@@ -122,7 +122,6 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.maptools.tools.MainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
@@ -598,11 +597,13 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                                     } else {
                                         Utilities.yesNoMessageDialog(MapsActivity.this, msg, new Runnable() {
                                             public void run() {
-                                                try {
-                                                    DaoNotes.deleteNotesByType(NoteType.OSM);
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
+//                                                try {
+                                                    // FIXME needs to be fixed
+
+//                                                    DaoNotes.deleteNotesByType(NoteType.OSM);
+//                                                } catch (IOException e) {
+//                                                    e.printStackTrace();
+//                                                }
                                             }
                                         }, null);
                                     }
@@ -840,7 +841,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             smsData.add(data);
         }
 
-        List<Note> notesList = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
+        List<Note> notesList = DaoNotes.getNotesList(nswe, false);
         for (Note note : notesList) {
             double lat = note.getLat();
             double lon = note.getLon();
@@ -1009,19 +1010,19 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             }
                             DaoGpsLog logDumper = new DaoGpsLog();
                             SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
-                            java.sql.Date now = new java.sql.Date(new java.util.Date().getTime());
+                            long now = new java.util.Date().getTime();
                             long newLogId = logDumper.addGpsLog(now, now, 0, name, 3, "blue", true); //$NON-NLS-1$
 
                             sqliteDatabase.beginTransaction();
                             try {
-                                java.sql.Date nowPlus10Secs = now;
+                                long nowPlus10Secs = now;
                                 for (int i = 0; i < routePoints.length; i = i + 2) {
                                     double lon = routePoints[i];
                                     double lat = routePoints[i + 1];
                                     double altim = -1;
 
                                     // dummy time increment
-                                    nowPlus10Secs = new java.sql.Date(nowPlus10Secs.getTime() + 10000);
+                                    nowPlus10Secs = nowPlus10Secs + 10000;
                                     logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
                                 }
 
@@ -1130,7 +1131,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             float w = (float) (lon - 0.00001f);
                             float e = (float) (lon + 0.00001f);
 
-                            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
+                            List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
                             if (notesInWorldBounds.size() > 0) {
                                 Note note = notesInWorldBounds.get(0);
                                 long id = note.getId();

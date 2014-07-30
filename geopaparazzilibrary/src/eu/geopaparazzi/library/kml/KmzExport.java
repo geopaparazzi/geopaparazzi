@@ -92,19 +92,20 @@ public class KmzExport {
                     bW.write(kmlRepresenter.toKmlString());
 
                     if (kmlRepresenter.hasImages()) {
-                        List<String> imagePaths = kmlRepresenter.getImagePaths();
-                        for( String imagePath : imagePaths ) {
-                            File imageFile = new File(imagePath);
-                            if (!imageFile.exists()) {
-                                // try the relative path
-                                imageFile = new File(applicationDir, imagePath);
-                            }
-                            if (imageFile.exists()) {
-                                existingImages.add(imageFile);
-                            } else {
-                                GPLog.addLogEntry(this, null, null, "Can't find image: " + imageFile.getAbsolutePath());
-                            }
-                        }
+                        // FIXME fix this
+//                        List<String> imagePaths = kmlRepresenter.getImagePaths();
+//                        for( String imagePath : imagePaths ) {
+//                            File imageFile = new File(imagePath);
+//                            if (!imageFile.exists()) {
+//                                // try the relative path
+//                                imageFile = new File(applicationDir, imagePath);
+//                            }
+//                            if (imageFile.exists()) {
+//                                existingImages.add(imageFile);
+//                            } else {
+//                                GPLog.addLogEntry(this, null, null, "Can't find image: " + imageFile.getAbsolutePath());
+//                            }
+//                        }
                     }
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);

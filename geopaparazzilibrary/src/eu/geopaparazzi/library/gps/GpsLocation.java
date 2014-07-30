@@ -69,13 +69,6 @@ public class GpsLocation extends Location {
     }
 
     /**
-     * @return the timestamp.
-     */
-    public Date getTimeDate() {
-        return new Date(getTime());
-    }
-
-    /**
      * @return the sql date.
      */
     public java.sql.Date getSqlDate() {

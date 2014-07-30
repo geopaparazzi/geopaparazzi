@@ -54,17 +54,17 @@ public class DaoNotes {
         sB.append("CREATE TABLE ");
         sB.append(TABLE_NOTES);
         sB.append(" (");
-        sB.append(NotesTableFields.COLUMN_ID_LONG.getFieldName());
+        sB.append(NotesTableFields.COLUMN_ID.getFieldName());
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sB.append(NotesTableFields.COLUMN_LON_DOUBLE.getFieldName()).append(" REAL NOT NULL, ");
-        sB.append(NotesTableFields.COLUMN_LAT_DOUBLE.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(NotesTableFields.COLUMN_ALTIM_DOUBLE.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(NotesTableFields.COLUMN_TS_LONG.getFieldName()).append(" DATE NOT NULL,");
-        sB.append(NotesTableFields.COLUMN_DESCRIPTION_STRING.getFieldName()).append(" TEXT, ");
-        sB.append(NotesTableFields.COLUMN_TEXT_STRING.getFieldName()).append(" TEXT NOT NULL, ");
-        sB.append(NotesTableFields.COLUMN_FORM_STRING.getFieldName()).append(" CLOB, ");
-        sB.append(NotesTableFields.COLUMN_STYLE_STRING.getFieldName()).append(" TEXT,");
-        sB.append(NotesTableFields.COLUMN_ISDIRTY_INT.getFieldName()).append(" INTEGER");
+        sB.append(NotesTableFields.COLUMN_LON.getFieldName()).append(" REAL NOT NULL, ");
+        sB.append(NotesTableFields.COLUMN_LAT.getFieldName()).append(" REAL NOT NULL,");
+        sB.append(NotesTableFields.COLUMN_ALTIM.getFieldName()).append(" REAL NOT NULL,");
+        sB.append(NotesTableFields.COLUMN_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(NotesTableFields.COLUMN_DESCRIPTION.getFieldName()).append(" TEXT, ");
+        sB.append(NotesTableFields.COLUMN_TEXT.getFieldName()).append(" TEXT NOT NULL, ");
+        sB.append(NotesTableFields.COLUMN_FORM.getFieldName()).append(" CLOB, ");
+        sB.append(NotesTableFields.COLUMN_STYLE.getFieldName()).append(" TEXT,");
+        sB.append(NotesTableFields.COLUMN_ISDIRTY.getFieldName()).append(" INTEGER");
         sB.append(");");
         String CREATE_TABLE_NOTES = sB.toString();
 
@@ -72,7 +72,7 @@ public class DaoNotes {
         sB.append("CREATE INDEX notes_ts_idx ON ");
         sB.append(TABLE_NOTES);
         sB.append(" ( ");
-        sB.append(NotesTableFields.COLUMN_TS_LONG.getFieldName());
+        sB.append(NotesTableFields.COLUMN_TS.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_NOTES_TS = sB.toString();
 
@@ -80,9 +80,9 @@ public class DaoNotes {
         sB.append("CREATE INDEX notes_x_by_y_idx ON ");
         sB.append(TABLE_NOTES);
         sB.append(" ( ");
-        sB.append(NotesTableFields.COLUMN_LON_DOUBLE.getFieldName());
+        sB.append(NotesTableFields.COLUMN_LON.getFieldName());
         sB.append(", ");
-        sB.append(NotesTableFields.COLUMN_LAT_DOUBLE.getFieldName());
+        sB.append(NotesTableFields.COLUMN_LAT.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
@@ -90,7 +90,7 @@ public class DaoNotes {
         sB.append("CREATE INDEX notes_isdirty_idx ON ");
         sB.append(TABLE_NOTES);
         sB.append(" ( ");
-        sB.append(NotesTableFields.COLUMN_ISDIRTY_INT.getFieldName());
+        sB.append(NotesTableFields.COLUMN_ISDIRTY.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_NOTES_ISDIRTY = sB.toString();
 
@@ -162,20 +162,19 @@ public class DaoNotes {
      */
     public static void addNoteNoTransaction(double lon, double lat, double altim, long timestamp, String text,
                                             String description, String form, String style, SQLiteDatabase sqliteDatabase) {
-        if (description == null) {
-            description = "note";
-        }
-
         ContentValues values = new ContentValues();
-        values.put(NotesTableFields.COLUMN_LON_DOUBLE.getFieldName(), lon);
-        values.put(NotesTableFields.COLUMN_LAT_DOUBLE.getFieldName(), lat);
-        values.put(NotesTableFields.COLUMN_ALTIM_DOUBLE.getFieldName(), altim);
-        values.put(NotesTableFields.COLUMN_TS_LONG.getFieldName(), timestamp);
-        values.put(NotesTableFields.COLUMN_DESCRIPTION_STRING.getFieldName(), description);
-        values.put(NotesTableFields.COLUMN_TEXT_STRING.getFieldName(), text);
-        values.put(NotesTableFields.COLUMN_FORM_STRING.getFieldName(), form);
-        values.put(NotesTableFields.COLUMN_STYLE_STRING.getFieldName(), style);
-        values.put(NotesTableFields.COLUMN_ISDIRTY_INT.getFieldName(), 1);
+        values.put(NotesTableFields.COLUMN_LON.getFieldName(), lon);
+        values.put(NotesTableFields.COLUMN_LAT.getFieldName(), lat);
+        values.put(NotesTableFields.COLUMN_ALTIM.getFieldName(), altim);
+        values.put(NotesTableFields.COLUMN_TS.getFieldName(), timestamp);
+        if (description != null)
+            values.put(NotesTableFields.COLUMN_DESCRIPTION.getFieldName(), description);
+        values.put(NotesTableFields.COLUMN_TEXT.getFieldName(), text);
+        if (form != null)
+            values.put(NotesTableFields.COLUMN_FORM.getFieldName(), form);
+        if (style != null)
+            values.put(NotesTableFields.COLUMN_STYLE.getFieldName(), style);
+        values.put(NotesTableFields.COLUMN_ISDIRTY.getFieldName(), 1);
         sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
     }
 
@@ -190,7 +189,7 @@ public class DaoNotes {
         sqliteDatabase.beginTransaction();
         try {
             // delete note
-            String query = "delete from " + TABLE_NOTES + " where " + NotesTableFields.COLUMN_ID_LONG.getFieldName() + " = " + id;
+            String query = "delete from " + TABLE_NOTES + " where " + NotesTableFields.COLUMN_ID.getFieldName() + " = " + id;
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
 
@@ -213,12 +212,12 @@ public class DaoNotes {
      */
     public static void updateForm(long id, String noteText, String jsonStr) throws IOException {
         ContentValues updatedValues = new ContentValues();
-        updatedValues.put(NotesTableFields.COLUMN_FORM_STRING.getFieldName(), jsonStr);
+        updatedValues.put(NotesTableFields.COLUMN_FORM.getFieldName(), jsonStr);
         if (noteText != null && noteText.length() > 0) {
-            updatedValues.put(NotesTableFields.COLUMN_TEXT_STRING.getFieldName(), noteText);
+            updatedValues.put(NotesTableFields.COLUMN_TEXT.getFieldName(), noteText);
         }
 
-        String where = NotesTableFields.COLUMN_ID_LONG.getFieldName() + "=" + id;
+        String where = NotesTableFields.COLUMN_ID.getFieldName() + "=" + id;
         String[] whereArgs = null;
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
@@ -239,25 +238,25 @@ public class DaoNotes {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
         String query = "SELECT " +//
-                NotesTableFields.COLUMN_ID_LONG.getFieldName() +
+                NotesTableFields.COLUMN_ID.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_LON_DOUBLE.getFieldName() +
+                NotesTableFields.COLUMN_LON.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_LAT_DOUBLE.getFieldName() +
+                NotesTableFields.COLUMN_LAT.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_ALTIM_DOUBLE.getFieldName() +
+                NotesTableFields.COLUMN_ALTIM.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_TEXT_STRING.getFieldName() +
+                NotesTableFields.COLUMN_TEXT.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_TS_LONG.getFieldName() +
+                NotesTableFields.COLUMN_TS.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_DESCRIPTION_STRING.getFieldName() +
+                NotesTableFields.COLUMN_DESCRIPTION.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_STYLE_STRING.getFieldName() +
+                NotesTableFields.COLUMN_STYLE.getFieldName() +
                 ", " +//
-                NotesTableFields.COLUMN_FORM_STRING.getFieldName() +//
+                NotesTableFields.COLUMN_FORM.getFieldName() +//
                 ", " +//
-                NotesTableFields.COLUMN_ISDIRTY_INT.getFieldName() +//
+                NotesTableFields.COLUMN_ISDIRTY.getFieldName() +//
                 " FROM " + TABLE_NOTES;
         if (nswe != null) {
             query = query + " WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
@@ -267,7 +266,7 @@ public class DaoNotes {
             query = query.replaceFirst("XXX", String.valueOf(nswe[0]));
         }
         if (onlyDirty)
-            query = query + " AND " + NotesTableFields.COLUMN_ISDIRTY_INT.getFieldName() + " = 1";
+            query = query + " AND " + NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Note> notes = new ArrayList<Note>();
@@ -303,10 +302,10 @@ public class DaoNotes {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<OverlayItem> notesList = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = { //
-                NotesTableFields.COLUMN_LON_DOUBLE.getFieldName(), //
-                NotesTableFields.COLUMN_LAT_DOUBLE.getFieldName(), //
-                NotesTableFields.COLUMN_TS_LONG.getFieldName(), //
-                NotesTableFields.COLUMN_TEXT_STRING.getFieldName() //
+                NotesTableFields.COLUMN_LON.getFieldName(), //
+                NotesTableFields.COLUMN_LAT.getFieldName(), //
+                NotesTableFields.COLUMN_TS.getFieldName(), //
+                NotesTableFields.COLUMN_TEXT.getFieldName() //
         };// ,
         String strSortOrder = "_id ASC";
         Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);

@@ -57,17 +57,23 @@ public class DaoImages {
         sB.append("CREATE TABLE ");
         sB.append(TABLE_IMAGES);
         sB.append(" (");
-        sB.append(ImageTableFields.COLUMN_ID_LONG.getFieldName());
+        sB.append(ImageTableFields.COLUMN_ID.getFieldName());
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sB.append(ImageTableFields.COLUMN_LON_DOUBLE.getFieldName()).append(" REAL NOT NULL, ");
-        sB.append(ImageTableFields.COLUMN_LAT_DOUBLE.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_ALTIM_DOUBLE.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_AZIM_DOUBLE.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName()).append(" INTEGER NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_TS_LONG.getFieldName()).append(" DATE NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_TEXT_STRING.getFieldName()).append(" TEXT NOT NULL,");
-        sB.append(ImageTableFields.COLUMN_NOTE_ID_LONG.getFieldName()).append(" INTEGER,");
-        sB.append(ImageTableFields.COLUMN_ISDIRTY_INT.getFieldName()).append(" INTEGER NOT NULL");
+        sB.append(ImageTableFields.COLUMN_LON.getFieldName()).append(" REAL NOT NULL, ");
+        sB.append(ImageTableFields.COLUMN_LAT.getFieldName()).append(" REAL NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_ALTIM.getFieldName()).append(" REAL NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_AZIM.getFieldName()).append(" REAL NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_IMAGE_ID.getFieldName());
+        sB.append(" INTEGER NOT NULL ");
+        sB.append("CONSTRAINT " + ImageTableFields.COLUMN_IMAGE_ID.getFieldName() + " REFERENCES ");
+        sB.append(TABLE_IMAGE_DATA);
+        sB.append("(");
+        sB.append(ImageDataTableFields.COLUMN_ID);
+        sB.append(") ON DELETE CASCADE,");
+        sB.append(ImageTableFields.COLUMN_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_TEXT.getFieldName()).append(" TEXT NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_NOTE_ID.getFieldName()).append(" INTEGER,");
+        sB.append(ImageTableFields.COLUMN_ISDIRTY.getFieldName()).append(" INTEGER NOT NULL");
         sB.append(");");
         String CREATE_TABLE_IMAGES = sB.toString();
 
@@ -75,7 +81,7 @@ public class DaoImages {
         sB.append("CREATE INDEX images_ts_idx ON ");
         sB.append(TABLE_IMAGES);
         sB.append(" ( ");
-        sB.append(ImageTableFields.COLUMN_TS_LONG.getFieldName());
+        sB.append(ImageTableFields.COLUMN_TS.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_IMAGES_TS = sB.toString();
 
@@ -83,9 +89,9 @@ public class DaoImages {
         sB.append("CREATE INDEX images_x_by_y_idx ON ");
         sB.append(TABLE_IMAGES);
         sB.append(" ( ");
-        sB.append(ImageTableFields.COLUMN_LON_DOUBLE.getFieldName());
+        sB.append(ImageTableFields.COLUMN_LON.getFieldName());
         sB.append(", ");
-        sB.append(ImageTableFields.COLUMN_LAT_DOUBLE.getFieldName());
+        sB.append(ImageTableFields.COLUMN_LAT.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_IMAGES_X_BY_Y = sB.toString();
 
@@ -93,7 +99,7 @@ public class DaoImages {
         sB.append("CREATE INDEX images_noteid_idx ON ");
         sB.append(TABLE_IMAGES);
         sB.append(" ( ");
-        sB.append(ImageTableFields.COLUMN_NOTE_ID_LONG.getFieldName());
+        sB.append(ImageTableFields.COLUMN_NOTE_ID.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_IMAGES_NOTEID = sB.toString();
 
@@ -101,7 +107,7 @@ public class DaoImages {
         sB.append("CREATE INDEX images_isdirty_idx ON ");
         sB.append(TABLE_IMAGES);
         sB.append(" ( ");
-        sB.append(ImageTableFields.COLUMN_ISDIRTY_INT.getFieldName());
+        sB.append(ImageTableFields.COLUMN_ISDIRTY.getFieldName());
         sB.append(" );");
         String CREATE_INDEX_IMAGES_ISDIRTY = sB.toString();
 
@@ -109,9 +115,9 @@ public class DaoImages {
         sB.append("CREATE TABLE ");
         sB.append(TABLE_IMAGE_DATA);
         sB.append(" (");
-        sB.append(ImageDataTableFields.COLUMN_ID_LONG.getFieldName());
+        sB.append(ImageDataTableFields.COLUMN_ID.getFieldName());
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sB.append(ImageDataTableFields.COLUMN_IMAGE_BLOB.getFieldName()).append(" BLOB NOT NULL");
+        sB.append(ImageDataTableFields.COLUMN_IMAGE.getFieldName()).append(" BLOB NOT NULL");
         sB.append(");");
         String CREATE_TABLE_IMAGEDATA = sB.toString();
 
@@ -158,19 +164,19 @@ public class DaoImages {
         try {
             // first insert image data
             ContentValues imageDataValues = new ContentValues();
-            imageDataValues.put(ImageDataTableFields.COLUMN_IMAGE_BLOB.getFieldName(), image);
+            imageDataValues.put(ImageDataTableFields.COLUMN_IMAGE.getFieldName(), image);
             long imageDataId = sqliteDatabase.insertOrThrow(TABLE_IMAGE_DATA, null, imageDataValues);
 
             ContentValues values = new ContentValues();
-            values.put(ImageTableFields.COLUMN_LON_DOUBLE.getFieldName(), lon);
-            values.put(ImageTableFields.COLUMN_LAT_DOUBLE.getFieldName(), lat);
-            values.put(ImageTableFields.COLUMN_ALTIM_DOUBLE.getFieldName(), altim);
-            values.put(ImageTableFields.COLUMN_TS_LONG.getFieldName(), timestamp);
-            values.put(ImageTableFields.COLUMN_TEXT_STRING.getFieldName(), text);
-            values.put(ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName(), imageDataId);
-            values.put(ImageTableFields.COLUMN_AZIM_DOUBLE.getFieldName(), azim);
+            values.put(ImageTableFields.COLUMN_LON.getFieldName(), lon);
+            values.put(ImageTableFields.COLUMN_LAT.getFieldName(), lat);
+            values.put(ImageTableFields.COLUMN_ALTIM.getFieldName(), altim);
+            values.put(ImageTableFields.COLUMN_TS.getFieldName(), timestamp);
+            values.put(ImageTableFields.COLUMN_TEXT.getFieldName(), text);
+            values.put(ImageTableFields.COLUMN_IMAGE_ID.getFieldName(), imageDataId);
+            values.put(ImageTableFields.COLUMN_AZIM.getFieldName(), azim);
             if (noteId != null)
-                values.put(ImageTableFields.COLUMN_NOTE_ID_LONG.getFieldName(), noteId);
+                values.put(ImageTableFields.COLUMN_NOTE_ID.getFieldName(), noteId);
             sqliteDatabase.insertOrThrow(TABLE_IMAGES, null, values);
 
             sqliteDatabase.setTransactionSuccessful();
@@ -192,14 +198,14 @@ public class DaoImages {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName()};
+            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGE_ID.getFieldName()};
             String imageIdsWhereStr = "";
             int count = 0;
             for (long id : ids) {
                 if (count > 0) {
                     imageIdsWhereStr = imageIdsWhereStr + " || ";
                 }
-                imageIdsWhereStr = imageIdsWhereStr + ImageTableFields.COLUMN_ID_LONG.getFieldName() + " = " + id;
+                imageIdsWhereStr = imageIdsWhereStr + ImageTableFields.COLUMN_ID.getFieldName() + " = " + id;
                 count++;
             }
             Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, imageIdsWhereStr, null, null, null, null);
@@ -212,7 +218,7 @@ public class DaoImages {
                 if (count > 0) {
                     imageDataIdsWhereStr = imageDataIdsWhereStr + " || ";
                 }
-                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID_LONG.getFieldName() + " = " + imageDataId;
+                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
                 count++;
 
             }
@@ -248,14 +254,14 @@ public class DaoImages {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName()};
+            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGE_ID.getFieldName()};
             String notesIdsWhereStr = "";
             int count = 0;
             for (long id : noteIds) {
                 if (count > 0) {
                     notesIdsWhereStr = notesIdsWhereStr + " || ";
                 }
-                notesIdsWhereStr = notesIdsWhereStr + ImageTableFields.COLUMN_NOTE_ID_LONG.getFieldName() + " = " + id;
+                notesIdsWhereStr = notesIdsWhereStr + ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " = " + id;
                 count++;
             }
             Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, notesIdsWhereStr, null, null, null, null);
@@ -268,7 +274,7 @@ public class DaoImages {
                 if (count > 0) {
                     imageDataIdsWhereStr = imageDataIdsWhereStr + " || ";
                 }
-                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID_LONG.getFieldName() + " = " + imageDataId;
+                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
                 count++;
 
             }
@@ -352,20 +358,20 @@ public class DaoImages {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Image> images = new ArrayList<Image>();
         String asColumnsToReturn[] = { //
-                ImageTableFields.COLUMN_ID_LONG.getFieldName(),//
-                ImageTableFields.COLUMN_LON_DOUBLE.getFieldName(),//
-                ImageTableFields.COLUMN_LAT_DOUBLE.getFieldName(),//
-                ImageTableFields.COLUMN_ALTIM_DOUBLE.getFieldName(),//
-                ImageTableFields.COLUMN_TS_LONG.getFieldName(),//
-                ImageTableFields.COLUMN_AZIM_DOUBLE.getFieldName(),//
-                ImageTableFields.COLUMN_TEXT_STRING.getFieldName(),//
-                ImageTableFields.COLUMN_NOTE_ID_LONG.getFieldName(),//
-                ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName()//
+                ImageTableFields.COLUMN_ID.getFieldName(),//
+                ImageTableFields.COLUMN_LON.getFieldName(),//
+                ImageTableFields.COLUMN_LAT.getFieldName(),//
+                ImageTableFields.COLUMN_ALTIM.getFieldName(),//
+                ImageTableFields.COLUMN_TS.getFieldName(),//
+                ImageTableFields.COLUMN_AZIM.getFieldName(),//
+                ImageTableFields.COLUMN_TEXT.getFieldName(),//
+                ImageTableFields.COLUMN_NOTE_ID.getFieldName(),//
+                ImageTableFields.COLUMN_IMAGE_ID.getFieldName()//
         };
         String strSortOrder = "_id ASC";
         String isDirtyString = null;
         if (onlyDirty) {
-            isDirtyString = ImageTableFields.COLUMN_ISDIRTY_INT.getFieldName() + " = " + 1;
+            isDirtyString = ImageTableFields.COLUMN_ISDIRTY.getFieldName() + " = " + 1;
         }
         Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, isDirtyString, null, null, null, strSortOrder);
         c.moveToFirst();
@@ -399,10 +405,10 @@ public class DaoImages {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<OverlayItem> images = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {//
-                ImageTableFields.COLUMN_LON_DOUBLE.getFieldName(),//
-                ImageTableFields.COLUMN_LAT_DOUBLE.getFieldName(), //
-                ImageTableFields.COLUMN_IMAGE_ID_LONG.getFieldName(),//
-                ImageTableFields.COLUMN_TEXT_STRING.getFieldName()//
+                ImageTableFields.COLUMN_LON.getFieldName(),//
+                ImageTableFields.COLUMN_LAT.getFieldName(), //
+                ImageTableFields.COLUMN_IMAGE_ID.getFieldName(),//
+                ImageTableFields.COLUMN_TEXT.getFieldName()//
         };
         String strSortOrder = "_id ASC";
         Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, null, null, null, null, strSortOrder);

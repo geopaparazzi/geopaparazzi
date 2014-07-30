@@ -49,7 +49,7 @@ import eu.geopaparazzi.library.util.Utilities;
  *  <li>longitude</li>
  *  <li>latitude</li>
  *  <li>elevation</li>
- *  <li>note date in format: yyyy-MM-dd HH:mm:ss</li>
+ *  <li>note UTC long timestamp</li>
  *  <li>the text of the note</li>
  * </ul>
  * 
@@ -82,17 +82,15 @@ public class NoteActivity extends Activity {
         saveButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 try {
-                    Date sqlDate = new Date(System.currentTimeMillis());
+                    long ts = System.currentTimeMillis();
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
-
-                    String sqlDateString = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.format(sqlDate);
 
                     String[] noteArray = {//
                     String.valueOf(longitude), //
                             String.valueOf(latitude), //
                             String.valueOf(elevation), //
-                            sqlDateString, //
+                            ts+"", //
                             noteString,//
                             "POI", // note category //$NON-NLS-1$
                             "" // form //$NON-NLS-1$
