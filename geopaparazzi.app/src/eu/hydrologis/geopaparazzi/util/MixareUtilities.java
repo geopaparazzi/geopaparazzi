@@ -73,7 +73,7 @@ public class MixareUtilities {
             points.add(p);
         }
 
-        List<Note> notesList = DaoNotes.getNotesInWorldBounds(n, s, w, e);
+        List<Note> notesList = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
         for( Note note : notesList ) {
             double lat = note.getLat();
             double lon = note.getLon();

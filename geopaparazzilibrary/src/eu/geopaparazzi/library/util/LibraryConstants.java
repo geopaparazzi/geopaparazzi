@@ -165,6 +165,8 @@ public interface LibraryConstants {
      */
     public static final String TMPPNGIMAGENAME = "tmp.png"; //$NON-NLS-1$
 
+    public static final String OSM = "OSM"; //$NON-NLS-1$
+
     /**
      * Key used to store and retrieve a custom path to the external storage.
      */

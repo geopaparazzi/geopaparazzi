@@ -59,7 +59,6 @@ import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 
 /**
  * Map tags adding activity.
@@ -265,7 +264,7 @@ public class MapTagsActivity extends Activity {
                     String nameStr = formArray[4];
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
-                    DaoNotes.addNote(lon, lat, elev, dateStr, nameStr, catStr, jsonStr, NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, Long.parseLong(dateStr), nameStr, "POI", jsonStr, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -280,8 +279,8 @@ public class MapTagsActivity extends Activity {
                     double lon = Double.parseDouble(noteArray[0]);
                     double lat = Double.parseDouble(noteArray[1]);
                     double elev = Double.parseDouble(noteArray[2]);
-                    DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], noteArray[5], noteArray[6],
-                            NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], noteArray[5], noteArray[6],
+                            null);
                 } catch (Exception e) {
                     e.printStackTrace();
 
@@ -305,8 +304,9 @@ public class MapTagsActivity extends Activity {
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                         double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                         double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+                        byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
 
-                        DaoImages.addImage(lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", relativeImagePath);
+                        DaoImages.addImage(lon, lat, elev, azim, new java.util.Date().getTime(), "", image, null);
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -327,8 +327,9 @@ public class MapTagsActivity extends Activity {
                     double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                     double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                     double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                    byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
 
-                    DaoImages.addImage(lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", absoluteImagePath);
+                    DaoImages.addImage(lon, lat, elev, -9999.0, new java.util.Date().getTime(), "", image, null);
                 } catch (Exception e) {
                     e.printStackTrace();
 

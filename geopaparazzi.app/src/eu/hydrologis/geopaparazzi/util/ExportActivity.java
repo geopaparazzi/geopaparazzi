@@ -226,14 +226,14 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList();
+                    List<Note> notesList = DaoNotes.getNotesList(null, false);
                     for( Note note : notesList ) {
                         kmlRepresenterList.add(note);
                     }
                     /*
                      * add pictures
                      */
-                    List<Image> imagesList = DaoImages.getImagesList();
+                    List<Image> imagesList = DaoImages.getImagesList(false);
                     for( Image image : imagesList ) {
                         kmlRepresenterList.add(image);
                     }
@@ -304,7 +304,7 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList();
+                    List<Note> notesList = DaoNotes.getNotesList(null, false);
                     for( Note note : notesList ) {
                         gpxRepresenterList.add(note);
                     }

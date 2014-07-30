@@ -40,14 +40,14 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 
 /**
  * Gpx file import activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpxImportActivity extends Activity {
 
     private String path;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         // setContentView(R.layout.note);
 
@@ -57,7 +57,7 @@ public class GpxImportActivity extends Activity {
 
             gpxImportProgressDialog = ProgressDialog.show(GpxImportActivity.this, getString(R.string.gpx_import_processing),
                     "", true, true); //$NON-NLS-1$
-            new Thread(){
+            new Thread() {
                 public void run() {
                     try {
                         File file = new File(path);
@@ -72,11 +72,11 @@ public class GpxImportActivity extends Activity {
                                 item.setVisible(false);
                                 item.setColor("blue"); //$NON-NLS-1$
                                 item.setData(wayPoints);
-                                DaoGpsLog.importGpxToMap(GpxImportActivity.this, item);
+                                DaoGpsLog.importGpxToMap(item);
                             }
                             List<TrackSegment> tracks = parser.getTracks();
                             if (tracks.size() > 0) {
-                                for( TrackSegment trackSegment : tracks ) {
+                                for (TrackSegment trackSegment : tracks) {
                                     String tName = trackSegment.getName();
                                     if (tName == null) {
                                         tName = ""; //$NON-NLS-1$
@@ -90,12 +90,12 @@ public class GpxImportActivity extends Activity {
                                     item.setVisible(false);
                                     item.setColor("red"); //$NON-NLS-1$
                                     item.setData(trackSegment);
-                                    DaoGpsLog.importGpxToMap(GpxImportActivity.this, item);
+                                    DaoGpsLog.importGpxToMap(item);
                                 }
                             }
                             List<Route> routes = parser.getRoutes();
                             if (routes.size() > 0) {
-                                for( Route route : routes ) {
+                                for (Route route : routes) {
                                     String rName = route.getName();
                                     if (rName == null) {
                                         rName = ""; //$NON-NLS-1$
@@ -109,7 +109,7 @@ public class GpxImportActivity extends Activity {
                                     item.setVisible(false);
                                     item.setColor("green"); //$NON-NLS-1$
                                     item.setData(route);
-                                    DaoGpsLog.importGpxToMap(GpxImportActivity.this, item);
+                                    DaoGpsLog.importGpxToMap(item);
                                 }
                             }
                         } else {
@@ -136,11 +136,13 @@ public class GpxImportActivity extends Activity {
         Utilities.dismissProgressDialog(gpxImportProgressDialog);
         super.onPause();
     }
-    
+
     private static ProgressDialog gpxImportProgressDialog;
-    private static Handler gpsImportHandler = new Handler(){
-        public void handleMessage( android.os.Message msg ) {
+    private static Handler gpsImportHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
             Utilities.dismissProgressDialog(gpxImportProgressDialog);
-        };
+        }
+
+        ;
     };
 }

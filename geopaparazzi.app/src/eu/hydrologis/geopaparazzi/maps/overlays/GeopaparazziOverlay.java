@@ -69,7 +69,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.util.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -1165,12 +1164,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     float e = (float) (lon + 0.00001f);
 
                     try {
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
+                        List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
-                            int type = note.getIsDirty();
+                            String description = note.getDescription();
                             String form = note.getForm();
-                            if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
+                            if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
                                 String name = note.getName();
                                 double altim = note.getAltim();
                                 Intent formIntent = new Intent(context, FormActivity.class);

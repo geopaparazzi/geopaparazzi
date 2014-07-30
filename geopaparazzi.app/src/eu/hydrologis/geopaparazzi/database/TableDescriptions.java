@@ -149,7 +149,7 @@ public class TableDescriptions {
         /**
          * The id of the connected image data.
          */
-        COLUMN_IMAGE_ID("image_id", Long.class);
+        COLUMN_IMAGEDATA_ID("imagedata_id", Long.class);
 
         private String fieldName;
         private Class fieldClass;
@@ -177,7 +177,7 @@ public class TableDescriptions {
         /**
          * The image data.
          */
-        COLUMN_IMAGE("image", byte[].class);
+        COLUMN_IMAGE("imagedata", byte[].class);
 
         private String fieldName;
         private Class fieldClass;
