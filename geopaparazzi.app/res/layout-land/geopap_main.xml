@@ -51,7 +51,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/dashboard_undonote_item"
+                android:id="@+id/dashboard_projectmetadata_item"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
@@ -59,18 +59,18 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:id="@+id/dashboard_undonote_item_button"
+                    android:id="@+id/dashboard_projectmetadata_item_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/action_bar_button_drawable"
                     android:padding="@dimen/dashboard_button_padding"
-                    android:src="@drawable/dashboard_undonote_item" >
+                    android:src="@drawable/ic_project_metadata" >
                 </ImageButton>
 
                 <TextView
-                    android:id="@+id/dashboard_undoitem_text"
+                    android:id="@+id/dashboard_projectmetadataitem_text"
                     style="@style/dashBoardText"
-                    android:text="@string/text_undo_a_gps_note" >
+                    android:text="@string/text_project_metadata" >
                 </TextView>
             </LinearLayout>
 

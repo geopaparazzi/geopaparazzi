@@ -25,14 +25,12 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
-import static eu.hydrologis.geopaparazzi.database.TableDescriptions.NotesTableFields;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_METADATA;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_NOTES;
 
@@ -121,7 +119,7 @@ public class DaoMetadata {
 
             values = new ContentValues();
             values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_CREATIONTS.getFieldName());
-            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), creationDate.getTime());
+            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), String.valueOf(creationDate.getTime()));
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
@@ -151,7 +149,7 @@ public class DaoMetadata {
     /**
      * Set a value of the metadata.
      *
-     * @param key the key to use (from {@link eu.hydrologis.geopaparazzi.database.TableDescriptions.MetadataTableFields}).
+     * @param key   the key to use (from {@link eu.hydrologis.geopaparazzi.database.TableDescriptions.MetadataTableFields}).
      * @param value the value to set.
      * @throws java.io.IOException if something goes wrong.
      */
@@ -159,10 +157,10 @@ public class DaoMetadata {
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), value);
 
-        String where = MetadataTableFields.COLUMN_KEY.getFieldName() + "=" + key;
+        String where = MetadataTableFields.COLUMN_KEY.getFieldName() + "='" + key + "'";
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        sqliteDatabase.update(TABLE_NOTES, updatedValues, where, null);
+        sqliteDatabase.update(TABLE_METADATA, updatedValues, where, null);
     }
 
     /**

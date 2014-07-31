@@ -237,4 +237,5 @@
     <string name="save">save</string>
     <string name="goto_feature">go to</string>
     <string name="cancel">cancel</string>
+    <string name="text_project_metadata">project info</string>
 </resources>

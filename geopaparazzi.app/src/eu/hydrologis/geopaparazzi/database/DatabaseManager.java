@@ -144,6 +144,8 @@ public class DatabaseManager {
 
             // CREATE TABLES
             GPLog.createTables(db);
+            DaoMetadata.createTables();
+            DaoMetadata.initProjectMetadata(null, null, null, null);
             DaoNotes.createTables();
             DaoGpsLog.createTables();
             DaoBookmarks.createTables();

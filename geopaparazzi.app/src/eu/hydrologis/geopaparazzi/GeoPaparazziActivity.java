@@ -92,6 +92,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
+import eu.hydrologis.geopaparazzi.util.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
 /**
@@ -386,11 +387,11 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
 
-        final int undoNotesButtonId = R.id.dashboard_undonote_item_button;
-        ImageButton undoNotesButton = (ImageButton) findViewById(undoNotesButtonId);
-        undoNotesButton.setOnClickListener(new Button.OnClickListener() {
+        final int projectMetadataButtonId = R.id.dashboard_projectmetadata_item_button;
+        ImageButton projectMetadataButton = (ImageButton) findViewById(projectMetadataButtonId);
+        projectMetadataButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                push(undoNotesButtonId, v);
+                push(projectMetadataButtonId, v);
             }
         });
 
@@ -556,20 +557,13 @@ public class GeoPaparazziActivity extends Activity {
 
                 break;
             }
-            case R.id.dashboard_undonote_item_button: {
-                Utilities.yesNoMessageDialog(this, getString(R.string.remove_last_note_prompt), new Runnable() {
-                    public void run() {
-                        try {
-                            // FIXME needs to be fixed
-//                            DaoNotes.deleteLastInsertedNote();
-                            Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
-                        } catch (Exception e) {
-                            GPLog.error(this, e.getLocalizedMessage(), e);
-                            e.printStackTrace();
-                            Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
-                        }
-                    }
-                }, null);
+            case R.id.dashboard_projectmetadata_item_button: {
+                try {
+                    Intent projectMetadataIntent = new Intent(this, ProjectMetadataActivity.class);
+                    startActivity(projectMetadataIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 break;
             }
