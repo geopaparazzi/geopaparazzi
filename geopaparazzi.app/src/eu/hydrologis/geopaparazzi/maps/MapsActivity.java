@@ -1374,7 +1374,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             case R.id.addnotebytagbutton:
                 // generate screenshot in background in order to not freeze
                 try {
-                    File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
+                    // FIXME needs to be fixed
+                    File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getApplicationDir();
                     final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
                     new Thread(new Runnable() {
                         public void run() {

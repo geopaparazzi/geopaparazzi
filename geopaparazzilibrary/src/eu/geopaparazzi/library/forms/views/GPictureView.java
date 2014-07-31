@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
@@ -51,7 +52,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom pictures view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GPictureView extends View implements GView {
@@ -64,32 +65,32 @@ public class GPictureView extends View implements GView {
     private File lastImageFile;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GPictureView( Context context, AttributeSet attrs, int defStyle ) {
+    public GPictureView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GPictureView( Context context, AttributeSet attrs ) {
+    public GPictureView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param key key
-     * @param value value
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param key                   key
+     * @param value                 value
      * @param constraintDescription constraints
      */
-    public GPictureView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+    public GPictureView(final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+                        String constraintDescription) {
         super(context, attrs);
 
         _value = value;
@@ -115,20 +116,21 @@ public class GPictureView extends View implements GView {
         button.setText(R.string.take_picture);
         textLayout.addView(button);
 
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
+                // FIXME needs to be fixed
                 Date currentDate = new Date();
                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                File mediaDir = null;
+                File applicationDir = null;
                 try {
-                    mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                    applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                 }
-                lastImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".jpg");
+                lastImageFile = new File(applicationDir, "IMG_" + currentDatestring + ".jpg");
 
                 Intent cameraIntent = new Intent(context, CameraActivity.class);
                 cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, lastImageFile.getName());
@@ -155,7 +157,7 @@ public class GPictureView extends View implements GView {
         scrollView.addView(imageLayout);
 
         ViewTreeObserver observer = imageLayout.getViewTreeObserver();
-        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener(){
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 if (lastImageFile != null && lastImageFile.exists()) {
                     String imagePath = lastImageFile.getAbsolutePath();
@@ -177,14 +179,14 @@ public class GPictureView extends View implements GView {
         refresh(context);
     }
 
-    public void refresh( final Context context ) {
+    public void refresh(final Context context) {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
             String[] imageSplit = _value.split(";");
             log("Handling images: " + _value);
 
-            for( String imageAbsolutePath : imageSplit ) {
+            for (String imageAbsolutePath : imageSplit) {
                 log("img: " + imageAbsolutePath);
 
                 if (imageAbsolutePath.length() == 0) {
@@ -206,8 +208,8 @@ public class GPictureView extends View implements GView {
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-                imageView.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         /*
                          * open in markers to edit it
                          */
@@ -226,7 +228,7 @@ public class GPictureView extends View implements GView {
 
             if (addedImages.size() > 0) {
                 StringBuilder sb = new StringBuilder();
-                for( String imagePath : addedImages ) {
+                for (String imagePath : addedImages) {
                     sb.append(";").append(imagePath);
                 }
                 _value = sb.substring(1);
@@ -239,7 +241,7 @@ public class GPictureView extends View implements GView {
         }
     }
 
-    private void log( String msg ) {
+    private void log(String msg) {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, null, null, msg);
     }
@@ -249,7 +251,7 @@ public class GPictureView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 

@@ -77,7 +77,8 @@ public enum WebProjectManager {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
-            String mediaFodlerName = resourcesManager.getMediaDir().getName();
+            // FIXME needs to be fixed
+            String mediaFodlerName = resourcesManager.getApplicationDir().getName();
 
             File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip");
             if (zipFile.exists()) {

@@ -246,7 +246,7 @@ public class ExportActivity extends Activity {
                         kmlRepresenterList.add(bookmark);
                     }
 
-                    File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
+                    File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
@@ -309,7 +309,7 @@ public class ExportActivity extends Activity {
                         gpxRepresenterList.add(note);
                     }
 
-                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
+                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
                     File gpxOutputFile = new File(gpxExportDir, filename);
                     GpxExport export = new GpxExport(null, gpxOutputFile);

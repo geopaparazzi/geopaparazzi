@@ -91,13 +91,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         String CREATE_TABLE_GPSLOGS = sB.toString();
 
         if (GPLog.LOG_ANDROID)
-            Log.i("DAOGPSLOG", "Create the gpslogs table.");
+            Log.i("DAOGPSLOG", "Create the gpslogs table with: \n" + CREATE_TABLE_GPSLOGS);
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS);
 
 
         /*
          * gps log data table
          */
+        sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_GPSLOG_DATA);
         sB.append(" (");
@@ -155,7 +156,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
 
         if (GPLog.LOG_ANDROID)
-            Log.i("DAOGPSLOG", "Create the gpslog_data table.");
+            Log.i("DAOGPSLOG", "Create the gpslogdata table with: \n" + CREATE_TABLE_GPSLOG_DATA);
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOG_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_ID);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_TS);
@@ -186,7 +187,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         String CREATE_TABLE_GPSLOGS_PROPERTIES = sB.toString();
 
         if (GPLog.LOG_ANDROID)
-            Log.i("DAOGPSLOG", "Create the gpslogs properties table.");
+            Log.i("DAOGPSLOG", "Create the gpslogs properties table with: \n" + CREATE_TABLE_GPSLOGS_PROPERTIES);
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS_PROPERTIES);
 
     }

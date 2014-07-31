@@ -788,7 +788,8 @@ public class GeoPaparazziActivity extends Activity {
                 if (resultCode == Activity.RESULT_OK) {
                     String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (relativeImagePath != null) {
-                        File imgFile = new File(resourcesManager.getMediaDir().getParentFile(), relativeImagePath);
+                        // FIXME needs to be fixed
+                        File imgFile = new File(resourcesManager.getApplicationDir().getParentFile(), relativeImagePath);
                         if (!imgFile.exists()) {
                             return;
                         }

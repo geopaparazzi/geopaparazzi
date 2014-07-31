@@ -85,7 +85,8 @@ public class CameraActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         File imageSaveFolder = null;
         try {
-            imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
+            // FIXME needs to be fixed
+            imageSaveFolder = ResourcesManager.getInstance(this).getApplicationDir();
             if (extras != null) {
                 String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
                 if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {

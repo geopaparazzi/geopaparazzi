@@ -267,7 +267,7 @@ public class ResourcesManager implements Serializable {
         if (GPLog.LOG_HEAVY) {
             Log.i("RESOURCESMANAGER", "App dir exists: " + applicationDir.exists());
         }
-        databaseFile = new File(applicationDirPath, databaseName);
+        databaseFile = new File(sdcardDir, databaseName);
 
         mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())

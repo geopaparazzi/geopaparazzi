@@ -218,6 +218,7 @@ public class FragmentDetail extends Fragment {
                             File applicationDir = ResourcesManager.getInstance(activity).getApplicationDir();
                             File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
+                                // FIXME needs to be fixed
                                 Date currentDate = new Date();
                                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                                 File newImageFile = new File(applicationDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -43,7 +43,7 @@ public class TableDescriptions {
     /**
      * gpslog data table name.
      */
-    public static final String TABLE_GPSLOG_DATA = "gpslog_data";
+    public static final String TABLE_GPSLOG_DATA = "gpslogsdata";
     /**
      * gpslog properties table name.
      */

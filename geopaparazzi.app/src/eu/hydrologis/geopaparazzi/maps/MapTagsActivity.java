@@ -155,9 +155,10 @@ public class MapTagsActivity extends Activity {
 
                 java.util.Date currentDate = new java.util.Date();
                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
+                // FIXME needs to be fixed
                 File mediaDir = null;
                 try {
-                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getMediaDir();
+                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getApplicationDir();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -295,7 +296,8 @@ public class MapTagsActivity extends Activity {
                 String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                 if (relativeImagePath != null) {
                     try {
-                        File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(),
+                        // FIXME needs to be fixed
+                        File imgFile = new File(ResourcesManager.getInstance(this).getApplicationDir().getParentFile(),
                                 relativeImagePath);
                         if (!imgFile.exists()) {
                             return;

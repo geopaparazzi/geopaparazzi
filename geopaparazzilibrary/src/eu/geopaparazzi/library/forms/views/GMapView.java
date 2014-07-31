@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -93,14 +94,16 @@ public class GMapView extends View implements GView {
 
         image = new File(value);
         if (!image.exists()) {
+            // FIXME needs to be fixed
             // look also in media folder for relative path name
-            File mediaDir = null;
+            File applicationDir = null;
             try {
-                mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
             } catch (Exception e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
             }
-            File parentFolder = mediaDir.getParentFile();
+
+            File parentFolder = applicationDir.getParentFile();
             image = new File(parentFolder, value);
         }
         if (image.exists()) {
