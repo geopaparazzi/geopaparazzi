@@ -81,7 +81,9 @@ import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
+import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.TableDescriptions;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
@@ -792,7 +794,7 @@ public class GeoPaparazziActivity extends Activity {
                             double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                             double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                             double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                            byte[] imageData  = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
+                            byte[] imageData = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
                             DaoImages.addImage(lon, lat, elev, azim, new Date().getTime(), "", imageData, null);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -815,7 +817,7 @@ public class GeoPaparazziActivity extends Activity {
                             double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                             double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                             double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                            byte[] imageData  = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
+                            byte[] imageData = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
                             DaoImages.addImage(lon, lat, elev, -9999.0, new Date().getTime(), "",
                                     imageData, null);
                         } catch (Exception e) {
@@ -863,6 +865,9 @@ public class GeoPaparazziActivity extends Activity {
         try {
             if (GPLog.LOG)
                 Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            // set last closing timestamp
+            DaoMetadata.setValue(TableDescriptions.MetadataTableFields.KEY_LASTTS.getFieldName(), new Date().getTime() + "");
 
             TagsManager.reset(this);
 
