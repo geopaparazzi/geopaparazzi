@@ -25,6 +25,10 @@ package eu.hydrologis.geopaparazzi.database;
 public class TableDescriptions {
 
     /**
+     * The metadata table name.
+     */
+    public static final String TABLE_METADATA = "metadata";
+    /**
      * The notes table name.
      */
     public static final String TABLE_NOTES = "notes";
@@ -49,6 +53,60 @@ public class TableDescriptions {
      */
     public static final String TABLE_GPSLOG_PROPERTIES = "gpslogsproperties";
 
+    public static enum MetadataTableFields {
+        /**
+         * The field name for the keys.
+         */
+        COLUMN_KEY("key", String.class),
+        /**
+         * The field name for the values.
+         */
+        COLUMN_VALUE("value", String.class),
+        /**
+         * Project name/title key to use.
+         */
+        KEY_NAME("name", String.class),
+        /**
+         * Description key to use.
+         */
+        KEY_DESCRIPTION("description", String.class),
+        /**
+         * Notes key to use.
+         */
+        KEY_NOTES("notes", String.class),
+        /**
+        * Creation timestamp key to use.
+        */
+        KEY_CREATIONTS("creationts", Long.class),
+        /**
+        * Last available timestamp key to use.
+        */
+        KEY_LASTTS("lastts", Long.class),
+        /**
+         * The user that created the project key to use.
+         */
+        KEY_CREATIONUSER("creationuser", String.class),
+        /**
+         * The last user working on the project key to use.
+         */
+        KEY_LASTUSER("lastuser", String.class);
+
+        private String fieldName;
+        private Class fieldClass;
+
+        MetadataTableFields(String fieldName, Class fieldClass) {
+            this.fieldName = fieldName;
+            this.fieldClass = fieldClass;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        public Class getFieldClass() {
+            return fieldClass;
+        }
+    }
 
     public static enum NotesTableFields {
         /**
