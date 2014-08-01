@@ -73,8 +73,6 @@ public class ActionBar {
     private final SensorsManager sensorsManager;
     private String satellitesString;
     private ImageButton menuButton;
-    private String projectName;
-    private String projectString;
     private String indent = "  ";
     private GpsServiceStatus lastGpsServiceStatus;
     private double[] lastGpsPosition;
@@ -88,14 +86,6 @@ public class ActionBar {
     private ActionBar( View actionBarView, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
         this.sensorsManager = sensorsManager;
-
-        try {
-            ResourcesManager resourcesManager = ResourcesManager.getInstance(actionBarView.getContext());
-            File applicationDir = resourcesManager.getApplicationDir();
-            projectName = applicationDir.getName();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         initVars();
         createQuickActions();
@@ -146,7 +136,6 @@ public class ActionBar {
         loggingString = context.getString(R.string.text_logging);
         acquirefixString = context.getString(R.string.gps_searching_fix);
         satellitesString = context.getString(R.string.satellites);
-        projectString = context.getString(R.string.project);
         gpsStatusString = context.getString(R.string.gps_status);
         mapString = context.getString(R.string.map);
         nameString = context.getString(R.string.name);
@@ -292,11 +281,6 @@ public class ActionBar {
         double azimuth = sensorsManager.getNormalAzimuth();
 
         StringBuilder sb = new StringBuilder();
-        if (projectName != null && projectName.length() != 0) {
-            sb.append(projectString).append(":\n");
-            sb.append(indent).append(projectName).append("\n\n");
-        }
-
         AbstractSpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
         if (selectedMapTable != null) {
             String tableName = selectedMapTable.getTableName();

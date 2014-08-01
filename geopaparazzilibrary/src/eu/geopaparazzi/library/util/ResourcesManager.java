@@ -231,34 +231,6 @@ public class ResourcesManager implements Serializable {
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists()) {
             createdApplicationDirOnInit = true;
-
-            // RandomAccessFile file = null;
-            // try {
-            // file = new RandomAccessFile(applicationDir, "rw");
-            // final FileLock fileLock = file.getChannel().tryLock();
-            // Log.i("RESOURCESMANAGER", "Got the lock? " + (null != fileLock));
-            // if (null != fileLock) {
-            // Log.i("RESOURCESMANAGER", "Is a valid lock? " + fileLock.isValid());
-            // }
-            // } finally {
-            // file.close();
-            // }
-
-            // Process proc = Runtime.getRuntime().exec(new String[]{"lsof",
-            // applicationDir.getAbsolutePath()});
-            // StringBuilder sb = new StringBuilder("LOSF RESULT: ");
-            // BufferedReader stdInput = new BufferedReader(new
-            // InputStreamReader(proc.getInputStream()));
-            // BufferedReader stdError = new BufferedReader(new
-            // InputStreamReader(proc.getErrorStream()));
-            // String s;
-            // while( (s = stdInput.readLine()) != null ) {
-            // sb.append(s).append("\n");
-            // }
-            // while( (s = stdError.readLine()) != null ) {
-            // sb.append(s).append("\n");
-            // }
-            // Log.i("RESOURCESMANAGER", sb.toString());
             if (!applicationDir.mkdirs()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, applicationDirPath);
                 throw new IOException(msgFormat);
