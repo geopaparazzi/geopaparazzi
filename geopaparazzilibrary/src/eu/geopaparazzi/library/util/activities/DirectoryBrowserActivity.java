@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
@@ -63,8 +64,7 @@ public class DirectoryBrowserActivity extends ListActivity {
      */
     public static final String FOLDER = "folder"; //$NON-NLS-1$
 
-    private List<String> items = new ArrayList<String>();
-    private List<String> itemsNames = new ArrayList<String>();
+    private List<File> filesList = new ArrayList<File>();
     private File startFolderFile;
     private String intentId;
     private String extention;
@@ -144,7 +144,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     @Override
     protected void onListItemClick( ListView l, View v, int position, long id ) {
         int selectedRow = (int) id;
-        File file = new File(items.get(selectedRow));
+        File file = filesList.get(selectedRow);
         if (file.isDirectory()) {
             File[] filesArray = file.listFiles(fileFilter);
             if (filesArray != null) {
@@ -174,41 +174,40 @@ public class DirectoryBrowserActivity extends ListActivity {
     private void getFiles( File parent, File[] files ) {
         Arrays.sort(files);
         currentDir = parent;
-        items.clear();
-        itemsNames.clear();
+        filesList.clear();
         for( File file : files ) {
             if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
                 continue;
             }
-            items.add(file.getAbsolutePath());
-            itemsNames.add(file.getName());
+            filesList.add(file);
         }
 
         if (fileListAdapter == null) {
-            fileListAdapter = new FileArrayAdapter(this, itemsNames);
+            fileListAdapter = new FileArrayAdapter(this, filesList);
             setListAdapter(fileListAdapter);
         } else {
             fileListAdapter.notifyDataSetChanged();
         }
     }
 
-    private static class FileArrayAdapter extends ArrayAdapter<String> {
+    private class FileArrayAdapter extends ArrayAdapter<File> {
         private final Activity context;
-        private final List<String> names;
+        private final List<File> files;
 
-        public FileArrayAdapter( Activity context, List<String> names ) {
-            super(context, R.id.browselist_text, names);
+        public FileArrayAdapter( Activity context, List<File> files ) {
+            super(context, R.id.browselist_text, files);
             this.context = context;
-            this.names = names;
+            this.files = files;
         }
 
-        static class ViewHolder {
+        class ViewHolder {
             public TextView textView;
+            public ImageView imageView;
         }
 
         @Override
         public int getCount() {
-            return names.size();
+            return files.size();
         }
 
         @Override
@@ -221,11 +220,23 @@ public class DirectoryBrowserActivity extends ListActivity {
                 rowView = inflater.inflate(R.layout.browse_file_row, null, true);
                 holder = new ViewHolder();
                 holder.textView = (TextView) rowView.findViewById(R.id.browselist_text);
+                holder.imageView = (ImageView) rowView.findViewById(R.id.fileIconView);
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();
             }
-            holder.textView.setText(names.get(position));
+            File file = files.get(position);
+            String fileName = file.getName();
+            holder.textView.setText(fileName);
+            if (file.isDirectory()){
+                holder.imageView.setImageResource(R.drawable.ic_filebrowser_folder);
+            }else {
+                if (!doFolder && fileName.endsWith(extention.toLowerCase())) {
+                    holder.imageView.setImageResource(R.drawable.ic_filebrowser_geopap);
+                }else{
+                    holder.imageView.setImageResource(R.drawable.ic_filebrowser_file);
+                }
+            }
 
             return rowView;
         }

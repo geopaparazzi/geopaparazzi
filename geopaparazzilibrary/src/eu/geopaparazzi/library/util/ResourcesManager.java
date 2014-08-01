@@ -17,8 +17,8 @@
  */
 package eu.geopaparazzi.library.util;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_BASEFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
 import java.io.File;
@@ -54,8 +54,11 @@ public class ResourcesManager implements Serializable {
 
     /**
      * The support folder for geopap. If not there, it is created.
+     *
+     * <p>It has the name of the application and resides in the sdcard.</p>
+     * <p>It contains for example the json tags file and temporary files if necessary.
      */
-    private File applicationDir;
+    private File applicationSupportFolder;
 
     /**
      * The database file for geopap.
@@ -77,8 +80,6 @@ public class ResourcesManager implements Serializable {
     private static boolean useInternalMemory = true;
 
     private File sdcardDir;
-
-    private boolean createdApplicationDirOnInit = false;
 
     /**
      * @param useInternalMemory if <code>true</code>, internal memory is used.
@@ -135,7 +136,7 @@ public class ResourcesManager implements Serializable {
             applicationLabel = packageName.substring(lastDot + 1, packageName.length());
         }
         applicationLabel = applicationLabel.toLowerCase();
-        String databaseName = applicationLabel + ".gpap"; //$NON-NLS-1$
+
         /*
          * take care to create all the folders needed
          *
@@ -144,7 +145,7 @@ public class ResourcesManager implements Serializable {
          * sdcard
          *    |
          *    |-- applicationname.gpap -> main database
-         *    |-- applicationfolder
+         *    |-- applicationSupportfolder
          *    |          |
          *    |          |--- temporary files
          *    |          `--- tags.json
@@ -152,15 +153,7 @@ public class ResourcesManager implements Serializable {
          *    `-- mapsdir
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
-        String baseFolder = preferences.getString(PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
-        applicationDir = new File(baseFolder);
-        File parentFile = applicationDir.getParentFile();
-        boolean parentExists = false;
-        boolean parentCanWrite = false;
-        if (parentFile != null) {
-            parentExists = parentFile.exists();
-            parentCanWrite = parentFile.canWrite();
-        }
+
         // the folder doesn't exist for some reason, fallback on default
         String state = Environment.getExternalStorageState();
         if (GPLog.LOG_HEAVY) {
@@ -178,7 +171,6 @@ public class ResourcesManager implements Serializable {
         }
 
         String cantCreateSdcardmsg = appContext.getResources().getString(R.string.cantcreate_sdcard);
-        File possibleApplicationDir;
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
             // and external storage exists and is usable
             String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
@@ -191,7 +183,7 @@ public class ResourcesManager implements Serializable {
                  * - create an app folder inside it
                  */
                 sdcardDir = customFolderFile;
-                possibleApplicationDir = new File(sdcardDir, applicationLabel);
+                applicationSupportFolder = new File(sdcardDir, applicationLabel);
             } else {
                 if (customFolderPath.equals("internal")) {
                     /*
@@ -200,11 +192,11 @@ public class ResourcesManager implements Serializable {
                      * - set sdcard anyways to the external folder for maps use
                      */
                     useInternalMemory = true;
-                    possibleApplicationDir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
+                    applicationSupportFolder = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
                     sdcardDir = Environment.getExternalStorageDirectory();
                 } else {
                     sdcardDir = Environment.getExternalStorageDirectory();
-                    possibleApplicationDir = new File(sdcardDir, applicationLabel);
+                    applicationSupportFolder = new File(sdcardDir, applicationLabel);
                 }
             }
         } else if (useInternalMemory) {
@@ -213,33 +205,38 @@ public class ResourcesManager implements Serializable {
              * - use internal memory
              * - set sdcard for maps inside the space
              */
-            possibleApplicationDir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
-            sdcardDir = possibleApplicationDir;
+            applicationSupportFolder = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
+            sdcardDir = applicationSupportFolder;
         } else {
             String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
             throw new IOException(msgFormat);
         }
 
-        if (baseFolder.length() == 0 || !parentExists || !parentCanWrite) {
-            applicationDir = possibleApplicationDir;
-        }
-
         // if (GPLog.LOG_HEAVY) {
-        Log.i("RESOURCESMANAGER", "Possible app dir: " + applicationDir);
+        Log.i("RESOURCESMANAGER", "Application support folder: " + applicationSupportFolder);
         // }
 
-        String applicationDirPath = applicationDir.getAbsolutePath();
-        if (!applicationDir.exists()) {
-            createdApplicationDirOnInit = true;
-            if (!applicationDir.mkdirs()) {
+        String applicationDirPath = applicationSupportFolder.getAbsolutePath();
+        if (!applicationSupportFolder.exists()) {
+            if (!applicationSupportFolder.mkdirs()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, applicationDirPath);
                 throw new IOException(msgFormat);
             }
         }
         if (GPLog.LOG_HEAVY) {
-            Log.i("RESOURCESMANAGER", "App dir exists: " + applicationDir.exists());
+            Log.i("RESOURCESMANAGER", "Application support folder exists: " + applicationSupportFolder.exists());
         }
-        databaseFile = new File(sdcardDir, databaseName);
+
+        /*
+         * get the database file
+         */
+        String databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
+        databaseFile = new File(databasePath);
+        if(!databaseFile.getParentFile().exists()){
+            // fallback on the default
+            String databaseName = applicationLabel + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
+            databaseFile = new File(sdcardDir, databaseName);
+        }
 
         mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())
@@ -251,32 +248,12 @@ public class ResourcesManager implements Serializable {
     }
 
     /**
-     * Get the file to the main application folder.
+     * Get the file to the main application support folder.
      * 
      * @return the {@link File} to the app folder.
      */
-    public File getApplicationDir() {
-        return applicationDir;
-    }
-
-    /**
-     * Get info about the application folder's pre-existence.
-     * 
-     * @return <code>true</code> if on initialisation an 
-     *      application folder had to be created, <code>false</code>
-     *      if the application folder already existed.
-     */
-    public boolean hadToCreateApplicationDirOnInit() {
-        return createdApplicationDirOnInit;
-    }
-
-    /**
-     * Get the file to the main application's parent folder.
-     * 
-     * @return the {@link File} to the app's parent folder.
-     */
-    public File getApplicationParentDir() {
-        return applicationDir.getParentFile();
+    public File getApplicationSupporterDir() {
+        return applicationSupportFolder;
     }
 
     /**
@@ -286,23 +263,6 @@ public class ResourcesManager implements Serializable {
      */
     public File getSdcardDir() {
         return sdcardDir;
-    }
-
-    /**
-     * Sets a new application folder. 
-     * 
-     * <p>Note that this will reset all the folders and resources that are bound 
-     * to it. For example there might be the need to recreate the database file.</p>
-     * 
-     * @param context the context to use.
-     * @param path the path to the new application.
-     */
-    public void setApplicationDir( Context context, String path ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Editor editor = preferences.edit();
-        editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, path);
-        editor.commit();
-        resetManager();
     }
 
     /**
@@ -324,18 +284,6 @@ public class ResourcesManager implements Serializable {
      */
     public File getMapsDir() {
         return mapsDir;
-    }
-
-    /**
-     * Update the description file of the project.
-     * 
-     * @param description a new description for the project.
-     * @throws IOException  if something goes wrong.
-     */
-    public void addProjectDescription( String description ) throws IOException {
-        File applicationDir = getApplicationDir();
-        File descriptionFile = new File(applicationDir, "description"); //$NON-NLS-1$
-        FileUtilities.writefile(description, descriptionFile);
     }
 
 }

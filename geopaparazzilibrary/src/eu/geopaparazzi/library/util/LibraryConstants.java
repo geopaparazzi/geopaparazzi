@@ -27,6 +27,11 @@ import java.text.DecimalFormat;
 public interface LibraryConstants {
 
     /**
+     * The default extention for geopaparazzi databases.
+     */
+    public static String GEOPAPARAZZI_DB_EXTENSION = ".gpap";
+
+    /**
      * The epsg for lat/long wgs84. 
      */
     public final String SRID_WGS84_4326 = "4326"; //$NON-NLS-1$
@@ -173,9 +178,9 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_CUSTOM_EXTERNALSTORAGE = "PREFS_KEY_CUSTOM_EXTERNALSTORAGE"; //$NON-NLS-1$
 
     /**
-     * Key used to store and retrieve the base folder of the application.
+     * Key used to store and retrieve the database of the application.
      */
-    public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$
+    public static final String PREFS_KEY_DATABASE_TO_LOAD = "PREFS_KEY_DATABASE_TO_LOAD"; //$NON-NLS-1$
 
     /**
      * Key used to store and retrieve the gps logging interval to use.
@@ -302,5 +307,6 @@ public interface LibraryConstants {
      * Key for tilesource title in preferences. 
      */
     public static final String PREFS_KEY_TILESOURCE_TITLE = "PREFS_KEY_TILESOURCE_TITLE";
+
 
 }

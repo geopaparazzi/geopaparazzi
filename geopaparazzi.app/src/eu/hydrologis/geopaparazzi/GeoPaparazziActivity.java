@@ -29,6 +29,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -40,6 +41,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,7 +56,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
@@ -326,13 +327,8 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void initializeResourcesManager() throws Exception {
-        Object stateObj = getLastNonConfigurationInstance();
-        if (stateObj instanceof ResourcesManager) {
-            resourcesManager = (ResourcesManager) stateObj;
-        } else {
-            ResourcesManager.resetManager();
-            resourcesManager = ResourcesManager.getInstance(this);
-        }
+        ResourcesManager.resetManager();
+        resourcesManager = ResourcesManager.getInstance(this);
 
         if (resourcesManager == null) {
             Utilities.yesNoMessageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
@@ -470,7 +466,7 @@ public class GeoPaparazziActivity extends Activity {
             OsmUtilities.handleOsmTagsDownload(this);
 
         Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
-                + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
+                + resourcesManager.getDatabaseFile().getAbsolutePath(), Toast.LENGTH_LONG);
 
         // check for screen on
         boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
@@ -677,12 +673,12 @@ public class GeoPaparazziActivity extends Activity {
                 startActivity(preferencesIntent);
                 return true;
             case MENU_RESET:
-                resetData();
+                createNewProject();
                 return true;
             case MENU_LOAD:
                 Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-                browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
-                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getApplicationDir()
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getSdcardDir()
                         .getAbsolutePath());
                 startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
                 return true;
@@ -745,19 +741,11 @@ public class GeoPaparazziActivity extends Activity {
             break;
             case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
                 if (resultCode == Activity.RESULT_OK) {
-                    String chosenFolderToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                        Editor editor = preferences.edit();
-                        editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
-                        editor.commit();
+                    String databasePathToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                    if (databasePathToLoad != null && new File(databasePathToLoad).exists()) {
+                        setNewDatabase(databasePathToLoad);
 
-                        GeopaparazziApplication.getInstance().closeDatabase();
-                        ResourcesManager.resetManager();
-
-                        Intent intent = getIntent();
-                        finish();
-                        startActivity(intent);
+                        recreateActivity();
                     }
                 }
                 break;
@@ -785,7 +773,7 @@ public class GeoPaparazziActivity extends Activity {
                     String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (relativeImagePath != null) {
                         // FIXME needs to be fixed
-                        File imgFile = new File(resourcesManager.getApplicationDir().getParentFile(), relativeImagePath);
+                        File imgFile = new File(resourcesManager.getApplicationSupporterDir().getParentFile(), relativeImagePath);
                         if (!imgFile.exists()) {
                             return;
                         }
@@ -829,6 +817,20 @@ public class GeoPaparazziActivity extends Activity {
                 }
                 break;
             }
+        }
+    }
+
+    private void setNewDatabase(String databasePathToLoad) {
+        try {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            Editor editor = preferences.edit();
+            editor.putString(LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD, databasePathToLoad);
+            editor.commit();
+            GeopaparazziApplication.getInstance().closeDatabase();
+            ResourcesManager.resetManager();
+            GeopaparazziApplication.getInstance().getDatabase();
+        } catch (IOException e) {
+            Utilities.errorDialog(this, e, null);
         }
     }
 
@@ -908,37 +910,21 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    // private void clearCacheIfneeded() {
-    // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-    // boolean exitCalled = preferences.getBoolean("EXIT_THROUGH_FINISH", true);
-    // Editor edit = preferences.edit();
-    // edit.putBoolean("EXIT_THROUGH_FINISH", false);
-    // edit.commit();
-    // if (exitCalled) {
-    // File cache = getCacheDir();
-    // if (cache.exists()) {
-    // GPLog.addLogEntry(this, "Deleting cache folder: " + cache);
-    // FileUtilities.deleteFileOrDir(cache);
-    // }
-    // }
-    // }
-
-    private void resetData() {
+    private void createNewProject() {
         final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
         final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
 
-        final File applicationParentDir = resourcesManager.getApplicationParentDir();
-        final String newGeopaparazziDirName = Constants.GEOPAPARAZZI
+        final File sdcardDir = resourcesManager.getSdcardDir();
+        final String newGeopaparazziProjectName = Constants.GEOPAPARAZZI
                 + "_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
-        dialog.getWindow().setBackgroundDrawableResource(getResources().getColor(android.R.color.transparent));
         final TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(enterNewProjectString);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         final Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-        editText.setText(newGeopaparazziDirName);
+        editText.setText(newGeopaparazziProjectName);
         editText.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // ignore
@@ -950,7 +936,7 @@ public class GeoPaparazziActivity extends Activity {
 
             public void afterTextChanged(Editable s) {
                 String newName = s.toString();
-                File newProjectFile = new File(applicationParentDir, newName);
+                File newProjectFile = new File(sdcardDir, newName);
                 if (newName.length() < 1) {
                     text.setText(enterNewProjectString);
                     yesButton.setEnabled(false);
@@ -969,16 +955,12 @@ public class GeoPaparazziActivity extends Activity {
                     Editable value = editText.getText();
                     String newName = value.toString();
                     GeopaparazziApplication.getInstance().closeDatabase();
-                    File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
-                    if (!newGeopaparazziDirFile.mkdir()) {
-                        throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
-                    }
-                    ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(GeoPaparazziActivity.this,
-                            newGeopaparazziDirFile.getAbsolutePath());
+                    File newGeopaparazziFile = new File(sdcardDir.getAbsolutePath(), newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                    setNewDatabase(newGeopaparazziFile.getAbsolutePath());
+                    dialog.dismiss();
 
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
+                    recreateActivity();
+
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
@@ -991,7 +973,34 @@ public class GeoPaparazziActivity extends Activity {
                 dialog.dismiss();
             }
         });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
+    }
+
+    private void recreateActivity() {
+        if (gpsServiceBroadcastReceiver != null) {
+            GpsServiceUtilities.stopDatabaseLogging(this);
+            GpsServiceUtilities.stopGpsService(this);
+            GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
+        }
+        if (Build.VERSION.SDK_INT >= 11) {
+            recreate();
+        } else {
+            Intent intent = getIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            overridePendingTransition(0, 0);
+
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        }
     }
 
     /**
@@ -1007,11 +1016,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return resourcesManager;
     }
 
     /**

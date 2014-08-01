@@ -113,27 +113,8 @@ public class ExportActivity extends Activity {
                     return;
                 }
 
-                Builder builder = new AlertDialog.Builder(context).setTitle(R.string.media_upload)
-                        .setMessage(R.string.enter_project_description).setIcon(android.R.drawable.ic_dialog_alert);
-                final EditText input = new EditText(ExportActivity.this);
-                input.setText(""); //$NON-NLS-1$
-                builder.setView(input);
-                AlertDialog alertDialog = builder.setNegativeButton(R.string.no_images, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        addProjectDescription(input);
-                        exportToCloud(context, serverUrl, user, pwd, false);
-                    }
-                }).setPositiveButton(R.string.with_images, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        addProjectDescription(input);
-                        exportToCloud(context, serverUrl, user, pwd, true);
-                    }
-                }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        // ignore
-                    }
-                }).create();
-                alertDialog.show();
+                exportToCloud(context, serverUrl, user, pwd);
+
             }
         });
     }
@@ -147,24 +128,15 @@ public class ExportActivity extends Activity {
         Utilities.dismissProgressDialog(cloudProgressDialog);
     }
 
-    private void addProjectDescription( final EditText input ) {
-        try {
-            String description = input.getText().toString();
-            ResourcesManager.getInstance(ExportActivity.this).addProjectDescription(description);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd,
-            final boolean addMedia ) {
+    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd) {
 
         cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 context.getString(R.string.exporting_data_to_the_cloud), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
-                    String message = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
+                    String message = WebProjectManager.INSTANCE.uploadProject(context, serverUrl, user, pwd);
                     return message;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);

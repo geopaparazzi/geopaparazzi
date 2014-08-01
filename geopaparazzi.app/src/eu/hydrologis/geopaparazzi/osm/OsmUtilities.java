@@ -241,7 +241,7 @@ public class OsmUtilities {
 
             public void onClick(DialogInterface dialog, int whichButton) {
                 try {
-                    parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
+                    parentFile = ResourcesManager.getInstance(activity).getApplicationSupporterDir().getParentFile();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

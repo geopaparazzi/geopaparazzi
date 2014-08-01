@@ -159,7 +159,8 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
         String imageName = "SKETCH_" + currentDatestring + ".png";
         String imagePropertiesName = "SKETCH_" + currentDatestring + ".properties";
-        File imageSaveFolder = ResourcesManager.getInstance(this).getApplicationDir();
+        // FIXME
+        File imageSaveFolder = ResourcesManager.getInstance(this).getApplicationSupporterDir();
 
         if (imageSavePath == null || imageSavePath.length() == 0) {
             imageFile = new File(imageSaveFolder, imageName);

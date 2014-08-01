@@ -215,7 +215,7 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value == null || value.length() <= 0) {
-                            File applicationDir = ResourcesManager.getInstance(activity).getApplicationDir();
+                            File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
                             File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
                                 // FIXME needs to be fixed

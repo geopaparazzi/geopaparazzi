@@ -63,7 +63,7 @@ public class MixareHandler {
      */
     public static void runRegionOnMixare( Context context, List<PointF3D> points ) throws Exception {
         String mixareJson = generateMixareData(context, points);
-        File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+        File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
         File mixarefile = new File(applicationDir, "mixare.json");
         FileUtilities.writefile(mixareJson, mixarefile);
         String mixareUri = "file://" + mixarefile.getAbsolutePath();

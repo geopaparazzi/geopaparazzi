@@ -117,7 +117,7 @@ public class ImportActivity extends Activity {
     private void importGpx() throws Exception {
         Intent browseIntent = new Intent(ImportActivity.this, DirectoryBrowserActivity.class);
         browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, ResourcesManager.getInstance(ImportActivity.this)
-                .getApplicationDir().getAbsolutePath());
+                .getSdcardDir().getAbsolutePath());
         browseIntent.putExtra(DirectoryBrowserActivity.INTENT_ID, Constants.GPXIMPORT);
         browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, ".gpx"); //$NON-NLS-1$
         startActivity(browseIntent);

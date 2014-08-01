@@ -213,7 +213,8 @@ public class NotesListActivity extends ListActivity {
                         } else if (iNote instanceof Image) {
                             Image image = (Image) iNote;
                             try {
-                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationDir();
+                                // FIXME
+                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationSupporterDir();
                                 File imageFile = new File(applicationDir, "tmp_image.jpg");
                                 ImageUtilities.imageIdToFile(image.getId(), imageFile.getAbsolutePath());
                                 if (imageFile.exists()) {
@@ -264,7 +265,8 @@ public class NotesListActivity extends ListActivity {
                             intent.setAction(android.content.Intent.ACTION_VIEW);
 
                             try {
-                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationDir();
+                                // FIXME
+                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationSupporterDir();
                                 File imageFile = new File(applicationDir, "tmp_image.jpg");
                                 ImageUtilities.imageIdToFile(image.getId(), imageFile.getAbsolutePath());
                                 intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$

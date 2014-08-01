@@ -439,7 +439,6 @@ public class Utilities {
             final String defaultText, final TextRunnable textRunnable ) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(message);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
@@ -465,6 +464,13 @@ public class Utilities {
                 dialog.dismiss();
             }
         });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
     }

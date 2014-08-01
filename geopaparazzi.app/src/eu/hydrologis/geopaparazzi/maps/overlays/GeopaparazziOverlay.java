@@ -1145,7 +1145,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     // try relative to media
                     try {
                         // FIXME needs to be fixed
-                        File mediaDir = ResourcesManager.getInstance(context).getApplicationDir();
+                        File mediaDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
                         absolutePath = new File(mediaDir.getParentFile(), title);
                     } catch (java.lang.Exception e) {
                         GPLog.error(this, "Error", e);

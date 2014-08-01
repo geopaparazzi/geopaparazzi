@@ -126,7 +126,7 @@ public class GPictureView extends View implements GView {
                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                 File applicationDir = null;
                 try {
-                    applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+                    applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }

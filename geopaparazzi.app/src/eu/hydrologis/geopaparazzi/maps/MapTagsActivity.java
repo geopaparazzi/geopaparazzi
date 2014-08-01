@@ -158,7 +158,7 @@ public class MapTagsActivity extends Activity {
                 // FIXME needs to be fixed
                 File mediaDir = null;
                 try {
-                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getApplicationDir();
+                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getApplicationSupporterDir();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -297,7 +297,7 @@ public class MapTagsActivity extends Activity {
                 if (relativeImagePath != null) {
                     try {
                         // FIXME needs to be fixed
-                        File imgFile = new File(ResourcesManager.getInstance(this).getApplicationDir().getParentFile(),
+                        File imgFile = new File(ResourcesManager.getInstance(this).getApplicationSupporterDir().getParentFile(),
                                 relativeImagePath);
                         if (!imgFile.exists()) {
                             return;

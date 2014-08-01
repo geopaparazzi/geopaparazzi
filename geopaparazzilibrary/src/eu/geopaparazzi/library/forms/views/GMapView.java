@@ -98,7 +98,7 @@ public class GMapView extends View implements GView {
             // look also in media folder for relative path name
             File applicationDir = null;
             try {
-                applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+                applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }

@@ -63,8 +63,6 @@ public class KmzExport {
             name = "Geopaparazzi Export";
         }
 
-        File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
-
         List<File> existingImages = new ArrayList<File>();
 
         /*
