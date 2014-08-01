@@ -273,8 +273,7 @@ public class FormActivity extends FragmentActivity {
 
         // finally store data
         String sectionObjectString = sectionObject.toString();
-        Date sqlDate = new Date(System.currentTimeMillis());
-        String timestamp = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(sqlDate);
+        long timestamp = System.currentTimeMillis();
 
         if (label == null) {
             label = sectionName;
@@ -283,7 +282,7 @@ public class FormActivity extends FragmentActivity {
         String.valueOf(longitude), //
                 String.valueOf(latitude), //
                 String.valueOf(elevation), //
-                timestamp, //
+                String.valueOf(timestamp), //
                 label, //
                 "POI", //
                 sectionObjectString};

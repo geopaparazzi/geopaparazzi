@@ -214,7 +214,7 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_SKETCH)) {
                         addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
-                        if (value == null || value.length() <= 0) {
+                        if (value.length() <= 0) {
                             File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
                             File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
