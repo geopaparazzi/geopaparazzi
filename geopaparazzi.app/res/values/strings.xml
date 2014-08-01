@@ -237,5 +237,11 @@
     <string name="save">save</string>
     <string name="goto_feature">go to</string>
     <string name="cancel">cancel</string>
-    <string name="text_project_metadata">project info</string>
+    <string name="project_info">project info</string>
+    <string name="description">description</string>
+    <string name="notes">notes</string>
+    <string name="last_closing_date">Last closing date</string>
+    <string name="creation_date">Creation date</string>
+    <string name="creation_user">Project creation user</string>
+    <string name="last_modification_user">Last project modification user</string>
 </resources>

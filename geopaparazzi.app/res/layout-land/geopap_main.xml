@@ -70,7 +70,7 @@
                 <TextView
                     android:id="@+id/dashboard_projectmetadataitem_text"
                     style="@style/dashBoardText"
-                    android:text="@string/text_project_metadata" >
+                    android:text="@string/project_info" >
                 </TextView>
             </LinearLayout>
 

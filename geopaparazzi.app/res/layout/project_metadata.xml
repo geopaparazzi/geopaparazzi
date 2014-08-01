@@ -45,7 +45,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:text="Project info"
+                android:text="@string/project_info"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/main_text_color" />
 
@@ -69,7 +69,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Name"
+                android:text="@string/name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -95,7 +95,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Description"
+                android:text="@string/description"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -121,7 +121,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Notes"
+                android:text="@string/notes"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -148,7 +148,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Creation date"
+                android:text="@string/creation_date"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -175,7 +175,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Last closing date"
+                android:text="@string/last_closing_date"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -202,7 +202,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Project creation user"
+                android:text="@string/creation_user"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -228,7 +228,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Last project modification user"
+                android:text="@string/last_modification_user"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
