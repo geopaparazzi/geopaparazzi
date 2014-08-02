@@ -267,6 +267,7 @@ public class CameraActivity extends Activity {
             finish();
         }
     }
+
     private void checkTakenPictureConsistency() {
         /*
          * Checking for duplicate images
