@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,7 +34,7 @@ import org.xml.sax.InputSource;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
+import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 
 /**
  * Open route service class. 
