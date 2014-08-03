@@ -27,7 +27,9 @@ import android.util.Log;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.core.model.GeoPoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.geopaparazzi.library.database.Image;
+import jsqlite.*;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 
@@ -440,18 +443,63 @@ public class DaoImages implements IImagesDbHelper {
 
         if (imageDataId != -1) {
             asColumnsToReturn = new String[]{ //
-                    ImageDataTableFields.COLUMN_ID.getFieldName(),//
                     ImageDataTableFields.COLUMN_IMAGE.getFieldName()//
             };
             whereStr = ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
             c = sqliteDatabase.query(TABLE_IMAGE_DATA, asColumnsToReturn, whereStr, null, null, null, null);
-            c.moveToFirst();
             byte[] imageData = null;
-            if (!c.isAfterLast()) {
-                long id = c.getLong(0);
-                imageData = c.getBlob(1);
+            try {
+                c.moveToFirst();
+                imageData = null;
+                if (!c.isAfterLast()) {
+                    imageData = c.getBlob(0);
+                }
+            } catch (Exception ex) {
+                if (ex.getLocalizedMessage().contains("Couldn't read row")) {
+                    String sizeQuery = "SELECT " + ImageDataTableFields.COLUMN_ID.getFieldName() +//
+                            ", length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") " +//
+                            "FROM " + TABLE_IMAGE_DATA +//
+                            " WHERE " + whereStr;
+                    //"length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") > 1000000";
+                    Cursor sizeCursor = sqliteDatabase.rawQuery(sizeQuery, null);
+                    sizeCursor.moveToFirst();
+                    long blobSize = 0;
+                    if (!sizeCursor.isAfterLast()) {
+                        blobSize = sizeCursor.getLong(1);
+                    }
+                    sizeCursor.close();
+
+                    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                    int maxBlobSize = 1000000;
+                    if (blobSize > maxBlobSize) {
+                        for (long i = 1; i <= blobSize; i = i + maxBlobSize) {
+                            long from = i;
+                            long size = maxBlobSize;
+                            if (from + size > blobSize) {
+                                size = blobSize - from + 1;
+                            }
+                            String tmpQuery = "SELECT substr(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + //
+                                    "," + from + ", " + size + ") FROM " + TABLE_IMAGE_DATA + " WHERE " + whereStr;
+//                        if (GPLog.LOG_HEAVY)
+                            GPLog.addLogEntry(this, "ISSUE QUERY: " + tmpQuery);
+                            Cursor imageCunchCursor = sqliteDatabase.rawQuery(tmpQuery, null);
+                            imageCunchCursor.moveToFirst();
+                            if (!imageCunchCursor.isAfterLast()) {
+                                byte[] blobData = imageCunchCursor.getBlob(0);
+                                bout.write(blobData);
+                            }
+                            imageCunchCursor.close();
+                        }
+                        imageData = bout.toByteArray();
+                        bout.close();
+                    }
+                } else {
+                    GPLog.error(this, null, ex);
+                }
+
+            } finally {
+                c.close();
             }
-            c.close();
             return imageData;
         }
 

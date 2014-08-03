@@ -1183,33 +1183,38 @@ public abstract class GeopaparazziOverlay extends Overlay {
     }
 
     private void openImage(Context context, String title, String snippet) {
-        // get image from db
-        long imageID = Long.parseLong(snippet);
+
         try {
+            File tempDir = ResourcesManager.getInstance(context).getTempDir();
+            // get image from db
+            long imageID = Long.parseLong(snippet);
+
             int length = title.length();
             String ext = title.substring(length - 4, length);
             byte[] imageData = new DaoImages().getImageData(imageID);
-            final File newTempFile = TemporaryFileCache.createNewTempFile(context, ext);
+
+
+            final File newTempFile = new File(tempDir, "temp_map_pic_image" + ext);
             ImageUtilities.writeImageDataToFile(imageData, newTempFile.getAbsolutePath());
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(newTempFile), "image/*"); //$NON-NLS-1$
             context.startActivity(intent);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // wait a moment to let it open up, then delete it
-                    // on unix systems you can delete a file even if opened,
-                    // it will be removed one the resource is not used any more.
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    newTempFile.delete();
-                }
-            });
-        } catch (IOException e) {
+            //            new Thread(new Runnable() {
+            //                @Override
+            //                public void run() {
+            //                    // wait a moment to let it open up, then delete it
+            //                    // on unix systems you can delete a file even if opened,
+            //                    // it will be removed one the resource is not used any more.
+            //                    try {
+            //                        Thread.sleep(5000);
+            //                    } catch (InterruptedException e) {
+            //                        e.printStackTrace();
+            //                    }
+            //                    newTempFile.delete();
+            //                }
+            //            });
+        } catch (java.lang.Exception e) {
             GPLog.error(this, null, e);
         }
     }
