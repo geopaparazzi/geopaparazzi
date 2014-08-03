@@ -68,6 +68,7 @@ import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -220,8 +221,7 @@ public class FragmentDetail extends Fragment {
                             if (tmpImage.exists()) {
                                 // FIXME needs to be fixed
                                 Date currentDate = new Date();
-                                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                                File newImageFile = new File(tempDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+                                File newImageFile = new File(tempDir, ImageUtilities.getMapImageName(currentDate));
                                 FileUtilities.copyFile(tmpImage, newImageFile);
                                 value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
                             }

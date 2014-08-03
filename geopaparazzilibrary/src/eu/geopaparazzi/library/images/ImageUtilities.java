@@ -50,6 +50,13 @@ public class ImageUtilities {
         return "IMG_" + currentDatestring + ".jpg";
     }
 
+    public static String getMapImageName(Date date) {
+        if (date == null)
+            date = new Date();
+        String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(date);
+        return "MAP_" + currentDatestring + ".png";
+    }
+
     public static boolean isImagePath(String path) {
         return path.toLowerCase().endsWith("jpg") || path.toLowerCase().endsWith("png");
     }
