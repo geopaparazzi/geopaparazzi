@@ -19,6 +19,8 @@ package eu.geopaparazzi.library.kml;
 
 import java.util.List;
 
+import eu.geopaparazzi.library.database.Image;
+
 /**
  * Interface for objects that are able to represent theirself as kml.
  * 
@@ -40,5 +42,12 @@ public interface KmlRepresenter {
      * @return <code>true</code> if the object has also an image that needs to be embedded in the kmz.
      */
     public boolean hasImages();
+
+    /**
+     * Get image list.
+     *
+     * @return the list of images.
+     */
+    public List<Image> getImages();
 
 }

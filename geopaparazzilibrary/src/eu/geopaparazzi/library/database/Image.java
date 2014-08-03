@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.library.database;
 
+import java.util.Arrays;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
@@ -27,10 +30,6 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Image implements INote, KmlRepresenter {
-    /**
-     *
-     */
-    public static final String IMAGE_NOTE = "image note";
     /**
      * Image name.
      */
@@ -83,11 +82,7 @@ public class Image implements INote, KmlRepresenter {
     public Image(long id, String name, double lon, double lat, double altim, double azim, long imageDataId, long noteId, long ts) {
         this.id = id;
         this.noteId = noteId;
-        if (name != null) {
-            this.name = name;
-        } else {
-            this.name = IMAGE_NOTE;
-        }
+        this.name = name;
         this.lon = lon;
         this.lat = lat;
         this.altim = altim;
@@ -123,9 +118,6 @@ public class Image implements INote, KmlRepresenter {
     }
 
     public String getName() {
-        if (name.length() == 0) {
-            name = IMAGE_NOTE;
-        }
         return name;
     }
 
@@ -149,13 +141,10 @@ public class Image implements INote, KmlRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() {
-        String imgName = getName();
-
-        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         if (name != null && name.length() > 0) {
-            sB.append("<name>").append(name).append(" (").append(ts).append(")").append("</name>\n");
+            sB.append("<name>").append(name).append("</name>\n");
         } else {
             sB.append("<name>").append(ts).append("</name>\n");
         }
@@ -163,7 +152,7 @@ public class Image implements INote, KmlRepresenter {
         sB.append("<html><head><title></title>");
         sB.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">");
         sB.append("</head><body>");
-        sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+        sB.append("<img src=\"" + name + "\" width=\"300\">");
         sB.append("</body></html>]]></description>\n");
         // sB.append("<styleUrl>#yellow-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#camera-icon</styleUrl>\n");
@@ -178,6 +167,11 @@ public class Image implements INote, KmlRepresenter {
 
     public boolean hasImages() {
         return true;
+    }
+
+    @Override
+    public List<Image> getImages() {
+        return Arrays.asList(this);
     }
 
 }

@@ -813,7 +813,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName(),//
                 GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()//
         };
-        String strSortOrder = GpsLogsDataTableFields.COLUMN_LOGID + "," + GpsLogsDataTableFields.COLUMN_DATA_TS + " ASC";
+        String strSortOrder = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "," + GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
         Cursor c = null;
         try {
             c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, null, null, null, null, strSortOrder);
@@ -913,10 +913,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
             c.moveToFirst();
             double[] lonLat = new double[2];
-            while (!c.isAfterLast()) {
+            if (!c.isAfterLast()) {
                 lonLat[0] = c.getDouble(0);
                 lonLat[1] = c.getDouble(1);
-                break;
             }
             return lonLat;
         } finally {

@@ -213,7 +213,6 @@ public class NotesListActivity extends ListActivity {
                         } else if (iNote instanceof Image) {
                             Image image = (Image) iNote;
                             try {
-                                // FIXME
                                 File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
                                 String ext = ".jpg";
                                 if (image.getName().endsWith(".png"))
@@ -269,7 +268,6 @@ public class NotesListActivity extends ListActivity {
                             intent.setAction(android.content.Intent.ACTION_VIEW);
 
                             try {
-                                // FIXME
                                 File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
                                 String ext = ".jpg";
                                 if (image.getName().endsWith(".png"))

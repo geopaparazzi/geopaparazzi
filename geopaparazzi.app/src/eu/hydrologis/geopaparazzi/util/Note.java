@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.INote;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
@@ -250,6 +251,13 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
 
     public boolean hasImages() {
         return images != null && images.size() > 0;
+    }
+
+    @Override
+    public List<Image> getImages() {
+        // FIXME
+
+        return null;
     }
 
     public List<String> getImagePaths() {
