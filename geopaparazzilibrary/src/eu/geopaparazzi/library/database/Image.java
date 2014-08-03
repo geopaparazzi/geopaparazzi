@@ -15,12 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.util;
+package eu.geopaparazzi.library.database;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
+import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
 

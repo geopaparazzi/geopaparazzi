@@ -32,8 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
-import eu.hydrologis.geopaparazzi.util.Image;
+import eu.geopaparazzi.library.database.Image;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 
@@ -43,7 +44,7 @@ import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class DaoImages {
+public class DaoImages implements IImagesDbHelper {
 
     /**
      * Create the image tables.
@@ -144,20 +145,8 @@ public class DaoImages {
         }
     }
 
-    /**
-     * Add an image to the db.
-     *
-     * @param lon       lon
-     * @param lat       lat
-     * @param altim     elevation
-     * @param azim      azimuth
-     * @param timestamp the timestamp
-     * @param text      a text
-     * @param image     the image data.
-     * @param noteId    an optional note id, to which it is connected.
-     * @throws IOException if something goes wrong.
-     */
-    public static void addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, Integer noteId)
+
+    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, Integer noteId)
             throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -167,6 +156,7 @@ public class DaoImages {
             imageDataValues.put(ImageDataTableFields.COLUMN_IMAGE.getFieldName(), image);
             long imageDataId = sqliteDatabase.insertOrThrow(TABLE_IMAGE_DATA, null, imageDataValues);
 
+            // then insert the image properties and reference to the image itself
             ContentValues values = new ContentValues();
             values.put(ImageTableFields.COLUMN_LON.getFieldName(), lon);
             values.put(ImageTableFields.COLUMN_LAT.getFieldName(), lat);
@@ -175,11 +165,14 @@ public class DaoImages {
             values.put(ImageTableFields.COLUMN_TEXT.getFieldName(), text);
             values.put(ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(), imageDataId);
             values.put(ImageTableFields.COLUMN_AZIM.getFieldName(), azim);
+            values.put(ImageTableFields.COLUMN_ISDIRTY.getFieldName(), 1);
             if (noteId != null)
                 values.put(ImageTableFields.COLUMN_NOTE_ID.getFieldName(), noteId);
-            sqliteDatabase.insertOrThrow(TABLE_IMAGES, null, values);
+            long imageId = sqliteDatabase.insertOrThrow(TABLE_IMAGES, null, values);
 
             sqliteDatabase.setTransactionSuccessful();
+
+            return imageId;
         } catch (Exception e) {
             GPLog.error("DAOIMAGES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
@@ -348,7 +341,7 @@ public class DaoImages {
 //    }
 
     /**
-     * Get the list of notes from the db.
+     * Get the list of {@link eu.geopaparazzi.library.database.Image}s from the db.
      *
      * @param onlyDirty if true, only dirty notes will be retrieved.
      * @return list of notes.
@@ -394,14 +387,44 @@ public class DaoImages {
         return images;
     }
 
-    /**
-     * Get image data by image id.
-     *
-     * @param imageId the image id.
-     * @return teh image data.
-     * @throws IOException if something goes wrong.
-     */
-    public static byte[] getImageData(long imageId) throws IOException {
+    public Image getImage(long imageId) throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        String asColumnsToReturn[] = { //
+                ImageTableFields.COLUMN_ID.getFieldName(),//
+                ImageTableFields.COLUMN_LON.getFieldName(),//
+                ImageTableFields.COLUMN_LAT.getFieldName(),//
+                ImageTableFields.COLUMN_ALTIM.getFieldName(),//
+                ImageTableFields.COLUMN_TS.getFieldName(),//
+                ImageTableFields.COLUMN_AZIM.getFieldName(),//
+                ImageTableFields.COLUMN_TEXT.getFieldName(),//
+                ImageTableFields.COLUMN_NOTE_ID.getFieldName(),//
+                ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()//
+        };
+        String whereStr = ImageTableFields.COLUMN_ID.getFieldName() + " = " + imageId;
+        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereStr, null, null, null, null);
+        try {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                long id = c.getLong(0);
+                double lon = c.getDouble(1);
+                double lat = c.getDouble(2);
+                double altim = c.getDouble(3);
+                long ts = c.getLong(4);
+                double azim = c.getDouble(5);
+                String text = c.getString(6);
+                long noteId = c.getLong(7);
+                long imageDataId = c.getLong(8);
+
+                Image image = new Image(id, text, lon, lat, altim, azim, imageDataId, noteId, ts);
+                return image;
+            }
+            return null;
+        } finally {
+            c.close();
+        }
+    }
+
+    public byte[] getImageData(long imageId) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String[] asColumnsToReturn = { //
                 ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()//
@@ -417,6 +440,7 @@ public class DaoImages {
 
         if (imageDataId != -1) {
             asColumnsToReturn = new String[]{ //
+                    ImageDataTableFields.COLUMN_ID.getFieldName(),//
                     ImageDataTableFields.COLUMN_IMAGE.getFieldName()//
             };
             whereStr = ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
@@ -424,7 +448,8 @@ public class DaoImages {
             c.moveToFirst();
             byte[] imageData = null;
             if (!c.isAfterLast()) {
-                imageData = c.getBlob(0);
+                long id = c.getLong(0);
+                imageData = c.getBlob(1);
             }
             c.close();
             return imageData;
@@ -458,7 +483,7 @@ public class DaoImages {
             long imageDataId = c.getLong(2);
             String text = c.getString(3);
 
-            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), imageDataId + "", text, marker);
+            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), text, imageDataId + "", marker);
             images.add(image);
             c.moveToNext();
         }

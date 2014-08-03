@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -28,7 +27,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import java.io.File;
@@ -41,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;

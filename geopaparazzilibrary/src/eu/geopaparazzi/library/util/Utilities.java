@@ -243,7 +243,7 @@ public class Utilities {
                     window.setBackgroundDrawableResource(android.R.color.transparent);
                     dialog.show();
                 } catch (Exception e) {
-                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute -- " + msg, e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }.execute((String) null);

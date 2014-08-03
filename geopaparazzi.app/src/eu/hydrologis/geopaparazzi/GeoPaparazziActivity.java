@@ -768,55 +768,6 @@ public class GeoPaparazziActivity extends Activity {
                 }
                 break;
             }
-            case (RETURNCODE_PICS): {
-                if (resultCode == Activity.RESULT_OK) {
-                    String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (relativeImagePath != null) {
-                        // FIXME needs to be fixed
-                        File imgFile = new File(resourcesManager.getApplicationSupporterDir().getParentFile(), relativeImagePath);
-                        if (!imgFile.exists()) {
-                            return;
-                        }
-                        try {
-                            double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                            double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                            double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                            double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                            byte[] imageData = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
-                            DaoImages.addImage(lon, lat, elev, azim, new Date().getTime(), "", imageData, null);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                        }
-                    }
-                }
-                break;
-            }
-            case (RETURNCODE_SKETCH): {
-                if (data != null) {
-                    String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (absoluteImagePath != null) {
-                        File imgFile = new File(absoluteImagePath);
-                        if (!imgFile.exists()) {
-                            return;
-                        }
-                        try {
-                            double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                            double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                            double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                            byte[] imageData = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
-                            DaoImages.addImage(lon, lat, elev, -9999.0, new Date().getTime(), "",
-                                    imageData, null);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-
-                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                        }
-                    }
-                }
-                break;
-            }
         }
     }
 

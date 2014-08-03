@@ -54,9 +54,9 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.util.INote;
-import eu.hydrologis.geopaparazzi.util.Image;
-import eu.hydrologis.geopaparazzi.util.ImageUtilities;
+import eu.geopaparazzi.library.database.INote;
+import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -214,9 +214,10 @@ public class NotesListActivity extends ListActivity {
                             Image image = (Image) iNote;
                             try {
                                 // FIXME
-                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationSupporterDir();
-                                File imageFile = new File(applicationDir, "tmp_image.jpg");
-                                ImageUtilities.imageIdToFile(image.getId(), imageFile.getAbsolutePath());
+                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
+                                File imageFile = new File(tempDir, "tmp_share_image.jpg");
+                                byte[] imageData = new DaoImages().getImageData(image.getId());
+                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
                                 if (imageFile.exists()) {
                                     ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
                                 } else {
@@ -266,9 +267,11 @@ public class NotesListActivity extends ListActivity {
 
                             try {
                                 // FIXME
-                                File applicationDir = ResourcesManager.getInstance(NotesListActivity.this).getApplicationSupporterDir();
-                                File imageFile = new File(applicationDir, "tmp_image.jpg");
-                                ImageUtilities.imageIdToFile(image.getId(), imageFile.getAbsolutePath());
+                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
+                                File imageFile = new File(tempDir, "tmp_share_image.jpg");
+                                byte[] imageData = new DaoImages().getImageData(image.getId());
+                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
                                 intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
                                 NotesListActivity.this.startActivity(intent);
                             } catch (java.lang.Exception e) {

@@ -47,6 +47,8 @@ public class ResourcesManager implements Serializable {
 
     private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
+    private static final String PATH_TEMP = "temp"; //$NON-NLS-1$
+
     /**
      * The nomedia file defining folders that should not be searched for media.
      */
@@ -69,6 +71,11 @@ public class ResourcesManager implements Serializable {
      * The basemaps folder.
      */
     private File mapsDir;
+
+    /**
+     * The temporary folder.
+     */
+    private File tempDir;
 
     private static ResourcesManager resourcesManager;
 
@@ -147,7 +154,7 @@ public class ResourcesManager implements Serializable {
          *    |-- applicationname.gpap -> main database
          *    |-- applicationSupportfolder
          *    |          |
-         *    |          |--- temporary files
+         *    |          |--- temp/ -> temporary files
          *    |          `--- tags.json
          *    |
          *    `-- mapsdir
@@ -245,6 +252,14 @@ public class ResourcesManager implements Serializable {
                 messageDialog(appContext, msgFormat, null);
                 mapsDir = sdcardDir;
             }
+
+        tempDir = new File(applicationSupportFolder, PATH_TEMP);
+        if (!tempDir.exists())
+            if (!tempDir.mkdir()) {
+                String msgFormat = Utilities.format(cantCreateSdcardmsg, tempDir.getAbsolutePath());
+                messageDialog(appContext, msgFormat, null);
+                tempDir = sdcardDir;
+            }
     }
 
     /**
@@ -286,4 +301,12 @@ public class ResourcesManager implements Serializable {
         return mapsDir;
     }
 
+    /**
+     * Get the temporary folder.
+     *
+     * @return the temp folder.
+     */
+    public File getTempDir() {
+        return tempDir;
+    }
 }

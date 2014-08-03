@@ -56,9 +56,11 @@ import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsService;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TemporaryFileCache;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
@@ -68,6 +70,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterato
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.util.Style;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -77,11 +80,10 @@ import jsqlite.Exception;
 /**
  * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
  * access the backing data structure of deriving subclasses.
- * <p>
+ * <p/>
  * The overlay may be used to show additional ways such as calculated routes. Closed polygons, for example buildings or
  * areas, are also supported. A way node sequence is considered as a closed polygon if the first and the last way node
  * are equal.
- *
  */
 public abstract class GeopaparazziOverlay extends Overlay {
 
@@ -92,11 +94,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Sets the bounds of the given drawable so that (0,0) is the center of the bottom row.
      *
-     * @param balloon
-     *            the drawable whose bounds should be set.
+     * @param balloon the drawable whose bounds should be set.
      * @return the given drawable with set bounds.
      */
-    public static Drawable boundCenter( Drawable balloon ) {
+    public static Drawable boundCenter(Drawable balloon) {
         balloon.setBounds(balloon.getIntrinsicWidth() / -2, balloon.getIntrinsicHeight() / -2, balloon.getIntrinsicWidth() / 2,
                 balloon.getIntrinsicHeight() / 2);
         return balloon;
@@ -105,11 +106,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
      *
-     * @param balloon
-     *            the drawable whose bounds should be set.
+     * @param balloon the drawable whose bounds should be set.
      * @return the given drawable with set bounds.
      */
-    public static Drawable boundCenterBottom( Drawable balloon ) {
+    public static Drawable boundCenterBottom(Drawable balloon) {
         balloon.setBounds(balloon.getIntrinsicWidth() / -2, -balloon.getIntrinsicHeight(), balloon.getIntrinsicWidth() / 2, 0);
         return balloon;
     }
@@ -132,8 +132,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private int left;
     private int right;
     private int top;
-    private List<Integer> visibleItems;
-    private List<Integer> visibleItemsRedraw;
+    private final List<Integer> visibleItems = new ArrayList<Integer>();
+    private final List<Integer> visibleItemsRedraw = new ArrayList<Integer>();
 
     /*
      * cross stuff
@@ -147,11 +147,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private final Point circlePosition;
     private final Path path;
 
-    private GpsData overlayGps;
+    private final GpsData overlayGps;
     private Drawable gpsMarker;
 
     private Path gpsPath;
-    private OverlayWay gpslogOverlay;
+    private final OverlayWay gpslogOverlay;
     private Paint gpsTrackPaintYellow;
     private Paint gpsTrackPaintBlack;
     private Paint gpsOutline;
@@ -175,16 +175,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Create a {@link OverlayWay} wrapped type.
      *
-     * @param context  the context to use.
+     * @param context the context to use.
      */
-    public GeopaparazziOverlay( Context context ) {
+    public GeopaparazziOverlay(Context context) {
         super();
         this.wayPath = new Path();
         this.wayPath.setFillType(Path.FillType.EVEN_ODD);
 
         this.itemPosition = new Point();
-        this.visibleItems = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
-        this.visibleItemsRedraw = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
 
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -295,7 +293,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      * Checks whether an item has been long pressed.
      */
     @Override
-    public boolean onLongPress( GeoPoint geoPoint, MapView mapView ) {
+    public boolean onLongPress(GeoPoint geoPoint, MapView mapView) {
         return checkItemHit(geoPoint, mapView, EventType.LONG_PRESS);
         // return super.onLongPress(geoPoint, mapView);
     }
@@ -304,7 +302,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      * Checks whether an item has been tapped.
      */
     @Override
-    public boolean onTap( GeoPoint geoPoint, MapView mapView ) {
+    public boolean onTap(GeoPoint geoPoint, MapView mapView) {
         return checkItemHit(geoPoint, mapView, EventType.TAP);
         // return super.onTap(geoPoint, mapView);
     }
@@ -319,16 +317,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
      */
     public abstract int itemSize();
 
-    private void drawWayPathOnCanvas( Canvas canvas, Point drawPosition, OverlayWay overlayWay ) {
+    private void drawWayPathOnCanvas(Canvas canvas, Point drawPosition, OverlayWay overlayWay) {
         // assemble the ways
         this.wayPath.reset();
-        for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
+        for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
             int x = overlayWay.cachedWayPositions[i][0].x - drawPosition.x;
             int y = overlayWay.cachedWayPositions[i][0].y - drawPosition.y;
             this.wayPath.moveTo(x, y);
             int lastX = 0;
             int lastY = 0;
-            for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
+            for (int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j) {
                 lastX = overlayWay.cachedWayPositions[i][j].x - drawPosition.x;
                 lastY = overlayWay.cachedWayPositions[i][j].y - drawPosition.y;
                 this.wayPath.lineTo(lastX, lastY);
@@ -378,24 +376,24 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void assembleGpsWayPath( Point drawPosition, OverlayWay overlayWay ) {
+    private void assembleGpsWayPath(Point drawPosition, OverlayWay overlayWay) {
         this.gpsPath.reset();
-        for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
+        for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
             this.gpsPath.moveTo(overlayWay.cachedWayPositions[i][0].x - drawPosition.x, overlayWay.cachedWayPositions[i][0].y
                     - drawPosition.y);
-            for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
+            for (int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j) {
                 this.gpsPath.lineTo(overlayWay.cachedWayPositions[i][j].x - drawPosition.x, overlayWay.cachedWayPositions[i][j].y
                         - drawPosition.y);
             }
         }
     }
 
-    private void drawGpsWayPathOnCanvas( Canvas canvas ) {
+    private void drawGpsWayPathOnCanvas(Canvas canvas) {
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
     }
 
-    private void drawGpsOnCanvas( Canvas canvas ) {
+    private void drawGpsOnCanvas(Canvas canvas) {
         canvas.drawPath(this.path, gpsOutline);
         canvas.drawPath(this.path, gpsFill);
     }
@@ -403,14 +401,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Set the current gps position.
      *
-     * @param position the {@link GeoPoint}.
-     * @param accuracy the accuracy.
+     * @param position         the {@link GeoPoint}.
+     * @param accuracy         the accuracy.
      * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_STATUS}.
      * @param gpsLoggingStatus the database logging status as defined by {@link GpsService#GPS_LOGGING_STATUS}.
      */
     @SuppressWarnings("nls")
-    public void setGpsPosition( GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus,
-            GpsLoggingStatus gpsLoggingStatus ) {
+    public void setGpsPosition(GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus,
+                               GpsLoggingStatus gpsLoggingStatus) {
         this.gpsServiceStatus = gpsServiceStatus;
         this.gpsLoggingStatus = gpsLoggingStatus;
         if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
@@ -429,14 +427,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Creates a way in this overlay.
      *
-     * @param index
-     *            the index of the way.
+     * @param index the index of the way.
      * @return the way.
      */
-    protected abstract OverlayWay createWay( int index );
+    protected abstract OverlayWay createWay(int index);
 
     @Override
-    protected void drawOverlayBitmap( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
+    protected void drawOverlayBitmap(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
 
         /*
          * first spatialite layers, if any
@@ -447,7 +444,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          * WAYS
          */
         int numberOfWays = waySize();
-        for( int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex ) {
+        for (int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex) {
             if (isInterrupted() || sizeHasChanged()) {
                 // stop working
                 return;
@@ -459,25 +456,23 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 continue;
             }
 
-            synchronized (overlayWay) {
-                // make sure that the current way has way nodes
-                if (overlayWay.wayNodes == null || overlayWay.wayNodes.length == 0) {
-                    continue;
-                }
-
-                // make sure that the cached way node positions are valid
-                if (drawZoomLevel != overlayWay.cachedZoomLevel) {
-                    for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
-                        for( int j = 0; j < overlayWay.cachedWayPositions[i].length; ++j ) {
-                            overlayWay.cachedWayPositions[i][j] = projection.toPoint(overlayWay.wayNodes[i][j],
-                                    overlayWay.cachedWayPositions[i][j], drawZoomLevel);
-                        }
-                    }
-                    overlayWay.cachedZoomLevel = drawZoomLevel;
-                }
-
-                drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
+            // make sure that the current way has way nodes
+            if (overlayWay.wayNodes == null || overlayWay.wayNodes.length == 0) {
+                continue;
             }
+
+            // make sure that the cached way node positions are valid
+            if (drawZoomLevel != overlayWay.cachedZoomLevel) {
+                for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
+                    for (int j = 0; j < overlayWay.cachedWayPositions[i].length; ++j) {
+                        overlayWay.cachedWayPositions[i][j] = projection.toPoint(overlayWay.wayNodes[i][j],
+                                overlayWay.cachedWayPositions[i][j], drawZoomLevel);
+                    }
+                }
+                overlayWay.cachedZoomLevel = drawZoomLevel;
+            }
+
+            drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
         }
 
         /*
@@ -491,7 +486,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         int canvasWidth = canvas.getWidth();
 
         int numberOfItems = itemSize();
-        for( int itemIndex = 0; itemIndex < numberOfItems; ++itemIndex ) {
+        for (int itemIndex = 0; itemIndex < numberOfItems; ++itemIndex) {
             if (isInterrupted() || sizeHasChanged()) {
                 // stop working
                 return;
@@ -503,75 +498,74 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 continue;
             }
 
-            synchronized (overlayItem) {
-                // make sure that the current item has a position
-                if (overlayItem.getPoint() == null) {
+            // make sure that the current item has a position
+            if (overlayItem.getPoint() == null) {
+                continue;
+            }
+
+            // make sure that the cached item position is valid
+            if (drawZoomLevel != overlayItem.cachedZoomLevel) {
+                overlayItem.cachedMapPosition = projection.toPoint(overlayItem.getPoint(), overlayItem.cachedMapPosition,
+                        drawZoomLevel);
+                overlayItem.cachedZoomLevel = drawZoomLevel;
+            }
+
+            // calculate the relative item position on the canvas
+            this.itemPosition.x = overlayItem.cachedMapPosition.x - drawPosition.x;
+            this.itemPosition.y = overlayItem.cachedMapPosition.y - drawPosition.y;
+
+            // get the correct marker for the item
+            if (overlayItem.getMarker() == null) {
+                if (this.itemDefaultMarker == null) {
+                    // no marker to draw the item
                     continue;
                 }
+                this.itemMarker = this.itemDefaultMarker;
+            } else {
+                this.itemMarker = overlayItem.getMarker();
+            }
 
-                // make sure that the cached item position is valid
-                if (drawZoomLevel != overlayItem.cachedZoomLevel) {
-                    overlayItem.cachedMapPosition = projection.toPoint(overlayItem.getPoint(), overlayItem.cachedMapPosition,
-                            drawZoomLevel);
-                    overlayItem.cachedZoomLevel = drawZoomLevel;
-                }
+            // get the position of the marker
+            Rect markerBounds = this.itemMarker.copyBounds();
 
-                // calculate the relative item position on the canvas
-                this.itemPosition.x = overlayItem.cachedMapPosition.x - drawPosition.x;
-                this.itemPosition.y = overlayItem.cachedMapPosition.y - drawPosition.y;
+            // calculate the bounding box of the marker
+            this.left = this.itemPosition.x + markerBounds.left;
+            this.right = this.itemPosition.x + markerBounds.right;
+            this.top = this.itemPosition.y + markerBounds.top;
+            this.itemBottom = this.itemPosition.y + markerBounds.bottom;
 
-                // get the correct marker for the item
-                if (overlayItem.getMarker() == null) {
-                    if (this.itemDefaultMarker == null) {
-                        // no marker to draw the item
-                        continue;
-                    }
-                    this.itemMarker = this.itemDefaultMarker;
-                } else {
-                    this.itemMarker = overlayItem.getMarker();
-                }
+            // check if the bounding box of the marker intersects with the canvas
+            if (this.right >= 0 && this.left <= canvasWidth && this.itemBottom >= 0 && this.top <= canvasHeight) {
+                // set the position of the marker
+                this.itemMarker.setBounds(this.left, this.top, this.right, this.itemBottom);
 
-                // get the position of the marker
-                Rect markerBounds = this.itemMarker.copyBounds();
+                // draw the item marker on the canvas
+                this.itemMarker.draw(canvas);
 
-                // calculate the bounding box of the marker
-                this.left = this.itemPosition.x + markerBounds.left;
-                this.right = this.itemPosition.x + markerBounds.right;
-                this.top = this.itemPosition.y + markerBounds.top;
-                this.itemBottom = this.itemPosition.y + markerBounds.bottom;
+                // restore the position of the marker
+                this.itemMarker.setBounds(markerBounds);
 
-                // check if the bounding box of the marker intersects with the canvas
-                if (this.right >= 0 && this.left <= canvasWidth && this.itemBottom >= 0 && this.top <= canvasHeight) {
-                    // set the position of the marker
-                    this.itemMarker.setBounds(this.left, this.top, this.right, this.itemBottom);
+                // add the current item index to the list of visible items
+                this.visibleItemsRedraw.add(itemIndex);
 
-                    // draw the item marker on the canvas
-                    this.itemMarker.draw(canvas);
-
-                    // restore the position of the marker
-                    this.itemMarker.setBounds(markerBounds);
-
-                    // add the current item index to the list of visible items
-                    this.visibleItemsRedraw.add(Integer.valueOf(itemIndex));
-
-                    if (isNotesTextVisible && overlayItem instanceof NoteOverlayItem) {
-                        String title = overlayItem.getTitle();
-                        float delta = markerBounds.width() / 4f;
-                        float x = right - delta;
-                        float y = top + delta;
-                        if (doNotesTextHalo)
-                            canvas.drawText(title, x, y, textHaloPaint);
-                        canvas.drawText(title, x, y, textPaint);
-                    }
+                if (isNotesTextVisible && overlayItem instanceof NoteOverlayItem) {
+                    String title = overlayItem.getTitle();
+                    float delta = markerBounds.width() / 4f;
+                    float x = right - delta;
+                    float y = top + delta;
+                    if (doNotesTextHalo)
+                        canvas.drawText(title, x, y, textHaloPaint);
+                    canvas.drawText(title, x, y, textPaint);
                 }
             }
         }
 
         // swap the two visible item lists
-        synchronized (this.visibleItems) {
-            List<Integer> visibleItemsTemp = this.visibleItems;
-            this.visibleItems = this.visibleItemsRedraw;
-            this.visibleItemsRedraw = visibleItemsTemp;
+        synchronized (visibleItems) {
+            List<Integer> visibleItemsTemp = new ArrayList<Integer>(visibleItems);
+            visibleItems.clear();
+            visibleItems.addAll(visibleItemsRedraw);
+            visibleItemsRedraw.addAll(visibleItemsTemp);
         }
 
         /*
@@ -582,14 +576,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
                 if (size > 1) {
-                    GeoPoint[] geoPoints = currentGpsLog.toArray(new GeoPoint[0]);
+                    GeoPoint[] geoPoints = currentGpsLog.toArray(new GeoPoint[currentGpsLog.size()]);
                     gpslogOverlay.setWayNodes(new GeoPoint[][]{geoPoints});
                     // make sure that the current way has way nodes
                     if (gpslogOverlay.wayNodes != null && gpslogOverlay.wayNodes.length != 0) {
                         // make sure that the cached way node positions are valid
                         if (drawZoomLevel != gpslogOverlay.cachedZoomLevel) {
-                            for( int i = 0; i < gpslogOverlay.cachedWayPositions.length; ++i ) {
-                                for( int j = 0; j < gpslogOverlay.cachedWayPositions[i].length; ++j ) {
+                            for (int i = 0; i < gpslogOverlay.cachedWayPositions.length; ++i) {
+                                for (int j = 0; j < gpslogOverlay.cachedWayPositions[i].length; ++j) {
                                     gpslogOverlay.cachedWayPositions[i][j] = projection.toPoint(gpslogOverlay.wayNodes[i][j],
                                             gpslogOverlay.cachedWayPositions[i][j], drawZoomLevel);
                                 }
@@ -702,7 +696,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
         canvas.drawPath(crossPath, crossPaint);
 
     }
-    private void drawFromSpatialite( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
+
+    private void drawFromSpatialite(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
         /*
          * draw from spatialite
          */
@@ -727,7 +722,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             /*
              * draw geometries
              */
-            for( int i = 0; i < spatialVectorTables.size(); i++ ) {
+            for (int i = 0; i < spatialVectorTables.size(); i++) {
                 SpatialVectorTable spatialTable = spatialVectorTables.get(i);
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
@@ -775,7 +770,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
-                    while( geometryIterator.hasNext() ) {
+                    while (geometryIterator.hasNext()) {
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
                             if (!envelope.intersects(geom.getEnvelopeInternal())) {
@@ -785,7 +780,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             if (spatialTable.isGeometryCollection()) {
                                 int geometriesCount = geom.getNumGeometries();
                                 // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
-                                for( int j = 0; j < geometriesCount; j++ ) {
+                                for (int j = 0; j < geometriesCount; j++) {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
                                         String geometryType = geom_collect.getGeometryType();
@@ -819,8 +814,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             /*
              * draw labels
              */
-            for( int i = 0; i < spatialVectorTables.size(); i++ ) {
-                SpatialVectorTable spatialTable = spatialVectorTables.get(i);
+            for (SpatialVectorTable spatialTable : spatialVectorTables) {
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
@@ -873,7 +867,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
-                    while( geometryIterator.hasNext() ) {
+                    while (geometryIterator.hasNext()) {
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
                             String labelText = geometryIterator.getLabelText();
@@ -883,7 +877,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             if (spatialTable.isGeometryCollection()) {
                                 int geometriesCount = geom.getNumGeometries();
                                 // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
-                                for( int j = 0; j < geometriesCount; j++ ) {
+                                for (int j = 0; j < geometriesCount; j++) {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
                                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
@@ -913,60 +907,60 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private static void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
+    private static void drawGeometry(Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke) {
         String s_geometry_type = geom.getGeometryType();
         int i_geometry_type = GeometryType.forValue(s_geometry_type);
         GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
         DrawableShape shape = shape_writer.toShape(geom);
-        switch( geometry_type ) {
-        case POINT_XY:
-        case POINT_XYM:
-        case POINT_XYZ:
-        case POINT_XYZM:
-        case MULTIPOINT_XY:
-        case MULTIPOINT_XYM:
-        case MULTIPOINT_XYZ:
-        case MULTIPOINT_XYZM: {
-            if (fill != null)
-                shape.fill(canvas, fill);
-            if (stroke != null)
-                shape.draw(canvas, stroke);
-            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
-        }
+        switch (geometry_type) {
+            case POINT_XY:
+            case POINT_XYM:
+            case POINT_XYZ:
+            case POINT_XYZM:
+            case MULTIPOINT_XY:
+            case MULTIPOINT_XYM:
+            case MULTIPOINT_XYZ:
+            case MULTIPOINT_XYZM: {
+                if (fill != null)
+                    shape.fill(canvas, fill);
+                if (stroke != null)
+                    shape.draw(canvas, stroke);
+                // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
+            }
             break;
-        case LINESTRING_XY:
-        case LINESTRING_XYM:
-        case LINESTRING_XYZ:
-        case LINESTRING_XYZM:
-        case MULTILINESTRING_XY:
-        case MULTILINESTRING_XYM:
-        case MULTILINESTRING_XYZ:
-        case MULTILINESTRING_XYZM: {
-            if (stroke != null)
-                shape.draw(canvas, stroke);
-        }
+            case LINESTRING_XY:
+            case LINESTRING_XYM:
+            case LINESTRING_XYZ:
+            case LINESTRING_XYZM:
+            case MULTILINESTRING_XY:
+            case MULTILINESTRING_XYM:
+            case MULTILINESTRING_XYZ:
+            case MULTILINESTRING_XYZM: {
+                if (stroke != null)
+                    shape.draw(canvas, stroke);
+            }
             break;
-        case POLYGON_XY:
-        case POLYGON_XYM:
-        case POLYGON_XYZ:
-        case POLYGON_XYZM:
-        case MULTIPOLYGON_XY:
-        case MULTIPOLYGON_XYM:
-        case MULTIPOLYGON_XYZ:
-        case MULTIPOLYGON_XYZM: {
-            if (fill != null)
-                shape.fill(canvas, fill);
-            if (stroke != null)
-                shape.draw(canvas, stroke);
-        }
+            case POLYGON_XY:
+            case POLYGON_XYM:
+            case POLYGON_XYZ:
+            case POLYGON_XYZM:
+            case MULTIPOLYGON_XY:
+            case MULTIPOLYGON_XYM:
+            case MULTIPOLYGON_XYZ:
+            case MULTIPOLYGON_XYZM: {
+                if (fill != null)
+                    shape.fill(canvas, fill);
+                if (stroke != null)
+                    shape.draw(canvas, stroke);
+            }
             break;
-        default:
-            break;
+            default:
+                break;
         }
     }
 
-    private static void drawLabel( PointTransformation pointTransformer, Geometry geom, String label, Canvas canvas,
-            Paint dbTextPaint, Paint dbTextHaloPaint, float delta, ShapeWriter linesWriter ) {
+    private static void drawLabel(PointTransformation pointTransformer, Geometry geom, String label, Canvas canvas,
+                                  Paint dbTextPaint, Paint dbTextHaloPaint, float delta, ShapeWriter linesWriter) {
 
         if (linesWriter == null) {
             /*
@@ -1010,24 +1004,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /**
      * Creates an item in this overlay.
      *
-     * @param index
-     *            the index of the item.
+     * @param index the index of the item.
      * @return the item.
      */
-    protected abstract OverlayItem createItem( int index );
+    protected abstract OverlayItem createItem(int index);
 
     /**
      * Checks whether an item has been hit by an event and calls the appropriate handler.
      *
-     * @param geoPoint
-     *            the point of the event.
-     * @param mapView
-     *            the {@link MapView} that triggered the event.
-     * @param eventType
-     *            the type of the event.
+     * @param geoPoint  the point of the event.
+     * @param mapView   the {@link MapView} that triggered the event.
+     * @param eventType the type of the event.
      * @return true if an item has been hit, false otherwise.
      */
-    protected boolean checkItemHit( GeoPoint geoPoint, MapView mapView, EventType eventType ) {
+    protected boolean checkItemHit(GeoPoint geoPoint, MapView mapView, EventType eventType) {
         Projection projection = mapView.getProjection();
         Point eventPosition = projection.toPixels(geoPoint, null);
         Context context = mapView.getContext();
@@ -1040,7 +1030,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         synchronized (this.visibleItems) {
             // iterate over all visible items
-            for( int i = this.visibleItems.size() - 1; i >= 0; --i ) {
+            for (int i = this.visibleItems.size() - 1; i >= 0; --i) {
                 Integer itemIndex = this.visibleItems.get(i);
 
                 // get the current item
@@ -1082,18 +1072,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     // check if the event position is within the bounds of the marker
                     if (checkRight >= eventPosition.x && checkLeft <= eventPosition.x && checkBottom >= eventPosition.y
                             && checkTop <= eventPosition.y) {
-                        switch( eventType ) {
-                        case LONG_PRESS:
-                            if (onLongPress(itemIndex.intValue())) {
-                                return true;
-                            }
-                            break;
+                        switch (eventType) {
+                            case LONG_PRESS:
+                                if (onLongPress(itemIndex.intValue())) {
+                                    return true;
+                                }
+                                break;
 
-                        case TAP:
-                            if (onTap(context, itemIndex.intValue())) {
-                                return true;
-                            }
-                            break;
+                            case TAP:
+                                if (onTap(context, itemIndex.intValue())) {
+                                    return true;
+                                }
+                                break;
                         }
                     }
                 }
@@ -1106,27 +1096,25 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Handles a long press event.
-     * <p>
+     * <p/>
      * The default implementation of this method does nothing and returns false.
      *
-     * @param index
-     *            the index of the item that has been long pressed.
+     * @param index the index of the item that has been long pressed.
      * @return true if the event was handled, false otherwise.
      */
-    protected boolean onLongPress( int index ) {
+    protected boolean onLongPress(int index) {
         return false;
     }
 
     /**
      * Handles a tap event.
-     * <p>
+     * <p/>
      * The default implementation of this method does nothing and returns false.
      *
-     * @param index
-     *            the index of the item that has been tapped.
+     * @param index the index of the item that has been tapped.
      * @return true if the event was handled, false otherwise.
      */
-    protected boolean onTap( Context context, int index ) {
+    protected boolean onTap(Context context, int index) {
         OverlayItem item = createItem(index);
         if (item != null) {
             String title = item.getTitle();
@@ -1138,21 +1126,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             float lat = latE6 / LibraryConstants.E6;
             float lon = lonE6 / LibraryConstants.E6;
             if (title != null && (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png"))) { //$NON-NLS-1$ //$NON-NLS-2$
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                File absolutePath = new File(title);
-                if (!absolutePath.exists()) {
-                    // try relative to media
-                    try {
-                        // FIXME needs to be fixed
-                        File mediaDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
-                        absolutePath = new File(mediaDir.getParentFile(), title);
-                    } catch (java.lang.Exception e) {
-                        GPLog.error(this, "Error", e);
-                    }
-                }
-                intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
-                context.startActivity(intent);
+                openImage(context, title, snippet);
             } else {
 
                 boolean doInfo = true;
@@ -1206,6 +1180,38 @@ public abstract class GeopaparazziOverlay extends Overlay {
             return true;
         }
         return false;
+    }
+
+    private void openImage(Context context, String title, String snippet) {
+        // get image from db
+        long imageID = Long.parseLong(snippet);
+        try {
+            int length = title.length();
+            String ext = title.substring(length - 4, length);
+            byte[] imageData = new DaoImages().getImageData(imageID);
+            final File newTempFile = TemporaryFileCache.createNewTempFile(context, ext);
+            ImageUtilities.writeImageDataToFile(imageData, newTempFile.getAbsolutePath());
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(newTempFile), "image/*"); //$NON-NLS-1$
+            context.startActivity(intent);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // wait a moment to let it open up, then delete it
+                    // on unix systems you can delete a file even if opened,
+                    // it will be removed one the resource is not used any more.
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    newTempFile.delete();
+                }
+            });
+        } catch (IOException e) {
+            GPLog.error(this, null, e);
+        }
     }
 
     @Override

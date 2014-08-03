@@ -62,7 +62,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 
 /**
  * Map tags adding activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -83,14 +83,14 @@ public class MapTagsActivity extends Activity {
     private ToggleButton togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.tags);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         togglePositionTypeButtonGps = (ToggleButton) findViewById(R.id.togglePositionTypeGps);
-        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor edit = preferences.edit();
                 edit.putBoolean(USE_MAPCENTER_POSITION, !isChecked);
                 edit.commit();
@@ -102,8 +102,8 @@ public class MapTagsActivity extends Activity {
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
 
-        broadcastReceiver = new BroadcastReceiver(){
-            public void onReceive( Context context, Intent intent ) {
+        broadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     gpsLocation = GpsServiceUtilities.getPosition(intent);
@@ -126,8 +126,8 @@ public class MapTagsActivity extends Activity {
         GpsServiceUtilities.triggerBroadcast(this);
 
         ImageButton imageButton = (ImageButton) findViewById(R.id.imagefromtag);
-        imageButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        imageButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
@@ -138,8 +138,8 @@ public class MapTagsActivity extends Activity {
             }
         });
         ImageButton noteButton = (ImageButton) findViewById(R.id.notefromtag);
-        noteButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        noteButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
@@ -149,8 +149,8 @@ public class MapTagsActivity extends Activity {
             }
         });
         ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
-        sketchButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        sketchButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 checkPositionCoordinates();
 
                 java.util.Date currentDate = new java.util.Date();
@@ -180,8 +180,8 @@ public class MapTagsActivity extends Activity {
         }
 
         final int buttonTextColor = getResources().getColor(R.color.main_text_color);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
-            public View getView( final int position, View cView, ViewGroup parent ) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray) {
+            public View getView(final int position, View cView, ViewGroup parent) {
 
                 Button tagButton = new Button(MapTagsActivity.this);
 
@@ -198,8 +198,8 @@ public class MapTagsActivity extends Activity {
                 mlp.setMargins(0, ind, 0, ind);
 
                 // osmButton.setImageResource(R.drawable.gps);
-                tagButton.setOnClickListener(new Button.OnClickListener(){
-                    public void onClick( View v ) {
+                tagButton.setOnClickListener(new Button.OnClickListener() {
+                    public void onClick(View v) {
                         try {
                             String userDefinedButtonName = tagNamesArray[position];
 
@@ -248,98 +248,78 @@ public class MapTagsActivity extends Activity {
         }
     }
 
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        switch( requestCode ) {
-        case (FORM_RETURN_CODE): {
-            String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-            if (formArray != null) {
-                try {
-                    double lon = Double.parseDouble(formArray[0]);
-                    double lat = Double.parseDouble(formArray[1]);
-                    double elev = Double.parseDouble(formArray[2]);
-                    String dateStr = formArray[3];
-                    String nameStr = formArray[4];
-                    String catStr = formArray[5];
-                    String jsonStr = formArray[6];
-                    DaoNotes.addNote(lon, lat, elev, Long.parseLong(dateStr), nameStr, "POI", jsonStr, null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                }
-            }
-            break;
-        }
-        case (NOTE_RETURN_CODE): {
-            String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
-            if (noteArray != null) {
-                try {
-                    double lon = Double.parseDouble(noteArray[0]);
-                    double lat = Double.parseDouble(noteArray[1]);
-                    double elev = Double.parseDouble(noteArray[2]);
-                    DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], noteArray[5], noteArray[6],
-                            null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                }
-            }
-            break;
-        }
-        case (CAMERA_RETURN_CODE): {
-            boolean imageExists = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
-            if (imageExists) {
-                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (relativeImagePath != null) {
+        switch (requestCode) {
+            case (FORM_RETURN_CODE): {
+                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                if (formArray != null) {
                     try {
-                        // FIXME needs to be fixed
-                        File imgFile = new File(ResourcesManager.getInstance(this).getApplicationSupporterDir().getParentFile(),
-                                relativeImagePath);
-                        if (!imgFile.exists()) {
-                            return;
-                        }
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                        byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
-
-                        DaoImages.addImage(lon, lat, elev, azim, new java.util.Date().getTime(), "", image, null);
+                        double lon = Double.parseDouble(formArray[0]);
+                        double lat = Double.parseDouble(formArray[1]);
+                        double elev = Double.parseDouble(formArray[2]);
+                        String dateStr = formArray[3];
+                        String nameStr = formArray[4];
+                        String catStr = formArray[5];
+                        String jsonStr = formArray[6];
+                        DaoNotes.addNote(lon, lat, elev, Long.parseLong(dateStr), nameStr, "POI", jsonStr, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+                break;
+            }
+            case (NOTE_RETURN_CODE): {
+                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                if (noteArray != null) {
+                    try {
+                        double lon = Double.parseDouble(noteArray[0]);
+                        double lat = Double.parseDouble(noteArray[1]);
+                        double elev = Double.parseDouble(noteArray[2]);
+                        DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], noteArray[5], noteArray[6],
+                                null);
                     } catch (Exception e) {
                         e.printStackTrace();
 
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                     }
                 }
+                break;
             }
-            break;
-        }
-        case (SKETCH_RETURN_CODE): {
-            String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-            if (absoluteImagePath != null) {
-                File imgFile = new File(absoluteImagePath);
-                if (!imgFile.exists()) {
-                    return;
-                }
-                try {
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                    byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
-
-                    DaoImages.addImage(lon, lat, elev, -9999.0, new java.util.Date().getTime(), "", image, null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
+            case (CAMERA_RETURN_CODE): {
+                boolean imageExists = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
+                if (!imageExists) {
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                 }
+                break;
             }
-            break;
-        }
+            case (SKETCH_RETURN_CODE): {
+                // FIXME
+//                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+//                if (absoluteImagePath != null) {
+//                    File imgFile = new File(absoluteImagePath);
+//                    if (!imgFile.exists()) {
+//                        return;
+//                    }
+//                    try {
+//                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+//                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+//                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+//                        byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
+//
+//                        DaoImages.addImage(lon, lat, elev, -9999.0, new java.util.Date().getTime(), "", image, null);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//
+//                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+//                    }
+//                }
+                break;
+            }
         }
         finish();
     }

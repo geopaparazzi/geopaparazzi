@@ -308,5 +308,8 @@ public interface LibraryConstants {
      */
     public static final String PREFS_KEY_TILESOURCE_TITLE = "PREFS_KEY_TILESOURCE_TITLE";
 
-
+    /**
+     * Key to passdatabase ids of objects through intents.
+     */
+    public static final String DATABASE_ID = "DATABASE_ID";
 }
