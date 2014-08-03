@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
@@ -63,6 +65,10 @@ public class ProjectMetadataActivity extends Activity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         try {
+            TextView databasePathTextView = (TextView) findViewById(R.id.databasePathTextView);
+            String databaseName = ResourcesManager.getInstance(this).getDatabaseFile().getName();
+            databasePathTextView.setText(databaseName);
+
             HashMap<String, String> projectMetadata = DaoMetadata.getProjectMetadata();
 
             nameText = (EditText) findViewById(R.id.nameEditText);
@@ -103,7 +109,7 @@ public class ProjectMetadataActivity extends Activity {
             lastUserText = (EditText) findViewById(R.id.lastUserEditText);
             lastUserText.setText(projectMetadata.get(KEY_LASTUSER.getFieldName()));
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             GPLog.error(this, null, e);
             Utilities.errorDialog(this, e, new Runnable() {
                 @Override

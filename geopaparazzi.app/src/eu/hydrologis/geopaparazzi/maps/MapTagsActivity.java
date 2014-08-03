@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -151,28 +152,25 @@ public class MapTagsActivity extends Activity {
         ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
         sketchButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                checkPositionCoordinates();
-
-                java.util.Date currentDate = new java.util.Date();
-                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                // FIXME needs to be fixed
-                File mediaDir = null;
                 try {
-                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getApplicationSupporterDir();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                    checkPositionCoordinates();
+                    java.util.Date currentDate = new java.util.Date();
+                    String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
+                    File tempFolder = ResourcesManager.getInstance(MapTagsActivity.this).getTempDir();
+                    File newImageFile = new File(tempFolder, "SKETCH_" + currentDatestring + ".png");
 
-                double[] gpsLocation = new double[]{longitude, latitude, elevation};
-                MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+                    double[] gpsLocation = new double[]{longitude, latitude, elevation};
+                    MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+                } catch (Exception e) {
+                    GPLog.error(MapTagsActivity.this, null, e);
+                }
             }
         });
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
         try {
             Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
-            tagNamesArray = sectionNames.toArray(new String[0]);
+            tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
             GPLog.error(this, e1.getLocalizedMessage(), e1);
@@ -298,26 +296,31 @@ public class MapTagsActivity extends Activity {
                 break;
             }
             case (SKETCH_RETURN_CODE): {
-                // FIXME
-//                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-//                if (absoluteImagePath != null) {
-//                    File imgFile = new File(absoluteImagePath);
-//                    if (!imgFile.exists()) {
-//                        return;
-//                    }
-//                    try {
-//                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-//                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-//                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-//                        byte[] image = data.getByteArrayExtra(LibraryConstants.PREFS_KEY_IMAGEDATA);
-//
-//                        DaoImages.addImage(lon, lat, elev, -9999.0, new java.util.Date().getTime(), "", image, null);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//
-//                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-//                    }
-//                }
+                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (absoluteImagePath != null) {
+                    File imgFile = new File(absoluteImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                        byte[] imageFromPath = ImageUtilities.getImageFromPath(absoluteImagePath, 10);
+
+
+                        java.util.Date currentDate = new java.util.Date();
+                        String name = ImageUtilities.getSketchImageName(currentDate);
+                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageFromPath, null);
+
+                        // delete the file after insertion in db
+                        imgFile.delete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
                 break;
             }
         }

@@ -17,10 +17,7 @@
  */
 package eu.geopaparazzi.library.camera;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,16 +26,13 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IGpsLogDbHelper;
+import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -90,12 +84,11 @@ public class CameraActivity extends Activity {
         File imageSaveFolder = null;
         try {
             // FIXME needs to be fixed
-            imageSaveFolder = ResourcesManager.getInstance(this).getApplicationSupporterDir();
+            imageSaveFolder = ResourcesManager.getInstance(this).getTempDir();
             if (extras != null) {
-                String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
-                if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {
-                    File applicationDir = ResourcesManager.getInstance(this).getApplicationSupporterDir();
-                    imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
+                String imageSaveFolderTmp = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
+                if (imageSaveFolderTmp != null && new File(imageSaveFolderTmp).exists()) {
+                    imageSaveFolder = new File(imageSaveFolderTmp);
                 }
                 imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
                 lon = extras.getDouble(LibraryConstants.LONGITUDE);
@@ -123,12 +116,9 @@ public class CameraActivity extends Activity {
         File mediaFolder = imageSaveFolder;
 
         currentDate = new Date();
-        String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
 
         if (imageName == null) {
-            imageName = "IMG_" + currentDatestring + ".jpg";
-        } else {
-            imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
+            imageName = ImageUtilities.getCameraImageName(currentDate);
         }
 
         imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
@@ -152,9 +142,9 @@ public class CameraActivity extends Activity {
             if (imageFile.exists()) {
 
                 try {
-                    byte[] imageDataArray = ImageUtilities.getImageFromPath(imageFilePath);
+                    byte[] imageDataArray = ImageUtilities.getImageFromPath(imageFilePath, 5);
 
-                    Class<?> logHelper = Class.forName("eu.hydrologis.geopaparazzi.database.DaoImages");
+                    Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
                     IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
                     SensorsManager sensorsManager = SensorsManager.getInstance(this);
@@ -162,6 +152,9 @@ public class CameraActivity extends Activity {
                     long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(), imageDataArray, null);
                     intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
                     intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+
+                    // delete the file after insertion in db
+                    imageFile.delete();
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                     Utilities.errorDialog(this, e, null);

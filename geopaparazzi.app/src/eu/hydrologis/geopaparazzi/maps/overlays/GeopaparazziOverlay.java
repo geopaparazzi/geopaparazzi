@@ -1200,20 +1200,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(newTempFile), "image/*"); //$NON-NLS-1$
             context.startActivity(intent);
-            //            new Thread(new Runnable() {
-            //                @Override
-            //                public void run() {
-            //                    // wait a moment to let it open up, then delete it
-            //                    // on unix systems you can delete a file even if opened,
-            //                    // it will be removed one the resource is not used any more.
-            //                    try {
-            //                        Thread.sleep(5000);
-            //                    } catch (InterruptedException e) {
-            //                        e.printStackTrace();
-            //                    }
-            //                    newTempFile.delete();
-            //                }
-            //            });
         } catch (java.lang.Exception e) {
             GPLog.error(this, null, e);
         }

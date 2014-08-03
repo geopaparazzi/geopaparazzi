@@ -1375,8 +1375,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 // generate screenshot in background in order to not freeze
                 try {
                     // FIXME needs to be fixed
-                    File applicationSupporterDir = ResourcesManager.getInstance(MapsActivity.this).getApplicationSupporterDir();
-                    final File tmpImageFile = new File(applicationSupporterDir, LibraryConstants.TMPPNGIMAGENAME);
+                    File tempDir = ResourcesManager.getInstance(MapsActivity.this).getTempDir();
+                    final File tmpImageFile = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
                     new Thread(new Runnable() {
                         public void run() {
                             try {

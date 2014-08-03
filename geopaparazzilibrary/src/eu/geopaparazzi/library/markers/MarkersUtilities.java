@@ -150,7 +150,7 @@ public class MarkersUtilities {
                 try {
                     sketchIntent = new Intent(context, Class.forName(APP_MAIN_ACTIVITY));
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             } else {
                 sketchIntent = new Intent();
@@ -188,7 +188,7 @@ public class MarkersUtilities {
             try {
                 sketchIntent = new Intent(context, Class.forName(APP_MAIN_ACTIVITY));
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         } else {
             sketchIntent = new Intent();

@@ -49,11 +49,22 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/main_text_color" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text=""
+                android:id="@+id/databasePathTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/titleTextView"
+                android:textColor="@color/main_text_color"
+                />
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
-                android:layout_below="@+id/titleTextView"
+                android:layout_below="@+id/databasePathTextView"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="5dp"
                 android:background="@color/main_decorations"
@@ -244,6 +255,8 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="15dp"
                 android:inputType="text" />
+
+
         </RelativeLayout>
     </ScrollView>
 

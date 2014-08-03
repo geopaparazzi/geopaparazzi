@@ -25,17 +25,54 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
- * Created by hydrologis on 30/07/14.
+ * Images helper utilities.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ImageUtilities {
 
+    public static String getSketchImageName(Date date) {
+        if (date == null)
+            date = new Date();
+        String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(date);
+        return "SKETCH_" + currentDatestring + ".png";
+    }
 
-    public static byte[] getImageFromPath(String imageFilePath) {
-        Bitmap photo = BitmapFactory.decodeFile(imageFilePath);
+    public static String getCameraImageName(Date date) {
+        if (date == null)
+            date = new Date();
+        String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(date);
+        return "IMG_" + currentDatestring + ".jpg";
+    }
+
+
+    /**
+     * Get an image from a file by its path.
+     *
+     * @param imageFilePath the image path.
+     * @param tryCount      times to try in 300 millis loop, in case the image is
+     *                      not yet on disk. (ugly but no other way right now)
+     * @return the image data or null.
+     */
+    public static byte[] getImageFromPath(String imageFilePath, int tryCount) {
+        Bitmap image = BitmapFactory.decodeFile(imageFilePath);
+        int count = 0;
+        while (image == null && ++count < tryCount) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            image = BitmapFactory.decodeFile(imageFilePath);
+        }
+        if (image == null) return null;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
         return stream.toByteArray();
     }
 
@@ -66,6 +103,13 @@ public class ImageUtilities {
         return bitmap;
     }
 
+    /**
+     * Write am image to disk.
+     *
+     * @param imageData the data to write.
+     * @param imagePath the path to write to.
+     * @throws IOException
+     */
     public static void writeImageDataToFile(byte[] imageData, String imagePath) throws IOException {
         FileOutputStream fout = new FileOutputStream(imagePath);
         try {

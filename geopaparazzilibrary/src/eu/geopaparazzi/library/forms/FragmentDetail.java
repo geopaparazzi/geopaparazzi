@@ -215,13 +215,13 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value.length() <= 0) {
-                            File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
-                            File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
+                            File tempDir = ResourcesManager.getInstance(activity).getTempDir();
+                            File tmpImage = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
                                 // FIXME needs to be fixed
                                 Date currentDate = new Date();
                                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                                File newImageFile = new File(applicationDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+                                File newImageFile = new File(tempDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
                                 FileUtilities.copyFile(tmpImage, newImageFile);
                                 value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
                             }

@@ -60,6 +60,7 @@ import java.util.List;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -465,8 +466,8 @@ public class GeoPaparazziActivity extends Activity {
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
 
-        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
-                + resourcesManager.getDatabaseFile().getAbsolutePath(), Toast.LENGTH_LONG);
+        //        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
+        //                + resourcesManager.getDatabaseFile().getAbsolutePath(), Toast.LENGTH_LONG);
 
         // check for screen on
         boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
@@ -601,7 +602,7 @@ public class GeoPaparazziActivity extends Activity {
 
                                                 logButton.setImageResource(R.drawable.dashboard_stop_log_item);
                                                 GpsServiceUtilities.startDatabaseLogging(appContext, newName,
-                                                        DaoGpsLog.class.getCanonicalName());
+                                                        IDefaultHelperClasses.GPSLOG_HELPER_CLASS);
                                                 actionBar.checkLogging();
                                                 DataManager.getInstance().setLogsVisible(true);
                                             }
