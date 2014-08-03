@@ -598,7 +598,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                                         Utilities.yesNoMessageDialog(MapsActivity.this, msg, new Runnable() {
                                             public void run() {
 //                                                try {
-                                                    // FIXME needs to be fixed
+                                                // FIXME needs to be fixed
 
 //                                                    DaoNotes.deleteNotesByType(NoteType.OSM);
 //                                                } catch (IOException e) {
@@ -1374,7 +1374,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             case R.id.addnotebytagbutton:
                 // generate screenshot in background in order to not freeze
                 try {
-                    // FIXME needs to be fixed
                     File tempDir = ResourcesManager.getInstance(MapsActivity.this).getTempDir();
                     final File tmpImageFile = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
                     new Thread(new Runnable() {
@@ -1396,7 +1395,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
                     startActivity(mapTagsIntent);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
+                    Utilities.errorDialog(this, e, null);
                 }
                 break;
             case R.id.addbookmarkbutton:

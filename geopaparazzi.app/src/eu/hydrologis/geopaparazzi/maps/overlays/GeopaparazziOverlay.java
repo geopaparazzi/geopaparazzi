@@ -1125,7 +1125,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int lonE6 = position.longitudeE6;
             float lat = latE6 / LibraryConstants.E6;
             float lon = lonE6 / LibraryConstants.E6;
-            if (title != null && (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png"))) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (title != null && ImageUtilities.isImagePath(title)) {
                 openImage(context, title, snippet);
             } else {
 
@@ -1194,7 +1194,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             byte[] imageData = new DaoImages().getImageData(imageID);
 
 
-            final File newTempFile = new File(tempDir, "temp_map_pic_image" + ext);
+            final File newTempFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
             ImageUtilities.writeImageDataToFile(imageData, newTempFile.getAbsolutePath());
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);

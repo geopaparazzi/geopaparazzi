@@ -50,6 +50,20 @@ public class ImageUtilities {
         return "IMG_" + currentDatestring + ".jpg";
     }
 
+    public static boolean isImagePath(String path) {
+        return path.toLowerCase().endsWith("jpg") || path.toLowerCase().endsWith("png");
+    }
+
+    /**
+     * Get the default temporary image file name.
+     *
+     * @param ext and optional dot+extension to add. If null, '.jpg' is used.
+     * @return the image name.
+     */
+    public static String getTempImageName(String ext) {
+        if (ext == null) ext = ".jpg";
+        return "tmp_gp_image" + ext;
+    }
 
     /**
      * Get an image from a file by its path.

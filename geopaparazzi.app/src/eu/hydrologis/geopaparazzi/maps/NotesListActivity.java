@@ -215,7 +215,10 @@ public class NotesListActivity extends ListActivity {
                             try {
                                 // FIXME
                                 File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
-                                File imageFile = new File(tempDir, "tmp_share_image.jpg");
+                                String ext = ".jpg";
+                                if (image.getName().endsWith(".png"))
+                                    ext = ".png";
+                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
                                 byte[] imageData = new DaoImages().getImageData(image.getId());
                                 ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
                                 if (imageFile.exists()) {
@@ -255,9 +258,9 @@ public class NotesListActivity extends ListActivity {
                                 Intent formIntent = new Intent(NotesListActivity.this, FormActivity.class);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, lat);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
                                 NotesListActivity.this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                             }
                         } else if (iNote instanceof Image) {
@@ -268,7 +271,10 @@ public class NotesListActivity extends ListActivity {
                             try {
                                 // FIXME
                                 File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
-                                File imageFile = new File(tempDir, "tmp_share_image.jpg");
+                                String ext = ".jpg";
+                                if (image.getName().endsWith(".png"))
+                                    ext = ".png";
+                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
                                 byte[] imageData = new DaoImages().getImageData(image.getId());
                                 ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
 
