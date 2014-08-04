@@ -126,9 +126,10 @@ public class DaoNotes {
      * @param description an optional description for the note.
      * @param form        the optional json form.
      * @param style       the optional style definition.
+     * @return the inserted note id.
      * @throws IOException if something goes wrong.
      */
-    public static void addNote(double lon, double lat, double altim, long timestamp, String text, String description,
+    public static long addNote(double lon, double lat, double altim, long timestamp, String text, String description,
                                String form, String style) throws IOException {
         if (description == null) {
             description = "note";
@@ -137,9 +138,11 @@ public class DaoNotes {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            addNoteNoTransaction(lon, lat, altim, timestamp, text, description, form, style, sqliteDatabase);
+            long noteId = addNoteNoTransaction(lon, lat, altim, timestamp, text, description, form, style, sqliteDatabase);
 
             sqliteDatabase.setTransactionSuccessful();
+
+            return noteId;
         } catch (Exception e) {
             GPLog.error("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
@@ -159,8 +162,9 @@ public class DaoNotes {
      * @param description    a description.
      * @param form           the json form or null
      * @param sqliteDatabase the database reference.
+     * @return the inserted note id.
      */
-    public static void addNoteNoTransaction(double lon, double lat, double altim, long timestamp, String text,
+    public static long addNoteNoTransaction(double lon, double lat, double altim, long timestamp, String text,
                                             String description, String form, String style, SQLiteDatabase sqliteDatabase) {
         ContentValues values = new ContentValues();
         values.put(NotesTableFields.COLUMN_LON.getFieldName(), lon);
@@ -175,7 +179,8 @@ public class DaoNotes {
         if (style != null)
             values.put(NotesTableFields.COLUMN_STYLE.getFieldName(), style);
         values.put(NotesTableFields.COLUMN_ISDIRTY.getFieldName(), 1);
-        sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
+        long noteId = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
+        return noteId;
     }
 
     /**

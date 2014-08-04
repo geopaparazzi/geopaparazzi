@@ -399,6 +399,7 @@ public class FormUtilities {
     /**
      * Adds a {@link GPictureView} to the supplied mainView.
      *
+     * @param noteId                the note id this form belogs to.
      * @param fragmentDetail        the fragmentDetail.
      * @param mainView              the main view to which to add the new widget to.
      * @param key                   the key identifying the widget.
@@ -406,9 +407,9 @@ public class FormUtilities {
      * @param constraintDescription constraint
      * @return the added view.
      */
-    public static GView addPictureView(FragmentDetail fragmentDetail, int requestCode, LinearLayout mainView, String key, String value,
+    public static GView addPictureView(long noteId, FragmentDetail fragmentDetail, int requestCode, LinearLayout mainView, String key, String value,
                                        String constraintDescription) {
-        GPictureView pictureView = new GPictureView(fragmentDetail, null, requestCode, mainView, key, value, constraintDescription);
+        GPictureView pictureView = new GPictureView(noteId, fragmentDetail, null, requestCode, mainView, key, value, constraintDescription);
         return pictureView;
     }
 
@@ -648,8 +649,8 @@ public class FormUtilities {
      * @return the list of images paths.
      * @throws Exception if something goes wrong.
      */
-    public static List<String> getImages(String formString) throws Exception {
-        List<String> images = new ArrayList<String>();
+    public static List<String> getImageIds(String formString) throws Exception {
+        List<String> imageIds = new ArrayList<String>();
         if (formString != null && formString.length() > 0) {
             JSONObject sectionObject = new JSONObject(formString);
             List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
@@ -671,27 +672,27 @@ public class FormUtilities {
                         }
                         String[] imageSplit = value.split(";");
                         for (String image : imageSplit) {
-                            images.add(image);
+                            imageIds.add(image);
                         }
                     } else if (type.equals(FormUtilities.TYPE_MAP)) {
                         if (value.trim().length() == 0) {
                             continue;
                         }
                         String image = value.trim();
-                        images.add(image);
+                        imageIds.add(image);
                     } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
                         if (value.trim().length() == 0) {
                             continue;
                         }
                         String[] imageSplit = value.split(";");
                         for (String image : imageSplit) {
-                            images.add(image);
+                            imageIds.add(image);
                         }
                     }
                 }
             }
         }
-        return images;
+        return imageIds;
     }
 
     /**

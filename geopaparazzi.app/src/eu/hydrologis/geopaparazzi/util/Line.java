@@ -221,7 +221,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     }
 
     @Override
-    public List<Image> getImages() {
+    public List<String> getImageIds() {
         return Collections.emptyList();
     }
 

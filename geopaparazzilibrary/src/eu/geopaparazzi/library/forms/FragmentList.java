@@ -100,6 +100,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
         } else {
             // String sectionName = activity.getSectionName();
             Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
+            intent.putExtra(LibraryConstants.DATABASE_ID, getNoteId());
             intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
             intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
             intent.putExtra(LibraryConstants.LONGITUDE, activity.getLongitude());
@@ -127,6 +128,10 @@ public class FragmentList extends android.support.v4.app.ListFragment {
      */
     public double getLatitude() {
         return activity.getLatitude();
+    }
+
+    public long getNoteId(){
+        return activity.getNoteId();
     }
 
     /**

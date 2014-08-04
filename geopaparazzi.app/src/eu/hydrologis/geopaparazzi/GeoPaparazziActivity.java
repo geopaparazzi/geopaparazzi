@@ -58,9 +58,9 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
-import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -82,7 +82,6 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActiv
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.TableDescriptions;
@@ -602,7 +601,7 @@ public class GeoPaparazziActivity extends Activity {
 
                                                 logButton.setImageResource(R.drawable.dashboard_stop_log_item);
                                                 GpsServiceUtilities.startDatabaseLogging(appContext, newName,
-                                                        IDefaultHelperClasses.GPSLOG_HELPER_CLASS);
+                                                        DefaultHelperClasses.GPSLOG_HELPER_CLASS);
                                                 actionBar.checkLogging();
                                                 DataManager.getInstance().setLogsVisible(true);
                                             }

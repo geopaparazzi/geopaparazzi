@@ -31,15 +31,14 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -74,8 +73,9 @@ public class CameraActivity extends Activity {
     private double lon;
     private double lat;
     private double elevation;
-    private int lastImageId;
+    private int lastImageMediastoreId;
     private String imageName;
+    private long noteId = -1;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -90,6 +90,7 @@ public class CameraActivity extends Activity {
                     imageSaveFolder = new File(imageSaveFolderTmp);
                 }
                 imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
+                noteId = extras.getLong(LibraryConstants.DATABASE_ID);
                 lon = extras.getDouble(LibraryConstants.LONGITUDE);
                 lat = extras.getDouble(LibraryConstants.LATITUDE);
                 elevation = extras.getDouble(LibraryConstants.ELEVATION);
@@ -127,7 +128,7 @@ public class CameraActivity extends Activity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
-        lastImageId = getLastImageId();
+        lastImageMediastoreId = getLastImageMediaId();
 
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
@@ -143,13 +144,14 @@ public class CameraActivity extends Activity {
                 try {
                     byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
 
-                    Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
+                    Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
                     IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
                     SensorsManager sensorsManager = SensorsManager.getInstance(this);
                     double azimuth = sensorsManager.getPictureAzimuth();
+
                     long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
-                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], null);
+                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
                     intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
                     intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
 
@@ -180,7 +182,7 @@ public class CameraActivity extends Activity {
                 MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns._ID};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         final String imageWhere = MediaStore.Images.Media._ID + ">?";
-        final String[] imageArguments = {Integer.toString(lastImageId)};
+        final String[] imageArguments = {Integer.toString(lastImageMediastoreId)};
         Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
                 imageOrderBy);
         List<File> cameraTakenMediaFiles = new ArrayList<File>();
@@ -226,7 +228,7 @@ public class CameraActivity extends Activity {
      *
      * @return the last image id from the media store.
      */
-    private int getLastImageId() {
+    private int getLastImageMediaId() {
         final String[] imageColumns = {MediaStore.Images.Media._ID};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         final String imageWhere = null;

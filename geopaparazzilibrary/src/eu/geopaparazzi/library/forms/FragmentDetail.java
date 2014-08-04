@@ -88,6 +88,7 @@ public class FragmentDetail extends Fragment {
     private List<String> keyList = new ArrayList<String>();
     private String selectedFormName;
     private JSONObject sectionObject;
+    private long noteId = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,12 +114,14 @@ public class FragmentDetail extends Fragment {
                 if (listFragment != null) {
                     selectedFormName = listFragment.getSelectedItemName();
                     sectionObject = listFragment.getSectionObject();
+                    noteId = listFragment.getNoteId();
                 } else {
                     if (activity instanceof FragmentDetailActivity) {
                         // case of portrait mode
                         FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
                         selectedFormName = fragmentDetailActivity.getFormName();
                         sectionObject = fragmentDetailActivity.getSectionObject();
+                        noteId= fragmentDetailActivity.getNoteId();
                     }
                 }
             }
@@ -212,7 +215,7 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addMultiSelectionView(activity, mainView, key, value, itemsArray,
                                 constraintDescription);
                     } else if (type.equals(TYPE_PICTURES)) {
-                        addedView = FormUtilities.addPictureView(this, requestCode, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_SKETCH)) {
                         addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {

@@ -20,24 +20,30 @@ package eu.geopaparazzi.library.database;
 
 /**
  * The default helper classes used by geopaparazzi.
- *
+ * <p/>
  * <p>These can be substituted through own implementations following the interfaces.</p>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface IDefaultHelperClasses {
+public class DefaultHelperClasses {
 
     /**
      * Helper class for images.
-     *
+     * <p/>
      * <P>Follows interface {@link eu.geopaparazzi.library.database.IImagesDbHelper}</P>
      */
-    public String IMAGE_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoImages";
+    public static String IMAGE_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoImages";
 
     /**
      * Helper class for gps logs.
-     *
+     * <p/>
      * <P>Follows interface {@link eu.geopaparazzi.library.database.IGpsLogDbHelper}</P>
      */
-    public String GPSLOG_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoGpsLog";
+    public static String GPSLOG_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoGpsLog";
+
+    public static IImagesDbHelper getDefaulfImageHelper() throws Exception {
+        Class<?> logHelper = Class.forName(IMAGE_HELPER_CLASS);
+        IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
+        return imagesDbHelper;
+    }
 }

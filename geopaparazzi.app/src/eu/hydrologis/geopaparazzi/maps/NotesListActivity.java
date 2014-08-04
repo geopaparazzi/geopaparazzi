@@ -44,7 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
@@ -102,7 +104,7 @@ public class NotesListActivity extends ListActivity {
             List<INote> allNotesList = new ArrayList<INote>();
             List<Note> notesList = DaoNotes.getNotesList(null, false);
             allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList(false);
+            List<Image> imagesList = DaoImages.getImagesList(false, true);
             allNotesList.addAll(imagesList);
             Collections.sort(allNotesList, notesSorter);
 
@@ -130,7 +132,7 @@ public class NotesListActivity extends ListActivity {
             List<INote> allNotesList = new ArrayList<INote>();
             List<Note> notesList = DaoNotes.getNotesList(null, false);
             allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList(false);
+            List<Image> imagesList = DaoImages.getImagesList(false, true);
             allNotesList.addAll(imagesList);
             Collections.sort(allNotesList, notesSorter);
 
@@ -188,14 +190,23 @@ public class NotesListActivity extends ListActivity {
                                     formText = formText + "\n" + osmUrl;
                                     if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
                                         // double altim = note.getAltim();
-                                        List<String> imagePaths = note.getImagePaths();
+
+                                        IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+                                        File tempDir = ResourcesManager.getInstance(getContext()).getTempDir();
+
+                                        // for now only one image is shared
+                                        List<String> imageIds = note.getImageIds();
                                         File imageFile = null;
-                                        if (imagePaths.size() > 0) {
-                                            String imagePath = imagePaths.get(0);
-                                            imageFile = new File(imagePath);
-                                            if (!imageFile.exists()) {
-                                                imageFile = null;
-                                            }
+                                        if (imageIds.size() > 0) {
+                                            String imageId = imageIds.get(0);
+
+                                            Image image = imageHelper.getImage(Long.parseLong(imageId));
+
+                                            String imageName = image.getName();
+                                            imageFile = new File(tempDir, imageName);
+
+                                            byte[] imageData = imageHelper.getImageDataById(image.getImageDataId(), null);
+                                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
                                         }
                                         if (imageFile != null) {
                                             ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, formText,

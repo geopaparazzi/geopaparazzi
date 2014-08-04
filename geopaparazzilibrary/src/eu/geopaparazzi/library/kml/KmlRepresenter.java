@@ -44,10 +44,10 @@ public interface KmlRepresenter {
     public boolean hasImages();
 
     /**
-     * Get image list.
+     * Get image ids list.
      *
-     * @return the list of images.
+     * @return the list of image ids.
      */
-    public List<Image> getImages();
+    public List<String> getImageIds();
 
 }

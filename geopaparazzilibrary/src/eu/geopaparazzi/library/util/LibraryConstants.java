@@ -43,6 +43,9 @@ public interface LibraryConstants {
      * 
      */
     public final float E6 = 1000000f;
+
+    public final float PICKRADIUS = 0.00001f;
+
     /**
      * 
      */
@@ -312,4 +315,5 @@ public interface LibraryConstants {
      * Key to passdatabase ids of objects through intents.
      */
     public static final String DATABASE_ID = "DATABASE_ID";
+
 }

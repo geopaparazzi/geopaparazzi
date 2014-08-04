@@ -150,7 +150,7 @@ public class DaoImages implements IImagesDbHelper {
     }
 
 
-    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumb, Integer noteId)
+    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumb, long noteId)
             throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -171,8 +171,7 @@ public class DaoImages implements IImagesDbHelper {
             values.put(ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(), imageDataId);
             values.put(ImageTableFields.COLUMN_AZIM.getFieldName(), azim);
             values.put(ImageTableFields.COLUMN_ISDIRTY.getFieldName(), 1);
-            if (noteId != null)
-                values.put(ImageTableFields.COLUMN_NOTE_ID.getFieldName(), noteId);
+            values.put(ImageTableFields.COLUMN_NOTE_ID.getFieldName(), noteId);
             long imageId = sqliteDatabase.insertOrThrow(TABLE_IMAGES, null, values);
 
             sqliteDatabase.setTransactionSuccessful();
@@ -348,11 +347,14 @@ public class DaoImages implements IImagesDbHelper {
     /**
      * Get the list of {@link eu.geopaparazzi.library.database.Image}s from the db.
      *
-     * @param onlyDirty if true, only dirty notes will be retrieved.
+     * @param onlyDirty      if true, only dirty notes will be retrieved.
+     * @param onlyStandalone if true, only pure image notes are returned.
+     *                       One example of non pure image notes is the image
+     *                       that belongs to a form based note.
      * @return list of notes.
      * @throws IOException if something goes wrong.
      */
-    public static List<Image> getImagesList(boolean onlyDirty) throws IOException {
+    public static List<Image> getImagesList(boolean onlyDirty, boolean onlyStandalone) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Image> images = new ArrayList<Image>();
         String asColumnsToReturn[] = { //
@@ -367,11 +369,20 @@ public class DaoImages implements IImagesDbHelper {
                 ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()//
         };
         String strSortOrder = "_id ASC";
-        String isDirtyString = null;
+        String whereString = null;
         if (onlyDirty) {
-            isDirtyString = ImageTableFields.COLUMN_ISDIRTY.getFieldName() + " = " + 1;
+            whereString = ImageTableFields.COLUMN_ISDIRTY.getFieldName() + " = " + 1;
         }
-        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, isDirtyString, null, null, null, strSortOrder);
+        if (onlyStandalone) {
+            if (whereString != null) {
+                whereString = whereString + " && ";
+            } else {
+                whereString = "";
+            }
+            whereString = whereString + ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
+        }
+
+        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
         c.moveToFirst();
         while (!c.isAfterLast()) {
             long id = c.getLong(0);

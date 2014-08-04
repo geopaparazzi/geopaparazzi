@@ -20,12 +20,9 @@ package eu.geopaparazzi.library.forms.views;
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,7 +32,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,17 +40,13 @@ import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.forms.FragmentDetail;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom pictures view.
@@ -91,6 +83,7 @@ public class GPictureView extends View implements GView {
     }
 
     /**
+     * @param noteId                the id of the note this image belows to.
      * @param fragmentDetail        the fragment detail  to use.
      * @param attrs                 attributes.
      * @param parentView            parent
@@ -98,7 +91,7 @@ public class GPictureView extends View implements GView {
      * @param value                 in case of pictures, the value are the ids of the image, semicolonseparated.
      * @param constraintDescription constraints
      */
-    public GPictureView(final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
+    public GPictureView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
                         String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
 
@@ -134,6 +127,7 @@ public class GPictureView extends View implements GView {
                 String imageName = ImageUtilities.getCameraImageName(null);
                 Intent cameraIntent = new Intent(activity, CameraActivity.class);
                 cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageName);
+                cameraIntent.putExtra(LibraryConstants.DATABASE_ID, noteId);
                 if (gpsLocation != null) {
                     cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
                     cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
@@ -170,8 +164,7 @@ public class GPictureView extends View implements GView {
             String[] imageSplit = _value.split(IMAGE_ID_SEPARATOR);
             log("Handling images: " + _value);
 
-            Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
-            IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
+            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
 
             for (String imageId : imageSplit) {
                 log("img: " + imageId);

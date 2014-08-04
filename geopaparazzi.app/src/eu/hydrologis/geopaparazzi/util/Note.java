@@ -32,6 +32,7 @@ import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 
 /**
  * Represents a note (log or map).
@@ -39,6 +40,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Note implements INote, KmlRepresenter, GpxRepresenter {
+    public static final String IMAGES_SEPARATOR = ";";
     private final String simpleText;
     private final String description;
     private final long timeStamp;
@@ -65,7 +67,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
      * @param isDirty     isDirty flag.
      */
     public Note(long id, String text, String description, long timeStamp, double lon, double lat, double altim,
-                 String form, int isDirty, String style) {
+                String form, int isDirty, String style) {
         this.id = id;
         this.style = style;
         if (text != null) {
@@ -146,6 +148,9 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         sB.append("<description>\n");
 
         if (form != null && form.length() > 0) {
+            DaoImages daoImages = new DaoImages();
+
+
             sB.append("<![CDATA[\n");
             JSONObject sectionObject = new JSONObject(form);
             if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
@@ -176,23 +181,24 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                         if (value.trim().length() == 0) {
                             continue;
                         }
-                        String[] imageSplit = value.split(";");
-                        for (String image : imageSplit) {
-                            File imgFile = new File(image);
-                            String imgName = imgFile.getName();
+                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
+                        for (String imageId : imageIdsSplit) {
+                            Image image = daoImages.getImage(Long.parseLong(imageId));
+                            String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                             sB.append("<img src=\"" + imgName + "\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
-                            images.add(image);
+                            images.add(imageId);
                         }
                     } else if (type.equals(FormUtilities.TYPE_MAP)) {
                         if (value.trim().length() == 0) {
                             continue;
                         }
                         sB.append("<tr>");
+                        // FIXME
                         String image = value.trim();
                         File imgFile = new File(image);
                         String imgName = imgFile.getName();
@@ -205,17 +211,17 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                         if (value.trim().length() == 0) {
                             continue;
                         }
-                        String[] imageSplit = value.split(";");
-                        for (String image : imageSplit) {
-                            File imgFile = new File(image);
-                            String imgName = imgFile.getName();
+                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
+                        for (String imageId : imageIdsSplit) {
+                            Image image = daoImages.getImage(Long.parseLong(imageId));
+                            String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                             sB.append("<img src=\"" + imgName + "\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
-                            images.add(image);
+                            images.add(imageId);
                         }
                     } else {
                         sB.append("<tr>");
@@ -232,7 +238,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                 sB.append("</table>");
             }
             sB.append("]]>\n");
-        } else if (description != null) {
+        } else {
             String description = Utilities.makeXmlSafe(this.description);
             sB.append(description);
             sB.append("\n");
@@ -253,17 +259,10 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         return images != null && images.size() > 0;
     }
 
-    @Override
-    public List<Image> getImages() {
-        // FIXME
-
-        return null;
-    }
-
-    public List<String> getImagePaths() {
+    public List<String> getImageIds() {
         if (images == null) {
             try {
-                images = FormUtilities.getImages(form);
+                images = FormUtilities.getImageIds(form);
             } catch (Exception e) {
                 e.printStackTrace();
             }

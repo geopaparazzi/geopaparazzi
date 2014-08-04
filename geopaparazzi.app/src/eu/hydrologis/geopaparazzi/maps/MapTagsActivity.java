@@ -39,6 +39,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.sql.Date;
 import java.util.Set;
@@ -131,6 +133,7 @@ public class MapTagsActivity extends Activity {
             public void onClick(View v) {
                 checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
+                intent.putExtra(LibraryConstants.DATABASE_ID, -1l);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
@@ -199,16 +202,30 @@ public class MapTagsActivity extends Activity {
                 tagButton.setOnClickListener(new Button.OnClickListener() {
                     public void onClick(View v) {
                         try {
-                            String userDefinedButtonName = tagNamesArray[position];
+                            String sectionName = tagNamesArray[position];
 
                             checkPositionCoordinates();
-                            // launch form activity
-                            Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
-                            formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, userDefinedButtonName);
-                            formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
-                            formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                            formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
-                            startActivityForResult(formIntent, FORM_RETURN_CODE);
+
+                            // insert note and then work on it
+                            try {
+                                JSONObject sectionObject = TagsManager.getInstance(MapTagsActivity.this).getSectionByName(sectionName);
+                                String sectionObjectString = sectionObject.toString();
+                                long noteId = DaoNotes.addNote(longitude, latitude, elevation, new java.util.Date().getTime(), sectionName, "POI", sectionObjectString, null);
+
+                                // launch form activity
+                                Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
+                                formIntent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, sectionName);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
+                                startActivityForResult(formIntent, FORM_RETURN_CODE);
+                            } catch (Exception e) {
+                                GPLog.error(this, null, e);
+                                Utilities.messageDialog(MapTagsActivity.this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                            }
+
+
                         } catch (Exception e) {
                             GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
@@ -256,16 +273,18 @@ public class MapTagsActivity extends Activity {
                 String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
                 if (formArray != null) {
                     try {
-                        double lon = Double.parseDouble(formArray[0]);
-                        double lat = Double.parseDouble(formArray[1]);
-                        double elev = Double.parseDouble(formArray[2]);
-                        String dateStr = formArray[3];
-                        String nameStr = formArray[4];
-                        String catStr = formArray[5];
-                        String jsonStr = formArray[6];
-                        DaoNotes.addNote(lon, lat, elev, Long.parseLong(dateStr), nameStr, "POI", jsonStr, null);
+                        long noteId = Long.parseLong(formArray[0]);
+                        //                        double lon = Double.parseDouble(formArray[1]);
+                        //                        double lat = Double.parseDouble(formArray[2]);
+                        //                        double elev = Double.parseDouble(formArray[3]);
+                        //                        String dateStr = formArray[4];
+                        String nameStr = formArray[5];
+                        //                        String catStr = formArray[6];
+                        String jsonStr = formArray[7];
+
+                        DaoNotes.updateForm(noteId, nameStr, jsonStr);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e);
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                     }
                 }
@@ -311,7 +330,7 @@ public class MapTagsActivity extends Activity {
 
                         java.util.Date currentDate = new java.util.Date();
                         String name = ImageUtilities.getSketchImageName(currentDate);
-                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageAndThumbnailArray[0], imageAndThumbnailArray[1], null);
+                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageAndThumbnailArray[0], imageAndThumbnailArray[1], -1);
 
                         // delete the file after insertion in db
                         imgFile.delete();

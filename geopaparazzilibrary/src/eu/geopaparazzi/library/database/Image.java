@@ -169,9 +169,7 @@ public class Image implements INote, KmlRepresenter {
         return true;
     }
 
-    @Override
-    public List<Image> getImages() {
-        return Arrays.asList(this);
+    public List<String> getImageIds() {
+        return Arrays.asList(id + "");
     }
-
 }

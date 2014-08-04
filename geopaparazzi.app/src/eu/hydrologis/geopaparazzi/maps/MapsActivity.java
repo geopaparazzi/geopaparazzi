@@ -1121,25 +1121,18 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
                     if (formArray != null) {
                         try {
-                            double lon = Double.parseDouble(formArray[0]);
-                            double lat = Double.parseDouble(formArray[1]);
-                            String textStr = formArray[4];
-                            String jsonStr = formArray[6];
+                            long noteId = Long.parseLong(formArray[0]);
+                            //                        double lon = Double.parseDouble(formArray[1]);
+                            //                        double lat = Double.parseDouble(formArray[2]);
+                            //                        double elev = Double.parseDouble(formArray[3]);
+                            //                        String dateStr = formArray[4];
+                            String nameStr = formArray[5];
+                            //                        String catStr = formArray[6];
+                            String jsonStr = formArray[7];
 
-                            float n = (float) (lat + 0.00001f);
-                            float s = (float) (lat - 0.00001f);
-                            float w = (float) (lon - 0.00001f);
-                            float e = (float) (lon + 0.00001f);
-
-                            List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
-                            if (notesInWorldBounds.size() > 0) {
-                                Note note = notesInWorldBounds.get(0);
-                                long id = note.getId();
-                                DaoNotes.updateForm(id, textStr, jsonStr);
-                            }
-
+                            DaoNotes.updateForm(noteId, nameStr, jsonStr);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e);
                             Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                         }
                     }

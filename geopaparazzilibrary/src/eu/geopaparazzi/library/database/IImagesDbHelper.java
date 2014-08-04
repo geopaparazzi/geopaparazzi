@@ -39,11 +39,11 @@ public interface IImagesDbHelper {
      * @param text      a text
      * @param image     the image data.
      * @param thumbnail a scaled image for quick extraction and preview.
-     * @param noteId    an optional note id, to which it is connected.
+     * @param noteId    the note id, to which it is connected or -1 if it is standalone.
      * @return the inserted image record id.
      * @throws IOException if something goes wrong.
      */
-    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumbnail, Integer noteId)
+    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumbnail, long noteId)
             throws Exception;
 
     /**

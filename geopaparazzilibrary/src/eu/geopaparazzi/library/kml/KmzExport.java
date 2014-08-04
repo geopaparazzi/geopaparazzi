@@ -17,15 +17,10 @@
  */
 package eu.geopaparazzi.library.kml;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -33,12 +28,10 @@ import java.util.zip.ZipOutputStream;
 
 import android.content.Context;
 
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IDefaultHelperClasses;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -123,20 +116,19 @@ public class KmzExport {
         /*
          * now add all images
          */
-        Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
+        Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
         IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
         for (KmlRepresenter kmlRepresenter : kmlRepresenters) {
             if (kmlRepresenter.hasImages()) {
-                List<Image> images = kmlRepresenter.getImages();
-                for (Image image : images) {
-                    String imageName = image.getName();
-                    long id = image.getId();
-
+                List<String> imageIds = kmlRepresenter.getImageIds();
+                for (String imageId : imageIds) {
+                    long id = Long.parseLong(imageId);
+                    Image image = imagesDbHelper.getImage(id);
                     byte[] imageData = imagesDbHelper.getImageData(id);
 
                     crc.reset();
                     crc.update(imageData);
-                    ZipEntry imageEntry = new ZipEntry(imageName);
+                    ZipEntry imageEntry = new ZipEntry(image.getName());
                     imageEntry.setMethod(ZipEntry.STORED);
                     imageEntry.setCompressedSize(imageData.length);
                     imageEntry.setSize(imageData.length);

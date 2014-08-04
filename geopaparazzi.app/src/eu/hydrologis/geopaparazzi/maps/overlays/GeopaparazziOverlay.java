@@ -1133,10 +1133,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (context instanceof MapsActivity) {
                     MapsActivity mapActivity = (MapsActivity) context;
 
-                    float n = (float) (lat + 0.00001f);
-                    float s = (float) (lat - 0.00001f);
-                    float w = (float) (lon - 0.00001f);
-                    float e = (float) (lon + 0.00001f);
+                    float n = lat + LibraryConstants.PICKRADIUS;
+                    float s = lat - LibraryConstants.PICKRADIUS;
+                    float w = lon - LibraryConstants.PICKRADIUS;
+                    float e = lon + LibraryConstants.PICKRADIUS;
 
                     try {
                         List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
@@ -1148,11 +1148,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 String name = note.getName();
                                 double altim = note.getAltim();
                                 Intent formIntent = new Intent(context, FormActivity.class);
+                                formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
                                 formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
                                 formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
                                 mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                                 doInfo = false;
                             }

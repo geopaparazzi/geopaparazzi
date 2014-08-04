@@ -204,7 +204,7 @@ public class ExportActivity extends Activity {
                     /*
                      * add pictures
                      */
-                    List<Image> imagesList = DaoImages.getImagesList(false);
+                    List<Image> imagesList = DaoImages.getImagesList(false, true);
                     for( Image image : imagesList ) {
                         kmlRepresenterList.add(image);
                     }

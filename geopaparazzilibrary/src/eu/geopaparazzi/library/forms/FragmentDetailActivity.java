@@ -27,12 +27,14 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * Fragment detail view activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FragmentDetailActivity extends FragmentActivity {
@@ -41,9 +43,10 @@ public class FragmentDetailActivity extends FragmentActivity {
     private JSONObject sectionObject;
     private double longitude;
     private double latitude;
+    private long noteId;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // don't permit rotation
@@ -60,12 +63,13 @@ public class FragmentDetailActivity extends FragmentActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
+            noteId = extras.getLong(LibraryConstants.DATABASE_ID);
             formName = extras.getString(FormUtilities.ATTR_FORMNAME);
             sectionObjectString = extras.getString(FormUtilities.ATTR_SECTIONOBJECTSTR);
             try {
                 sectionObject = new JSONObject(sectionObjectString);
             } catch (JSONException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
             }
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
@@ -109,22 +113,26 @@ public class FragmentDetailActivity extends FragmentActivity {
         return longitude;
     }
 
-    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+    public long getNoteId() {
+        return noteId;
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button, in order to avoid losing info
-        switch( keyCode ) {
-        case KeyEvent.KEYCODE_BACK:
-            FragmentDetail currentFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
-            if (currentFragment != null) {
-                try {
-                    currentFragment.storeFormItems(false);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                FragmentDetail currentFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
+                if (currentFragment != null) {
+                    try {
+                        currentFragment.storeFormItems(false);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                    }
+                    JSONObject returnSectionObject = currentFragment.getSectionObject();
+                    Intent intent = getIntent();
+                    intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, returnSectionObject.toString());
+                    setResult(Activity.RESULT_OK, intent);
                 }
-                JSONObject returnSectionObject = currentFragment.getSectionObject();
-                Intent intent = getIntent();
-                intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, returnSectionObject.toString());
-                setResult(Activity.RESULT_OK, intent);
-            }
         }
         return super.onKeyDown(keyCode, event);
     }

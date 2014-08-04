@@ -183,7 +183,7 @@ public class Bookmark implements KmlRepresenter {
     }
 
     @Override
-    public List<Image> getImages() {
+    public List<String> getImageIds() {
         return Collections.emptyList();
     }
 
