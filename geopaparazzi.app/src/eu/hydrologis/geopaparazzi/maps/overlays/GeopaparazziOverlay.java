@@ -445,7 +445,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          */
         int numberOfWays = waySize();
         for (int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex) {
-            if (isInterrupted() || sizeHasChanged()) {
+            if (isInterrupted() || sizeHasChanged() || needRedraw()) {
                 // stop working
                 return;
             }
@@ -487,7 +487,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         int numberOfItems = itemSize();
         for (int itemIndex = 0; itemIndex < numberOfItems; ++itemIndex) {
-            if (isInterrupted() || sizeHasChanged()) {
+            if (isInterrupted() || sizeHasChanged() || needRedraw()) {
                 // stop working
                 return;
             }
@@ -602,7 +602,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          * GPS position
          */
 
-        if (isInterrupted() || sizeHasChanged()) {
+        if (isInterrupted() || sizeHasChanged() || needRedraw()) {
             // stop working
             return;
         }
@@ -724,7 +724,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
              */
             for (int i = 0; i < spatialVectorTables.size(); i++) {
                 SpatialVectorTable spatialTable = spatialVectorTables.get(i);
-                if (isInterrupted() || sizeHasChanged()) {
+                if (isInterrupted() || sizeHasChanged()  || needRedraw()) {
                     // stop working
                     return;
                 }
@@ -790,14 +790,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                         } else {
                                             drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
                                         }
-                                        if (isInterrupted() || sizeHasChanged()) { // stop working
+                                        if (isInterrupted() || sizeHasChanged() || needRedraw()) { // stop working
                                             return;
                                         }
                                     }
                                 }
                             } else {
                                 drawGeometry(geom, canvas, shapeWriter, fill, stroke);
-                                if (isInterrupted() || sizeHasChanged()) { // stop working
+                                if (isInterrupted() || sizeHasChanged() || needRedraw()) { // stop working
                                     return;
                                 }
                             }
@@ -815,7 +815,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
              * draw labels
              */
             for (SpatialVectorTable spatialTable : spatialVectorTables) {
-                if (isInterrupted() || sizeHasChanged()) {
+                if (isInterrupted() || sizeHasChanged() || needRedraw()) {
                     // stop working
                     return;
                 }
@@ -883,7 +883,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
                                         drawLabel(pointTransformer, geom_collect, labelText, canvas, dbTextPaint,
                                                 dbTextHaloPaint, delta, linesWriter);
-                                        if (isInterrupted() || sizeHasChanged()) { // stop working
+                                        if (isInterrupted() || sizeHasChanged() || needRedraw()) { // stop working
                                             return;
                                         }
                                     }
@@ -891,7 +891,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             } else {
                                 drawLabel(pointTransformer, geom, labelText, canvas, dbTextPaint, dbTextHaloPaint, delta,
                                         linesWriter);
-                                if (isInterrupted() || sizeHasChanged()) { // stop working
+                                if (isInterrupted() || sizeHasChanged() || needRedraw()) { // stop working
                                     return;
                                 }
                             }
