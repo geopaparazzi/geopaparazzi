@@ -128,8 +128,9 @@ public class GMapView extends View implements GView {
             mainLayout.addView(imageView);
         }
         if (image.exists() && imageView != null) {
-            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-            imageView.setImageBitmap(thumbnail);
+            // FIXME
+//            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+//            imageView.setImageBitmap(thumbnail);
         }
 
     }
@@ -142,8 +143,9 @@ public class GMapView extends View implements GView {
             e.printStackTrace();
         }
         if (image.exists() && imageView != null) {
-            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-            imageView.setImageBitmap(thumbnail);
+            // FIXME
+//            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+//            imageView.setImageBitmap(thumbnail);
         }
     }
 

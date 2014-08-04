@@ -306,12 +306,12 @@ public class MapTagsActivity extends Activity {
                         double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                         double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                        byte[] imageFromPath = ImageUtilities.getImageFromPath(absoluteImagePath, 10);
 
+                        byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(absoluteImagePath, 10);
 
                         java.util.Date currentDate = new java.util.Date();
                         String name = ImageUtilities.getSketchImageName(currentDate);
-                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageFromPath, null);
+                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageAndThumbnailArray[0], imageAndThumbnailArray[1], null);
 
                         // delete the file after insertion in db
                         imgFile.delete();

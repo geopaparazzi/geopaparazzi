@@ -22,7 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -36,6 +36,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  */
 public class ImageUtilities {
     public static final int MAXBLOBSIZE = 1900000;
+    public static final int THUMBNAILWIDTH = 100;
 
     public static String getSketchImageName(Date date) {
         if (date == null)
@@ -96,6 +97,51 @@ public class ImageUtilities {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
         return stream.toByteArray();
+    }
+
+    /**
+     * Get an image and thumbnail from a file by its path.
+     *
+     * @param imageFilePath the image path.
+     * @param tryCount      times to try in 300 millis loop, in case the image is
+     *                      not yet on disk. (ugly but no other way right now)
+     * @return the image and thumbnail data or null.
+     */
+    public static byte[][] getImageAndThumbnailFromPath(String imageFilePath, int tryCount) {
+        byte[][] imageAndThumbNail = new byte[2][];
+
+        // first read full image and check existence
+        Bitmap image = BitmapFactory.decodeFile(imageFilePath);
+        int count = 0;
+        while (image == null && ++count < tryCount) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            image = BitmapFactory.decodeFile(imageFilePath);
+        }
+        if (image == null) return null;
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        // define sampling for thumbnail
+        float sampleSizeF = (float) width / (float) THUMBNAILWIDTH;
+        float newHeight = height/sampleSizeF;
+        Bitmap thumbnail =  Bitmap.createScaledBitmap(image, THUMBNAILWIDTH, (int)newHeight, false);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byte[] imageBytes = stream.toByteArray();
+
+        stream = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byte[] thumbnailBytes = stream.toByteArray();
+
+        imageAndThumbNail[0] = imageBytes;
+        imageAndThumbNail[1] = thumbnailBytes;
+        return imageAndThumbNail;
     }
 
 

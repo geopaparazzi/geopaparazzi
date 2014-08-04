@@ -305,28 +305,6 @@ public class FileUtilities {
     }
 
     /**
-     * Read a bitmap, resampled to the supplied width.
-     *
-     * @param imageFile the image to read.
-     * @param newWidth the new width to which to sample.
-     * @return the read {@link Bitmap}.
-     */
-    public static Bitmap readScaledBitmap( File imageFile, int newWidth ) {
-        BitmapFactory.Options bounds = new BitmapFactory.Options();
-        bounds.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getAbsolutePath(), bounds);
-        int width = bounds.outWidth;
-
-        float sampleSizeF = (float) width / (float) newWidth;
-        int sampleSize = Math.round(sampleSizeF);
-        BitmapFactory.Options resample = new BitmapFactory.Options();
-        resample.inSampleSize = sampleSize;
-
-        Bitmap thumbnail = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), resample);
-        return thumbnail;
-    }
-
-    /**
      * Read files to byte array.
      *
      * @param file the file to read.

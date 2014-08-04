@@ -204,7 +204,8 @@ public class GSketchView extends View implements GView {
                     continue;
                 }
 
-                Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
+                // FIXME
+                Bitmap thumbnail =null;// FileUtilities.readScaledBitmap(image, 100);
                 ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
                 imageView.setPadding(5, 5, 5, 5);

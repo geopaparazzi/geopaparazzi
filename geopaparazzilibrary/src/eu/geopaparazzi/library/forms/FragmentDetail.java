@@ -62,6 +62,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
@@ -76,7 +77,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * The fragment detail view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FragmentDetail extends Fragment {
@@ -89,20 +90,20 @@ public class FragmentDetail extends Fragment {
     private JSONObject sectionObject;
 
     @Override
-    public void onCreate( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     @Override
-    public void onActivityCreated( Bundle savedInstanceState ) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
     }
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.details, container, false);
         LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
         try {
@@ -133,7 +134,7 @@ public class FragmentDetail extends Fragment {
                 JSONArray formItemsArray = TagsManager.getFormItems(formObject);
 
                 int length = formItemsArray.length();
-                for( int i = 0; i < length; i++ ) {
+                for (int i = 0; i < length; i++) {
                     JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
                     String key = "-"; //$NON-NLS-1$
@@ -211,7 +212,7 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addMultiSelectionView(activity, mainView, key, value, itemsArray,
                                 constraintDescription);
                     } else if (type.equals(TYPE_PICTURES)) {
-                        addedView = FormUtilities.addPictureView(activity, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addPictureView(this, requestCode, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_SKETCH)) {
                         addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
@@ -245,7 +246,7 @@ public class FragmentDetail extends Fragment {
         return view;
     }
 
-    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             GView gView = requestCodes2WidgetMap.get(requestCode);
@@ -259,12 +260,16 @@ public class FragmentDetail extends Fragment {
     public void onResume() {
         super.onResume();
 
-        for( int i = 0; i < requestCodes2WidgetMap.size(); i++ ) {
+        for (int i = 0; i < requestCodes2WidgetMap.size(); i++) {
             int key = requestCodes2WidgetMap.keyAt(i);
             // get the object by the key.
             GView view = requestCodes2WidgetMap.get(key);
             if (view instanceof GMapView) {
-                view.refresh(((GMapView) view).getContext());
+                try {
+                    view.refresh(((GMapView) view).getContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -278,24 +283,24 @@ public class FragmentDetail extends Fragment {
 
     /**
      * Setter for the form.
-     * 
+     *
      * @param selectedItemName form name.
-     * @param sectionObject section object.
+     * @param sectionObject    section object.
      */
-    public void setForm( String selectedItemName, JSONObject sectionObject ) {
+    public void setForm(String selectedItemName, JSONObject sectionObject) {
         this.selectedFormName = selectedItemName;
         this.sectionObject = sectionObject;
     }
 
     /**
      * Store the form items the widgets.
-     * 
+     *
      * @param doConstraintsCheck if <code>true</code>, a check on all constraints is performed.
      * @return <code>null</code>, if everything was saved properly, the key of the items
-     *              that didn't pass the constraint check.
-     * @throws Exception  if something goes wrong.
+     * that didn't pass the constraint check.
+     * @throws Exception if something goes wrong.
      */
-    public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
+    public String storeFormItems(boolean doConstraintsCheck) throws Exception {
         if (selectedFormName == null) {
             return null;
         }
@@ -303,7 +308,7 @@ public class FragmentDetail extends Fragment {
         JSONArray formItems = TagsManager.getFormItems(form4Name);
 
         // update the items
-        for( String key : keyList ) {
+        for (String key : keyList) {
             Constraints constraints = key2ConstraintsMap.get(key);
 
             GView view = key2WidgetMap.get(key);

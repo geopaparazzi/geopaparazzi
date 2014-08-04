@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -43,6 +45,10 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IDefaultHelperClasses;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.forms.FragmentDetail;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -57,12 +63,15 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  */
 public class GPictureView extends View implements GView {
 
+    public static final String IMAGE_ID_SEPARATOR = ";";
+    /**
+     * The ids of the pictures.
+     */
     private String _value;
 
     private List<String> addedImages = new ArrayList<String>();
 
     private LinearLayout imageLayout;
-    private File lastImageFile;
 
     /**
      * @param context  the context to use.
@@ -82,20 +91,21 @@ public class GPictureView extends View implements GView {
     }
 
     /**
-     * @param context               the context to use.
+     * @param fragmentDetail        the fragment detail  to use.
      * @param attrs                 attributes.
      * @param parentView            parent
      * @param key                   key
-     * @param value                 value
+     * @param value                 in case of pictures, the value are the ids of the image, semicolonseparated.
      * @param constraintDescription constraints
      */
-    public GPictureView(final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+    public GPictureView(final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
                         String constraintDescription) {
-        super(context, attrs);
+        super(fragmentDetail.getActivity(), attrs);
 
         _value = value;
 
-        LinearLayout textLayout = new LinearLayout(context);
+        final FragmentActivity activity = fragmentDetail.getActivity();
+        LinearLayout textLayout = new LinearLayout(activity);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -103,14 +113,14 @@ public class GPictureView extends View implements GView {
         textLayout.setOrientation(LinearLayout.VERTICAL);
         parentView.addView(textLayout);
 
-        TextView textView = new TextView(context);
+        TextView textView = new TextView(activity);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
-        final Button button = new Button(context);
+        final Button button = new Button(activity);
         button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.take_picture);
@@ -118,122 +128,102 @@ public class GPictureView extends View implements GView {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
-                // FIXME needs to be fixed
-                Date currentDate = new Date();
-                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                File applicationDir = null;
-                try {
-                    applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
-                } catch (Exception e) {
-                    GPLog.error(this, null, e);
-                }
-                lastImageFile = new File(applicationDir, "IMG_" + currentDatestring + ".jpg");
-
-                Intent cameraIntent = new Intent(context, CameraActivity.class);
-                cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, lastImageFile.getName());
+                String imageName = ImageUtilities.getCameraImageName(null);
+                Intent cameraIntent = new Intent(activity, CameraActivity.class);
+                cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageName);
                 if (gpsLocation != null) {
                     cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
                     cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
                     cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
                 }
-                context.startActivity(cameraIntent);
+                fragmentDetail.startActivityForResult(cameraIntent, requestCode);
             }
         });
 
-        ScrollView scrollView = new ScrollView(context);
+        ScrollView scrollView = new ScrollView(activity);
         ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
-        imageLayout = new LinearLayout(context);
+        imageLayout = new LinearLayout(activity);
         LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         imageLayout.setLayoutParams(imageLayoutParams);
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
         scrollView.addView(imageLayout);
 
-        ViewTreeObserver observer = imageLayout.getViewTreeObserver();
-        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                if (lastImageFile != null && lastImageFile.exists()) {
-                    String imagePath = lastImageFile.getAbsolutePath();
-                    _value = _value + ";" + imagePath;
-
-                    try {
-                        // THIS IS PLAIN UGLY
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    refresh(context);
-                    lastImageFile = null;
-                }
-                return true;
-            }
-        });
-
-        refresh(context);
+        try {
+            refresh(activity);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
     }
 
-    public void refresh(final Context context) {
+    public void refresh(final Context context) throws Exception {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
-            String[] imageSplit = _value.split(";");
+            String[] imageSplit = _value.split(IMAGE_ID_SEPARATOR);
             log("Handling images: " + _value);
 
-            for (String imageAbsolutePath : imageSplit) {
-                log("img: " + imageAbsolutePath);
+            Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
+            IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
-                if (imageAbsolutePath.length() == 0) {
+            for (String imageId : imageSplit) {
+                log("img: " + imageId);
+
+                if (imageId.length() == 0) {
                     continue;
                 }
-                if (addedImages.contains(imageAbsolutePath.trim())) {
+                long imageIdLong;
+                try {
+                    imageIdLong = Long.parseLong(imageId);
+                } catch (Exception e) {
+                    continue;
+                }
+                if (addedImages.contains(imageId.trim())) {
                     continue;
                 }
 
-                final File image = new File(imageAbsolutePath);
-                if (!image.exists()) {
-                    log("Img doesn't exist on disk....");
-                    continue;
-                }
+                byte[] imageThumbnail = imagesDbHelper.getImageThumbnail(imageIdLong);
+                Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
-                Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
                 ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        /*
-                         * open in markers to edit it
-                         */
-                        MarkersUtilities.launchOnImage(context, image);
-                        // Intent intent = new Intent();
-                        // intent.setAction(android.content.Intent.ACTION_VIEW);
-                        //                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                        // context.startActivity(intent);
-                    }
-                });
-                log("Creating thumb and adding it: " + imageAbsolutePath);
+//                imageView.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View v) {
+//                        /*
+//                         * open in markers to edit it
+//                         */
+//                        // FIXME
+//                        MarkersUtilities.launchOnImage(context, image);
+//                        // Intent intent = new Intent();
+//                        // intent.setAction(android.content.Intent.ACTION_VIEW);
+//                        //                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+//                        // context.startActivity(intent);
+//                    }
+//                });
+                log("Creating thumb and adding it: " + imageId);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
-                addedImages.add(imageAbsolutePath);
+                addedImages.add(imageId);
             }
 
             if (addedImages.size() > 0) {
                 StringBuilder sb = new StringBuilder();
                 for (String imagePath : addedImages) {
-                    sb.append(";").append(imagePath);
+                    sb.append(IMAGE_ID_SEPARATOR).append(imagePath);
                 }
                 _value = sb.substring(1);
 
-                log("New img paths: " + _value);
+                log("New img ids: " + _value);
 
             }
             log("Exiting refresh....");
@@ -252,7 +242,16 @@ public class GPictureView extends View implements GView {
 
     @Override
     public void setOnActivityResult(Intent data) {
-        // ignore
+        long imageId = data.getLongExtra(LibraryConstants.DATABASE_ID, -1);
+        if (imageId == -1) {
+            return;
+        }
+        _value = _value + IMAGE_ID_SEPARATOR + imageId;
+        try {
+            refresh(getContext());
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
     }
-
 }
+

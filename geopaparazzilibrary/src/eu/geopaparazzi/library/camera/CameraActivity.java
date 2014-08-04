@@ -141,14 +141,15 @@ public class CameraActivity extends Activity {
             if (imageFile.exists()) {
 
                 try {
-                    byte[] imageDataArray = ImageUtilities.getImageFromPath(imageFilePath, 5);
+                    byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
 
                     Class<?> logHelper = Class.forName(IDefaultHelperClasses.IMAGE_HELPER_CLASS);
                     IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
                     SensorsManager sensorsManager = SensorsManager.getInstance(this);
                     double azimuth = sensorsManager.getPictureAzimuth();
-                    long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(), imageDataArray, null);
+                    long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
+                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], null);
                     intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
                     intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
 
