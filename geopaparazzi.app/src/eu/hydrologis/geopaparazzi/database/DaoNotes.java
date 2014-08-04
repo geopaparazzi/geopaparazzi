@@ -29,9 +29,11 @@ import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -318,13 +320,13 @@ public class DaoNotes {
         while (!c.isAfterLast()) {
             double lon = c.getDouble(0);
             double lat = c.getDouble(1);
-            String date = c.getString(2);
+            long date = c.getLong(2);
             String text = c.getString(3);
 
             StringBuilder description = new StringBuilder();
             description.append(text);
             description.append("\n\n");
-            description.append(date);
+            description.append(TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(date)));
 
             NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
             notesList.add(item1);

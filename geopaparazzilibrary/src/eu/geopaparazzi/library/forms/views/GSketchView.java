@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -41,12 +42,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.forms.FragmentDetail;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A custom Sketch view.
@@ -55,12 +62,12 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  */
 public class GSketchView extends View implements GView {
 
+    private long noteId;
     private String _value;
 
     private List<String> addedImages = new ArrayList<String>();
 
     private LinearLayout imageLayout;
-    private File lastImageFile;
 
     /**
      * @param context  the context to use.
@@ -80,20 +87,24 @@ public class GSketchView extends View implements GView {
     }
 
     /**
-     * @param context               the context to use.
+     * @param noteId                the id of the note this image belows to.
+     * @param fragmentDetail        the fragment detail  to use.
      * @param attrs                 attributes.
+     * @param requestCode           the code for starting the activity with result.
      * @param parentView            parent
      * @param key                   key
      * @param value                 value
      * @param constraintDescription constraints
      */
-    public GSketchView(final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+    public GSketchView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
                        String constraintDescription) {
-        super(context, attrs);
+        super(fragmentDetail.getActivity(), attrs);
+        this.noteId = noteId;
 
         _value = value;
 
-        LinearLayout textLayout = new LinearLayout(context);
+        final FragmentActivity activity = fragmentDetail.getActivity();
+        LinearLayout textLayout = new LinearLayout(activity);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -101,14 +112,14 @@ public class GSketchView extends View implements GView {
         textLayout.setOrientation(LinearLayout.VERTICAL);
         parentView.addView(textLayout);
 
-        TextView textView = new TextView(context);
+        TextView textView = new TextView(activity);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
-        final Button button = new Button(context);
+        final Button button = new Button(activity);
         button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.draw_sketch);
@@ -117,38 +128,31 @@ public class GSketchView extends View implements GView {
         button.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
-                // FIXME needs to be fixed
-                Date currentDate = new Date();
-                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                File applicationDir = null;
                 try {
-                    applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                    double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+
+                    Date currentDate = new Date();
+                    String sketchImageName = ImageUtilities.getSketchImageName(currentDate);
+
+                    File tempDir = ResourcesManager.getInstance(getContext()).getTempDir();
+                    File sketchFile = new File(tempDir, sketchImageName);
+                    /*
+                     * open markers for new sketch
+                     */
+                    MarkersUtilities.launch(fragmentDetail, sketchFile, gpsLocation, requestCode);
                 } catch (Exception e) {
-                    GPLog.error(this, null, e);
+                    e.printStackTrace();
                 }
-                lastImageFile = new File(applicationDir, "SKETCH_" + currentDatestring + ".png");
-
-                // the old way
-                // Intent sketchIntent = new Intent(context, DrawingActivity.class);
-                // String imagePath = lastImageFile.getAbsolutePath();
-                // sketchIntent.putExtra(LibraryConstants.PREFS_KEY_PATH, imagePath);
-                // context.startActivity(sketchIntent);
-
-                /*
-                 * open markers for new sketch
-                 */
-                MarkersUtilities.launch(context, lastImageFile, gpsLocation);
             }
         });
 
-        ScrollView scrollView = new ScrollView(context);
+        ScrollView scrollView = new ScrollView(activity);
         ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT, 150);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
-        imageLayout = new LinearLayout(context);
+        imageLayout = new LinearLayout(activity);
         LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT);
         imageLayout.setLayoutParams(imageLayoutParams);
@@ -157,73 +161,60 @@ public class GSketchView extends View implements GView {
         scrollView.addView(imageLayout);
         // scrollView.setFillViewport(true);
 
-        ViewTreeObserver observer = imageLayout.getViewTreeObserver();
-        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                if (lastImageFile != null && lastImageFile.exists()) {
-                    String imagePath = lastImageFile.getAbsolutePath();
-                    _value = _value + ";" + imagePath;
-
-                    try {
-                        // THIS IS PLAIN UGLY
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    refresh(context);
-                    lastImageFile = null;
-                }
-                return true;
-            }
-        });
-
-        refresh(context);
+        try {
+            refresh(activity);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
     }
 
-    public void refresh(final Context context) {
+    public void refresh(final Context context) throws Exception {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
             String[] imageSplit = _value.split(";");
             log("Handling images: " + _value);
 
-            for (String imageAbsolutePath : imageSplit) {
-                log("img: " + imageAbsolutePath);
 
-                if (imageAbsolutePath.length() == 0) {
+            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
+
+            for (String imageId : imageSplit) {
+                log("img: " + imageId);
+
+                if (imageId.length() == 0) {
+                    continue;
+                }
+                long imageIdLong;
+                try {
+                    imageIdLong = Long.parseLong(imageId);
+                } catch (Exception e) {
+                    continue;
+                }
+                if (addedImages.contains(imageId.trim())) {
                     continue;
                 }
 
-                if (addedImages.contains(imageAbsolutePath.trim())) {
-                    continue;
-                }
+                byte[] imageThumbnail = imagesDbHelper.getImageThumbnail(imageIdLong);
+                Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
-                final File image = new File(imageAbsolutePath);
-                if (!image.exists()) {
-                    log("Img doesn't exist on disk....");
-                    continue;
-                }
-
-                // FIXME
-                Bitmap thumbnail =null;// FileUtilities.readScaledBitmap(image, 100);
                 ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        /*
-                         * open in markers to edit it
-                         */
-                        MarkersUtilities.launchOnImage(context, image);
-                    }
-                });
-                log("Creating thumb and adding it: " + imageAbsolutePath);
+//                imageView.setOnClickListener(new View.OnClickListener() {
+//                    public void onClick(View v) {
+//                        /*
+//                         * open in markers to edit it
+//                         */
+//                        MarkersUtilities.launchOnImage(context, image);
+//                    }
+//                });
+                log("Creating thumb and adding it: " + imageId);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
 
-                addedImages.add(imageAbsolutePath);
+                addedImages.add(imageId);
             }
 
             if (addedImages.size() > 0) {
@@ -252,7 +243,40 @@ public class GSketchView extends View implements GView {
 
     @Override
     public void setOnActivityResult(Intent data) {
-        // ignore
+        String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+        if (absoluteImagePath != null) {
+            File imgFile = new File(absoluteImagePath);
+            if (!imgFile.exists()) {
+                return;
+            }
+            try {
+                IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+
+
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+
+                byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(absoluteImagePath, 10);
+
+                java.util.Date currentDate = new java.util.Date();
+                String name = ImageUtilities.getSketchImageName(currentDate);
+                long imageId = imageHelper.addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
+
+                // delete the file after insertion in db
+                imgFile.delete();
+
+
+                _value = _value + GPictureView.IMAGE_ID_SEPARATOR + imageId;
+                try {
+                    refresh(getContext());
+                } catch (Exception e) {
+                    GPLog.error(this, null, e);
+                }
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
     }
 
 }

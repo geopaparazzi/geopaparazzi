@@ -401,6 +401,7 @@ public class FormUtilities {
      *
      * @param noteId                the note id this form belogs to.
      * @param fragmentDetail        the fragmentDetail.
+     * @param requestCode           the code to use for activity return.
      * @param mainView              the main view to which to add the new widget to.
      * @param key                   the key identifying the widget.
      * @param value                 the value to put in the widget.
@@ -416,16 +417,18 @@ public class FormUtilities {
     /**
      * Adds a {@link GSketchView} to the supplied mainView.
      *
-     * @param context               the context.
+     * @param noteId                the note id this form belogs to.
+     * @param fragmentDetail        the fragmentDetail.
+     * @param requestCode           the code to use for activity return.
      * @param mainView              the main view to which to add the new widget to.
      * @param key                   the key identifying the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @return the added view.
      */
-    public static GView addSketchView(final Context context, LinearLayout mainView, String key, String value,
+    public static GView addSketchView(long noteId, FragmentDetail fragmentDetail, int requestCode, LinearLayout mainView, String key, String value,
                                       String constraintDescription) {
-        GSketchView sketch = new GSketchView(context, null, mainView, key, value, constraintDescription);
+        GSketchView sketch = new GSketchView(noteId, fragmentDetail, null, requestCode, mainView, key, value, constraintDescription);
         return sketch;
     }
 

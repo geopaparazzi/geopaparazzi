@@ -86,6 +86,7 @@ public class GPictureView extends View implements GView {
      * @param noteId                the id of the note this image belows to.
      * @param fragmentDetail        the fragment detail  to use.
      * @param attrs                 attributes.
+     * @param requestCode           the code for starting the activity with result.
      * @param parentView            parent
      * @param key                   key
      * @param value                 in case of pictures, the value are the ids of the image, semicolonseparated.

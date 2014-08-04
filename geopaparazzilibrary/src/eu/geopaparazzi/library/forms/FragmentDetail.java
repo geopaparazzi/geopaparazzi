@@ -121,7 +121,7 @@ public class FragmentDetail extends Fragment {
                         FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
                         selectedFormName = fragmentDetailActivity.getFormName();
                         sectionObject = fragmentDetailActivity.getSectionObject();
-                        noteId= fragmentDetailActivity.getNoteId();
+                        noteId = fragmentDetailActivity.getNoteId();
                     }
                 }
             }
@@ -217,7 +217,7 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_PICTURES)) {
                         addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_SKETCH)) {
-                        addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value.length() <= 0) {
                             File tempDir = ResourcesManager.getInstance(activity).getTempDir();
