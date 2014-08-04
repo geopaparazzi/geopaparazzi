@@ -440,7 +440,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             if (DataManager.getInstance().areImagesVisible()) {
                 Drawable imageMarker = getResources().getDrawable(R.drawable.photo);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
-                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker);
+                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 dataOverlay.addItems(imagesOverlaysList);
             }
 

@@ -64,7 +64,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
@@ -89,6 +91,8 @@ public class FragmentDetail extends Fragment {
     private String selectedFormName;
     private JSONObject sectionObject;
     private long noteId = -1;
+    private double longitude;
+    private double latitude;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +119,8 @@ public class FragmentDetail extends Fragment {
                     selectedFormName = listFragment.getSelectedItemName();
                     sectionObject = listFragment.getSectionObject();
                     noteId = listFragment.getNoteId();
+                    longitude = listFragment.getLongitude();
+                    latitude = listFragment.getLatitude();
                 } else {
                     if (activity instanceof FragmentDetailActivity) {
                         // case of portrait mode
@@ -122,6 +128,8 @@ public class FragmentDetail extends Fragment {
                         selectedFormName = fragmentDetailActivity.getFormName();
                         sectionObject = fragmentDetailActivity.getSectionObject();
                         noteId = fragmentDetailActivity.getNoteId();
+                        longitude = fragmentDetailActivity.getLongitude();
+                        latitude = fragmentDetailActivity.getLatitude();
                     }
                 }
             }
@@ -220,14 +228,17 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value.length() <= 0) {
+                            // need to read image
                             File tempDir = ResourcesManager.getInstance(activity).getTempDir();
                             File tmpImage = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
-                                // FIXME needs to be fixed
-                                Date currentDate = new Date();
-                                File newImageFile = new File(tempDir, ImageUtilities.getMapImageName(currentDate));
-                                FileUtilities.copyFile(tmpImage, newImageFile);
-                                value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
+                                byte[][] imageAndThumbnailFromPath = ImageUtilities.getImageAndThumbnailFromPath(tmpImage.getAbsolutePath(), 1);
+                                Date date = new Date();
+                                String mapImageName = ImageUtilities.getMapImageName(date);
+
+                                IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+                                long imageId = imageHelper.addImage(longitude, latitude, -1.0, -1.0, date.getTime(), mapImageName, imageAndThumbnailFromPath[0], imageAndThumbnailFromPath[1], noteId);
+                                value = "" + imageId;
                             }
                         }
                         addedView = FormUtilities.addMapView(activity, mainView, key, value, constraintDescription);

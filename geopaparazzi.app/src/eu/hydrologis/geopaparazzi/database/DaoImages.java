@@ -579,10 +579,13 @@ public class DaoImages implements IImagesDbHelper {
      * Get all image overlays.
      *
      * @param marker the marker to use.
+     * @param onlyStandalone if true, only pure image notes are returned.
+     *                       One example of non pure image notes is the image
+     *                       that belongs to a form based note.
      * @return the list of {@link OverlayItem}s.
      * @throws IOException if something goes wrong.
      */
-    public static List<OverlayItem> getImagesOverlayList(Drawable marker) throws IOException {
+    public static List<OverlayItem> getImagesOverlayList(Drawable marker, boolean onlyStandalone) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<OverlayItem> images = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {//
@@ -592,7 +595,11 @@ public class DaoImages implements IImagesDbHelper {
                 ImageTableFields.COLUMN_TEXT.getFieldName()//
         };
         String strSortOrder = "_id ASC";
-        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, null, null, null, null, strSortOrder);
+        String whereString = null;
+        if (onlyStandalone) {
+            whereString = ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
+        }
+        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
         c.moveToFirst();
         while (!c.isAfterLast()) {
             double lon = c.getDouble(0);
