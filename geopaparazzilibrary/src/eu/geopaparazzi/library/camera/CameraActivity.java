@@ -46,10 +46,10 @@ import eu.geopaparazzi.library.util.Utilities;
  * The taking pictures activity.
  * <p/>
  * <p>
- * The image is created in a <b>media</b> folder inside the
+ * The image is created in a <b>tmp</b> folder inside the
  * application folder. If the intent bundle contains a
  * {@link LibraryConstants#PREFS_KEY_CAMERA_IMAGESAVEFOLDER}
- * value, that one is used as relative path inside the application folder.
+ * value, that one is used as folder.
  * </p>
  * <p>
  * The bundle is supposed to contain the gps position available through the keys:
@@ -58,8 +58,8 @@ import eu.geopaparazzi.library.util.Utilities;
  * </p>
  * <p/>
  * <p>
- * The activity returns the relative path to the generated image, that can be
- * retrieved through the {@link LibraryConstants#PREFS_KEY_PATH} key from
+ * The activity returns the id of the image inserted in the database, that can be
+ * retrieved through the {@link LibraryConstants#DATABASE_ID} key from
  * the bundle.
  * </p>
  *

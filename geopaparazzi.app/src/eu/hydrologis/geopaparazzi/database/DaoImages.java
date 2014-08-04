@@ -35,9 +35,9 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.geopaparazzi.library.database.Image;
-import jsqlite.*;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 
@@ -121,13 +121,14 @@ public class DaoImages implements IImagesDbHelper {
         sB.append(" (");
         sB.append(ImageDataTableFields.COLUMN_ID.getFieldName());
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sB.append(ImageDataTableFields.COLUMN_IMAGE.getFieldName()).append(" BLOB NOT NULL");
+        sB.append(ImageDataTableFields.COLUMN_IMAGE.getFieldName()).append(" BLOB NOT NULL,");
+        sB.append(ImageDataTableFields.COLUMN_THUMBNAIL.getFieldName()).append(" BLOB NOT NULL");
         sB.append(");");
         String CREATE_TABLE_IMAGEDATA = sB.toString();
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
-            Log.i("DAOIMAGES", "Create the images table.");
+            Log.i("DAOIMAGES", "Create the images tables.");
 
         sqliteDatabase.beginTransaction();
         try {
@@ -142,14 +143,14 @@ public class DaoImages implements IImagesDbHelper {
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e("DAOIMAGES", e.getLocalizedMessage(), e);
-            throw new IOException(e.getLocalizedMessage());
+            throw new IOException(e);
         } finally {
             sqliteDatabase.endTransaction();
         }
     }
 
 
-    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, Integer noteId)
+    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumb, Integer noteId)
             throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -157,6 +158,7 @@ public class DaoImages implements IImagesDbHelper {
             // first insert image data
             ContentValues imageDataValues = new ContentValues();
             imageDataValues.put(ImageDataTableFields.COLUMN_IMAGE.getFieldName(), image);
+            imageDataValues.put(ImageDataTableFields.COLUMN_THUMBNAIL.getFieldName(), thumb);
             long imageDataId = sqliteDatabase.insertOrThrow(TABLE_IMAGE_DATA, null, imageDataValues);
 
             // then insert the image properties and reference to the image itself
@@ -442,68 +444,124 @@ public class DaoImages implements IImagesDbHelper {
         c.close();
 
         if (imageDataId != -1) {
-            asColumnsToReturn = new String[]{ //
-                    ImageDataTableFields.COLUMN_IMAGE.getFieldName()//
-            };
-            whereStr = ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
-            c = sqliteDatabase.query(TABLE_IMAGE_DATA, asColumnsToReturn, whereStr, null, null, null, null);
-            byte[] imageData = null;
-            try {
-                c.moveToFirst();
-                imageData = null;
-                if (!c.isAfterLast()) {
-                    imageData = c.getBlob(0);
-                }
-            } catch (Exception ex) {
-                if (ex.getLocalizedMessage().contains("Couldn't read row")) {
-                    String sizeQuery = "SELECT " + ImageDataTableFields.COLUMN_ID.getFieldName() +//
-                            ", length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") " +//
-                            "FROM " + TABLE_IMAGE_DATA +//
-                            " WHERE " + whereStr;
-                    //"length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") > 1000000";
-                    Cursor sizeCursor = sqliteDatabase.rawQuery(sizeQuery, null);
-                    sizeCursor.moveToFirst();
-                    long blobSize = 0;
-                    if (!sizeCursor.isAfterLast()) {
-                        blobSize = sizeCursor.getLong(1);
-                    }
-                    sizeCursor.close();
-
-                    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                    int maxBlobSize = 1000000;
-                    if (blobSize > maxBlobSize) {
-                        for (long i = 1; i <= blobSize; i = i + maxBlobSize) {
-                            long from = i;
-                            long size = maxBlobSize;
-                            if (from + size > blobSize) {
-                                size = blobSize - from + 1;
-                            }
-                            String tmpQuery = "SELECT substr(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + //
-                                    "," + from + ", " + size + ") FROM " + TABLE_IMAGE_DATA + " WHERE " + whereStr;
-//                        if (GPLog.LOG_HEAVY)
-                            GPLog.addLogEntry(this, "ISSUE QUERY: " + tmpQuery);
-                            Cursor imageCunchCursor = sqliteDatabase.rawQuery(tmpQuery, null);
-                            imageCunchCursor.moveToFirst();
-                            if (!imageCunchCursor.isAfterLast()) {
-                                byte[] blobData = imageCunchCursor.getBlob(0);
-                                bout.write(blobData);
-                            }
-                            imageCunchCursor.close();
-                        }
-                        imageData = bout.toByteArray();
-                        bout.close();
-                    }
-                } else {
-                    GPLog.error(this, null, ex);
-                }
-
-            } finally {
-                c.close();
-            }
+            byte[] imageData = getImageDataById(imageDataId, sqliteDatabase);
             return imageData;
         }
 
         return null;
+    }
+
+    public byte[] getImageDataById(long imageDataId, SQLiteDatabase sqliteDatabase) throws IOException {
+        if (sqliteDatabase == null) {
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        }
+        String[] asColumnsToReturn;
+        String whereStr;
+        Cursor c;
+        asColumnsToReturn = new String[]{ //
+                ImageDataTableFields.COLUMN_IMAGE.getFieldName()//
+        };
+        whereStr = ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
+        c = sqliteDatabase.query(TABLE_IMAGE_DATA, asColumnsToReturn, whereStr, null, null, null, null);
+        byte[] imageData = null;
+        try {
+            c.moveToFirst();
+            imageData = null;
+            if (!c.isAfterLast()) {
+                imageData = c.getBlob(0);
+            }
+        } catch (Exception ex) {
+            if (ex.getLocalizedMessage().contains("Couldn't read row")) {
+                String sizeQuery = "SELECT " + ImageDataTableFields.COLUMN_ID.getFieldName() +//
+                        ", length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") " +//
+                        "FROM " + TABLE_IMAGE_DATA +//
+                        " WHERE " + whereStr;
+                //"length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") > 1000000";
+                Cursor sizeCursor = sqliteDatabase.rawQuery(sizeQuery, null);
+                sizeCursor.moveToFirst();
+                long blobSize = 0;
+                if (!sizeCursor.isAfterLast()) {
+                    blobSize = sizeCursor.getLong(1);
+                }
+                sizeCursor.close();
+
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
+                int maxBlobSize = ImageUtilities.MAXBLOBSIZE;
+                if (blobSize > maxBlobSize) {
+                    for (long i = 1; i <= blobSize; i = i + maxBlobSize) {
+                        long from = i;
+                        long size = maxBlobSize;
+                        if (from + size > blobSize) {
+                            size = blobSize - from + 1;
+                        }
+                        String tmpQuery = "SELECT substr(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + //
+                                "," + from + ", " + size + ") FROM " + TABLE_IMAGE_DATA + " WHERE " + whereStr;
+                        if (GPLog.LOG_HEAVY)
+                            GPLog.addLogEntry(this, "ISSUE QUERY: " + tmpQuery);
+                        Cursor imageCunchCursor = sqliteDatabase.rawQuery(tmpQuery, null);
+                        imageCunchCursor.moveToFirst();
+                        if (!imageCunchCursor.isAfterLast()) {
+                            byte[] blobData = imageCunchCursor.getBlob(0);
+                            bout.write(blobData);
+                        }
+                        imageCunchCursor.close();
+                    }
+                    imageData = bout.toByteArray();
+                    bout.close();
+                }
+            } else {
+                GPLog.error(this, null, ex);
+            }
+
+        } finally {
+            c.close();
+        }
+        return imageData;
+    }
+
+
+    public byte[] getImageThumbnail(long imageId) throws Exception {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        String[] asColumnsToReturn = { //
+                ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()//
+        };
+        String whereStr = ImageTableFields.COLUMN_ID.getFieldName() + " = " + imageId;
+        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereStr, null, null, null, null);
+        c.moveToFirst();
+        long imageDataId = -1;
+        if (!c.isAfterLast()) {
+            imageDataId = c.getLong(0);
+        }
+        c.close();
+
+        if (imageDataId != -1) {
+            byte[] imageData = getImageThumbnailById(sqliteDatabase, imageDataId);
+            return imageData;
+        }
+
+        return null;
+    }
+
+    public byte[] getImageThumbnailById(SQLiteDatabase sqliteDatabase, long imageDataId) throws Exception {
+        String[] asColumnsToReturn;
+        String whereStr;
+        asColumnsToReturn = new String[]{ //
+                ImageDataTableFields.COLUMN_THUMBNAIL.getFieldName()//
+        };
+        whereStr = ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
+        Cursor c = sqliteDatabase.query(TABLE_IMAGE_DATA, asColumnsToReturn, whereStr, null, null, null, null);
+        byte[] imageData = null;
+        try {
+            c.moveToFirst();
+            imageData = null;
+            if (!c.isAfterLast()) {
+                imageData = c.getBlob(0);
+            }
+        } finally {
+            c.close();
+        }
+        return imageData;
     }
 
     /**

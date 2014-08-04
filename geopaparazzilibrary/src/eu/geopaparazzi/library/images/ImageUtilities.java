@@ -35,6 +35,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ImageUtilities {
+    public static final int MAXBLOBSIZE = 1900000;
 
     public static String getSketchImageName(Date date) {
         if (date == null)

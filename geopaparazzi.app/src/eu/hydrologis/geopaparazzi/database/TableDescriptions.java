@@ -235,7 +235,11 @@ public class TableDescriptions {
         /**
          * The image data.
          */
-        COLUMN_IMAGE("imagedata", byte[].class);
+        COLUMN_IMAGE("data", byte[].class),
+        /**
+         * The image thumbnail data.
+         */
+        COLUMN_THUMBNAIL("thumbnail", byte[].class);
 
         private String fieldName;
         private Class fieldClass;

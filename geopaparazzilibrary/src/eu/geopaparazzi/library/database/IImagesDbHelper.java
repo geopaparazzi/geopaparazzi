@@ -38,21 +38,22 @@ public interface IImagesDbHelper {
      * @param timestamp the timestamp
      * @param text      a text
      * @param image     the image data.
+     * @param thumbnail a scaled image for quick extraction and preview.
      * @param noteId    an optional note id, to which it is connected.
      * @return the inserted image record id.
      * @throws IOException if something goes wrong.
      */
-    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, Integer noteId)
-            throws IOException;
+    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumbnail, Integer noteId)
+            throws Exception;
 
     /**
-     * Get an image from the db.
+     * Get an image from the db by its id..
      *
      * @param imageId the id of the image to get.
      * @return the image or null.
      * @throws IOException if something goes wrong.
      */
-    public Image getImage(long imageId) throws IOException;
+    public Image getImage(long imageId) throws Exception;
 
     /**
      * Get image data by image id.
@@ -61,5 +62,34 @@ public interface IImagesDbHelper {
      * @return the image data.
      * @throws IOException if something goes wrong.
      */
-    public byte[] getImageData(long imageId) throws IOException;
+    public byte[] getImageData(long imageId) throws Exception;
+
+    /**
+     * Get an image from the db by its <b>data</b> id.
+     *
+     * @param imageDataId the image data id.
+     * @param sqliteDatabase the optional db to use. If called from #getImageData, this should not be null.
+     * @return the image data.
+     * @throws IOException
+     */
+    public byte[] getImageDataById(long imageDataId, SQLiteDatabase sqliteDatabase) throws Exception;
+
+    /**
+     * Get image thumbnail by image id.
+     *
+     * @param imageId the image id.
+     * @return the image thumbnail data.
+     * @throws IOException if something goes wrong.
+     */
+    public byte[] getImageThumbnail(long imageId) throws Exception;
+
+    /**
+     * Get an image thumbnail from the db by its <b>data</b> id.
+     *
+     * @param imageDataId the image data id.
+     * @param sqliteDatabase the optional db to use. If called from #getImageData, this should not be null.
+     * @return the image data.
+     * @throws IOException
+     */
+    public byte[] getImageThumbnailById(SQLiteDatabase sqliteDatabase, long imageDataId) throws Exception;
 }

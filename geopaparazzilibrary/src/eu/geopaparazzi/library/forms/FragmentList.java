@@ -43,7 +43,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_list_item,
-                fragmentTitles.toArray(new String[0]));
+                fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
         int color = getActivity().getResources().getColor(R.color.formcolor);
         int[] colors = {0, color, 0}; // red for the example
