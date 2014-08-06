@@ -37,7 +37,6 @@ import com.vividsolutions.jts.android.geom.PathShape;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.util.Debug;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
@@ -89,7 +88,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
-    private static final int ITEM_INITIAL_CAPACITY = 8;
 
     /**
      * Sets the bounds of the given drawable so that (0,0) is the center of the bottom row.
@@ -103,16 +101,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
         return balloon;
     }
 
-    /**
-     * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
-     *
-     * @param balloon the drawable whose bounds should be set.
-     * @return the given drawable with set bounds.
-     */
-    public static Drawable boundCenterBottom(Drawable balloon) {
-        balloon.setBounds(balloon.getIntrinsicWidth() / -2, -balloon.getIntrinsicHeight(), balloon.getIntrinsicWidth() / 2, 0);
-        return balloon;
-    }
+    //    /**
+    //     * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
+    //     *
+    //     * @param balloon the drawable whose bounds should be set.
+    //     * @return the given drawable with set bounds.
+    //     */
+    //    public static Drawable boundCenterBottom(Drawable balloon) {
+    //        balloon.setBounds(balloon.getIntrinsicWidth() / -2, -balloon.getIntrinsicHeight(), balloon.getIntrinsicWidth() / 2, 0);
+    //        return balloon;
+    //    }
 
     /*
      * way stuff
@@ -122,16 +120,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint defaultWayPaintOutline;
     private Path wayPath;
 
-    /*
-     * item stuff
-     */
-    private int itemBottom;
     private Drawable itemDefaultMarker;
-    private Drawable itemMarker;
     private Point itemPosition;
-    private int left;
-    private int right;
-    private int top;
     private final List<Integer> visibleItems = new ArrayList<Integer>();
     private final List<Integer> visibleItemsRedraw = new ArrayList<Integer>();
 
@@ -164,7 +154,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsBlueFill;
 
     private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
-    private int inset = 5;
+    private static final int inset = 5;
     private Paint textPaint;
     private Paint textHaloPaint;
     private boolean isNotesTextVisible;
@@ -523,35 +513,36 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
             // get the correct marker for the item
             Drawable marker = overlayItem.getMarker();
+            Drawable itemMarker;
             if (marker == null) {
                 if (this.itemDefaultMarker == null) {
                     // no marker to draw the item
                     continue;
                 }
-                this.itemMarker = this.itemDefaultMarker;
+                itemMarker = this.itemDefaultMarker;
             } else {
-                this.itemMarker = marker;
+                itemMarker = marker;
             }
 
             // get the position of the marker
-            Rect markerBounds = this.itemMarker.copyBounds();
+            Rect markerBounds = itemMarker.copyBounds();
 
             // calculate the bounding box of the marker
-            this.left = this.itemPosition.x + markerBounds.left;
-            this.right = this.itemPosition.x + markerBounds.right;
-            this.top = this.itemPosition.y + markerBounds.top;
-            this.itemBottom = this.itemPosition.y + markerBounds.bottom;
+            int left = this.itemPosition.x + markerBounds.left;
+            int right = this.itemPosition.x + markerBounds.right;
+            int top = this.itemPosition.y + markerBounds.top;
+            int itemBottom = this.itemPosition.y + markerBounds.bottom;
 
             // check if the bounding box of the marker intersects with the canvas
-            if (this.right >= 0 && this.left <= canvasWidth && this.itemBottom >= 0 && this.top <= canvasHeight) {
+            if (right >= 0 && left <= canvasWidth && itemBottom >= 0 && top <= canvasHeight) {
                 // set the position of the marker
-                this.itemMarker.setBounds(this.left, this.top, this.right, this.itemBottom);
+                itemMarker.setBounds(left, top, right, itemBottom);
 
                 // draw the item marker on the canvas
-                this.itemMarker.draw(canvas);
+                itemMarker.draw(canvas);
 
                 // restore the position of the marker
-                this.itemMarker.setBounds(markerBounds);
+                itemMarker.setBounds(markerBounds);
 
                 // add the current item index to the list of visible items
                 this.visibleItemsRedraw.add(itemIndex);
@@ -1063,14 +1054,15 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
                 // select the correct marker for the item and get the position
                 Rect checkMarkerBounds;
-                if (checkOverlayItem.getMarker() == null) {
+                Drawable marker = checkOverlayItem.getMarker();
+                if (marker == null) {
                     if (this.itemDefaultMarker == null) {
                         // no marker to draw the item
                         continue;
                     }
                     checkMarkerBounds = this.itemDefaultMarker.getBounds();
                 } else {
-                    checkMarkerBounds = checkOverlayItem.getMarker().getBounds();
+                    checkMarkerBounds = marker.getBounds();
                 }
 
                 // calculate the bounding box of the marker
