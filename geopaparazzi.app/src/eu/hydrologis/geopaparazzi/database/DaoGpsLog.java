@@ -310,8 +310,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("UPDATE ");
             sb.append(TABLE_GPSLOGS);
             sb.append(" SET ");
-            sb.append(GpsLogsTableFields.COLUMN_LOG_ENDTS.getFieldName()).append("='").append(dateFormatter.format(new java.util.Date(endTimestamp))).append("' ");
-            sb.append("WHERE ").append(GpsLogsTableFields.COLUMN_ID.getFieldName()).append("=").append(logId);
+            sb.append(GpsLogsTableFields.COLUMN_LOG_ENDTS.getFieldName()).append("=").append(endTimestamp);
+            sb.append(" WHERE ").append(GpsLogsTableFields.COLUMN_ID.getFieldName()).append("=").append(logId);
 
             String query = sb.toString();
             if (GPLog.LOG_HEAVY)
@@ -406,8 +406,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             while (!c.isAfterLast()) {
                 long logid = c.getLong(0);
                 String text = c.getString(1);
-                String start = c.getString(2);
-                String end = c.getString(3);
+                long start = c.getLong(2);
+                long end = c.getLong(3);
                 double lengthm = c.getDouble(4);
                 String color = c.getString(5);
                 double width = c.getDouble(6);
