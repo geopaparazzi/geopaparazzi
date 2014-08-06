@@ -17,14 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.preferences;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -32,44 +29,37 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.R;
-
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
 
 /**
  * A custom sdcard path chooser.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CustomSdcardPathPreference extends DialogPreference implements View.OnClickListener,
+public class CustomMapsPathPreference extends DialogPreference implements View.OnClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String USER_SDCARD_PATHS = "USER_SDCARD_PATHS";
+    private static final String USER_MAPS_PATHS = "USER_MAPS_PATHS";
+    public static final String PREFS_KEY_CUSTOM_MAPSFOLDER = "PREFS_KEY_CUSTOM_MAPSFOLDER";
     private Context context;
     private String customPath = ""; //$NON-NLS-1$
     private Spinner guessedPathsSpinner;
-    private List<String> sdcardsList = new ArrayList<String>();
+    private List<String> mapsFoldersList = new ArrayList<String>();
 
     /**
      * @param ctxt  the context to use.
      * @param attrs attributes.
      */
-    public CustomSdcardPathPreference(Context ctxt, AttributeSet attrs) {
+    public CustomMapsPathPreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
         this.context = ctxt;
         setPositiveButtonText(ctxt.getString(android.R.string.ok));
@@ -126,7 +116,7 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
     private void refresh() {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String paths = preferences.getString(USER_SDCARD_PATHS, "");
+        String paths = preferences.getString(USER_MAPS_PATHS, "");
         TreeSet<String> pathSet = toSet(paths);
         File file = new File(customPath.trim());
         if (file.exists() && file.isDirectory())
@@ -135,19 +125,19 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
         // add to preferences
         String prefString = toString(pathSet);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(USER_SDCARD_PATHS, prefString);
+        editor.putString(USER_MAPS_PATHS, prefString);
         editor.commit();
 
-        sdcardsList.clear();
-        sdcardsList.addAll(pathSet);
+        mapsFoldersList.clear();
+        mapsFoldersList.addAll(pathSet);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, sdcardsList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, mapsFoldersList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         guessedPathsSpinner.setAdapter(adapter);
         if (customPath != null) {
             file = new File(customPath.trim());
-            for (int i = 0; i < sdcardsList.size(); i++) {
-                if (sdcardsList.get(i).equals(file.getAbsolutePath())) {
+            for (int i = 0; i < mapsFoldersList.size(); i++) {
+                if (mapsFoldersList.get(i).equals(file.getAbsolutePath())) {
                     guessedPathsSpinner.setSelection(i);
                     break;
                 }
@@ -161,8 +151,8 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
 
         if (customPath != null) {
             File file = new File(customPath.trim());
-            for (int i = 0; i < sdcardsList.size(); i++) {
-                if (sdcardsList.get(i).equals(file.getAbsolutePath())) {
+            for (int i = 0; i < mapsFoldersList.size(); i++) {
+                if (mapsFoldersList.get(i).equals(file.getAbsolutePath())) {
                     guessedPathsSpinner.setSelection(i);
                     break;
                 }
@@ -210,7 +200,7 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
         try {
             File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
             Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-            browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_EXTERNALSTORAGE);
+            browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_MAPSFOLDER);
             browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
             browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
 
@@ -223,8 +213,8 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(PREFS_KEY_CUSTOM_EXTERNALSTORAGE)) {
-            String path = sharedPreferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "");
+        if (key.equals(PREFS_KEY_CUSTOM_MAPSFOLDER)) {
+            String path = sharedPreferences.getString(PREFS_KEY_CUSTOM_MAPSFOLDER, "");
             File file = new File(path.trim());
             if (file.exists()) {
                 customPath = file.getAbsolutePath();

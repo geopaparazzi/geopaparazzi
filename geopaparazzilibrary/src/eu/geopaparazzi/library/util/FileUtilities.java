@@ -40,28 +40,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FileUtilities {
-    /**
-     * Get sdcards list. 
-     * 
-     * @return the list of possible sdcard paths.
-     */
-    public static List<String> getPossibleSdcardsList() {
-        List<String> list_sdcards = new ArrayList<String>();
-        File dir_mnt = new File("/mnt");
-        if ((dir_mnt != null) && (dir_mnt.exists()) && (dir_mnt.canRead())) {
-            // '/mnt' will list the mounted directories accessable and can be soft-link's
-            File[] list_files = dir_mnt.listFiles();
-            for( File this_file : list_files ) {
-                if (this_file.isDirectory()) {
-                    if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1) {
-                        // 'sdcard' (now shown as '/storage/emulated/0') ; 'extSdCard'
-                        list_sdcards.add(this_file.getAbsolutePath().trim());
-                    }
-                }
-            }
-        }
-        return list_sdcards;
-    }
+
 
     /**
      * Copy a file.

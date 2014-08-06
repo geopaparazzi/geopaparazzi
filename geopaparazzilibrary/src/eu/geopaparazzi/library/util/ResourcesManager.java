@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
@@ -246,7 +247,15 @@ public class ResourcesManager implements Serializable {
             databaseFile = new File(sdcardDir, databaseName);
         }
 
-        mapsDir = new File(sdcardDir, PATH_MAPS);
+
+        String mapsFolderPath = preferences.getString(PREFS_KEY_CUSTOM_MAPSFOLDER, "asdasdpoipoi");
+        mapsFolderPath = mapsFolderPath.trim();
+        File customMapsDir = new File(mapsFolderPath);
+        if (customMapsDir.exists()) {
+            mapsDir = customMapsDir;
+        } else {
+            mapsDir = new File(sdcardDir, PATH_MAPS);
+        }
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
@@ -261,6 +270,11 @@ public class ResourcesManager implements Serializable {
                 messageDialog(appContext, msgFormat, null);
                 tempDir = sdcardDir;
             }
+
+        Editor editor = preferences.edit();
+        editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE, sdcardDir.getAbsolutePath());
+        editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER, mapsDir.getAbsolutePath());
+        editor.commit();
     }
 
     /**
