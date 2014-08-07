@@ -120,6 +120,13 @@
         android:summary="@string/use_custom_sdcard_summary"
         android:title="@string/custom_sdcard_path" />
 
+    <eu.hydrologis.geopaparazzi.preferences.CustomMapsPathPreference
+        android:defaultValue=""
+        android:key="PREFS_KEY_CUSTOM_MAPSFOLDER"
+        android:order="101"
+        android:summary="Change the folder from which maps are loaded. Needs a restart of Geopaparazzi"
+        android:title="Current used maps folder" />
+
     <PreferenceScreen
         android:order="200"
         android:title="@string/osm_preferences" >

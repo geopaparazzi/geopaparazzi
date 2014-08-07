@@ -22,34 +22,33 @@ import java.io.Serializable;
 
 /**
  * Item representing a gps log.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LogMapItem extends MapItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String startTime = " - "; //$NON-NLS-1$
-    private String endTime = " - "; //$NON-NLS-1$
+    private long startTime = 0;
+    private long endTime = 0;
     private double lengthm = 0.0;
     private long id;
 
     /**
-     * @param id id
-     * @param text title.
-     * @param color color
-     * @param width width
+     * @param id        id
+     * @param text      title.
+     * @param color     color
+     * @param width     width
      * @param isVisible if visible
      * @param startTime start time
-     * @param endTime end time
-     * @param lengthm log length in m
+     * @param endTime   end time
+     * @param lengthm   log length in m
      */
-    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime,
-            double lengthm ) {
+    public LogMapItem(long id, String text, String color, float width, boolean isVisible,
+                      long startTime, long endTime,
+                      double lengthm) {
         super(id, text, color, width, isVisible);
-        if (startTime != null)
-            this.startTime = startTime;
-        if (endTime != null)
-            this.endTime = endTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
         if (lengthm > 0)
             this.lengthm = lengthm;
         this.id = id;
@@ -58,7 +57,7 @@ public class LogMapItem extends MapItem implements Serializable {
     /**
      * @return the start time.
      */
-    public String getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
@@ -72,7 +71,7 @@ public class LogMapItem extends MapItem implements Serializable {
     /**
      * @return the end time.
      */
-    public String getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
@@ -83,7 +82,7 @@ public class LogMapItem extends MapItem implements Serializable {
     // this.endTime = endTime;
     // }
 
-    public void setEndTime( String endTime ) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -98,7 +97,7 @@ public class LogMapItem extends MapItem implements Serializable {
     /**
      * @param lengthm the track length in meters
      */
-    public void setLengthInM( double lengthm ) {
+    public void setLengthInM(double lengthm) {
         this.lengthm = lengthm;
     }
 

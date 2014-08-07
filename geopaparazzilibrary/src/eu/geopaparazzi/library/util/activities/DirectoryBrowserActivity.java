@@ -25,7 +25,9 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +49,11 @@ public class DirectoryBrowserActivity extends ListActivity {
     /**
      */
     public static final String STARTFOLDERPATH = "STARTFOLDERPATH"; //$NON-NLS-1$
+
+    /**
+     * Key that brings the preference key in which to place the selected path.
+     */
+    public static final String PUT_PATH_PREFERENCE = "PUT_PATH_PREFERENCE"; //$NON-NLS-1$
     /**
      * Key for a new intent to launch on the resulting path.
      */
@@ -75,6 +82,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private boolean doHidden;
     private String startFolder;
     private FileArrayAdapter fileListAdapter;
+    private String preferencesKey;
 
     @Override
     public void onCreate( Bundle icicle ) {
@@ -87,6 +95,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             extention = extras.getString(EXTENTION);
             startFolder = extras.getString(STARTFOLDERPATH);
             doHidden = extras.getBoolean(SHOWHIDDEN, false);
+            preferencesKey = extras.getString(PUT_PATH_PREFERENCE);
 
             if (extention != null && extention.equals(FOLDER)) {
                 doFolder = true;
@@ -110,6 +119,14 @@ public class DirectoryBrowserActivity extends ListActivity {
             okButton.setOnClickListener(new OnClickListener(){
                 public void onClick( View v ) {
                     String absolutePath = currentDir.getAbsolutePath();
+
+                    if (preferencesKey!=null) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(preferencesKey, absolutePath);
+                        editor.commit();
+                    }
+
                     handleIntent(absolutePath);
                     finish();
                 }

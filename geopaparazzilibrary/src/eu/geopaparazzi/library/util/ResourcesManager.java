@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
@@ -32,14 +33,15 @@ import android.content.pm.ApplicationInfo;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Singleton that takes care of resources management.
- * 
+ * <p/>
  * <p>It creates a folder structure with possible database and log file names.</p>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ResourcesManager implements Serializable {
@@ -56,7 +58,7 @@ public class ResourcesManager implements Serializable {
 
     /**
      * The support folder for geopap. If not there, it is created.
-     *
+     * <p/>
      * <p>It has the name of the application and resides in the sdcard.</p>
      * <p>It contains for example the json tags file and temporary files if necessary.
      */
@@ -91,25 +93,25 @@ public class ResourcesManager implements Serializable {
     /**
      * @param useInternalMemory if <code>true</code>, internal memory is used.
      */
-    public static void setUseInternalMemory( boolean useInternalMemory ) {
+    public static void setUseInternalMemory(boolean useInternalMemory) {
         ResourcesManager.useInternalMemory = useInternalMemory;
     }
 
     /**
      * The getter for the {@link ResourcesManager} singleton.
-     * 
+     * <p/>
      * <p>This is a singleton but might require to be recreated
      * in every moment of the application. This is due to the fact
      * that when the application looses focus (for example because of
-     * an incoming call, and therefore at a random moment, if the memory 
-     * is too low, the parent activity could have been killed by 
-     * the system in background. In which case we need to recreate it.) 
-     * 
+     * an incoming call, and therefore at a random moment, if the memory
+     * is too low, the parent activity could have been killed by
+     * the system in background. In which case we need to recreate it.)
+     *
      * @param context the context to refer to.
      * @return the {@link ResourcesManager} instance.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public synchronized static ResourcesManager getInstance( Context context ) throws Exception {
+    public synchronized static ResourcesManager getInstance(Context context) throws Exception {
         if (resourcesManager == null) {
             resourcesManager = new ResourcesManager(context);
         }
@@ -125,14 +127,14 @@ public class ResourcesManager implements Serializable {
 
     /**
      * Getter for the app name.
-     * 
+     *
      * @return the name of the app.
      */
     public String getApplicationName() {
         return applicationLabel;
     }
 
-    private ResourcesManager( Context context ) throws Exception {
+    private ResourcesManager(Context context) throws Exception {
         Context appContext = context.getApplicationContext();
         ApplicationInfo appInfo = appContext.getApplicationInfo();
 
@@ -239,13 +241,21 @@ public class ResourcesManager implements Serializable {
          */
         String databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
         databaseFile = new File(databasePath);
-        if(!databaseFile.getParentFile().exists()){
+        if (databaseFile.getParentFile() == null || !databaseFile.getParentFile().exists()) {
             // fallback on the default
             String databaseName = applicationLabel + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
             databaseFile = new File(sdcardDir, databaseName);
         }
 
-        mapsDir = new File(sdcardDir, PATH_MAPS);
+
+        String mapsFolderPath = preferences.getString(PREFS_KEY_CUSTOM_MAPSFOLDER, "asdasdpoipoi");
+        mapsFolderPath = mapsFolderPath.trim();
+        File customMapsDir = new File(mapsFolderPath);
+        if (customMapsDir.exists()) {
+            mapsDir = customMapsDir;
+        } else {
+            mapsDir = new File(sdcardDir, PATH_MAPS);
+        }
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
@@ -260,11 +270,16 @@ public class ResourcesManager implements Serializable {
                 messageDialog(appContext, msgFormat, null);
                 tempDir = sdcardDir;
             }
+
+        Editor editor = preferences.edit();
+        editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE, sdcardDir.getAbsolutePath());
+        editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER, mapsDir.getAbsolutePath());
+        editor.commit();
     }
 
     /**
      * Get the file to the main application support folder.
-     * 
+     *
      * @return the {@link File} to the app folder.
      */
     public File getApplicationSupporterDir() {
@@ -273,7 +288,7 @@ public class ResourcesManager implements Serializable {
 
     /**
      * Get the sdcard dir or <code>null</code>.
-     * 
+     *
      * @return the sdcard folder file.
      */
     public File getSdcardDir() {
@@ -282,10 +297,10 @@ public class ResourcesManager implements Serializable {
 
     /**
      * Get the file to a default database location for the app.
-     * 
+     * <p/>
      * <p>This path is generated with default values and can be
-     * exploited. It doesn't assure that in the location there really is a db.  
-     * 
+     * exploited. It doesn't assure that in the location there really is a db.
+     *
      * @return the {@link File} to the database.
      */
     public File getDatabaseFile() {
@@ -294,7 +309,7 @@ public class ResourcesManager implements Serializable {
 
     /**
      * Get the default maps folder.
-     * 
+     *
      * @return the default maps folder.
      */
     public File getMapsDir() {

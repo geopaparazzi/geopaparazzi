@@ -181,6 +181,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_CUSTOM_EXTERNALSTORAGE = "PREFS_KEY_CUSTOM_EXTERNALSTORAGE"; //$NON-NLS-1$
 
     /**
+     * Key used to store and retrieve a custom path to the maps folder.
+     */
+    public static final String PREFS_KEY_CUSTOM_MAPSFOLDER = "PREFS_KEY_CUSTOM_MAPSFOLDER"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the database of the application.
      */
     public static final String PREFS_KEY_DATABASE_TO_LOAD = "PREFS_KEY_DATABASE_TO_LOAD"; //$NON-NLS-1$
