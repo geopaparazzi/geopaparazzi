@@ -163,37 +163,33 @@ public class ResourcesManager implements Serializable {
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
 
-        // the folder doesn't exist for some reason, fallback on default
-        String state = Environment.getExternalStorageState();
-        if (GPLog.LOG_HEAVY) {
-            Log.i("RESOURCESMANAGER", state);
-        }
-        boolean mExternalStorageAvailable;
-        boolean mExternalStorageWriteable;
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
-
         String cantCreateSdcardmsg = appContext.getResources().getString(R.string.cantcreate_sdcard);
-        if (mExternalStorageAvailable && mExternalStorageWriteable) {
-            // and external storage exists and is usable
-            String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
-            customFolderPath = customFolderPath.trim();
-            File customFolderFile = new File(customFolderPath);
-            if (customFolderFile.exists() && customFolderFile.isDirectory() && customFolderFile.canWrite()) {
-                /*
-                 * the user wants a different storage path:
-                 * - use that as sdcard
-                 * - create an app folder inside it
-                 */
-                sdcardDir = customFolderFile;
-                applicationSupportFolder = new File(sdcardDir, applicationLabel);
+        String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
+        customFolderPath = customFolderPath.trim();
+        File customFolderFile = new File(customFolderPath);
+        if (customFolderFile.exists() && customFolderFile.isDirectory() && customFolderFile.canWrite()) {
+            // we can write to the user set folder, let's use it
+            sdcardDir = customFolderFile;
+            applicationSupportFolder = new File(sdcardDir, applicationLabel);
+        } else {
+            // checks
+            // the folder doesn't exist for some reason, fallback on default
+            String state = Environment.getExternalStorageState();
+            if (GPLog.LOG_HEAVY) {
+                Log.i("RESOURCESMANAGER", state);
+            }
+            boolean mExternalStorageAvailable;
+            boolean mExternalStorageWriteable;
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                mExternalStorageAvailable = mExternalStorageWriteable = true;
+            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                mExternalStorageAvailable = true;
+                mExternalStorageWriteable = false;
             } else {
+                mExternalStorageAvailable = mExternalStorageWriteable = false;
+            }
+
+            if (mExternalStorageAvailable && mExternalStorageWriteable) {
                 if (customFolderPath.equals("internal")) {
                     /*
                      * the user folder doesn't exist, but is "internal":
@@ -207,19 +203,22 @@ public class ResourcesManager implements Serializable {
                     sdcardDir = Environment.getExternalStorageDirectory();
                     applicationSupportFolder = new File(sdcardDir, applicationLabel);
                 }
+            } else if (useInternalMemory) {
+                /*
+                 * no external storage available:
+                 * - use internal memory
+                 * - set sdcard for maps inside the space
+                 */
+                applicationSupportFolder = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
+                sdcardDir = applicationSupportFolder;
+            } else {
+                String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
+                throw new IOException(msgFormat);
             }
-        } else if (useInternalMemory) {
-            /*
-             * no external storage available:
-             * - use internal memory
-             * - set sdcard for maps inside the space
-             */
-            applicationSupportFolder = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
-            sdcardDir = applicationSupportFolder;
-        } else {
-            String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
-            throw new IOException(msgFormat);
+
+
         }
+
 
         // if (GPLog.LOG_HEAVY) {
         Log.i("RESOURCESMANAGER", "Application support folder: " + applicationSupportFolder);
