@@ -504,7 +504,7 @@ public class GeoPaparazziActivity extends Activity {
     private void initMapsDirManager() throws jsqlite.Exception, IOException {
         MapsDirManager.reset();
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
         final ProgressDialog initMapsdirDialog = new ProgressDialog(this);
         initMapsdirDialog.setCancelable(true);
@@ -531,7 +531,7 @@ public class GeoPaparazziActivity extends Activity {
                     Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
                 }
 
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
         };
         try {
