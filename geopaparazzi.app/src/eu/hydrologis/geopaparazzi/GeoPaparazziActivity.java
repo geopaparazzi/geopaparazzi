@@ -907,6 +907,9 @@ public class GeoPaparazziActivity extends Activity {
 
             public void afterTextChanged(Editable s) {
                 String newName = s.toString();
+                if (!newName.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
+                    newName = newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
+                }
                 File newProjectFile = new File(sdcardDir, newName);
                 if (newName.length() < 1) {
                     text.setText(enterNewProjectString);
