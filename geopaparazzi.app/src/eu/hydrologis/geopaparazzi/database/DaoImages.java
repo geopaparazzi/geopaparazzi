@@ -56,8 +56,6 @@ public class DaoImages implements IImagesDbHelper {
      */
     public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
-
-        sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_IMAGES);
         sB.append(" (");
