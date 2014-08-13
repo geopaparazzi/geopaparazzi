@@ -246,4 +246,5 @@
     <string name="creation_user">Project creation user</string>
     <string name="last_modification_user">Last project modification user</string>
     <string name="mapsfolder">Maps folder</string>
+    <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
 </resources>

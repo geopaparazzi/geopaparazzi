@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -128,8 +129,9 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
+        int selectionStroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
         createdGeometryPaintFill.setAntiAlias(true);
-        createdGeometryPaintFill.setColor(Color.YELLOW);
+        createdGeometryPaintFill.setColor(selectionStroke);
         createdGeometryPaintFill.setAlpha(180);
         createdGeometryPaintFill.setStyle(Paint.Style.FILL);
 
@@ -140,7 +142,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
         createdGeometryPaintStroke.setAntiAlias(true);
         createdGeometryPaintStroke.setStrokeWidth(5f);
-        createdGeometryPaintStroke.setColor(Color.YELLOW);
+        createdGeometryPaintStroke.setColor(selectionStroke);
         createdGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
         point = new Point();
