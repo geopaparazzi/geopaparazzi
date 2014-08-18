@@ -520,10 +520,10 @@ public class FormUtilities {
             String range = jsonObject.getString(CONSTRAINT_RANGE).trim();
             String[] rangeSplit = range.split(",");
             if (rangeSplit.length == 2) {
-                boolean lowIncluded = rangeSplit[0].startsWith("[") ? true : false;
+                boolean lowIncluded = rangeSplit[0].startsWith("[");
                 String lowStr = rangeSplit[0].substring(1);
                 Double low = Utilities.adapt(lowStr, Double.class);
-                boolean highIncluded = rangeSplit[1].endsWith("]") ? true : false;
+                boolean highIncluded = rangeSplit[1].endsWith("]");
                 String highStr = rangeSplit[1].substring(0, rangeSplit[1].length() - 1);
                 Double high = Utilities.adapt(highStr, Double.class);
                 constraints.addConstraint(new RangeConstraint(low, lowIncluded, high, highIncluded));
