@@ -39,7 +39,7 @@
 //import android.view.ViewParent;
 //import android.widget.ProgressBar;
 //import android.widget.RemoteViews.RemoteView;
-//import eu.hydrologis.geopaparazzi.R;
+//import eu.hydrologis.geopaparazzi3.R;
 //
 ///**
 // * @author http://code.google.com/p/ardroid/

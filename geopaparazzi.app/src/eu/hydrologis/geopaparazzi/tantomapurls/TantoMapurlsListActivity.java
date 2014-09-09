@@ -50,7 +50,7 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * Web projects listing activity.

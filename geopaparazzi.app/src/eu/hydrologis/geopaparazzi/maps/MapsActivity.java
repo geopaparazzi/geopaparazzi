@@ -110,7 +110,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;

@@ -61,7 +61,7 @@
   <string name="gpslogging_only">Cette fonction est disponible uniquement lorsque le GPS est actif et qu\'un signal est disponible.</string>
   <string name="remove_last_note_prompt">Voulez-vous vraiment supprimer la dernière note de texte ? Cette action est définitive.</string>
   <string name="installgpsstatus_title">Installer GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi utilise l\'Application GPS Status comme boussole et visualisateur d\'information sur le GPS. Voulez-vous l\'installer ?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 utilise l\'Application GPS Status comme boussole et visualisateur d\'information sur le GPS. Voulez-vous l\'installer ?</string>
   <!--added after 2.1.2-->
   <string name="phonenumber_hint">Entrez les numéros de téléphone séparés par des virgules...</string>
   <string name="pick_phonenumber_label">…</string>

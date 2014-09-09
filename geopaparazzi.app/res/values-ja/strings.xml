@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">ノートを表示する</string>
   <string name="kmlsaved">正常にエクスポートされました:</string>
   <string name="kmlnonsaved">データのエクスポート中にエラーが発生しました ！</string>
@@ -217,6 +217,6 @@
   <string name="limit_results_to_20_recommended">結果を20件に制限する(推奨)</string>
   <string name="text_filter">テキストフィルタ</string>
   <string name="tanto_service_query">クエリ</string>
-  <string name="tanto_disclaimer">よくお読みください：Geopaparazziは、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
+  <string name="tanto_disclaimer">よくお読みください：Geopaparazzi3は、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi3著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
   <string name="service_name_propmt">サービス名を入力。空白の場合サービス名はサービスから取得されます。</string>
 </resources>

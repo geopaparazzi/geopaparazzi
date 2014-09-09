@@ -43,7 +43,7 @@ import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 

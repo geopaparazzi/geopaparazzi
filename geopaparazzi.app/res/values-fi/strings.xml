@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Toiminto on mahdollinen jos gps on käytettävissä.</string>
   <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?</string>
   <string name="installgpsstatus_title">Asenna GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
   <!--added after 2.1.2-->
   <string name="reset">Uusi projekti</string>
   <string name="load">Lataa projekti</string>

@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">ναι</string>
   <string name="no">όχι</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Εναλλαγή ορατότητας σημειώσεων.</string>
   <string name="kmlsaved">Τα δεδομένα έχουν εξαχθεί επιτυχώς σε:</string>
   <string name="kmlnonsaved">Ένα σφάλμα παρουσιάστηκε κατα την εξαγωγή των δεδομένων!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Η λειτουργία είναι διαθέσιμη μόνο όταν το gps είναι ενεργό και υπάρχει διαθέσιμο σήμα.</string>
   <string name="remove_last_note_prompt">Θέλετε να διαγραφεί η τελευταία σημείωση κειμένου; Αυτό δε μπορεί να αναιρεθεί.</string>
   <string name="installgpsstatus_title">Εγκατάσταση κατάστασης GPS</string>
-  <string name="installgpsstatus_message">Το Geopaparazzi χρησιμοποιεί την εφαρμογή κατάστασης GPS σας πυξίδα και προβολή πληροφοριών GPS. Θέλετε να την εγκαταστήσετε;</string>
+  <string name="installgpsstatus_message">Το Geopaparazzi3 χρησιμοποιεί την εφαρμογή κατάστασης GPS σας πυξίδα και προβολή πληροφοριών GPS. Θέλετε να την εγκαταστήσετε;</string>
   <!--added after 2.1.2-->
   <string name="reset">Δημιουργία νέου έργου</string>
   <string name="load">Φορτώστε υφιστάμενο έργο</string>
@@ -219,6 +219,6 @@
   <string name="limit_results_to_20_recommended">Περιορίστε τα αποτελέσματα σε 20 (προτείνεται)</string>
   <string name="text_filter">φίλτρο κειμένου</string>
   <string name="tanto_service_query">ερώτημα</string>
-  <string name="tanto_disclaimer">ΠΑΡΑΚΑΛΩ ΔΙΑΒΑΣΤΕ ΠΡΟΣΕΚΤΙΚΑ: Το Geopaparazzi δεν αναλαμβάνει καμία ευθύνη για τις νομικές συνέπειες των δεδομένων που μεταφορτώνονται. Πριν από τη μεταφόρτωση οποιουδήποτε wms mapurl definition, ο χρήστης οφείλει να ελέγξει την αδειοδότηση της υπηρεσίας και να βεβαιωθεί ότι επιτρέπεται να τη χρησιμοποιήσει. Σε καμία περίπτωση δεν πρέπει οι συγγραφείς του Geopaparazzi να θεωρηθούν υπεύθυνοι για οποιαδήποτε παραβίαση της άδειας που σχετίζεται με την κατάχρηση της υπηρεσίας.</string>
+  <string name="tanto_disclaimer">ΠΑΡΑΚΑΛΩ ΔΙΑΒΑΣΤΕ ΠΡΟΣΕΚΤΙΚΑ: Το Geopaparazzi3 δεν αναλαμβάνει καμία ευθύνη για τις νομικές συνέπειες των δεδομένων που μεταφορτώνονται. Πριν από τη μεταφόρτωση οποιουδήποτε wms mapurl definition, ο χρήστης οφείλει να ελέγξει την αδειοδότηση της υπηρεσίας και να βεβαιωθεί ότι επιτρέπεται να τη χρησιμοποιήσει. Σε καμία περίπτωση δεν πρέπει οι συγγραφείς του Geopaparazzi3 να θεωρηθούν υπεύθυνοι για οποιαδήποτε παραβίαση της άδειας που σχετίζεται με την κατάχρηση της υπηρεσίας.</string>
   <string name="service_name_propmt">Εισάγετε ένα όνομα για την υπηρεσία. Εάν μείνει κενό, το όνομα θα μπει από την υπηρεσία.</string>
 </resources>

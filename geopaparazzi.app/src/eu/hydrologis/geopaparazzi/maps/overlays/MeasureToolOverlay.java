@@ -40,7 +40,7 @@
 //import android.view.MotionEvent;
 //import eu.geopaparazzi.library.util.debug.Debug;
 //import eu.geopaparazzi.library.util.debug.Logger;
-//import eu.hydrologis.geopaparazzi.R;
+//import eu.hydrologis.geopaparazzi3.R;
 //
 ///**
 // * Overlay to show the measure.

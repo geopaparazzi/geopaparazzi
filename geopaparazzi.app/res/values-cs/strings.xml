@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Přepnout viditelnost poznámek.</string>
   <string name="kmlsaved">Data úspěšně vyvedena do: </string>
   <string name="kmlnonsaved">Během vyvádění dat se vyskytla chyba!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Tato funkce je dostupná, jen když je  GPS v činnosti a signál je dostupný.</string>
   <string name="remove_last_note_prompt">Opravdu chcete odstranit poslední textovou poznámku? Tento krok nelze vrátit zpět.</string>
   <string name="installgpsstatus_title">Instalovat stav GPS</string>
-  <string name="installgpsstatus_message">Geopaparazzi používá pro stav GPS programy, jako je kompas a informační pohled na GPS. Chcete je nainstalovat?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 používá pro stav GPS programy, jako je kompas a informační pohled na GPS. Chcete je nainstalovat?</string>
   <!--added after 2.1.2-->
   <string name="reset">Vytvořit nový projekt</string>
   <string name="load">Nahrát stávající projekt</string>
@@ -218,6 +218,6 @@
   <string name="limit_results_to_20_recommended">Omezit výsledky na 20 (doporučeno)</string>
   <string name="text_filter">Textový filtr</string>
   <string name="tanto_service_query">Dotaz</string>
-  <string name="tanto_disclaimer">POZORNĚ SI PŘEČTĚTE: Geopaparazzi nenese žádnou zodpovědnost za zákonné předpoklady týkající se stažených dat. Před stažením jakékoli definice wms mapurl musí uživatel ověřit licencování služby a ujistit se, že je mu dovoleno její dotazování. V žádném ohledu není možné autory Geopaparazzi činit zodpovědnými za jakékoli porušení zákona související se zneužitím služby.</string>
+  <string name="tanto_disclaimer">POZORNĚ SI PŘEČTĚTE: Geopaparazzi3 nenese žádnou zodpovědnost za zákonné předpoklady týkající se stažených dat. Před stažením jakékoli definice wms mapurl musí uživatel ověřit licencování služby a ujistit se, že je mu dovoleno její dotazování. V žádném ohledu není možné autory Geopaparazzi3 činit zodpovědnými za jakékoli porušení zákona související se zneužitím služby.</string>
   <string name="service_name_propmt">Zadejte název pro službu. Pokud je ponecháno prázdné, název je převzat od služby.</string>
 </resources>

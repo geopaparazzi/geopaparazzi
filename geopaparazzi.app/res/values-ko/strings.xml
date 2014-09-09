@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">예</string>
   <string name="no">아니오</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">메모 보이기를 전환합니다.</string>
   <string name="kmlsaved">데이터를 성공적으로 내보냄:</string>
   <string name="kmlnonsaved">데이터를 내보내는 중 오류가 발생했습니다!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">이 기능은 GPS 및 신호가 활성화 상태인 경우에만 사용 가능합니다.</string>
   <string name="remove_last_note_prompt">마지막 텍스트 메모를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.</string>
   <string name="installgpsstatus_title">GPS 상태 설치</string>
-  <string name="installgpsstatus_message">Geopaparazzi는 나침반과 GPS 정보를 보는데 GPS 상태 응용 프로그램을 사용합니다. 설치 하시겠습니까?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3는 나침반과 GPS 정보를 보는데 GPS 상태 응용 프로그램을 사용합니다. 설치 하시겠습니까?</string>
   <!--added after 2.1.2-->
   <string name="reset">새로운 프로젝트 생성하기</string>
   <string name="load">기존 프로젝트 불러오기</string>
@@ -217,6 +217,6 @@
   <string name="limit_results_to_20_recommended">검색 결과 20개 제한 (권장)</string>
   <string name="text_filter">텍스트 필터</string>
   <string name="tanto_service_query">쿼리</string>
-  <string name="tanto_disclaimer">자세히 읽어보십시오: Geopaparazzi는 다운로드한 데이터에 대해 법적으로 아무 책임도 지지 않습니다. 어떤 WMS 서비스의 지도를 다운로드하기 전에, 사용자는 그 서비스의 라이센스를 확인해야하고, 서비스 제공자가 쿼리를 허용해야 합니다. 어떠한 방식으로든 Geopaparazzi 사용자는 서빗의 오용과 관련된 라이센스 침해에 대해 책임을 져야 합니다.</string>
+  <string name="tanto_disclaimer">자세히 읽어보십시오: Geopaparazzi3는 다운로드한 데이터에 대해 법적으로 아무 책임도 지지 않습니다. 어떤 WMS 서비스의 지도를 다운로드하기 전에, 사용자는 그 서비스의 라이센스를 확인해야하고, 서비스 제공자가 쿼리를 허용해야 합니다. 어떠한 방식으로든 Geopaparazzi3 사용자는 서빗의 오용과 관련된 라이센스 침해에 대해 책임을 져야 합니다.</string>
   <string name="service_name_propmt">서비스 이름을 입력하십시오. 공백인 경우 서비스에서 이름을 가져옵니다.</string>
 </resources>

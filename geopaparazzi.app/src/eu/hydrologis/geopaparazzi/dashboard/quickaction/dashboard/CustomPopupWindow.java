@@ -12,7 +12,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/

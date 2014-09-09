@@ -31,8 +31,8 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
+import eu.hydrologis.geopaparazzi3.GeopaparazziApplication;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

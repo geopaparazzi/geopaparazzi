@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">igen</string>
   <string name="no">nem</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Jegyzetek megjelenítése</string>
   <string name="kmlsaved">Sikeresen exportált adatok: </string>
   <string name="kmlnonsaved">Hiba történt az adatok exportálása során!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Ez a funkció csak aktív GPS és megfelelő jel mellett érhető el.</string>
   <string name="remove_last_note_prompt">Valóban el kívánja távolítani az utolsó szöveg jegyzetet? Nem visszavonható.</string>
   <string name="installgpsstatus_title">GPS Status installálása</string>
-  <string name="installgpsstatus_message">A Geopaparazzi iránytű és gps infók megjelenítésére a GPS Status alkalmazást használja. Kívánja installálni?</string>
+  <string name="installgpsstatus_message">A Geopaparazzi3 iránytű és gps infók megjelenítésére a GPS Status alkalmazást használja. Kívánja installálni?</string>
   <!--added after 2.1.2-->
   <string name="reset">Új projekt </string>
   <string name="load">Projekt betöltés</string>

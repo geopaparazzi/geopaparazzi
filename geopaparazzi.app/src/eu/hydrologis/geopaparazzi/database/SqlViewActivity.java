@@ -35,7 +35,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.library.database.DatabaseListActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * A view for db queries.

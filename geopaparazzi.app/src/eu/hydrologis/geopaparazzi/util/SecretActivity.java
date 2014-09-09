@@ -38,9 +38,9 @@ import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
+import eu.hydrologis.geopaparazzi3.GeopaparazziApplication;
 
 /**
  * The hidden activity.

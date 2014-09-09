@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">是</string>
   <string name="no">否</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="kmlsaved">数据成功被输出到：</string>
   <string name="loggingoff">停止所有的传感器</string>
   <string name="nogps_data">没有可用的GPS数据！</string>

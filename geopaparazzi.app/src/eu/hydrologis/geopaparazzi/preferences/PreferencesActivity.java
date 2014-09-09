@@ -19,7 +19,7 @@ package eu.hydrologis.geopaparazzi.preferences;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * Prefs activity.

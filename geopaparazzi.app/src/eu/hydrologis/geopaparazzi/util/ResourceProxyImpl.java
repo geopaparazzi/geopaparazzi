@@ -6,7 +6,7 @@
 //import android.graphics.Bitmap;
 //import android.graphics.BitmapFactory;
 //import android.graphics.drawable.Drawable;
-//import eu.hydrologis.geopaparazzi.R;
+//import eu.hydrologis.geopaparazzi3.R;
 //
 //public class ResourceProxyImpl extends DefaultResourceProxyImpl {
 //

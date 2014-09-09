@@ -45,7 +45,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 

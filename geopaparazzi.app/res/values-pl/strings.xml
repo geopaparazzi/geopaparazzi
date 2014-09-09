@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">tak</string>
   <string name="no">nie</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Przełącz widoczność notatek.</string>
   <string name="kmlsaved">Dane zostały poprawnie wyeksportowane do:</string>
   <string name="kmlnonsaved">Wystąpił błąd podczas eksportu danych!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Tak funkcja jest dostępna tylko gdy włączony został GPS i dostępny jest sygnał.</string>
   <string name="remove_last_note_prompt">Czy naprawdę chcesz usunąć ostatnią notatkę tekstową? Operacja jest nieodwracalna.</string>
   <string name="installgpsstatus_title">Zainstaluj GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi używa aplikacji GPS Status do prezentacji kompasu i informacji GPS. Czy chcesz ją zainstalować?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 używa aplikacji GPS Status do prezentacji kompasu i informacji GPS. Czy chcesz ją zainstalować?</string>
   <!--added after 2.1.2-->
   <string name="reset">Utwórz nowy projekt</string>
   <string name="load">Wczytaj istniejący projekt</string>
@@ -217,6 +217,6 @@
   <string name="limit_results_to_20_recommended">ogranicz do 20 wyników (zalecane)</string>
   <string name="text_filter">filtr tekstowy</string>
   <string name="tanto_service_query">zapytanie</string>
-  <string name="tanto_disclaimer">PRZECZYTAJ UWAŻNIE: Geopaparazzi nie ponosi odpowiedzialności za skutki prawne pobierania danych. Przed pobraniem jakiegokolwiek definicji mapurl WMS, użytkownik musi sprawdzić licencjonowanie usługi i upewnić się, że może z niej skorzystać. Autorzy Geopaparazzi nie mogą być w żaden sposób pociągnięci do odpowiedzialności za naruszenie licencji związanych z niewłaściwym wykorzystaniem usługi.</string>
+  <string name="tanto_disclaimer">PRZECZYTAJ UWAŻNIE: Geopaparazzi3 nie ponosi odpowiedzialności za skutki prawne pobierania danych. Przed pobraniem jakiegokolwiek definicji mapurl WMS, użytkownik musi sprawdzić licencjonowanie usługi i upewnić się, że może z niej skorzystać. Autorzy Geopaparazzi3 nie mogą być w żaden sposób pociągnięci do odpowiedzialności za naruszenie licencji związanych z niewłaściwym wykorzystaniem usługi.</string>
   <string name="service_name_propmt">Wprowadź nazwę dla serwisu. W przypadku pozostawienia pola pustego, nazwa zastanie pobrana z serwisu.</string>
 </resources>

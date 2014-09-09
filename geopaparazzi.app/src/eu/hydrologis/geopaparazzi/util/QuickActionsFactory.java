@@ -29,7 +29,7 @@
 //import eu.geopaparazzi.library.gps.GpsManager;
 //import eu.geopaparazzi.library.util.TimeUtilities;
 //import eu.geopaparazzi.library.util.Utilities;
-//import eu.hydrologis.geopaparazzi.R;
+//import eu.hydrologis.geopaparazzi3.R;
 //import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 //import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 //import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;

@@ -52,7 +52,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 

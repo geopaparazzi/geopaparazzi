@@ -34,8 +34,8 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.util.Image;
+import eu.hydrologis.geopaparazzi3.GeopaparazziApplication;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

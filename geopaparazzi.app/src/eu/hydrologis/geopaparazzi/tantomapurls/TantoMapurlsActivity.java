@@ -39,8 +39,8 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
+import eu.hydrologis.geopaparazzi3.GeopaparazziApplication;
 
 /**
  * Client for Tanto's mapurls download service written by Giovanni Allegri.

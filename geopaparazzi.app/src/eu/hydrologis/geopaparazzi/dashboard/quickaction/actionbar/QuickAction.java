@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/

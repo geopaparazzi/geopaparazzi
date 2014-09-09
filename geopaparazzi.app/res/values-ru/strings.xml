@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">да</string>
   <string name="no">нет</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Сменить видимость заметок.</string>
   <string name="loggingoff">Остановлены все сенсоры.</string>
   <string name="about">О программе</string>

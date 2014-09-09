@@ -46,7 +46,7 @@
   <string name="enable_debug">Activa el log de debug</string>
   <string name="remove_last_note_prompt">Está seguro que desea cancelar la última nota? No es sta posible de volver.</string>
   <string name="installgpsstatus_title">Instala GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi utiliza la aplicación Gps Status como brújula y la vista información gps. Desea instalarla?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 utiliza la aplicación Gps Status como brújula y la vista información gps. Desea instalarla?</string>
   <!--added after 2.1.2-->
   <!--added after 2.1.4-->
   <!--added after 2.3.1-->

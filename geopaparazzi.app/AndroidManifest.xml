@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eu.hydrologis.geopaparazzi"
+    package="eu.hydrologis.geopaparazzi3"
     android:installLocation="auto"
-    android:versionCode="58"
-    android:versionName="3.9.7" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="1"
+    android:versionName="3.9.8" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -41,7 +41,7 @@
     </supports-screens>
 
     <application
-        android:name="eu.hydrologis.geopaparazzi.GeopaparazziApplication"
+        android:name="eu.hydrologis.geopaparazzi3.GeopaparazziApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -49,7 +49,7 @@
         android:launchMode="singleTask"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
-            android:name=".GeoPaparazziActivity"
+            android:name="eu.hydrologis.geopaparazzi3.GeoPaparazziActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -88,14 +88,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.GpsDataPropertiesActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.GpsDataPropertiesActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.GpsDataListActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.GpsDataListActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
 
@@ -138,7 +138,7 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LabelPropertiesActivity" >
         </activity>
-        <activity android:name=".maps.MapsActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.MapsActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
 
@@ -152,7 +152,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".preferences.PreferencesActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.preferences.PreferencesActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.preferences.PREFERENCES" />
 
@@ -166,7 +166,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".gpx.GpxImportActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.gpx.GpxImportActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.gpx.GPXIMPORT" />
 
@@ -174,7 +174,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".maps.MapTagsActivity"
+            android:name="eu.hydrologis.geopaparazzi.maps.MapTagsActivity"
             android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
@@ -182,30 +182,30 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".osm.OsmCategoryActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".osm.OsmFormActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.osm.OsmFormActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MeasureInfoActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.MeasureInfoActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.BookmarksListActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.BookmarksListActivity" >
         </activity>
-        <activity android:name=".maps.NotesListActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.maps.NotesListActivity" >
         </activity>
         <activity android:name="eu.geopaparazzi.library.sketch.DrawingActivity" >
             <intent-filter>
@@ -214,9 +214,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".util.ExportActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.util.ExportActivity" >
         </activity>
-        <activity android:name=".util.ImportActivity" >
+        <activity android:name="eu.hydrologis.geopaparazzi.util.ImportActivity" >
         </activity>
         <!-- FROM LIBRARY -->
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />

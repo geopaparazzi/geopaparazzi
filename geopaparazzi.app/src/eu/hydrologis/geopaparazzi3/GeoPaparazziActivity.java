@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi;
+package eu.hydrologis.geopaparazzi3;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -256,12 +256,12 @@ public class GeoPaparazziActivity extends Activity {
                         }
 
                         Utilities.messageDialog(this, MessageFormat.format(
-                                getString(eu.hydrologis.geopaparazzi.R.string.imported_notes_and_bookmarks), notesNum,
+                                getString(eu.hydrologis.geopaparazzi3.R.string.imported_notes_and_bookmarks), notesNum,
                                 bookmarksNum), null);
                     }
                 }
             } catch (Exception e) {
-                Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
+                Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi3.R.string.could_not_open_sms), null);
             }
         }
     }
@@ -314,7 +314,7 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         if (resourcesManager == null) {
-            Utilities.yesNoMessageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
+            Utilities.yesNoMessageDialog(this, getString(eu.hydrologis.geopaparazzi3.R.string.no_sdcard_use_internal_memory),
                     new Runnable(){
                         public void run() {
                             ResourcesManager.setUseInternalMemory(true);
@@ -447,7 +447,7 @@ public class GeoPaparazziActivity extends Activity {
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
 
-        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
+        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi3.R.string.loaded_project_in)
                 + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
 
         // check for screen on
@@ -897,8 +897,8 @@ public class GeoPaparazziActivity extends Activity {
     // }
 
     private void resetData() {
-        final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
-        final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
+        final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi3.R.string.enter_a_name_for_the_new_project);
+        final String projectExistingString = getString(eu.hydrologis.geopaparazzi3.R.string.chosen_project_exists);
 
         final File applicationParentDir = resourcesManager.getApplicationParentDir();
         final String newGeopaparazziDirName = Constants.GEOPAPARAZZI

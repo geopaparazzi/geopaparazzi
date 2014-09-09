@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">sim</string>
   <string name="no">não</string>
-  <string name="app_name">Geopaparazzi</string>
+  <string name="app_name">Geopaparazzi3</string>
   <string name="notesvisibilityToggle">Alternar visibilidade de notas.</string>
   <string name="kmlsaved">Os dados foram exportados com sucesso para: </string>
   <string name="kmlnonsaved">Ocorreu um erro durante a exportação de dados!</string>
@@ -68,7 +68,7 @@
   <string name="gpslogging_only">Esta função está disponível apenas quando o gps está ativo e há um sinal disponível.</string>
   <string name="remove_last_note_prompt">Você realmente deseja remover a última nota de texto? Isto não pode ser desfeito.</string>
   <string name="installgpsstatus_title">Instalar estado do GPS</string>
-  <string name="installgpsstatus_message">O Geopaparazzi usa o aplicativo de estado do GPS como bússola e como visão de informações de gps. Você deseja instalá-lo?</string>
+  <string name="installgpsstatus_message">O Geopaparazzi3 usa o aplicativo de estado do GPS como bússola e como visão de informações de gps. Você deseja instalá-lo?</string>
   <!--added after 2.1.2-->
   <string name="reset">Criar novo projeto</string>
   <string name="load">Carregar projeto existente</string>

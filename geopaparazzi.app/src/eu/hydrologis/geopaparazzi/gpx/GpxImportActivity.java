@@ -34,7 +34,7 @@ import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 
 /**

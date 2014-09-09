@@ -50,7 +50,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.util.Constants;
 

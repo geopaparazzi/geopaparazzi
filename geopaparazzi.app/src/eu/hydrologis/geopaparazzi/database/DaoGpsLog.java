@@ -50,9 +50,9 @@ import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi3.GeopaparazziApplication;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

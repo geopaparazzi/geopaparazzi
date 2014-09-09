@@ -39,7 +39,7 @@ import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.Constants;

@@ -31,7 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 
 /**
  * A custom sdcard path chooser.

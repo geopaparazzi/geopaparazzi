@@ -44,7 +44,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
-import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi3.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity;
 

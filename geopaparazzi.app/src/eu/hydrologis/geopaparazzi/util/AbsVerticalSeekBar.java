@@ -25,7 +25,7 @@
 //import android.util.AttributeSet;
 //import android.view.KeyEvent;
 //import android.view.MotionEvent;
-//import eu.hydrologis.geopaparazzi.R;
+//import eu.hydrologis.geopaparazzi3.R;
 //
 ///**
 // * @author http://code.google.com/p/ardroid/

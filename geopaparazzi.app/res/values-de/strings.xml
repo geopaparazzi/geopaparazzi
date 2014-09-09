@@ -67,7 +67,7 @@
   <string name="gpslogging_only">Diese Funktion ist nur verfügbar, wenn GPS aktiviert und ein Signal verfügbar ist.</string>
   <string name="remove_last_note_prompt">Letzte Notiz wirklich löschen? Aktion kann nicht rückgängig gemacht werden.</string>
   <string name="installgpsstatus_title">Installiere GPS-Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
+  <string name="installgpsstatus_message">Geopaparazzi3 benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
   <!--added after 2.1.2-->
   <string name="reset">Neues Projekt anlegen</string>
   <string name="load">Vorhandenes Projekt laden</string>
