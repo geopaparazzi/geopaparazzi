@@ -319,8 +319,6 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         Utilities.messageDialog(context, "The added vertex has created a selfintersection of the polygon and your layer doesn't support it.", null);
                     }
                 }
-
-
                 firstInvalid = false;
             }
         }
