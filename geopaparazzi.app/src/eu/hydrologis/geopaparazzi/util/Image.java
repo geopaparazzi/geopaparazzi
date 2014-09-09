@@ -33,7 +33,7 @@ public class Image implements INote, KmlRepresenter {
     /**
      * 
      */
-    public static final String IMAGE_NOTE = "image note";
+    public static final String IMAGE_NOTE = "image note ";
     private String name;
     private final long id;
     private final double lon;
@@ -60,7 +60,7 @@ public class Image implements INote, KmlRepresenter {
         if (name != null) {
             this.name = name;
         } else {
-            this.name = IMAGE_NOTE;
+            this.name = IMAGE_NOTE + ts;
         }
         this.lon = lon;
         this.lat = lat;
@@ -98,7 +98,7 @@ public class Image implements INote, KmlRepresenter {
 
     public String getName() {
         if (name.length() == 0) {
-            name = IMAGE_NOTE;
+            name = IMAGE_NOTE + ts;
         }
         return name;
     }
