@@ -678,7 +678,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
                 }
 
                 private void sync( final String description ) {
-                    syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
+                    runOnUiThread(new Runnable(){
+                        public void run() {
+                            syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
+                        }
+                    });
                     new AsyncTask<String, Void, String>(){
                         private Exception e = null;
 
