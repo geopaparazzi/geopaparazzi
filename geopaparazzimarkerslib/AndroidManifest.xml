@@ -19,7 +19,7 @@
       android:versionCode="40" android:versionName="1.1.1">
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="19" >
+        android:targetSdkVersion="20" >
     </uses-sdk>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
