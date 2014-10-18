@@ -93,7 +93,7 @@ public class TagsManager {
     }
 
     private static void getFileTags( Context context ) throws Exception {
-        File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+        File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
         File tagsFile = new File(applicationDir, TAGSFILENAME);
         if (!tagsFile.exists() || Debug.doOverwriteTags) {
             AssetManager assetManager = context.getAssets();

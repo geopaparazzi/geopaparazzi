@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -38,7 +39,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * Singleton to handle cloud up- and download.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -59,37 +60,31 @@ public enum WebProjectManager {
     public static String DOWNLOADPATH = "download";
 
     /**
-     * The id parameter name to use in the server url. 
+     * The id parameter name to use in the server url.
      */
     public static String ID = "id";
 
     /**
      * Uploads a project folder as zip to the given server via POST.
-     * 
+     *
      * @param context the {@link Context} to use.
-     * @param addMedia defines if also the images in media should be included.
-     * @param server the server to which to upload.
-     * @param user the username for authentication.
-     * @param passwd the password for authentication.
+     * @param server  the server to which to upload.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
      * @return the return message.
      */
-    public String uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
+    public String uploadProject(Context context, String server, String user, String passwd) {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File appFolder = resourcesManager.getApplicationDir();
-            String mediaFodlerName = resourcesManager.getMediaDir().getName();
+            File databaseFile = resourcesManager.getDatabaseFile();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip");
+            File zipFile = new File(databaseFile.getParentFile(), databaseFile.getName() + ".zip");
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();
                 }
             }
-            if (addMedia) {
-                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath());
-            } else {
-                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), mediaFodlerName);
-            }
+            CompressionUtilities.createZipFromFiles(zipFile, databaseFile);
 
             server = server + "/" + UPLOADPATH;
             String result = NetworkUtilities.sendFilePost(context, server, zipFile, user, passwd);
@@ -105,20 +100,20 @@ public enum WebProjectManager {
 
     /**
      * Downloads a project from the given server via GET.
-     * 
-     * @param context the {@link Context} to use.
-     * @param server the server from which to download.
-     * @param user the username for authentication.
-     * @param passwd the password for authentication.
-     * @param webproject the project to download. 
+     *
+     * @param context    the {@link Context} to use.
+     * @param server     the server from which to download.
+     * @param user       the username for authentication.
+     * @param passwd     the password for authentication.
+     * @param webproject the project to download.
      * @return the return code.
      */
-    public String downloadProject( Context context, String server, String user, String passwd, Webproject webproject ) {
+    public String downloadProject(Context context, String server, String user, String passwd, Webproject webproject) {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File appFolder = resourcesManager.getApplicationDir();
+            File sdcardDir = resourcesManager.getSdcardDir();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip");
+            File zipFile = new File(sdcardDir.getParentFile(), resourcesManager.getApplicationName() + ".zip");
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();
@@ -128,8 +123,8 @@ public enum WebProjectManager {
             server = server + "/" + DOWNLOADPATH + "/" + webproject.id;
             NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
 
-            // now remove the zip file
-            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), appFolder.getParentFile().getAbsolutePath(), true);
+            // TODO check
+            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), sdcardDir.getAbsolutePath(), false);
             /*
              * remove the zip file
              */
@@ -152,15 +147,15 @@ public enum WebProjectManager {
 
     /**
      * Downloads the project list from the given server via GET.
-     * 
+     *
      * @param context the {@link Context} to use.
-     * @param server the server from which to download.
-     * @param user the username for authentication.
-     * @param passwd the password for authentication.
+     * @param server  the server from which to download.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
      * @return the project list.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) throws Exception {
+    public List<Webproject> downloadProjectList(Context context, String server, String user, String passwd) throws Exception {
         String jsonString = "[]";
         if (server.equals("test")) {
             AssetManager assetManager = context.getAssets();
@@ -168,7 +163,7 @@ public enum WebProjectManager {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder sb = new StringBuilder();
             String line;
-            while( (line = br.readLine()) != null ) {
+            while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");
             }
             jsonString = sb.toString();
@@ -182,18 +177,18 @@ public enum WebProjectManager {
 
     /**
      * Transform a json string to a list of webprojects.
-     * 
+     *
      * @param json the json string.
      * @return the list of {@link Webproject}.
-     * @throws Exception  if something goes wrong. 
+     * @throws Exception if something goes wrong.
      */
-    public static List<Webproject> json2WebprojectsList( String json ) throws Exception {
+    public static List<Webproject> json2WebprojectsList(String json) throws Exception {
         List<Webproject> wpList = new ArrayList<Webproject>();
 
         JSONObject jsonObject = new JSONObject(json);
         JSONArray projectsArray = jsonObject.getJSONArray("projects");
         int projectNum = projectsArray.length();
-        for( int i = 0; i < projectNum; i++ ) {
+        for (int i = 0; i < projectNum; i++) {
             JSONObject projectObject = projectsArray.getJSONObject(i);
             String id = projectObject.getString("id");
             String title = projectObject.getString("title");

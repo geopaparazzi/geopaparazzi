@@ -31,125 +31,116 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * A custom map view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GMapView extends View implements GView {
 
-    private File image;
-    private ImageView imageView;
     private LinearLayout mainLayout;
+    private String value;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GMapView( Context context, AttributeSet attrs, int defStyle ) {
+    public GMapView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GMapView( Context context, AttributeSet attrs ) {
+    public GMapView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param key key
-     * @param value value
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param key                   key
+     * @param value                 value
      * @param constraintDescription constraints
      */
-    public GMapView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+    public GMapView(final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+                    String constraintDescription) {
         super(context, attrs);
+        this.value = value;
 
-        mainLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        mainLayout.setLayoutParams(layoutParams);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
-        parentView.addView(mainLayout);
+        try {
+            mainLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(10, 10, 10, 10);
+            mainLayout.setLayoutParams(layoutParams);
+            mainLayout.setOrientation(LinearLayout.VERTICAL);
+            parentView.addView(mainLayout);
 
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        mainLayout.addView(textView);
+            TextView textView = new TextView(context);
+            textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+            textView.setPadding(2, 2, 2, 2);
+            textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+            textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+            mainLayout.addView(textView);
 
-        image = new File(value);
-        if (!image.exists()) {
-            // look also in media folder for relative path name
-            File mediaDir = null;
-            try {
-                mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            File parentFolder = mediaDir.getParentFile();
-            image = new File(parentFolder, value);
-        }
-        if (image.exists()) {
-            imageView = new ImageView(context);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            long imageId = Long.parseLong(value.trim());
+
+            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
+
+            byte[] imageThumbnail = imagesDbHelper.getImageThumbnail(imageId);
+            Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
+
+            ImageView imageView = new ImageView(context);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
             imageView.setPadding(5, 5, 5, 5);
-            imageView.setOnClickListener(new View.OnClickListener(){
-                public void onClick( View v ) {
-                    // the old way
-                    // Intent intent = new Intent();
-                    // intent.setAction(android.content.Intent.ACTION_VIEW);
-                    //                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                    // context.startActivity(intent);
-
-                    /*
-                     * open in markers to edit it
-                     */
-                    MarkersUtilities.launchOnImage(context, image);
-                }
-
-            });
-            mainLayout.addView(imageView);
-        }
-        if (image.exists() && imageView != null) {
-            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
             imageView.setImageBitmap(thumbnail);
+            imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
+//            imageView.setOnClickListener(new OnClickListener() {
+//                public void onClick(View v) {
+//                    // the old way
+//                    // Intent intent = new Intent();
+//                    // intent.setAction(android.content.Intent.ACTION_VIEW);
+//                    //                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+//                    // context.startActivity(intent);
+//
+//                        /*
+//                         * open in markers to edit it
+//                         */
+//                    MarkersUtilities.launchOnImage(context, image);
+//                }
+//
+//            });
+            mainLayout.addView(imageView);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
         }
 
     }
 
-    public void refresh( final Context context ) {
-        try {
-            // THIS IS PLAIN UGLY
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (image.exists() && imageView != null) {
-            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-            imageView.setImageBitmap(thumbnail);
-        }
+    public void refresh(final Context context) {
+        // ignore
     }
 
     public String getValue() {
-        return image.getAbsolutePath();
+        return value;
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 

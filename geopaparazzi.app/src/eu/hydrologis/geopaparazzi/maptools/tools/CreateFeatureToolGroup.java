@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -78,9 +79,9 @@ import static java.lang.Math.round;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
 
-    private MapView mapView;
+    private final MapView mapView;
 
     private int buttonSelectionColor;
 
@@ -115,6 +116,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private ImageButton addVertexByTapButton;
     private boolean addVertexByTapActive = false;
+    private Coordinate lastKnownGpsCoordinate;
 
     /**
      * Constructor.
@@ -128,8 +130,9 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
+        int selectionStroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
         createdGeometryPaintFill.setAntiAlias(true);
-        createdGeometryPaintFill.setColor(Color.YELLOW);
+        createdGeometryPaintFill.setColor(selectionStroke);
         createdGeometryPaintFill.setAlpha(180);
         createdGeometryPaintFill.setStyle(Paint.Style.FILL);
 
@@ -140,7 +143,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
         createdGeometryPaintStroke.setAntiAlias(true);
         createdGeometryPaintStroke.setStrokeWidth(5f);
-        createdGeometryPaintStroke.setColor(Color.YELLOW);
+        createdGeometryPaintStroke.setColor(selectionStroke);
         createdGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
         point = new Point();
@@ -166,6 +169,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
             gpsStreamButton.setPadding(0, padding, 0, padding);
             gpsStreamButton.setOnTouchListener(this);
+            gpsStreamButton.setOnLongClickListener(this);
             gpsStreamButton.setOnClickListener(this);
             parent.addView(gpsStreamButton);
 
@@ -214,9 +218,22 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         addVertexByTapActive = false;
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (v == gpsStreamButton) {
+            gpsStreamActive = !gpsStreamActive;
+            addVertexByTapActive = false;
+        }
+        EditManager.INSTANCE.invalidateEditingView();
+        handleToolIcons(v);
+        return true;
+    }
+
     public void onClick(View v) {
         if (v == addVertexButton) {
-
+            // adds point in map center
+            gpsStreamActive = false;
+            addVertexByTapActive = false;
             final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication
                     .getInstance());
             double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
@@ -227,9 +244,11 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 return;
             }
         } else if (v == gpsStreamButton) {
-            gpsStreamActive = !gpsStreamActive;
+            addVertexByTapActive = false;
+            addGpsCoordinate();
         } else if (v == addVertexByTapButton) {
             addVertexByTapActive = !addVertexByTapActive;
+            gpsStreamActive = false;
         } else if (v == commitButton) {
             if (coordinatesList.size() > 2) {
                 List<Geometry> geomsList = new ArrayList<Geometry>();
@@ -280,7 +299,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 int size = coordinatesList.size() - 1;
                 coordinatesList.remove(size);
                 // commitButton.setVisibility(View.VISIBLE);
-                reCreateGeometry(v.getContext(), size);
+                reCreateGeometry(v.getContext());
             }
         }
         if (coordinatesList.size() > 2) {
@@ -298,13 +317,13 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         if (coordinatesCount == 0) {
             return true;
         }
-        reCreateGeometry(context, coordinatesCount);
+        reCreateGeometry(context);
         return false;
     }
 
-    private void reCreateGeometry(Context context, int coordinatesCount) {
+    private void reCreateGeometry(Context context) {
         polygonGeometry = null;
-        if (coordinatesCount > 2) {
+        if (coordinatesList.size() > 2) {
             polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
             if (!polygonGeometry.isValid() && firstInvalid) {
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
@@ -317,8 +336,6 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         Utilities.messageDialog(context, "The added vertex has created a selfintersection of the polygon and your layer doesn't support it.", null);
                     }
                 }
-
-
                 firstInvalid = false;
             }
         }
@@ -333,6 +350,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         .setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream_active));
             } else {
                 gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
+                gpsStreamButton.getBackground().clearColorFilter();
             }
         if (addVertexByTapButton != null)
             if (addVertexByTapActive) {
@@ -444,9 +462,15 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
     }
 
     public void onGpsUpdate(double lon, double lat) {
+        lastKnownGpsCoordinate = new Coordinate(lon, lat);
         if (gpsStreamActive) {
-            Coordinate gpsCoordinate = new Coordinate(lon, lat);
-            addVertex(mapView.getContext(), gpsCoordinate);
+            addGpsCoordinate();
+        }
+    }
+
+    private void addGpsCoordinate() {
+        if (lastKnownGpsCoordinate != null) {
+            addVertex(mapView.getContext(), lastKnownGpsCoordinate);
 
             if (coordinatesList.size() > 2) {
                 commitButton.setVisibility(View.VISIBLE);
@@ -454,7 +478,11 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 commitButton.setVisibility(View.GONE);
             }
             EditManager.INSTANCE.invalidateEditingView();
+        } else {
+            EditingView editingView = EditManager.INSTANCE.getEditingView();
+            Utilities.messageDialog(editingView.getContext(), "No GPS coordinate has been acquired yet.", null);
         }
     }
+
 
 }

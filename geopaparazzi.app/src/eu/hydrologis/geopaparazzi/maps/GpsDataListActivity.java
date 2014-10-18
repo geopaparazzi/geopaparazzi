@@ -89,7 +89,7 @@ public class GpsDataListActivity extends ListActivity {
             if (doReread) {
                 List<LogMapItem> logsList = DaoGpsLog.getGpslogs();
                 Collections.sort(logsList, mapItemSorter);
-                gpslogItems = logsList.toArray(new LogMapItem[0]);
+                gpslogItems = logsList.toArray(new LogMapItem[logsList.size()]);
             }
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);

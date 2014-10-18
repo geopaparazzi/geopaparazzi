@@ -45,5 +45,5 @@ public interface GView {
      * 
      * @param context  the context to use.
      */
-    public void refresh( Context context );
+    public void refresh( Context context ) throws Exception;
 }

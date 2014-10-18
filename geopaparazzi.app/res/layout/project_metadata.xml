@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Geopaparazzi - Digital field mapping on Android based devices
+  ~ Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/saveButton"
+        android:background="@color/main_background"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_background">
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/project_info"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/main_text_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text=""
+                android:id="@+id/databasePathTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/titleTextView"
+                android:textColor="@color/main_text_color"
+                />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:layout_below="@+id/databasePathTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"
+                android:background="@color/main_decorations"
+                android:orientation="horizontal" />
+
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/linearLayout"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/nameEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/nameTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/nameEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/description"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/descriptionEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/descriptionTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/notesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/descriptionEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/notes"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/notesEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/notesTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="text"
+                android:lines="4" />
+
+            <TextView
+                android:id="@+id/creationDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/notesEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/creation_date"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/creationDateEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/creationDateTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:editable="false"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/lastDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/creationDateEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/last_closing_date"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/lastDateEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/lastDateTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:editable="false"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/creationUserTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/lastDateEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/creation_user"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/creationUserEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/creationUserTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/lastUserTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_below="@+id/creationUserEditText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/last_modification_user"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/lastUserEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_alignLeft="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/lastUserTextView"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="text" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/save"
+        android:onClick="save"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+</RelativeLayout>

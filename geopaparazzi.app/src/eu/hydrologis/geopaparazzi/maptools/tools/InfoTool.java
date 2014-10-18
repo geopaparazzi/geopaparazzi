@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -96,15 +97,15 @@ public class InfoTool extends MapTool {
         this.parentGroup = parentGroup;
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
-        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int stroke = ColorUtilities.getColor(ColorUtilities.infoselection_stroke);
+        int fill = ColorUtilities.getColor(ColorUtilities.infoselection_fill);
         infoRectPaintFill.setAntiAlias(true);
-        infoRectPaintFill.setColor(Color.BLUE);
+        infoRectPaintFill.setColor(fill);
         infoRectPaintFill.setAlpha(80);
         infoRectPaintFill.setStyle(Paint.Style.FILL);
         infoRectPaintStroke.setAntiAlias(true);
         infoRectPaintStroke.setStrokeWidth(1.5f);
-        infoRectPaintStroke.setColor(Color.BLUE);
+        infoRectPaintStroke.setColor(stroke);
         infoRectPaintStroke.setStyle(Paint.Style.STROKE);
     }
 

@@ -40,6 +40,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.TestMock;
@@ -300,7 +301,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                 try {
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase();
-                    java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+                    long now = System.currentTimeMillis();
                     long gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
                     log("GPS Start logging. Logid: " + gpsLogId);
@@ -405,7 +406,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                             try {
                                 if (isDatabaseLogging) {
                                     dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt,
-                                            lastGpsLocation.getSqlDate());
+                                            lastGpsLocation.getTime());
                                 }
                             } catch (Exception e) {
                                 // we log the exception and try to go on
@@ -426,7 +427,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         dbHelper.deleteGpslog(gpsLogId);
                     } else {
                         // set the end time stamp and the total distance for the track
-                        java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
+                        long end = System.currentTimeMillis();
                         dbHelper.setEndTs(gpsLogId, end);
                         dbHelper.setTrackLengthm(gpsLogId, (double) currentDistance);
                     }

@@ -4,6 +4,7 @@
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="app_name">Geopaparazzi</string>
+    <string name="app_file_name">Geopaparazzi Project Database</string>
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
     <string name="kmlsaved">Data successfully exported to: </string>
     <string name="kmlnonsaved">An error occurred during the data export!</string>
@@ -237,4 +238,13 @@
     <string name="save">save</string>
     <string name="goto_feature">go to</string>
     <string name="cancel">cancel</string>
+    <string name="project_info">project info</string>
+    <string name="description">description</string>
+    <string name="notes">notes</string>
+    <string name="last_closing_date">Last closing date</string>
+    <string name="creation_date">Creation date</string>
+    <string name="creation_user">Project creation user</string>
+    <string name="last_modification_user">Last project modification user</string>
+    <string name="mapsfolder">Maps folder</string>
+    <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
 </resources>

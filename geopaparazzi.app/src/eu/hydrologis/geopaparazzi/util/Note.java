@@ -24,73 +24,68 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.INote;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 
 /**
  * Represents a note (log or map).
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Note implements INote, KmlRepresenter, GpxRepresenter {
-    private final String name;
+    public static final String IMAGES_SEPARATOR = ";";
+    private final String simpleText;
     private final String description;
-    private final String timeStamp;
+    private final long timeStamp;
     private final long id;
+    private String style;
     private final double lon;
     private final double lat;
     private final double altim;
-    private final String category;
-    private final String section;
-    private final int type;
+    private final String form;
+    private final int isDirty;
     private List<String> images = null;
 
     /**
      * A wrapper for a note.
-     * 
-     * @param id the note's id.
-     * @param name the text of the note.
-     * @param description a description or the date if available.
-     * @param timeStamp the timestamp.
-     * @param lon lon
-     * @param lat lat
-     * @param altim elevation
-     * @param category the category.
-     * @param section the section .
-     * @param type teh type.
+     *
+     * @param id          the note's id.
+     * @param text        the simple text of the note.
+     * @param description a description for the note
+     * @param timeStamp   the timestamp.
+     * @param lon         lon
+     * @param lat         lat
+     * @param altim       elevation
+     * @param form        the form data .
+     * @param isDirty     isDirty flag.
      */
-    public Note( long id, String name, String description, String timeStamp, double lon, double lat, double altim,
-            String category, String section, int type ) {
+    public Note(long id, String text, String description, long timeStamp, double lon, double lat, double altim,
+                String form, int isDirty, String style) {
         this.id = id;
-        if (name != null) {
-            this.name = name;
+        this.style = style;
+        if (text != null) {
+            this.simpleText = text;
         } else {
-            this.name = ""; //$NON-NLS-1$
+            this.simpleText = ""; //$NON-NLS-1$
         }
         if (description != null) {
             this.description = description;
         } else {
             this.description = ""; //$NON-NLS-1$
         }
-        if (timeStamp != null) {
-            this.timeStamp = timeStamp;
-        } else {
-            this.timeStamp = ""; //$NON-NLS-1$
-        }
-        if (category != null) {
-            this.category = category;
-        } else {
-            this.category = ""; //$NON-NLS-1$
-        }
+        this.timeStamp = timeStamp;
         this.lon = lon;
         this.lat = lat;
         this.altim = altim;
-        this.section = section;
-        this.type = type;
+        this.form = form;
+        this.isDirty = isDirty;
     }
 
     public long getId() {
@@ -113,7 +108,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
     }
 
     public String getName() {
-        return name;
+        return simpleText;
     }
 
     /**
@@ -127,44 +122,44 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
      * @return form json.
      */
     public String getForm() {
-        return section;
+        return form;
+    }
+
+    public String getStyle() {
+        return style;
     }
 
     /**
-     * @return category.
+     * @return the isDirty.
      */
-    public String getCategory() {
-        return category;
-    }
-
-    /**
-     * @return the type.
-     */
-    public int getType() {
-        return type;
+    public int getIsDirty() {
+        return isDirty;
     }
 
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
         images = new ArrayList<String>();
-        String name = Utilities.makeXmlSafe(this.name);
+        String name = Utilities.makeXmlSafe(this.simpleText);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#info-icon</styleUrl>\n");
-        sB.append("<name>").append(name).append("</name>\n");
+        sB.append("<simpleText>").append(name).append("</simpleText>\n");
         sB.append("<description>\n");
 
-        if (section != null && section.length() > 0) {
+        if (form != null && form.length() > 0) {
+            DaoImages daoImages = new DaoImages();
+
+
             sB.append("<![CDATA[\n");
-            JSONObject sectionObject = new JSONObject(section);
+            JSONObject sectionObject = new JSONObject(form);
             if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
                 String sectionName = sectionObject.getString(FormUtilities.ATTR_SECTIONNAME);
                 sB.append("<h1>").append(sectionName).append("</h1>\n");
             }
 
             List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
-            for( String formName : formsNames ) {
+            for (String formName : formsNames) {
                 sB.append("<h2>").append(formName).append("</h2>\n");
 
                 sB.append("<table style=\"text-align: left; width: 100%;\" border=\"1\" cellpadding=\"5\" cellspacing=\"2\">");
@@ -172,7 +167,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
 
                 JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
                 JSONArray formItems = TagsManager.getFormItems(form4Name);
-                for( int i = 0; i < formItems.length(); i++ ) {
+                for (int i = 0; i < formItems.length(); i++) {
                     JSONObject formItem = formItems.getJSONObject(i);
                     if (!formItem.has(FormUtilities.TAG_KEY)) {
                         continue;
@@ -186,23 +181,24 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                         if (value.trim().length() == 0) {
                             continue;
                         }
-                        String[] imageSplit = value.split(";");
-                        for( String image : imageSplit ) {
-                            File imgFile = new File(image);
-                            String imgName = imgFile.getName();
+                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
+                        for (String imageId : imageIdsSplit) {
+                            Image image = daoImages.getImage(Long.parseLong(imageId));
+                            String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                             sB.append("<img src=\"" + imgName + "\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
-                            images.add(image);
+                            images.add(imageId);
                         }
                     } else if (type.equals(FormUtilities.TYPE_MAP)) {
                         if (value.trim().length() == 0) {
                             continue;
                         }
                         sB.append("<tr>");
+                        // FIXME
                         String image = value.trim();
                         File imgFile = new File(image);
                         String imgName = imgFile.getName();
@@ -215,17 +211,17 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                         if (value.trim().length() == 0) {
                             continue;
                         }
-                        String[] imageSplit = value.split(";");
-                        for( String image : imageSplit ) {
-                            File imgFile = new File(image);
-                            String imgName = imgFile.getName();
+                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
+                        for (String imageId : imageIdsSplit) {
+                            Image image = daoImages.getImage(Long.parseLong(imageId));
+                            String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                             sB.append("<img src=\"" + imgName + "\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
-                            images.add(image);
+                            images.add(imageId);
                         }
                     } else {
                         sB.append("<tr>");
@@ -242,7 +238,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                 sB.append("</table>");
             }
             sB.append("]]>\n");
-        } else if (description != null) {
+        } else {
             String description = Utilities.makeXmlSafe(this.description);
             sB.append(description);
             sB.append("\n");
@@ -263,10 +259,10 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         return images != null && images.size() > 0;
     }
 
-    public List<String> getImagePaths() {
+    public List<String> getImageIds() {
         if (images == null) {
             try {
-                images = FormUtilities.getImages(section);
+                images = FormUtilities.getImageIds(form);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -293,7 +289,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
     public String toGpxString() throws Exception {
         String description = Utilities.makeXmlSafe(this.description);
         description = description.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
-        String name = Utilities.makeXmlSafe(this.name);
+        String name = Utilities.makeXmlSafe(this.simpleText);
         name = name.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
         String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description);
         return wayPointString;

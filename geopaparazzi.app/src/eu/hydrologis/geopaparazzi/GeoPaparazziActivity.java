@@ -26,10 +26,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,6 +43,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,9 +58,9 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.forms.TagsManager;
@@ -80,9 +84,9 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActiv
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.database.DaoImages;
+import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.database.TableDescriptions;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
@@ -93,7 +97,10 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
+import eu.hydrologis.geopaparazzi.util.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
@@ -121,7 +128,6 @@ public class GeoPaparazziActivity extends Activity {
     private boolean sliderIsOpen = false;
     private SensorsManager sensorManager;
     private SlidingDrawer slidingDrawer;
-    private ProgressDialog initMapsdirDialog;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
@@ -129,12 +135,13 @@ public class GeoPaparazziActivity extends Activity {
 
     private static boolean checkedGps = false;
 
-    public void onCreate( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkIncomingProject();
 
         GpsServiceUtilities.startGpsService(this);
-        gpsServiceBroadcastReceiver = new BroadcastReceiver(){
-            public void onReceive( Context context, Intent intent ) {
+        gpsServiceBroadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
                 onGpsServiceUpdate(intent);
                 checkFirstTimeGps(context);
             }
@@ -172,6 +179,19 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
 
+    }
+
+    private void checkIncomingProject() {
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String path = data.getEncodedPath();
+            if (path.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                Editor editor = preferences.edit();
+                editor.putString(PREFS_KEY_DATABASE_TO_LOAD, path);
+                editor.commit();
+            }
+        }
     }
 
     @SuppressLint("DefaultLocale")
@@ -248,12 +268,12 @@ public class GeoPaparazziActivity extends Activity {
                         int notesNum = 0;
                         int bookmarksNum = 0;
                         if (sms2Data.size() > 0) {
-                            for( SmsData smsData : sms2Data ) {
+                            for (SmsData smsData : sms2Data) {
                                 String text = smsData.text.replaceAll("\\_", " "); //$NON-NLS-1$//$NON-NLS-2$
                                 if (smsData.TYPE == SmsData.NOTE) {
-                                    String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(new Date());
-                                    DaoNotes.addNote(smsData.x, smsData.y, smsData.z, dateStr, text, NoteType.POI.getDef(), null,
-                                            NoteType.POI.getTypeNum());
+                                    long timestamp = new Date().getTime();
+                                    DaoNotes.addNote(smsData.x, smsData.y, smsData.z, timestamp, text, "SMS", null,
+                                            null);
                                     notesNum++;
                                 } else if (smsData.TYPE == SmsData.BOOKMARK) {
                                     DaoBookmarks.addBookmark(smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
@@ -276,7 +296,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private void checkMapsLoadingFinished() {
         int maxTimes = 0;
-        while (!MapsDirManager.getInstance().finishedLoading() && maxTimes++ < 200){ // max wait 60 seconds
+        while (!MapsDirManager.getInstance().finishedLoading() && maxTimes++ < 200) { // max wait 60 seconds
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -287,7 +307,6 @@ public class GeoPaparazziActivity extends Activity {
 
     @Override
     protected void onPause() {
-        Utilities.dismissProgressDialog(initMapsdirDialog);
         super.onPause();
     }
 
@@ -297,12 +316,12 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     @Override
-    public void onConfigurationChanged( Configuration newConfig ) {
+    public void onConfigurationChanged(Configuration newConfig) {
         // avoid oncreate call when rotating device
         super.onConfigurationChanged(newConfig);
     }
 
-    public void onWindowFocusChanged( boolean hasFocus ) {
+    public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         checkActionBar();
     }
@@ -313,8 +332,8 @@ public class GeoPaparazziActivity extends Activity {
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
 
             final ImageButton menuButton = actionBar.getMenuButton();
-            menuButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            menuButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     openContextMenu(menuButton);
                 }
             });
@@ -324,17 +343,12 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void initializeResourcesManager() throws Exception {
-        Object stateObj = getLastNonConfigurationInstance();
-        if (stateObj instanceof ResourcesManager) {
-            resourcesManager = (ResourcesManager) stateObj;
-        } else {
-            ResourcesManager.resetManager();
-            resourcesManager = ResourcesManager.getInstance(this);
-        }
+        ResourcesManager.resetManager();
+        resourcesManager = ResourcesManager.getInstance(this);
 
         if (resourcesManager == null) {
             Utilities.yesNoMessageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
-                    new Runnable(){
+                    new Runnable() {
                         public void run() {
                             ResourcesManager.setUseInternalMemory(true);
                             try {
@@ -344,11 +358,12 @@ public class GeoPaparazziActivity extends Activity {
                                 e.printStackTrace();
                             }
                         }
-                    }, new Runnable(){
+                    }, new Runnable() {
                         public void run() {
                             finish();
                         }
-                    });
+                    }
+            );
         } else {
             initIfOk();
         }
@@ -357,7 +372,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private void initIfOk() {
         if (resourcesManager == null) {
-            Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable(){
+            Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable() {
                 public void run() {
                     finish();
                 }
@@ -380,25 +395,25 @@ public class GeoPaparazziActivity extends Activity {
          */
         final int notesButtonId = R.id.dashboard_note_item_button;
         ImageButton notesButton = (ImageButton) findViewById(notesButtonId);
-        notesButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        notesButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(notesButtonId, v);
             }
         });
 
-        final int undoNotesButtonId = R.id.dashboard_undonote_item_button;
-        ImageButton undoNotesButton = (ImageButton) findViewById(undoNotesButtonId);
-        undoNotesButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                push(undoNotesButtonId, v);
+        final int projectMetadataButtonId = R.id.dashboard_projectmetadata_item_button;
+        ImageButton projectMetadataButton = (ImageButton) findViewById(projectMetadataButtonId);
+        projectMetadataButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                push(projectMetadataButtonId, v);
             }
         });
 
         final int logButtonId = R.id.dashboard_log_item_button;
         logButton = (ImageButton) findViewById(logButtonId);
         // isChecked = applicationManager.isGpsLogging();
-        logButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        logButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(logButtonId, v);
             }
         });
@@ -410,24 +425,24 @@ public class GeoPaparazziActivity extends Activity {
 
         final int mapButtonId = R.id.dashboard_map_item_button;
         ImageButton mapButton = (ImageButton) findViewById(mapButtonId);
-        mapButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        mapButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(mapButtonId, v);
             }
         });
 
         final int importButtonId = R.id.dashboard_import_item_button;
         ImageButton importButton = (ImageButton) findViewById(importButtonId);
-        importButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        importButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(importButtonId, v);
             }
         });
 
         final int exportButtonId = R.id.dashboard_export_item_button;
         ImageButton exportButton = (ImageButton) findViewById(exportButtonId);
-        exportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        exportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(exportButtonId, v);
             }
         });
@@ -435,12 +450,12 @@ public class GeoPaparazziActivity extends Activity {
         // slidingdrawer
         final int slidingId = R.id.slide;
         slidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
+        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
             public void onDrawerOpened() {
                 sliderIsOpen = true;
             }
         });
-        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
             public void onDrawerClosed() {
                 sliderIsOpen = false;
             }
@@ -449,15 +464,15 @@ public class GeoPaparazziActivity extends Activity {
         // panic buttons part
         final int panicButtonId = R.id.panicbutton;
         Button panicButton = (Button) findViewById(panicButtonId);
-        panicButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        panicButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(panicButtonId, v);
             }
         });
         final int statusUpdateButtonId = R.id.statusupdatebutton;
         Button statusUpdateButton = (Button) findViewById(statusUpdateButtonId);
-        statusUpdateButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        statusUpdateButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(statusUpdateButtonId, v);
             }
         });
@@ -466,8 +481,8 @@ public class GeoPaparazziActivity extends Activity {
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
 
-        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
-                + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
+        //        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
+        //                + resourcesManager.getDatabaseFile().getAbsolutePath(), Toast.LENGTH_LONG);
 
         // check for screen on
         boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
@@ -486,10 +501,12 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    private void initMapsDirManager() throws jsqlite.Exception, IOException, FileNotFoundException {
+    private void initMapsDirManager() throws jsqlite.Exception, IOException {
         MapsDirManager.reset();
 
-        initMapsdirDialog = new ProgressDialog(this);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
+        final ProgressDialog initMapsdirDialog = new ProgressDialog(this);
         initMapsdirDialog.setCancelable(true);
         initMapsdirDialog.setTitle(getString(R.string.maps_manager));
         initMapsdirDialog.setMessage(getString(R.string.loading_maps));
@@ -498,8 +515,8 @@ public class GeoPaparazziActivity extends Activity {
         initMapsdirDialog.setIndeterminate(true);
         initMapsdirDialog.show();
 
-        AsyncTask<String, Void, String> asyncTask = new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        AsyncTask<String, Void, String> asyncTask = new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 try {
                     MapsDirManager.getInstance().init(GeoPaparazziActivity.this, null);
                     return "";
@@ -507,11 +524,14 @@ public class GeoPaparazziActivity extends Activity {
                     return "ERROR: " + e.getLocalizedMessage();
                 }
             }
-            protected void onPostExecute( String response ) { // on UI thread!
+
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(initMapsdirDialog);
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
                 }
+
+//                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
             }
         };
         try {
@@ -529,132 +549,128 @@ public class GeoPaparazziActivity extends Activity {
 
     /**
      * Push action.
-     * 
+     *
      * @param id the calling id.
-     * @param v parent view.
+     * @param v  parent view.
      */
-    public void push( int id, View v ) {
-        switch( id ) {
-        case R.id.dashboard_note_item_button: {
-            boolean isValid = false;
-            if (lastGpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
-                if (gpsLocation != null) {
-                    try {
-                        Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
-                        startActivity(mapTagsIntent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+    public void push(int id, View v) {
+        switch (id) {
+            case R.id.dashboard_note_item_button: {
+                boolean isValid = false;
+                if (lastGpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+                    if (gpsLocation != null) {
+                        try {
+                            Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
+                            startActivity(mapTagsIntent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        isValid = true;
                     }
-                    isValid = true;
                 }
+                if (!isValid)
+                    Utilities.messageDialog(this, R.string.gpslogging_only, null);
+
+                break;
             }
-            if (!isValid)
-                Utilities.messageDialog(this, R.string.gpslogging_only, null);
-
-            break;
-        }
-        case R.id.dashboard_undonote_item_button: {
-            Utilities.yesNoMessageDialog(this, getString(R.string.remove_last_note_prompt), new Runnable(){
-                public void run() {
-                    try {
-                        DaoNotes.deleteLastInsertedNote();
-                        Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
-                    } catch (IOException e) {
-                        GPLog.error(this, e.getLocalizedMessage(), e);
-                        e.printStackTrace();
-                        Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
-                    }
+            case R.id.dashboard_projectmetadata_item_button: {
+                try {
+                    Intent projectMetadataIntent = new Intent(this, ProjectMetadataActivity.class);
+                    startActivity(projectMetadataIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }, null);
 
-            break;
-        }
-        case R.id.dashboard_log_item_button: {
-            final GPApplication appContext = GeopaparazziApplication.getInstance();
-            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
-                        new Runnable(){
-                            public void run() {
-                                runOnUiThread(new Runnable(){
-                                    public void run() {
-                                        // stop logging
-                                        GpsServiceUtilities.stopDatabaseLogging(appContext);
-                                        logButton.setImageResource(R.drawable.dashboard_log_item);
-                                        actionBar.checkLogging();
-                                    }
-                                });
-                            }
-                        }, null);
-
-            } else {
-                // start logging
-                final Context context = this;
-                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
-
-                    Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
-                            defaultLogName, new TextRunnable(){
+                break;
+            }
+            case R.id.dashboard_log_item_button: {
+                final GPApplication appContext = GeopaparazziApplication.getInstance();
+                if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                    Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
+                            new Runnable() {
                                 public void run() {
-                                    runOnUiThread(new Runnable(){
+                                    runOnUiThread(new Runnable() {
                                         public void run() {
-                                            String newName = theTextToRunOn;
-                                            if (newName == null || newName.length() < 1) {
-                                                newName = defaultLogName;
-                                            }
-
-                                            logButton.setImageResource(R.drawable.dashboard_stop_log_item);
-                                            GpsServiceUtilities.startDatabaseLogging(appContext, newName,
-                                                    DaoGpsLog.class.getCanonicalName());
+                                            // stop logging
+                                            GpsServiceUtilities.stopDatabaseLogging(appContext);
+                                            logButton.setImageResource(R.drawable.dashboard_log_item);
                                             actionBar.checkLogging();
-                                            DataManager.getInstance().setLogsVisible(true);
                                         }
                                     });
                                 }
-                            });
+                            }, null
+                    );
 
                 } else {
-                    Utilities.messageDialog(context, R.string.gpslogging_only, null);
-                }
-            }
+                    // start logging
+                    final Context context = this;
+                    if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                        final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
-            break;
-        }
-        case R.id.dashboard_map_item_button: {
-            if (!MapsDirManager.getInstance().finishedLoading()) {
-                Utilities.messageDialog(this, getString(R.string.maps_loading_not_finished_yet), null);
-                return;
+                        Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
+                                defaultLogName, new TextRunnable() {
+                                    public void run() {
+                                        runOnUiThread(new Runnable() {
+                                            public void run() {
+                                                String newName = theTextToRunOn;
+                                                if (newName == null || newName.length() < 1) {
+                                                    newName = defaultLogName;
+                                                }
+
+                                                logButton.setImageResource(R.drawable.dashboard_stop_log_item);
+                                                GpsServiceUtilities.startDatabaseLogging(appContext, newName,
+                                                        DefaultHelperClasses.GPSLOG_HELPER_CLASS);
+                                                actionBar.checkLogging();
+                                                DataManager.getInstance().setLogsVisible(true);
+                                            }
+                                        });
+                                    }
+                                }
+                        );
+
+                    } else {
+                        Utilities.messageDialog(context, R.string.gpslogging_only, null);
+                    }
+                }
+
+                break;
             }
-            Intent mapIntent = new Intent(this, MapsActivity.class);
-            startActivity(mapIntent);
-            break;
-        }
-        case R.id.dashboard_import_item_button: {
-            Intent exportIntent = new Intent(this, ImportActivity.class);
-            startActivity(exportIntent);
-            break;
-        }
-        case R.id.dashboard_export_item_button: {
-            Intent exportIntent = new Intent(this, ExportActivity.class);
-            startActivity(exportIntent);
-            break;
-        }
-        case R.id.panicbutton: {
-            sendPosition(true);
-            break;
-        }
-        case R.id.statusupdatebutton: {
-            sendPosition(false);
-            break;
-        }
-        default:
-            break;
+            case R.id.dashboard_map_item_button: {
+                if (!MapsDirManager.getInstance().finishedLoading()) {
+                    Utilities.messageDialog(this, getString(R.string.maps_loading_not_finished_yet), null);
+                    return;
+                }
+                Intent mapIntent = new Intent(this, MapsActivity.class);
+                startActivity(mapIntent);
+                break;
+            }
+            case R.id.dashboard_import_item_button: {
+                Intent exportIntent = new Intent(this, ImportActivity.class);
+                startActivity(exportIntent);
+                break;
+            }
+            case R.id.dashboard_export_item_button: {
+                Intent exportIntent = new Intent(this, ExportActivity.class);
+                startActivity(exportIntent);
+                break;
+            }
+            case R.id.panicbutton: {
+                sendPosition(true);
+                break;
+            }
+            case R.id.statusupdatebutton: {
+                sendPosition(false);
+                break;
+            }
+            default:
+                break;
         }
     }
 
     @Override
-    public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 0, R.string.mapsactivity_menu_tilesource).setIcon(R.drawable.ic_menu_tilesource);
         menu.add(Menu.NONE, MENU_RESET, 1, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
@@ -665,32 +681,32 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     @Override
-    public boolean onContextItemSelected( MenuItem item ) {
-        switch( item.getItemId() ) {
-        case MENU_ABOUT:
-            Intent intent = new Intent(this, AboutActivity.class);
-            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
-            startActivity(intent);
-            return true;
-        case MENU_SETTINGS:
-            Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
-            startActivity(preferencesIntent);
-            return true;
-        case MENU_RESET:
-            resetData();
-            return true;
-        case MENU_LOAD:
-            Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-            browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
-            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getApplicationDir()
-                    .getAbsolutePath());
-            startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
-            return true;
-        case MENU_EXIT:
-            finish();
-            return true;
-        case MENU_TILE_SOURCE_ID:
-            startMapsDirTreeViewList();
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ABOUT:
+                Intent intent = new Intent(this, AboutActivity.class);
+                intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
+                startActivity(intent);
+                return true;
+            case MENU_SETTINGS:
+                Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
+                startActivity(preferencesIntent);
+                return true;
+            case MENU_RESET:
+                createNewProject();
+                return true;
+            case MENU_LOAD:
+                Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getSdcardDir()
+                        .getAbsolutePath());
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
+                return true;
+            case MENU_EXIT:
+                finish();
+                return true;
+            case MENU_TILE_SOURCE_ID:
+                startMapsDirTreeViewList();
         }
 
         return super.onContextItemSelected(item);
@@ -698,15 +714,15 @@ public class GeoPaparazziActivity extends Activity {
 
     /**
      * Start the Dialog to select a map
-     *
+     * <p/>
      * <p>
      * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
      * - when first called this list will build a directory/file list AND a map-type/Directory/File list
      * - once created, this list will be retained during the Application
      * - the user can switch from a sorted list as Directory/File OR Map-Type/Directory/File view
      * </p>
-     *  result will be sent to MapDirManager and saved there and stored to preferences
-     *  - when the MapView is created, this stored value will be read and loaded
+     * result will be sent to MapDirManager and saved there and stored to preferences
+     * - when the MapView is created, this stored value will be read and loaded
      */
     private void startMapsDirTreeViewList() {
         try {
@@ -718,115 +734,74 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch( requestCode ) {
-        case MAPSDIR_FILETREE: {
-            if (resultCode == Activity.RESULT_OK) {
-                // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
-                // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
-                // selected_classinfo will contain all information about the map
-                // MapsDirManager will store this internally and store the values to preferences
-                // - if this is called from a non-Map-Activity:
-                // -- the map_view parameter and the position parameter MUST be null
-                // - if this is called from a Map-Activity:
-                // -- the map_view parameter and the position parameter should be given
-                // --- the position parameter is not given [null], it will use the position of the
-                // map_view
-                // -- if not null : selected_MapClassInfo() will call
-                // MapsDirManager.load_Map(map_view,mapCenterLocation);
+        switch (requestCode) {
+            case MAPSDIR_FILETREE: {
+                if (resultCode == Activity.RESULT_OK) {
+                    // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
+                    // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
+                    // selected_classinfo will contain all information about the map
+                    // MapsDirManager will store this internally and store the values to preferences
+                    // - if this is called from a non-Map-Activity:
+                    // -- the map_view parameter and the position parameter MUST be null
+                    // - if this is called from a Map-Activity:
+                    // -- the map_view parameter and the position parameter should be given
+                    // --- the position parameter is not given [null], it will use the position of the
+                    // map_view
+                    // -- if not null : selected_MapClassInfo() will call
+                    // MapsDirManager.load_Map(map_view,mapCenterLocation);
 
-                // if (MapsDirTreeViewList.selected_classinfo != null) {
-                // MapsDirManager.getInstance().selectMapClassInfo(this,
-                // MapsDirTreeViewList.selected_classinfo, null, null);
-                // }
-            }
-        }
-            break;
-        case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
-            if (resultCode == Activity.RESULT_OK) {
-                String chosenFolderToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                    Editor editor = preferences.edit();
-                    editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
-                    editor.commit();
-
-                    GeopaparazziApplication.getInstance().closeDatabase();
-                    ResourcesManager.resetManager();
-
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
+                    // if (MapsDirTreeViewList.selected_classinfo != null) {
+                    // MapsDirManager.getInstance().selectMapClassInfo(this,
+                    // MapsDirTreeViewList.selected_classinfo, null, null);
+                    // }
                 }
             }
             break;
-        }
-        case (RETURNCODE_NOTES): {
-            if (resultCode == Activity.RESULT_OK) {
-                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
-                if (noteArray != null) {
-                    try {
-                        double lon = Double.parseDouble(noteArray[0]);
-                        double lat = Double.parseDouble(noteArray[1]);
-                        double elev = Double.parseDouble(noteArray[2]);
-                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(), null,
-                                NoteType.POI.getTypeNum());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+            case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
+                if (resultCode == Activity.RESULT_OK) {
+                    String databasePathToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                    if (databasePathToLoad != null && new File(databasePathToLoad).exists()) {
+                        setNewDatabase(databasePathToLoad);
+
+                        recreateActivity();
                     }
                 }
+                break;
             }
-            break;
-        }
-        case (RETURNCODE_PICS): {
-            if (resultCode == Activity.RESULT_OK) {
-                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (relativeImagePath != null) {
-                    File imgFile = new File(resourcesManager.getMediaDir().getParentFile(), relativeImagePath);
-                    if (!imgFile.exists()) {
-                        return;
-                    }
-                    try {
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                        DaoImages.addImage(lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "", relativeImagePath);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+            case (RETURNCODE_NOTES): {
+                if (resultCode == Activity.RESULT_OK) {
+                    String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                    if (noteArray != null) {
+                        try {
+                            double lon = Double.parseDouble(noteArray[0]);
+                            double lat = Double.parseDouble(noteArray[1]);
+                            double elev = Double.parseDouble(noteArray[2]);
+                            DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], "POI", null,
+                                    null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                        }
                     }
                 }
+                break;
             }
-            break;
         }
-        case (RETURNCODE_SKETCH): {
-            if (data != null) {
-                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (absoluteImagePath != null) {
-                    File imgFile = new File(absoluteImagePath);
-                    if (!imgFile.exists()) {
-                        return;
-                    }
-                    try {
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+    }
 
-                        DaoImages.addImage(lon, lat, elev, -9999.0, new java.sql.Date(new Date().getTime()), "",
-                                absoluteImagePath);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
-                }
-            }
-            break;
-        }
+    private void setNewDatabase(String databasePathToLoad) {
+        try {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            Editor editor = preferences.edit();
+            editor.putString(LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD, databasePathToLoad);
+            editor.commit();
+            GeopaparazziApplication.getInstance().closeDatabase();
+            ResourcesManager.resetManager();
+            GeopaparazziApplication.getInstance().getDatabase();
+        } catch (IOException e) {
+            Utilities.errorDialog(this, e, null);
         }
     }
 
@@ -834,27 +809,27 @@ public class GeoPaparazziActivity extends Activity {
     private long previousBackTime = System.currentTimeMillis();
     private ImageButton logButton;
 
-    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button
         // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
-        switch( keyCode ) {
-        case KeyEvent.KEYCODE_BACK:
-            if (sliderIsOpen) {
-                slidingDrawer.animateClose();
-            }
-            backCount++;
-            long backTime = System.currentTimeMillis();
-
-            if (backTime - previousBackTime < 1000) {
-                if (backCount > 10) {
-                    Intent hiddenIntent = new Intent(this, SecretActivity.class);
-                    startActivity(hiddenIntent);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (sliderIsOpen) {
+                    slidingDrawer.animateClose();
                 }
-            } else {
-                backCount = 0;
-            }
-            previousBackTime = backTime;
-            return true;
+                backCount++;
+                long backTime = System.currentTimeMillis();
+
+                if (backTime - previousBackTime < 1000) {
+                    if (backCount > 10) {
+                        Intent hiddenIntent = new Intent(this, SecretActivity.class);
+                        startActivity(hiddenIntent);
+                    }
+                } else {
+                    backCount = 0;
+                }
+                previousBackTime = backTime;
+                return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -863,6 +838,9 @@ public class GeoPaparazziActivity extends Activity {
         try {
             if (GPLog.LOG)
                 Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            // set last closing timestamp
+            DaoMetadata.setValue(TableDescriptions.MetadataTableFields.KEY_LASTTS.getFieldName(), new Date().getTime() + "");
 
             TagsManager.reset(this);
 
@@ -903,47 +881,36 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    // private void clearCacheIfneeded() {
-    // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-    // boolean exitCalled = preferences.getBoolean("EXIT_THROUGH_FINISH", true);
-    // Editor edit = preferences.edit();
-    // edit.putBoolean("EXIT_THROUGH_FINISH", false);
-    // edit.commit();
-    // if (exitCalled) {
-    // File cache = getCacheDir();
-    // if (cache.exists()) {
-    // GPLog.addLogEntry(this, "Deleting cache folder: " + cache);
-    // FileUtilities.deleteFileOrDir(cache);
-    // }
-    // }
-    // }
-
-    private void resetData() {
+    private void createNewProject() {
         final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
         final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
 
-        final File applicationParentDir = resourcesManager.getApplicationParentDir();
-        final String newGeopaparazziDirName = Constants.GEOPAPARAZZI
+        final File sdcardDir = resourcesManager.getSdcardDir();
+        final String newGeopaparazziProjectName = Constants.GEOPAPARAZZI
                 + "_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
-        dialog.getWindow().setBackgroundDrawableResource(getResources().getColor(android.R.color.transparent));
         final TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(enterNewProjectString);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         final Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-        editText.setText(newGeopaparazziDirName);
-        editText.addTextChangedListener(new TextWatcher(){
-            public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        editText.setText(newGeopaparazziProjectName);
+        editText.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // ignore
             }
-            public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // ignore
             }
-            public void afterTextChanged( Editable s ) {
+
+            public void afterTextChanged(Editable s) {
                 String newName = s.toString();
-                File newProjectFile = new File(applicationParentDir, newName);
+                if (!newName.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
+                    newName = newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
+                }
+                File newProjectFile = new File(sdcardDir, newName);
                 if (newName.length() < 1) {
                     text.setText(enterNewProjectString);
                     yesButton.setEnabled(false);
@@ -956,22 +923,18 @@ public class GeoPaparazziActivity extends Activity {
                 }
             }
         });
-        yesButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 try {
                     Editable value = editText.getText();
                     String newName = value.toString();
                     GeopaparazziApplication.getInstance().closeDatabase();
-                    File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
-                    if (!newGeopaparazziDirFile.mkdir()) {
-                        throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
-                    }
-                    ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(GeoPaparazziActivity.this,
-                            newGeopaparazziDirFile.getAbsolutePath());
+                    File newGeopaparazziFile = new File(sdcardDir.getAbsolutePath(), newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                    setNewDatabase(newGeopaparazziFile.getAbsolutePath());
+                    dialog.dismiss();
 
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
+                    recreateActivity();
+
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
@@ -979,22 +942,58 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
         Button cancelButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
-        cancelButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
+    }
+
+    private void recreateActivity() {
+        if (gpsServiceBroadcastReceiver != null) {
+            GpsServiceUtilities.stopDatabaseLogging(this);
+            GpsServiceUtilities.stopGpsService(this);
+            GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
+        }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= 11) {
+                    recreate();
+                } else {
+                    Intent intent = getIntent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    finish();
+                    overridePendingTransition(0, 0);
+
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                }
+            }
+        }, 10);
+
+
     }
 
     /**
      * Check for:
-     *  visibility of gpslogs (turned on or off?)
+     * visibility of gpslogs (turned on or off?)
      */
     private static void checkMapsAndLogsVisibility() throws IOException {
         List<LogMapItem> maps = DaoGpsLog.getGpslogs();
         boolean oneVisible = false;
-        for( LogMapItem item : maps ) {
+        for (LogMapItem item : maps) {
             if (!oneVisible && item.isVisible()) {
                 oneVisible = true;
             }
@@ -1002,16 +1001,11 @@ public class GeoPaparazziActivity extends Activity {
         DataManager.getInstance().setLogsVisible(oneVisible);
     }
 
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        return resourcesManager;
-    }
-
     /**
      * Send the panic or status update message.
      */
     @SuppressWarnings("nls")
-    private void sendPosition( boolean isPanic ) {
+    private void sendPosition(boolean isPanic) {
         if (isPanic) {
             String lastPosition = getString(R.string.help_needed);
             String[] panicNumbers = GpUtilities.getPanicNumbers(this);
@@ -1019,7 +1013,7 @@ public class GeoPaparazziActivity extends Activity {
                 String positionText = SmsUtilities.createPositionText(this, lastPosition);
                 SmsUtilities.sendSMSViaApp(this, "", positionText);
             } else {
-                for( String number : panicNumbers ) {
+                for (String number : panicNumbers) {
                     number = number.trim();
                     if (number.length() == 0) {
                         continue;
@@ -1037,7 +1031,7 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-    private void onGpsServiceUpdate( Intent intent ) {
+    private void onGpsServiceUpdate(Intent intent) {
         lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
@@ -1048,12 +1042,12 @@ public class GeoPaparazziActivity extends Activity {
                 lastGpsStatusExtras, lastPositiontime);
     }
 
-    private void checkFirstTimeGps( Context context ) {
+    private void checkFirstTimeGps(Context context) {
         if (!checkedGps) {
             checkedGps = true;
             if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
                 String prompt = getResources().getString(R.string.prompt_gpsenable);
-                Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                Utilities.yesNoMessageDialog(context, prompt, new Runnable() {
                     public void run() {
                         Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(gpsOptionsIntent);

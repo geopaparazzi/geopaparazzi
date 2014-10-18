@@ -40,6 +40,7 @@ import java.util.List;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -89,15 +90,15 @@ public class SelectionTool extends MapTool {
         super(mapView);
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
-        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int stroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
+        int fill = ColorUtilities.getColor(ColorUtilities.selection_fill);
         selectRectPaintFill.setAntiAlias(true);
-        selectRectPaintFill.setColor(Color.RED);
+        selectRectPaintFill.setColor(fill);
         selectRectPaintFill.setAlpha(80);
         selectRectPaintFill.setStyle(Paint.Style.FILL);
         selectRectPaintStroke.setAntiAlias(true);
         selectRectPaintStroke.setStrokeWidth(1.5f);
-        selectRectPaintStroke.setColor(Color.YELLOW);
+        selectRectPaintStroke.setColor(stroke);
         selectRectPaintStroke.setStyle(Paint.Style.STROKE);
     }
 

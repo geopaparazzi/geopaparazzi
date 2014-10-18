@@ -169,7 +169,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         if (parent != null)
             parent.removeAllViews();
-        parent = null;
     }
 
     public void onClick(View v) {

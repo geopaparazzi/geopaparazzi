@@ -26,6 +26,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
@@ -45,11 +46,13 @@ import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
@@ -126,13 +129,15 @@ public class CutExtendTool extends MapTool {
         drawingPaintStroke.setColor(Color.RED);
         drawingPaintStroke.setStyle(Paint.Style.STROKE);
 
+        int previewStroke = ColorUtilities.getColor(ColorUtilities.preview_stroke);
+        int previewFill = ColorUtilities.getColor(ColorUtilities.preview_fill);
         selectedPreviewGeometryPaintFill.setAntiAlias(true);
-        selectedPreviewGeometryPaintFill.setColor(Color.GRAY);
+        selectedPreviewGeometryPaintFill.setColor(previewFill);
         selectedPreviewGeometryPaintFill.setAlpha(180);
         selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
-        selectedPreviewGeometryPaintStroke.setColor(Color.DKGRAY);
+        selectedPreviewGeometryPaintStroke.setColor(previewStroke);
         selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
     }
@@ -310,6 +315,8 @@ public class CutExtendTool extends MapTool {
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(context, response, null);
                 } else {
+                    Utilities.toast(context, context.getString(R.string.preview_mode_save_warning), Toast.LENGTH_SHORT);
+
                     EditManager.INSTANCE.invalidateEditingView();
 
                     ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();

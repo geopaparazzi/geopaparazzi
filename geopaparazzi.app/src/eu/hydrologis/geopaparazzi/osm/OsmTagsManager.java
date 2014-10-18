@@ -144,7 +144,7 @@ public class OsmTagsManager {
      */
     public synchronized File getTagsFolderFile( Context context ) throws Exception {
         if (tagsFolderFile == null) {
-            File geoPaparazziDir = ResourcesManager.getInstance(context).getApplicationDir();
+            File geoPaparazziDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
             tagsFolderFile = new File(geoPaparazziDir.getParentFile(), TAGSFOLDERNAME);
         }
         return tagsFolderFile;

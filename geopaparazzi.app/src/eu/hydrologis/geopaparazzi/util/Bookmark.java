@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.util;
 import java.util.Collections;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -181,7 +182,9 @@ public class Bookmark implements KmlRepresenter {
         return false;
     }
 
-    public List<String> getImagePaths() {
+    @Override
+    public List<String> getImageIds() {
         return Collections.emptyList();
     }
+
 }

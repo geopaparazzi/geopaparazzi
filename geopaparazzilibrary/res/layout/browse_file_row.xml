@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:background="@color/main_background">
 
     <LinearLayout
+        android:id="@+id/upperline"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@drawable/border_1px"
-        android:orientation="vertical" >
-    </LinearLayout>
+        android:layout_alignParentTop="true"
+        android:background="@color/main_decorations"
+        android:orientation="horizontal" />
+
+    <ImageView
+        android:id="@+id/fileIconView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/upperline"
+        android:src="@drawable/ic_filebrowser_folder" />
 
     <TextView
         android:id="@+id/browselist_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/fileIconView"
+        android:layout_toRightOf="@+id/fileIconView"
         android:background="@color/main_background"
-        android:padding="15dp"
         android:text="asdasdadsd"
-        android:textColor="@color/main_text_color_neutral" />
+        android:textColor="@color/main_text_color" />
 
     <LinearLayout
+        android:id="@+id/lowerline"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@drawable/border_1px"
-        android:orientation="vertical" >
-    </LinearLayout>
+        android:layout_below="@+id/fileIconView"
+        android:background="@color/main_decorations"
+        android:orientation="horizontal" />
 
-</LinearLayout>
+
+</RelativeLayout>

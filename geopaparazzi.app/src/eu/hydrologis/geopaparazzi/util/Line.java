@@ -20,8 +20,10 @@ package eu.hydrologis.geopaparazzi.util;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -218,8 +220,9 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         return false;
     }
 
-    public List<String> getImagePaths() {
-        return null;
+    @Override
+    public List<String> getImageIds() {
+        return Collections.emptyList();
     }
 
     private void calculateBounds() {

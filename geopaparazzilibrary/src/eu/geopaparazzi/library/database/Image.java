@@ -15,58 +15,79 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.util;
+package eu.geopaparazzi.library.database;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents an image.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Image implements INote, KmlRepresenter {
     /**
-     * 
+     * Image name.
      */
-    public static final String IMAGE_NOTE = "image note";
     private String name;
+    /**
+     * Image database id.
+     */
     private final long id;
+
+    /**
+     * Image longitude.
+     */
     private final double lon;
+    /**
+     * Image latitude.
+     */
     private final double lat;
+    /**
+     * Image elevation.
+     */
     private final double altim;
+    /**
+     * Image azimuth.
+     */
     private final double azim;
-    private final String path;
-    private final String ts;
+    /**
+     * Id of the image data.
+     */
+    private final long imageDataId;
+    /**
+     * Connected note id.
+     */
+    private long noteId;
+
+    private final long ts;
 
     /**
      * A wrapper for an image.
-     * 
-     * @param id the image id.
-     * @param name the text of the note.
-     * @param lon lon
-     * @param lat lat
-     * @param altim elevation
-     * @param azim azimuth
-     * @param path image path.
-     * @param ts the timestamp.
+     *
+     * @param id          the image id.
+     * @param name        the text of the note.
+     * @param lon         lon
+     * @param lat         lat
+     * @param altim       elevation
+     * @param azim        azimuth
+     * @param imageDataId image data id.
+     * @param noteId      note id.
+     * @param ts          the timestamp.
      */
-    public Image( long id, String name, double lon, double lat, double altim, double azim, String path, String ts ) {
+    public Image(long id, String name, double lon, double lat, double altim, double azim, long imageDataId, long noteId, long ts) {
         this.id = id;
-        if (name != null) {
-            this.name = name;
-        } else {
-            this.name = IMAGE_NOTE;
-        }
+        this.noteId = noteId;
+        this.name = name;
         this.lon = lon;
         this.lat = lat;
         this.altim = altim;
         this.azim = azim;
-        this.path = path;
+        this.imageDataId = imageDataId;
         this.ts = ts;
     }
 
@@ -83,7 +104,7 @@ public class Image implements INote, KmlRepresenter {
     }
 
     /**
-     * @return teh elevation.
+     * @return the elevation.
      */
     public double getAltim() {
         return altim;
@@ -97,36 +118,33 @@ public class Image implements INote, KmlRepresenter {
     }
 
     public String getName() {
-        if (name.length() == 0) {
-            name = IMAGE_NOTE;
-        }
         return name;
     }
 
     /**
-     * @return the image path.
+     * @return the image data id.
      */
-    public String getPath() {
-        return path;
+    public long getImageDataId() {
+        return imageDataId;
+    }
+
+    public long getNoteId() {
+        return noteId;
     }
 
     /**
      * @return the timestamp.
      */
-    public String getTs() {
+    public long getTs() {
         return ts;
     }
 
     @SuppressWarnings("nls")
     public String toKmlString() {
-        File img = new File(path);
-        String imgName = img.getName();
-
-        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         if (name != null && name.length() > 0) {
-            sB.append("<name>").append(name).append(" (").append(ts).append(")").append("</name>\n");
+            sB.append("<name>").append(name).append("</name>\n");
         } else {
             sB.append("<name>").append(ts).append("</name>\n");
         }
@@ -134,7 +152,7 @@ public class Image implements INote, KmlRepresenter {
         sB.append("<html><head><title></title>");
         sB.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">");
         sB.append("</head><body>");
-        sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+        sB.append("<img src=\"" + name + "\" width=\"300\">");
         sB.append("</body></html>]]></description>\n");
         // sB.append("<styleUrl>#yellow-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#camera-icon</styleUrl>\n");
@@ -151,9 +169,7 @@ public class Image implements INote, KmlRepresenter {
         return true;
     }
 
-    public List<String> getImagePaths() {
-        List<String> imgs = new ArrayList<String>();
-        imgs.add(path);
-        return imgs;
+    public List<String> getImageIds() {
+        return Arrays.asList(id + "");
     }
 }

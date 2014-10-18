@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -28,7 +27,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import java.io.File;
@@ -41,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -113,27 +112,8 @@ public class ExportActivity extends Activity {
                     return;
                 }
 
-                Builder builder = new AlertDialog.Builder(context).setTitle(R.string.media_upload)
-                        .setMessage(R.string.enter_project_description).setIcon(android.R.drawable.ic_dialog_alert);
-                final EditText input = new EditText(ExportActivity.this);
-                input.setText(""); //$NON-NLS-1$
-                builder.setView(input);
-                AlertDialog alertDialog = builder.setNegativeButton(R.string.no_images, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        addProjectDescription(input);
-                        exportToCloud(context, serverUrl, user, pwd, false);
-                    }
-                }).setPositiveButton(R.string.with_images, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        addProjectDescription(input);
-                        exportToCloud(context, serverUrl, user, pwd, true);
-                    }
-                }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        // ignore
-                    }
-                }).create();
-                alertDialog.show();
+                exportToCloud(context, serverUrl, user, pwd);
+
             }
         });
     }
@@ -147,24 +127,15 @@ public class ExportActivity extends Activity {
         Utilities.dismissProgressDialog(cloudProgressDialog);
     }
 
-    private void addProjectDescription( final EditText input ) {
-        try {
-            String description = input.getText().toString();
-            ResourcesManager.getInstance(ExportActivity.this).addProjectDescription(description);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd,
-            final boolean addMedia ) {
+    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd) {
 
         cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 context.getString(R.string.exporting_data_to_the_cloud), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
-                    String message = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
+                    String message = WebProjectManager.INSTANCE.uploadProject(context, serverUrl, user, pwd);
                     return message;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
@@ -226,14 +197,14 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList();
+                    List<Note> notesList = DaoNotes.getNotesList(null, false);
                     for( Note note : notesList ) {
                         kmlRepresenterList.add(note);
                     }
                     /*
                      * add pictures
                      */
-                    List<Image> imagesList = DaoImages.getImagesList();
+                    List<Image> imagesList = DaoImages.getImagesList(false, true);
                     for( Image image : imagesList ) {
                         kmlRepresenterList.add(image);
                     }
@@ -246,7 +217,7 @@ public class ExportActivity extends Activity {
                         kmlRepresenterList.add(bookmark);
                     }
 
-                    File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
+                    File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
@@ -304,12 +275,12 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList();
+                    List<Note> notesList = DaoNotes.getNotesList(null, false);
                     for( Note note : notesList ) {
                         gpxRepresenterList.add(note);
                     }
 
-                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
+                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
                     File gpxOutputFile = new File(gpxExportDir, filename);
                     GpxExport export = new GpxExport(null, gpxOutputFile);

@@ -66,7 +66,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
 
     private int buttonSelectionColor;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.data_list);
 
@@ -87,24 +87,24 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         final List<String> editableSpatialVectorTablesNames = new ArrayList<String>();
         try {
             List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-            for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+            for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                 if (spatialVectorTable.isEditable()) {
                     int geomType = spatialVectorTable.getGeomType();
                     GeometryType geometryType = GeometryType.forValue(geomType);
-                    switch( geometryType ) {
-                    case POLYGON_XY:
-                    case POLYGON_XYM:
-                    case POLYGON_XYZ:
-                    case POLYGON_XYZM:
-                    case MULTIPOLYGON_XY:
-                    case MULTIPOLYGON_XYM:
-                    case MULTIPOLYGON_XYZ:
-                    case MULTIPOLYGON_XYZM:
-                        editableSpatialVectorTables.add(spatialVectorTable);
-                        editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
-                        break;
-                    default:
-                        break;
+                    switch (geometryType) {
+                        case POLYGON_XY:
+                        case POLYGON_XYM:
+                        case POLYGON_XYZ:
+                        case POLYGON_XYZM:
+                        case MULTIPOLYGON_XY:
+                        case MULTIPOLYGON_XYM:
+                        case MULTIPOLYGON_XYZ:
+                        case MULTIPOLYGON_XYZM:
+                            editableSpatialVectorTables.add(spatialVectorTable);
+                            editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -112,7 +112,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
             e.printStackTrace();
         }
 
-        if (editableSpatialVectorTables.size()==0){
+        if (editableSpatialVectorTables.size() == 0) {
             Utilities.messageDialog(this, "No editable layers found", new Runnable() {
                 @Override
                 public void run() {
@@ -137,10 +137,12 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         }
 
         ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.editablelayers_row,
-                editableSpatialVectorTables){
+                editableSpatialVectorTables) {
+            private ImageButton currentEditable = null;
+
             @SuppressWarnings("nls")
             @Override
-            public View getView( final int position, View cView, ViewGroup parent ) {
+            public View getView(final int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.editablelayers_row, null);
                 try {
@@ -151,20 +153,27 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     TextView nameView = (TextView) rowView.findViewById(R.id.name);
                     TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
 
-                    ImageButton editableButton = (ImageButton) rowView.findViewById(R.id.editableButton);
-                    editableButton.setOnClickListener(new View.OnClickListener(){
-                        public void onClick( View v ) {
+                    final ImageButton editableButton = (ImageButton) rowView.findViewById(R.id.editableButton);
+                    editableButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            if (currentEditable != null) {
+                                currentEditable.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                            }
+                            editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                            currentEditable = editableButton;
+
                             SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(position);
                             ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
                             EditManager.INSTANCE.setEditLayer(layer);
 
-                            finish();
+//                            finish();
                         }
                     });
                     editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
                     if (spatialVectorTable != null && spatialVectorTable == item) {
                         editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                        currentEditable = editableButton;
                     } else if (item.isTableEnabled() == 1) {
                         editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
                     } else {
@@ -209,18 +218,18 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
 
     }
 
-    public boolean onTouch( View v, MotionEvent event ) {
-        switch( event.getAction() ) {
-        case MotionEvent.ACTION_DOWN: {
-            v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_OVER);
-            v.invalidate();
-            break;
-        }
-        case MotionEvent.ACTION_UP: {
-            v.getBackground().clearColorFilter();
-            v.invalidate();
-            break;
-        }
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_OVER);
+                v.invalidate();
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                v.getBackground().clearColorFilter();
+                v.invalidate();
+                break;
+            }
         }
         return false;
     }

@@ -94,8 +94,6 @@ public class GPLog {
      */
     public static void createTables( SQLiteDatabase sqliteDatabase ) throws IOException {
         StringBuilder sB = new StringBuilder();
-
-        sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_LOG);
         sB.append(" (");

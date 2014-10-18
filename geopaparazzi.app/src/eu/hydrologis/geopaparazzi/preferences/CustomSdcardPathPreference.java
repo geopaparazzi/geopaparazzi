@@ -17,40 +17,59 @@
  */
 package eu.hydrologis.geopaparazzi.preferences;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.R;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
 
 /**
  * A custom sdcard path chooser.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CustomSdcardPathPreference extends DialogPreference {
+public class CustomSdcardPathPreference extends DialogPreference implements View.OnClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String USER_SDCARD_PATHS = "USER_SDCARD_PATHS";
     private Context context;
-    private EditText editView;
     private String customPath = ""; //$NON-NLS-1$
     private Spinner guessedPathsSpinner;
-    private List<String> guessedSdcardsList;
+    private List<String> sdcardsList = new ArrayList<String>();
+
     /**
      * @param ctxt  the context to use.
      * @param attrs attributes.
      */
-    public CustomSdcardPathPreference( Context ctxt, AttributeSet attrs ) {
+    public CustomSdcardPathPreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
         this.context = ctxt;
         setPositiveButtonText(ctxt.getString(android.R.string.ok));
@@ -59,61 +78,76 @@ public class CustomSdcardPathPreference extends DialogPreference {
 
     @Override
     protected View onCreateDialogView() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+
         LinearLayout mainLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
+                LayoutParams.MATCH_PARENT);
         mainLayout.setLayoutParams(layoutParams);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(R.string.set_path_manually);
-        mainLayout.addView(textView);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View preferencesLayout = layoutInflater.inflate(R.layout.preferences_sdcard, mainLayout);
 
-        editView = new EditText(context);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(15, 5, 15, 5);
-        editView.setText(customPath);
-        mainLayout.addView(editView);
+        guessedPathsSpinner = (Spinner) preferencesLayout.findViewById(R.id.customsdcardPathsSpinner);
+        Button browseButton = (Button) preferencesLayout.findViewById(R.id.chooseCustomSdcardButton);
+        browseButton.setOnClickListener(this);
 
-        TextView comboLabelView = new TextView(context);
-        comboLabelView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        comboLabelView.setPadding(2, 2, 2, 2);
-        comboLabelView.setText(R.string.choose_from_suggested);
-        mainLayout.addView(comboLabelView);
-
-        guessedPathsSpinner = new Spinner(context);
-        guessedPathsSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        guessedPathsSpinner.setPadding(15, 5, 15, 5);
-        mainLayout.addView(guessedPathsSpinner);
-
-        guessedSdcardsList = FileUtilities.getPossibleSdcardsList();
-        guessedSdcardsList.add(0, ""); //$NON-NLS-1$
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, guessedSdcardsList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        guessedPathsSpinner.setAdapter(adapter);
-        if (customPath != null) {
-            for( int i = 0; i < guessedSdcardsList.size(); i++ ) {
-                if (guessedSdcardsList.get(i).equals(customPath.trim())) {
-                    guessedPathsSpinner.setSelection(i);
-                    break;
-                }
-            }
-        }
+        refresh();
 
         return mainLayout;
     }
-    @Override
-    protected void onBindDialogView( View v ) {
-        super.onBindDialogView(v);
 
-        editView.setText(customPath);
+
+    private TreeSet<String> toSet(String paths) {
+        TreeSet<String> set = new TreeSet<String>();
+        String[] pathSplit = paths.split(";");
+        for (String path : pathSplit) {
+            File file = new File(path.trim());
+            if (file.exists() && file.isDirectory()) {
+                set.add(file.getAbsolutePath());
+            }
+        }
+        return set;
+    }
+
+    private String toString(TreeSet<String> set) {
+        StringBuilder sb = new StringBuilder();
+        for (String path : set) {
+            sb.append(";").append(path);
+        }
+        if (sb.length() < 1) {
+            return "";
+        }
+        return sb.substring(1);
+    }
+
+    private void refresh() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String paths = preferences.getString(USER_SDCARD_PATHS, "");
+        TreeSet<String> pathSet = toSet(paths);
+        File file = new File(customPath.trim());
+        if (file.exists() && file.isDirectory())
+            pathSet.add(file.getAbsolutePath());
+
+        // add to preferences
+        String prefString = toString(pathSet);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(USER_SDCARD_PATHS, prefString);
+        editor.commit();
+
+        sdcardsList.clear();
+        sdcardsList.addAll(pathSet);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, sdcardsList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        guessedPathsSpinner.setAdapter(adapter);
         if (customPath != null) {
-            for( int i = 0; i < guessedSdcardsList.size(); i++ ) {
-                if (guessedSdcardsList.get(i).equals(customPath.trim())) {
+            file = new File(customPath.trim());
+            for (int i = 0; i < sdcardsList.size(); i++) {
+                if (sdcardsList.get(i).equals(file.getAbsolutePath())) {
                     guessedPathsSpinner.setSelection(i);
                     break;
                 }
@@ -122,28 +156,43 @@ public class CustomSdcardPathPreference extends DialogPreference {
     }
 
     @Override
-    protected void onDialogClosed( boolean positiveResult ) {
+    protected void onBindDialogView(View v) {
+        super.onBindDialogView(v);
+
+        if (customPath != null) {
+            File file = new File(customPath.trim());
+            for (int i = 0; i < sdcardsList.size(); i++) {
+                if (sdcardsList.get(i).equals(file.getAbsolutePath())) {
+                    guessedPathsSpinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
 
         if (positiveResult) {
-            customPath = editView.getText().toString().trim();
-            if (customPath.length() == 0) {
-                // try combo
-                customPath = guessedPathsSpinner.getSelectedItem().toString();
-            }
+            customPath = guessedPathsSpinner.getSelectedItem().toString();
             if (callChangeListener(customPath)) {
                 persistString(customPath);
             }
         }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
+
     }
 
     @Override
-    protected Object onGetDefaultValue( TypedArray a, int index ) {
+    protected Object onGetDefaultValue(TypedArray a, int index) {
         return (a.getString(index));
     }
 
     @Override
-    protected void onSetInitialValue( boolean restoreValue, Object defaultValue ) {
+    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
 
         if (restoreValue) {
             if (defaultValue == null) {
@@ -153,6 +202,34 @@ public class CustomSdcardPathPreference extends DialogPreference {
             }
         } else {
             customPath = defaultValue.toString();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        try {
+            File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
+            Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
+            browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_EXTERNALSTORAGE);
+            browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
+            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
+
+            context.startActivity(browseIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(PREFS_KEY_CUSTOM_EXTERNALSTORAGE)) {
+            String path = sharedPreferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "");
+            File file = new File(path.trim());
+            if (file.exists()) {
+                customPath = file.getAbsolutePath();
+            }
+            refresh();
         }
     }
 }

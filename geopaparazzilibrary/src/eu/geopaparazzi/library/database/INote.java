@@ -15,43 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.database;
+package eu.geopaparazzi.library.database;
 
 /**
- * The supported types of notes.
+ * Utility interface.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-@SuppressWarnings("nls")
-public enum NoteType {
-    /**
-     * default type
-     */
-    POI(0, "POI"),
-    /**
-     * osm type
-     */
-    OSM(1, "OSM");
-
-    private final int num;
-    private final String def;
-
-    NoteType( int num, String def ) {
-        this.num = num;
-        this.def = def;
-    }
+public interface INote {
 
     /**
-     * @return the id of teh type.
+     * @return the note id.
      */
-    public int getTypeNum() {
-        return num;
-    }
+    public long getId();
 
     /**
-     * @return the code of the type.
+     * @return the note name.
      */
-    public String getDef() {
-        return def;
-    }
+    public String getName();
+
+    /**
+     * @return the note latitude.
+     */
+    public double getLat();
+
+    /**
+     * @return the note longitude.
+     */
+    public double getLon();
+
 }

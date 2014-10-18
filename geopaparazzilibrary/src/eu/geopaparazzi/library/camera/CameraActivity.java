@@ -17,9 +17,7 @@
  */
 package eu.geopaparazzi.library.camera;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,71 +26,71 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * The taking pictures activity.
- * 
+ * <p/>
  * <p>
- * The image is created in a <b>media</b> folder inside the 
- * application folder. If the intent bundle contains a 
+ * The image is created in a <b>tmp</b> folder inside the
+ * application folder. If the intent bundle contains a
  * {@link LibraryConstants#PREFS_KEY_CAMERA_IMAGESAVEFOLDER}
- * value, that one is used as relative path inside the application folder.
+ * value, that one is used as folder.
  * </p>
  * <p>
  * The bundle is supposed to contain the gps position available through the keys:
  * {@link LibraryConstants#LONGITUDE},{@link LibraryConstants#LATITUDE},
- * {@link LibraryConstants#ELEVATION},{@link LibraryConstants#AZIMUTH} 
+ * {@link LibraryConstants#ELEVATION},{@link LibraryConstants#AZIMUTH}
  * </p>
- * 
+ * <p/>
  * <p>
- * The activity returns the relative path to the generated image, that can be
- * retrieved through the {@link LibraryConstants#PREFS_KEY_PATH} key from
+ * The activity returns the id of the image inserted in the database, that can be
+ * retrieved through the {@link LibraryConstants#DATABASE_ID} key from
  * the bundle.
  * </p>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class CameraActivity extends Activity {
 
     private static final int CAMERA_PIC_REQUEST = 1337;
-    private File mediaFolder;
-    private String currentDatestring;
     private String imageFilePath;
     private Date currentDate;
     private double lon;
     private double lat;
     private double elevation;
-    private int lastImageId;
+    private int lastImageMediastoreId;
     private String imageName;
-    private String imagePropertiesName;
+    private long noteId = -1;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         Bundle extras = getIntent().getExtras();
         File imageSaveFolder = null;
         try {
-            imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
+            imageSaveFolder = ResourcesManager.getInstance(this).getTempDir();
             if (extras != null) {
-                String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
-                if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {
-                    File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
-                    imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
+                String imageSaveFolderTmp = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
+                if (imageSaveFolderTmp != null && new File(imageSaveFolderTmp).exists()) {
+                    imageSaveFolder = new File(imageSaveFolderTmp);
                 }
                 imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
+                noteId = extras.getLong(LibraryConstants.DATABASE_ID);
                 lon = extras.getDouble(LibraryConstants.LONGITUDE);
                 lat = extras.getDouble(LibraryConstants.LATITUDE);
                 elevation = extras.getDouble(LibraryConstants.ELEVATION);
@@ -105,7 +103,7 @@ public class CameraActivity extends Activity {
 
         if (!imageSaveFolder.exists()) {
             if (!imageSaveFolder.mkdirs()) {
-                Runnable runnable = new Runnable(){
+                Runnable runnable = new Runnable() {
                     public void run() {
                         finish();
                     }
@@ -115,19 +113,12 @@ public class CameraActivity extends Activity {
             }
         }
 
-        mediaFolder = imageSaveFolder;
+        File mediaFolder = imageSaveFolder;
 
         currentDate = new Date();
-        currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
 
         if (imageName == null) {
-            imageName = "IMG_" + currentDatestring + ".jpg";
-            imagePropertiesName = "IMG_" + currentDatestring + ".properties";
-        } else {
-            imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
-            File imgFile = new File(imageFilePath);
-            String nameWithoutExtention = FileUtilities.getNameWithoutExtention(imgFile);
-            imagePropertiesName = nameWithoutExtention + ".properties";
+            imageName = ImageUtilities.getCameraImageName(currentDate);
         }
 
         imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
@@ -137,125 +128,38 @@ public class CameraActivity extends Activity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
-        lastImageId = getLastImageId();
+        lastImageMediastoreId = getLastImageMediaId();
 
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PIC_REQUEST) {
             checkTakenPictureConsistency();
 
             Intent intent = getIntent();
-
             File imageFile = new File(imageFilePath);
             if (imageFile.exists()) {
 
-                SensorsManager sensorsManager = SensorsManager.getInstance(this);
-                double azimuth = sensorsManager.getPictureAzimuth();
-
-                double latitude = lat;
-                double longitude = lon;
-
-                String latRef = "N";
-                String lonRef = "E";
-                if (lat < 0) {
-                    latRef = "S";
-                }
-                if (lon < 0) {
-                    lonRef = "W";
-                }
-                double exifLat = Math.abs(latitude);
-                double exifLon = Math.abs(longitude);
-
-                String latString = Utilities.degreeDecimal2ExifFormat(exifLat);
-                String lonString = Utilities.degreeDecimal2ExifFormat(exifLon);
-                String altimString = String.valueOf(elevation);
-                String azimuthString = String.valueOf((int) azimuth);
-
-                if (GPLog.LOG) {
-                    GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth
-                            + " -- Altim=" + altimString);
-                }
-
                 try {
-                    ExifInterface exif = new ExifInterface(imageFilePath);
+                    byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
 
-                    String latStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-                    String lonStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-                    String latRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-                    String lonRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
-                    String dateOld = exif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
-                    String timeOld = exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
-                    String dateTimeOld = exif.getAttribute(ExifInterface.TAG_DATETIME);
+                    Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
+                    IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
-                    Date date = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.parse(currentDatestring);
+                    SensorsManager sensorsManager = SensorsManager.getInstance(this);
+                    double azimuth = sensorsManager.getPictureAzimuth();
 
-                    String exifDate = TimeUtilities.INSTANCE.EXIFFORMATTER.format(date);
-
-                    String[] dateTimeSplit = exifDate.split("\\s+");
-                    if (dateTimeOld == null || dateTimeOld.trim().length() <= 0) {
-                        exif.setAttribute(ExifInterface.TAG_DATETIME, exifDate);
-                    }
-                    if (dateOld == null || dateOld.trim().length() <= 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTimeSplit[0]);
-                    }
-                    if (timeOld == null || timeOld.trim().length() <= 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTimeSplit[1]);
-                    }
-                    if (latStringOld == null || latRefStringOld == null || latStringOld.trim().length() <= 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latString);
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, latRef);
-                    }
-                    if (lonStringOld == null || lonRefStringOld == null || lonStringOld.trim().length() <= 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lonString);
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lonRef);
-                    }
-                    String azz = (int) (azimuth * 100.0) + "/100";
-                    String alt = (int) (elevation * 100.0) + "/100";
-                    exif.setAttribute("GPSImgDirection", azz);
-                    // exif.setAttribute("GPSImgDirectionRef", "M");
-                    exif.setAttribute("GPSAltitude", alt);
-                    // exif.setAttribute("GPSAltitudeRef", "0");
-
-                    exif.saveAttributes();
-
-                    // create props file
-                    String propertiesFilePath = mediaFolder.getAbsolutePath() + File.separator + imagePropertiesName;
-                    File propertiesFile = new File(propertiesFilePath);
-                    BufferedWriter bW = null;
-                    try {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("latitude=");
-                        sb.append(String.valueOf(latitude));
-                        sb.append("\nlongitude=");
-                        sb.append(String.valueOf(longitude));
-                        sb.append("\nazimuth=");
-                        sb.append(azimuthString);
-                        sb.append("\naltim=");
-                        sb.append(altimString);
-                        sb.append("\nutctimestamp=");
-                        sb.append(currentDatestring).append("\n");
-                        bW = new BufferedWriter(new FileWriter(propertiesFile));
-                        bW.write(sb.toString());
-                    } finally {
-                        bW.close();
-                    }
-
-                    /*
-                     * add the image to the database
-                     */
-                    String relativeImageFilePath = mediaFolder.getName() + File.separator + imageName;
-
-                    intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);
-                    intent.putExtra(LibraryConstants.LATITUDE, latitude);
-                    intent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                    intent.putExtra(LibraryConstants.ELEVATION, elevation);
-                    intent.putExtra(LibraryConstants.AZIMUTH, azimuth);
+                    long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
+                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
+                    intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
                     intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+
+                    // delete the file after insertion in db
+                    imageFile.delete();
                 } catch (Exception e) {
-                    Utilities.messageDialog(this, "An error occurred while adding gps info to the picture.", null);
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
+                    Utilities.errorDialog(this, e, null);
                 }
             } else {
                 intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
@@ -266,6 +170,9 @@ public class CameraActivity extends Activity {
             finish();
         }
     }
+
+
+
     private void checkTakenPictureConsistency() {
         /*
          * Checking for duplicate images
@@ -275,12 +182,12 @@ public class CameraActivity extends Activity {
                 MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns._ID};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         final String imageWhere = MediaStore.Images.Media._ID + ">?";
-        final String[] imageArguments = {Integer.toString(lastImageId)};
+        final String[] imageArguments = {Integer.toString(lastImageMediastoreId)};
         Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
                 imageOrderBy);
         List<File> cameraTakenMediaFiles = new ArrayList<File>();
         if (imageCursor.getCount() > 0) {
-            while( imageCursor.moveToNext() ) {
+            while (imageCursor.moveToNext()) {
                 // int id =
                 // imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
                 String path = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
@@ -310,7 +217,7 @@ public class CameraActivity extends Activity {
                 e.printStackTrace();
             }
         }
-        for( File cameraTakenFile : cameraTakenMediaFiles ) {
+        for (File cameraTakenFile : cameraTakenMediaFiles) {
             // delete the one duplicated
             cameraTakenFile.delete();
         }
@@ -318,10 +225,10 @@ public class CameraActivity extends Activity {
 
     /**
      * Gets the last image id from the media store.
-     * 
+     *
      * @return the last image id from the media store.
      */
-    private int getLastImageId() {
+    private int getLastImageMediaId() {
         final String[] imageColumns = {MediaStore.Images.Media._ID};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         final String imageWhere = null;

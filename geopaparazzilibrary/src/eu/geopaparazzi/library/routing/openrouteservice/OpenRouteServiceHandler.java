@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,7 +34,7 @@ import org.xml.sax.InputSource;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
+import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 
 /**
  * Open route service class. 
@@ -232,12 +231,12 @@ public class OpenRouteServiceHandler {
      */
     public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
         SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
-        Date now = new Date(new java.util.Date().getTime());
+        long now = new java.util.Date().getTime();
         long newLogId = logDumper.addGpsLog(now, now, 0, name, 1, "blue", true); //$NON-NLS-1$
 
         sqliteDatabase.beginTransaction();
         try {
-            Date nowPlus10Secs = now;
+            long nowPlus10Secs = now;
             String path = "";
             if (path != null && path.trim().length() > 0) {
                 String[] pairs = path.trim().split(" ");
@@ -254,7 +253,7 @@ public class OpenRouteServiceHandler {
                         }
 
                         // dummy time increment
-                        nowPlus10Secs = new Date(nowPlus10Secs.getTime() + 10000);
+                        nowPlus10Secs = nowPlus10Secs + 10000;
                         logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
                     }
                 } catch (NumberFormatException e) {

@@ -37,27 +37,33 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.View;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * The form activity.
- * 
+ * <p/>
  * <p>This returns an array of {@link String} data that can be retrieved
  * through: {@link LibraryConstants#PREFS_KEY_FORM} and contain:</p>
  * <ul>
- *   <li>longitude</li>
- *   <li>latitude</li>
- *   <li>elevation (or -1.0)</li>
- *   <li>timestamp</li>
- *   <li>a name for the form</li>
- *   <li>the filled form data json</li>
+ * <li>longitude</li>
+ * <li>latitude</li>
+ * <li>elevation (or -1.0)</li>
+ * <li>timestamp</li>
+ * <li>a name for the form</li>
+ * <li>the filled form data json</li>
  * </ul>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -70,8 +76,9 @@ public class FormActivity extends FragmentActivity {
     private JSONObject sectionObject;
     private List<String> formNames4Section = new ArrayList<String>();
     private String sectionObjectString;
+    private long noteId = -1;
 
-    public void onCreate( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // make sure the orientation can't be changed once this activity started
@@ -89,6 +96,7 @@ public class FormActivity extends FragmentActivity {
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
+            noteId = extras.getLong(LibraryConstants.DATABASE_ID);
         }
 
         try {
@@ -114,6 +122,10 @@ public class FormActivity extends FragmentActivity {
         return formNames4Section;
     }
 
+    public long getNoteId() {
+        return noteId;
+    }
+
     /**
      * @return the section names.
      */
@@ -131,7 +143,7 @@ public class FormActivity extends FragmentActivity {
     /**
      * @param sectionObject teh object to set.
      */
-    public void setSectionObject( JSONObject sectionObject ) {
+    public void setSectionObject(JSONObject sectionObject) {
         this.sectionObject = sectionObject;
     }
 
@@ -151,10 +163,10 @@ public class FormActivity extends FragmentActivity {
 
     /**
      * Save action.
-     * 
+     *
      * @param view parent.
      */
-    public void saveClicked( View view ) {
+    public void saveClicked(View view) {
         try {
             saveAction();
         } catch (Exception e) {
@@ -165,10 +177,10 @@ public class FormActivity extends FragmentActivity {
 
     /**
      * Share action.
-     * 
+     *
      * @param view parent.
      */
-    public void shareClicked( View view ) {
+    public void shareClicked(View view) {
         try {
             shareAction();
         } catch (Exception e) {
@@ -176,12 +188,13 @@ public class FormActivity extends FragmentActivity {
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
+
     /**
      * Cancel action.
-     * 
+     *
      * @param view parent.
      */
-    public void cancelClicked( View view ) {
+    public void cancelClicked(View view) {
         finish();
     }
 
@@ -190,15 +203,24 @@ public class FormActivity extends FragmentActivity {
         float lat = (float) latitude;
         float lon = (float) longitude;
         String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
-        // double altim = note.getAltim();
-        List<String> imagePaths = FormUtilities.getImages(form);
+
+        IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+        File tempDir = ResourcesManager.getInstance(this).getTempDir();
+
+        // for now only one image is shared
+        List<String> imageIds = FormUtilities.getImageIds(form);
         File imageFile = null;
-        if (imagePaths.size() > 0) {
-            String imagePath = imagePaths.get(0);
-            imageFile = new File(imagePath);
-            if (!imageFile.exists()) {
-                imageFile = null;
-            }
+        if (imageIds.size() > 0) {
+            String imageId = imageIds.get(0);
+
+            Image image = imageHelper.getImage(Long.parseLong(imageId));
+
+            String name = image.getName();
+            imageFile = new File(tempDir, name);
+
+            byte[] imageData = imageHelper.getImageDataById(image.getImageDataId(), null);
+            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
         }
         String formText = FormUtilities.formToPlainText(form, false);
         formText = formText + "\n" + osmUrl;
@@ -223,14 +245,14 @@ public class FormActivity extends FragmentActivity {
         // extract and check constraints
         List<String> availableFormNames = TagsManager.getFormNames4Section(sectionObject);
         String label = null;
-        for( String formName : availableFormNames ) {
+        for (String formName : availableFormNames) {
             JSONObject formObject = TagsManager.getForm4Name(formName, sectionObject);
 
             JSONArray formItemsArray = TagsManager.getFormItems(formObject);
 
             int length = formItemsArray.length();
             String value = null;
-            for( int i = 0; i < length; i++ ) {
+            for (int i = 0; i < length; i++) {
                 JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
                 String key = "-";
@@ -273,17 +295,17 @@ public class FormActivity extends FragmentActivity {
 
         // finally store data
         String sectionObjectString = sectionObject.toString();
-        Date sqlDate = new Date(System.currentTimeMillis());
-        String timestamp = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(sqlDate);
+        long timestamp = System.currentTimeMillis();
 
         if (label == null) {
             label = sectionName;
         }
         String[] formDataArray = {//
-        String.valueOf(longitude), //
+                String.valueOf(noteId), //
+                String.valueOf(longitude), //
                 String.valueOf(latitude), //
                 String.valueOf(elevation), //
-                timestamp, //
+                String.valueOf(timestamp), //
                 label, //
                 "POI", //
                 sectionObjectString};
@@ -293,11 +315,11 @@ public class FormActivity extends FragmentActivity {
         finish();
     }
 
-    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button, in order to avoid losing info
-        switch( keyCode ) {
-        case KeyEvent.KEYCODE_BACK:
-            return true;
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                return true;
         }
         return super.onKeyDown(keyCode, event);
     }

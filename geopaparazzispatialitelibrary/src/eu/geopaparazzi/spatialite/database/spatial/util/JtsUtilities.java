@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * Utilities class for JTS.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class JtsUtilities {
@@ -38,40 +38,37 @@ public class JtsUtilities {
 
     /**
      * Create a {@link Polygon} from a list of coordinates.
-     * 
+     *
      * @param coordinatesList the list of coordinates.
      * @return the created polygon.
      */
-    public static Polygon createPolygon( List<Coordinate> coordinatesList ) {
+    public static Polygon createPolygon(List<Coordinate> coordinatesList) {
         coordinatesList = new ArrayList<Coordinate>(coordinatesList);
         Coordinate firstCoord = coordinatesList.get(0);
-        Coordinate lastCoord = coordinatesList.get(coordinatesList.size() - 1);
-        if (firstCoord.distance(lastCoord) > DELTA) {
-            coordinatesList.add(firstCoord);
-        }
-        Polygon polygon = gf.createPolygon(coordinatesList.toArray(new Coordinate[0]));
+        coordinatesList.add(firstCoord);
+        Polygon polygon = gf.createPolygon(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         return polygon;
     }
 
     /**
      * Create {@link MultiPoint}s from a list of coordinates.
-     * 
+     *
      * @param coordinatesList the list of coordinates.
      * @return the created points.
      */
-    public static MultiPoint createPoints( List<Coordinate> coordinatesList ) {
-        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[0]));
+    public static MultiPoint createPoints(List<Coordinate> coordinatesList) {
+        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         return multiPoints;
     }
 
     /**
      * Create vertex points as polygons from a list of coordinates.
-     * 
+     *
      * @param coordinatesList the list of coordinates.
      * @return the created points.
      */
-    public static Geometry createVertexBuffers( List<Coordinate> coordinatesList ) {
-        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[0]));
+    public static Geometry createVertexBuffers(List<Coordinate> coordinatesList) {
+        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         Geometry buffer = multiPoints.buffer(0.0001);
         return buffer;
     }

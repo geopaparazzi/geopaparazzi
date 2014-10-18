@@ -20,7 +20,7 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.util.Comparator;
 
 import eu.hydrologis.geopaparazzi.util.Bookmark;
-import eu.hydrologis.geopaparazzi.util.INote;
+import eu.geopaparazzi.library.database.INote;
 
 /**
  * {@link MapItem} comparators to sort them.

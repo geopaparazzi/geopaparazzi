@@ -39,6 +39,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.sql.Date;
 import java.util.Set;
@@ -49,6 +51,7 @@ import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -59,11 +62,10 @@ import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 
 /**
  * Map tags adding activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -84,14 +86,14 @@ public class MapTagsActivity extends Activity {
     private ToggleButton togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.tags);
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         togglePositionTypeButtonGps = (ToggleButton) findViewById(R.id.togglePositionTypeGps);
-        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor edit = preferences.edit();
                 edit.putBoolean(USE_MAPCENTER_POSITION, !isChecked);
                 edit.commit();
@@ -103,8 +105,8 @@ public class MapTagsActivity extends Activity {
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
 
-        broadcastReceiver = new BroadcastReceiver(){
-            public void onReceive( Context context, Intent intent ) {
+        broadcastReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     gpsLocation = GpsServiceUtilities.getPosition(intent);
@@ -127,10 +129,11 @@ public class MapTagsActivity extends Activity {
         GpsServiceUtilities.triggerBroadcast(this);
 
         ImageButton imageButton = (ImageButton) findViewById(R.id.imagefromtag);
-        imageButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        imageButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
+                intent.putExtra(LibraryConstants.DATABASE_ID, -1l);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
@@ -139,8 +142,8 @@ public class MapTagsActivity extends Activity {
             }
         });
         ImageButton noteButton = (ImageButton) findViewById(R.id.notefromtag);
-        noteButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        noteButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
@@ -150,29 +153,27 @@ public class MapTagsActivity extends Activity {
             }
         });
         ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
-        sketchButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                checkPositionCoordinates();
-
-                java.util.Date currentDate = new java.util.Date();
-                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                File mediaDir = null;
+        sketchButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 try {
-                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getMediaDir();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                    checkPositionCoordinates();
+                    java.util.Date currentDate = new java.util.Date();
+                    String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
+                    File tempFolder = ResourcesManager.getInstance(MapTagsActivity.this).getTempDir();
+                    File newImageFile = new File(tempFolder, "SKETCH_" + currentDatestring + ".png");
 
-                double[] gpsLocation = new double[]{longitude, latitude, elevation};
-                MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+                    double[] gpsLocation = new double[]{longitude, latitude, elevation};
+                    MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+                } catch (Exception e) {
+                    GPLog.error(MapTagsActivity.this, null, e);
+                }
             }
         });
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
         try {
             Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
-            tagNamesArray = sectionNames.toArray(new String[0]);
+            tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
             GPLog.error(this, e1.getLocalizedMessage(), e1);
@@ -180,8 +181,8 @@ public class MapTagsActivity extends Activity {
         }
 
         final int buttonTextColor = getResources().getColor(R.color.main_text_color);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
-            public View getView( final int position, View cView, ViewGroup parent ) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray) {
+            public View getView(final int position, View cView, ViewGroup parent) {
 
                 Button tagButton = new Button(MapTagsActivity.this);
 
@@ -198,19 +199,33 @@ public class MapTagsActivity extends Activity {
                 mlp.setMargins(0, ind, 0, ind);
 
                 // osmButton.setImageResource(R.drawable.gps);
-                tagButton.setOnClickListener(new Button.OnClickListener(){
-                    public void onClick( View v ) {
+                tagButton.setOnClickListener(new Button.OnClickListener() {
+                    public void onClick(View v) {
                         try {
-                            String userDefinedButtonName = tagNamesArray[position];
+                            String sectionName = tagNamesArray[position];
 
                             checkPositionCoordinates();
-                            // launch form activity
-                            Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
-                            formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, userDefinedButtonName);
-                            formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
-                            formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                            formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
-                            startActivityForResult(formIntent, FORM_RETURN_CODE);
+
+                            // insert note and then work on it
+                            try {
+                                JSONObject sectionObject = TagsManager.getInstance(MapTagsActivity.this).getSectionByName(sectionName);
+                                String sectionObjectString = sectionObject.toString();
+                                long noteId = DaoNotes.addNote(longitude, latitude, elevation, new java.util.Date().getTime(), sectionName, "POI", sectionObjectString, null);
+
+                                // launch form activity
+                                Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
+                                formIntent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, sectionName);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
+                                startActivityForResult(formIntent, FORM_RETURN_CODE);
+                            } catch (Exception e) {
+                                GPLog.error(this, null, e);
+                                Utilities.messageDialog(MapTagsActivity.this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                            }
+
+
                         } catch (Exception e) {
                             GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
@@ -248,95 +263,85 @@ public class MapTagsActivity extends Activity {
         }
     }
 
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        switch( requestCode ) {
-        case (FORM_RETURN_CODE): {
-            String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-            if (formArray != null) {
-                try {
-                    double lon = Double.parseDouble(formArray[0]);
-                    double lat = Double.parseDouble(formArray[1]);
-                    double elev = Double.parseDouble(formArray[2]);
-                    String dateStr = formArray[3];
-                    String nameStr = formArray[4];
-                    String catStr = formArray[5];
-                    String jsonStr = formArray[6];
-                    DaoNotes.addNote(lon, lat, elev, dateStr, nameStr, catStr, jsonStr, NoteType.POI.getTypeNum());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                }
-            }
-            break;
-        }
-        case (NOTE_RETURN_CODE): {
-            String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
-            if (noteArray != null) {
-                try {
-                    double lon = Double.parseDouble(noteArray[0]);
-                    double lat = Double.parseDouble(noteArray[1]);
-                    double elev = Double.parseDouble(noteArray[2]);
-                    DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], noteArray[5], noteArray[6],
-                            NoteType.POI.getTypeNum());
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                }
-            }
-            break;
-        }
-        case (CAMERA_RETURN_CODE): {
-            boolean imageExists = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
-            if (imageExists) {
-                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (relativeImagePath != null) {
+        switch (requestCode) {
+            case (FORM_RETURN_CODE): {
+                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                if (formArray != null) {
                     try {
-                        File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(),
-                                relativeImagePath);
-                        if (!imgFile.exists()) {
-                            return;
-                        }
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+                        long noteId = Long.parseLong(formArray[0]);
+                        //                        double lon = Double.parseDouble(formArray[1]);
+                        //                        double lat = Double.parseDouble(formArray[2]);
+                        //                        double elev = Double.parseDouble(formArray[3]);
+                        //                        String dateStr = formArray[4];
+                        String nameStr = formArray[5];
+                        //                        String catStr = formArray[6];
+                        String jsonStr = formArray[7];
 
-                        DaoImages.addImage(lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", relativeImagePath);
+                        DaoNotes.updateForm(noteId, nameStr, jsonStr);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+                break;
+            }
+            case (NOTE_RETURN_CODE): {
+                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                if (noteArray != null) {
+                    try {
+                        double lon = Double.parseDouble(noteArray[0]);
+                        double lat = Double.parseDouble(noteArray[1]);
+                        double elev = Double.parseDouble(noteArray[2]);
+                        DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], noteArray[5], noteArray[6],
+                                null);
                     } catch (Exception e) {
                         e.printStackTrace();
 
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                     }
                 }
+                break;
             }
-            break;
-        }
-        case (SKETCH_RETURN_CODE): {
-            String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-            if (absoluteImagePath != null) {
-                File imgFile = new File(absoluteImagePath);
-                if (!imgFile.exists()) {
-                    return;
-                }
-                try {
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-
-                    DaoImages.addImage(lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", absoluteImagePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
+            case (CAMERA_RETURN_CODE): {
+                boolean imageExists = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
+                if (!imageExists) {
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                 }
+                break;
             }
-            break;
-        }
+            case (SKETCH_RETURN_CODE): {
+                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (absoluteImagePath != null) {
+                    File imgFile = new File(absoluteImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+
+                        byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(absoluteImagePath, 10);
+
+                        java.util.Date currentDate = new java.util.Date();
+                        String name = ImageUtilities.getSketchImageName(currentDate);
+                        new DaoImages().addImage(lon, lat, elev, -9999.0, currentDate.getTime(), name, imageAndThumbnailArray[0], imageAndThumbnailArray[1], -1);
+
+                        // delete the file after insertion in db
+                        imgFile.delete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+                break;
+            }
         }
         finish();
     }

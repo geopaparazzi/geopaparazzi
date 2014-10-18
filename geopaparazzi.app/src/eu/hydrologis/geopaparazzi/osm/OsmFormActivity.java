@@ -46,12 +46,12 @@ import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_MANDATORY;
@@ -145,10 +145,9 @@ public class OsmFormActivity extends Activity {
                     String result = storeNote();
                     if (result == null) {
                         endString = jsonFormObject.toString();
-                        Date sqlDate = new Date(System.currentTimeMillis());
-                        String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(sqlDate);
-                        DaoNotes.addNote(longitude, latitude, -1.0, dateStr, formLongnameDefinition, NoteType.OSM.getDef(),
-                                endString, NoteType.OSM.getTypeNum());
+                        long timestamp = System.currentTimeMillis();
+                        DaoNotes.addNote(longitude, latitude, -1.0, timestamp, formLongnameDefinition, LibraryConstants.OSM,
+                                endString, null);
                         finish();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(OsmFormActivity.this);

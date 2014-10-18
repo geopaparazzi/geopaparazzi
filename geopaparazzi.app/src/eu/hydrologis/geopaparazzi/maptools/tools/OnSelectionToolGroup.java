@@ -52,6 +52,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
@@ -117,22 +118,27 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
+
+        int stroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
+        int fill = ColorUtilities.getColor(ColorUtilities.selection_fill);
         selectedGeometryPaintFill.setAntiAlias(true);
-        selectedGeometryPaintFill.setColor(Color.RED);
+        selectedGeometryPaintFill.setColor(fill);
         selectedGeometryPaintFill.setAlpha(180);
         selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedGeometryPaintStroke.setAntiAlias(true);
         selectedGeometryPaintStroke.setStrokeWidth(5f);
-        selectedGeometryPaintStroke.setColor(Color.YELLOW);
+        selectedGeometryPaintStroke.setColor(stroke);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
+        stroke = ColorUtilities.getColor(ColorUtilities.preview_stroke);
+        fill = ColorUtilities.getColor(ColorUtilities.preview_fill);
         selectedPreviewGeometryPaintFill.setAntiAlias(true);
-        selectedPreviewGeometryPaintFill.setColor(Color.GRAY);
+        selectedPreviewGeometryPaintFill.setColor(fill);
         selectedPreviewGeometryPaintFill.setAlpha(180);
         selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
-        selectedPreviewGeometryPaintStroke.setColor(Color.DKGRAY);
+        selectedPreviewGeometryPaintStroke.setColor(stroke);
         selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
         geometryPaintFill = selectedGeometryPaintFill;

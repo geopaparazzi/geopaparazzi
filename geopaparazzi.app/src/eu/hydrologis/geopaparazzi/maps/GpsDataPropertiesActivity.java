@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -48,7 +49,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * Data properties activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsDataPropertiesActivity extends Activity {
@@ -62,7 +63,7 @@ public class GpsDataPropertiesActivity extends Activity {
     private String newColor;
     private double newLengthm;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.gpslog_properties);
@@ -77,43 +78,47 @@ public class GpsDataPropertiesActivity extends Activity {
             item = (LogMapItem) object;
 
             final TextView startTimeTextView = (TextView) findViewById(R.id.starttime_label);
-            String startTime = item.getStartTime();
+            long startTime = item.getStartTime();
+            String startTimeStr = " - ";
             try {
-                startTime = TimeUtilities.utcToLocalTime(startTime);
+                startTimeStr = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(startTime));
             } catch (Exception e1) {
                 GPLog.error(this, "error in start time conversion: " + startTime, e1); //$NON-NLS-1$
             }
             String startText = startTimeTextView.getText().toString();
-            startTimeTextView.setText(startText + startTime);
-            final TextView endTimeTextView = (TextView) findViewById(R.id.endtime_label);
-            String endTime = item.getEndTime();
-            try {
-                endTime = TimeUtilities.utcToLocalTime(endTime);
-            } catch (Exception e1) {
-                GPLog.error(this, "error in end time conversion: " + startTime, e1); //$NON-NLS-1$
-            }
+            startTimeTextView.setText(startText + startTimeStr);
 
-            if (startTime.equals(endTime)) {
-                endTime = " - "; //$NON-NLS-1$
+            final TextView endTimeTextView = (TextView) findViewById(R.id.endtime_label);
+            long endTime = item.getEndTime();
+            String endTimeStr = " - ";
+            if (startTime != endTime){
+                try {
+                    endTimeStr = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(endTime));
+                } catch (Exception e1) {
+                    GPLog.error(this, "error in end time conversion: " + endTime, e1); //$NON-NLS-1$
+                }
             }
 
             String endText = endTimeTextView.getText().toString();
-            endTimeTextView.setText(endText + endTime);
+            endTimeTextView.setText(endText + endTimeStr);
+
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
 
             lognameTextView.setText(item.getName());
             newText = item.getName();
-            lognameTextView.addTextChangedListener(new TextWatcher(){
+            lognameTextView.addTextChangedListener(new TextWatcher() {
 
-                public void onTextChanged( CharSequence s, int start, int before, int count ) {
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
                     newText = lognameTextView.getText().toString();
                 }
-                public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     // ignore
                 }
-                public void afterTextChanged( Editable s ) {
+
+                public void afterTextChanged(Editable s) {
                     // ignore
                 }
             });
@@ -126,16 +131,17 @@ public class GpsDataPropertiesActivity extends Activity {
 
             // button to update the log (track) length field
             final ImageButton refreshLogLenButton = (ImageButton) findViewById(R.id.gpslog_refreshLogLength);
-            refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            refreshLogLenButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     final long logID = item.getLogID();
                     @SuppressWarnings("nls")
-                    StringAsyncTask task = new StringAsyncTask(GpsDataPropertiesActivity.this){
+                    StringAsyncTask task = new StringAsyncTask(GpsDataPropertiesActivity.this) {
                         @Override
-                        protected void doUiPostWork( String response ) {
+                        protected void doUiPostWork(String response) {
                             trackLengthTextView.setText(response);
                             dispose();
                         }
+
                         @Override
                         protected String doBackgroundWork() {
                             try {
@@ -156,52 +162,54 @@ public class GpsDataPropertiesActivity extends Activity {
 
             // line width
             newWidth = item.getWidth();
-            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
+            ArrayAdapter<?> widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
                     android.R.layout.simple_spinner_item);
             widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             widthView.setAdapter(widthSpinnerAdapter);
             int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
             widthView.setSelection(widthIndex);
-            widthView.setOnItemSelectedListener(new OnItemSelectedListener(){
-                public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
+            widthView.setOnItemSelectedListener(new OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                     Object selectedItem = widthView.getSelectedItem();
                     newWidth = Float.parseFloat(selectedItem.toString());
                 }
-                public void onNothingSelected( AdapterView< ? > arg0 ) {
+
+                public void onNothingSelected(AdapterView<?> arg0) {
                     // ignore
                 }
             });
 
             // color box
             newColor = item.getColor();
-            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
+            ArrayAdapter<?> colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
                     android.R.layout.simple_spinner_item);
             colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             colorView.setAdapter(colorSpinnerAdapter);
             int colorIndex = colorList.indexOf(item.getColor());
             colorView.setSelection(colorIndex);
-            colorView.setOnItemSelectedListener(new OnItemSelectedListener(){
+            colorView.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-                public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                     Object selectedItem = colorView.getSelectedItem();
                     newColor = selectedItem.toString();
                 }
-                public void onNothingSelected( AdapterView< ? > arg0 ) {
+
+                public void onNothingSelected(AdapterView<?> arg0) {
                     // ignore
                 }
             });
 
             final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
-            chartButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            chartButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     Intent intent = new Intent(GpsDataPropertiesActivity.this, ProfileChartActivity.class);
                     intent.putExtra(Constants.ID, item.getId());
                     startActivity(intent);
                 }
             });
             final Button zoomToStartButton = (Button) findViewById(R.id.gpslog_zoom_start);
-            zoomToStartButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            zoomToStartButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     try {
                         double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(item.getId());
                         if (firstPoint != null) {
@@ -218,8 +226,8 @@ public class GpsDataPropertiesActivity extends Activity {
                 }
             });
             final Button zoomToEndButton = (Button) findViewById(R.id.gpslog_zoom_end);
-            zoomToEndButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            zoomToEndButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     try {
                         double[] firstPoint = DaoGpsLog.getGpslogLastPoint(item.getId());
                         if (firstPoint != null) {
@@ -237,8 +245,8 @@ public class GpsDataPropertiesActivity extends Activity {
             });
 
             final Button deleteButton = (Button) findViewById(R.id.gpslog_delete);
-            deleteButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
+            deleteButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
                     try {
                         long id = item.getId();
                         new DaoGpsLog().deleteGpslog(id);

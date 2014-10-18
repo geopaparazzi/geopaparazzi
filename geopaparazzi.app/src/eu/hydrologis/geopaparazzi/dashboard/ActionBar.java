@@ -52,7 +52,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 
 /**
  * The action bar utilities class.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -73,8 +73,6 @@ public class ActionBar {
     private final SensorsManager sensorsManager;
     private String satellitesString;
     private ImageButton menuButton;
-    private String projectName;
-    private String projectString;
     private String indent = "  ";
     private GpsServiceStatus lastGpsServiceStatus;
     private double[] lastGpsPosition;
@@ -82,17 +80,17 @@ public class ActionBar {
     private long lastGpsPositiontime;
     private GpsLoggingStatus lastGpsLoggingStatus;
     private String mapString;
+    private String mapsFolderString;
     private String nameString;
     private String boundsString;
+    private File mapsDir;
 
-    private ActionBar( View actionBarView, SensorsManager sensorsManager ) {
+    private ActionBar(View actionBarView, SensorsManager sensorsManager) {
         this.actionBarView = actionBarView;
         this.sensorsManager = sensorsManager;
 
         try {
-            ResourcesManager resourcesManager = ResourcesManager.getInstance(actionBarView.getContext());
-            File applicationDir = resourcesManager.getApplicationDir();
-            projectName = applicationDir.getName();
+            mapsDir = ResourcesManager.getInstance(actionBarView.getContext()).getMapsDir();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,16 +100,16 @@ public class ActionBar {
 
         final int gpsInfoButtonId = R.id.action_bar_info;
         ImageButton gpsInfoButton = (ImageButton) actionBarView.findViewById(gpsInfoButtonId);
-        gpsInfoButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        gpsInfoButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(gpsInfoButtonId, v);
             }
         });
 
         final int compassButtonId = R.id.action_bar_compass;
         ImageButton compassButton = (ImageButton) actionBarView.findViewById(compassButtonId);
-        compassButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        compassButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 push(compassButtonId, v);
             }
         });
@@ -129,13 +127,6 @@ public class ActionBar {
         return menuButton;
     }
 
-    /**
-     * @return the action bar view.
-     */
-    public View getActionBarView() {
-        return actionBarView;
-    }
-
     private void initVars() {
         Context context = actionBarView.getContext();
         timeString = context.getString(R.string.utctime);
@@ -146,33 +137,33 @@ public class ActionBar {
         loggingString = context.getString(R.string.text_logging);
         acquirefixString = context.getString(R.string.gps_searching_fix);
         satellitesString = context.getString(R.string.satellites);
-        projectString = context.getString(R.string.project);
         gpsStatusString = context.getString(R.string.gps_status);
         mapString = context.getString(R.string.map);
+        mapsFolderString = context.getString(R.string.mapsfolder);
         nameString = context.getString(R.string.name);
         boundsString = context.getString(R.string.bounds);
     }
 
     /**
      * Build the action bar.
-     * 
-     * @param activity the parent activity.
-     * @param activityId the activity id.
+     *
+     * @param activity       the parent activity.
+     * @param activityId     the activity id.
      * @param sensorsManager teh sensor manager.
      * @return the actionbar.
      */
-    public static ActionBar getActionBar( Activity activity, int activityId, SensorsManager sensorsManager ) {
+    public static ActionBar getActionBar(Activity activity, int activityId, SensorsManager sensorsManager) {
         View view = activity.findViewById(activityId);
         return new ActionBar(view, sensorsManager);
     }
 
     /**
      * Set the title.
-     * 
-     * @param titleResourceId the id of the text to set. 
-     * @param titleViewId the view id.
+     *
+     * @param titleResourceId the id of the text to set.
+     * @param titleViewId     the view id.
      */
-    public void setTitle( int titleResourceId, int titleViewId ) {
+    public void setTitle(int titleResourceId, int titleViewId) {
         TextView textView = (TextView) actionBarView.findViewById(titleViewId);
         if (textView != null) {
             textView.setText(titleResourceId);
@@ -181,44 +172,44 @@ public class ActionBar {
 
     /**
      * Push action.
-     * 
+     *
      * @param id id.
-     * @param v view.
+     * @param v  view.
      */
-    public void push( int id, View v ) {
-        switch( id ) {
-        case R.id.action_bar_info: {
-            QuickAction qa = new QuickAction(v);
-            infoQuickaction.setTitle(createGpsInfo());
-            qa.addActionItem(infoQuickaction);
-            qa.setAnimStyle(QuickAction.ANIM_AUTO);
-            qa.show();
+    public void push(int id, View v) {
+        switch (id) {
+            case R.id.action_bar_info: {
+                QuickAction qa = new QuickAction(v);
+                infoQuickaction.setTitle(createGpsInfo());
+                qa.addActionItem(infoQuickaction);
+                qa.setAnimStyle(QuickAction.ANIM_AUTO);
+                qa.show();
 
-            break;
-        }
-        case R.id.action_bar_compass: {
-            Context context = actionBarView.getContext();
-            openCompass(context);
-            break;
-        }
-        default:
-            break;
+                break;
+            }
+            case R.id.action_bar_compass: {
+                Context context = actionBarView.getContext();
+                openCompass(context);
+                break;
+            }
+            default:
+                break;
         }
     }
 
     /**
      * Opens the comapss app.
-     * 
+     *
      * @param context the context to use.
      */
-    public static void openCompass( final Context context ) {
+    public static void openCompass(final Context context) {
         String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
         String gpsStatusPackage = "com.eclipsim.gpsstatus";
         boolean hasGpsStatus = false;
         List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
 
         { // try to get the installed packages list. Seems to have troubles over different
-          // versions, so trying them all
+            // versions, so trying them all
             try {
                 installedPackages = context.getPackageManager().getInstalledPackages(0);
             } catch (Exception e) {
@@ -234,7 +225,7 @@ public class ActionBar {
 
         if (installedPackages.size() > 0) {
             // if a list is available, check if the status gps is installed
-            for( PackageInfo packageInfo : installedPackages ) {
+            for (PackageInfo packageInfo : installedPackages) {
                 String packageName = packageInfo.packageName;
                 if (LOG_HOW)
                     GPLog.addLogEntry("ACTIONBAR", packageName);
@@ -259,17 +250,17 @@ public class ActionBar {
         } else {
             new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
                     .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
                             // ignore
                         }
-                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));
-                            context.startActivity(intent);
-                        }
-                    }).show();
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));
+                    context.startActivity(intent);
+                }
+            }).show();
         }
     }
 
@@ -292,11 +283,10 @@ public class ActionBar {
         double azimuth = sensorsManager.getNormalAzimuth();
 
         StringBuilder sb = new StringBuilder();
-        if (projectName != null && projectName.length() != 0) {
-            sb.append(projectString).append(":\n");
-            sb.append(indent).append(projectName).append("\n\n");
+        if (mapsDir != null) {
+            sb.append(mapsFolderString).append(":\n");
+            sb.append(indent).append(mapsDir.getAbsolutePath()).append("\n\n");
         }
-
         AbstractSpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
         if (selectedMapTable != null) {
             String tableName = selectedMapTable.getTableName();
@@ -362,7 +352,8 @@ public class ActionBar {
         }
         return sb.toString();
     }
-    private void addGpsStatusInfo( StringBuilder sb ) {
+
+    private void addGpsStatusInfo(StringBuilder sb) {
         if (lastGpsStatusExtras != null) {
             int satForFixCount = lastGpsStatusExtras[2];
             int satCount = lastGpsStatusExtras[1];
@@ -377,12 +368,12 @@ public class ActionBar {
      */
     public void checkLogging() {
         Button gpsOnOffView = (Button) actionBarView.findViewById(R.id.gpsOnOff);
-        gpsOnOffView.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        gpsOnOffView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
                     final Context context = v.getContext();
                     String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-                    Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                    Utilities.yesNoMessageDialog(context, prompt, new Runnable() {
                         public void run() {
                             Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             context.startActivity(gpsOptionsIntent);
@@ -430,16 +421,16 @@ public class ActionBar {
 
     /**
      * Set the current status.
-     * 
-     * @param gpsServiceStatus gps status.
-     * @param gpsLoggingStatus logging status.
-     * @param lastGpsPosition gps position.
+     *
+     * @param gpsServiceStatus      gps status.
+     * @param gpsLoggingStatus      logging status.
+     * @param lastGpsPosition       gps position.
      * @param lastGpsPositionExtras position extras.
-     * @param lastGpsStatusExtras status extras.
-     * @param lastPositiontime position time.
+     * @param lastGpsStatusExtras   status extras.
+     * @param lastPositiontime      position time.
      */
-    public void setStatus( GpsServiceStatus gpsServiceStatus, GpsLoggingStatus gpsLoggingStatus, double[] lastGpsPosition,
-            float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, long lastPositiontime ) {
+    public void setStatus(GpsServiceStatus gpsServiceStatus, GpsLoggingStatus gpsLoggingStatus, double[] lastGpsPosition,
+                          float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, long lastPositiontime) {
         this.lastGpsServiceStatus = gpsServiceStatus;
         this.lastGpsLoggingStatus = gpsLoggingStatus;
         this.lastGpsPosition = lastGpsPosition;

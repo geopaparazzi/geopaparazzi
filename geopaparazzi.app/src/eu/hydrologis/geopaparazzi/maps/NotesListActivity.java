@@ -44,7 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
@@ -54,14 +56,14 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.util.INote;
-import eu.hydrologis.geopaparazzi.util.Image;
+import eu.geopaparazzi.library.database.INote;
+import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * Notes listing activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends ListActivity {
@@ -70,7 +72,7 @@ public class NotesListActivity extends ListActivity {
     private Map<String, INote> notesMap = new HashMap<String, INote>();
     private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.noteslist);
@@ -100,16 +102,16 @@ public class NotesListActivity extends ListActivity {
         try {
 
             List<INote> allNotesList = new ArrayList<INote>();
-            List<Note> notesList = DaoNotes.getNotesList();
+            List<Note> notesList = DaoNotes.getNotesList(null, false);
             allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList();
+            List<Image> imagesList = DaoImages.getImagesList(false, true);
             allNotesList.addAll(imagesList);
             Collections.sort(allNotesList, notesSorter);
 
             notesNames = new String[allNotesList.size()];
             notesMap.clear();
             int index = 0;
-            for( INote note : allNotesList ) {
+            for (INote note : allNotesList) {
                 String name = note.getName();
                 notesMap.put(name, note);
                 notesNames[index] = name;
@@ -123,21 +125,21 @@ public class NotesListActivity extends ListActivity {
         redoAdapter();
     }
 
-    private void filterList( String filterText ) {
+    private void filterList(String filterText) {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "filter notes list"); //$NON-NLS-1$
         try {
             List<INote> allNotesList = new ArrayList<INote>();
-            List<Note> notesList = DaoNotes.getNotesList();
+            List<Note> notesList = DaoNotes.getNotesList(null, false);
             allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList();
+            List<Image> imagesList = DaoImages.getImagesList(false, true);
             allNotesList.addAll(imagesList);
             Collections.sort(allNotesList, notesSorter);
 
             notesMap.clear();
             filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
             List<String> namesList = new ArrayList<String>();
-            for( INote note : allNotesList ) {
+            for (INote note : allNotesList) {
                 String name = note.getName();
                 String nameLower = name.toLowerCase();
                 if (nameLower.matches(filterText)) {
@@ -156,9 +158,9 @@ public class NotesListActivity extends ListActivity {
     }
 
     private void redoAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.note_row, notesNames){
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.note_row, notesNames) {
             @Override
-            public View getView( int position, View cView, ViewGroup parent ) {
+            public View getView(int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.note_row, null);
 
@@ -166,8 +168,8 @@ public class NotesListActivity extends ListActivity {
                 notesText.setText(notesNames[position]);
 
                 final ImageView shareButton = (ImageView) rowView.findViewById(R.id.sharebutton);
-                shareButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                shareButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final String name = notesText.getText().toString();
                         INote iNote = notesMap.get(name);
                         float lat = (float) iNote.getLat();
@@ -181,21 +183,30 @@ public class NotesListActivity extends ListActivity {
                                 text = text + "\n" + osmUrl;
                                 ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, text);
                             } else {
-                                int type = note.getType();
+                                String description = note.getDescription();
                                 String form = note.getForm();
                                 try {
                                     String formText = FormUtilities.formToPlainText(form, false);
                                     formText = formText + "\n" + osmUrl;
-                                    if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
+                                    if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
                                         // double altim = note.getAltim();
-                                        List<String> imagePaths = note.getImagePaths();
+
+                                        IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+                                        File tempDir = ResourcesManager.getInstance(getContext()).getTempDir();
+
+                                        // for now only one image is shared
+                                        List<String> imageIds = note.getImageIds();
                                         File imageFile = null;
-                                        if (imagePaths.size() > 0) {
-                                            String imagePath = imagePaths.get(0);
-                                            imageFile = new File(imagePath);
-                                            if (!imageFile.exists()) {
-                                                imageFile = null;
-                                            }
+                                        if (imageIds.size() > 0) {
+                                            String imageId = imageIds.get(0);
+
+                                            Image image = imageHelper.getImage(Long.parseLong(imageId));
+
+                                            String imageName = image.getName();
+                                            imageFile = new File(tempDir, imageName);
+
+                                            byte[] imageData = imageHelper.getImageDataById(image.getImageDataId(), null);
+                                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
                                         }
                                         if (imageFile != null) {
                                             ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, formText,
@@ -212,21 +223,22 @@ public class NotesListActivity extends ListActivity {
 
                         } else if (iNote instanceof Image) {
                             Image image = (Image) iNote;
-                            File imageFile = new File(image.getPath());
                             try {
-                                if (!imageFile.exists()) {
-                                    // try relative to media
-                                    File mediaDir = ResourcesManager.getInstance(NotesListActivity.this).getMediaDir();
-                                    imageFile = new File(mediaDir.getParentFile(), image.getPath());
+                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
+                                String ext = ".jpg";
+                                if (image.getName().endsWith(".png"))
+                                    ext = ".png";
+                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                                byte[] imageData = new DaoImages().getImageData(image.getId());
+                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+                                if (imageFile.exists()) {
+                                    ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
+                                } else {
+                                    Utilities.errorDialog(NotesListActivity.this, new IOException("The image is missing: "
+                                            + imageFile), null);
                                 }
                             } catch (java.lang.Exception e) {
                                 e.printStackTrace();
-                            }
-                            if (imageFile.exists()) {
-                                ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
-                            } else {
-                                Utilities.errorDialog(NotesListActivity.this, new IOException("The image is missing: "
-                                        + imageFile), null);
                             }
                         }
 
@@ -234,8 +246,8 @@ public class NotesListActivity extends ListActivity {
                 });
 
                 final ImageView editButton = (ImageView) rowView.findViewById(R.id.editbutton);
-                editButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                editButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final String name = notesText.getText().toString();
                         INote iNote = notesMap.get(name);
                         if (iNote instanceof Note) {
@@ -247,60 +259,64 @@ public class NotesListActivity extends ListActivity {
                                 return;
                             }
 
-                            int type = note.getType();
+                            String description = note.getDescription();
                             double lat = note.getLat();
                             double lon = note.getLon();
                             String form = note.getForm();
-                            if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
+                            if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
                                 double altim = note.getAltim();
                                 Intent formIntent = new Intent(NotesListActivity.this, FormActivity.class);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, lat);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
                                 NotesListActivity.this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                             }
                         } else if (iNote instanceof Image) {
                             Image image = (Image) iNote;
                             Intent intent = new Intent();
                             intent.setAction(android.content.Intent.ACTION_VIEW);
-                            File absolutePath = new File(image.getPath());
-                            if (!absolutePath.exists()) {
-                                // try relative to media
-                                try {
-                                    File mediaDir = ResourcesManager.getInstance(NotesListActivity.this).getMediaDir();
-                                    absolutePath = new File(mediaDir.getParentFile(), image.getPath());
-                                } catch (java.lang.Exception e) {
-                                    e.printStackTrace();
-                                }
+
+                            try {
+                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
+                                String ext = ".jpg";
+                                if (image.getName().endsWith(".png"))
+                                    ext = ".png";
+                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                                byte[] imageData = new DaoImages().getImageData(image.getId());
+                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+                                intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                                NotesListActivity.this.startActivity(intent);
+                            } catch (java.lang.Exception e) {
+                                GPLog.error(NotesListActivity.this, null, e);
                             }
-                            intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
-                            NotesListActivity.this.startActivity(intent);
+
                         }
 
                     }
                 });
 
                 final ImageView deleteButton = (ImageView) rowView.findViewById(R.id.deletebutton);
-                deleteButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final String name = notesText.getText().toString();
                         final INote note = notesMap.get(name);
                         Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_note),
-                                new Runnable(){
+                                new Runnable() {
                                     public void run() {
-                                        new AsyncTask<String, Void, String>(){
-                                            protected String doInBackground( String... params ) {
+                                        new AsyncTask<String, Void, String>() {
+                                            protected String doInBackground(String... params) {
                                                 return "";
                                             }
 
-                                            protected void onPostExecute( String response ) {
+                                            protected void onPostExecute(String response) {
                                                 try {
                                                     if (note instanceof Note) {
                                                         DaoNotes.deleteNote(note.getId());
                                                     } else if (note instanceof Image) {
-                                                        DaoImages.deleteImage(note.getId());
+                                                        DaoImages.deleteImages(note.getId());
                                                     }
                                                     refreshList();
                                                 } catch (IOException e) {
@@ -313,14 +329,15 @@ public class NotesListActivity extends ListActivity {
                                         }.execute((String) null);
 
                                     }
-                                }, null);
+                                }, null
+                        );
 
                     }
                 });
 
                 final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
-                goButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                goButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         INote note = notesMap.get(notesText.getText().toString());
                         if (note != null) {
                             Intent intent = getIntent();
@@ -341,17 +358,18 @@ public class NotesListActivity extends ListActivity {
 
         setListAdapter(arrayAdapter);
     }
-    private TextWatcher filterTextWatcher = new TextWatcher(){
 
-        public void afterTextChanged( Editable s ) {
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
             // ignore
         }
 
-        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
 
-        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             // arrayAdapter.getFilter().filter(s);
             filterList(s.toString());
         }
@@ -359,41 +377,41 @@ public class NotesListActivity extends ListActivity {
     private ArrayAdapter<String> arrayAdapter;
     private EditText filterText;
 
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
-        switch( requestCode ) {
-        case (MapsActivity.FORMUPDATE_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-                if (formArray != null) {
-                    try {
-                        double lon = Double.parseDouble(formArray[0]);
-                        double lat = Double.parseDouble(formArray[1]);
-                        String textStr = formArray[4];
-                        String jsonStr = formArray[6];
+        switch (requestCode) {
+            case (MapsActivity.FORMUPDATE_RETURN_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                    if (formArray != null) {
+                        try {
+                            double lon = Double.parseDouble(formArray[0]);
+                            double lat = Double.parseDouble(formArray[1]);
+                            String textStr = formArray[4];
+                            String jsonStr = formArray[6];
 
-                        float n = (float) (lat + 0.00001f);
-                        float s = (float) (lat - 0.00001f);
-                        float w = (float) (lon - 0.00001f);
-                        float e = (float) (lon + 0.00001f);
+                            float n = (float) (lat + 0.00001f);
+                            float s = (float) (lat - 0.00001f);
+                            float w = (float) (lon - 0.00001f);
+                            float e = (float) (lon + 0.00001f);
 
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
-                        if (notesInWorldBounds.size() > 0) {
-                            Note note = notesInWorldBounds.get(0);
-                            long id = note.getId();
-                            DaoNotes.updateForm(id, textStr, jsonStr);
+                            List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
+                            if (notesInWorldBounds.size() > 0) {
+                                Note note = notesInWorldBounds.get(0);
+                                long id = note.getId();
+                                DaoNotes.updateForm(id, textStr, jsonStr);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                     }
                 }
+                break;
             }
-            break;
-        }
         }
     }
 }

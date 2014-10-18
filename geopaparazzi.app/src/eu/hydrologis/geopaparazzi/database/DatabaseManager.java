@@ -40,7 +40,7 @@ public class DatabaseManager {
     /**
      * The db version.
      */
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
 
     private static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -140,11 +140,12 @@ public class DatabaseManager {
          */
         public void create( Context context ) throws IOException {
             db.setLocale(Locale.getDefault());
-            db.setLockingEnabled(false);
             db.setVersion(DATABASE_VERSION);
 
             // CREATE TABLES
             GPLog.createTables(db);
+            DaoMetadata.createTables();
+            DaoMetadata.initProjectMetadata(null, null, null, null);
             DaoNotes.createTables();
             DaoGpsLog.createTables();
             DaoBookmarks.createTables();
@@ -160,48 +161,48 @@ public class DatabaseManager {
          * @throws IOException  if something goes wrong.
          */
         public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
-            if (oldDbVersion == 1) {
-                Log.i(DEBUG_TAG, "Db upgrade to 2");
-                DaoNotes.upgradeNotesFromDB1ToDB2(db);
-            }
-            if (oldDbVersion <= 2) {
-                Log.i(DEBUG_TAG, "Db upgrade to 3");
-                DaoBookmarks.createTables();
-            }
-            if (oldDbVersion <= 3) {
-                Log.i(DEBUG_TAG, "Db upgrade to 4");
-                DaoImages.createTables();
-            }
-            if (oldDbVersion <= 4) {
-                Log.i(DEBUG_TAG, "Db upgrade to 5");
-                DaoNotes.upgradeNotesFromDB4ToDB5(db);
-            }
-            if (oldDbVersion <= 5) {
-                Log.i(DEBUG_TAG, "Db upgrade to 6");
-                DaoNotes.upgradeNotesFromDB5ToDB6(db);
-            }
-            if (oldDbVersion <= 6) {
-                Log.i(DEBUG_TAG, "Db upgrade to 7");
-                GPLog.createTables(db);
-            }
-            if (oldDbVersion <= 7) {
-                Log.i(DEBUG_TAG, "Db upgrade to 8");
-                // probably don't need to check (could just add column), but it is safer this way
-                boolean checkField = DaoGpsLog.existsColumnInTable(db, "gpslogs", "lengthm");
-                if (checkField == false) {
-                    DaoGpsLog.addFieldGPSTables(db, "gpslogs", "lengthm", "REAL");
-                }
-            }
-            db.beginTransaction();
-            try {
-                db.setTransactionSuccessful();
-                db.setVersion(newDbVersion);
-            } catch (Exception e) {
-                Log.e("DATABASEMANAGER", e.getLocalizedMessage(), e);
-                throw new IOException(e.getLocalizedMessage());
-            } finally {
-                db.endTransaction();
-            }
+//            if (oldDbVersion == 1) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 2");
+//                DaoNotes.upgradeNotesFromDB1ToDB2(db);
+//            }
+//            if (oldDbVersion <= 2) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 3");
+//                DaoBookmarks.createTables();
+//            }
+//            if (oldDbVersion <= 3) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 4");
+//                DaoImages.createTables();
+//            }
+//            if (oldDbVersion <= 4) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 5");
+//                DaoNotes.upgradeNotesFromDB4ToDB5(db);
+//            }
+//            if (oldDbVersion <= 5) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 6");
+//                DaoNotes.upgradeNotesFromDB5ToDB6(db);
+//            }
+//            if (oldDbVersion <= 6) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 7");
+//                GPLog.createTables(db);
+//            }
+//            if (oldDbVersion <= 7) {
+//                Log.i(DEBUG_TAG, "Db upgrade to 8");
+//                // probably don't need to check (could just add column), but it is safer this way
+//                boolean checkField = DaoGpsLog.existsColumnInTable(db, "gpslogs", "lengthm");
+//                if (checkField == false) {
+//                    DaoGpsLog.addFieldGPSTables(db, "gpslogs", "lengthm", "REAL");
+//                }
+//            }
+//            db.beginTransaction();
+//            try {
+//                db.setTransactionSuccessful();
+//                db.setVersion(newDbVersion);
+//            } catch (Exception e) {
+//                Log.e("DATABASEMANAGER", e.getLocalizedMessage(), e);
+//                throw new IOException(e.getLocalizedMessage());
+//            } finally {
+//                db.endTransaction();
+//            }
         }
 
         public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {

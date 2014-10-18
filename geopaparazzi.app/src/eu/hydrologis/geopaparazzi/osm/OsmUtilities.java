@@ -38,17 +38,17 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * Utilities class for handling OSM matters.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -60,15 +60,15 @@ public class OsmUtilities {
     private static final String SERVER = "http://lucadelu.org/cgi-bin/zoo_loader.cgi";
 
     /**
-     * 
+     *
      */
     public static final String PREF_KEY_USER = "osm_user_key";
     /**
-     * 
+     *
      */
     public static final String PREF_KEY_PWD = "osm_pwd_key";
     /**
-     * 
+     *
      */
     public static final String PREF_KEY_SERVER = "osm_server_key";
 
@@ -87,13 +87,13 @@ public class OsmUtilities {
 
     /**
      * Send OSM notes to the server.
-     * 
-     * @param context the context.
+     *
+     * @param context     the context.
      * @param description the changeset description.
      * @return the server response.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static String sendOsmNotes( Context context, String description ) throws Exception {
+    public static String sendOsmNotes(Context context, String description) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String user = preferences.getString(PREF_KEY_USER, TEST);
         if (user.length() == 0) {
@@ -127,10 +127,10 @@ public class OsmUtilities {
         wpsXmlString = wpsXmlString.replaceFirst("PASSWORD", pwd);
         wpsXmlString = wpsXmlString.replaceFirst("CHANGESET", description);
 
-        List<Note> notesList = DaoNotes.getNotesList();
+        List<Note> notesList = DaoNotes.getNotesList(null, false);
         StringBuilder sb = new StringBuilder();
-        for( Note note : notesList ) {
-            if (note.getType() == NoteType.OSM.getTypeNum()) {
+        for (Note note : notesList) {
+            if (note.getDescription().equals(LibraryConstants.OSM)) {
                 String form = note.getForm();
                 if (form != null) {
                     sb.append(",\n");
@@ -161,24 +161,24 @@ public class OsmUtilities {
     /**
      * Read from an inputstream and convert the read stuff to a String. Useful for text files
      * that are available as streams.
-     * 
+     *
      * @param inputStream the input stream.
-     * @return the read string 
-     * @throws IOException  if something goes wrong.
+     * @return the read string
+     * @throws IOException if something goes wrong.
      */
-    public static String readInputStreamToString( InputStream inputStream ) throws IOException {
+    public static String readInputStreamToString(InputStream inputStream) throws IOException {
         // Create the byte list to hold the data
         List<Byte> bytesList = new ArrayList<Byte>();
 
         byte b = 0;
-        while( (b = (byte) inputStream.read()) != -1 ) {
+        while ((b = (byte) inputStream.read()) != -1) {
             bytesList.add(b);
         }
         // Close the input stream and return bytes
         inputStream.close();
 
         byte[] bArray = new byte[bytesList.size()];
-        for( int i = 0; i < bArray.length; i++ ) {
+        for (int i = 0; i < bArray.length; i++) {
             bArray[i] = bytesList.get(i);
         }
 
@@ -191,10 +191,10 @@ public class OsmUtilities {
 
     /**
      * Download the osm tags archive if necessary and if network is available.
-     * 
+     *
      * @param activity parent activity.
      */
-    public static void handleOsmTagsDownload( final Activity activity ) {
+    public static void handleOsmTagsDownload(final Activity activity) {
 
         if (!NetworkUtilities.isNetworkAvailable(activity)) {
             // Utilities
@@ -232,79 +232,79 @@ public class OsmUtilities {
         new AlertDialog.Builder(activity).setTitle("OSM tags")
                 .setMessage("Do you want to download the OSM tags of version " + onlineVersion[0] + "?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
                         // ignore
                     }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    private File parentFile;
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            private File parentFile;
 
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        try {
-                            parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                        final File osmZipFile = new File(parentFile, "osmtags.zip");
-                        File osmFolderFile = new File(parentFile, "osmtags");
+            public void onClick(DialogInterface dialog, int whichButton) {
+                try {
+                    parentFile = ResourcesManager.getInstance(activity).getApplicationSupporterDir().getParentFile();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                final File osmZipFile = new File(parentFile, "osmtags.zip");
+                File osmFolderFile = new File(parentFile, "osmtags");
 
-                        if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
-                            boolean deleteFileOrDir = FileUtilities.deleteFileOrDir(osmFolderFile);
-                            if (!deleteFileOrDir) {
-                                Utilities
-                                        .messageDialog(
-                                                activity,
-                                                "An osm tags folder already exists and it was not possible to remove it. Please remove the folder manually before downloading the new tags.",
-                                                null);
-                                return;
-                            }
-                        }
-
-                        if (!NetworkUtilities.isNetworkAvailable(activity)) {
-                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
-                            return;
-                        }
-
-                        final ProgressDialog progressDialog = ProgressDialog.show(activity, "",
-                                activity.getString(R.string.loading_data));
-
-                        new AsyncTask<String, Void, String>(){
-                            protected String doInBackground( String... params ) {
-
-                                try {
-                                    NetworkUtilities.sendGetRequest4File(osmTagsZipUrlPath, osmZipFile, null, null, null);
-                                } catch (Exception e) {
-                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.", null);
-                                    e.printStackTrace();
-                                    return "";
-                                }
-
-                                try {
-                                    CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath(),
-                                            true);
-
-                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                                    Editor editor = preferences.edit();
-                                    editor.putInt(Constants.PREFS_KEY_OSMTAGSVERSION, onlineVersion[0]);
-                                    editor.commit();
-                                } catch (IOException e) {
-                                    Utilities.messageDialog(activity,
-                                            "An error occurred while unzipping the OSM tags to the device.", null);
-                                    e.printStackTrace();
-                                    return "";
-                                } finally {
-                                    osmZipFile.delete();
-                                }
-                                return "";
-                            }
-
-                            protected void onPostExecute( String dataset ) {
-                                progressDialog.dismiss();
-                            }
-                        }.execute((String) null);
-
+                if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
+                    boolean deleteFileOrDir = FileUtilities.deleteFileOrDir(osmFolderFile);
+                    if (!deleteFileOrDir) {
+                        Utilities
+                                .messageDialog(
+                                        activity,
+                                        "An osm tags folder already exists and it was not possible to remove it. Please remove the folder manually before downloading the new tags.",
+                                        null);
+                        return;
                     }
-                }).show();
+                }
+
+                if (!NetworkUtilities.isNetworkAvailable(activity)) {
+                    Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
+                    return;
+                }
+
+                final ProgressDialog progressDialog = ProgressDialog.show(activity, "",
+                        activity.getString(R.string.loading_data));
+
+                new AsyncTask<String, Void, String>() {
+                    protected String doInBackground(String... params) {
+
+                        try {
+                            NetworkUtilities.sendGetRequest4File(osmTagsZipUrlPath, osmZipFile, null, null, null);
+                        } catch (Exception e) {
+                            Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.", null);
+                            e.printStackTrace();
+                            return "";
+                        }
+
+                        try {
+                            CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath(),
+                                    true);
+
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                            Editor editor = preferences.edit();
+                            editor.putInt(Constants.PREFS_KEY_OSMTAGSVERSION, onlineVersion[0]);
+                            editor.commit();
+                        } catch (IOException e) {
+                            Utilities.messageDialog(activity,
+                                    "An error occurred while unzipping the OSM tags to the device.", null);
+                            e.printStackTrace();
+                            return "";
+                        } finally {
+                            osmZipFile.delete();
+                        }
+                        return "";
+                    }
+
+                    protected void onPostExecute(String dataset) {
+                        progressDialog.dismiss();
+                    }
+                }.execute((String) null);
+
+            }
+        }).show();
 
     }
 

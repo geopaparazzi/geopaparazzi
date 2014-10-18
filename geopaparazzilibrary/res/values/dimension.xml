@@ -28,4 +28,7 @@
 	<!-- custom dialog dims -->
 	<dimen name="dialog_minwidth">300dp</dimen>
 	<dimen name="dialog_minheight">180dp</dimen>
+    <!-- horizontal line height -->
+	<dimen name="horizontal_line_height">2dp</dimen>
+	<dimen name="horizontal_line_height_fat">5dp</dimen>
 </resources>

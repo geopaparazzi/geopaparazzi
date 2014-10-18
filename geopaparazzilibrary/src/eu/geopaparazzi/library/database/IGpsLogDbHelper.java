@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.gps;
+package eu.geopaparazzi.library.database;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -40,8 +40,8 @@ public interface IGpsLogDbHelper {
     /**
      * Creates a new gpslog entry and returns the log's new id.
      * 
-     * @param startTs the start timestamp.
-     * @param endTs the end timestamp.
+     * @param startTs the start UTC timestamp.
+     * @param endTs the end UTC timestamp.
      * @param lengthm the length of the log in meters
      * @param text a description or null.
      * @param width the width of the rendered log. 
@@ -50,7 +50,7 @@ public interface IGpsLogDbHelper {
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog( Date startTs, Date endTs, double lengthm, String text, float width, String color, boolean visible )
+    public long addGpsLog( long startTs, long endTs, double lengthm, String text, float width, String color, boolean visible )
             throws IOException;
 
     /**
@@ -67,7 +67,7 @@ public interface IGpsLogDbHelper {
      * @throws IOException  if something goes wrong.
      */
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
-            Date timestamp ) throws IOException;
+            long timestamp ) throws IOException;
 
     /**
      * Deletes a gps log from the database. 
@@ -84,7 +84,7 @@ public interface IGpsLogDbHelper {
      * @param end the end timestamp.
      * @throws IOException  if something goes wrong.
      */
-    public void setEndTs( long logid, Date end ) throws IOException;
+    public void setEndTs( long logid, long end ) throws IOException;
 
     /**
      * Re-sets the log (track) length.

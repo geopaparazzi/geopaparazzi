@@ -38,6 +38,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -221,7 +222,6 @@ public class Utilities {
             protected void onPostExecute( String response ) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(eu.geopaparazzi.library.R.layout.simpledialog);
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                 text.setText(msg);
                 try {
@@ -234,9 +234,16 @@ public class Utilities {
                             }
                         }
                     });
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    Window window = dialog.getWindow();
+                    lp.copyFrom(window.getAttributes());
+                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    window.setAttributes(lp);
+                    window.setBackgroundDrawableResource(android.R.color.transparent);
                     dialog.show();
                 } catch (Exception e) {
-                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute -- " + msg, e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }.execute((String) null);
@@ -314,7 +321,6 @@ public class Utilities {
                 try {
                     final Dialog dialog = new Dialog(context);
                     dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
-                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.setCancelable(false);
                     TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
@@ -337,6 +343,13 @@ public class Utilities {
                             }
                         }
                     });
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    Window window = dialog.getWindow();
+                    lp.copyFrom(window.getAttributes());
+                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    window.setAttributes(lp);
+                    window.setBackgroundDrawableResource(android.R.color.transparent);
                     dialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in yesNoMessageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -426,7 +439,6 @@ public class Utilities {
             final String defaultText, final TextRunnable textRunnable ) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(message);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
@@ -452,6 +464,13 @@ public class Utilities {
                 dialog.dismiss();
             }
         });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
     }

@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/dialog_background"
-    android:paddingBottom="10dp" >
+    android:layout_height="wrap_content"
+    android:background="@color/main_background"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/upperline"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/horizontal_line_height_fat"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/main_decorations"
+        android:orientation="horizontal" />
 
     <TextView
         android:id="@+id/dialogtext"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_margin="25dp"
         android:gravity="center_horizontal"
+        android:layout_below="@+id/upperline"
         android:text="dummy text"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
@@ -32,11 +44,13 @@
     </EditText>
 
     <LinearLayout
+        android:id="@+id/buttons_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dialogEdittext"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="25dp"
         android:orientation="horizontal" >
 
         <Button
@@ -67,5 +81,17 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
     </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/lowerline"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/horizontal_line_height_fat"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/buttons_layout"
+        android:background="@color/main_decorations"
+        android:orientation="horizontal" />
 
 </RelativeLayout>
