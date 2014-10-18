@@ -3,11 +3,11 @@ buildscript {
                 mavenCentral()
         }
         dependencies {
-                classpath 'com.android.tools.build:gradle:0.12.+'
+                classpath 'com.android.tools.build:gradle:0.12.2'
         }
 }
 
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     compile files('libs/android-support-v4.jar')
-    compile files('libs/achartengine-1.1.0-rc1.jar')
+    compile files('libs/androidplot-core-0.6.1.jar')
     compile files('libs/httpclient-4.2.2.jar')
     compile files('libs/httpcore-4.2.2.jar')
     compile files('libs/httpmime-4.2.2.jar')

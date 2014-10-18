@@ -8,7 +8,7 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="20"/>
 
-    <application android:label="GeopaparazziMapsforge">
+    <application >
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
 
     </application>

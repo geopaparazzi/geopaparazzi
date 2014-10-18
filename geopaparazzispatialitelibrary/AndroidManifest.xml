@@ -30,7 +30,7 @@
 
     -->
 
-    <application android:label="GeopaparazziSpatialiteLibrary" >
+    <application  >
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LinesDataPropertiesActivity" >
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PolygonsDataPropertiesActivity" >
