@@ -151,15 +151,8 @@ public class ExportActivity extends Activity {
                 // } else {
                 // msg = getString(R.string.project_succesfully_uploaded_to_cloud);
                 // }
-                AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
-                builder.setMessage(response).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                // ignore
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+
+                Utilities.messageDialog(ExportActivity.this, response, null);
             }
         }.execute((String) null);
 
@@ -244,15 +237,7 @@ public class ExportActivity extends Activity {
                     msg = getString(R.string.kmlnonsaved);
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
-                builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                // ignore
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                Utilities.messageDialog(ExportActivity.this, msg, null);
             }
         }.execute((String) null);
     }
@@ -303,15 +288,7 @@ public class ExportActivity extends Activity {
                     msg = getString(R.string.kmlnonsaved);
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
-                builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                // ignore
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                Utilities.messageDialog(ExportActivity.this, msg, null);
             }
         }.execute((String) null);
     }
