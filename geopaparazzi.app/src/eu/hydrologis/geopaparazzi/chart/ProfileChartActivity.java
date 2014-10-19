@@ -20,16 +20,21 @@ package eu.hydrologis.geopaparazzi.chart;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.FloatMath;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidplot.ui.AnchorPosition;
@@ -61,12 +66,13 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 
 /**
- * The simplest possible example of using AndroidPlot to plot some data.
+ * The profile chart activity.
+ *
+ * @author Andrea Antonello
  */
-public class ProfileChartActivity extends Activity implements View.OnTouchListener, View.OnLongClickListener {
+public class ProfileChartActivity extends Activity implements View.OnTouchListener, View.OnClickListener {
 
     private XYPlot xyPlotSpeed, xyPlotElev;
-    private Boolean series2_onRight = true;
     private LineAndPointFormatter seriesSpeedFormat, seriesElevFormat;
 
     XYSeries seriesSpeed, seriesElev;
@@ -76,6 +82,9 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
     private PointF maxXYSpeed;
     private PointF minXYElevation;
     private PointF maxXYElevation;
+    private TextView infoTextView;
+    private double elevDifference;
+    private DrawerLayout drawerLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +92,9 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profilechart);
 
+        int backgroundColor = getResources().getColor(R.color.main_background);
+        int decorationsColor = getResources().getColor(R.color.main_decorations_dark);
+        int textColor = getResources().getColor(R.color.main_text_color_neutral);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -104,11 +116,15 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         final float f10 = PixelUtils.dpToPix(10);
         final SizeMetrics sm = new SizeMetrics(0, SizeLayoutType.FILL, 0, SizeLayoutType.FILL);
 
-        xyPlotSpeed = (XYPlot) findViewById(R.id.mySimpleXYPlot_L);
-        xyPlotElev = (XYPlot) findViewById(R.id.mySimpleXYPlot_R);
-
+        xyPlotSpeed = (XYPlot) findViewById(R.id.speed_plot);
+        xyPlotElev = (XYPlot) findViewById(R.id.elevation_plot);
         xyPlotSpeed.setOnTouchListener(this);
-        xyPlotSpeed.setOnLongClickListener(this);
+
+        infoTextView = (TextView) findViewById(R.id.info_text);
+        Button resetButton = (Button) findViewById(R.id.reset_chart_button);
+        resetButton.setOnClickListener(this);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.container_drawer);
 
         // Disable Hardware Acceleration on the xyPlot view object.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -135,56 +151,81 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         /* 
          * Setup the Graph Widgets
          */
-        XYGraphWidget graphWidget_L = xyPlotSpeed.getGraphWidget();
-        XYGraphWidget graphWidget_R = xyPlotElev.getGraphWidget();
+        XYGraphWidget graphWidgetSpeed = xyPlotSpeed.getGraphWidget();
+        XYGraphWidget graphWidgetElev = xyPlotElev.getGraphWidget();
 
-        graphWidget_L.setSize(sm);
-        graphWidget_R.setSize(sm);
+        graphWidgetSpeed.setSize(sm);
+        graphWidgetElev.setSize(sm);
 
-        graphWidget_L.setMargins(0, 0, 0, 0);
-        graphWidget_R.setMargins(0, 0, 0, 0);
+        graphWidgetSpeed.setMargins(0, 0, 0, 0);
+        graphWidgetElev.setMargins(0, 0, 0, 0);
 
-        graphWidget_L.setPadding(f26, f10, f26, f26);
-        graphWidget_R.setPadding(f26, f10, f26, f26);
+        graphWidgetSpeed.setPadding(f26, f10, f26, f26);
+        graphWidgetElev.setPadding(f26, f10, f26, f26);
 
-        graphWidget_L.setRangeAxisPosition(true, false, 4, "10");
-        graphWidget_R.setRangeAxisPosition(false, false, 4, "10");
+        graphWidgetSpeed.setRangeAxisPosition(true, false, 4, "10");
+        graphWidgetElev.setRangeAxisPosition(false, false, 4, "10");
 
-        graphWidget_L.setRangeLabelVerticalOffset(-3);
-        graphWidget_R.setRangeLabelVerticalOffset(-3);
+        graphWidgetSpeed.setRangeLabelVerticalOffset(-3);
+        graphWidgetElev.setRangeLabelVerticalOffset(-3);
 
-        graphWidget_L.setRangeOriginLabelPaint(null);
-        graphWidget_R.setRangeOriginLabelPaint(null);
+        graphWidgetSpeed.setRangeOriginLabelPaint(null);
+        graphWidgetElev.setRangeOriginLabelPaint(null);
 
-        graphWidget_L.setRangeLabelWidth(0);
-        graphWidget_R.setRangeLabelWidth(0);
+        graphWidgetSpeed.setRangeLabelWidth(0);
+        graphWidgetElev.setRangeLabelWidth(0);
 
-        graphWidget_L.setDomainLabelWidth(0);
-        graphWidget_R.setDomainLabelWidth(0);
+        graphWidgetSpeed.setDomainLabelWidth(0);
+        graphWidgetElev.setDomainLabelWidth(0);
 
-        graphWidget_R.setBackgroundPaint(null);
-        graphWidget_R.setDomainLabelPaint(null);
-        graphWidget_R.setGridBackgroundPaint(null);
-        graphWidget_R.setDomainOriginLabelPaint(null);
-        graphWidget_R.setRangeOriginLinePaint(null);
-        graphWidget_R.setDomainGridLinePaint(null);
-        graphWidget_R.setRangeGridLinePaint(null);
+        graphWidgetElev.setBackgroundPaint(null);
+        graphWidgetElev.setDomainLabelPaint(null);
+        graphWidgetElev.setGridBackgroundPaint(null);
+        graphWidgetElev.setDomainOriginLabelPaint(null);
+        graphWidgetElev.setRangeOriginLinePaint(null);
+        graphWidgetElev.setDomainGridLinePaint(null);
+        graphWidgetElev.setRangeGridLinePaint(null);
 
-        graphWidget_L.getRangeLabelPaint().setTextSize(PixelUtils.dpToPix(8));
-        graphWidget_R.getRangeLabelPaint().setTextSize(PixelUtils.dpToPix(8));
 
-        graphWidget_L.getDomainOriginLabelPaint().setTextSize(PixelUtils.dpToPix(8));
-        graphWidget_L.getDomainLabelPaint().setTextSize(PixelUtils.dpToPix(8));
+        graphWidgetSpeed.getBackgroundPaint().setColor(backgroundColor);
+        graphWidgetSpeed.getGridBackgroundPaint().setColor(backgroundColor);
 
-        float textSize = graphWidget_L.getRangeLabelPaint().getTextSize();
-        graphWidget_L.setRangeLabelVerticalOffset((textSize / 2) * -1);
-        graphWidget_R.setRangeLabelVerticalOffset(graphWidget_L.getRangeLabelVerticalOffset());
+        graphWidgetSpeed.getRangeOriginLinePaint().setColor(decorationsColor);
+        graphWidgetSpeed.getRangeOriginLinePaint().setStrokeWidth(3f);
+        graphWidgetSpeed.getDomainOriginLinePaint().setColor(decorationsColor);
+        graphWidgetSpeed.getDomainOriginLinePaint().setStrokeWidth(3f);
+
+        graphWidgetSpeed.getRangeGridLinePaint().setColor(decorationsColor);
+        graphWidgetSpeed.getRangeGridLinePaint().setStrokeWidth(1f);
+        graphWidgetSpeed.getDomainGridLinePaint().setColor(decorationsColor);
+        graphWidgetSpeed.getDomainGridLinePaint().setStrokeWidth(1f);
+
+        graphWidgetSpeed.getRangeLabelPaint().setColor(textColor);
+        graphWidgetSpeed.getDomainLabelPaint().setColor(textColor);
+        graphWidgetSpeed.getDomainOriginLabelPaint().setColor(textColor);
+        Paint rangeOriginLabelPaint = graphWidgetSpeed.getRangeOriginLabelPaint();
+        if (rangeOriginLabelPaint == null) {
+            rangeOriginLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            rangeOriginLabelPaint.setStyle(Paint.Style.STROKE);
+            graphWidgetSpeed.setRangeOriginLabelPaint(rangeOriginLabelPaint);
+        }
+        rangeOriginLabelPaint.setColor(textColor);
+
+        graphWidgetSpeed.getRangeLabelPaint().setTextSize(PixelUtils.dpToPix(8));
+        graphWidgetElev.getRangeLabelPaint().setTextSize(PixelUtils.dpToPix(8));
+
+        graphWidgetSpeed.getDomainOriginLabelPaint().setTextSize(PixelUtils.dpToPix(8));
+        graphWidgetSpeed.getDomainLabelPaint().setTextSize(PixelUtils.dpToPix(8));
+
+        float textSize = graphWidgetSpeed.getRangeLabelPaint().getTextSize();
+        graphWidgetSpeed.setRangeLabelVerticalOffset((textSize / 2) * -1);
+        graphWidgetElev.setRangeLabelVerticalOffset(graphWidgetSpeed.getRangeLabelVerticalOffset());
 
         /*
          * Position the Graph Widgets in the Centre
          */
-        graphWidget_L.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
-        graphWidget_R.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
+        graphWidgetSpeed.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
+        graphWidgetElev.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
 
         /* 
          * Position the Label Widgets
@@ -195,29 +236,31 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         xyPlotSpeed.getRangeLabelWidget().position(1, XLayoutStyle.ABSOLUTE_FROM_LEFT, -20, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.LEFT_BOTTOM);
 
         /*
-         *  Setup and Position the LEFT Legend
+         *  Setup and Position the speed Legend
          */
-        XYLegendWidget legendWidget_LEFT = xyPlotSpeed.getLegendWidget();
-        legendWidget_LEFT.setSize(new SizeMetrics(100, SizeLayoutType.ABSOLUTE, 200, SizeLayoutType.ABSOLUTE));
-        legendWidget_LEFT.setPadding(1, 1, 1, 1);
-        legendWidget_LEFT.setTableModel(new DynamicTableModel(1, 3));
-        legendWidget_LEFT.setIconSizeMetrics(new SizeMetrics(PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE, PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE));
-        legendWidget_LEFT.getTextPaint().setTextSize(PixelUtils.dpToPix(9));
-        legendWidget_LEFT.position(PixelUtils.dpToPix(30), XLayoutStyle.ABSOLUTE_FROM_LEFT, f10 + 2, YLayoutStyle.ABSOLUTE_FROM_TOP, AnchorPosition.LEFT_TOP);
+        XYLegendWidget legendWidgetSpeed = xyPlotSpeed.getLegendWidget();
+        legendWidgetSpeed.setSize(new SizeMetrics(100, SizeLayoutType.ABSOLUTE, 200, SizeLayoutType.ABSOLUTE));
+        legendWidgetSpeed.setPadding(1, 1, 1, 1);
+        legendWidgetSpeed.setTableModel(new DynamicTableModel(1, 3));
+        legendWidgetSpeed.setIconSizeMetrics(new SizeMetrics(PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE, PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE));
+        legendWidgetSpeed.getTextPaint().setColor(textColor);
+        legendWidgetSpeed.getTextPaint().setTextSize(PixelUtils.dpToPix(9));
+        legendWidgetSpeed.position(PixelUtils.dpToPix(30), XLayoutStyle.ABSOLUTE_FROM_LEFT, f10 + 2, YLayoutStyle.ABSOLUTE_FROM_TOP, AnchorPosition.LEFT_TOP);
 
        
         /*
-         *  Setup and Position the RIGHT Legend
+         *  Setup and Position the elev Legend
          */
-        XYLegendWidget legendWidget_RIGHT = xyPlotElev.getLegendWidget();
-        legendWidget_RIGHT.setSize(new SizeMetrics(100, SizeLayoutType.ABSOLUTE, 200, SizeLayoutType.ABSOLUTE));
-        legendWidget_RIGHT.setPadding(1, 1, 1, 1);
-        legendWidget_RIGHT.setTableModel(new DynamicTableModel(1, 3));
-        legendWidget_RIGHT.setIconSizeMetrics(new SizeMetrics(PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE, PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE));
-        legendWidget_RIGHT.getTextPaint().setTextSize(PixelUtils.dpToPix(9));
-        legendWidget_RIGHT.getTextPaint().setTextAlign(Align.RIGHT);
-        legendWidget_RIGHT.setMarginLeft(185);
-        legendWidget_RIGHT.position(PixelUtils.dpToPix(30), XLayoutStyle.ABSOLUTE_FROM_RIGHT, f10 + 2, YLayoutStyle.ABSOLUTE_FROM_TOP, AnchorPosition.RIGHT_TOP);
+        XYLegendWidget legendWidgetElev = xyPlotElev.getLegendWidget();
+        legendWidgetElev.setSize(new SizeMetrics(100, SizeLayoutType.ABSOLUTE, 200, SizeLayoutType.ABSOLUTE));
+        legendWidgetElev.setPadding(1, 1, 1, 1);
+        legendWidgetElev.setTableModel(new DynamicTableModel(1, 3));
+        legendWidgetElev.setIconSizeMetrics(new SizeMetrics(PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE, PixelUtils.dpToPix(10), SizeLayoutType.ABSOLUTE));
+        //        legendWidgetElev.getTextPaint().setColor(textColor);
+        legendWidgetElev.getTextPaint().setTextSize(PixelUtils.dpToPix(9));
+        legendWidgetElev.getTextPaint().setTextAlign(Align.RIGHT);
+        legendWidgetElev.setMarginLeft(185);
+        legendWidgetElev.position(PixelUtils.dpToPix(30), XLayoutStyle.ABSOLUTE_FROM_RIGHT, f10 + 2, YLayoutStyle.ABSOLUTE_FROM_TOP, AnchorPosition.RIGHT_TOP);
 
 
         // Setup the formatters
@@ -237,7 +280,6 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         super.onResume();
 
         progressDialog = ProgressDialog.show(this, "", getString(R.string.loading_data));
-
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {
@@ -262,24 +304,16 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
     private void updateView() {
 
         // Remove all current series from each plot
-        Iterator<XYSeries> iterator1 = xyPlotSpeed.getSeriesSet().iterator();
-        while (iterator1.hasNext()) {
-            XYSeries setElement = iterator1.next();
+        for (XYSeries setElement : xyPlotSpeed.getSeriesSet()) {
             xyPlotSpeed.removeSeries(setElement);
         }
-        Iterator<XYSeries> iterator2 = xyPlotElev.getSeriesSet().iterator();
-        while (iterator2.hasNext()) {
-            XYSeries setElement = iterator2.next();
+        for (XYSeries setElement : xyPlotElev.getSeriesSet()) {
             xyPlotElev.removeSeries(setElement);
         }
 
         // Add series to each plot as needed.
         xyPlotSpeed.addSeries(seriesSpeed, seriesSpeedFormat);
-        if (series2_onRight) {
-            xyPlotElev.addSeries(seriesElev, seriesElevFormat);
-        } else {
-            xyPlotSpeed.addSeries(seriesElev, seriesElevFormat);
-        }
+        xyPlotElev.addSeries(seriesElev, seriesElevFormat);
 
         // Finalise each Plot based on whether they have any series or not.
         if (!xyPlotElev.getSeriesSet().isEmpty()) {
@@ -308,17 +342,12 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         maxXYElevation = new PointF(xyPlotElev.getCalculatedMaxX().floatValue(),
                 xyPlotElev.getCalculatedMaxY().floatValue());
 
+
+        infoTextView.setText("Active elevation diff: " + elevDifference + "m");
     }
 
     /**
      * Create a dataset based on supplied data that are supposed to be coordinates and elevations for a profile view.
-     * <p/>
-     * <p>
-     * Note that this also sets the min and max values
-     * of the chart data, so the dataset created should
-     * really be used through setDataset, so that the bounds
-     * are properly zoomed.
-     * </p>
      */
     public void createDatasetFromProfile() throws Exception {
         DynamicDoubleArray lonArray = line.getLonList();
@@ -335,7 +364,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         List<Double> xList1 = new ArrayList<Double>(lonArray.size());
         List<Double> yList1 = new ArrayList<Double>(lonArray.size());
         List<Double> yList2 = new ArrayList<Double>(lonArray.size());
-        double elevDifference = 0;
+        elevDifference = 0;
         for (int i = 0; i < lonArray.size(); i++) {
             double elev = elevArray.get(i);
             double lat = latArray.get(i);
@@ -521,7 +550,10 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
     }
 
     @Override
-    public boolean onLongClick(View v) {
+    public void onClick(View v) {
+        drawerLayout.closeDrawers();
+
+
         minXYSpeed.x = seriesSpeed.getX(0).floatValue();
         maxXYSpeed.x = seriesSpeed.getX(seriesSpeed.size() - 1).floatValue();
         xyPlotSpeed.setDomainBoundaries(minXYSpeed.x, maxXYSpeed.x, BoundaryMode.FIXED);
@@ -531,6 +563,6 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
         xyPlotElev.redraw();
         xyPlotSpeed.redraw();
-        return true;
+
     }
 }
