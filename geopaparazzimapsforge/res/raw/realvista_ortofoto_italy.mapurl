@@ -6,4 +6,4 @@ type=wms
 format=jpg
 defaultzoom=17
 mbtiles=defaulttiles/_realvista_ortofot_italy.mbtiles
-description=RealVista1.0 WMS OPEN di e-GEOS SpA e' distribuito con Licenza Creative Commons Attribuzione 4.0 Internazionale. Based on a work at www.realvista.it. Registration required: http://goo.gl/ZrQJzZ﻿
+description=RealVista1.0 WMS OPEN di e-GEOS SpA distribuito con Licenza Creative Commons Attribuzione 4.0 Internazionale. Based on a work at www.realvista.it. Registration required: http://goo.gl/ZrQJzZ﻿
