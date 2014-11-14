@@ -47,6 +47,7 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,7 @@ import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
+import jsqlite.*;
 
 import static java.lang.Math.round;
 
@@ -286,7 +288,13 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
                         context.startService(intent);
                     } catch (jsqlite.Exception e) {
-                        GPLog.error(this, null, e);
+                        if (e.getMessage().contains("UNIQUE constraint failed")) {
+                            Utilities.messageDialog(commitButton.getContext(), "A unique constraint violation occurred. Databases with unique constraints are not supported.", null);
+                            coordinatesList.clear();
+                            this.polygonGeometry = null;
+                        } else {
+                            GPLog.error(this, null, e);
+                        }
                     }
                 }
             }
