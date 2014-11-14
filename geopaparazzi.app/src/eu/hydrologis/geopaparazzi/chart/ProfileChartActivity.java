@@ -20,7 +20,6 @@ package eu.hydrologis.geopaparazzi.chart;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
@@ -54,7 +53,6 @@ import com.androidplot.xy.XYSeries;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;

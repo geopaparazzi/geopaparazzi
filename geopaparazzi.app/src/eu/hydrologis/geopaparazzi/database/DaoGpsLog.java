@@ -50,7 +50,6 @@ import eu.hydrologis.geopaparazzi.util.Line;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_GPSLOGS;
-import static java.lang.Math.abs;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

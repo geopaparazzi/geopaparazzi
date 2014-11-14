@@ -42,7 +42,6 @@ import android.widget.ToggleButton;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.sql.Date;
 import java.util.Set;
 
 import eu.geopaparazzi.library.camera.CameraActivity;

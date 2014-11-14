@@ -20,7 +20,6 @@ package eu.hydrologis.geopaparazzi.util;
 import java.util.Collections;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
 

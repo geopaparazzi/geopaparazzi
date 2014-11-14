@@ -18,8 +18,6 @@
 package eu.hydrologis.geopaparazzi.maptools;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.text.Editable;
 import android.text.InputType;

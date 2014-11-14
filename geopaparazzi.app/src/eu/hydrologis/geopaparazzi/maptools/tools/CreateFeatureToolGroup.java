@@ -72,7 +72,6 @@ import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
-import jsqlite.*;
 
 import static java.lang.Math.round;
 

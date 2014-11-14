@@ -32,7 +32,6 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_METADATA;
-import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_NOTES;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
