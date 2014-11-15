@@ -244,7 +244,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-        boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
+        boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, true);
 
         /*
          * create main mapview
