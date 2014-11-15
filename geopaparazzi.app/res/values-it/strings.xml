@@ -232,15 +232,10 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="spatialite_recovery_mode">Modalità recovery Spatialite</string>
   <string name="spatialite_recover_mode_tooltip">Se attivata, al prossimo avvio tenterà di correggere tabelle non compatibili.</string>
   <string name="map">Mappa</string>
-  <string name="name">nome</string>
   <string name="bounds">limiti</string>
   <string name="maps_loading_not_finished_yet">Il caricamento delle mappe non è completo. Si prega di attendere un attimo e riprovare.</string>
   <string name="save">salva</string>
   <string name="goto_feature">vai a</string>
-  <string name="cancel">Annulla</string>
-  <string name="project_info">informazioni sul progetto</string>
-  <string name="description">descrizione</string>
-  <string name="notes">note</string>
   <string name="last_closing_date">Ultima data di chiusura</string>
   <string name="creation_date">Data di creazione</string>
   <string name="creation_user">Autore del progetto</string>

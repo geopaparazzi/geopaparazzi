@@ -3,6 +3,7 @@
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
   <string name="app_name">Geopaparazzi</string>
+  <string name="app_file_name">Geopaparazziプロジェクトデータベース</string>
   <string name="notesvisibilityToggle">ノートを表示する</string>
   <string name="kmlsaved">正常にエクスポートされました:</string>
   <string name="kmlnonsaved">データのエクスポート中にエラーが発生しました ！</string>
