@@ -107,6 +107,9 @@
   <string name="osm_user_label">ユーザー名</string>
   <string name="osm_password_label">パスワード</string>
   <string name="osm_server_label">接続サーバ</string>
+  <string name="osm_notes_properly_uploaded">OSMノートが正しくアップロードされました
+
+アップロードされたノートをデバイスから削除しますか？</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM タグのアップロード中にエラーが発生しました。</string>
   <string name="enable_automatic_center_on_gps">地図中心をGPS座標へ</string>
   <string name="enable_center_on_gps">GPS座標を常に中心にする</string>
@@ -143,6 +146,8 @@
   <string name="enter_a_name_for_the_new_project">新しいプロジェクトの名前を入力します。</string>
   <string name="chosen_project_exists">選択したプロジェクトの名前は既に存在します、別の名前を選んでください。</string>
   <string name="no_external_sdcard_for_db_renderer">データベースのレンダリングは、外部ストレージからのみサポートされています。外部ストレージが見つかりませんでした、外部ストレージは利用可能ですか？</string>
+  <string name="no_map_files_found_go_online">/Sdcard/maps フォルダー内にマップ ファイルが見つかりませんでした。オンライン マップへ切り替えます。
+マップはここからダウンロードすることができます: http://download.mapsforge.org</string>
   <string name="select_map_to_use">使用するマップを選択します。</string>
   <string name="no_map_file_found_going_to_mapnik">マップ ファイルが見つかりませんでした。MAPNIK タイル ソースを切替えます。</string>
   <string name="enter_project_description">プロジェクトの説明を入力します</string>
@@ -157,6 +162,8 @@
   <string name="sent_sms">SMS送信 : </string>
   <string name="send_data">データ送信</string>
   <string name="found_no_data_to_send">現在の表示マップに送信するデータが見つかりません。</string>
+  <string name="insert_phone_to_send"> SMS は選択されたデータを送信します。
+データの送信先電話番号を入力してください。</string>
   <string name="no_message_sent">送信メッセージがありません。</string>
   <string name="logs_will_be_merged">ログがこの操作で一緒にマージされます。続行しますか?</string>
   <string name="distance">距離: </string>
@@ -219,4 +226,5 @@
   <string name="tanto_service_query">クエリ</string>
   <string name="tanto_disclaimer">よくお読みください：Geopaparazziは、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
   <string name="service_name_propmt">サービス名を入力。空白の場合サービス名はサービスから取得されます。</string>
+  <string name="info">INFO</string>
 </resources>
