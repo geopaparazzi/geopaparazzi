@@ -68,7 +68,7 @@ import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
  */
 public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
-    private MapView mapView;
+    private final MapView mapView;
 
     private int buttonSelectionColor;
     private List<Feature> selectedFeatures = new ArrayList<Feature>();

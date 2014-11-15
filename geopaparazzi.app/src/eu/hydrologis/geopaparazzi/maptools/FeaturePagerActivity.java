@@ -149,7 +149,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
             }
 
         };
-        saveDataTask.startProgressDialog("SAVE", "Saving data to database...", false, null);
+        saveDataTask.startProgressDialog(getString(R.string.save_uppercase), getString(R.string.saving_to_database), false, null);
         saveDataTask.execute();
 
     }

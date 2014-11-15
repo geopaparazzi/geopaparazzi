@@ -278,7 +278,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                             DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
                                     spatialVectorTableLayer.getSpatialVectorTable());
                         }
-                        Utilities.toast(commitButton.getContext(), "Geometry saved.", Toast.LENGTH_SHORT);
+                        Utilities.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                         coordinatesList.clear();
 
                         // reset mapview
@@ -288,7 +288,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         context.startService(intent);
                     } catch (jsqlite.Exception e) {
                         if (e.getMessage().contains("UNIQUE constraint failed")) {
-                            Utilities.messageDialog(commitButton.getContext(), "A unique constraint violation occurred. Databases with unique constraints are not supported.", null);
+                            Utilities.messageDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);
                             coordinatesList.clear();
                             this.polygonGeometry = null;
                         } else {
@@ -340,7 +340,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                     int geomType = spatialVectorTable.getGeomType();
                     GeometryType geometryType = GeometryType.forValue(geomType);
                     if (!geometryType.isGeometryCompatible(polygonGeometry)) {
-                        Utilities.messageDialog(context, "The added vertex has created a selfintersection of the polygon and your layer doesn't support it.", null);
+                        Utilities.messageDialog(context, context.getString(R.string.selfintersection_message), null);
                     }
                 }
                 firstInvalid = false;
@@ -487,7 +487,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             EditManager.INSTANCE.invalidateEditingView();
         } else {
             EditingView editingView = EditManager.INSTANCE.getEditingView();
-            Utilities.messageDialog(editingView.getContext(), "No GPS coordinate has been acquired yet.", null);
+            Utilities.messageDialog(editingView.getContext(), R.string.no_gps_coordinate_acquired_yet, null);
         }
     }
 

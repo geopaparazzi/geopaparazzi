@@ -1165,7 +1165,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     String newName = value.toString();
                     if (newName == null || newName.length() < 1) {
                         newName = proposedName;
-                        ;
                     }
 
                     int zoom = mapView.getMapPosition().getZoomLevel();

@@ -143,6 +143,5 @@ public class GpxImportActivity extends Activity {
             Utilities.dismissProgressDialog(gpxImportProgressDialog);
         }
 
-        ;
     };
 }

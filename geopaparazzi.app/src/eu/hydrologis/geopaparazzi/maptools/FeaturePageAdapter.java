@@ -186,12 +186,12 @@ public class FeaturePageAdapter extends PagerAdapter {
             TextView areaTextView = new TextView(context);
             areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             areaTextView.setPadding(padding, padding, padding, padding);
-            areaTextView.setText("Area: " + areaLengthFormatter.format(feature.getOriginalArea()));
+            areaTextView.setText(context.getString(eu.hydrologis.geopaparazzi.R.string.area_colon) + areaLengthFormatter.format(feature.getOriginalArea()));
             areaTextView.setTextColor(textColor);
             TextView lengthTextView = new TextView(context);
             lengthTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             lengthTextView.setPadding(padding, padding, padding, padding);
-            lengthTextView.setText("Length: " + areaLengthFormatter.format(feature.getOriginalLength()));
+            lengthTextView.setText(context.getString(eu.hydrologis.geopaparazzi.R.string.length_colon) + areaLengthFormatter.format(feature.getOriginalLength()));
             lengthTextView.setTextColor(textColor);
             linearLayoutView.addView(areaTextView);
             linearLayoutView.addView(lengthTextView);

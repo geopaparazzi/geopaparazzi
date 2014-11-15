@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="10dip"
         android:gravity="center_horizontal"
-        android:text="Available layers"
+        android:text="@string/avaiable_layers"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/tanto_blue"
         android:textStyle="bold" />

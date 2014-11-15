@@ -108,7 +108,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
             }
 
             if (compatibleSpatialVectorTables.size() == 0) {
-                Utilities.messageDialog(this, "No compatible layers found", new Runnable() {
+                Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.no_compatible_layers_found), new Runnable() {
                     @Override
                     public void run() {
                         finish();
@@ -123,7 +123,6 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
 
             ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.editablelayers_row,
                     compatibleSpatialVectorTables) {
-                @SuppressWarnings("nls")
                 @Override
                 public View getView(final int position, View cView, ViewGroup parent) {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -172,7 +171,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                                 }
 
                                 if (count > 0)
-                                    Utilities.toast(editableButton.getContext(), "Copied " + count + " geometries to layer: " + spatialVectorTable.getTableName(), Toast.LENGTH_SHORT);
+                                    Utilities.toast(editableButton.getContext(), String.format(getString(eu.hydrologis.geopaparazzi.R.string.copied_features_to_layer), count, spatialVectorTable.getTableName()), Toast.LENGTH_SHORT);
 
                                 finish();
                             }

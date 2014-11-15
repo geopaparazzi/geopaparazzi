@@ -141,8 +141,8 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
         final ProgressDialog importDialog = new ProgressDialog(this);
         importDialog.setCancelable(true);
-        importDialog.setTitle("Downloading...");
-        importDialog.setMessage("Requesting available services");
+        importDialog.setTitle(getString(R.string.downloading));
+        importDialog.setMessage(getString(R.string.requesting_available_services));
         importDialog.setCancelable(false);
         importDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         importDialog.setIndeterminate(true);

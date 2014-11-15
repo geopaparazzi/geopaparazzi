@@ -45,6 +45,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
@@ -237,8 +238,7 @@ public class SelectionTool extends MapTool {
                                 if(geometry!=null)
                                     geomsCount = geomsCount + geometry.getNumGeometries();
                             }
-                            Utilities.toast(context, "Selected " + features.size() + " features with " + geomsCount
-                                    + " polygons.", Toast.LENGTH_SHORT);
+                            Utilities.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
                         } catch (java.lang.Exception e) {
                             e.printStackTrace();
                         }
