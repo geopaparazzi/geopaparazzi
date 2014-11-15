@@ -105,7 +105,6 @@
   <string name="osm_user_label">Όνομα χρήστη</string>
   <string name="osm_password_label">Κωδικός</string>
   <string name="osm_server_label">Εξυπηρετητής προς σύνδεση</string>
-  <string name="osm_notes_properly_uploaded">Οι σημειώσεις OSM ανέβηκαν σωστά.\n\nΘέλετε να διαγράψετε τις σημειώσεις που ανέβηκαν από τη συσκευή;</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Ένα σφάλμα προέκυψε κατα το ανέβασμα των ετικετών OSM:</string>
   <string name="enable_automatic_center_on_gps">Αυτόματο κεντράρισμα στο GPS</string>
   <string name="enable_center_on_gps">Ενεργοποίηση κέντρου στο GPS</string>
@@ -142,7 +141,6 @@
   <string name="enter_a_name_for_the_new_project">Εισάγετε ένα όνομα για το νέο έργο</string>
   <string name="chosen_project_exists">Το επιλεγμένο όνομα έργου υπάρχει ήδη, παρακαλώ επιλέξτε ένα άλλο όνομα</string>
   <string name="no_external_sdcard_for_db_renderer">Η απόδοση της βάσης δεδομένων υποστηρίζεται μόνο από εξωτερική αποθήκευση. Δε μπορεί να βρεθεί εξωτερική αποθήκευση, είναι διαθέσιμη κάποια;</string>
-  <string name="no_map_files_found_go_online">Δε βρέθηκαν αρχεία χάρτη στον φάκελο /sdcard/maps. Μετάβαση σε online χάρτες.\n\nΧάρτες μπορούν να μεταφορτωθούν από: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Επιλέξτε χάρτη προς χρήση</string>
   <string name="no_map_file_found_going_to_mapnik">Αδυναμία εύρεσης αρχείου χάρτη, μετάβαση σε πηγή MAPNIK.</string>
   <string name="enter_project_description">Εισάγετε μια περιγραφή για το έργο</string>
@@ -157,7 +155,6 @@
   <string name="sent_sms">Σταλμένο sms :</string>
   <string name="send_data">Αποστολή δεδομένων</string>
   <string name="found_no_data_to_send">Δε βρέθηκαν δεδομένα στον τρέχων ορατό χάρτη.</string>
-  <string name="insert_phone_to_send">Το sms θα σταλθεί για να μεταφερθούν τα επιλεγμένα δεδομένα.\n\nΠαρακαλώ εισάγετε έναν έγκυρο τηλεφωνικό αριθμό στον οποίο θα σταλθούν τα δεδομένα.</string>
   <string name="no_message_sent">Το μήνυμα δε στάλθηκε.</string>
   <string name="logs_will_be_merged">Τα αρχεία καταγραφής θα συγχωνευτούν σε αυτή τη λειτουργία. Συνέχεια;</string>
   <string name="distance">Απόσταση:</string>
@@ -195,7 +192,6 @@
   <string name="high_density_display">Οθόνη υψηλής πυκνότητας</string>
   <string name="high_density_display_sum">Εάν είναι ανοιχτό, τα online osm maptiles κλιμακώνονται για καλύτερη αναγνωσιμότητα.</string>
   <string name="satellites">δορυφόροι</string>
-  <string name="crash_toast_text">Η εφαρμογή αντιμετώπισε ένα μοιραίο σφάλμα. Θα συλεχθούν πληροφορίες της κατάρρευσης οι οποίες είναι χρήσιμες για να λυθεί το πρόβλημα. Παρακαλώ στείλτε τες στην ομάδα προγραμματισμού όταν είναι δυνατόν.</string>
   <string name="start">έναρξη</string>
   <string name="end">τέλος</string>
   <string name="other">άλλα</string>

@@ -93,7 +93,6 @@
   <string name="osm_user_label">Nom d\'utilisateur</string>
   <string name="osm_password_label">Mot de passe</string>
   <string name="osm_server_label">Serveur pour vous connecter</string>
-  <string name="osm_notes_properly_uploaded">Les notes OSM ont correctement été envoyées.\n\nVoulez vous effacer les fichiers envoyés de l\'appareil?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Une erreur est survenue pendant l\'envoi des tags OSM : </string>
   <string name="enable_automatic_center_on_gps">Centrer automatiquement sur GPS</string>
   <string name="profile">profil</string>
@@ -127,7 +126,6 @@
   <string name="enter_a_name_for_the_new_project">Entrer un nom pour le nouveau projet</string>
   <string name="chosen_project_exists">Le nom du projet choisi existe déjà, veuillez choisir un autre nom</string>
   <string name="no_external_sdcard_for_db_renderer">Le rendu de cette base de données est suporté seuleument à partir d\'un sockage externe. Aucun stockage externe a été trouvé, est ce qu\'il y en a un disponible?</string>
-  <string name="no_map_files_found_go_online">Aucun fichier de carte n\'a été trouvé dans le dossier /sdcard/maps. Passage aux cartes en lignes. \n\nLes cartes peuvent être téléchargées sur : http://download.mapsforge.org</string>
   <string name="select_map_to_use">Sélectionnez la carte à utiliser</string>
   <string name="no_map_file_found_going_to_mapnik">Impossible de trouver le fichier de la carte, basculé sur le tuilage MAPNIK.</string>
   <string name="enter_project_description">Entrer une description pour le projet</string>
@@ -140,7 +138,6 @@
   <string name="add_proximity_radius">Ajouter un rayon d\'alerte de proximité en mètres.</string>
   <string name="sent_sms">Message envoyé :</string>
   <string name="found_no_data_to_send">Aucune donnée n\'a été trouvée à envoyer dans la carte courante</string>
-  <string name="insert_phone_to_send">\"un sms sera envoyé pour transférer les données sélectionnées.\n\nVeuillez insérer un numéro de téléphone valide pour envoyer les données à. »</string>
   <string name="no_message_sent">Aucun message envoyé.</string>
   <string name="logs_will_be_merged">les logs seront fusionnés ensemble dans cette opération. Continuer?</string>
   <string name="distance">Distance: </string>

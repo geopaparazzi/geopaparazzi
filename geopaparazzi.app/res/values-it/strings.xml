@@ -3,6 +3,7 @@
   <string name="yes">sì</string>
   <string name="no">no</string>
   <string name="app_name">Geopaparazzi</string>
+  <string name="app_file_name">Database di progetto</string>
   <string name="notesvisibilityToggle">Cambia visibilità delle note.</string>
   <string name="kmlsaved">Dati esportati con successo in: </string>
   <string name="kmlnonsaved">Si è verificato un errore durante l\'esportazione dei dati!</string>
@@ -83,7 +84,7 @@
   <string name="delete_visible_bookmarks_prompt">Sei sicuro di volere cancellare tutti i segnalibri visibili? Non è possibile tornare indietro.</string>
   <string name="gps_searching_fix">Il Gps sta cercando di acquisire il segnale.</string>
   <string name="bookmarks_list_rename">Rinomina segnalibro</string>
-  <string name="mapsactivity_menu_toggle_scalebar">Cambia scala</string>
+  <string name="mapsactivity_menu_toggle_scalebar">Mostra scala</string>
   <string name="mapsactivity_menu_tilesource">Seleziona sorgente tile</string>
   <string name="mapsactivity_delete_bookmarks">﻿Eliminazione di {0} favoriti…</string>
   <string name="mapsactivity_delete_notes">﻿Eliminazione di {0} note...</string>
@@ -105,7 +106,9 @@
   <string name="osm_user_label">Utente</string>
   <string name="osm_password_label">Password</string>
   <string name="osm_server_label">Server al quale connettersi</string>
-  <string name="osm_notes_properly_uploaded">Note OSM correttamente caricate\n\nVuoi rimuovere le note dal dispositivo?</string>
+  <string name="osm_notes_properly_uploaded">Note OSM correttamente caricate
+
+Vuoi rimuovere le note dal dispositivo?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">E\' avvenuto un errore durante il caricamento dei tag OSM: </string>
   <string name="enable_automatic_center_on_gps">Centra automaticamente su GPS</string>
   <string name="enable_center_on_gps">Abilita centra su GPS</string>
@@ -142,7 +145,9 @@
   <string name="enter_a_name_for_the_new_project">Immettere un nome per il nuovo progetto</string>
   <string name="chosen_project_exists">Il nome di progetto scelto esiste già, per favore scegli un altro nome</string>
   <string name="no_external_sdcard_for_db_renderer">Mappe da database sono supportate solo con supporto di scheda di memoria. E\' disponibile?</string>
-  <string name="no_map_files_found_go_online">Non sono state trovate mappe nella cartella /sdcard/maps. Uso le mappe online.\n\nLe mappe possono essere scaricate da: http://download.mapsforge.org</string>
+  <string name="no_map_files_found_go_online">Non sono state trovate mappe nella cartella /sdcard/maps. Uso le mappe online.
+
+Le mappe possono essere scaricate da: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Seleziona mappa da utilizzare</string>
   <string name="no_map_file_found_going_to_mapnik">Impossibile trovare il file di mappa, passo a MAPNIK tile.</string>
   <string name="enter_project_description">Immettere una descrizione del progetto</string>
@@ -157,7 +162,8 @@
   <string name="sent_sms">Sms inviati:</string>
   <string name="send_data">Invia dati</string>
   <string name="found_no_data_to_send">Non ci sono dati inviabili nella attuale mappa visibile.</string>
-  <string name="insert_phone_to_send"> sms verranno inviati per trasferire i dati selezionati. \nInserire un numero di telefono valido per inviare i dati.</string>
+  <string name="insert_phone_to_send"> sms verranno inviati per trasferire i dati selezionati. 
+Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="no_message_sent">Nessun messaggio inviato.</string>
   <string name="logs_will_be_merged"> traccie verranno unite assieme in questa operazione. Continuare?</string>
   <string name="distance">Distanza:</string>
@@ -195,7 +201,6 @@
   <string name="high_density_display">Schermo ad alta densità</string>
   <string name="high_density_display_sum">Se selezionato, le tavolette scaricate da osm verranno scalate per migliorarne la leggibilità.</string>
   <string name="satellites">satelliti</string>
-  <string name="crash_toast_text">E\' avvenuto un errore fatale. Verranno raccolte informazioni utili alla risoluzione del problema. Si prega di mandarle al team di sviluppo quando possibile.</string>
   <string name="start">inizio</string>
   <string name="end">fine</string>
   <string name="other">altro</string>
@@ -221,4 +226,43 @@
   <string name="tanto_service_query">richiedi</string>
   <string name="tanto_disclaimer">PLEASE READ CAREFULLY: Geopaparazzi takes no responsibility over the legal implications of the data downloaded. Before downloading any wms mapurl definition, the user must check the licensing of the service and make sure he is allowed to query it. In no way should the authors of Geopaparazzi be held accountable for any license infringement related to misuse of the service.</string>
   <string name="service_name_propmt">Inserire un nome per il servizio. Se vuoto, il nome verra\' preso dal servizio stesso.</string>
+  <string name="info">INFO</string>
+  <string name="calculate_length">Calcolo lunghezza...</string>
+  <string name="spatialite_preferences">Impostazioni Spatialite</string>
+  <string name="spatialite_recovery_mode">Modalità recovery Spatialite</string>
+  <string name="spatialite_recover_mode_tooltip">Se attivata, al prossimo avvio tenterà di correggere tabelle non compatibili.</string>
+  <string name="map">Mappa</string>
+  <string name="name">nome</string>
+  <string name="bounds">limiti</string>
+  <string name="maps_loading_not_finished_yet">Il caricamento delle mappe non è completo. Si prega di attendere un attimo e riprovare.</string>
+  <string name="save">salva</string>
+  <string name="goto_feature">vai a</string>
+  <string name="cancel">Annulla</string>
+  <string name="project_info">informazioni sul progetto</string>
+  <string name="description">descrizione</string>
+  <string name="notes">note</string>
+  <string name="last_closing_date">Ultima data di chiusura</string>
+  <string name="creation_date">Data di creazione</string>
+  <string name="creation_user">Autore del progetto</string>
+  <string name="last_modification_user">Utente dell\'ultima modifica</string>
+  <string name="mapsfolder">Cartella Mappe</string>
+  <string name="preview_mode_save_warning">Modalità di preview. Se premuto il pulsante di salvataggio, la geometria sarà salvata nel database.</string>
+  <string name="reset_string">reset</string>
+  <string name="avaiable_layers">Piani disponibili</string>
+  <string name="geometry_saved">Geometria salvata.</string>
+  <string name="unique_constraint_violation_message">È avvenuta una violazione di unique constraint. Non sono supportati database con unique contraints.</string>
+  <string name="selfintersection_message">Il vertice aggiunto ha creato una auto-intersezione del poligono e il piano non la supporta.</string>
+  <string name="no_gps_coordinate_acquired_yet">Non sono state ancora acquisite coordinate GPS.</string>
+  <string name="info_uppercase">INFO</string>
+  <string name="extracting_info">Estrazione informazioni...</string>
+  <string name="geom_incompatible_with_layer">La geometria risultante non è compatibile con il piano di destinazione.</string>
+  <string name="selected_features_in_layer">Selezionate %1$d features con %2$d polygoni.</string>
+  <string name="no_compatible_layers_found">Non sono stati trovati piani compatibili.</string>
+  <string name="copied_features_to_layer">Copiate %1$d geometrie nel piano: %2$s</string>
+  <string name="area_colon">Area:</string>
+  <string name="length_colon">Lunghezza:</string>
+  <string name="save_uppercase">SALVA</string>
+  <string name="saving_to_database">Salvataggio nel database...</string>
+  <string name="downloading">Download in corso...</string>
+  <string name="requesting_available_services">Richiesta servizi disponibili...</string>
 </resources>

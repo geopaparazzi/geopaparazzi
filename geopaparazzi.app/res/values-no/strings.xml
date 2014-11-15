@@ -93,7 +93,6 @@
   <string name="osm_user_label">Brukernavn</string>
   <string name="osm_password_label">Passord</string>
   <string name="osm_server_label">Server for tilkobling</string>
-  <string name="osm_notes_properly_uploaded">OSM-notater er lastet opp.\n\nVil du slette dem fra enheten?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Det oppstod en feil under opplasting av OSM tagger: </string>
   <string name="enable_automatic_center_on_gps">Sentrèr automatisk etter GPS</string>
   <string name="profile">profil</string>
@@ -127,7 +126,6 @@
   <string name="enter_a_name_for_the_new_project">Skriv inn et navn for det nye prosjektet</string>
   <string name="chosen_project_exists">Det valgte prosjektnavnet finnes allerede, Velg et annet navn</string>
   <string name="no_external_sdcard_for_db_renderer">Database-visning støttes bare fra ekstern lagring. Kunne ikke finne ekstern lagring, er det tilgjengelig?</string>
-  <string name="no_map_files_found_go_online">Ingen kartfiler ble funnet i mappen /sdcard/maps. Bytter til elektroniske kart. \nKart kan lastes ned fra: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Velg kart</string>
   <string name="no_map_file_found_going_to_mapnik">Kunne ikke finne kart-filen, bytter til MAPNIK-kilde.</string>
   <string name="enter_project_description">Angi en beskrivelse for prosjektet</string>
@@ -140,7 +138,6 @@
   <string name="add_proximity_radius">Legge inn alarm-radius for geografisk proksimitet (meter).</string>
   <string name="sent_sms">Sendte sms:</string>
   <string name="found_no_data_to_send">Fant ikke data å sende i det synlig kartet.</string>
-  <string name="insert_phone_to_send">sms sendes for å overføre de valgte dataene. \nLegg inn et mobilnummer.</string>
   <string name="no_message_sent">Ingen melding ble sendt.</string>
   <string name="logs_will_be_merged">logger slås sammen i denne operasjonen. Vil du fortsette?</string>
   <string name="distance">Distanse:</string>

@@ -105,7 +105,6 @@
   <string name="osm_user_label">Usuário</string>
   <string name="osm_password_label">Senha</string>
   <string name="osm_server_label">Servidor a se conectar</string>
-  <string name="osm_notes_properly_uploaded">Notas de OSM enviadas adequadamente.\n\nVocê deseja remover as notas enviadas do dispositivo?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Ocorreu um erro ao atualizar as etiquetas OSM: </string>
   <string name="enable_automatic_center_on_gps">Centralizar automaticamente no GPS</string>
   <string name="profile">perfil</string>
@@ -140,7 +139,6 @@
   <string name="enter_a_name_for_the_new_project">Digite um nome para o novo projeto</string>
   <string name="chosen_project_exists">O nome do projeto escolhido já existe, por favor, escolha outro nome</string>
   <string name="no_external_sdcard_for_db_renderer">Somente há suporte a processamento de banco de dados por intermédio de armazenamento externo. Não foi possível localizar um armazenamento externo, há algum disponível?</string>
-  <string name="no_map_files_found_go_online">Não foram localizados arquivos de mapas na pasta /sdcard/maps. Alternando para mapas online.\n\nOs mapas podem ser baixados em: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Selecione o mapa para usar</string>
   <string name="no_map_file_found_going_to_mapnik">Não foi possível localizar o arquivo de mapa, alternando para a fonte de ladrilho MAPNIK.</string>
   <string name="enter_project_description">Digite uma descrição para o projeto</string>
@@ -155,7 +153,6 @@
   <string name="sent_sms">Sms enviado : </string>
   <string name="send_data">Enviar dados</string>
   <string name="found_no_data_to_send">Não foi localizado nenhum dado a ser enviado no mapa visível atual.</string>
-  <string name="insert_phone_to_send">sms será enviado para transferir os dados selecionados.\n\nPor favor insira um número de telefone válido para enviar os dados.</string>
   <string name="no_message_sent">Nenhuma mensagem enviada.</string>
   <string name="logs_will_be_merged"> registros serão mesclados durante esta operação. Continuar?</string>
   <string name="distance">Distância:</string>
@@ -191,7 +188,6 @@
   <string name="keep_use_imperial">Use unidades imperiais</string>
   <string name="keep_use_imperial_sum">Quando possível usa-se unidades imperiais ao invés de métricas.</string>
   <string name="satellites">satélites</string>
-  <string name="crash_toast_text">O aplicativo sofreu um erro fatal. Serão recolhidas as informações de erro, que são úteis para resolver o problema. Por favor, envie-as para a equipe de desenvolvimento, quando possível.</string>
   <string name="start">início</string>
   <string name="end">fim</string>
   <string name="other">outro</string>

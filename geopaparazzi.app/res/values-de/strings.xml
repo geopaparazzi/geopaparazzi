@@ -104,7 +104,6 @@
   <string name="osm_user_label">Benutzername</string>
   <string name="osm_password_label">Kennwort</string>
   <string name="osm_server_label">Server verbunden zu</string>
-  <string name="osm_notes_properly_uploaded">OSM-Notizen erfolgreich hochgeladen.\n\nnMöchten Sie die hochgeladenen Notizen auf dem Gerät entfernen?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Fehler beim Hochladen von OSM-Tags: </string>
   <string name="enable_automatic_center_on_gps">Automatisches Zentrieren auf GPS</string>
   <string name="profile">Profil</string>
@@ -139,7 +138,6 @@
   <string name="enter_a_name_for_the_new_project">Geben Sie einen Namen für das Projekt ein</string>
   <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
   <string name="no_external_sdcard_for_db_renderer">Databank-Rendering wird nur von externem Speicher unterstützt. Externer Speicher konnte nicht gefunden werden. Ist eine solcher vorhanden?</string>
-  <string name="no_map_files_found_go_online">Es konnten keine Kartendateien im Verzeichnis /sdcard/maps gefunden werden. Es wird auf Onlinekarten zugegriffen.\n\nKarten können von http://download.mapsforge.org heruntergeladen werden.</string>
   <string name="select_map_to_use">Wählen Sie eine Karte aus</string>
   <string name="no_map_file_found_going_to_mapnik">Ein \"map file\" konnte nicht gefunden werden, schalte auf MAPNIK als Tile-Quelle um.</string>
   <string name="enter_project_description">Geben Sie eine Beschreibung für das Projekt</string>
@@ -154,7 +152,6 @@
   <string name="sent_sms">Verschickte SMS :</string>
   <string name="send_data">Daten senden</string>
   <string name="found_no_data_to_send">Keine Daten zum Senden in aktuell dargestellter Karte gefunden. </string>
-  <string name="insert_phone_to_send">SMS werden versendet, um die ausgewählten Daten zu übermitteln.\n\nBitte geben Sie einen zulässige Telefonnummer an, wohin die Daten gesendet werden sollen.</string>
   <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>
   <string name="logs_will_be_merged">LOG-Dateien werden bei dieser Operation zusammengeführt. Möchten Sie fortfahren?</string>
   <string name="distance">Entfernung:</string>
@@ -190,7 +187,6 @@
   <string name="keep_use_imperial">Verwende britische Maßeinheiten</string>
   <string name="keep_use_imperial_sum">Verwendet britische Maßeinheiten anstelle von metrischen, soweit möglich.</string>
   <string name="satellites">Satelliten</string>
-  <string name="crash_toast_text">Bei der Anwendung kam es zu einem schwerwiegenden Fehler. Es werden Informationen zum Absturz gesammelt, die nützlich sind, um das Problem zu lösen. Bitte senden Sie diese,  wenn möglich, an das Entwicklungerteam.</string>
   <string name="start">Start</string>
   <string name="end">Ziel</string>
   <string name="other">andere</string>

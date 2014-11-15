@@ -1,2 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="stroke_color">Boja linije</string>
+  <string name="width">Širina linije</string>
+  <string name="alpha">Neprozirnost linije</string>
+  <string name="fill_color">Boja unosa</string>
+  <string name="fill_alpha">Neprozirnost unosa</string>
+  <string name="point_shape_">Oblik tačke</string>
+  <string name="point_size">Veličina tačke</string>
+  <string name="decimation">Desetkovanje</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Minimalni zum</string>
+  <string name="max_zoom">Maksimalni zum</string>
+  <string name="label_properties">Svojstva oznake</string>
+  <string name="toggle_visibility">Vidljivost tastera</string>
+  <string name="label_field">Polje oznake</string>
+  <string name="label_size">Veličina oznake</string>
+</resources>

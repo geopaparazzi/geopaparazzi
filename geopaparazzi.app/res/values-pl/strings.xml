@@ -105,7 +105,6 @@
   <string name="osm_user_label">Użytkownik</string>
   <string name="osm_password_label">Hasło</string>
   <string name="osm_server_label">Serwer do połączenia</string>
-  <string name="osm_notes_properly_uploaded">Notatki OSM przesłane poprawnie\n\nCzy chcesz usunąć przesłane notatki z urządzenia?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Wystąpił błąd podczas wysyłania znaczników OSM:</string>
   <string name="enable_automatic_center_on_gps">Automatycznie wyśrodkuj w GPS</string>
   <string name="enable_center_on_gps">Włącz centrowanie GPS</string>
@@ -142,7 +141,6 @@
   <string name="enter_a_name_for_the_new_project">Wprowadź nazwę dla nowego projektu</string>
   <string name="chosen_project_exists">Wybrana nazwa projektu już istnieje, proszę podać inna</string>
   <string name="no_external_sdcard_for_db_renderer">Renderowanie bazy danych jest możliwe tylko z zewnętrznego magazynu. Nie mogę znaleźć zewnętrznego magazynu, czy jest jakikolwiek dostępny?</string>
-  <string name="no_map_files_found_go_online">Nie znaleziono żadnych map w folderze /sdcard/maps. Przełączam na mapy online.\n\nMapy można pobrać ze strony: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Wskaż mapę do użycia</string>
   <string name="no_map_file_found_going_to_mapnik">Nie mogę znaleźć pliku map, przełączam się na źródło kafelków MAPNIK.</string>
   <string name="enter_project_description">Podaj opis dla projektu</string>
@@ -157,7 +155,6 @@
   <string name="sent_sms">Wyślij SMS:</string>
   <string name="send_data">Wyślij dane</string>
   <string name="found_no_data_to_send">W aktualnym widoku mapy nie znaleziono danych do wysłania.</string>
-  <string name="insert_phone_to_send">zostanie wysłany SMS by przekazać wybrane dane.\n\nProszę wprowadzić poprawny numer telefonu na który zostaną przesłane dane.</string>
   <string name="no_message_sent">Nie wysłano żadnej wiadomości.</string>
   <string name="logs_will_be_merged">podczas tej operacji logi zostaną złączone. Kontynuować?</string>
   <string name="distance">Dystans:</string>
@@ -193,7 +190,6 @@
   <string name="keep_use_imperial">Użyj imperialnych jednostek miar</string>
   <string name="keep_use_imperial_sum">W miarę możliwości używa jednostek imperialnych zamiast metrycznych.</string>
   <string name="satellites">satelity</string>
-  <string name="crash_toast_text">W aplikacji wystąpił krytyczny błąd. Informacja o błędzie zostanie zapisana, co może okazać się przydatne przy rozwiązywaniu problemu. Jeżeli to możliwe, prosimy o przesłanie jej do zespołu programistów.</string>
   <string name="start">start</string>
   <string name="end">koniec</string>
   <string name="other">inne</string>

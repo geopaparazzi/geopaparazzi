@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="stroke_color">Barva tahu</string>
-  <string name="width">Šířka tahu</string>
-  <string name="alpha">Průhlednost tahu</string>
+  <string name="stroke_color">Barva linie</string>
+  <string name="width">Šířka linie</string>
+  <string name="alpha">Neprůhlednost linie</string>
   <string name="fill_color">Barva výplně</string>
-  <string name="fill_alpha">Průhlednost výplně</string>
+  <string name="fill_alpha">Neprůhlednost linie</string>
   <string name="point_shape_">Tvar bodu</string>
   <string name="point_size">Velikost bodu</string>
-  <string name="decimation">Decimace</string>
+  <string name="decimation">Redukce hustoty</string>
   <string name="decimation_factor_default">0.000001</string>
-  <string name="min_zoom">Nejmenší zvětšení</string>
-  <string name="max_zoom">Největší zvětšení</string>
+  <string name="min_zoom">Nejmenší úroveň zvětšení</string>
+  <string name="max_zoom">Největší úroveň zvětšení</string>
   <string name="dash_pattern">Vzor čárkování</string>
-  <string name="label_properties">Vlastnosti štítků</string>
+  <string name="label_properties">Vlastnosti popisků</string>
   <string name="toggle_visibility">Přepnout viditelnost</string>
-  <string name="label_field">Pole štítku</string>
-  <string name="label_size">Velikost štítku</string>
+  <string name="label_field">Pole popisku</string>
+  <string name="label_size">Velikost popisku</string>
 </resources>

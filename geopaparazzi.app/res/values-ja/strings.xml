@@ -37,7 +37,8 @@
   <string name="gps_logging_distance">GPSログ取得の最小距離区間</string>
   <string name="gps_logging_interval">GPSログ取得の最小時間区間</string>
   <string name="gps_use_android_level">省電力利用 (バッテリ節約, 再起動後に有効)</string>
-  <string name="gps_use_android_level_summary">チェックした場合、gps の設定は、オペレーティング システム レベルでバッテリーを節約することができますが、大きな間隔を選択すると信号の安定性が低くなります（gps の接続に問題がある場合は、チェックしないように)。gps は100 秒以内の間隔で電力が供給されます。バッテリー寿命を良くするには大きな間隔を選択してください。\n</string>
+  <string name="gps_use_android_level_summary">チェックした場合、gps の設定は、オペレーティング システム レベルでバッテリーを節約することができますが、大きな間隔を選択すると信号の安定性が低くなります（gps の接続に問題がある場合は、チェックしないように)。gps は100 秒以内の間隔で電力が供給されます。バッテリー寿命を良くするには大きな間隔を選択してください。
+</string>
   <string name="sms_preferences">SMS設定</string>
   <string name="sms_catcher">SMS受信を有効にする</string>
   <string name="databaseError">データベース接続中にエラーが発生しました。</string>
@@ -105,7 +106,6 @@
   <string name="osm_user_label">ユーザー名</string>
   <string name="osm_password_label">パスワード</string>
   <string name="osm_server_label">接続サーバ</string>
-  <string name="osm_notes_properly_uploaded">OSMノートが正しくアップロードされました\n\nアップロードされたノートをデバイスから削除しますか？</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM タグのアップロード中にエラーが発生しました。</string>
   <string name="enable_automatic_center_on_gps">地図中心をGPS座標へ</string>
   <string name="enable_center_on_gps">GPS座標を常に中心にする</string>
@@ -142,7 +142,6 @@
   <string name="enter_a_name_for_the_new_project">新しいプロジェクトの名前を入力します。</string>
   <string name="chosen_project_exists">選択したプロジェクトの名前は既に存在します、別の名前を選んでください。</string>
   <string name="no_external_sdcard_for_db_renderer">データベースのレンダリングは、外部ストレージからのみサポートされています。外部ストレージが見つかりませんでした、外部ストレージは利用可能ですか？</string>
-  <string name="no_map_files_found_go_online">/Sdcard/maps フォルダー内にマップ ファイルが見つかりませんでした。オンライン マップへ切り替えます。\nMaps はここからダウンロードすることができます: http://download.mapsforge.org</string>
   <string name="select_map_to_use">使用するマップを選択します。</string>
   <string name="no_map_file_found_going_to_mapnik">マップ ファイルが見つかりませんでした。MAPNIK タイル ソースを切替えます。</string>
   <string name="enter_project_description">プロジェクトの説明を入力します</string>
@@ -157,7 +156,6 @@
   <string name="sent_sms">SMS送信 : </string>
   <string name="send_data">データ送信</string>
   <string name="found_no_data_to_send">現在の表示マップに送信するデータが見つかりません。</string>
-  <string name="insert_phone_to_send"> SMS は選択されたデータを送信します。\nデータの送信先電話番号を入力してください。</string>
   <string name="no_message_sent">送信メッセージがありません。</string>
   <string name="logs_will_be_merged">ログがこの操作で一緒にマージされます。続行しますか?</string>
   <string name="distance">距離: </string>
@@ -192,8 +190,9 @@
   <string name="prompt_delete_bookmark">ブックマークを削除してもよろしいですか？この操作は取り消しできません。</string>
   <string name="keep_use_imperial">インペリアル単位を使用する</string>
   <string name="keep_use_imperial_sum">可能であればメートルの代わりにインペリアルを使用する</string>
+  <string name="high_density_display">高解像度ディスプレイ</string>
+  <string name="high_density_display_sum">オンにするとOSMマップがより見やすくなります。</string>
   <string name="satellites">衛星数</string>
-  <string name="crash_toast_text">アプリケーションに重大なエラーが発生しました。問題解決のために有用なクラッシュ情報が収集されています。もしよろしければ、開発チームにクラッシュ情報をお送りください。</string>
   <string name="start">開始</string>
   <string name="end">終了</string>
   <string name="other">その他</string>

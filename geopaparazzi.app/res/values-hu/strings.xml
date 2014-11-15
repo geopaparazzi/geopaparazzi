@@ -105,7 +105,6 @@
   <string name="osm_user_label">Felhasználói név</string>
   <string name="osm_password_label">Jelszó</string>
   <string name="osm_server_label">Elérendő WPS szerver</string>
-  <string name="osm_notes_properly_uploaded">Az OSM jegyzetek rendben feltöltődtek.\n\nEl kívánja távolítani feltöltött jegyzeteit az eszközről?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Hiba történt az OSM cimkék feltöltése során: </string>
   <string name="enable_automatic_center_on_gps">GPS követő térkép</string>
   <string name="profile">útprofil</string>
@@ -140,7 +139,6 @@
   <string name="enter_a_name_for_the_new_project">Adja meg az új projekt nevét</string>
   <string name="chosen_project_exists">A megadott projekt név már létezik, kérem válasszon másikat</string>
   <string name="no_external_sdcard_for_db_renderer">Az adatbázis használat csak SD-kártyáról támogatott. Nincs elérhető külső tárolója?</string>
-  <string name="no_map_files_found_go_online">Az /sdcard/maps mappában nincsenek térkép fájlok. Kapcsoljon online térképre!\nTérképek letölthetők innét: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Válasszon térképet</string>
   <string name="no_map_file_found_going_to_mapnik">Nem található térkép fájl, átkapcsolás MAPNIK forrásra.</string>
   <string name="enter_project_description">Adjon meg leírást a projekthez</string>
@@ -155,7 +153,6 @@
   <string name="sent_sms">Küldött sms:</string>
   <string name="send_data">Adatküldés</string>
   <string name="found_no_data_to_send">Az éppen látható térképen nincs elküldhető adat.</string>
-  <string name="insert_phone_to_send">A kiválasztott adat átviteléhez SMS-t kell küldeni.\nAdja meg azt a telefonszámot ahová az adatot küldi.</string>
   <string name="no_message_sent">Nem ment üzenet.</string>
   <string name="logs_will_be_merged">A naplók egyesítésre kerülnek a műveletben. Folytatja?</string>
   <string name="distance">Távolság:</string>
@@ -191,7 +188,6 @@
   <string name="keep_use_imperial">Angolszász mértékek</string>
   <string name="keep_use_imperial_sum">Angolszász mértékek használata metrikus helyett.</string>
   <string name="satellites">műholdak</string>
-  <string name="crash_toast_text">Az alkalmazás végzetes hibát tapasztalt. Az összeomlás információja begyűjtésre került a probléma megoldásához. Küldje el a fejlesztői csapatnak ha lehetséges!</string>
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>

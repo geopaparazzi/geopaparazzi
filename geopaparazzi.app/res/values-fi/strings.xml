@@ -105,9 +105,10 @@
   <string name="osm_user_label">Käyttäjänimi</string>
   <string name="osm_password_label">Salasana</string>
   <string name="osm_server_label">Yhdistettävä palvelin</string>
-  <string name="osm_notes_properly_uploaded">OSM-muistiinpanot viety.\n\nHaluatko poistaa viedyt muistiinpanot laitteesta?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Virhe vietäessä OSM-tageja:</string>
   <string name="enable_automatic_center_on_gps">Keskitä GPS automaattisesti</string>
+  <string name="enable_center_on_gps">Salli keskittäminen GPS:llä</string>
+  <string name="disable_center_on_gps">Poista keskittäminen GPS:llä</string>
   <string name="profile">profiili</string>
   <string name="loading_data">Ladataan dataa…</string>
   <string name="profilelable_distance">etäisyys [m]</string>
@@ -131,6 +132,7 @@
   <string name="exporting_data_to_kmz">Viedään KMZ-tiedostoksi</string>
   <string name="exporting_data_to_gpx">Viedään GPX-tiedostoksi</string>
   <string name="media_upload">Median lataus</string>
+  <string name="osm_insert_a_changeset_description">Lisää muutosjoukkon kuvaus</string>
   <string name="set_description">Aseta kuvaus</string>
   <string name="loaded_project_in">Projekti ladattu:</string>
   <string name="no_sdcard_use_internal_memory">Muistikorttia ei ole saatavilla. Halutko käyttää laitteen sisäistä muistia sen sijaan? Tällöin karttanäytössä ei ole karttaa muistin säästämiseksi.</string>
@@ -139,7 +141,6 @@
   <string name="enter_a_name_for_the_new_project">Anna nimi uudelle projektille</string>
   <string name="chosen_project_exists">Projektin nimi on jo käytössä, valitse uusi</string>
   <string name="no_external_sdcard_for_db_renderer">Tietokannan mallinnus on tuettu vain ulkoisesta tietolähteestä. Ulkoista tietolähdettä ei löytynyt.</string>
-  <string name="no_map_files_found_go_online">Karttatiedostoja ei löytynyt kansiosta /sdcard/maps. Käytetään online-karttoja. \n\nKarttoja voi ladata: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Valitse kartta</string>
   <string name="no_map_file_found_going_to_mapnik">Karttatiedostoa ei löytynyt, käytetään MAPNIK-karttaa</string>
   <string name="enter_project_description">Projektin kuvaus</string>
@@ -154,11 +155,11 @@
   <string name="sent_sms">Lähetetyt tekstiviestit:</string>
   <string name="send_data">Lähetä tiedot</string>
   <string name="found_no_data_to_send">Nykyisessä näkymässä ei dataa lähetettäväksi.</string>
-  <string name="insert_phone_to_send">Valitut tiedot lähetetään tekstiviestillä. \nLisää puhelinnumero lähettääksesi tiedot.</string>
   <string name="no_message_sent">Viestiä ei lähetetty.</string>
   <string name="logs_will_be_merged">\" lokit yhdistetään. Jatketaanko?</string>
   <string name="distance">Etäisyys:</string>
   <string name="imported_notes_and_bookmarks">Tuotiin {0} muistiinpanoa ja {1} kirjanmerkkiä.</string>
+  <string name="could_not_open_sms">Ei voitu avata siirrettyä sms tietojen URIa.</string>
   <string name="start_">Aloita:</string>
   <string name="end_">Loppu:</string>
   <string name="map_textsize_factor">Karttatekstien kokokerroin</string>
@@ -188,13 +189,32 @@
   <string name="prompt_delete_bookmark">Oletko varma, että haluat poistaa kirjanmerkin? Tätä ei voi kumota.</string>
   <string name="keep_use_imperial">Käytä imperiaalisia mittayksikköjä</string>
   <string name="keep_use_imperial_sum">Käytä imperiaalisia mittoja metristen sijasta.</string>
+  <string name="high_density_display">Korkean tiheyden näyttö</string>
+  <string name="high_density_display_sum">Jos päällä, online osm karttakuvakkeet skaalataan paremmalle luettavuudelle.</string>
   <string name="satellites">satelliitit</string>
-  <string name="crash_toast_text">Ohjelma kaatui ja tietoja kerätään ongelmasta. Jos mahdollista lähetä ne kehittäjälle.</string>
   <string name="start">aloita</string>
   <string name="end">lopeta</string>
   <string name="other">muu</string>
+  <string name="base_maps">Spatialite tietoluettelo</string>
   <string name="maps_manager">Karttojen hallinta</string>
+  <string name="loading_maps">Ladataan karttoja ...</string>
   <!--ellipsis character instead of three dots-->
   <string name="project">Projekti</string>
   <string name="gps_status">GPS Status</string>
+  <string name="no_queriable_layer_is_visible">Ei kyseltävä taso on näkyvissä.</string>
+  <string name="set_path_manually">Aseta polku käsin (jos asetettu, on se etusijalla comboboxiin nähden)</string>
+  <string name="choose_from_suggested">tai valitse ehdotetuista</string>
+  <string name="reset_style_tables">Aseta tyylitaulut oletusarvoihin</string>
+  <string name="menu_button">valikkonäppäin</string>
+  <string name="track_length">Seurannan pituus:</string>
+  <string name="gpslog_updateLogLength">Päivitä</string>
+  <string name="do_you_want_to_stop_logging">Haluatko keskeyttää lokin kirjoittamisen?</string>
+  <string name="tanto_mapurl_download_service">TANTO mapurl latauspalvelu</string>
+  <string name="tap_on_title_to_visit_website">(napauta otsikkoa käydäksesi websivustolla)</string>
+  <string name="use_map_center_coordinate_to_filter_results">käytä kartan keskikoordinaattia tulosten suodattamiseen</string>
+  <string name="limit_results_to_20_recommended">rajoita tulosten lukumäärä 20:een (suositeltu)</string>
+  <string name="text_filter">tekstisuodatin</string>
+  <string name="tanto_service_query">kysely</string>
+  <string name="tanto_disclaimer">OLE YSTÄVÄLLINEN JA LUE HUOLELLISESTI. Geopaparazzi ei ota laillista vastuuta ladatusta datasta. Ennen minkä tahansa wms mapurl määrityksen latausta käyttäjän tulee varmistaa palvelun lisenssiointi ja varmistaa että hän on oikeutettu kyselemään sitä. Missää tapauksessa ei Geopaparazzin tekijöitä voi pitää vastuullisena mihinkään lisenssin rikkomiseen palvelun väärinkäytöksissä.</string>
+  <string name="service_name_propmt">Anna palvelun nimi. Jos jätetään tyhjäksi, nimi otetaan palvelusta.</string>
 </resources>
