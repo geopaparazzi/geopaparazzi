@@ -227,4 +227,17 @@
   <string name="tanto_disclaimer">よくお読みください：Geopaparazziは、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
   <string name="service_name_propmt">サービス名を入力。空白の場合サービス名はサービスから取得されます。</string>
   <string name="info">INFO</string>
+  <string name="calculate_length">距離計算...</string>
+  <string name="spatialite_preferences">Spatialite設定</string>
+  <string name="spatialite_recovery_mode">Spatialite復元モード</string>
+  <string name="spatialite_recover_mode_tooltip">オンにした場合、次の起動の際に不良のあるテーブルの修正が試みられます。</string>
+  <string name="map">地図</string>
+  <string name="name_lc">名称</string>
+  <string name="name_uc">名称</string>
+  <string name="bounds">境界</string>
+  <string name="maps_loading_not_finished_yet">マップのロードがまだ終了していません。少し待ってからもう一度試してください。</string>
+  <string name="save">保存</string>
+  <string name="goto_feature">目的地</string>
+  <string name="cancel">キャンセル</string>
+  <string name="project_info">プロジェクト情報</string>
 </resources>
