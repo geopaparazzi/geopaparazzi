@@ -84,7 +84,7 @@
     <string name="http_not_found_msg">The requested resource could not be found. Please check your connection url.</string>
     <string name="http_not_implemented_code_msg">Trapped a return message code (please sent it to the developer): </string>
     <string name="post_completed_properly">Post completed properly.</string>
-    <string name="http_ok_msg">The request was processed successful.</string>
+    <string name="http_ok_msg">The request was processed successfully.</string>
     <string name="the_file_exists_wont_overwrite">The file exists. Won\'t overwrite: </string>
     <string name="share_note_with">Share note with...</string>
     <string name="downloading_mapurl_to_the_device">Downloading selected service to the device.</string>
