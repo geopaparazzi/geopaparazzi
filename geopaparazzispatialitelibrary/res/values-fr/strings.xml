@@ -9,4 +9,11 @@
   <string name="point_size">Taille du point</string>
   <string name="decimation">Epurage</string>
   <string name="decimation_factor_default">0,000001</string>
+  <string name="min_zoom">Zoom minimum</string>
+  <string name="max_zoom">Zoom maximum</string>
+  <string name="dash_pattern">Dash pattern</string>
+  <string name="label_properties">Propriétés d\'étiquetage</string>
+  <string name="toggle_visibility">mode de visibilité</string>
+  <string name="label_field">champ d\'étiquette</string>
+  <string name="label_size">taille de l\'étiquette</string>
 </resources>

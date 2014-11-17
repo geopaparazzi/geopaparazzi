@@ -11,6 +11,7 @@
   <string name="decimation_factor_default">0.000001</string>
   <string name="min_zoom">Minimalni zum</string>
   <string name="max_zoom">Maksimalni zum</string>
+  <string name="dash_pattern">Stilovi crtica</string>
   <string name="label_properties">Svojstva oznake</string>
   <string name="toggle_visibility">Vidljivost tastera</string>
   <string name="label_field">Polje oznake</string>

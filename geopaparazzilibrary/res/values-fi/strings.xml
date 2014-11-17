@@ -88,4 +88,5 @@
   <string name="share_note_with">Jaa muistiinpano...</string>
   <string name="downloading_mapurl_to_the_device">Lataus valittu palveluksi laitteelle.</string>
   <string name="mapurl_successfully_downloaded">Mapurl on onnistuneesti ladattu ja asennettu. Muista käynnistää Geopaparazzi uudelleen saadaksesi palvelun luetteloon.</string>
+  <string name="crash_toast_text">Sovellutusta kohtasi vakava virhe. Kaatumiseen johtaneet tiedot kerätään ja ne ovat hyödyllisiä ongelman ratkaisuun. Ole ystävällinen ja lähetä ne kehitystiimille kun mahdollista.</string>
 </resources>

@@ -2,6 +2,8 @@
 <resources>
   <string name="yes">Ja</string>
   <string name="no">Nein</string>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="app_file_name">Geopaparazzi Projektdatenbank</string>
   <string name="notesvisibilityToggle">Sichtbarkeit der Notizen umschalten.</string>
   <string name="kmlsaved">Daten erfolgreich exportiert nach: </string>
   <string name="kmlnonsaved">Während des Daten-Exports ist ein Fehler aufgetreten!</string>
@@ -152,6 +154,7 @@
   <string name="sent_sms">Verschickte SMS :</string>
   <string name="send_data">Daten senden</string>
   <string name="found_no_data_to_send">Keine Daten zum Senden in aktuell dargestellter Karte gefunden. </string>
+  <string name="insert_phone_to_send">Eine SMS wird gesendet, um die ausgewählten Daten zu übertragen.\nBitte geben Sie eine gültige Telefonnummer an, um die Daten zu senden.</string>
   <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>
   <string name="logs_will_be_merged">LOG-Dateien werden bei dieser Operation zusammengeführt. Möchten Sie fortfahren?</string>
   <string name="distance">Entfernung:</string>
@@ -190,6 +193,44 @@
   <string name="start">Start</string>
   <string name="end">Ziel</string>
   <string name="other">andere</string>
+  <string name="base_maps">Spatialite Datenliste</string>
   <string name="maps_manager">Kartenmanager</string>
+  <string name="loading_maps">Lade Karten...</string>
   <!--ellipsis character instead of three dots-->
+  <string name="project">Projekt</string>
+  <string name="gps_status">GPS-Status</string>
+  <string name="menu_button">Menü-Taste</string>
+  <string name="track_length">Streckenlänge:</string>
+  <string name="gpslog_updateLogLength">Aktualisierung</string>
+  <string name="tap_on_title_to_visit_website">(Tippen Sie auf den Titel, um die Webseite zu besuchen)</string>
+  <string name="text_filter">Textfilter</string>
+  <string name="tanto_service_query">Anfrage</string>
+  <string name="info">INFO</string>
+  <string name="calculate_length">Länge berechnen</string>
+  <string name="spatialite_preferences">Spatialite Einstellungen</string>
+  <string name="spatialite_recovery_mode">Spatialite Wiederherstellungsmodus</string>
+  <string name="map">Karte</string>
+  <string name="name_lc">Name</string>
+  <string name="name_uc">Name</string>
+  <string name="bounds">Grenzen</string>
+  <string name="save">speichere</string>
+  <string name="goto_feature">gehe zu</string>
+  <string name="cancel">Abbrechen</string>
+  <string name="project_info">Projektinformation</string>
+  <string name="description">Beschreibung</string>
+  <string name="notes">Anmerkungen</string>
+  <string name="creation_date">Erstellungsdatum</string>
+  <string name="mapsfolder">Kartenverzeichnis</string>
+  <string name="reset_string">zurücksetzen</string>
+  <string name="avaiable_layers">Verfügbare Layer</string>
+  <string name="geometry_saved">Geometrie gespeichert.</string>
+  <string name="info_uppercase">INFO</string>
+  <string name="extracting_info">Extrahiere Informationen...</string>
+  <string name="no_compatible_layers_found">Es wurden keine kompatiblen Layer gefunden</string>
+  <string name="area_colon">Fläche:</string>
+  <string name="length_colon">Länge:</string>
+  <string name="save_uppercase">SPEICHERN</string>
+  <string name="saving_to_database">Speichern der Daten in der Datenbank...</string>
+  <string name="downloading">Herunterladen...</string>
+  <string name="requesting_available_services">Fordere verfügbare Dienste an</string>
 </resources>

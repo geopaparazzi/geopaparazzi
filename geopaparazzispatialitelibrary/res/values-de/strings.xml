@@ -9,4 +9,11 @@
   <string name="point_size">Punktgröße</string>
   <string name="decimation">Dezimierung</string>
   <string name="decimation_factor_default">0,000001</string>
+  <string name="min_zoom">Min. Zoom</string>
+  <string name="max_zoom">Max. Zoom</string>
+  <string name="dash_pattern">Linienstil</string>
+  <string name="label_properties">Label-Eigenschaften</string>
+  <string name="toggle_visibility">Sichtbarkeit ändern</string>
+  <string name="label_field">Beschriftungsfeld</string>
+  <string name="label_size">Beschriftungsgröße</string>
 </resources>
