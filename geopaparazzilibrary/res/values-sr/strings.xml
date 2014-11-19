@@ -83,7 +83,6 @@
   <string name="http_not_found_msg">Predloženi resorsi nisu mogli biti pronadjeni. Proverite konekciju sa URL adresom.</string>
   <string name="http_not_implemented_code_msg">Uhvaćen je kod povratne poruke (pošaljite je administratoru):</string>
   <string name="post_completed_properly">Postavka je uspešno završena.</string>
-  <string name="http_ok_msg">Zahtev je uspešno obrađen.</string>
   <string name="the_file_exists_wont_overwrite">Fajl već postoji. Želite li da ga prekopirate?</string>
   <string name="share_note_with">Podeliti belešku sa...</string>
   <string name="downloading_mapurl_to_the_device">Preuzimanje odabrane usluge na uredjaj.</string>

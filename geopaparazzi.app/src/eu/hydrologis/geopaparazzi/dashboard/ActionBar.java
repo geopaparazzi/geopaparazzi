@@ -140,7 +140,7 @@ public class ActionBar {
         gpsStatusString = context.getString(R.string.gps_status);
         mapString = context.getString(R.string.map);
         mapsFolderString = context.getString(R.string.mapsfolder);
-        nameString = context.getString(R.string.name);
+        nameString = context.getString(R.string.name_lc);
         boundsString = context.getString(R.string.bounds);
     }
 

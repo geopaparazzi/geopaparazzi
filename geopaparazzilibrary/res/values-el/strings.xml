@@ -83,7 +83,6 @@
   <string name="http_not_found_msg">Η πηγή που ζητήθηκε δε βρέθηκε. Παρακαλώ ελέγξτε το URL της σύνδεσης σας.</string>
   <string name="http_not_implemented_code_msg">Trapped a return message code (παρακαλώ στείλτε το στον προγραμματιστή): </string>
   <string name="post_completed_properly">Η αποστολή ολοκληρώθηκε σωστά.</string>
-  <string name="http_ok_msg">Η επεξεργασία της αίτησης έγινε με επιτυχία.</string>
   <string name="the_file_exists_wont_overwrite">Το αρχείο υπάρχει. Θέλετε να το αντικαταστήσετε:</string>
   <string name="share_note_with">Μοιραστείτε τη σημείωση με...</string>
   <string name="downloading_mapurl_to_the_device">Μεταφόρτωση της επιλεγμένης υπηρεσίας στη συσκευή.</string>
