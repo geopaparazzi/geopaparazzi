@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Farba čiary</string>
+  <string name="width">Hrúbka čiary</string>
+  <string name="alpha">Priesvitnosť čiary</string>
+  <string name="fill_color">Farba výplne</string>
+  <string name="fill_alpha">Priesvitnosť výplne</string>
+  <string name="point_shape_">Tvar bodu</string>
+  <string name="point_size">Veľkosť bodu</string>
+  <string name="decimation">Decimation</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Min zoom</string>
+  <string name="max_zoom">Max zoom</string>
+  <string name="dash_pattern">Vzor</string>
+  <string name="label_properties">Vlastnosti popisov</string>
+  <string name="toggle_visibility">prepnúť viditeľnosť</string>
+  <string name="label_field">pole popisu</string>
+  <string name="label_size">veľkosť popisu</string>
+</resources>
