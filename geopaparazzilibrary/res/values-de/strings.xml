@@ -83,6 +83,7 @@
   <string name="http_not_found_msg">Die angeforderte Ressource wurde nicht gefunden. Bitte überprüfen Sie Ihre Verbindungs-URL.</string>
   <string name="http_not_implemented_code_msg">Ein Return-Code wurde übermittelt (Bitte senden sie ihn an den Entwickler):</string>
   <string name="post_completed_properly">Die Übertragung wurde ordnungsgemäß abgeschlossen.</string>
+  <string name="http_ok_msg">Die Anfrage wurde erfolgreich ausgeführt.</string>
   <string name="the_file_exists_wont_overwrite">Die Datei existiert bereits und wird nicht überschrieben:</string>
   <string name="share_note_with">Teile die Notiz mit ...</string>
   <string name="downloading_mapurl_to_the_device">Lade den ausgewählten Dienst auf das Gerät.</string>
