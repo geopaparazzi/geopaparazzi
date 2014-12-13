@@ -29,3 +29,5 @@ tx.exe
 # gradle stuff
 .gradle
 **/build/
+build/
+.idea/
