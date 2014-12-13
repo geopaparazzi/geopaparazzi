@@ -838,6 +838,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return linesMap;
     }
 
+
+
+
     /**
      * Get the line for a certain log id from the db
      *

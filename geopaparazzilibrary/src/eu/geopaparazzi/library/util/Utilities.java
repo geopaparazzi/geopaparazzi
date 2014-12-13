@@ -17,7 +17,12 @@
  */
 package eu.geopaparazzi.library.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -937,5 +942,40 @@ public class Utilities {
             return null;
         }
         return null;
+    }
+
+
+    /**
+     * Serialize an object.
+     *
+     * @param obj the object to serialize.
+     * @return the byte array.
+     * @throws IOException
+     */
+    public static byte[] serializeObject(Object obj) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bos);
+        out.writeObject(obj);
+        out.close();
+        return bos.toByteArray();
+    }
+
+    /**
+     * Deserialize an array of bytes.
+     *
+     * @param bytes the array to convert.
+     * @param clazz the class contained in the array.
+     * @return the converted object.
+     * @throws Exception
+     */
+    public static <T> T deserializeObject(byte[] bytes, Class<T> clazz) throws Exception {
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            return clazz.cast(in.readObject());
+        } finally {
+            if (in != null)
+                in.close();
+        }
     }
 }

@@ -5,21 +5,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 /**
  * Utilities.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpUtilities {
 
     /**
-     * @param context  the context to use.
+     * @param context the context to use.
      * @return the decimation factor  from the preferences.
      */
-    public static int getDecimationFactor( Context context ) {
+    public static int getDecimationFactor(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5"); //$NON-NLS-1$
         int decimationFactor = 5;
@@ -33,12 +39,12 @@ public class GpUtilities {
 
     /**
      * Gets the panic numbers from the preferences.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @return the array of numbers or null.
      */
     @SuppressWarnings("nls")
-    public static String[] getPanicNumbers( Activity context ) {
+    public static String[] getPanicNumbers(Activity context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final String panicNumbersString = preferences.getString(PANICKEY, "");
         // Make sure there's a valid return address.
@@ -49,4 +55,6 @@ public class GpUtilities {
             return numbers;
         }
     }
+
+
 }

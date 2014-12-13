@@ -17,13 +17,15 @@
  */
 package eu.geopaparazzi.library.gpx;
 
+import java.io.Serializable;
+
 /**
  * Interface for objects that are able to represent themself as gpx item.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public interface GpxRepresenter {
+public interface GpxRepresenter extends Serializable {
 
     /**
      * @return min lat.
