@@ -151,6 +151,11 @@ public interface LibraryConstants {
     public static final String AZIMUTH = "AZIMUTH"; //$NON-NLS-1$
 
     /**
+     * Key used to pass an the existence of an object through the bundles.
+     */
+    public static final String OBJECT_EXISTS = "OBJECT_EXISTS"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a route string temporarily through bundles.
      */
     public static final String ROUTE = "ROUTE"; //$NON-NLS-1$
