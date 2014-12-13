@@ -5,7 +5,7 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Projektová databáze Geopaparazzi</string>
   <string name="notesvisibilityToggle">Zobrazit poznámky</string>
-  <string name="kmlsaved">Data byla úspěšně vyexportována do:</string>
+  <string name="kmlsaved">Data úspěšně vyvedena do: </string>
   <string name="kmlnonsaved">Při exportu dat se vyskytla chyba!</string>
   <string name="loggingoff">Všechna čidla zastavena.</string>
   <string name="nogps_data">Data GPS ještě nejsou dostupná!</string>
@@ -18,12 +18,12 @@
   <string name="azimuth">Azimut: </string>
   <string name="go_to">Jít na</string>
   <string name="goto_coordinate">Jít na souřadnici</string>
-  <string name="geocoding">Vyhledání místa / adresy</string>
+  <string name="geocoding">Vyhledání místa/adresy</string>
   <string name="prompt_gpsenable">Vaše GPS je zakázána! Chcete ji povolit?</string>
   <string name="width_label">Šířka</string>
   <string name="color_label">Barva</string>
-  <string name="mainmenu_kmlexport">Export</string>
-  <string name="mainmenu_import">Import</string>
+  <string name="mainmenu_kmlexport">Vyvést</string>
+  <string name="mainmenu_import">Zavést</string>
   <string name="mainmenu_gpsdataselect">Seznam GPS záznamů</string>
   <string name="mainmenu_preferences">Nastavení</string>
   <string name="mainmenu_merge">Sloučit vybrané záznamy</string>
@@ -69,7 +69,7 @@
   <string name="gpslogging_only">Tato funkce je dostupná, jen když je  GPS v činnosti a signál je dostupný.</string>
   <string name="remove_last_note_prompt">Opravdu chcete odstranit poslední textovou poznámku? Tento krok nelze vrátit zpět.</string>
   <string name="installgpsstatus_title">Instalace GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi používá aplikaci GPS Status pro kompas a GPS informace. Chcete ji nainstalovat?</string>
+  <string name="installgpsstatus_message">Geopaparazzi používá program GPS Status pro kompas a GPS informace. Chcete ji nainstalovat?</string>
   <!--added after 2.1.2-->
   <string name="reset">Vytvořit nový projekt</string>
   <string name="load">Otevřít stávající projekt</string>
@@ -128,7 +128,7 @@
   <string name="geopapcloud_server_label">Server, ke kterému se připojit</string>
   <string name="exporting_data">Exportují se data</string>
   <string name="error_set_cloud_settings">Nastavení geopap-cloud nejsou nastavena řádně. Prověřte, prosím, svá nastavení</string>
-  <string name="exporting_data_to_the_cloud">Exportují se data do internetového úložiště.</string>
+  <string name="exporting_data_to_the_cloud">Vyvádí se data do internetového úložiště.</string>
   <string name="error_uploadig_project_to_cloud">Během nahrávání projektu do Geopap-cloud se vyskytla chyba.</string>
   <string name="project_succesfully_uploaded_to_cloud">Projekt byl úspěšně nahrán na Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Exportují se data do KMZ.</string>

@@ -266,4 +266,8 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="saving_to_database">Salvataggio nel database...</string>
   <string name="downloading">Download in corso...</string>
   <string name="requesting_available_services">Richiesta servizi disponibili...</string>
+  <string name="custommapfolder_summary">Cambiare la cartella dalla quale vengono caricate le mappe. E\' necessario riavviare Geopaparazzi.</string>
+  <string name="custommapfolder_title">Cartella mappe attualmente in uso.</string>
+  <string name="enable_mock_locations_for_demo">Per utilizzare la modalità demo, è necessario abilitare le mock locations di Android nelle impostazioni sviluppatore. Modalità demo disabilitata.</string>
+  <string name="could_not_open_geosms">Non è stato possibile aprire lo URI. Geopaparazzi è in grado di aprire solo URI GeoSMS che contengono una parte:</string>
 </resources>
