@@ -241,7 +241,7 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities
                         .messageDialog(
                                 this,
-                                getString(R.string.could_not_open_geosms),
+                                getString(R.string.could_not_open_geosms) + " ...&q=46.068941,11.169849&GeoSMS",
                                 null);
             }
         }

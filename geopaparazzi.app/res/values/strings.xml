@@ -269,5 +269,5 @@
     <string name="custommapfolder_summary">Change the folder from which maps are loaded. Needs a restart of Geopaparazzi</string>
     <string name="custommapfolder_title">Current used maps folder</string>
     <string name="enable_mock_locations_for_demo">To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.</string>
-    <string name="could_not_open_geosms"><![CDATA["Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS "]]></string>
+    <string name="could_not_open_geosms">Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like:</string>
 </resources>
