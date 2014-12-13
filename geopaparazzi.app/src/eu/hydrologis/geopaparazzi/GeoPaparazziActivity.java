@@ -169,7 +169,7 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities
                         .messageDialog(
                                 this,
-                                "To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.",
+                                getString(R.string.enable_mock_locations_for_demo),
                                 null);
                 Editor edit = preferences.edit();
                 edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
@@ -241,7 +241,7 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities
                         .messageDialog(
                                 this,
-                                "Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS ",
+                                getString(R.string.could_not_open_geosms),
                                 null);
             }
         }

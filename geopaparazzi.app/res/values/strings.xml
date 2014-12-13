@@ -266,4 +266,8 @@
     <string name="saving_to_database">Saving data to database...</string>
     <string name="downloading">Downloading...</string>
     <string name="requesting_available_services">Requesting available services</string>
+    <string name="custommapfolder_summary">Change the folder from which maps are loaded. Needs a restart of Geopaparazzi</string>
+    <string name="custommapfolder_title">Current used maps folder</string>
+    <string name="enable_mock_locations_for_demo">To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.</string>
+    <string name="could_not_open_geosms"><![CDATA["Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS "]]></string>
 </resources>

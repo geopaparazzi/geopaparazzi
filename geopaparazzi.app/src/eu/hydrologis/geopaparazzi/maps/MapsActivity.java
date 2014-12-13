@@ -329,11 +329,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
         saveCenterPref();
 
-        if (areButtonsVisible) {
-            setAllButtoonsEnablement(true);
-        } else {
-            setAllButtoonsEnablement(false);
-        }
+        setAllButtoonsEnablement(areButtonsVisible);
         EditingView editingView = (EditingView) findViewById(R.id.editingview);
         LinearLayout editingToolsLayout = (LinearLayout) findViewById(R.id.editingToolsLayout);
         EditManager.INSTANCE.setEditingView(editingView, editingToolsLayout);

@@ -6,7 +6,7 @@
         android:order="1"
         android:title="@string/gps_preferences" >
         <EditTextPreference
-            android:defaultValue="0"
+            android:defaultValue="1"
             android:inputType="number"
             android:key="PREFS_KEY_GPS_LOGGING_DISTANCE"
             android:order="3"
@@ -14,7 +14,7 @@
         </EditTextPreference>
 
         <ListPreference
-            android:defaultValue="5"
+            android:defaultValue="3"
             android:entries="@array/gps_time_name"
             android:entryValues="@array/gps_time_value"
             android:key="PREFS_KEY_GPS_LOGGING_INTERVAL"
@@ -124,8 +124,8 @@
         android:defaultValue=""
         android:key="PREFS_KEY_CUSTOM_MAPSFOLDER"
         android:order="101"
-        android:summary="Change the folder from which maps are loaded. Needs a restart of Geopaparazzi"
-        android:title="Current used maps folder" />
+        android:summary="@string/custommapfolder_summary"
+        android:title="@string/custommapfolder_title" />
 
     <PreferenceScreen
         android:order="200"
