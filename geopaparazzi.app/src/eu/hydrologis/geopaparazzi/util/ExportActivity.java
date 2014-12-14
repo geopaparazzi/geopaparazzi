@@ -18,11 +18,19 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -61,40 +69,54 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 
 /**
  * Activity for export tasks.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ExportActivity extends Activity {
+public class ExportActivity extends Activity implements
+        NfcAdapter.CreateBeamUrisCallback {
 
     private ProgressDialog kmlProgressDialog;
     private ProgressDialog gpxProgressDialog;
     private ProgressDialog cloudProgressDialog;
+    private NfcAdapter mNfcAdapter;
 
-    public void onCreate( Bundle icicle ) {
+    // List of URIs to provide to Android Beam
+    private Uri[] mFileUris = new Uri[1];
+    private PendingIntent pendingIntent;
+
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.export);
+        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+
+        try {
+            checkNfc();
+        } catch (Exception e) {
+            GPLog.error(this, e.getLocalizedMessage(), e);
+        }
 
         ImageButton kmzExportButton = (ImageButton) findViewById(R.id.kmzExportButton);
-        kmzExportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        kmzExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 exportKmz();
             }
         });
         ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxExportButton);
-        gpxExportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        gpxExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 exportGpx();
             }
         });
         ImageButton bookmarksExportButton = (ImageButton) findViewById(R.id.bookmarksExportButton);
-        bookmarksExportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        bookmarksExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 exportBookmarks();
             }
         });
         ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
-        cloudExportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        cloudExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 final ExportActivity context = ExportActivity.this;
                 if (!NetworkUtilities.isNetworkAvailable(context)) {
                     Utilities.messageDialog(context, context.getString(R.string.available_only_with_network), null);
@@ -116,9 +138,27 @@ public class ExportActivity extends Activity {
         });
     }
 
+    private void checkNfc() throws Exception {
+        // Check for available NFC Adapter
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mNfcAdapter != null) {
+            if (Build.VERSION.SDK_INT >
+                    Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                mNfcAdapter.setBeamPushUrisCallback(this, this);
+                File databaseFile = ResourcesManager.getInstance(this).getDatabaseFile();
+                mFileUris[0] = Uri.fromFile(databaseFile);
+            } else {
+                mNfcAdapter = null;
+            }
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+
+        if (mNfcAdapter != null)
+            mNfcAdapter.disableForegroundDispatch(this);
 
         Utilities.dismissProgressDialog(kmlProgressDialog);
         Utilities.dismissProgressDialog(gpxProgressDialog);
@@ -126,12 +166,12 @@ public class ExportActivity extends Activity {
     }
 
 
-    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd) {
+    private void exportToCloud(final ExportActivity context, final String serverUrl, final String user, final String pwd) {
 
         cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 context.getString(R.string.exporting_data_to_the_cloud), true, true);
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 try {
                     String message = WebProjectManager.INSTANCE.uploadProject(context, serverUrl, user, pwd);
                     return message;
@@ -141,7 +181,7 @@ public class ExportActivity extends Activity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(cloudProgressDialog);
                 // String msg;
                 // if (code == ReturnCodes.ERROR) {
@@ -159,8 +199,8 @@ public class ExportActivity extends Activity {
     private void exportKmz() {
         kmlProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 getString(R.string.exporting_data_to_kmz), true, true);
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 File kmlOutputFile = null;
                 try {
                     List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
@@ -169,13 +209,13 @@ public class ExportActivity extends Activity {
                      */
                     List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs();
                     HashMap<Long, LogMapItem> mapitemsMap = new HashMap<Long, LogMapItem>();
-                    for( LogMapItem log : gpslogs ) {
+                    for (LogMapItem log : gpslogs) {
                         mapitemsMap.put(log.getId(), log);
                     }
 
                     HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
                     Collection<Entry<Long, Line>> linesSet = linesMap.entrySet();
-                    for( Entry<Long, Line> lineEntry : linesSet ) {
+                    for (Entry<Long, Line> lineEntry : linesSet) {
                         Long id = lineEntry.getKey();
                         Line line = lineEntry.getValue();
                         LogMapItem mapItem = mapitemsMap.get(id);
@@ -189,14 +229,14 @@ public class ExportActivity extends Activity {
                      * get notes
                      */
                     List<Note> notesList = DaoNotes.getNotesList(null, false);
-                    for( Note note : notesList ) {
+                    for (Note note : notesList) {
                         kmlRepresenterList.add(note);
                     }
                     /*
                      * add pictures
                      */
                     List<Image> imagesList = DaoImages.getImagesList(false, true);
-                    for( Image image : imagesList ) {
+                    for (Image image : imagesList) {
                         kmlRepresenterList.add(image);
                     }
 
@@ -204,7 +244,7 @@ public class ExportActivity extends Activity {
                      * add bookmarks
                      */
                     List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
-                    for( Bookmark bookmark : bookmarksList ) {
+                    for (Bookmark bookmark : bookmarksList) {
                         kmlRepresenterList.add(bookmark);
                     }
 
@@ -226,7 +266,7 @@ public class ExportActivity extends Activity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(kmlProgressDialog);
                 String msg = ""; //$NON-NLS-1$
                 if (response.length() > 0) {
@@ -243,8 +283,8 @@ public class ExportActivity extends Activity {
     private void exportGpx() {
         gpxProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 getString(R.string.exporting_data_to_gpx), true, true);
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 try {
                     List<GpxRepresenter> gpxRepresenterList = new ArrayList<GpxRepresenter>();
                     /*
@@ -252,14 +292,14 @@ public class ExportActivity extends Activity {
                      */
                     HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
                     Collection<Line> linesCollection = linesMap.values();
-                    for( Line line : linesCollection ) {
+                    for (Line line : linesCollection) {
                         gpxRepresenterList.add(line);
                     }
                     /*
                      * get notes
                      */
                     List<Note> notesList = DaoNotes.getNotesList(null, false);
-                    for( Note note : notesList ) {
+                    for (Note note : notesList) {
                         gpxRepresenterList.add(note);
                     }
 
@@ -277,7 +317,7 @@ public class ExportActivity extends Activity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(gpxProgressDialog);
                 String msg = ""; //$NON-NLS-1$
                 if (response.length() > 0) {
@@ -297,7 +337,7 @@ public class ExportActivity extends Activity {
         try {
             List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
             TreeSet<String> bookmarksNames = new TreeSet<String>();
-            for( Bookmark bookmark : allBookmarks ) {
+            for (Bookmark bookmark : allBookmarks) {
                 String tmpName = bookmark.getName();
                 bookmarksNames.add(tmpName.trim());
             }
@@ -309,7 +349,7 @@ public class ExportActivity extends Activity {
             StringBuilder sb = new StringBuilder();
             if (bookmarksfile.exists()) {
                 List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
-                for( String bookmarkLine : bookmarksList ) {
+                for (String bookmarkLine : bookmarksList) {
                     String[] split = bookmarkLine.split(","); //$NON-NLS-1$
                     // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969, 12
                     if (split.length < 3) {
@@ -320,12 +360,12 @@ public class ExportActivity extends Activity {
                         namesToNOTAdd.add(name);
                     }
                 }
-                for( String string : bookmarksList ) {
+                for (String string : bookmarksList) {
                     sb.append(string).append("\n");
                 }
             }
             int exported = 0;
-            for( Bookmark bookmark : allBookmarks ) {
+            for (Bookmark bookmark : allBookmarks) {
                 String name = bookmark.getName().trim();
                 if (!namesToNOTAdd.contains(name)) {
                     sb.append(name);
@@ -351,6 +391,45 @@ public class ExportActivity extends Activity {
             Utilities.messageDialog(this, "An error occurred while exporting the bookmarks.", null);
         }
 
+    }
+
+    @Override
+    public Uri[] createBeamUris(NfcEvent nfcEvent) {
+        GPLog.addLogEntry(this, "URI SENT: " + mFileUris[0]);
+        return mFileUris;
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        if (mNfcAdapter != null)
+            mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+
+        // Check to see that the Activity started due to an Android Beam
+        String action = getIntent().getAction();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+            GPLog.addLogEntry(this, "Incoming NFC event.");
+            processIntent(getIntent());
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+        setIntent(intent);
+    }
+
+    void processIntent(Intent intent) {
+        Uri beamUri = intent.getData();
+        String path = beamUri.getPath();
+        GPLog.addLogEntry(this, "Incoming URI path: " + path);
+        if (TextUtils.equals(beamUri.getScheme(), "file") &&
+                path.endsWith("gpap")) {
+            System.out.println(path);
+            File pathFile = new File(path);
+            boolean exists = pathFile.exists();
+            System.out.println(exists);
+        }
     }
 
 }

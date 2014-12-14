@@ -24,6 +24,9 @@
         tools:ignore="MockLocation" />
 
     <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" />
+    <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
 
@@ -114,7 +117,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.GpsDataListActivity"
+        <activity
+            android:name=".maps.GpsDataListActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
@@ -214,7 +218,20 @@
         </activity>
         <activity android:name=".maps.BookmarksListActivity" />
         <activity android:name=".maps.NotesListActivity" />
-        <activity android:name=".util.ExportActivity" />
+        <activity
+            android:name=".util.ExportActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.gpap"
+                    android:scheme="file" />
+            </intent-filter>
+        </activity>
         <activity android:name=".util.ImportActivity" />
         <!-- FROM LIBRARY -->
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
