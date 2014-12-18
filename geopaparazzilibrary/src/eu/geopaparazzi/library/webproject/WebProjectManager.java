@@ -57,7 +57,9 @@ public enum WebProjectManager {
     /**
      * The relative path appended to the server url to compose the download projects list url.
      */
-    public static String DOWNLOADPATH = "download";
+    public static String DOWNLOADLISTPATH = "stage_gplist_download";
+
+    public static String DOWNLOADPROJECTPATH = "stage_gpproject_download";
 
     /**
      * The id parameter name to use in the server url.
@@ -120,7 +122,7 @@ public enum WebProjectManager {
                 }
             }
 
-            server = server + "/" + DOWNLOADPATH + "/" + webproject.id;
+            server = server + "/" + DOWNLOADPROJECTPATH + "/" + webproject.id;
             NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
 
             // TODO check
@@ -168,7 +170,7 @@ public enum WebProjectManager {
             }
             jsonString = sb.toString();
         } else {
-            server = server + "/" + DOWNLOADPATH;
+            server = server + "/" + DOWNLOADLISTPATH;
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
         List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
@@ -202,7 +204,7 @@ public enum WebProjectManager {
             wp.date = date;
             wp.name = name;
             wp.title = title;
-            wp.id = Long.parseLong(id);
+            wp.id = id;
             try {
                 wp.size = Long.parseLong(size);
             } catch (Exception e) {
