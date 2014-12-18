@@ -114,35 +114,16 @@ public enum WebProjectManager {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File sdcardDir = resourcesManager.getSdcardDir();
-
-            File zipFile = new File(sdcardDir.getParentFile(), resourcesManager.getApplicationName() + ".zip");
-            if (zipFile.exists()) {
-                if (!zipFile.delete()) {
-                    throw new IOException();
-                }
-            }
-
-            server = server + "/" + DOWNLOADPROJECTPATH + "/" + webproject.id;
-            NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
-
-            // TODO check
-            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), sdcardDir.getAbsolutePath(), false);
-            /*
-             * remove the zip file
-             */
-            if (zipFile.exists()) {
-                if (!zipFile.delete()) {
-                    throw new IOException();
-                }
-            }
-
-            return context.getString(R.string.project_successfully_downloaded);
-        } catch (Exception e) {
-            String message = e.getMessage();
-            if (message.equals(CompressionUtilities.FILE_EXISTS)) {
+            File downloadedProjectFile = new File(sdcardDir.getParentFile(), webproject.id);
+            if (downloadedProjectFile.exists()) {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
                 return wontOverwrite;
             }
+            server = server + "/" + DOWNLOADPROJECTPATH;
+            NetworkUtilities.sendGetRequest4File(server, downloadedProjectFile, "id=" + webproject.id, user, passwd);
+
+            return context.getString(R.string.project_successfully_downloaded);
+        } catch (Exception e) {
             return e.getLocalizedMessage();
         }
     }
