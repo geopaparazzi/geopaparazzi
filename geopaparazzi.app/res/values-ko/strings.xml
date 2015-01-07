@@ -261,4 +261,8 @@
   <string name="saving_to_database">데이터베이스에 저장하는 중...</string>
   <string name="downloading">다운로드 중...</string>
   <string name="requesting_available_services">사용가능한 서비스 요청중</string>
+  <string name="custommapfolder_summary">지도가 로드된 폴더 변경합니다. Geopaparazzi 재시작이 필요합니다.</string>
+  <string name="custommapfolder_title">현재 사용된 지도 폴더</string>
+  <string name="enable_mock_locations_for_demo">데모 모드를 사용하기 위해 개발자 설정에서  안드로이드 모의 위치 설정이 필요합니다. 데모 모드를 닫습니다.</string>
+  <string name="could_not_open_geosms">입력된 URI를 열 수 없습니다. Geopaparazzi는 다음과 같은 GeoSMS URI만 열 수 있습니다:</string>
 </resources>
