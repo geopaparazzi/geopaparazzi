@@ -93,7 +93,6 @@ public class GpsDataListActivity extends ListActivity {
             }
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
         }
 
         ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row, gpslogItems){
@@ -165,7 +164,6 @@ public class GpsDataListActivity extends ListActivity {
                 mergeSelected();
             } catch (IOException e) {
                 GPLog.error(this, e.getLocalizedMessage(), e);
-                e.printStackTrace();
             }
             return true;
         case SELECTALL:
@@ -173,7 +171,7 @@ public class GpsDataListActivity extends ListActivity {
                 DaoGpsLog.setLogsVisibility(true);
                 refreshList(true);
             } catch (IOException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e); //$NON-NLS-1$
             }
             return true;
         case UNSELECTALL:
@@ -181,7 +179,7 @@ public class GpsDataListActivity extends ListActivity {
                 DaoGpsLog.setLogsVisibility(false);
                 refreshList(true);
             } catch (IOException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e); //$NON-NLS-1$
             }
             return true;
         }
@@ -212,7 +210,7 @@ public class GpsDataListActivity extends ListActivity {
                     try {
                         DaoGpsLog.mergeLogs(id, mainId);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                     }
                 }
                 refreshList(true);

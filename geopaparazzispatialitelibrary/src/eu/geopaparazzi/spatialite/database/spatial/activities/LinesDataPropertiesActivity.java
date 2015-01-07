@@ -26,6 +26,7 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -57,7 +58,7 @@ public class LinesDataPropertiesActivity extends Activity {
         try {
             spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
@@ -166,7 +167,7 @@ public class LinesDataPropertiesActivity extends Activity {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             finish();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
     }
 

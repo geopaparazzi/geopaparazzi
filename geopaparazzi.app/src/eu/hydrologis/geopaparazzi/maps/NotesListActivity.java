@@ -216,7 +216,7 @@ public class NotesListActivity extends ListActivity {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    GPLog.error(this, null, e); //$NON-NLS-1$
                                     Utilities.errorDialog(NotesListActivity.this, e, null);
                                 }
                             }
@@ -238,7 +238,7 @@ public class NotesListActivity extends ListActivity {
                                             + imageFile), null);
                                 }
                             } catch (java.lang.Exception e) {
-                                e.printStackTrace();
+                                GPLog.error(this, null, e); //$NON-NLS-1$
                             }
                         }
 
@@ -405,7 +405,7 @@ public class NotesListActivity extends ListActivity {
                             }
 
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e); //$NON-NLS-1$
                             Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                         }
                     }

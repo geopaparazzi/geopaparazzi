@@ -123,8 +123,7 @@ public class GeopackageTileDownloader extends TileDownloader {
                 decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
             } catch (Exception e) {
                 // ignore and set the image as empty
-                if (GPLog.LOG_HEAVY)
-                    GPLog.error(this, "Could not find image: " + tileQuery, e); //$NON-NLS-1$
+                GPLog.error(this, "Could not find image: " + tileQuery, e); //$NON-NLS-1$
             }
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {

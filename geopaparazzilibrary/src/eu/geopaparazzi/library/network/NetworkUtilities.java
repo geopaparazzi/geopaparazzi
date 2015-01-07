@@ -239,7 +239,6 @@ public class NetworkUtilities {
                         .getString(R.string.post_completed_properly));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw e;
         } finally {
             if (conn != null)
@@ -312,7 +311,6 @@ public class NetworkUtilities {
                     context.getResources().getString(R.string.file_upload_completed_properly));
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw e;
         } finally {
             if (wr != null)

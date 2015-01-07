@@ -353,7 +353,7 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
             }
             return stylesList;
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error("GeopaparazziDatabaseProperties", null, e);
             return null;
         } finally {
             try {

@@ -272,7 +272,6 @@ public class ExportActivity extends Activity {
                     return gpxOutputFile.getAbsolutePath();
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
                     return null;
                 }
             }
@@ -347,7 +346,7 @@ public class ExportActivity extends Activity {
                 Utilities.messageDialog(this, "Successfully exported bookmarks: " + exported, null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             Utilities.messageDialog(this, "An error occurred while exporting the bookmarks.", null);
         }
 

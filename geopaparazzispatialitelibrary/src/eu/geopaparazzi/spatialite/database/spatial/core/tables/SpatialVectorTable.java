@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -142,6 +143,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
                         + uniqueNameBasedOnDbFilePath + "]");
             }
         } catch (Exception e) {
+            GPLog.error(this, null, e);
             // ignore and use absolute path
             uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
         }

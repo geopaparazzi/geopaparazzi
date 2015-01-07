@@ -40,6 +40,7 @@ import android.view.View;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
@@ -109,7 +110,7 @@ public class FormActivity extends FragmentActivity {
             sectionObject = new JSONObject(sectionObjectString);
             formNames4Section = TagsManager.getFormNames4Section(sectionObject);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         setContentView(R.layout.form);
 
@@ -170,7 +171,7 @@ public class FormActivity extends FragmentActivity {
         try {
             saveAction();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
@@ -184,7 +185,7 @@ public class FormActivity extends FragmentActivity {
         try {
             shareAction();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }

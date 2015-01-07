@@ -47,7 +47,7 @@ public class SPL_Geopackage {
      * @throws jsqlite.Exception if something goes wrong.
      */
     public static void getGeoPackageMap_R10(Database database, HashMap<String, String> spatialVectorMap,
-                                             HashMap<String, String> spatialVectorMapErrors) throws Exception {
+                                            HashMap<String, String> spatialVectorMapErrors) throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
         String vector_data = ""; // term used when building the sql
         String vector_extent = ""; // term used when building the sql
@@ -162,7 +162,8 @@ public class SPL_Geopackage {
             GPLog.error("DAOSPATIALIE", "spatialiteAutoGPKG[" + databaseType + "] sql[" + s_AutoGPKG + "] db[" + database.getFilename()
                     + "]", e_stmt);
         } finally {
-            statement.close();
+            if (statement != null)
+                statement.close();
         }
         return i_count_tables;
     }

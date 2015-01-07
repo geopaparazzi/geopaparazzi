@@ -483,7 +483,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                     i_http_code = 779;
                 }
             } catch (IOException e) {
-                if (e.getMessage().indexOf("ETIMEDOUT") != -1) { // failed to connect to
+                if (e.getMessage().contains("ETIMEDOUT")) { // failed to connect to
                                                                  // fbinter.stadt-berlin.de/141.15.4.15
                                                                  // (port 80): connect failed:
                                                                  // ETIMEDOUT (Connection timed out)
@@ -515,7 +515,6 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
       * -- even with 'access denied', HTTP_OK is returned, but with an error text being sent (i_content_length != -1)
       * @param i_parm reservered
       * @param i_http_code http code recieved
-      * @param s_http_code http text recieved
       * @param i_content_length gziped length of data recieved [images always '-1']
       * @param i_image_null 0= no valid imageg recieved ; 1= valid image recieved
       * @return i_http_code
@@ -707,7 +706,6 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
       * -- only unique values will be stored
       * - valid zoom-levels: 0-22
       * - result will sorted from min to max
-      * @param s_zoom_levels list of zoom levels
       * @return zoom_levels.size() [ amount of valid,sorted zoom_levels found]
      */
     private int check_request_bounds( String s_request_bounds, String s_request_bounds_url ) {
@@ -811,8 +809,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         int i_zoom_level = 0;
         if (indexOfS != -1) {
             String[] sa_string = s_zoom_levels.split(",");
-            for( int i = 0; i < sa_string.length; i++ ) {
-                String s_zoom_level = sa_string[i];
+            for (String s_zoom_level : sa_string) {
                 indexOfS = s_zoom_level.indexOf("-");
                 if (indexOfS != -1) {
                     if (add_zoom_from_to(s_zoom_levels, 1) != 0)

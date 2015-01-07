@@ -158,7 +158,7 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
             GPLog.clearLogTable(database);
             Utilities.messageDialog(this, "Log cleared.", null);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             Utilities.messageDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
         }
     }
@@ -180,7 +180,7 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
             }
             Utilities.messageDialog(this, "Style reset performed.", null);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             Utilities.messageDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
         }
     }

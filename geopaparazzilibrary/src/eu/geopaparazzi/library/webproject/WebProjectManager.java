@@ -93,7 +93,7 @@ public enum WebProjectManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             return e.getLocalizedMessage();
         }
     }
@@ -136,6 +136,7 @@ public enum WebProjectManager {
 
             return context.getString(R.string.project_successfully_downloaded);
         } catch (Exception e) {
+            GPLog.error(this, null, e);
             String message = e.getMessage();
             if (message.equals(CompressionUtilities.FILE_EXISTS)) {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);

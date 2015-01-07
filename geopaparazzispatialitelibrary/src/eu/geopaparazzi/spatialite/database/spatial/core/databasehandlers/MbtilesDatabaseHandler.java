@@ -259,6 +259,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         try {
             return mbtilesSplitter.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, forceUnique);
         } catch (IOException e) {
+            GPLog.error(this, null, e);
             return 1;
         }
     }

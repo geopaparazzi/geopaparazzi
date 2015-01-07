@@ -283,6 +283,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 try {
                     createDatasetFromProfile();
                 } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                     return "ERROR";
                 }
                 return "OK";

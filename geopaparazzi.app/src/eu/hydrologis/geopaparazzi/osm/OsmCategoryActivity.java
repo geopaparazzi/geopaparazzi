@@ -30,6 +30,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -54,7 +55,7 @@ public class OsmCategoryActivity extends Activity {
         try {
             itemsForCategory = OsmTagsManager.getInstance().getItemsForCategory(this, category);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e); //$NON-NLS-1$
         }
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmtagsgridview);

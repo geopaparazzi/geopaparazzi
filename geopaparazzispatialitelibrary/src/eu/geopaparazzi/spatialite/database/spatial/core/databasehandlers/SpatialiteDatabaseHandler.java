@@ -128,6 +128,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 try {
                     databaseType = DatabaseCreationAndProperties.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     isDatabaseValid = false;
                 }
                 switch (databaseType) {
@@ -151,7 +152,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 checkAndUpdatePropertiesUniqueNames();
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
+            GPLog.error(this,  "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
 
@@ -345,7 +346,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             }
             return list;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            GPLog.error(this, null, ex);
         }
         return null;
     }
@@ -362,7 +363,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 stmt.close();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            GPLog.error(this, null, ex);
         }
         return null;
     }

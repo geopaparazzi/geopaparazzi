@@ -7,6 +7,8 @@ import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.LinkedHashMap;
 
+import eu.geopaparazzi.library.database.GPLog;
+
 /**
  * Image cache.
  * 
@@ -23,7 +25,7 @@ public class OsmImageCache {
         try {
             tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e); //$NON-NLS-1$
         }
     }
 

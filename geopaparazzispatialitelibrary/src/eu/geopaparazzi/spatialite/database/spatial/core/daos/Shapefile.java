@@ -239,7 +239,7 @@ public class Shapefile {
                         // + "] srid["+i_srid+"]");
                     }
                 } catch (IOException e) {
-                    // TODO
+                    GPLog.error("Shapefile", null, e);
                 }
             }
         }

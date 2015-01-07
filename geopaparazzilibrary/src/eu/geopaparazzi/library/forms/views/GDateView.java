@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormDatePickerFragment;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -112,7 +113,7 @@ public class GDateView extends View implements GView {
                 try {
                     date = dateFormatter.parse(dateStr);
                 } catch (ParseException e) {
-                    // fallback on current date
+                    GPLog.error(this, null, e);
                     date = new Date();
                 }
                 final Calendar c = Calendar.getInstance();
