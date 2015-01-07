@@ -414,7 +414,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
                 // "/" +
                 // text);
-                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end,
+                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1, start, end,
                         (double) lengthm);
                 logsList.add(item);
                 c.moveToNext();
@@ -486,7 +486,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
                     if (gpslogGeoPoints.size() > 1) {
                         way.setPaint(null, wayPaintOutline);
-                        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+                        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[gpslogGeoPoints.size()]);
                         way.setWayNodes(new GeoPoint[][]{geoPoints});
                         // item.setId(logid);
                         // item.setVisible(visible == 1 ? true : false);
@@ -874,6 +874,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             while (!c.isAfterLast()) {
                 double lon = c.getDouble(0);
                 double lat = c.getDouble(1);
+
                 double altim = c.getDouble(2);
                 String date = c.getString(3);
                 line.addPoint(lon, lat, altim, date);

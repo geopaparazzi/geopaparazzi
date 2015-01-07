@@ -32,6 +32,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -148,8 +149,9 @@ public class GpsDataListActivity extends ListActivity implements
                     for (int j = 0; j < size; j++) {
                         double lon = lonList.get(j);
                         double lat = latList.get(j);
+
                         double altim = altimList.get(j);
-                        long time = Long.parseLong(dateList.get(i));
+                        long time = Long.parseLong(dateList.get(j));
                         daoGpsLog.addGpsLogDataPoint(sqliteDatabase, logId, lon, lat, altim, time);
                     }
                     sqliteDatabase.setTransactionSuccessful();
