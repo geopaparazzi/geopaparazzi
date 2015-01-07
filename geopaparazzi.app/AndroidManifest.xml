@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="62"
-    android:versionName="4.0.1">
+    android:versionCode="63"
+    android:versionName="4.1.0">
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,18 +18,22 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.NFC" />
     <uses-permission
         android:name="android.permission.ACCESS_MOCK_LOCATION"
         tools:ignore="MockLocation" />
 
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
 
     <!-- compatibility -->
     <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="20" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="21" />
 
     <supports-screens
         android:anyDensity="true"
@@ -113,11 +117,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.GpsDataListActivity">
+        <activity
+            android:name=".maps.GpsDataListActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/eu.geopaparazzi.gpsdatalog_msg" />
             </intent-filter>
         </activity>
         <activity
@@ -207,7 +218,20 @@
         </activity>
         <activity android:name=".maps.BookmarksListActivity" />
         <activity android:name=".maps.NotesListActivity" />
-        <activity android:name=".util.ExportActivity" />
+        <activity
+            android:name=".util.ExportActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.gpap"
+                    android:scheme="file" />
+            </intent-filter>
+        </activity>
         <activity android:name=".util.ImportActivity" />
         <!-- FROM LIBRARY -->
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />

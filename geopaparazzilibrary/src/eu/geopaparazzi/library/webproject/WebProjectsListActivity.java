@@ -90,7 +90,7 @@ public class WebProjectsListActivity extends ListActivity {
                     }
                     return ""; //$NON-NLS-1$
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                     return ERROR;
                 }
             }

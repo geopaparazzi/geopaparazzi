@@ -236,6 +236,7 @@ public class GeocodeActivity extends ListActivity {
                                             return errorMessage;
                                         }
                                     } catch (Exception e) {
+                                        GPLog.error(this, null, e);
                                         return getString(R.string.route_extraction_error);
                                     }
                                 }

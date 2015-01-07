@@ -246,6 +246,7 @@ public class InfoTool extends MapTool {
                         }
                         return "";
                     } catch (Exception e) {
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                         return "ERROR: " + e.getLocalizedMessage();
                     }
 
@@ -277,7 +278,7 @@ public class InfoTool extends MapTool {
             }.execute((String) null);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            GPLog.error(this, null, ex); //$NON-NLS-1$
         }
     }
 

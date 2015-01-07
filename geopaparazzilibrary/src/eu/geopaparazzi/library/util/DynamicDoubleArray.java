@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.util;
 
+import java.io.Serializable;
+
 import static java.lang.Math.max;
 
 /**
@@ -25,7 +27,7 @@ import static java.lang.Math.max;
  * @author Andrea Antonello (www.hydrologis.com)
  * @since 2.6
  */
-public class DynamicDoubleArray {
+public class DynamicDoubleArray implements Serializable {
     private double[] internalArray = null;
     private final int growingSize;
     private int currentPosition = -1;

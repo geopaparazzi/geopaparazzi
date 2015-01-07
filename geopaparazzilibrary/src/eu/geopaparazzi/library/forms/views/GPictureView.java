@@ -177,6 +177,7 @@ public class GPictureView extends View implements GView {
                 try {
                     imageIdLong = Long.parseLong(imageId);
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     continue;
                 }
                 if (addedImages.contains(imageId.trim())) {

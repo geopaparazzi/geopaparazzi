@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -83,7 +84,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             try {
                 oldFragment.storeFormItems(false);
             } catch (Exception e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
                 Utilities.messageDialog(activity, R.string.error_while_storing_form_data, null);
             }
             // FragmentActivity activity2 = oldFragment.getActivity();
@@ -150,7 +151,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 try {
                     activity.setSectionObject(new JSONObject(sectionStringObject));
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                 }
             }
             break;

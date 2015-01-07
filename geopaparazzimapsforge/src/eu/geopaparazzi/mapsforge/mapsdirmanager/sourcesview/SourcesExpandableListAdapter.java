@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.mapsforge.R;
@@ -56,7 +58,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
             File mapsDir = ResourcesManager.getInstance(activity).getMapsDir();
             mapsParentPath = mapsDir.getParent() + "/"; //$NON-NLS-1$
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         folderList = new ArrayList<String>();
         tablesList = new ArrayList<List<String[]>>();

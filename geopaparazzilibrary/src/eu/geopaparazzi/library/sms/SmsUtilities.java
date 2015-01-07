@@ -254,6 +254,7 @@ public class SmsUtilities {
 
                             } catch (Exception e) {
                                 // ignore the param, it was not a coordinate block
+                                GPLog.error("SmsUtilities", null, e);
                             }
 
                         }

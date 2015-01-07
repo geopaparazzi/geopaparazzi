@@ -275,7 +275,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                     undoButton.setVisibility(View.GONE);
                     EditManager.INSTANCE.invalidateEditingView();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                 }
             }
         } else if (v == undoButton) {

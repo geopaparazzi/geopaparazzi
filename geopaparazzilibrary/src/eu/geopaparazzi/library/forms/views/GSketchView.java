@@ -142,7 +142,7 @@ public class GSketchView extends View implements GView {
                      */
                     MarkersUtilities.launch(fragmentDetail, sketchFile, gpsLocation, requestCode);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                 }
             }
         });
@@ -188,6 +188,7 @@ public class GSketchView extends View implements GView {
                 try {
                     imageIdLong = Long.parseLong(imageId);
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     continue;
                 }
                 if (addedImages.contains(imageId.trim())) {

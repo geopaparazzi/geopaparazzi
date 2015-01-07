@@ -85,7 +85,7 @@ public class MBTilesDroidSpitter {
                 }
                 create_mbtiles(this.file_mbtiles);
             } catch (IOException e) {
-                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
             }
         }
         this.s_name = this.file_mbtiles.getName().substring(0, this.file_mbtiles.getName().lastIndexOf("."));
@@ -98,7 +98,7 @@ public class MBTilesDroidSpitter {
       * @return void
       */
     public void open( boolean fetchMetadata, String metadataVersion ) {
-        if (metadataVersion != "")
+        if (!metadataVersion.equals(""))
             this.s_metadataVersion = metadataVersion;
         db_mbtiles = SQLiteDatabase.openOrCreateDatabase(file_mbtiles, null);
         if (!fetchMetadata)
@@ -108,8 +108,8 @@ public class MBTilesDroidSpitter {
         } catch (MetadataParseException e) {
             GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
         }
-        if (!isValid()) { // this mbtiles file is invalid
-        }
+//        if (!isValid()) { // this mbtiles file is invalid
+//        }
     }
     // -----------------------------------------------
     /**
@@ -243,7 +243,8 @@ public class MBTilesDroidSpitter {
             blob_data = c.getBlob(c.getColumnIndex("tile_data"));
             c.close();
         } catch (Exception e) {
-        } finally { // causes crash
+            GPLog.error(this, null, e);
+        //} finally { // causes crash
                     // db_lock.readLock().unlock();
         }
         return blob_data;
@@ -278,7 +279,7 @@ public class MBTilesDroidSpitter {
             i_rc = insertTile(s_tile_id, i_x, i_y_osm, i_z, ba_tile_data, i_force_unique);
         } catch (Exception e) {
             i_rc = 1;
-            GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+            GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
         }
         // GPLog.androidLog(-1,"MBTilesDroidSpitter.insertBitmapTile: inserting["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
         return i_rc;
@@ -289,7 +290,7 @@ public class MBTilesDroidSpitter {
       * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
       * - second of two function that use the 'tms' numbering for the y/tile_row value
       * - blank [i.e. all pixels have the same RGB] image will only be saved once in the'images' table and reference in the 'map' table
-      * @param tile_id for images/map tables tile_id field [only filled when Bitmap is blank [all pixels haves ame rgb]
+      * @param s_tile_id for images/map tables tile_id field [only filled when Bitmap is blank [all pixels haves ame rgb]
       * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
@@ -304,7 +305,7 @@ public class MBTilesDroidSpitter {
             return 100; // invalid mbtiles
         }
         boolean b_unique = true;
-        if (s_tile_id == "") {
+        if (s_tile_id.equals("")) {
             s_tile_id = get_tile_id_from_zxy(i_z, i_x, i_y_osm);
         } else { // This should be a 'Blank' Image :'ff-ee-dd.rgb', check if allready stored in
                  // 'images' table
@@ -341,6 +342,7 @@ public class MBTilesDroidSpitter {
             try {
                 s_tile_id_query = search_tile_image(ba_tile_data);
             } catch (Exception e) {
+                GPLog.error(this, null, e);
                 i_rc = 1;
             }
             if (s_tile_id_query != "") { // We have this image, do not add again
@@ -398,7 +400,7 @@ public class MBTilesDroidSpitter {
                 int i_catch_rc = 0;
                 if (e.getMessage() != null) {
                     String s_message = e.getMessage();
-                    if (s_message.indexOf("code 19") != -1) { // When the tile
+                    if (s_message.contains("code 19")) { // When the tile
                                                               // allready exists:
                                                               // not to be
                                                               // considered an
@@ -421,6 +423,7 @@ public class MBTilesDroidSpitter {
                     // i_update=0: inside bounds ; othewise bounds and metadata have changed - not
                     // used
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     i_rc = 1;
                 }
             }
@@ -543,7 +546,7 @@ public class MBTilesDroidSpitter {
                 try {
                     update_mbtiles_metadata(db_mbtiles, update_metadata, i_reload_metadata);
                 } catch (Exception e) {
-                    GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                    GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
                 }
             }
             i_rc = 1;
@@ -825,6 +828,7 @@ public class MBTilesDroidSpitter {
             }
             c_tiles.close();
         } catch (Exception e) {
+            GPLog.error(this, null, e);
         } finally {
             db_lock.readLock().unlock();
         }
@@ -834,8 +838,7 @@ public class MBTilesDroidSpitter {
             return list_tile_id_exists; // returns all that exist
         }
         // 'fill' remove existing from the compleate list and return the missing
-        for( int i = 0; i < list_tile_id_exists.size(); i++ ) {
-            String s_tile_id = list_tile_id_exists.get(i);
+        for (String s_tile_id : list_tile_id_exists) {
             list_tile_id.remove(s_tile_id);
         }
         list_tile_id_exists.clear();
@@ -862,7 +865,7 @@ public class MBTilesDroidSpitter {
                 db_mbtiles.execSQL(s_sql_request_url);
             } catch (Exception e) {
                 s_sql_request_url = "";
-                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
                         + "][2=DROP or CREATE request_url] get_request_url_count[" + this.i_request_url_count + "]  sql["
                         + s_sql_request_url + "]", e);
             } finally {
@@ -880,7 +883,7 @@ public class MBTilesDroidSpitter {
                 db_mbtiles.execSQL(s_sql_request_url);
             } catch (Exception e) {
                 s_sql_request_url = "";
-                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
                         + "][2=DROP or CREATE request_url] get_request_url_count[" + this.i_request_url_count + "]  sql["
                         + s_sql_request_url + "]", e);
             } finally {
@@ -935,7 +938,7 @@ public class MBTilesDroidSpitter {
                     }
                 }
             } catch (Exception e) {
-                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
                         + "][1=pragma table_info(request_url) or count(tile_id)] get_request_url_count["
                         + this.i_request_url_count + "]  sql[" + s_sql_request_url + "]", e);
             } finally {
@@ -974,7 +977,7 @@ public class MBTilesDroidSpitter {
                 db_mbtiles.execSQL(s_sql_request_url);
                 this.i_request_url_count--;
             } catch (Exception e) {
-                // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+                GPLog.error(this, null, e);
             } finally {
                 if (this.i_request_url_count < 1) { // this will delete the empty table
                     this.i_request_url_count = 0;
@@ -997,7 +1000,7 @@ public class MBTilesDroidSpitter {
                 // will only be added if it did not exist
                 this.i_request_url_count++;
             } catch (Exception e) {
-                // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+                GPLog.error(this, null, e);
             }
         }
             break;
@@ -1025,7 +1028,7 @@ public class MBTilesDroidSpitter {
             }
             db_mbtiles.setTransactionSuccessful();
         } catch (Exception e) {
-            GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> insert_list_request_url["
+            GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> insert_list_request_url["
                     + this.i_request_url_count + "]  mbtiles_request_url.size[" + mbtiles_request_url.size() + "] empty["
                     + mbtiles_request_url.isEmpty() + "]", e);
         } finally {
@@ -1053,7 +1056,7 @@ public class MBTilesDroidSpitter {
             // db_mbtiles.execSQL("ANALYZE"); // ANALYZE
             i_rc = 0;
         } catch (Exception e) {
-            GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> on_analyze_vacuum[" + i_rc + "] ", e);
+            GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> on_analyze_vacuum[" + i_rc + "] ", e);
         } finally {
             db_lock.writeLock().unlock();
             GPLog.androidLog(-1, "MBTilesDroidSplitter: [" + getName() + "] -I-> on_analyze_vacuum[" + i_rc + "] ");
@@ -1090,7 +1093,7 @@ public class MBTilesDroidSpitter {
                     c_tiles.close();
                 }
             } catch (Exception e) {
-                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> retrieve_request_url["
+                GPLog.error(this, "MBTilesDroidSplitter: [" + getName() + "] -E-> retrieve_request_url["
                         + this.i_request_url_count + "] ", e);
             } finally {
                 db_lock.readLock().unlock();
@@ -1139,7 +1142,7 @@ public class MBTilesDroidSpitter {
             } catch (Exception e) {
                 sqlite_db.close();
                 sqlite_db = null;
-                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
                 i_rc = 2;
                 return i_rc;
             }
@@ -1315,6 +1318,7 @@ public class MBTilesDroidSpitter {
                 try {
                     fetchMetadata(this.s_metadataVersion);
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     i_rc = 1;
                 }
             }
@@ -1381,7 +1385,7 @@ public class MBTilesDroidSpitter {
             try {
                 update_mbtiles_metadata(db_mbtiles, update_metadata, i_reload_metadata);
             } catch (Exception e) {
-                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
             }
         }
         return update_metadata;
@@ -1447,7 +1451,7 @@ public class MBTilesDroidSpitter {
                 c_tiles.close();
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "MBTilesDroidSpitter.fetch_bounds_minmax_tiles:  sql[" + SQL_GET_MINMAXZOOM_TILES + "]", e);
+            GPLog.error(this, "MBTilesDroidSpitter.fetch_bounds_minmax_tiles:  sql[" + SQL_GET_MINMAXZOOM_TILES + "]", e);
         } finally {
             db_lock.readLock().unlock();
         }
@@ -1772,7 +1776,6 @@ public class MBTilesDroidSpitter {
      * 20131128: corrections added to correct going over or under max/min extent
      * - was causing http 400 Bad Requests
      * - updated openstreetmap wiki
-     * @param latlong_bounds [position_y,position_x]
      * @param zoom
      * @return [zoom,xtile,ytile_osm]
      */

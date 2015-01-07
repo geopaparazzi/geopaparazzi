@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.library.kml;
 
+import java.io.Serializable;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.Image;
@@ -27,7 +28,7 @@ import eu.geopaparazzi.library.database.Image;
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public interface KmlRepresenter {
+public interface KmlRepresenter extends Serializable {
     /**
      * Transforms the object in its kml representation.
      *  

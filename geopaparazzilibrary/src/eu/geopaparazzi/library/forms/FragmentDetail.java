@@ -255,7 +255,7 @@ public class FragmentDetail extends Fragment {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         return view;
     }
@@ -282,7 +282,7 @@ public class FragmentDetail extends Fragment {
                 try {
                     view.refresh(((GMapView) view).getContext());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                 }
             }
         }

@@ -57,7 +57,9 @@ public enum WebProjectManager {
     /**
      * The relative path appended to the server url to compose the download projects list url.
      */
-    public static String DOWNLOADPATH = "download";
+    public static String DOWNLOADLISTPATH = "stage_gplist_download";
+
+    public static String DOWNLOADPROJECTPATH = "stage_gpproject_download";
 
     /**
      * The id parameter name to use in the server url.
@@ -93,7 +95,7 @@ public enum WebProjectManager {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             return e.getLocalizedMessage();
         }
     }
@@ -112,30 +114,17 @@ public enum WebProjectManager {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File sdcardDir = resourcesManager.getSdcardDir();
-
-            File zipFile = new File(sdcardDir.getParentFile(), resourcesManager.getApplicationName() + ".zip");
-            if (zipFile.exists()) {
-                if (!zipFile.delete()) {
-                    throw new IOException();
-                }
+            File downloadedProjectFile = new File(sdcardDir.getParentFile(), webproject.id);
+            if (downloadedProjectFile.exists()) {
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
+                return wontOverwrite;
             }
-
-            server = server + "/" + DOWNLOADPATH + "/" + webproject.id;
-            NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
-
-            // TODO check
-            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), sdcardDir.getAbsolutePath(), false);
-            /*
-             * remove the zip file
-             */
-            if (zipFile.exists()) {
-                if (!zipFile.delete()) {
-                    throw new IOException();
-                }
-            }
+            server = server + "/" + DOWNLOADPROJECTPATH;
+            NetworkUtilities.sendGetRequest4File(server, downloadedProjectFile, "id=" + webproject.id, user, passwd);
 
             return context.getString(R.string.project_successfully_downloaded);
         } catch (Exception e) {
+            GPLog.error(this, null, e);
             String message = e.getMessage();
             if (message.equals(CompressionUtilities.FILE_EXISTS)) {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
@@ -168,7 +157,7 @@ public enum WebProjectManager {
             }
             jsonString = sb.toString();
         } else {
-            server = server + "/" + DOWNLOADPATH;
+            server = server + "/" + DOWNLOADLISTPATH;
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
         List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
@@ -202,7 +191,7 @@ public enum WebProjectManager {
             wp.date = date;
             wp.name = name;
             wp.title = title;
-            wp.id = Long.parseLong(id);
+            wp.id = id;
             try {
                 wp.size = Long.parseLong(size);
             } catch (Exception e) {

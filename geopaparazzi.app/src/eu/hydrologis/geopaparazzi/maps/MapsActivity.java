@@ -325,7 +325,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         try {
             handleOsmSliderView();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e); //$NON-NLS-1$
         }
         saveCenterPref();
 
@@ -461,7 +461,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             }
             // dataOverlay.requestRedraw();
         } catch (IOException e1) {
-            e1.printStackTrace();
+            GPLog.error(this, null, e1); //$NON-NLS-1$
         }
     }
 
@@ -764,7 +764,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
                     return true;
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    GPLog.error(this, null, e1); //$NON-NLS-1$
                     return false;
                 }
             case MENU_SENDDATA_ID:
@@ -772,7 +772,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     sendData();
                     return true;
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    GPLog.error(this, null, e1); //$NON-NLS-1$
                     return false;
                 }
             case MENU_GO_TO: {
@@ -1027,7 +1027,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                                 sqliteDatabase.endTransaction();
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
                             GPLog.error(this, "Cannot draw route.", e); //$NON-NLS-1$
                         }
 
@@ -1070,7 +1069,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             setCenterAndZoomForMapWindowFocus(lon, lat, null);
                         }
                     } catch (jsqlite.Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                     }
                 }
                 break;
@@ -1169,7 +1168,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     mapView.invalidateOnUiThread();
                 } catch (IOException e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
                     Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -1376,7 +1374,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                                 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
                                 out.close();
                             } catch (Exception e) {
-                                // ignore
+                                GPLog.error(this, null, e); //$NON-NLS-1$
                             }
                         }
                     }).start();

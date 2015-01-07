@@ -347,7 +347,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                             Geometry geometry = wkbReader.read(defaultGeometry);
                             FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
                         } catch (Exception e) {
-                            // ignore and try to go on
+                            GPLog.error(this, null, e); //$NON-NLS-1$
                         }
                     }
                 }

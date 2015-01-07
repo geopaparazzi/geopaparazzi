@@ -36,6 +36,7 @@ import org.mapsforge.core.model.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
@@ -213,6 +214,7 @@ public class SelectionTool extends MapTool {
 
                     return "";
                 } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                     return "ERROR: " + e.getLocalizedMessage();
                 }
 
@@ -240,7 +242,7 @@ public class SelectionTool extends MapTool {
                             }
                             Utilities.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
                         } catch (java.lang.Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e); //$NON-NLS-1$
                         }
                         OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
                         EditManager.INSTANCE.setActiveToolGroup(selectionGroup);

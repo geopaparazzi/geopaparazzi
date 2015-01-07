@@ -35,6 +35,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import eu.geopaparazzi.library.database.DatabaseListActivity;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -62,7 +63,7 @@ public class SqlViewActivity extends Activity {
             sqlSpinner.setAdapter(queryAdapter);
             sqlSpinner.setSelection(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e); //$NON-NLS-1$
         }
 
         customQueryText = (EditText) findViewById(R.id.ownQueryEditText);

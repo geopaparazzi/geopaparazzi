@@ -98,7 +98,7 @@ public class CameraActivity extends Activity {
                 throw new RuntimeException("Not implemented yet...");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         if (!imageSaveFolder.exists()) {
@@ -214,7 +214,7 @@ public class CameraActivity extends Activity {
                 FileUtilities.copyFile(cameraDoubleFile, imageFile);
                 cameraDoubleFile.delete();
             } catch (IOException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
             }
         }
         for (File cameraTakenFile : cameraTakenMediaFiles) {

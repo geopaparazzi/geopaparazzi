@@ -27,7 +27,7 @@ public class Webproject {
     /**
      * The server unique id for the project.
      */
-    public long id;
+    public String id;
     /**
      * The size of the project in bytes.
      */

@@ -98,6 +98,7 @@ import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
@@ -286,6 +287,7 @@ public class GeoPaparazziActivity extends Activity {
                     }
                 }
             } catch (Exception e) {
+                GPLog.error(this, null, e); //$NON-NLS-1$
                 Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
             }
         }
@@ -298,7 +300,7 @@ public class GeoPaparazziActivity extends Activity {
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e); //$NON-NLS-1$
             }
         }
     }
@@ -353,7 +355,7 @@ public class GeoPaparazziActivity extends Activity {
                                 resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
                                 initIfOk();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                GPLog.error(this, null, e); //$NON-NLS-1$
                             }
                         }
                     }, new Runnable() {
@@ -519,6 +521,14 @@ public class GeoPaparazziActivity extends Activity {
                     MapsDirManager.getInstance().init(GeoPaparazziActivity.this, null);
                     return "";
                 } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
+
+                    // reset mapdirsfolder
+                    final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
+                    Editor editor = preferences.edit();
+                    editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER, "asdasdpoipoi");
+                    editor.commit();
+
                     return "ERROR: " + e.getLocalizedMessage();
                 }
             }
@@ -526,6 +536,10 @@ public class GeoPaparazziActivity extends Activity {
             protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(initMapsdirDialog);
                 if (response.startsWith("ERROR")) {
+                    String kitkatErrorSdcardCheck = "not an error (code 0): Could not open the database in read/write mode";
+                    if (response.contains(kitkatErrorSdcardCheck)){
+                        response = response + "\n\nIf your data are on the sdcard and your Android version is KitKat, then Geopaparazzi has no write permissions (read for more info: https://code.google.com/p/android/issues/detail?id=67570)";
+                    }
                     Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
                 }
 
@@ -563,7 +577,7 @@ public class GeoPaparazziActivity extends Activity {
                             Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
                             startActivity(mapTagsIntent);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e); //$NON-NLS-1$
                         }
                         isValid = true;
                     }
@@ -578,7 +592,7 @@ public class GeoPaparazziActivity extends Activity {
                     Intent projectMetadataIntent = new Intent(this, ProjectMetadataActivity.class);
                     startActivity(projectMetadataIntent);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                 }
 
                 break;
@@ -779,7 +793,7 @@ public class GeoPaparazziActivity extends Activity {
                             DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], "POI", null,
                                     null);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e); //$NON-NLS-1$
                             Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                         }
                     }
@@ -862,7 +876,7 @@ public class GeoPaparazziActivity extends Activity {
             try {
                 MapsDirManager.getInstance().finish();
             } catch (Exception e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e); //$NON-NLS-1$
             }
             GeopaparazziApplication.getInstance().closeDatabase();
             ResourcesManager.resetManager();
@@ -872,7 +886,7 @@ public class GeoPaparazziActivity extends Activity {
             // edit.putBoolean("EXIT_THROUGH_FINISH", true);
             // edit.commit();
         } catch (Exception e1) {
-            e1.printStackTrace();
+            GPLog.error(this, null, e1); //$NON-NLS-1$
         } finally {
             checkedGps = false;
             super.finish();

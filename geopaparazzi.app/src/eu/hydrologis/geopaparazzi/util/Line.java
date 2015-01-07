@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.location.Location;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,7 @@ import static java.lang.Math.sqrt;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Line implements KmlRepresenter, GpxRepresenter {
+public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
 
     private String name;
     private DynamicDoubleArray latList;

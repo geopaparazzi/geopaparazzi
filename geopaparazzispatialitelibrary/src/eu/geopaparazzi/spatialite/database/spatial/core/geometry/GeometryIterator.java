@@ -90,7 +90,7 @@ public class GeometryIterator implements Iterator<Geometry> {
                 }
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.setLabelText column_count[" + columnCount + "] column[" + i + "]", e);
+            GPLog.error(this, "GeometryIterator.setLabelText column_count[" + columnCount + "] column[" + i + "]", e);
         }
     }
     /**
@@ -103,7 +103,7 @@ public class GeometryIterator implements Iterator<Geometry> {
         try {
             stmt = database.prepare(query);
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.creation sql[" + query + "]", e);
+            GPLog.error(this, "GeometryIterator.creation sql[" + query + "]", e);
         }
     }
 
@@ -115,7 +115,7 @@ public class GeometryIterator implements Iterator<Geometry> {
         try { // sqlite-amalgamation-3080100 allways returns false with BLOBS
             return stmt.step();
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.hasNext()[stmt.step() failed]", e);
+            GPLog.error(this, "GeometryIterator.hasNext()[stmt.step() failed]", e);
             return false;
         }
     }
@@ -132,7 +132,7 @@ public class GeometryIterator implements Iterator<Geometry> {
             setLabelText(stmt);
             return geometry;
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.next()[wkbReader.read() failed]", e);
+            GPLog.error(this, "GeometryIterator.next()[wkbReader.read() failed]", e);
         }
         return null;
     }

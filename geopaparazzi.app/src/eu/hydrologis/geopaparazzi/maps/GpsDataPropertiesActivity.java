@@ -220,7 +220,6 @@ public class GpsDataPropertiesActivity extends Activity {
                         }
                     } catch (IOException e) {
                         GPLog.error(this, e.getLocalizedMessage(), e);
-                        e.printStackTrace();
                     }
                     finish();
                 }
@@ -239,7 +238,6 @@ public class GpsDataPropertiesActivity extends Activity {
                         finish();
                     } catch (IOException e) {
                         GPLog.error(this, e.getLocalizedMessage(), e);
-                        e.printStackTrace();
                     }
                 }
             });
@@ -252,7 +250,7 @@ public class GpsDataPropertiesActivity extends Activity {
                         new DaoGpsLog().deleteGpslog(id);
                         finish();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                     }
                 }
             });

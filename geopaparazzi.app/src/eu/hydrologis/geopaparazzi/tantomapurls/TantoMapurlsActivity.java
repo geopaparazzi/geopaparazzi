@@ -35,6 +35,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -173,6 +174,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                 try {
                     result = NetworkUtilities.sendGetRequest(getUrl, null, null, null);
                 } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                     result = "ERROR: " + e.getLocalizedMessage();
                 }
                 return result;
@@ -207,7 +209,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                         MapsDirManager.reset();
                         MapsDirManager.getInstance().init(GeopaparazziApplication.getInstance(), null);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                     }
 
                 }
