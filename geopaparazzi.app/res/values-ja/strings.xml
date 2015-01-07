@@ -160,7 +160,6 @@
   <string name="proximity_radius">近接半径</string>
   <string name="add_proximity_radius">近接アラートの半径をメートルで追加します。</string>
   <string name="sent_sms">SMS送信 : </string>
-  <string name="send_data">データ送信</string>
   <string name="found_no_data_to_send">現在の表示マップに送信するデータが見つかりません。</string>
   <string name="insert_phone_to_send"> SMS は選択されたデータを送信します。
 データの送信先電話番号を入力してください。</string>

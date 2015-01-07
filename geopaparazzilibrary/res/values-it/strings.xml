@@ -89,4 +89,6 @@
   <string name="downloading_mapurl_to_the_device">Scaricamento del servizio selezionato.</string>
   <string name="mapurl_successfully_downloaded">Il mapurl e\' stato scaricato e installato. Riavviare Geopaparazzi per completare l\'operazione.</string>
   <string name="crash_toast_text">E\' avvenuto un errore fatale. Verranno raccolte informazioni utili alla risoluzione del problema. Si prega di mandarle al team di sviluppo quando possibile.</string>
+  <string name="share_current_position">Condividi posizione corrente</string>
+  <string name="share_current_center">Condividi il centro mappa corrente</string>
 </resources>

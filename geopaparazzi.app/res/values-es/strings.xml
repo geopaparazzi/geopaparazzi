@@ -156,7 +156,6 @@
   <string name="proximity_radius">Radio de proximidad</string>
   <string name="add_proximity_radius">Añadir el radio de la alerta de proximidad en metros</string>
   <string name="sent_sms">SMS enviado :</string>
-  <string name="send_data">Enviar datos</string>
   <string name="found_no_data_to_send">No se han encontrado datos para enviar en el mapa visible actual.</string>
   <string name="insert_phone_to_send">Se enviará un sms para transferir los datos seleccionados.\nIntroduzca por favor un número de teléfono válido para enviar los datos.</string>
   <string name="no_message_sent">No se han enviado mensajes.</string>

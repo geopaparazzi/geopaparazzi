@@ -156,7 +156,6 @@
   <string name="proximity_radius">Umgebungsalarm</string>
   <string name="add_proximity_radius">Radius für den Umgebungsalarm in Metern hinzufügen</string>
   <string name="sent_sms">Verschickte SMS :</string>
-  <string name="send_data">Daten senden</string>
   <string name="found_no_data_to_send">Keine Daten zum Senden in aktuell dargestellter Karte gefunden. </string>
   <string name="insert_phone_to_send">Eine SMS wird gesendet, um die ausgewählten Daten zu übertragen.\nBitte geben Sie eine gültige Telefonnummer an, um die Daten zu senden.</string>
   <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>

@@ -21,25 +21,31 @@ import java.io.File;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+
+import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
- * Utilities to help sharing of data through the android intents. 
- * 
+ * Utilities to help sharing of data through the android intents.
+ * <p/>
  * <p>Adapted from http://writecodeeasy.blogspot.it/2012/09/androidtutorial-shareintents.html</p>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ShareUtilities {
 
     /**
-     * Share text. 
-     * 
-     * @param context  the context to use.
+     * Share text.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
-     * @param textToShare text.
+     * @param textToShare  text.
      */
-    public static void shareText( Context context, String titleMessage, String textToShare ) {
+    public static void shareText(Context context, String titleMessage, String textToShare) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, textToShare);
@@ -47,16 +53,37 @@ public class ShareUtilities {
     }
 
     /**
-     * Share text by email. 
-     * 
-     * @param context  the context to use.
+     * Share position url.
+     *
+     * @param context      the context to use.
+     */
+    public static void sharePositionUrl(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+        String title = context.getString(R.string.share_current_position);
+        if (gpsLocation == null) {
+            gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+            title = context.getString(R.string.share_current_center);
+        }
+        String url = Utilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, false);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    /**
+     * Share text by email.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
      * @param emailSubject email subject.
-     * @param textToShare text.
-     * @param email email address.
+     * @param textToShare  text.
+     * @param email        email address.
      */
-    public static void shareTextByEmail( Context context, String titleMessage, String emailSubject, String textToShare,
-            String email ) {
+    public static void shareTextByEmail(Context context, String titleMessage, String emailSubject, String textToShare,
+                                        String email) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc882");
         intent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
@@ -66,13 +93,13 @@ public class ShareUtilities {
     }
 
     /**
-     * Share image. 
-     * 
-     * @param context  the context to use.
+     * Share image.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
-     * @param imageFile the image file. 
+     * @param imageFile    the image file.
      */
-    public static void shareImage( Context context, String titleMessage, File imageFile ) {
+    public static void shareImage(Context context, String titleMessage, File imageFile) {
         String mimeType = "image/png";
         if (imageFile.getName().toLowerCase().endsWith("jpg")) {
             mimeType = "image/jpg";
@@ -81,14 +108,14 @@ public class ShareUtilities {
     }
 
     /**
-     * Share text and image. 
-     * 
-     * @param context  the context to use.
+     * Share text and image.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
-     * @param textToShare text.
-     * @param imageFile the image file.
+     * @param textToShare  text.
+     * @param imageFile    the image file.
      */
-    public static void shareTextAndImage( Context context, String titleMessage, String textToShare, File imageFile ) {
+    public static void shareTextAndImage(Context context, String titleMessage, String textToShare, File imageFile) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, textToShare);
@@ -98,30 +125,30 @@ public class ShareUtilities {
     }
 
     /**
-     * Share audio. 
-     * 
-     * @param context  the context to use.
+     * Share audio.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
-     * @param audioFile the audio file. 
+     * @param audioFile    the audio file.
      */
-    public static void shareAudio( Context context, String titleMessage, File audioFile ) {
+    public static void shareAudio(Context context, String titleMessage, File audioFile) {
         String mimeType = "audio/amr";
         shareFile(context, titleMessage, audioFile, mimeType);
     }
 
     /**
-     * Share video. 
-     * 
-     * @param context  the context to use.
+     * Share video.
+     *
+     * @param context      the context to use.
      * @param titleMessage title.
-     * @param videoFile the video file. 
+     * @param videoFile    the video file.
      */
-    public static void shareVideo( Context context, String titleMessage, File videoFile ) {
+    public static void shareVideo(Context context, String titleMessage, File videoFile) {
         String mimeType = "video/mp4";
         shareFile(context, titleMessage, videoFile, mimeType);
     }
 
-    private static void shareFile( Context context, String titleMessage, File file, String mimeType ) {
+    private static void shareFile(Context context, String titleMessage, File file, String mimeType) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType(mimeType);
         Uri uri = Uri.fromFile(file);

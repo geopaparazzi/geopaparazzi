@@ -162,7 +162,7 @@
     <string name="proximity_radius">Proximity Radius</string>
     <string name="add_proximity_radius">Add proximity alert radius in meters.</string>
     <string name="sent_sms">Sent sms : </string>
-    <string name="send_data">Send data</string>
+    <string name="share_position">Share position</string>
     <string name="found_no_data_to_send">Found no data to send in the current visible map.</string>
     <string name="insert_phone_to_send">" sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to."</string>
     <string name="no_message_sent">No message sent.</string>

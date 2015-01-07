@@ -153,7 +153,6 @@
   <string name="proximity_radius">Promień Bliskości</string>
   <string name="add_proximity_radius">Dodaj promień w metrach dla alarmu bliskości.</string>
   <string name="sent_sms">Wyślij SMS:</string>
-  <string name="send_data">Wyślij dane</string>
   <string name="found_no_data_to_send">W aktualnym widoku mapy nie znaleziono danych do wysłania.</string>
   <string name="no_message_sent">Nie wysłano żadnej wiadomości.</string>
   <string name="logs_will_be_merged">podczas tej operacji logi zostaną złączone. Kontynuować?</string>

@@ -151,7 +151,6 @@
   <string name="proximity_radius">Figyelmeztetési távolság</string>
   <string name="add_proximity_radius">Adja meg a figyelmeztetési távolságot méterben.</string>
   <string name="sent_sms">Küldött sms:</string>
-  <string name="send_data">Adatküldés</string>
   <string name="found_no_data_to_send">Az éppen látható térképen nincs elküldhető adat.</string>
   <string name="no_message_sent">Nem ment üzenet.</string>
   <string name="logs_will_be_merged">A naplók egyesítésre kerülnek a műveletben. Folytatja?</string>

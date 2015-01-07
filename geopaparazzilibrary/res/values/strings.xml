@@ -90,5 +90,7 @@
     <string name="downloading_mapurl_to_the_device">Downloading selected service to the device.</string>
     <string name="mapurl_successfully_downloaded">The mapurl has been successfully downloaded and installed. Remember to restart Geopaparazzi to have the service listed.</string>
     <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
-    
+    <string name="share_current_position">Share current position</string>
+    <string name="share_current_center">Share current map center</string>
+
 </resources>

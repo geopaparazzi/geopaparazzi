@@ -156,7 +156,6 @@
   <string name="proximity_radius">Polomer priblíženia</string>
   <string name="add_proximity_radius">Pridaj hodnotu pre výstrahu priblíženia v metroch.</string>
   <string name="sent_sms">Poslaná sms:</string>
-  <string name="send_data">Poslané údaje</string>
   <string name="found_no_data_to_send">Na aktuálne viditeľnej mape neboli nájdené žiadne údaje pre poslanie.</string>
   <string name="insert_phone_to_send">Bude odoslaná sms pre transfer vybraných údajov.\nProsím zadajte platné telefónne číslo pre zaslanie údajov.</string>
   <string name="no_message_sent">Žiadna správa neodoslaná.</string>

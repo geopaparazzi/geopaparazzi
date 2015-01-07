@@ -143,7 +143,6 @@
   <string name="proximity_radius">Радиус приближения</string>
   <string name="add_proximity_radius">Добавить радиус приближения для уведомления в метрах</string>
   <string name="sent_sms">Отправленное SMS:</string>
-  <string name="send_data">Отправить данные</string>
   <string name="found_no_data_to_send">В видимой области нет данных для отправки</string>
   <string name="no_message_sent">Сообщение не отправлено.</string>
   <string name="distance">Расстояние:</string>

@@ -80,7 +80,9 @@ public class PositionUtilities {
         // these are *E6 values of the coordinates
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
-
+        if (lonFloat == NOVALUE && latFloat == NOVALUE) {
+            return null;
+        }
         double lon = (double) lonFloat / LibraryConstants.E6;
         double lat = (double) latFloat / LibraryConstants.E6;
         if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {

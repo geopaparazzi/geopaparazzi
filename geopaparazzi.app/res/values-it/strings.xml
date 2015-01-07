@@ -160,7 +160,7 @@ Le mappe possono essere scaricate da: http://download.mapsforge.org</string>
   <string name="proximity_radius">Raggio di prossimità</string>
   <string name="add_proximity_radius">Aggiungi raggio di avviso di prossimità in metri.</string>
   <string name="sent_sms">Sms inviati:</string>
-  <string name="send_data">Invia dati</string>
+  <string name="share_position">Condividi posizione</string>
   <string name="found_no_data_to_send">Non ci sono dati inviabili nella attuale mappa visibile.</string>
   <string name="insert_phone_to_send"> sms verranno inviati per trasferire i dati selezionati. 
 Inserire un numero di telefono valido per inviare i dati.</string>

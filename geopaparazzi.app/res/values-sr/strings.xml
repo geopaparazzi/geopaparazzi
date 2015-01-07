@@ -156,7 +156,6 @@
   <string name="proximity_radius">Radijus blizine</string>
   <string name="add_proximity_radius">Uneti radijus blizine opreza u metrima.</string>
   <string name="sent_sms">Poslat sms :</string>
-  <string name="send_data">Pošalji podatke</string>
   <string name="found_no_data_to_send">Nisu pronadjeni podaci u trenutno izabranoj mapi</string>
   <string name="insert_phone_to_send">sms će biti poslat da prenese odabrane podatke.\nUnesite tačan broj telefona na koji će podaci biti poslati.</string>
   <string name="no_message_sent">Nije poslata poruka</string>

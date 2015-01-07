@@ -156,7 +156,6 @@
   <string name="proximity_radius">Säde lähestymistä varten</string>
   <string name="add_proximity_radius">Aseta lähestymishälytys metreissä</string>
   <string name="sent_sms">Lähetetyt tekstiviestit:</string>
-  <string name="send_data">Lähetä tiedot</string>
   <string name="found_no_data_to_send">Nykyisessä näkymässä ei dataa lähetettäväksi.</string>
   <string name="insert_phone_to_send">valittu data lähetetään tekstiviestillä.\nOle hyvä ja anna oikea puhelin numero johon data lähetetään.</string>
   <string name="no_message_sent">Viestiä ei lähetetty.</string>

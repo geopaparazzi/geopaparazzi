@@ -156,7 +156,6 @@
   <string name="proximity_radius">Rayon de proximité</string>
   <string name="add_proximity_radius">Ajouter un rayon d\'alerte de proximité en mètres.</string>
   <string name="sent_sms">Message envoyé :</string>
-  <string name="send_data">Envoyer des données</string>
   <string name="found_no_data_to_send">Aucune donnée n\'a été trouvée à envoyer dans la carte courante.</string>
   <string name="insert_phone_to_send">Un SMS sera envoyé pour transférer les données sélectionnées. \ nVeuillez insérer un numéro de téléphone valide pour y envoyer les données.</string>
   <string name="no_message_sent">Aucun message envoyé.</string>

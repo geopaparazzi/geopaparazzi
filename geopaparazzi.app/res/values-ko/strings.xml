@@ -156,7 +156,6 @@
   <string name="proximity_radius">근접 반경</string>
   <string name="add_proximity_radius">미터단위의 근접 경고 반경을 추가합니다.</string>
   <string name="sent_sms">보낸 SMS :</string>
-  <string name="send_data">데이터 보내기</string>
   <string name="found_no_data_to_send">현재 보이는 지도에서 보낼 데이터를 찾을 수 없습니다.</string>
   <string name="insert_phone_to_send">SMS는 선택된 데이터를 전송하려 합니다.\n유효한 전화번호를 입력하십시오.</string>
   <string name="no_message_sent">보낸 메세지가 없습니다.</string>

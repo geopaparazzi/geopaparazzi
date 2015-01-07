@@ -156,7 +156,6 @@
   <string name="proximity_radius">Poloměr blízkosti</string>
   <string name="add_proximity_radius">Přidat poloměr pro výstrahu při blízkosti v metrech.</string>
   <string name="sent_sms">Poslána SMS:</string>
-  <string name="send_data">Poslat data</string>
   <string name="found_no_data_to_send">V právě zobrazené mapě nebyla nalezena žádná data k odeslání.</string>
   <string name="insert_phone_to_send">Pro přenos vybraných dat bude zaslána SMS.\nVložte, prosím, platné telefonní číslo, na něž se mají data poslat.</string>
   <string name="no_message_sent">Neposlána žádná zpráva.</string>
@@ -261,4 +260,8 @@
   <string name="saving_to_database">Ukládají se data do databáze...</string>
   <string name="downloading">Stahuje se...</string>
   <string name="requesting_available_services">Požadavek na dostupné služby</string>
+  <string name="custommapfolder_summary">Změnit složku, ze které jsou mapy nahrávány. Vyžaduje opětovné spuštění Geopaparazzi</string>
+  <string name="custommapfolder_title">Nyní používaná složka s mapami</string>
+  <string name="enable_mock_locations_for_demo">K použití ukázkového režimu je potřeba v nastavení pro vývojáře povolit předstírané polohy. Ukázkový režim se zakazuje.</string>
+  <string name="could_not_open_geosms">Nepodařilo se otevřít poslané URI. Geopaparazzi dokáže otevřít jen GeoSMS URI, jež obsahují části jako:</string>
 </resources>

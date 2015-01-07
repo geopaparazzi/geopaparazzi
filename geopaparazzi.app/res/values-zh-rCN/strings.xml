@@ -82,7 +82,6 @@
   <string name="successfully_imported_bookmarks">成功读入书签</string>
   <string name="error_bookmarks_import">加载书签时有错误发生</string>
   <string name="sent_sms">发送sms：</string>
-  <string name="send_data">传送数据</string>
   <string name="no_message_sent">没有信息发出</string>
   <string name="distance">距离：</string>
   <string name="start_">开始：</string>

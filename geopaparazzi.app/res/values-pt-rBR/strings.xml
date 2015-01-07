@@ -151,7 +151,6 @@
   <string name="proximity_radius">Raio de proximidade</string>
   <string name="add_proximity_radius">Adicionar raio de alerta de proximidade em metros.</string>
   <string name="sent_sms">Sms enviado : </string>
-  <string name="send_data">Enviar dados</string>
   <string name="found_no_data_to_send">Não foi localizado nenhum dado a ser enviado no mapa visível atual.</string>
   <string name="no_message_sent">Nenhuma mensagem enviada.</string>
   <string name="logs_will_be_merged"> registros serão mesclados durante esta operação. Continuar?</string>

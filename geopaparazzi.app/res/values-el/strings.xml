@@ -153,7 +153,6 @@
   <string name="proximity_radius">Ακτίνα εγγύτητας</string>
   <string name="add_proximity_radius">Προσθήκη ειδοποίησης ακτίνας εγγύτητας σε μέτρα.</string>
   <string name="sent_sms">Σταλμένο sms :</string>
-  <string name="send_data">Αποστολή δεδομένων</string>
   <string name="found_no_data_to_send">Δε βρέθηκαν δεδομένα στον τρέχων ορατό χάρτη.</string>
   <string name="no_message_sent">Το μήνυμα δε στάλθηκε.</string>
   <string name="logs_will_be_merged">Τα αρχεία καταγραφής θα συγχωνευτούν σε αυτή τη λειτουργία. Συνέχεια;</string>
