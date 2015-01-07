@@ -41,6 +41,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -1073,7 +1075,7 @@ public class MapsDirManager {
             MapDatabasesManager.getInstance().closeDatabases();
             CustomTileDatabasesManager.getInstance().closeDatabases();
         } catch (Exception e) {
-            GPLog.androidLog(4, "MapsDirManager finish[" + mapsDir.getName() + "]", e);
+            Log.e("MapsDirManager", "finish[" + mapsDir.getName() + "]", e);
         }
     }
 

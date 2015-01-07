@@ -238,7 +238,7 @@ public class CustomTileDownloader extends TileDownloader {
                             ZOOM_MIN = b_zoom;
                         }
                     } catch (Exception e) {
-                        // use default: handle exception
+                        GPLog.error(this, null, e);
                     }
                 }
                 if (line.startsWith(MAXZOOM_STR)) {
@@ -248,7 +248,7 @@ public class CustomTileDownloader extends TileDownloader {
                             ZOOM_MAX = b_zoom;
                         }
                     } catch (Exception e) {
-                        // use default: handle exception
+                        GPLog.error(this, null, e);
                     }
                 }
                 if (line.startsWith(CENTER_STR)) {
@@ -260,7 +260,7 @@ public class CustomTileDownloader extends TileDownloader {
                         center[1] = y;
                         centerPoint = new GeoPoint(y, x);
                     } catch (NumberFormatException e) {
-                        // use default
+                        GPLog.error(this, null, e);
                     }
                 }
                 if (line.startsWith(TYPE_STR)) {
@@ -314,7 +314,7 @@ public class CustomTileDownloader extends TileDownloader {
                             ZOOM_DEFAULT = b_zoom;
                         }
                     } catch (Exception e) {
-                        // use default: handle exception
+                        GPLog.error(this, null, e);
                     }
                 }
                 if (line.startsWith(FORCE_UNIQUE_STR)) {
@@ -342,6 +342,7 @@ public class CustomTileDownloader extends TileDownloader {
                         request_bounds[2] = Double.parseDouble(coord[2]);
                         request_bounds[3] = Double.parseDouble(coord[3]);
                     } catch (NumberFormatException e) {
+                        GPLog.error(this, null, e);
                         requestBounds = "";
                     }
                 }
@@ -835,9 +836,10 @@ public class CustomTileDownloader extends TileDownloader {
             bitmap.setPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
             return true;
         } catch (UnknownHostException e) {
+            GPLog.error(this, null, e);
             return false;
         } catch (IOException e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
             return false;
         }
     }
@@ -861,7 +863,7 @@ public class CustomTileDownloader extends TileDownloader {
                 mbtilesDatabase.close();
                 mbtilesDatabase = null;
             } catch (Exception e) {
-                // ignore
+                GPLog.error(this, null, e);
             }
         }
     }

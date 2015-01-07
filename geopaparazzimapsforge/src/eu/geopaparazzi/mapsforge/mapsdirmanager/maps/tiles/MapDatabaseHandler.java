@@ -93,7 +93,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
             minZoom = 0;
             maxZoom = 22;
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "MapDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
+            GPLog.error(this, "MapDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
 

@@ -125,7 +125,7 @@ public class OsmFormActivity extends Activity {
             }
             formJsonString = FileUtilities.readfile(tagsJsonFile);
         } catch (Exception e1) {
-            e1.printStackTrace();
+            GPLog.error(this, null, e1); //$NON-NLS-1$
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);

@@ -313,7 +313,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     try {
                         minDistance = Float.parseFloat(minDistanceStr);
                     } catch (Exception e) {
-                        // ignore and use default
+                        GPLog.error(this, null, e);
                     }
                     String intervalStr = preferences
                             .getString(PREFS_KEY_GPSLOGGINGINTERVAL, String.valueOf(GPS_LOGGING_INTERVAL));
@@ -321,7 +321,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     try {
                         waitForSecs = Integer.parseInt(intervalStr);
                     } catch (Exception e) {
-                        // ignore and use default
+                        GPLog.error(this, null, e);
                     }
                     if (DO_WHILE_LOOP_LOG) {
                         GPLog.addLogEntry(GpsService.this, "GPS waiting interval: " + waitForSecs);
@@ -442,7 +442,6 @@ public class GpsService extends Service implements LocationListener, Listener {
                     GPLog.error(this, msg, e);
                     toastHandler.post(new ToastRunnable(msg));
                 } catch (Exception e) {
-                    e.printStackTrace();
                     String msg = getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
                     toastHandler.post(new ToastRunnable(msg));
@@ -468,7 +467,6 @@ public class GpsService extends Service implements LocationListener, Listener {
                     }
                     return true;
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                     String msg = getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
                     return true;

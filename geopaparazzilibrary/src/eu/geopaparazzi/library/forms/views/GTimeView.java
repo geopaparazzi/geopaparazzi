@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormTimePickerFragment;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -112,6 +113,7 @@ public class GTimeView extends View implements GView {
                 try {
                     date = timeFormatter.parse(dateStr);
                 } catch (ParseException e) {
+                    GPLog.error(this, null, e);
                     // fallback on current date
                     date = new Date();
                 }

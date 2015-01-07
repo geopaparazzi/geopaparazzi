@@ -121,7 +121,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                                 mBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                                 out.flush();
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                GPLog.error(this, null, e);
                                 if (out != null)
                                     try {
                                         out.close();

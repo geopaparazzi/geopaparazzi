@@ -99,7 +99,7 @@ public class TantoMapurlsListActivity extends ListActivity {
             }
             mapurlsToLoad.addAll(mapurlsList);
         } catch (JSONException e1) {
-            e1.printStackTrace();
+            GPLog.error(this, null, e1);
         }
 
         filterText = (EditText) findViewById(R.id.search_box);

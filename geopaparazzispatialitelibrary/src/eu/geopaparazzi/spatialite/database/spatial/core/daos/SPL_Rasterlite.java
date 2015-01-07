@@ -20,8 +20,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
-import jsqlite.Database;
-import jsqlite.Stmt;
+import jsqlite.*;
 
 /**
  * SPL_Rasterlite related doa.
@@ -164,13 +163,13 @@ public class SPL_Rasterlite {
         qSb.append(Integer.toString(reaspect));
         qSb.append(");");
         String s_sql_command = qSb.toString();
-        Stmt this_stmt = null;
+        Stmt stmt = null;
         byte[] ba_image = null;
         if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) { // only if rasterlite2 driver is active
             try {
-                this_stmt = sqlite_db.prepare(s_sql_command);
-                if (this_stmt.step()) {
-                    ba_image = this_stmt.column_bytes(0);
+                stmt = sqlite_db.prepare(s_sql_command);
+                if (stmt.step()) {
+                    ba_image = stmt.column_bytes(0);
                 }
             } catch (jsqlite.Exception e_stmt) {
                 /*
@@ -182,9 +181,14 @@ public class SPL_Rasterlite {
                   'I WindowState: WIN DEATH: Window{41ee0100 u0 eu.hydrologis.geopaparazzi/eu.hydrologis.geopaparazzi.GeoPaparazziActivity}'
                 */
                 int i_rc = sqlite_db.last_error();
-                GPLog.error("DAOSPATIALIE", "rl2_GetMapImage sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+                GPLog.error("SPL_Rasterlite", "rl2_GetMapImage sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
             } finally {
-                // this_stmt.close();
+                if(stmt!=null)
+                    try {
+                        stmt.close();
+                    } catch (jsqlite.Exception e) {
+                        GPLog.error("SPL_Rasterlite", null, e);
+                    }
             }
         }
         return ba_image;

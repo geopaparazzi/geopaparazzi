@@ -240,7 +240,6 @@ public class GpsDataListActivity extends ListActivity implements
             }
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
         }
 
         ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row, gpslogItems) {
@@ -305,32 +304,31 @@ public class GpsDataListActivity extends ListActivity implements
         return true;
     }
 
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch (item.getItemId()) {
-            case MERGE_SELECTED:
-                try {
-                    mergeSelected();
-                } catch (IOException e) {
-                    GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                }
-                return true;
-            case SELECTALL:
-                try {
-                    DaoGpsLog.setLogsVisibility(true);
-                    refreshList(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            case UNSELECTALL:
-                try {
-                    DaoGpsLog.setLogsVisibility(false);
-                    refreshList(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return true;
+    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+        switch( item.getItemId() ) {
+        case MERGE_SELECTED:
+            try {
+                mergeSelected();
+            } catch (IOException e) {
+                GPLog.error(this, e.getLocalizedMessage(), e);
+            }
+            return true;
+        case SELECTALL:
+            try {
+                DaoGpsLog.setLogsVisibility(true);
+                refreshList(true);
+            } catch (IOException e) {
+                GPLog.error(this, null, e); //$NON-NLS-1$
+            }
+            return true;
+        case UNSELECTALL:
+            try {
+                DaoGpsLog.setLogsVisibility(false);
+                refreshList(true);
+            } catch (IOException e) {
+                GPLog.error(this, null, e); //$NON-NLS-1$
+            }
+            return true;
         }
         return super.onMenuItemSelected(featureId, item);
     }
@@ -359,7 +357,7 @@ public class GpsDataListActivity extends ListActivity implements
                     try {
                         DaoGpsLog.mergeLogs(id, mainId);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e); //$NON-NLS-1$
                     }
                 }
                 refreshList(true);

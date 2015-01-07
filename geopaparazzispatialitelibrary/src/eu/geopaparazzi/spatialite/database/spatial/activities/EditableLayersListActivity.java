@@ -80,7 +80,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         try {
             mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         final List<SpatialVectorTable> editableSpatialVectorTables = new ArrayList<SpatialVectorTable>();
@@ -109,7 +109,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                 }
             }
         } catch (jsqlite.Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         if (editableSpatialVectorTables.size() == 0) {

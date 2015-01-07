@@ -93,7 +93,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
         try {
             mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         refreshList(true);
@@ -233,7 +233,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
                             setResult(Activity.RESULT_OK, intent);
                             finish();
                         } catch (jsqlite.Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e);
                         }
                     }
                 });
@@ -273,7 +273,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
                         try {
                             SpatialDatabasesManager.getInstance().updateStyle(item);
                         } catch (jsqlite.Exception e) {
-                            e.printStackTrace();
+                            GPLog.error(this, null, e);
                         }
                     }
                 });
@@ -293,8 +293,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
             }
             spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
         } catch (Exception e) {
-            // Logger.e(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         super.onPause();

@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -92,7 +93,7 @@ public class ActionBar {
         try {
             mapsDir = ResourcesManager.getInstance(actionBarView.getContext()).getMapsDir();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("ActionBar", "error", e);
         }
 
         initVars();

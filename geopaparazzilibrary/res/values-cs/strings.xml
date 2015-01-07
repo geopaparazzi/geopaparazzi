@@ -15,7 +15,7 @@
   <string name="last_position_unknown">Promiňte, polohu se nepodařilo řádně určit.</string>
   <string name="cantcreate_img_folder">Nepodařilo se vytvořit složku, do které se má uložit obrázek.</string>
   <string name="gpx_import_title">Linie nebo bod?</string>
-  <string name="gpx_import_message">Zvolte, zda se má soubor načíst jako linie nebo čáry.</string>
+  <string name="gpx_import_message">Zvolte, zda se má soubor načíst jako body nebo čáry.</string>
   <string name="gpx_import_checkbox_message">Vynutit načtení jako linie?</string>
   <string name="gpx_import_processing">Zavádí se GPX...</string>
   <string name="insert_note">Zde vložte poznámku</string>

@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.TreeSet;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -66,7 +67,7 @@ public class ImportActivity extends Activity {
                 try {
                     importGpx();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    GPLog.error(this, null, e);
                 }
             }
         });
@@ -131,7 +132,7 @@ public class ImportActivity extends Activity {
         try {
             resourcesManager = ResourcesManager.getInstance(context);
         } catch (Exception e1) {
-            e1.printStackTrace();
+            GPLog.error(this, null, e1);
         }
         final File sdcardDir = resourcesManager.getSdcardDir();
         File[] bookmarksfileList = sdcardDir.listFiles(new FilenameFilter(){
@@ -196,14 +197,13 @@ public class ImportActivity extends Activity {
                         DaoBookmarks.addBookmark(lon, lat, name, zoom, -1, -1, -1, -1);
                         imported++;
                     } catch (Exception e) {
-
-                        e.printStackTrace();
+                        GPLog.error(this, null, e);
                     }
                 }
 
                 Utilities.messageDialog(context, getString(R.string.successfully_imported_bookmarks) + imported, null);
             } catch (IOException e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
                 Utilities.messageDialog(context, R.string.error_bookmarks_import, null);
             }
         } else {

@@ -279,13 +279,13 @@ public class SpatialiteUtilities {
                     boundsCoordinates[3] = envelope.getMaxY();
                 }
             } catch (java.lang.Exception e) {
-                GPLog.androidLog(4, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
+                GPLog.error("SpatialiteUtilities",".collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
             } finally {
                 if (centerStmt != null)
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "SpatialiteUtilities[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
+            GPLog.error("SpatialiteUtilities","[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
         }
     }
 

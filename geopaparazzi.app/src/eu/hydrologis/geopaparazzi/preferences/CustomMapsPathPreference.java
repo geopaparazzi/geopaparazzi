@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.R;
@@ -206,7 +207,7 @@ public class CustomMapsPathPreference extends DialogPreference implements View.O
 
             context.startActivity(browseIntent);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e); //$NON-NLS-1$
         }
     }
 

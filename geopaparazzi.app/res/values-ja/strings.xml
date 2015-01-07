@@ -266,4 +266,8 @@
   <string name="saving_to_database">データベースへ保存中...</string>
   <string name="downloading">ダウンロード中...</string>
   <string name="requesting_available_services">利用可能なサービスをリクエスト中</string>
+  <string name="custommapfolder_summary">マップがロードされているフォルダを変更します。Geopaparazziの再起動が必要です。</string>
+  <string name="custommapfolder_title">マップフォルダの変更</string>
+  <string name="enable_mock_locations_for_demo">デモモードを有効にするには開発者向けオプションの疑似ロケーションを許可するを有効にします。デモモードを無効にしています。</string>
+  <string name="could_not_open_geosms">指定のURIをオープンできません。GeopaparazziのオープンできるGeoSMS URIは次のようなものです:</string>
 </resources>

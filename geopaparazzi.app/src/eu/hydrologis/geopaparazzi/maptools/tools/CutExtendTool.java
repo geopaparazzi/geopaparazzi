@@ -42,6 +42,7 @@ import org.mapsforge.core.model.GeoPoint;
 
 import java.util.List;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
@@ -300,6 +301,7 @@ public class CutExtendTool extends MapTool {
                     }
                     return "";
                 } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
                     return "ERROR: " + e.getLocalizedMessage();
                 }
 

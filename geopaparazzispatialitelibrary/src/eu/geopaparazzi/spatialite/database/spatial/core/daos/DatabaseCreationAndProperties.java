@@ -302,8 +302,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                     JavaSqliteDescription += "rasterlite2_properties[none]]";
                 } else {
                     JavaSqliteDescription += "exception[? not a spatialite database, or spatialite < 4 ?]]";
-                    GPLog.error("DAOSPATIALIE", "[" + name + "].getJavaSqliteDescription[" + JavaSqliteDescription + "]", e);
                 }
+                GPLog.error("DAOSPATIALIE", "[" + name + "].getJavaSqliteDescription[" + JavaSqliteDescription + "]", e);
             }
         }
         return JavaSqliteDescription;

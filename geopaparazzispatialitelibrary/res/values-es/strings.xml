@@ -1,2 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="stroke_color">Color del borde</string>
+  <string name="width">Anchura de borde</string>
+  <string name="alpha">Valor alpha del borde</string>
+  <string name="fill_color">Colord de relleno</string>
+  <string name="fill_alpha">Valor alpha de relleno</string>
+  <string name="point_shape_">Forma del punto</string>
+  <string name="point_size">Tamaño del punto</string>
+  <string name="decimation">Reducción decimal</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Zoom mínimo</string>
+  <string name="max_zoom">Zoom máximo</string>
+  <string name="dash_pattern">Patrón de discontinuidad</string>
+  <string name="label_properties">Propiedades de la etiqueta</string>
+  <string name="toggle_visibility">Conmutar visibilidad</string>
+  <string name="label_field">Campo de la etiqueta</string>
+  <string name="label_size">Tamaño de la etiqueta</string>
+</resources>

@@ -124,7 +124,7 @@ public class TestMock {
                             try {
                                 locationJellyBeanFixMethod.invoke(location);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                GPLog.error(this, null, e);
                             }
                         }
                         location.setSpeed(v);

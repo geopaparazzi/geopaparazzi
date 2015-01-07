@@ -74,7 +74,7 @@ public enum BluetoothManager {
         try {
             reset();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         // needs to be set afterwards, since reset puts it to false
         isDummy = true;

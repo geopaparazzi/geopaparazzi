@@ -86,7 +86,7 @@ public class LogAnalysisActivity extends ListActivity {
                 database = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
 
         messagesList = new ArrayList<String>();
@@ -152,6 +152,7 @@ public class LogAnalysisActivity extends ListActivity {
                     refreshList();
                     return "";
                 } catch (Exception e) {
+                    GPLog.error(this, null, e);
                     return "ERROR: " + e.getLocalizedMessage();
                 }
             }
@@ -183,7 +184,7 @@ public class LogAnalysisActivity extends ListActivity {
                         };
                         setListAdapter(arrayAdapter);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, null, e);
                     }
                 }
             }

@@ -31,6 +31,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eu.geopaparazzi.library.database.GPLog;
+
 /**
  * A very basic KML parser to meet the need of the emulator control panel.
  * <p/>
@@ -186,7 +188,7 @@ public class KmlParser {
 
             return mHandler.getSuccess();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         return false;
     }

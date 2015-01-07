@@ -261,4 +261,8 @@
   <string name="saving_to_database">Speichern der Daten in der Datenbank...</string>
   <string name="downloading">Herunterladen...</string>
   <string name="requesting_available_services">Fordere verfügbare Dienste an</string>
+  <string name="custommapfolder_summary">Ändern Sie den Ordner, aus dem Karten geladen werden. Erfordert einen Neustart von Geopaparazzi</string>
+  <string name="custommapfolder_title">Aktuell verwendeter Verzeichnis für Karten</string>
+  <string name="enable_mock_locations_for_demo">Um den Demo-Modus zu verwenden, müssen Sie Androids simulierte Standorte in den Entwickler-Einstellungen aktivieren. Deaktivieren des Demo-Modus.</string>
+  <string name="could_not_open_geosms">Die übergebene URI konnte nicht geöffnet werden. Geopaparazzi ist nur in der Lage, GeoSMS URIs zu öffnen, die ein solches Element enthalten:</string>
 </resources>

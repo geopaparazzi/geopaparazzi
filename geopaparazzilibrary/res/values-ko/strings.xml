@@ -83,6 +83,7 @@
   <string name="http_not_found_msg">요청한 리소스를 찾을 수 없습니다. 연결 URL을 확인하시기 바랍니다.</string>
   <string name="http_not_implemented_code_msg">리턴 메시지 코드 수집됨 (개발자에게 보내주세요) :</string>
   <string name="post_completed_properly">성공적으로 게시를 완료했습니다.</string>
+  <string name="http_ok_msg">요청이 성공적으로 처리되었습니다.</string>
   <string name="the_file_exists_wont_overwrite">파일이 존재합니다. 덮어 쓰지 않습니다:</string>
   <string name="share_note_with">메모 공유...</string>
   <string name="downloading_mapurl_to_the_device">선택한 서비스를 장치에 다운로드.</string>

@@ -7,6 +7,13 @@
   <string name="fill_alpha">Прозрачность заливки</string>
   <string name="point_shape_">Форма точки</string>
   <string name="point_size">Размер точки</string>
-  <string name="decimation">Прореживание</string>
+  <string name="decimation">Упрощение линии</string>
   <string name="decimation_factor_default">0,000001</string>
+  <string name="min_zoom">Минимальный масштаб</string>
+  <string name="max_zoom">Максимальный масштаб</string>
+  <string name="dash_pattern">Пользовательский пунктир (через ,)</string>
+  <string name="label_properties">Подписи</string>
+  <string name="toggle_visibility">подписывать</string>
+  <string name="label_field">значение из поля</string>
+  <string name="label_size">размер подписи</string>
 </resources>

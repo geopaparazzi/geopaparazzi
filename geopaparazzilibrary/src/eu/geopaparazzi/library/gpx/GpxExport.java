@@ -94,7 +94,6 @@ public class GpxExport {
                     bW.write(gpxRepresenter.toGpxString());
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
                 }
             }
             bW.write("</gpx>\n");

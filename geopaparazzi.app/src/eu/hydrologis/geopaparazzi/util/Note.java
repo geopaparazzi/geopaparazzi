@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormUtilities;
@@ -264,7 +265,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
             try {
                 images = FormUtilities.getImageIds(form);
             } catch (Exception e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
             }
         }
         return images;
