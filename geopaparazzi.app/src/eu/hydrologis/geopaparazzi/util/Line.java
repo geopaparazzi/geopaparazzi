@@ -22,6 +22,7 @@ import android.location.Location;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
@@ -282,9 +283,9 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
         double[] altimArray = altimList.getInternalArray();
         for( int i = 0; i < size; i++ ) {
             String dateString = dateList.get(i);
+            long time = Long.parseLong(dateString);
             // TODO change this sooner or later - needs ts to be hold differently in db
-            dateString = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC
-                    .parse(dateString));
+            dateString = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(new Date(time));
             String trackPointString = GpxUtilities.getTrackPointString(latArray[i], lonArray[i], altimArray[i], dateString);
             sb.append(trackPointString);
         }

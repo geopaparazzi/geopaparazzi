@@ -288,12 +288,18 @@ public class GpsDataListActivity extends ListActivity implements
                 if (resultCode == Activity.RESULT_OK) {
                     double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
                     double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
-                    Intent intent = getIntent();
-                    intent.putExtra(LibraryConstants.LATITUDE, lat);
+//                    Intent intent = getIntent();
+//                    intent.putExtra(LibraryConstants.LATITUDE, lat);
+//                    intent.putExtra(LibraryConstants.LONGITUDE, lon);
+//                    setResult(Activity.RESULT_OK, intent);
+
+                    Intent intent = new Intent(this, MapsSupportService.class);
+                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
                     intent.putExtra(LibraryConstants.LONGITUDE, lon);
-                    setResult(Activity.RESULT_OK, intent);
+                    intent.putExtra(LibraryConstants.LATITUDE, lat);
+                    startService(intent);
+                    finish();
                 }
-                break;
             }
         }
     }

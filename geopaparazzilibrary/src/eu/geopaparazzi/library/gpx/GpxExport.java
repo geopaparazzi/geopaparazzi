@@ -76,10 +76,10 @@ public class GpxExport {
             String formattedTime = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(new Date());
             bW.write("<time>" + formattedTime + "</time>\n");
 
-            double minLat = 0.0;
-            double minLon = 0.0;
-            double maxLat = 0.0;
-            double maxLon = 0.0;
+            double minLat = Double.POSITIVE_INFINITY;
+            double minLon = Double.POSITIVE_INFINITY;
+            double maxLat = Double.NEGATIVE_INFINITY;
+            double maxLon = Double.NEGATIVE_INFINITY;
             for( GpxRepresenter gpxRepresenter : gpxRepresenters ) {
                 minLat = Math.min(minLat, gpxRepresenter.getMinLat());
                 minLon = Math.min(minLon, gpxRepresenter.getMinLon());

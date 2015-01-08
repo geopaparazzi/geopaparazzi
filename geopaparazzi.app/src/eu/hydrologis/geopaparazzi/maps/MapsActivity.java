@@ -738,7 +738,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             // return true;
             case MENU_GPSDATA:
                 Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
-                startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
+                startActivity(gpsDatalistIntent);
                 return true;
             case MENU_DATA:
                 Intent datalistIntent = new Intent(this, DataListActivity.class);
@@ -1052,14 +1052,14 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 }
                 break;
             }
-            case (GPSDATAPROPERTIES_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
-                    setCenterAndZoomForMapWindowFocus(lon, lat, null);
-                }
-                break;
-            }
+//            case (GPSDATAPROPERTIES_RETURN_CODE): {
+//                if (resultCode == Activity.RESULT_OK) {
+//                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+//                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
+//                    setCenterAndZoomForMapWindowFocus(lon, lat, null);
+//                }
+//                break;
+//            }
             case (DATAPROPERTIES_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
