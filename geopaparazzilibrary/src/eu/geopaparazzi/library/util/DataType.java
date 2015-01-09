@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.util;
 
 /**
  * Common Data Types.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -40,10 +40,10 @@ public enum DataType {
     BLOB(6, Object.class, "''");
 
     private int code;
-    private Class< ? > clazz;
+    private Class<?> clazz;
     private String defaultValueForSql;
 
-    private DataType( int code, Class< ? > clazz, String defaultValueForSql ) {
+    private DataType(int code, Class<?> clazz, String defaultValueForSql) {
         this.code = code;
         this.clazz = clazz;
         this.defaultValueForSql = defaultValueForSql;
@@ -59,7 +59,7 @@ public enum DataType {
     /**
      * @return the class for the type.
      */
-    public Class< ? > getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 
@@ -72,13 +72,13 @@ public enum DataType {
 
     /**
      * Get the type from the code.
-     * 
+     *
      * @param code the code.
      * @return the {@link DataType}.
      */
-    public static DataType getType4Code( int code ) {
+    public static DataType getType4Code(int code) {
         DataType[] values = values();
-        for( DataType dataType : values ) {
+        for (DataType dataType : values) {
             if (dataType.getCode() == code) {
                 return dataType;
             }
@@ -88,13 +88,13 @@ public enum DataType {
 
     /**
      * Get the type from the name.
-     * 
+     *
      * @param name the name.
      * @return the {@link DataType}.
      */
-    public static DataType getType4Name( String name ) {
+    public static DataType getType4Name(String name) {
         DataType[] values = values();
-        for( DataType dataType : values ) {
+        for (DataType dataType : values) {
             if (dataType.name().equals(name)) {
                 return dataType;
             }
@@ -104,7 +104,7 @@ public enum DataType {
 
     /**
      * Get the datatype from a given sqlite code.
-     * 
+     * <p/>
      * <p>The codes are the ones defined in jsqlite.Constants.<br>
      * Currently supported are:<br>
      * <pre>
@@ -116,24 +116,24 @@ public enum DataType {
      * SQLITE_TEXT = 3;
      * SQLITE2_TEXT = -2;
      * </pre>
-     * 
+     *
      * @param sqliteCode the code.
      * @return the {@link DataType}.
      */
-    public static DataType getType4SqliteCode( int sqliteCode ) {
+    public static DataType getType4SqliteCode(int sqliteCode) {
 
-        switch( sqliteCode ) {
-        case 1:
-            return INTEGER;
-        case 2:
-            return FLOAT;
-        case 4:
-            return BLOB;
-        case 3:
-        case -2:
-            return TEXT;
-        case -1:
-            return DOUBLE;
+        switch (sqliteCode) {
+            case 1:
+                return INTEGER;
+            case 2:
+                return FLOAT;
+            case 4:
+                return BLOB;
+            case 3:
+            case -2:
+                return TEXT;
+            case -1:
+                return DOUBLE;
         }
         return null;
     }

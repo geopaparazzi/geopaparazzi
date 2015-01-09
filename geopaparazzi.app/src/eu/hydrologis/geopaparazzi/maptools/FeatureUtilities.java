@@ -118,8 +118,7 @@ public class FeatureUtilities {
                     for (int i = 1; i < column_count; i++) {
                         String cName = stmt.column_name(i);
                         String value = stmt.column_string(i);
-                        int columnType = stmt.column_type(i);
-                        DataType type = DataType.getType4SqliteCode(columnType);
+                        DataType type = spatialTable.getTableFieldType(cName);
                         feature.addAttribute(cName, value, type.name());
                     }
                     featuresList.add(feature);
@@ -162,10 +161,9 @@ public class FeatureUtilities {
                     for (int i = 1; i < count - 1; i++) {
                         String cName = stmt.column_name(i);
                         String value = stmt.column_string(i);
-                        int columnType = stmt.column_type(i);
-                        DataType type = DataType.getType4SqliteCode(columnType);
+                        DataType type = spatialTable.getTableFieldType(cName);
                         if (type == null) {
-                            GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type " + columnType + " for column "
+                            GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type for column "
                                     + cName);
                             continue;
                         }

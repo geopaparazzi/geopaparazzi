@@ -23,11 +23,12 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import eu.geopaparazzi.library.util.DataType;
 
 /**
  * A spatial feature container.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Feature implements Parcelable {
@@ -50,12 +51,12 @@ public class Feature implements Parcelable {
 
     /**
      * Constructor.
-     * 
-     * @param tableName the table the feature belongs to.
+     *
+     * @param tableName       the table the feature belongs to.
      * @param uniqueTableName the unique table name through which get the spatialtable.
-     * @param id the unique id of the feature.
+     * @param id              the unique id of the feature.
      */
-    public Feature( String tableName, String uniqueTableName, String id ) {
+    public Feature(String tableName, String uniqueTableName, String id) {
         this.readableTableName = tableName;
         this.uniqueTableName = uniqueTableName;
         this.id = id;
@@ -63,13 +64,13 @@ public class Feature implements Parcelable {
 
     /**
      * Constructor for case with geometry.
-     * 
-     * @param tableName the table the feature belongs to.
+     *
+     * @param tableName       the table the feature belongs to.
      * @param uniqueTableName the unique table name through which get the spatialtable.
-     * @param id the unique id of the feature.
-     * @param geometry the default geometry.
+     * @param id              the unique id of the feature.
+     * @param geometry        the default geometry.
      */
-    public Feature( String tableName, String uniqueTableName, String id, byte[] geometry ) {
+    public Feature(String tableName, String uniqueTableName, String id, byte[] geometry) {
         this.readableTableName = tableName;
         this.uniqueTableName = uniqueTableName;
         this.id = id;
@@ -85,28 +86,29 @@ public class Feature implements Parcelable {
 
     /**
      * Add a new attribute.
-     * 
-     * @param name name of the field.
+     *
+     * @param name  name of the field.
      * @param value value of the field as string.
-     * @param type type of the field as of {@link DataType#name()}.
+     * @param type  type of the field as of {@link DataType#name()}.
      */
-    public synchronized void addAttribute( String name, String value, String type ) {
+    public synchronized void addAttribute(String name, String value, String type) {
         if (attributeNames.contains(name)) {
             throw new IllegalArgumentException(MessageFormat.format(
                     "Attribute already present: {0}. Use setAttribute instead.", name)); //$NON-NLS-1$
         }
         attributeNames.add(name);
+        if (value == null) value = "";
         attributeValuesStrings.add(value);
         attributeTypes.add(type);
     }
 
     /**
      * Change an attribute through its field name.
-     * 
+     *
      * @param field the field name to change.
      * @param value the new value to set.
      */
-    public void setAttribute( String field, String value ) {
+    public void setAttribute(String field, String value) {
         int indexOf = attributeNames.indexOf(field);
         if (indexOf != -1) {
             setAttribute(indexOf, value);
@@ -115,22 +117,22 @@ public class Feature implements Parcelable {
 
     /**
      * Change an attribute through its index.
-     * 
+     *
      * @param index the index.
      * @param value the new value to set.
      */
-    public void setAttribute( int index, String value ) {
+    public void setAttribute(int index, String value) {
         attributeValuesStrings.set(index, value);
         isDirty = true;
     }
 
     /**
      * Get an attribute's string representation by its name.
-     * 
+     *
      * @param name the name.
      * @return the attribute.
      */
-    public String getAttributeAsString( String name ) {
+    public String getAttributeAsString(String name) {
         int indexOf = attributeNames.indexOf(name);
         if (indexOf != -1) {
             return attributeValuesStrings.get(indexOf);
@@ -207,7 +209,7 @@ public class Feature implements Parcelable {
         return 0;
     }
 
-    public void writeToParcel( Parcel dest, int flags ) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(readableTableName);
         dest.writeString(uniqueTableName);
@@ -220,9 +222,9 @@ public class Feature implements Parcelable {
     }
 
     @SuppressWarnings("javadoc")
-    public static final Parcelable.Creator<Feature> CREATOR = new Parcelable.Creator<Feature>(){
+    public static final Parcelable.Creator<Feature> CREATOR = new Parcelable.Creator<Feature>() {
         @SuppressWarnings("unchecked")
-        public Feature createFromParcel( Parcel in ) {
+        public Feature createFromParcel(Parcel in) {
             String id = in.readString();
             String tableName = in.readString();
             String uniqueTableName = in.readString();
@@ -239,7 +241,7 @@ public class Feature implements Parcelable {
             return feature;
         }
 
-        public Feature[] newArray( int size ) {
+        public Feature[] newArray(int size) {
             return new Feature[size];
         }
     };
