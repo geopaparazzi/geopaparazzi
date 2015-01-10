@@ -89,4 +89,6 @@
   <string name="downloading_mapurl_to_the_device">Lade den ausgewählten Dienst auf das Gerät.</string>
   <string name="mapurl_successfully_downloaded">Die mapurl wurde erfolgreich heruntergeladen und installiert. Denken Sie daran, Geopaparazzi neu zu starten, damit der Dienst aufgeführt.</string>
   <string name="crash_toast_text">Bei der Anwendung kam es zu einem schwerwiegenden Fehler. Crash-Informationen werden gesammelt, die nützlich sind, um das Problem zu lösen. Bitte senden Sie diese, wenn möglich,  an das Entwicklungsteam.</string>
+  <string name="share_current_position">Die aktuelle Position teilen</string>
+  <string name="share_current_center">Den aktuellen Kartenmittelpunkt teilen</string>
 </resources>

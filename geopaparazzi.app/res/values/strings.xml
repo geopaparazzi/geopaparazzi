@@ -270,4 +270,5 @@
     <string name="custommapfolder_title">Current used maps folder</string>
     <string name="enable_mock_locations_for_demo">To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.</string>
     <string name="could_not_open_geosms">Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like:</string>
+    <string name="continue_last_log">Continue last log.</string>
 </resources>

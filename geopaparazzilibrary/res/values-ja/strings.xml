@@ -89,4 +89,6 @@
   <string name="downloading_mapurl_to_the_device">選択したサービスを端末にダウンロードしています。</string>
   <string name="mapurl_successfully_downloaded">mapurlは正しくダウンロードされました。サービスリストからGeopaparazziを再起動してください。</string>
   <string name="crash_toast_text">アプリケーションに重大なエラーが発生しました。問題解決のために有用なクラッシュ情報が収集されています。もしよろしければ、開発チームにクラッシュ情報をお送りください。</string>
+  <string name="share_current_position">現在位置の共有</string>
+  <string name="share_current_center">現在の地図位置を共有</string>
 </resources>

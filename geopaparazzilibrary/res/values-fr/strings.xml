@@ -83,9 +83,12 @@
   <string name="http_not_found_msg">La ressource demandée n\'a pu être trouvée. S\'il vous plaît vérifiez votre URL de connexion.</string>
   <string name="http_not_implemented_code_msg">Piège d\'un code de message de retour (s\'il vous plaît envoyez-le au développeur):</string>
   <string name="post_completed_properly">Soumission faite correctement.</string>
+  <string name="http_ok_msg">La demande a été traitée avec succès.</string>
   <string name="the_file_exists_wont_overwrite">Le fichier existe. Ne sera pas remplacé:</string>
   <string name="share_note_with">Partager note avec ...</string>
   <string name="downloading_mapurl_to_the_device">Téléchargement du service sélectionné dans l\'appareil.</string>
   <string name="mapurl_successfully_downloaded">Le mapurl a été téléchargé et installé avec succès. Ne oubliez pas de redémarrer Geopaparazzi pour répertorier le service répertorié.</string>
   <string name="crash_toast_text">L\'application a rencontré une erreur fatale. Les informations de l\'accident seront collectées, et sont utiles pour résoudre le problème. Se il vous plaît envoyez-les à l\'équipe de développement lorsque cela sera possible.</string>
+  <string name="share_current_position">Partage la position actuelle</string>
+  <string name="share_current_center">Partage le centre de la carte actuelle</string>
 </resources>

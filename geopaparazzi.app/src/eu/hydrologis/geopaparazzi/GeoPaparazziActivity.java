@@ -623,7 +623,7 @@ public class GeoPaparazziActivity extends Activity {
                         final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
                         Utilities.inputMessageAndCheckboxDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
-                                defaultLogName, "Continue last log.", false, new TextAndBooleanRunnable() {
+                                defaultLogName, getString(R.string.continue_last_log), false, new TextAndBooleanRunnable() {
                                     public void run() {
                                         runOnUiThread(new Runnable() {
                                             public void run() {

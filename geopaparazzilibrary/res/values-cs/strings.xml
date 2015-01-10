@@ -89,4 +89,6 @@
   <string name="downloading_mapurl_to_the_device">Vybraná služba se stahuje do zařízení.</string>
   <string name="mapurl_successfully_downloaded">Soubor .mapurl byl úspěšně stažen a nainstalován. Nezapomeňte na to, že je potřeba Geopaparazzi spustit znovu, aby se služba objevila v seznamu.</string>
   <string name="crash_toast_text">Program postihla vážná chyba. Informace o pádu, které jsou užitečné při řešení potíží, budou sebrány. Pokud je to možné, pošlete je, prosím, vývojářskému týmu.</string>
+  <string name="share_current_position">Sdílet nynější polohu</string>
+  <string name="share_current_center">Sdílet nynější mapový střed</string>
 </resources>
