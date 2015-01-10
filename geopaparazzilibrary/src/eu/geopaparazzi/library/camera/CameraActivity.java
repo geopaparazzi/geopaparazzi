@@ -74,7 +74,6 @@ public class CameraActivity extends Activity {
     private double lat;
     private double elevation;
     private int lastImageMediastoreId;
-    private String imageName;
     private long noteId = -1;
 
     public void onCreate(Bundle icicle) {
@@ -84,6 +83,7 @@ public class CameraActivity extends Activity {
         File imageSaveFolder = null;
         try {
             imageSaveFolder = ResourcesManager.getInstance(this).getTempDir();
+            String imageName;
             if (extras != null) {
                 String imageSaveFolderTmp = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
                 if (imageSaveFolderTmp != null && new File(imageSaveFolderTmp).exists()) {
@@ -97,40 +97,47 @@ public class CameraActivity extends Activity {
             } else {
                 throw new RuntimeException("Not implemented yet...");
             }
+
+
+            if (!imageSaveFolder.exists()) {
+                if (!imageSaveFolder.mkdirs()) {
+                    Runnable runnable = new Runnable() {
+                        public void run() {
+                            finish();
+                        }
+                    };
+                    Utilities.messageDialog(this, getString(R.string.cantcreate_img_folder), runnable);
+                    return;
+                }
+            }
+
+            File mediaFolder = imageSaveFolder;
+
+            currentDate = new Date();
+
+            if (imageName == null) {
+                imageName = ImageUtilities.getCameraImageName(currentDate);
+            }
+
+            imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
+            File imgFile = new File(imageFilePath);
+            Uri outputFileUri = Uri.fromFile(imgFile);
+
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+            lastImageMediastoreId = getLastImageMediaId();
+
+            startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
         } catch (Exception e) {
             GPLog.error(this, null, e);
+            Utilities.errorDialog(this, e, new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
         }
-
-        if (!imageSaveFolder.exists()) {
-            if (!imageSaveFolder.mkdirs()) {
-                Runnable runnable = new Runnable() {
-                    public void run() {
-                        finish();
-                    }
-                };
-                Utilities.messageDialog(this, getString(R.string.cantcreate_img_folder), runnable);
-                return;
-            }
-        }
-
-        File mediaFolder = imageSaveFolder;
-
-        currentDate = new Date();
-
-        if (imageName == null) {
-            imageName = ImageUtilities.getCameraImageName(currentDate);
-        }
-
-        imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
-        File imgFile = new File(imageFilePath);
-        Uri outputFileUri = Uri.fromFile(imgFile);
-
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
-        lastImageMediastoreId = getLastImageMediaId();
-
-        startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -170,7 +177,6 @@ public class CameraActivity extends Activity {
             finish();
         }
     }
-
 
 
     private void checkTakenPictureConsistency() {
