@@ -45,9 +45,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -62,11 +64,11 @@ public class Utilities {
 
     /**
      * get unique device id.
-     * 
-     * @param context  the context to use.
+     *
+     * @param context the context to use.
      * @return the unique id.
      */
-    public static String getUniqueDeviceId( Context context ) {
+    public static String getUniqueDeviceId(Context context) {
         // try to go for the imei
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String id = tm.getDeviceId();
@@ -98,7 +100,7 @@ public class Utilities {
      * @return the exif format string.
      */
     @SuppressWarnings("nls")
-    public static String degreeDecimal2ExifFormat( double decimalDegree ) {
+    public static String degreeDecimal2ExifFormat(double decimalDegree) {
         StringBuilder sb = new StringBuilder();
         sb.append((int) decimalDegree);
         sb.append("/1,");
@@ -121,7 +123,7 @@ public class Utilities {
      * @return the decimal degree.
      */
     @SuppressWarnings("nls")
-    public static double exifFormat2degreeDecimal( String exifFormat ) {
+    public static double exifFormat2degreeDecimal(String exifFormat) {
         // latitude=44/1,10/1,28110/1000
         String[] exifSplit = exifFormat.trim().split(",");
 
@@ -152,18 +154,18 @@ public class Utilities {
      * @param d2 the length of the second leg.
      * @return the length of the hypothenuse.
      */
-    public static double pythagoras( double d1, double d2 ) {
+    public static double pythagoras(double d1, double d2) {
         return Math.sqrt(Math.pow(d1, 2.0) + Math.pow(d2, 2.0));
     }
 
     /**
      * Tries to adapt a value to the supplied type.
      *
-     * @param value the value to adapt.
+     * @param value   the value to adapt.
      * @param adaptee the class to adapt to.
      * @return the adapted object or <code>null</code>, if it fails.
      */
-    public static <T> T adapt( Object value, Class<T> adaptee ) {
+    public static <T> T adapt(Object value, Class<T> adaptee) {
         if (value instanceof Number) {
             Number num = (Number) value;
             if (adaptee.isAssignableFrom(Double.class)) {
@@ -214,25 +216,25 @@ public class Utilities {
     /**
      * Execute a message dialog in an {@link AsyncTask}.
      *
-     * @param context the {@link Context} to use.
-     * @param msg the message to show.
+     * @param context    the {@link Context} to use.
+     * @param msg        the message to show.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void messageDialog( final Context context, final String msg, final Runnable okRunnable ) {
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+    public static void messageDialog(final Context context, final String msg, final Runnable okRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
             }
 
-            protected void onPostExecute( String response ) {
+            protected void onPostExecute(String response) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(eu.geopaparazzi.library.R.layout.simpledialog);
                 TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                 text.setText(msg);
                 try {
                     Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                    dialogButton.setOnClickListener(new View.OnClickListener(){
-                        public void onClick( View v ) {
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
                             dialog.dismiss();
                             if (okRunnable != null) {
                                 new Thread(okRunnable).start();
@@ -259,10 +261,10 @@ public class Utilities {
      */
     public class CustomDialog extends Dialog {
         /**
-         * @param context  the context to use.
-         * @param view parent view.
+         * @param context the context to use.
+         * @param view    parent view.
          */
-        public CustomDialog( Context context, View view ) {
+        public CustomDialog(Context context, View view) {
             super(context);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(view);
@@ -274,25 +276,25 @@ public class Utilities {
     /**
      * Execute a generic error dialog in an {@link AsyncTask}.
      *
-     * @param context the {@link Context} to use.
-     * @param t the exception.
+     * @param context    the {@link Context} to use.
+     * @param t          the exception.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void errorDialog( final Context context, final Throwable t, final Runnable okRunnable ) {
+    public static void errorDialog(final Context context, final Throwable t, final Runnable okRunnable) {
 
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
             }
 
-            protected void onPostExecute( String response ) {
+            protected void onPostExecute(String response) {
                 try {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder //
-                    .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
+                            .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
                             .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
                                     if (okRunnable != null) {
                                         new Thread(okRunnable).start();
                                     }
@@ -310,19 +312,19 @@ public class Utilities {
     /**
      * Execute a message dialog in an {@link AsyncTask}.
      *
-     * @param context the {@link Context} to use.
-     * @param msg the message to show.
+     * @param context     the {@link Context} to use.
+     * @param msg         the message to show.
      * @param yesRunnable optional {@link Runnable} to trigger after yes was pressed.
-     * @param noRunnable optional {@link Runnable} to trigger after no was pressed.
+     * @param noRunnable  optional {@link Runnable} to trigger after no was pressed.
      */
-    public static void yesNoMessageDialog( final Context context, final String msg, final Runnable yesRunnable,
-            final Runnable noRunnable ) {
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+    public static void yesNoMessageDialog(final Context context, final String msg, final Runnable yesRunnable,
+                                          final Runnable noRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
             }
 
-            protected void onPostExecute( String response ) {
+            protected void onPostExecute(String response) {
                 try {
                     final Dialog dialog = new Dialog(context);
                     dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
@@ -331,8 +333,8 @@ public class Utilities {
                     TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                     text.setText(msg);
                     Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                    yesButton.setOnClickListener(new View.OnClickListener(){
-                        public void onClick( View v ) {
+                    yesButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
                             dialog.dismiss();
                             if (yesRunnable != null) {
                                 new Thread(yesRunnable).start();
@@ -340,8 +342,8 @@ public class Utilities {
                         }
                     });
                     Button noButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
-                    noButton.setOnClickListener(new View.OnClickListener(){
-                        public void onClick( View v ) {
+                    noButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
                             dialog.dismiss();
                             if (noRunnable != null) {
                                 new Thread(noRunnable).start();
@@ -366,37 +368,38 @@ public class Utilities {
     /**
      * Execute a message dialog in an {@link AsyncTask}.
      *
-     * @param context the {@link Context} to use.
-     * @param msgId the id of the message to show.
+     * @param context    the {@link Context} to use.
+     * @param msgId      the id of the message to show.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void messageDialog( final Context context, final int msgId, final Runnable okRunnable ) {
+    public static void messageDialog(final Context context, final int msgId, final Runnable okRunnable) {
         String msg = context.getString(msgId);
         messageDialog(context, msg, okRunnable);
     }
 
     /**
      * A warning dialog.
-     *
+     * <p/>
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
-     * @param context  the context to use.
-     * @param msg the message.
+     * @param context    the context to use.
+     * @param msg        the message.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void warningDialog( final Context context, final String msg, final Runnable okRunnable ) {
+    public static void warningDialog(final Context context, final String msg, final Runnable okRunnable) {
         messageDialog(context, msg, okRunnable);
     }
+
     /**
      * A warning dialog.
-     *
+     * <p/>
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
-     * @param context  the context to use.
-     * @param msgId msg id.
+     * @param context    the context to use.
+     * @param msgId      msg id.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void warningDialog( final Context context, final int msgId, final Runnable okRunnable ) {
+    public static void warningDialog(final Context context, final int msgId, final Runnable okRunnable) {
         messageDialog(context, msgId, okRunnable);
     }
 
@@ -404,16 +407,16 @@ public class Utilities {
      * Execute a toast in an {@link AsyncTask}.
      *
      * @param context the {@link Context} to use.
-     * @param msg the message to show.
-     * @param length toast length.
+     * @param msg     the message to show.
+     * @param length  toast length.
      */
-    public static void toast( final Context context, final String msg, final int length ) {
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+    public static void toast(final Context context, final String msg, final int length) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
             }
 
-            protected void onPostExecute( String response ) {
+            protected void onPostExecute(String response) {
                 Toast.makeText(context, msg, length).show();
             }
         }.execute((String) null);
@@ -423,10 +426,10 @@ public class Utilities {
      * Execute a toast in an {@link AsyncTask}.
      *
      * @param context the {@link Context} to use.
-     * @param msgId the id of the message to show.
-     * @param length toast length.
+     * @param msgId   the id of the message to show.
+     * @param length  toast length.
      */
-    public static void toast( final Context context, final int msgId, final int length ) {
+    public static void toast(final Context context, final int msgId, final int length) {
         String msg = context.getString(msgId);
         toast(context, msg, length);
     }
@@ -434,23 +437,25 @@ public class Utilities {
     /**
      * Execute a message dialog in an {@link AsyncTask}.
      *
-     * @param context the {@link Context} to use.
-     * @param title a title for the input dialog.
-     * @param message a message to show.
-     * @param defaultText a default text to fill in.
+     * @param context      the {@link Context} to use.
+     * @param title        a title for the input dialog.
+     * @param message      a message to show.
+     * @param defaultText  a default text to fill in.
      * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
      */
-    public static void inputMessageDialog( final Context context, final String title, final String message,
-            final String defaultText, final TextRunnable textRunnable ) {
+    public static void inputMessageDialog(final Context context, final String title, final String message,
+                                          final String defaultText, final TextRunnable textRunnable) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
         TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(message);
+        CheckBox checkBox = (CheckBox) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
+        checkBox.setVisibility(View.GONE);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         editText.setText(defaultText);
         Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-        yesButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Editable value = editText.getText();
                 String newText = value.toString();
                 if (newText == null || newText.length() < 1) {
@@ -464,8 +469,8 @@ public class Utilities {
             }
         });
         Button cancelButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
-        cancelButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 dialog.dismiss();
             }
         });
@@ -477,15 +482,69 @@ public class Utilities {
         window.setAttributes(lp);
         window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
-
     }
 
     /**
-     * Ring action.
-     * 
-     * @param context  if something goes wrong.
+     * Execute a message dialog with checkbox in an {@link AsyncTask}.
+     *
+     * @param context      the {@link Context} to use.
+     * @param title        a title for the input dialog.
+     * @param message      a message to show.
+     * @param defaultText  a default text to fill in.
+     * @param checkBoxText the text of the checkbox.
+     * @param defaultCheckboxSelection default selection for checkbox.
+     * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
      */
-    public static void ring( Context context ) {
+    public static void inputMessageAndCheckboxDialog(final Context context, final String title, final String message,
+                                                     final String defaultText, final String checkBoxText, final boolean defaultCheckboxSelection, final TextAndBooleanRunnable textRunnable) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
+        TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+        text.setText(message);
+        final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
+        editText.setText(defaultText);
+        final CheckBox checkBox = (CheckBox) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
+        checkBox.setText(checkBoxText);
+        checkBox.setChecked(defaultCheckboxSelection);
+        Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Editable value = editText.getText();
+                String newText = value.toString();
+                if (newText == null || newText.length() < 1) {
+                    newText = defaultText;
+                }
+                dialog.dismiss();
+                if (textRunnable != null) {
+                    textRunnable.setText(newText);
+                    textRunnable.setTheBoolean(checkBox.isChecked());
+                    new Thread(textRunnable).start();
+                }
+            }
+        });
+        Button cancelButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+    }
+
+
+    /**
+     * Ring action.
+     *
+     * @param context if something goes wrong.
+     */
+    public static void ring(Context context) {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(context, notification);
         r.play();
@@ -494,47 +553,46 @@ public class Utilities {
 
     /**
      * Converts TMS tile coordinates to Google Tile coordinates.
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx the x tile number.
-     * @param ty the y tile number.
+     * @param tx   the x tile number.
+     * @param ty   the y tile number.
      * @param zoom the current zoom level.
      * @return the converted values.
      */
-    public static int[] tmsTile2GoogleTile( int tx, int ty, int zoom ) {
+    public static int[] tmsTile2GoogleTile(int tx, int ty, int zoom) {
         return new int[]{tx, (int) ((Math.pow(2, zoom) - 1) - ty)};
     }
 
     /**
      * Converts Google tile coordinates to TMS Tile coordinates.
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx the x tile number.
-     * @param ty the y tile number.
+     * @param tx   the x tile number.
+     * @param ty   the y tile number.
      * @param zoom the current zoom level.
      * @return the converted values.
      */
-    public static int[] googleTile2TmsTile( int tx, int ty, int zoom ) {
+    public static int[] googleTile2TmsTile(int tx, int ty, int zoom) {
         return new int[]{tx, (int) ((Math.pow(2, zoom) - 1) - ty)};
     }
 
     /**
      * Converts TMS tile coordinates to Microsoft QuadTree.
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
-     * @param tx tile x.
-     * @param ty tile y.
-     * @param zoom zoomlevel.
      *
+     * @param tx   tile x.
+     * @param ty   tile y.
+     * @param zoom zoomlevel.
      * @return the quadtree key.
      */
-    public static String quadTree( int tx, int ty, int zoom ) {
+    public static String quadTree(int tx, int ty, int zoom) {
         String quadKey = ""; //$NON-NLS-1$
         ty = (int) ((Math.pow(2, zoom) - 1) - ty);
-        for( int i = zoom; i < 0; i-- ) {
+        for (int i = zoom; i < 0; i--) {
             int digit = 0;
             int mask = 1 << (i - 1);
             if ((tx & mask) != 0) {
@@ -551,13 +609,13 @@ public class Utilities {
     /**
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx tile x.
-     * @param ty tile y.
-     * @param zoom zoomlevel.
+     * @param tx       tile x.
+     * @param ty       tile y.
+     * @param zoom     zoomlevel.
      * @param tileSize tile size.
      * @return [minx, miny, maxx, maxy]
      */
-    public static double[] tileLatLonBounds( int tx, int ty, int zoom, int tileSize ) {
+    public static double[] tileLatLonBounds(int tx, int ty, int zoom, int tileSize) {
         double[] bounds = tileBounds(tx, ty, zoom, tileSize);
         double[] mins = metersToLatLon(bounds[0], bounds[1]);
         double[] maxs = metersToLatLon(bounds[2], bounds[3]);
@@ -566,16 +624,16 @@ public class Utilities {
 
     /**
      * Returns bounds of the given tile in EPSG:900913 coordinates
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx tile x.
-     * @param ty tile y.
-     * @param zoom zoomlevel.
+     * @param tx       tile x.
+     * @param ty       tile y.
+     * @param zoom     zoomlevel.
      * @param tileSize tile size.
      * @return [minx, miny, maxx, maxy]
      */
-    public static double[] tileBounds( int tx, int ty, int zoom, int tileSize ) {
+    public static double[] tileBounds(int tx, int ty, int zoom, int tileSize) {
         double[] min = pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
         double minx = min[0], miny = min[1];
         double[] max = pixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
@@ -586,14 +644,14 @@ public class Utilities {
     /**
      * Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84
      * Datum
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
-     * @param mx x 
+     *
+     * @param mx x
      * @param my y
-     * @return lat long 
+     * @return lat long
      */
-    public static double[] metersToLatLon( double mx, double my ) {
+    public static double[] metersToLatLon(double mx, double my) {
 
         double lon = (mx / originShift) * 180.0;
         double lat = (my / originShift) * 180.0;
@@ -601,41 +659,40 @@ public class Utilities {
         lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
         return new double[]{-lat, lon};
     }
+
     /**
-    * Equatorial radius of earth is required for distance computation.
-    */
+     * Equatorial radius of earth is required for distance computation.
+     */
     public static final double EQUATORIALRADIUS = 6378137.0;
+
     /**
      * Convert a longitude coordinate (in degrees) to a horizontal distance in meters from the
      * zero meridian
      *
-     * @param longitude
-     *            in degrees
+     * @param longitude in degrees
      * @return longitude in meters in spherical mercator projection
      */
-    public static double longitudeToMetersX( double longitude ) {
+    public static double longitudeToMetersX(double longitude) {
         return EQUATORIALRADIUS * java.lang.Math.toRadians(longitude);
     }
 
     /**
      * Convert a meter measure to a longitude
      *
-     * @param x
-     *            in meters
+     * @param x in meters
      * @return longitude in degrees in spherical mercator projection
      */
-    public static double metersXToLongitude( double x ) {
+    public static double metersXToLongitude(double x) {
         return java.lang.Math.toDegrees(x / EQUATORIALRADIUS);
     }
 
     /**
      * Convert a meter measure to a latitude
      *
-     * @param y
-     *            in meters
+     * @param y in meters
      * @return latitude in degrees in spherical mercator projection
      */
-    public static double metersYToLatitude( double y ) {
+    public static double metersYToLatitude(double y) {
         return java.lang.Math.toDegrees(java.lang.Math.atan(java.lang.Math.sinh(y / EQUATORIALRADIUS)));
     }
 
@@ -643,45 +700,48 @@ public class Utilities {
      * Convert a latitude coordinate (in degrees) to a vertical distance in meters from the
      * equator
      *
-     * @param latitude
-     *            in degrees
+     * @param latitude in degrees
      * @return latitude in meters in spherical mercator projection
      */
-    public static double latitudeToMetersY( double latitude ) {
+    public static double latitudeToMetersY(double latitude) {
         return EQUATORIALRADIUS
                 * java.lang.Math.log(java.lang.Math.tan(java.lang.Math.PI / 4 + 0.5 * java.lang.Math.toRadians(latitude)));
     }
+
     /**
-    * Convert a east-longitude,west-longitude coordinate (in degrees) to distance in meters
-    *
-    * @param east_longitude longitude in degrees
-    * @param west_longitude longitude in degrees
-    * @return meters in spherical mercator projection
-    */
-    public static double longitudeToMeters( double east_longitude, double west_longitude ) {
+     * Convert a east-longitude,west-longitude coordinate (in degrees) to distance in meters
+     *
+     * @param east_longitude longitude in degrees
+     * @param west_longitude longitude in degrees
+     * @return meters in spherical mercator projection
+     */
+    public static double longitudeToMeters(double east_longitude, double west_longitude) {
         return longitudeToMetersX(east_longitude) - longitudeToMetersX(west_longitude);
     }
+
     /**
-    * Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
-    *
-    * @param north_latitude latitude in degrees
-    * @param south_latitude latitude in degrees
-    * @return meters in spherical mercator projection
-    */
-    public static double latitudeToMeters( double north_latitude, double south_latitude ) {
+     * Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
+     *
+     * @param north_latitude latitude in degrees
+     * @param south_latitude latitude in degrees
+     * @return meters in spherical mercator projection
+     */
+    public static double latitudeToMeters(double north_latitude, double south_latitude) {
         return latitudeToMetersY(north_latitude) - latitudeToMetersY(south_latitude);
     }
+
     /**
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * @param px pixel x.
-     * @param py  pixel y.
-     * @param zoom zoomlevel.
+     *
+     * @param px       pixel x.
+     * @param py       pixel y.
+     * @param zoom     zoomlevel.
      * @param tileSize tile size.
      * @return converted coordinate.
      */
-    public static double[] pixelsToMeters( double px, double py, int zoom, int tileSize ) {
+    public static double[] pixelsToMeters(double px, double py, int zoom, int tileSize) {
         double res = getResolution(zoom, tileSize);
         double mx = px * res - originShift;
         double my = py * res - originShift;
@@ -690,14 +750,14 @@ public class Utilities {
 
     /**
      * Resolution (meters/pixel) for given zoom level (measured at Equator)
-     *
+     * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
-     * @param zoom zoomlevel.
+     *
+     * @param zoom     zoomlevel.
      * @param tileSize tile size.
      * @return resolution.
      */
-    public static double getResolution( int zoom, int tileSize ) {
+    public static double getResolution(int zoom, int tileSize) {
         // return (2 * Math.PI * 6378137) / (this.tileSize * 2**zoom)
         double initialResolution = 2 * Math.PI * 6378137 / tileSize;
         return initialResolution / Math.pow(2, zoom);
@@ -705,12 +765,12 @@ public class Utilities {
 
     /**
      * Convert unsafe chars.
-     * 
+     *
      * @param string text to check.
      * @return safe text.
      */
     @SuppressWarnings("nls")
-    public static String makeXmlSafe( String string ) {
+    public static String makeXmlSafe(String string) {
         if (string == null)
             return "";
         string = string.replaceAll("&", "&amp;");
@@ -719,22 +779,22 @@ public class Utilities {
 
     /**
      * A string formatter.
-     *
+     * <p/>
      * <p>This method exists, because the method to use is not definitive yet.</p>
      * <p>
      * Currently the format of the substitutes in the message are:
      * <ul>
-     *   <li>%1$d = for numeric</li>
-     *   <li>%1$s = for strings</li>
+     * <li>%1$d = for numeric</li>
+     * <li>%1$s = for strings</li>
      * </ul>
      * The %1, %2, etc refer to the number of the args.
      * </p>
      *
-     * @param msg the message.
+     * @param msg  the message.
      * @param args the args to substitute.
      * @return the formatted string.
      */
-    public static String format( String msg, String... args ) {
+    public static String format(String msg, String... args) {
         String msgFormat = String.format(msg, (Object[]) args);
         return msgFormat;
     }
@@ -742,16 +802,16 @@ public class Utilities {
     /**
      * Convert bytes to hex string.
      *
-     * @param b the bytes array to convert.
+     * @param b    the bytes array to convert.
      * @param size the size of the array to consider.
      * @return the hex string.
      */
-    public static String getHexString( byte[] b, int size ) {
+    public static String getHexString(byte[] b, int size) {
         if (size < 1) {
             size = b.length;
         }
         StringBuilder sb = new StringBuilder();
-        for( int i = size - 1; i >= 0; i-- ) {
+        for (int i = size - 1; i >= 0; i--) {
             if (i >= 0)
                 sb.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
         }
@@ -764,7 +824,7 @@ public class Utilities {
      * @param file the filesystem's path.
      * @return the available space in mb.
      */
-    public static float getAvailableMegabytes( File file ) {
+    public static float getAvailableMegabytes(File file) {
         StatFs stat = new StatFs(file.getPath());
         long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
         return bytesAvailable / (1024.f * 1024.f);
@@ -776,7 +836,7 @@ public class Utilities {
      * @param file the filesystem's path.
      * @return the size in mb.
      */
-    public static float getFilesystemMegabytes( File file ) {
+    public static float getFilesystemMegabytes(File file) {
         StatFs stat = new StatFs(file.getPath());
         long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
         return bytes / (1024.f * 1024.f);
@@ -784,25 +844,25 @@ public class Utilities {
 
     /**
      * Convert meters to feet.
-      *
-      * @param meters the value in meters to convert to feet.
-      * @return meters converted to feet.
-      */
-    public static double toFeet( final double meters ) {
+     *
+     * @param meters the value in meters to convert to feet.
+     * @return meters converted to feet.
+     */
+    public static double toFeet(final double meters) {
         return meters * METER_TO_FEET_CONVERSION_FACTOR;
     }
 
     /**
      * Create an OSM url from coordinates.
      *
-     * @param lat lat
-     * @param lon lon
-     * @param withMarker if <code>true</code>, marker is added.
+     * @param lat             lat
+     * @param lon             lon
+     * @param withMarker      if <code>true</code>, marker is added.
      * @param withGeosmsParam if <code>true</code>, geosms params are added.
      * @return url string.
      */
     @SuppressWarnings("nls")
-    public static String osmUrlFromLatLong( float lat, float lon, boolean withMarker, boolean withGeosmsParam ) {
+    public static String osmUrlFromLatLong(float lat, float lon, boolean withMarker, boolean withGeosmsParam) {
         StringBuilder sB = new StringBuilder();
         sB.append("http://www.osm.org/?lat=");
         sB.append(lat);
@@ -823,22 +883,22 @@ public class Utilities {
 
     /**
      * Method to help define file names that need to be hidden.
-     *
+     * <p/>
      * <p>Currently ones that start with _ are hidden.</p>
      *
      * @param name the name to check.
      * @return <code>true</code> if the name defines a file to hide.
      */
-    public static boolean isNameFromHiddenFile( String name ) {
+    public static boolean isNameFromHiddenFile(String name) {
         return name.startsWith("_"); //$NON-NLS-1$
     }
 
     /**
      * Dismiss {@link ProgressDialog} with check in one line.
-     * 
+     *
      * @param progressDialog the dialog to dismiss.
      */
-    public static void dismissProgressDialog( ProgressDialog progressDialog ) {
+    public static void dismissProgressDialog(ProgressDialog progressDialog) {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
@@ -846,12 +906,12 @@ public class Utilities {
 
     /**
      * Gets the data from a gmap url.
-     * 
+     *
      * @param url the url to parse.
      * @return an array with [lat, lon, text] or <code>null</code>.
      */
     @SuppressWarnings("nls")
-    public static String[] getLatLonTextFromGmapUrl( String url ) {
+    public static String[] getLatLonTextFromGmapUrl(String url) {
         String googleMapsUrl = "http://maps.google.com/maps?q=";
         if (url.startsWith(googleMapsUrl)) {
             // google maps url
@@ -893,18 +953,18 @@ public class Utilities {
 
     /**
      * Gets the data from a osm url.
-     * 
+     *
      * @param urlString the url to parse.
      * @return an array with [lat, lon, text, zoom] or <code>null</code>.
      */
     @SuppressWarnings("nls")
-    public static String[] getLatLonTextFromOsmUrl( String urlString ) {
+    public static String[] getLatLonTextFromOsmUrl(String urlString) {
         // http://www.openstreetmap.org/?mlat=42.082&mlon=9.822#map=6/42.082/9.822&layers=N
         String osmMapsUrl = "http://www.openstreetmap.org";
         if (urlString.startsWith(osmMapsUrl)) {
             String[] urlSplit = urlString.split("#|&|\\?");
             HashMap<String, String> paramsMap = new HashMap<String, String>();
-            for( String string : urlSplit ) {
+            for (String string : urlSplit) {
                 if (string.indexOf('=') != -1) {
                     String[] keyValue = string.split("=");
                     if (keyValue.length == 2) {

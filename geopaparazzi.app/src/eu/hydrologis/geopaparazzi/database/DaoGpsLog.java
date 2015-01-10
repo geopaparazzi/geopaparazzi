@@ -839,8 +839,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
 
-
-
     /**
      * Get the line for a certain log id from the db
      *
@@ -1126,6 +1124,19 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     "When checking whether a column exists in the table, an error occurred: " + e.getMessage());
             return false;
         }
+    }
+
+
+    public long getLastLogId() throws Exception {
+        SQLiteDatabase database = getDatabase();
+        String query = "select max(" + GpsLogsTableFields.COLUMN_ID.getFieldName() + ") from " + TableDescriptions.TABLE_GPSLOGS;
+        Cursor mCursor = database.rawQuery(query, null);
+        mCursor.moveToFirst();
+        if (!mCursor.isAfterLast()) {
+            long id = mCursor.getLong(0);
+            return id;
+        }
+        throw new Exception();
     }
 
     /**

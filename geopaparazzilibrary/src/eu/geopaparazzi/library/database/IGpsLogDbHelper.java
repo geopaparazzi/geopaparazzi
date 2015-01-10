@@ -95,4 +95,14 @@ public interface IGpsLogDbHelper {
      */
     public void setTrackLengthm( long logid, double length ) throws IOException;
 
+    /**
+     * Get the last available log id.
+     * <p/>
+     * <p>If something goes wrong or no logs are available before, an exception is thrown.</p>
+     *
+     * @return the last log id.
+     * @throws Exception
+     */
+    public long getLastLogId() throws Exception;
+
 }

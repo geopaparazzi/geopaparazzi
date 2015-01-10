@@ -71,6 +71,7 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -537,7 +538,7 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities.dismissProgressDialog(initMapsdirDialog);
                 if (response.startsWith("ERROR")) {
                     String kitkatErrorSdcardCheck = "not an error (code 0): Could not open the database in read/write mode";
-                    if (response.contains(kitkatErrorSdcardCheck)){
+                    if (response.contains(kitkatErrorSdcardCheck)) {
                         response = response + "\n\nIf your data are on the sdcard and your Android version is KitKat, then Geopaparazzi has no write permissions (read for more info: https://code.google.com/p/android/issues/detail?id=67570)";
                     }
                     Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
@@ -621,8 +622,8 @@ public class GeoPaparazziActivity extends Activity {
                     if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                         final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
-                        Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
-                                defaultLogName, new TextRunnable() {
+                        Utilities.inputMessageAndCheckboxDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
+                                defaultLogName, "Continue last log.", false, new TextAndBooleanRunnable() {
                                     public void run() {
                                         runOnUiThread(new Runnable() {
                                             public void run() {
@@ -632,7 +633,7 @@ public class GeoPaparazziActivity extends Activity {
                                                 }
 
                                                 logButton.setImageResource(R.drawable.dashboard_stop_log_item);
-                                                GpsServiceUtilities.startDatabaseLogging(appContext, newName,
+                                                GpsServiceUtilities.startDatabaseLogging(appContext, newName, theBooleanToRunOn,
                                                         DefaultHelperClasses.GPSLOG_HELPER_CLASS);
                                                 actionBar.checkLogging();
                                                 DataManager.getInstance().setLogsVisible(true);

@@ -21,6 +21,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
@@ -46,16 +48,15 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
 /**
- * 
  * A service to handle the GPS data.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * use this to start and trigger a service</br>
  * <code>Intent i= new Intent(context, GpsService.class)</code>;</br>
  * add data to the intent</br>
  * <code>i.putExtra("KEY1", "Value to be used by the service");</br>
- * context.startService(i);</code> 
- * 
+ * context.startService(i);</code>
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -79,6 +80,10 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Intent key to pass the string gps log name.
      */
     public static final String START_GPS_LOG_NAME = "START_GPS_LOG_NAME";
+    /**
+     * Intent key to pass the flag to continue log
+     */
+    public static final String START_GPS_CONTINUE_LOG = "START_GPS_CONTINUE_LOG";
 
     /**
      * Intent key to use for broadcasts.
@@ -87,7 +92,7 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * Intent key to use for int gps status.
-     * 
+     * <p/>
      * <p>Status can be:
      * <ul>
      * <li>gps off = 0</li>
@@ -100,7 +105,7 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * Intent key to use for int gps logging status.
-     * 
+     * <p/>
      * <p>Status can be:
      * <ul>
      * <li>gps logging off = 0</li>
@@ -145,7 +150,7 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * The previous gps location or null if no gps location was taken yet.
-     * 
+     * <p/>
      * <p>This changes with every {@link #onLocationChanged(Location)}.</p>
      */
     private Location previousLoc = null;
@@ -171,7 +176,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     private Handler toastHandler;
 
     @Override
-    public int onStartCommand( Intent intent, int flags, int startId ) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         // GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
 
@@ -209,10 +214,11 @@ public class GpsService extends Service implements LocationListener, Listener {
                     if (!isDatabaseLogging) {
                         String gpsLogName = intent.getStringExtra(START_GPS_LOG_NAME);
                         String gpsLogHelperClass = intent.getStringExtra(START_GPS_LOG_HELPER_CLASS);
+                        boolean continueLastGpsLog = intent.getBooleanExtra(START_GPS_CONTINUE_LOG, false);
                         try {
-                            Class< ? > logHelper = Class.forName(gpsLogHelperClass);
+                            Class<?> logHelper = Class.forName(gpsLogHelperClass);
                             IGpsLogDbHelper newInstance = (IGpsLogDbHelper) logHelper.newInstance();
-                            startDatabaseLogging(gpsLogName, newInstance);
+                            startDatabaseLogging(gpsLogName, continueLastGpsLog, newInstance);
                         } catch (Exception e) {
                             GPLog.error(this, "Could not start logging", e);
                         }
@@ -284,25 +290,38 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * Starts logging into the database.
-     * 
-     * @param logName a name for the new log or <code>null</code>.
-     * @param dbHelper the db helper.
+     *
+     * @param logName         a name for the new log or <code>null</code>.
+     * @param continueLastLog if true, the last previous log is continued.
+     * @param dbHelper        the db helper.
      */
-    private void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
+    private void startDatabaseLogging(final String logName, final boolean continueLastLog, final IGpsLogDbHelper dbHelper) {
         if (isDatabaseLogging) {
             // we do not start twice
             return;
         }
         isDatabaseLogging = true;
 
-        Thread t = new Thread(){
+        Thread t = new Thread() {
 
             public void run() {
                 try {
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase();
-                    long now = System.currentTimeMillis();
-                    long gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
+
+                    long gpsLogId = -1;
+                    if (continueLastLog) {
+                        try {
+                            gpsLogId = dbHelper.getLastLogId();
+                        } catch (Exception e) {
+                            // ignore and create a new one
+                        }
+                    }
+
+                    if (gpsLogId < 0) {
+                        long now = System.currentTimeMillis();
+                        gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
+                    }
                     currentRecordedLogId = gpsLogId;
                     log("GPS Start logging. Logid: " + gpsLogId);
 
@@ -331,7 +350,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     long previousGpsLocationTime = -1;
                     currentPointsNum = 0;
                     currentDistance = 0;
-                    while( isDatabaseLogging ) {
+                    while (isDatabaseLogging) {
                         if (gotFix || isMockMode) {
                             if (DO_WHILE_LOOP_LOG)
                                 GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while at: " + System.nanoTime());
@@ -429,7 +448,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         // set the end time stamp and the total distance for the track
                         long end = System.currentTimeMillis();
                         dbHelper.setEndTs(gpsLogId, end);
-                        dbHelper.setTrackLengthm(gpsLogId, (double) currentDistance);
+                        dbHelper.setTrackLengthm(gpsLogId, currentDistance);
                     }
 
                     currentPointsNum = 0;
@@ -453,13 +472,13 @@ public class GpsService extends Service implements LocationListener, Listener {
 
             /**
              * Waits a bit before next gps query.
-             * 
+             *
              * @param waitForSecs seconds to wait.
              * @return <code>false</code> if the gps got interrupted, <code>true</code> else.
              */
-            private boolean holdABitAndCheckLogging( int waitForSecs ) {
+            private boolean holdABitAndCheckLogging(int waitForSecs) {
                 try {
-                    for( int i = 0; i < waitForSecs; i++ ) {
+                    for (int i = 0; i < waitForSecs; i++) {
                         Thread.sleep(1000L);
                         if (!isDatabaseLogging) {
                             return false;
@@ -482,7 +501,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         isDatabaseLogging = false;
     }
 
-    private static void log( String msg ) {
+    private static void log(String msg) {
         try {
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry("GPSSERVICE", null, null, msg);
@@ -492,7 +511,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
     }
 
-    private static void logABS( String msg ) {
+    private static void logABS(String msg) {
         try {
             if (GPLog.LOG_ABSURD)
                 GPLog.addLogEntry("GPSSERVICE", null, null, msg);
@@ -503,9 +522,9 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * Checks if the GPS is switched on.
-     * 
+     * <p/>
      * <p>Does not say if the GPS is supplying valid data.</p>
-     * 
+     *
      * @return <code>true</code> if the GPS is switched on.
      */
     private boolean isGpsOn() {
@@ -522,7 +541,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         return gpsIsEnabled;
     }
 
-    public void onLocationChanged( Location loc ) {
+    public void onLocationChanged(Location loc) {
         if (loc == null) {
             lastGpsLocation = null;
             return;
@@ -542,13 +561,13 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
     }
 
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
+    public void onStatusChanged(String provider, int status, Bundle extras) {
         // for( GpsManagerListener activity : listeners ) {
         // activity.onStatusChanged(provider, status, extras);
         // }
     }
 
-    public void onProviderEnabled( String provider ) {
+    public void onProviderEnabled(String provider) {
         isProviderEnabled = true;
         if (!isListeningForUpdates) {
             registerForLocationUpdates();
@@ -556,12 +575,12 @@ public class GpsService extends Service implements LocationListener, Listener {
         broadcast("triggered by onProviderEnabled");
     }
 
-    public void onProviderDisabled( String provider ) {
+    public void onProviderDisabled(String provider) {
         isProviderEnabled = false;
         broadcast("triggered by onProviderDisabled");
     }
 
-    public void onGpsStatusChanged( int event ) {
+    public void onGpsStatusChanged(int event) {
         mStatus = locationManager.getGpsStatus(mStatus);
 
         // check fix
@@ -601,7 +620,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     /**
      * @param message a message that can be used for logging.
      */
-    private void broadcast( String message ) {
+    private void broadcast(String message) {
         Intent intent = new Intent(GPS_SERVICE_BROADCAST_NOTIFICATION);
 
         int status = 0; // gps off
@@ -677,7 +696,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     private class ToastRunnable implements Runnable {
         String mText;
 
-        public ToastRunnable( String text ) {
+        public ToastRunnable(String text) {
             mText = text;
         }
 
@@ -711,7 +730,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     // }
     //
     @Override
-    public IBinder onBind( Intent intent ) {
+    public IBinder onBind(Intent intent) {
         return null;
     }
     //

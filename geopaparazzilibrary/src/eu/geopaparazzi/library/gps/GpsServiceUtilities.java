@@ -28,7 +28,7 @@ import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_STATUS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOGGING;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_HELPER_CLASS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_NAME;
-import static eu.geopaparazzi.library.gps.GpsService.STOP_GPS_LOGGING;
+import static eu.geopaparazzi.library.gps.GpsService.*;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -183,13 +183,15 @@ public class GpsServiceUtilities {
      * 
      * @param context the context to use.
      * @param logName the name of the log.
+     * @param continueLastGpsLog if true, the last previous log is continued.
      * @param className the class to use as helper.
      */
-    public static void startDatabaseLogging( Context context, String logName, String className ) {
+    public static void startDatabaseLogging( Context context, String logName, boolean continueLastGpsLog, String className ) {
         Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(START_GPS_LOGGING, true);
         intent.putExtra(START_GPS_LOG_NAME, logName);
         intent.putExtra(START_GPS_LOG_HELPER_CLASS, className);
+        intent.putExtra(START_GPS_CONTINUE_LOG, continueLastGpsLog);
         context.startService(intent);
     }
 

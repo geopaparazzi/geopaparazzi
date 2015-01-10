@@ -43,11 +43,23 @@
         <requestFocus />
     </EditText>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New CheckBox"
+        android:id="@+id/dialogcheckBox"
+        android:layout_below="@+id/dialogEdittext"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color"/>
+
     <LinearLayout
         android:id="@+id/buttons_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialogEdittext"
+        android:layout_below="@+id/dialogcheckBox"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="25dp"
@@ -93,5 +105,7 @@
         android:layout_below="@+id/buttons_layout"
         android:background="@color/main_decorations"
         android:orientation="horizontal" />
+
+
 
 </RelativeLayout>
