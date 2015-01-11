@@ -176,4 +176,18 @@
         </EditTextPreference>
     </PreferenceScreen>
 
+    <PreferenceScreen
+        android:order="250"
+        android:title="@string/gpsaveraging_preferences" >
+        <!-- Metric / Imperial -->
+        <ListPreference
+            android:key="PREFS_KEY_GPSAVG_UNITS"
+            android:order="252"
+            android:title="@string/gpsavg_units" />
+        <!-- dd.ddddd / dd mm.mmm / dd mm sss.ss -->
+        <ListPreference
+            android:key="PREFS_KEY_GPSAVG_FORMAT"
+            android:order="253"
+            android:title="@string/gpsavg_coordinate_format" />
+    </PreferenceScreen>
 </PreferenceScreen>
