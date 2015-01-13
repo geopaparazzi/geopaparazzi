@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
@@ -906,6 +907,8 @@ public class GeoPaparazziActivity extends Activity {
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
         final TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(enterNewProjectString);
+        CheckBox checkBox = (CheckBox) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
+        checkBox.setVisibility(View.GONE);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         final Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
         editText.setText(newGeopaparazziProjectName);

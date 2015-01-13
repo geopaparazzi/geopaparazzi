@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -45,7 +46,7 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Activity that performs geocoding on a user entered location.
- * 
+ *
  * @author Adam Stroud &#60;<a href="mailto:adam.stroud@gmail.com">adam.stroud@gmail.com</a>&#62;
  * @author Andrea Antonello (www.hydrologis.com) - geopaparazzi adaptions/additions.
  */
@@ -56,7 +57,7 @@ public class GeocodeActivity extends ListActivity {
     private ProgressDialog orsProgressDialog;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.geocode);
@@ -72,10 +73,10 @@ public class GeocodeActivity extends ListActivity {
 
     /**
      * Lookup action.
-     * 
+     *
      * @param view parent.
      */
-    public void onLookupLocationClick( View view ) {
+    public void onLookupLocationClick(View view) {
         if (!checkNetwork()) {
             return;
         }
@@ -93,7 +94,7 @@ public class GeocodeActivity extends ListActivity {
 
             List<AddressWrapper> addressWrapperList = new ArrayList<AddressWrapper>();
 
-            for( Address address : addressList ) {
+            for (Address address : addressList) {
                 addressWrapperList.add(new AddressWrapper(address));
             }
 
@@ -101,9 +102,9 @@ public class GeocodeActivity extends ListActivity {
         } catch (IOException e) {
             GPLog.error(this, "Could not geocode address", e); //$NON-NLS-1$
             new AlertDialog.Builder(this).setMessage(R.string.geocodeErrorMessage).setTitle(R.string.geocodeErrorTitle)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick( DialogInterface dialog, int which ) {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     }).show();
@@ -113,10 +114,10 @@ public class GeocodeActivity extends ListActivity {
 
     /**
      * Ok action.
-     * 
+     *
      * @param view parent.
      */
-    public void onOkClick( View view ) {
+    public void onOkClick(View view) {
         if (!checkNetwork()) {
             return;
         }
@@ -148,10 +149,10 @@ public class GeocodeActivity extends ListActivity {
 
     /**
      * Nav action.
-     * 
+     *
      * @param view parent.
      */
-    public void onNavClick( View view ) {
+    public void onNavClick(View view) {
         if (!checkNetwork()) {
             return;
         }
@@ -165,31 +166,31 @@ public class GeocodeActivity extends ListActivity {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String[] items = new String[]{//
-        OpenRouteServiceHandler.Preference.Fastest.toString(), //
+                OpenRouteServiceHandler.Preference.Fastest.toString(), //
                 OpenRouteServiceHandler.Preference.Shortest.toString(), //
                 OpenRouteServiceHandler.Preference.Bicycle.toString() //
         };
 
         new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
 
                         ListView preferenceChoiceListView = ((AlertDialog) dialog).getListView();
                         int selectedPosition = preferenceChoiceListView.getCheckedItemPosition();
                         OpenRouteServiceHandler.Preference orsPreference = OpenRouteServiceHandler.Preference.Fastest;
-                        switch( selectedPosition ) {
-                        case 1:
-                            orsPreference = OpenRouteServiceHandler.Preference.Shortest;
-                            break;
-                        case 2:
-                            orsPreference = OpenRouteServiceHandler.Preference.Bicycle;
-                            break;
-                        case 0:
-                        default:
-                            orsPreference = OpenRouteServiceHandler.Preference.Fastest;
-                            break;
+                        switch (selectedPosition) {
+                            case 1:
+                                orsPreference = OpenRouteServiceHandler.Preference.Shortest;
+                                break;
+                            case 2:
+                                orsPreference = OpenRouteServiceHandler.Preference.Bicycle;
+                                break;
+                            case 0:
+                            default:
+                                orsPreference = OpenRouteServiceHandler.Preference.Fastest;
+                                break;
                         }
                         final OpenRouteServiceHandler.Preference tmpOrsPreference = orsPreference;
 
@@ -207,10 +208,10 @@ public class GeocodeActivity extends ListActivity {
 
                             orsProgressDialog = ProgressDialog.show(GeocodeActivity.this, getString(R.string.openrouteservice),
                                     getString(R.string.downloading_route), true, false);
-                            new AsyncTask<String, Void, String>(){
+                            new AsyncTask<String, Void, String>() {
                                 private String usedUrlString;
 
-                                protected String doInBackground( String... params ) {
+                                protected String doInBackground(String... params) {
                                     try {
 
                                         OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1],
@@ -241,21 +242,24 @@ public class GeocodeActivity extends ListActivity {
                                     }
                                 }
 
-                                protected void onPostExecute( String errorMessage ) { // on UI
-                                                                                      // thread!
+                                protected void onPostExecute(String errorMessage) { // on UI
+                                    // thread!
                                     Utilities.dismissProgressDialog(orsProgressDialog);
                                     if (errorMessage == null) {
                                         GeocodeActivity.this.setResult(RESULT_OK, intent);
                                         finish();
                                     } else {
-                                        String openString = errorMessage + "\n\n" //$NON-NLS-1$
-                                                + getString(R.string.view_routing_url_in_browser);
-                                        Utilities.yesNoMessageDialog(GeocodeActivity.this, openString, new Runnable(){
-                                            public void run() {
-                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(usedUrlString));
-                                                startActivity(browserIntent);
-                                            }
-                                        }, null);
+                                        String openString = errorMessage;
+                                        if (usedUrlString != null) {
+                                            openString = openString + "\n\n" //$NON-NLS-1$
+                                                    + getString(R.string.view_routing_url_in_browser);
+                                            Utilities.yesNoMessageDialog(GeocodeActivity.this, openString, new Runnable() {
+                                                public void run() {
+                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(usedUrlString));
+                                                    startActivity(browserIntent);
+                                                }
+                                            }, null);
+                                        }
 
                                     }
                                 }
@@ -270,7 +274,7 @@ public class GeocodeActivity extends ListActivity {
     private static class AddressWrapper {
         private Address address;
 
-        public AddressWrapper( Address address ) {
+        public AddressWrapper(Address address) {
             this.address = address;
         }
 
@@ -278,7 +282,7 @@ public class GeocodeActivity extends ListActivity {
         public String toString() {
             StringBuilder stringBuilder = new StringBuilder();
 
-            for( int i = 0; i < address.getMaxAddressLineIndex(); i++ ) {
+            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                 stringBuilder.append(address.getAddressLine(i));
 
                 if ((i + 1) < address.getMaxAddressLineIndex()) {
