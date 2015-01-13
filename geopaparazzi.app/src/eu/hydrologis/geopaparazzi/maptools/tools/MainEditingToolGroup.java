@@ -245,12 +245,12 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                             AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
                                     spatialVectorTable);
                             if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                                int geomType = spatialVectorTable.getGeomType();
-                                GeometryType geometryType = GeometryType.forValue(geomType);
+                                int tableGeomTypeCode = spatialVectorTable.getGeomType();
+                                GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
 
                                 Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
 
-                                if (geometryType.isGeometryCompatible(newGeom)) {
+                                if (tableGeometryType.isGeometryCompatible(newGeom)) {
                                     DaoSpatialite.updateFeatureGeometry(
                                             cutExtendProcessedFeature.getId(),
                                             newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);

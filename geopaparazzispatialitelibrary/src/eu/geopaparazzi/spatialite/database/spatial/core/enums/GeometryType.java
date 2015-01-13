@@ -81,14 +81,14 @@ public enum GeometryType {
 
     /**
      * Create the type.
-     * 
-     * @param type the geometry type.
-     * @param description the human readable description.
-     * @param geometryTypeCast the geometry cast sql piece.
+     *
+     * @param type                the geometry type.
+     * @param description         the human readable description.
+     * @param geometryTypeCast    the geometry cast sql piece.
      * @param spaceDimensionsCast the space dimension cast sql piece.
-     * @param multiSingleCast the cast sql piece for single or multi geom.
+     * @param multiSingleCast     the cast sql piece for single or multi geom.
      */
-    GeometryType( int type, String description, String geometryTypeCast, String spaceDimensionsCast, String multiSingleCast ) {
+    GeometryType(int type, String description, String geometryTypeCast, String spaceDimensionsCast, String multiSingleCast) {
         this.type = type;
         this.description = description;
         this.geometryTypeCast = geometryTypeCast;
@@ -125,7 +125,7 @@ public enum GeometryType {
     }
 
     /**
-     * @return the cast sql piece for single or multi geom. 
+     * @return the cast sql piece for single or multi geom.
      */
     public String getMultiSingleCast() {
         return multiSingleCast;
@@ -137,111 +137,121 @@ public enum GeometryType {
      * @param value the type.
      * @return the {@link GeometryType}.
      */
-    public static GeometryType forValue( int value ) {
-        switch( value ) {
-        case 0:
-            return GEOMETRY_XY;
-        case 1:
-            return POINT_XY;
-        case 2:
-            return LINESTRING_XY;
-        case 3:
-            return POLYGON_XY;
-        case 4:
-            return MULTIPOINT_XY;
-        case 5:
-            return MULTILINESTRING_XY;
-        case 6:
-            return MULTIPOLYGON_XY;
-        case 7:
-            return GEOMETRYCOLLECTION_XY;
+    public static GeometryType forValue(int value) {
+        switch (value) {
+            case 0:
+                return GEOMETRY_XY;
+            case 1:
+                return POINT_XY;
+            case 2:
+                return LINESTRING_XY;
+            case 3:
+                return POLYGON_XY;
+            case 4:
+                return MULTIPOINT_XY;
+            case 5:
+                return MULTILINESTRING_XY;
+            case 6:
+                return MULTIPOLYGON_XY;
+            case 7:
+                return GEOMETRYCOLLECTION_XY;
             /*
              * XYZ
              */
-        case 1000:
-            return GEOMETRY_XYZ;
-        case 1001:
-            return POINT_XYZ;
-        case 1002:
-            return LINESTRING_XYZ;
-        case 1003:
-            return POLYGON_XYZ;
-        case 1004:
-            return MULTIPOINT_XYZ;
-        case 1005:
-            return MULTILINESTRING_XYZ;
-        case 1006:
-            return MULTIPOLYGON_XYZ;
-        case 1007:
-            return GEOMETRYCOLLECTION_XYZ;
+            case 1000:
+                return GEOMETRY_XYZ;
+            case 1001:
+                return POINT_XYZ;
+            case 1002:
+                return LINESTRING_XYZ;
+            case 1003:
+                return POLYGON_XYZ;
+            case 1004:
+                return MULTIPOINT_XYZ;
+            case 1005:
+                return MULTILINESTRING_XYZ;
+            case 1006:
+                return MULTIPOLYGON_XYZ;
+            case 1007:
+                return GEOMETRYCOLLECTION_XYZ;
             /*
              * XYM
              */
-        case 2000:
-            return GEOMETRY_XYM;
-        case 2001:
-            return POINT_XYM;
-        case 2002:
-            return LINESTRING_XYM;
-        case 2003:
-            return POLYGON_XYM;
-        case 2004:
-            return MULTIPOINT_XYM;
-        case 2005:
-            return MULTILINESTRING_XYM;
-        case 2006:
-            return MULTIPOLYGON_XYM;
-        case 2007:
-            return GEOMETRYCOLLECTION_XYM;
+            case 2000:
+                return GEOMETRY_XYM;
+            case 2001:
+                return POINT_XYM;
+            case 2002:
+                return LINESTRING_XYM;
+            case 2003:
+                return POLYGON_XYM;
+            case 2004:
+                return MULTIPOINT_XYM;
+            case 2005:
+                return MULTILINESTRING_XYM;
+            case 2006:
+                return MULTIPOLYGON_XYM;
+            case 2007:
+                return GEOMETRYCOLLECTION_XYM;
             /*
              * XYZM
              */
-        case 3000:
-            return GEOMETRY_XYZM;
-        case 3001:
-            return POINT_XYZM;
-        case 3002:
-            return LINESTRING_XYZM;
-        case 3003:
-            return POLYGON_XYZM;
-        case 3004:
-            return MULTIPOINT_XYZM;
-        case 3005:
-            return MULTILINESTRING_XYZM;
-        case 3006:
-            return MULTIPOLYGON_XYZM;
-        case 3007:
-            return GEOMETRYCOLLECTION_XYZM;
-        default:
-            break;
+            case 3000:
+                return GEOMETRY_XYZM;
+            case 3001:
+                return POINT_XYZM;
+            case 3002:
+                return LINESTRING_XYZM;
+            case 3003:
+                return POLYGON_XYZM;
+            case 3004:
+                return MULTIPOINT_XYZM;
+            case 3005:
+                return MULTILINESTRING_XYZM;
+            case 3006:
+                return MULTIPOLYGON_XYZM;
+            case 3007:
+                return GEOMETRYCOLLECTION_XYZM;
+            default:
+                break;
         }
         throw new IllegalArgumentException("No geometry type of value: " + value);
     }
 
     /**
      * Checks if the given geometry is compatible with this type.
-     *
+     * <p/>
      * <p>Compatible means that the type is the same and a cast from multi to
      * single is not required.<p/>
      *
      * @param geometry the geometry to check.
      * @return <code>true</code>, if the geometry is compatible.
      */
-    public boolean isGeometryCompatible(Geometry geometry){
+    public boolean isGeometryCompatible(Geometry geometry) {
         String geometryType = geometry.getGeometryType().toLowerCase();
 
         String description = getDescription().toLowerCase();
-        if (!description.startsWith(geometryType)){
-            return false;
+        if (!description.startsWith(geometryType)) {
+            /*
+             * Geometry is compatible if the type is multi
+             * and the geometry is single.
+             */
+            String multiSingleCast = getMultiSingleCast().toLowerCase();
+            if (multiSingleCast.contains("tomulti")) {
+                // layer is multi geometry
+                if (!description.startsWith("multi" + geometryType)) {
+                    return false;
+                }
+            }
         }
         /*
          * Geometry is not compatible if the type is single
          * and the geometry is multi.
          */
         String multiSingleCast = getMultiSingleCast().toLowerCase();
-        if (multiSingleCast.contains("tosingle")){
+        if (multiSingleCast.contains("tosingle")) {
             // layer is single geometry
-            if (geometryType.contains("multi")){
+            if (geometryType.contains("multi")) {
                 return false;
             }
         }
@@ -250,14 +260,14 @@ public enum GeometryType {
 
     /**
      * Checks if the given geometry type is compatible with this type.
-     *
+     * <p/>
      * <p>Compatible means that the type is the same and a cast from multi to
      * single is not required.<p/>
      *
      * @param geometryType the geometry type to check.
      * @return <code>true</code>, if the geometry is compatible.
      */
-    public boolean isGeometryTypeCompatible(GeometryType geometryType){
+    public boolean isGeometryTypeCompatible(GeometryType geometryType) {
         String otherDescription = geometryType.getDescription();
         String thisDescription = getDescription();
         /*
@@ -265,9 +275,9 @@ public enum GeometryType {
          * and the geometry is multi.
          */
         String multiSingleCast = getMultiSingleCast().toLowerCase();
-        if (multiSingleCast.contains("tosingle")){
+        if (multiSingleCast.contains("tosingle")) {
             // layer is single geometry
-            if (otherDescription.contains("multi")){
+            if (otherDescription.contains("multi")) {
                 return false;
             }
         }
@@ -280,14 +290,14 @@ public enum GeometryType {
 
     /**
      * Get the {@link GeometryType} int value from the geometry type name as of spatialite 3.
-     *
+     * <p/>
      * <b>WARNING: this returns just the basic geom types!</b>
      *
      * @param name the geometry type name.
      * @return the type.
      */
     @SuppressLint("DefaultLocale")
-    public static int forValue( String name ) {
+    public static int forValue(String name) {
         if (name.toUpperCase().startsWith("POINT")) {
             return POINT_XY.getType();
         } else if (name.toUpperCase().startsWith("MULTIPOINT")) {
