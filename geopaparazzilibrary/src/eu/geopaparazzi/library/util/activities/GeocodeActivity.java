@@ -259,6 +259,8 @@ public class GeocodeActivity extends ListActivity {
                                                     startActivity(browserIntent);
                                                 }
                                             }, null);
+                                        } else {
+                                            Utilities.warningDialog(GeocodeActivity.this, openString, null);
                                         }
 
                                     }
