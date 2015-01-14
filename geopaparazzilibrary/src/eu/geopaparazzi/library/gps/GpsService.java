@@ -17,11 +17,6 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +41,11 @@ import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.TestMock;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
 
 /**
  * A service to handle the GPS data.
@@ -312,7 +312,9 @@ public class GpsService extends Service implements LocationListener, Listener {
                     long gpsLogId = -1;
                     if (continueLastLog) {
                         try {
+                            log("Continue from last log...");
                             gpsLogId = dbHelper.getLastLogId();
+                            log("...with log id: " + gpsLogId);
                         } catch (Exception e) {
                             // ignore and create a new one
                         }
@@ -321,6 +323,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     if (gpsLogId < 0) {
                         long now = System.currentTimeMillis();
                         gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
+                        log("Beginning a new log with log id: " + gpsLogId);
                     }
                     currentRecordedLogId = gpsLogId;
                     log("GPS Start logging. Logid: " + gpsLogId);
