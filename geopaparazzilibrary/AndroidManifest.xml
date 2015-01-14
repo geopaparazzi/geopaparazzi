@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.geopaparazzi.library"
-    android:versionCode="52"
-    android:versionName="3.9.1" >
+    android:versionCode="64"
+    android:versionName="4.1.1" >
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="19" >
+        android:targetSdkVersion="21" >
     </uses-sdk>
 
     <!--
@@ -21,7 +21,13 @@
         <uses-permission android:name="android.permission.RECEIVE_SMS" />
         <uses-permission android:name="android.permission.SEND_SMS" />
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.RECORD_AUDIO" />        <uses-permission android:name="android.permission.READ_CONTACTS" />        <uses-permission android:name="android.permission.VIBRATE" />
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+        <uses-permission android:name="android.permission.READ_CONTACTS" />
+        <uses-permission android:name="android.permission.VIBRATE" />
+
+
+
+
     -->
 
     <uses-feature
@@ -99,13 +105,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.sketch.DrawingActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.sketch.DrawingActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name="eu.geopaparazzi.library.forms.FormActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
@@ -120,25 +119,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".bluetooth.BluetoothPreferencesActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".webproject.WebProjectsListActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".util.activities.PlaySoundActivity"
-            android:theme="@android:style/Theme.NoDisplay" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.PlaySoundActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
