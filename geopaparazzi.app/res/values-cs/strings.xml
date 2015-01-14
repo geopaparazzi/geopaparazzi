@@ -265,4 +265,5 @@
   <string name="custommapfolder_title">Nyní používaná složka s mapami</string>
   <string name="enable_mock_locations_for_demo">K použití ukázkového režimu je potřeba v nastavení pro vývojáře povolit předstírané polohy. Ukázkový režim se zakazuje.</string>
   <string name="could_not_open_geosms">Nepodařilo se otevřít poslané URI. Geopaparazzi dokáže otevřít jen GeoSMS URI, jež obsahují části jako:</string>
+  <string name="continue_last_log">Pokračovat v posledním záznamu.</string>
 </resources>
