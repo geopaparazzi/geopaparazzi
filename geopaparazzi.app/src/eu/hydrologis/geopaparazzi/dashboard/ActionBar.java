@@ -344,7 +344,7 @@ public class ActionBar {
             sb.append(" ").append(elev); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(azimString);
-            sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
+            sb.append(" ").append((int) azimuth); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(loggingString);
             sb.append(": ").append(lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON); //$NON-NLS-1$

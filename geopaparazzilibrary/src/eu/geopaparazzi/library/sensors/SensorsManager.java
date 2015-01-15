@@ -194,6 +194,7 @@ public class SensorsManager implements SensorEventListener {
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Y, outR);
             SensorManager.getOrientation(outR, values);
             normalAzimuth = toDegrees(values[0]);
+            normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
             // normalPitch = toDegrees(values[1]);
             // normalRoll = toDegrees(values[2]);
             // int orientation = getContext().getResources().getConfiguration().orientation;
