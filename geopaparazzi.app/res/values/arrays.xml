@@ -123,5 +123,14 @@
         <item>tomato</item>
         <item>salmon</item>
     </string-array>
+    <string-array name="gpsavg_units">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+    <string-array name="gpsavg_format">
+        <item>dd.ddddd</item>
+        <item>N dd mm.mmm</item>
+        <item>N dd mm ss.sss</item>
+    </string-array>
 
 </resources>

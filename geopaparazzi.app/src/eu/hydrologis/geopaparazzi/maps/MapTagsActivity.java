@@ -70,6 +70,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 @SuppressWarnings("nls")
 public class MapTagsActivity extends Activity {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
+    private static final String PREFS_KEY_GPSAVG_ON = "PREFS_KEY_GPSAVG_ON";
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
@@ -104,11 +105,21 @@ public class MapTagsActivity extends Activity {
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
 
+        final boolean gpsAveraging = preferences.getBoolean(PREFS_KEY_GPSAVG_ON,true);
+
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    gpsLocation = GpsServiceUtilities.getPosition(intent);
+                    if(gpsAveraging){
+                        GPLog.addLogEntry("GPSAVG","inside MapTags if stmt");
+                        GpsServiceUtilities.startGpsAveraging(context);
+                        // somehow wait here till averaging done?
+                        gpsLocation = GpsServiceUtilities.getPositionAverage(intent);
+                        //TODO -- call to window or message of some sort
+                    } else {
+                        gpsLocation = GpsServiceUtilities.getPosition(intent);
+                    }
                     boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                     if (useMapCenterPosition) {
                         togglePositionTypeButtonGps.setChecked(false);

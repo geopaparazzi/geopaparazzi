@@ -22,18 +22,25 @@ import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_BROADCAST_NOTIF
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_DO_BROADCAST;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_GPSSTATUS_EXTRAS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION;
+import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_AVERAGED_POSITION;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_EXTRAS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_TIME;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_STATUS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOGGING;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_HELPER_CLASS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_NAME;
-import static eu.geopaparazzi.library.gps.GpsService.*;
+//import static eu.geopaparazzi.library.gps.GpsService.*;
+import static eu.geopaparazzi.library.gps.GpsService.START_GPS_CONTINUE_LOG;
+import static eu.geopaparazzi.library.gps.GpsService.START_GPS_AVERAGING;
+import static eu.geopaparazzi.library.gps.GpsService.STOP_GPS_LOGGING;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import eu.geopaparazzi.library.database.GPLog;
+
 /**
  * 
  * A service utils class.
@@ -133,6 +140,21 @@ public class GpsServiceUtilities {
     }
 
     /**
+     * Utility to get the position/gps average from an intent.
+     *
+     * @param intent the intent.
+     * @return the position as lon, lat, elev.
+     */
+    public static double[] getPositionAverage( Intent intent ) {
+        GPLog.addLogEntry("GPSAVG","In gpsserviceutilities getPositionAvg");
+        if (intent == null) {
+            return null;
+        }
+        double[] position = intent.getDoubleArrayExtra(GPS_SERVICE_AVERAGED_POSITION);
+        return position;
+    }
+
+    /**
      * Utility to get the gps status extras from an intent.
      * 
      * @param intent the intent.
@@ -203,6 +225,18 @@ public class GpsServiceUtilities {
     public static void stopDatabaseLogging( Context context ) {
         Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(STOP_GPS_LOGGING, true);
+        context.startService(intent);
+    }
+
+    /**
+     * Start position averaging.
+     *
+     * @param context the context to use.
+     */
+    public static void startGpsAveraging( Context context) {
+        GPLog.addLogEntry("GPSAVG","In gpsserviceutilities startGPSAvg");
+        Intent intent = new Intent(context, GpsService.class);
+        intent.putExtra(START_GPS_AVERAGING, true);
         context.startService(intent);
     }
 }
