@@ -41,6 +41,10 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
+import android.app.PendingIntent;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
@@ -195,6 +199,7 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public boolean isAveraging = false; //original also declared static
     private GpsAvgMeasurements gpsavgmeasurements;
+    private NotificationCompat.Builder nBuilder;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -769,6 +774,12 @@ public class GpsService extends Service implements LocationListener, Listener {
                 String.valueOf(GPS_AVERAGING_SAMPLE_NUMBER));
         Integer numSamps = Integer.parseInt(numSamples);
 
+        //build the notification intents
+        Intent intent = new Intent(this, GpsService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
         for (int i=0;i<numSamps;i++ ) {
             GPLog.addLogEntry("GPSAVG","In avg loop");
             // can't figure out how to use lastGpsLocation from this class
@@ -783,6 +794,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             } catch (InterruptedException e) {
                 break;
             }
+            notifyAboutAveraging(pendingIntent, notifyMgr, i,numSamps);
         }
         broadcast("GPS Averaging complete");
 
@@ -790,6 +802,33 @@ public class GpsService extends Service implements LocationListener, Listener {
         // see: http://developer.android.com/guide/topics/ui/notifiers/notifications.html#Progress
 
     }
+
+
+    /**
+     * Creates a notification for users to track (and stop early, if desired) GPS position averaging
+     */
+    public void notifyAboutAveraging(PendingIntent pendingIntent, NotificationManager notifyMgr, Integer sampsAcquired, Integer sampsTargeted) {
+
+        if (nBuilder == null) {
+            nBuilder =  new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.action_bar_logo)
+                            .setContentTitle("Averaging ...")
+                            .setContentText("GPS Position Averaging")
+                            .setNumber(sampsAcquired);
+        } else {
+            nBuilder.setNumber(sampsAcquired);
+        }
+
+        nBuilder.setContentIntent(pendingIntent);
+
+        //TODO add button to stop processing
+
+        // Issuing notification
+        int notificationId = 1;
+        notifyMgr.notify(notificationId, nBuilder.build());
+
+    }
+
 
 
     // /////////////////////////////////////////////
