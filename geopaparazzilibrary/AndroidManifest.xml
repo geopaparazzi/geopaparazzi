@@ -39,7 +39,7 @@
         android:required="false" >
     </uses-feature>
 
-    <application android:label="GeopaparazziLibrary" >
+    <application  >
         <activity
             android:name="eu.geopaparazzi.library.nfc.NfcIdReaderActivity"
             android:launchMode="singleTask" >
