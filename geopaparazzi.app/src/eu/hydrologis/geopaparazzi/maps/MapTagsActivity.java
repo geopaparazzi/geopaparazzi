@@ -71,6 +71,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 public class MapTagsActivity extends Activity {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
     private static final String PREFS_KEY_GPSAVG_ON = "PREFS_KEY_GPSAVG_ON";
+    private static final String GPS_AVG_COMPLETE = "GPS_AVG_COMPLETE";
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
@@ -83,6 +84,7 @@ public class MapTagsActivity extends Activity {
     private double mapCenterElevation;
     private String[] tagNamesArray;
     private double[] gpsLocation;
+    private double[] gpsAvgLocation;
     private ToggleButton togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
@@ -111,14 +113,19 @@ public class MapTagsActivity extends Activity {
             public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    if(gpsAveraging){
-                        GPLog.addLogEntry("GPSAVG","inside MapTags if stmt");
+                    int avgComplete = intent.getIntExtra(GPS_AVG_COMPLETE,0);
+                    //GPLog.addLogEntry("GPSAVG","intComplete is " + Integer.toString(avgComplete));
+                    //GPLog.addLogEntry("GPSAVG","gpsAveraging is " + Boolean.valueOf(gpsAveraging));
+                    if(gpsAveraging && avgComplete == 0){
                         GpsServiceUtilities.startGpsAveraging(context);
-                        // somehow wait here till averaging done?
-                        gpsLocation = GpsServiceUtilities.getPositionAverage(intent);
                         //TODO -- call to window or message of some sort
                     } else {
                         gpsLocation = GpsServiceUtilities.getPosition(intent);
+                        gpsAvgLocation = GpsServiceUtilities.getPositionAverage(intent);
+                        GPLog.addLogEntry("GPSAVG","Standard Lat: " + String.valueOf(gpsLocation[0]));
+                        if(gpsAvgLocation != null) {
+                            GPLog.addLogEntry("GPSAVG", "Averaged Lat:  " + String.valueOf(gpsAvgLocation[0]));
+                        }
                     }
                     boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                     if (useMapCenterPosition) {
@@ -262,14 +269,18 @@ public class MapTagsActivity extends Activity {
     private void checkPositionCoordinates() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
-        if (useMapCenterPosition || gpsLocation == null) {
+        if (useMapCenterPosition || (gpsLocation == null && gpsAvgLocation == null)) {
             latitude = mapCenterLatitude;
             longitude = mapCenterLongitude;
             elevation = mapCenterElevation;
-        } else {
+        } else if (gpsAvgLocation == null) {
             latitude = gpsLocation[1];
             longitude = gpsLocation[0];
             elevation = gpsLocation[2];
+        } else {
+            latitude = gpsAvgLocation[1];
+            longitude = gpsAvgLocation[0];
+            elevation = gpsAvgLocation[2];
         }
     }
 

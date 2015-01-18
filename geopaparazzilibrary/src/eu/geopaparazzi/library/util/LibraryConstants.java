@@ -201,6 +201,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_GPSLOGGINGDISTANCE = "PREFS_KEY_GPS_LOGGING_DISTANCE"; //$NON-NLS-1$
 
     /**
+     * Key used to store and retrieve the number of samples for gps position averaging.
+     */
+    public static final String PREFS_KEY_GPSAVG_NUMBER_SAMPLES = "PREFS_KEY_GPSAVG_NUMBER_SAMPLES"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the gps mode to use (apply on android listener or just on application base).
      */
     public static final String PREFS_KEY_GPSDOATANDROIDLEVEL = "PREFS_KEY_GPSDOATANDROIDLEVEL"; //$NON-NLS-1$
@@ -303,6 +308,12 @@ public interface LibraryConstants {
      * Default gps logging distance.
      */
     public static final float GPS_LOGGING_DISTANCE = 1f;
+
+    /**
+     * Default gps averaging number of samples to average
+     */
+    public static final int GPS_AVERAGING_SAMPLE_NUMBER = 5;
+
     /**
      * Key for tilesource in preferences. 
      */

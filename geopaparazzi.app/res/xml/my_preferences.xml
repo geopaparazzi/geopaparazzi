@@ -182,7 +182,8 @@
         <CheckBoxPreference
             android:key="PREFS_KEY_GPSAVG_ON"
             android:order="251"
-            android:title="@string/gpsavg_turn_on" >
+            android:title="@string/gpsavg_turn_on"
+            android:defaultValue="true">
         </CheckBoxPreference>
         <!-- Metric / Imperial -->
         <ListPreference
