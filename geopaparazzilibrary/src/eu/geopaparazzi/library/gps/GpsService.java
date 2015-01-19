@@ -787,6 +787,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         for (int i = 0; i < numSamps; i++) {
                             GPLog.addLogEntry("GPSAVG", "In avg loop");
                             // can't figure out how to use lastGpsLocation from this class
+                            // need to sample immediate gps location, not delayed or stored
                             Location location = locationManager.getLastKnownLocation("gps");
                             if (location != null) {
                                 gpsavgmeasurements.add(location);
@@ -804,9 +805,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         cancelAvgNotify(notifyMgr);
                     }
                 }
-        );
-        // use notification with progress bar? because we'll have targeted number of records or time to avg
-        // see: http://developer.android.com/guide/topics/ui/notifiers/notifications.html#Progress
+        ).start();
 
     }
 
@@ -823,15 +822,16 @@ public class GpsService extends Service implements LocationListener, Listener {
     public void notifyAboutAveraging(PendingIntent pendingIntent, NotificationManager notifyMgr, Integer sampsAcquired, Integer sampsTargeted) {
 
         if (nBuilder == null) {
+            String msg = "Averaging " + String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + ".";
             nBuilder =  new NotificationCompat.Builder(this)
                             .setSmallIcon(R.drawable.action_bar_logo)
-                            .setContentTitle("Averaging ...")
-                            .setContentText("GPS Position Averaging")
-                            .setNumber(sampsAcquired)
+                            .setContentTitle("GPS Position Averaging")
+                            .setContentText(msg)
                             .setProgress(sampsTargeted,sampsAcquired,false);
 
         } else {
-            nBuilder.setNumber(sampsAcquired)
+            String msg = String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + " points sampled.";
+            nBuilder.setContentText(msg)
                     .setProgress(sampsTargeted,sampsAcquired,false);
         }
 
