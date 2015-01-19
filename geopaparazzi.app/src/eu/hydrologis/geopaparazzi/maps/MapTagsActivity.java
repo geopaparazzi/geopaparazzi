@@ -107,16 +107,16 @@ public class MapTagsActivity extends Activity {
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
 
-        final boolean gpsAveraging = preferences.getBoolean(PREFS_KEY_GPSAVG_ON,true);
+        final boolean prefsDoGpsAveraging = preferences.getBoolean(PREFS_KEY_GPSAVG_ON,true);
 
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     int avgComplete = intent.getIntExtra(GPS_AVG_COMPLETE,0);
-                    //GPLog.addLogEntry("GPSAVG","intComplete is " + Integer.toString(avgComplete));
-                    //GPLog.addLogEntry("GPSAVG","gpsAveraging is " + Boolean.valueOf(gpsAveraging));
-                    if(gpsAveraging && avgComplete == 0){
+                    GPLog.addLogEntry("GPSAVG","int avComplete is " + Integer.toString(avgComplete));
+                    //GPLog.addLogEntry("GPSAVG","prefsDoGpsAveraging is " + Boolean.valueOf(prefsDoGpsAveraging));
+                    if(prefsDoGpsAveraging && avgComplete == 0){
                         GpsServiceUtilities.startGpsAveraging(context);
                         //TODO -- call to window or message of some sort
                     } else {

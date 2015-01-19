@@ -197,7 +197,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     /**
      * for gps avg
      */
-    public boolean isAveraging = false; //original also declared static
+    private boolean isAveraging = false; //original also declared static
     private GpsAvgMeasurements gpsavgmeasurements;
     private NotificationCompat.Builder nBuilder;
 
@@ -229,9 +229,6 @@ public class GpsService extends Service implements LocationListener, Listener {
             registerForLocationUpdates();
             log("onStartCommand: Registered for location updates");
         }
-
-        // GPS averaging additions
-        gpsavgmeasurements = GpsAvgMeasurements.getInstance();
 
         if (intent != null) {
             /*
@@ -273,8 +270,9 @@ public class GpsService extends Service implements LocationListener, Listener {
             }
             if (intent.hasExtra(START_GPS_AVERAGING)){
                 log("onStartCommand: Start GPS averaging called");
-                GPLog.addLogEntry("GPSAVG","In gpsservice intent call");
-                if(!isAveraging){
+                gpsavgmeasurements = GpsAvgMeasurements.getInstance();
+                boolean doAverage = intent.getBooleanExtra(START_GPS_AVERAGING, false);
+                if(!isAveraging && doAverage){
                     startAveraging();
                 }
             }
@@ -737,10 +735,12 @@ public class GpsService extends Service implements LocationListener, Listener {
             elev = loc.getAltitude();
             double[] GpsAvgPositionArray = new double[]{lon, lat, elev};
             intent.putExtra(GPS_SERVICE_AVERAGED_POSITION, GpsAvgPositionArray);
-            if(message == "GPS Averaging complete"){
-                intent.putExtra(GPS_AVG_COMPLETE,1);
-                GPLog.addLogEntry("GPSAVG","put extra AVGCOMPLETE");
+            if(message == "GPS Averaging complete") {
+                intent.putExtra(GPS_AVG_COMPLETE, 1);
+                GPLog.addLogEntry("GPSAVG", "put extra AVGCOMPLETE");
                 isAveraging = false;
+            } else {
+                intent.putExtra(GPS_AVG_COMPLETE,0);
             }
             GPLog.addLogEntry("GPSAVG","put extra AVERAGED POSITION");
         }
@@ -766,38 +766,45 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public void startAveraging() {
         isAveraging = true;
-        Toast.makeText(GpsService.this, "Starting GPS Averaging", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(GpsService.this, "Starting GPS Averaging", Toast.LENGTH_SHORT).show();
         gpsavgmeasurements.clean();
-        int averagingDelaySeconds = 1;
+        final int averagingDelaySeconds = 1;
 
-        String numSamples = preferences.getString(PREFS_KEY_GPSAVG_NUMBER_SAMPLES,
+        final String numSamples = preferences.getString(PREFS_KEY_GPSAVG_NUMBER_SAMPLES,
                 String.valueOf(GPS_AVERAGING_SAMPLE_NUMBER));
-        Integer numSamps = Integer.parseInt(numSamples);
+        final Integer numSamps = Integer.parseInt(numSamples);
 
         //build the notification intents
         Intent intent = new Intent(this, GpsService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        final NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        for (int i=0;i<numSamps;i++ ) {
-            GPLog.addLogEntry("GPSAVG","In avg loop");
-            // can't figure out how to use lastGpsLocation from this class
-            Location location =  locationManager.getLastKnownLocation("gps");
-            if (location != null) {
-                gpsavgmeasurements.add(location);
-            }
-            try {
-                for( int j = 0; j < averagingDelaySeconds; j++ ) {
-                    Thread.sleep(1000L);
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < numSamps; i++) {
+                            GPLog.addLogEntry("GPSAVG", "In avg loop");
+                            // can't figure out how to use lastGpsLocation from this class
+                            Location location = locationManager.getLastKnownLocation("gps");
+                            if (location != null) {
+                                gpsavgmeasurements.add(location);
+                            }
+                            try {
+                                for (int j = 0; j < averagingDelaySeconds; j++) {
+                                    Thread.sleep(1000L);
+                                }
+                            } catch (InterruptedException e) {
+                                break;
+                            }
+                            notifyAboutAveraging(pendingIntent, notifyMgr, i, numSamps);
+                        }
+                        broadcast("GPS Averaging complete");
+                        cancelAvgNotify(notifyMgr);
+                    }
                 }
-            } catch (InterruptedException e) {
-                break;
-            }
-            notifyAboutAveraging(pendingIntent, notifyMgr, i,numSamps);
-        }
-        broadcast("GPS Averaging complete");
-
+        );
         // use notification with progress bar? because we'll have targeted number of records or time to avg
         // see: http://developer.android.com/guide/topics/ui/notifiers/notifications.html#Progress
 
@@ -806,6 +813,12 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     /**
      * Creates a notification for users to track (and stop early, if desired) GPS position averaging
+     *
+     * @param pendingIntent the pending intent for the notification
+     * @param notifyMgr the notification manager retrieved from the system
+     * @param sampsAcquired the current number of gps samples sent to gpsavgmeasurements for averaging
+     * @param  sampsTargeted the total number of gps samples requested for averaging
+     *
      */
     public void notifyAboutAveraging(PendingIntent pendingIntent, NotificationManager notifyMgr, Integer sampsAcquired, Integer sampsTargeted) {
 
@@ -814,9 +827,12 @@ public class GpsService extends Service implements LocationListener, Listener {
                             .setSmallIcon(R.drawable.action_bar_logo)
                             .setContentTitle("Averaging ...")
                             .setContentText("GPS Position Averaging")
-                            .setNumber(sampsAcquired);
+                            .setNumber(sampsAcquired)
+                            .setProgress(sampsTargeted,sampsAcquired,false);
+
         } else {
-            nBuilder.setNumber(sampsAcquired);
+            nBuilder.setNumber(sampsAcquired)
+                    .setProgress(sampsTargeted,sampsAcquired,false);
         }
 
         nBuilder.setContentIntent(pendingIntent);
@@ -824,12 +840,23 @@ public class GpsService extends Service implements LocationListener, Listener {
         //TODO add button to stop processing
 
         // Issuing notification
-        int notificationId = 1;
+        int notificationId = 6;
         notifyMgr.notify(notificationId, nBuilder.build());
 
     }
 
+    /*
+    * Cancels the notification
+    *
+    * @param notifyMgr the notification manager
+    *
+    * */
+    public void cancelAvgNotify(NotificationManager notifyMgr) {
 
+    notifyMgr.cancel(6);
+
+
+    }
 
     // /////////////////////////////////////////////
     // UNUSED METHODS
