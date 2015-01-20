@@ -155,12 +155,17 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Intent key to pass the boolean to start gps averaging.
      */
     public static final String GPS_AVG_COMPLETE = "GPS_AVG_COMPLETE";
+    /**
+     * Intent key to pass the boolean to stop averaging.
+     */
+    public static final String STOP_AVERAGING_NOW = "STOP_AVERAGING_NOW";
 
 
     private SharedPreferences preferences;
     private LocationManager locationManager;
     private boolean useNetworkPositions = false;
     private boolean isMockMode = false;
+    private boolean stopAveragingRequest = false;
 
     /**
      * The last taken gps location.
@@ -275,6 +280,11 @@ public class GpsService extends Service implements LocationListener, Listener {
                 if(!isAveraging && doAverage){
                     startAveraging();
                 }
+            }
+            if (intent.hasExtra(STOP_AVERAGING_NOW)){
+                log("onStartCommand: Start GPS averaging called");
+                stopAveragingRequest = true;
+                //stopAveragingNow();
             }
 
         }
@@ -775,9 +785,11 @@ public class GpsService extends Service implements LocationListener, Listener {
         final Integer numSamps = Integer.parseInt(numSamples);
 
         //build the notification intents
-        Intent intent = new Intent(this, GpsService.class);
+        //Intent intent = new Intent(this, GpsService.class);
+        Intent intent = new Intent("eu.hydrologis.geopaparazzi.maps.MapTagsActivity");
         final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
+
         final NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         new Thread(
@@ -800,6 +812,9 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 break;
                             }
                             notifyAboutAveraging(pendingIntent, notifyMgr, i, numSamps);
+                            if(stopAveragingRequest){
+                                break;
+                            }
                         }
                         broadcast("GPS Averaging complete");
                         cancelAvgNotify(notifyMgr);
@@ -809,6 +824,14 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     }
 
+    /**
+     * Stops active averaging.
+     */
+//    public void stopAveragingNow() {
+//        broadcast("GPS Averaging complete");
+//        cancelAvgNotify(notifyMgr);
+//    }
+
 
     /**
      * Creates a notification for users to track (and stop early, if desired) GPS position averaging
@@ -816,10 +839,14 @@ public class GpsService extends Service implements LocationListener, Listener {
      * @param pendingIntent the pending intent for the notification
      * @param notifyMgr the notification manager retrieved from the system
      * @param sampsAcquired the current number of gps samples sent to gpsavgmeasurements for averaging
-     * @param  sampsTargeted the total number of gps samples requested for averaging
+     * @param sampsTargeted the total number of gps samples requested for averaging
      *
      */
     public void notifyAboutAveraging(PendingIntent pendingIntent, NotificationManager notifyMgr, Integer sampsAcquired, Integer sampsTargeted) {
+
+        Intent stopAvgIntent = new Intent(this, GpsService.class);
+        stopAvgIntent.putExtra("STOP_AVERAGING_NOW",1);
+        PendingIntent stopAvgPendingIntent = PendingIntent.getActivity(this,0,stopAvgIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (nBuilder == null) {
             String msg = "Averaging " + String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + ".";
@@ -827,7 +854,9 @@ public class GpsService extends Service implements LocationListener, Listener {
                             .setSmallIcon(R.drawable.action_bar_logo)
                             .setContentTitle("GPS Position Averaging")
                             .setContentText(msg)
-                            .setProgress(sampsTargeted,sampsAcquired,false);
+                            .setContentIntent(pendingIntent)
+                            .setProgress(sampsTargeted,sampsAcquired,false)
+                            .addAction(R.drawable.goto_position,"Finish now", stopAvgPendingIntent); //only for android 5?
 
         } else {
             String msg = String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + " points sampled.";
@@ -845,12 +874,12 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     }
 
-    /*
+    /**
     * Cancels the notification
     *
     * @param notifyMgr the notification manager
     *
-    * */
+    */
     public void cancelAvgNotify(NotificationManager notifyMgr) {
 
     notifyMgr.cancel(6);

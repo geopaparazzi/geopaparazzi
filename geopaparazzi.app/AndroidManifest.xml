@@ -165,16 +165,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".maps.MapTagsActivity"
-            android:parentActivityName=".maps.MapsActivity"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.maps.MapTagsActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name="eu.geopaparazzi.library.util.activities.AboutActivity">
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.AboutActivity" />
@@ -205,7 +195,9 @@
         </activity>
         <activity
             android:name=".maps.MapTagsActivity"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:parentActivityName=".maps.MapsActivity">
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
 
