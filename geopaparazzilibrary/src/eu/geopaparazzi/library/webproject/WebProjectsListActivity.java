@@ -216,15 +216,7 @@ public class WebProjectsListActivity extends ListActivity {
                 if (response.equals(okMsg)) {
                     Utilities.messageDialog(WebProjectsListActivity.this, okMsg, null);
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
-                    builder.setMessage(response).setCancelable(false)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                    // ignore
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    Utilities.warningDialog(WebProjectsListActivity.this, response, null);
                 }
 
             }

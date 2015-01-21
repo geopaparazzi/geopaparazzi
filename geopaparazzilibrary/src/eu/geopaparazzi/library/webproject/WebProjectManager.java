@@ -119,12 +119,13 @@ public enum WebProjectManager {
      * @return the return code.
      */
     public String downloadProject(Context context, String server, String user, String passwd, Webproject webproject) {
+        String downloadedProjectFileName = "no information available";
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File sdcardDir = resourcesManager.getSdcardDir();
-            File downloadedProjectFile = new File(sdcardDir.getParentFile(), webproject.id);
+            File downloadedProjectFile = new File(sdcardDir, webproject.id);
             if (downloadedProjectFile.exists()) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();
                 return wontOverwrite;
             }
             server = addActionPath(server, DOWNLOADPROJECTPATH);
@@ -135,7 +136,7 @@ public enum WebProjectManager {
             GPLog.error(this, null, e);
             String message = e.getMessage();
             if (message.equals(CompressionUtilities.FILE_EXISTS)) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName;
                 return wontOverwrite;
             }
             return e.getLocalizedMessage();
