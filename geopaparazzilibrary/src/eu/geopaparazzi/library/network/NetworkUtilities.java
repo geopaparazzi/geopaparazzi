@@ -53,13 +53,14 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * Network utils methods.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -67,31 +68,31 @@ public class NetworkUtilities {
 
     private static final String TAG = "NETWORKUTILITIES";
     /**
-     * 
+     *
      */
     public static final long maxBufferSize = 4096;
 
     /**
      * Read url to string.
-     * 
+     *
      * @param urlString the url.
      * @return the fetched text.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static String readUrl( String urlString ) throws Exception {
+    public static String readUrl(String urlString) throws Exception {
         URL url = new URL(urlString);
         InputStream inputStream = url.openStream();
         BufferedReader bi = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
         String line = null;
-        while( (line = bi.readLine()) != null ) {
+        while ((line = bi.readLine()) != null) {
             sb.append(line).append("\n");
         }
         inputStream.close();
         return sb.toString().trim();
     }
 
-    private static HttpURLConnection makeNewConnection( String fileUrl ) throws Exception {
+    private static HttpURLConnection makeNewConnection(String fileUrl) throws Exception {
         // boolean doHttps =
         // CorePlugin.getDefault().getPreferenceStore().getBoolean(KeyManager.keys().getHttpConnectionTypeKey());
         if (fileUrl.startsWith("https")) {
@@ -113,17 +114,17 @@ public class NetworkUtilities {
     /**
      * Sends an HTTP GET request to a url
      *
-     * @param urlStr - The URL of the server. (Example: " http://www.yahoo.com/search")
-     * @param file the output file. If it is a folder, it tries to get the file name from the header.
-     * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2"). 
-     *           Note: This method will add the question mark (?) to the request - 
-     *           DO NOT add it yourself
-     * @param user user.
-     * @param password password.
-     * @return the file written. 
-     * @throws Exception  if something goes wrong. 
+     * @param urlStr            - The URL of the server. (Example: " http://www.yahoo.com/search")
+     * @param file              the output file. If it is a folder, it tries to get the file name from the header.
+     * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2").
+     *                          Note: This method will add the question mark (?) to the request -
+     *                          DO NOT add it yourself
+     * @param user              user.
+     * @param password          password.
+     * @return the file written.
+     * @throws Exception if something goes wrong.
      */
-    public static File sendGetRequest4File( String urlStr, File file, String requestParameters, String user, String password )
+    public static File sendGetRequest4File(String urlStr, File file, String requestParameters, String user, String password)
             throws Exception {
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;
@@ -146,7 +147,7 @@ public class NetworkUtilities {
             String fileName = null;
             if (headerField != null) {
                 String[] split = headerField.split(";");
-                for( String string : split ) {
+                for (String string : split) {
                     String pattern = "filename=";
                     if (string.toLowerCase().startsWith(pattern)) {
                         fileName = string.replaceFirst(pattern, "");
@@ -169,7 +170,7 @@ public class NetworkUtilities {
 
             byte[] buffer = new byte[(int) maxBufferSize];
             int bytesRead = in.read(buffer, 0, (int) maxBufferSize);
-            while( bytesRead > 0 ) {
+            while (bytesRead > 0) {
                 out.write(buffer, 0, bytesRead);
                 bytesRead = in.read(buffer, 0, (int) maxBufferSize);
             }
@@ -187,18 +188,18 @@ public class NetworkUtilities {
 
     /**
      * Sends a string via POST to a given url.
-     * 
-     * @param context  the context to use.
-     * @param urlStr the url to which to send to.
-     * @param string the string to send as post body.
-     * @param user the user or <code>null</code>.
-     * @param password the password or <code>null</code>.
+     *
+     * @param context      the context to use.
+     * @param urlStr       the url to which to send to.
+     * @param string       the string to send as post body.
+     * @param user         the user or <code>null</code>.
+     * @param password     the password or <code>null</code>.
      * @param readResponse if <code>true</code>, the response from the server is read and parsed as return message.
      * @return the response.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static String sendPost( Context context, String urlStr, String string, String user, String password,
-            boolean readResponse ) throws Exception {
+    public static String sendPost(Context context, String urlStr, String string, String user, String password,
+                                  boolean readResponse) throws Exception {
         BufferedOutputStream wr = null;
         HttpURLConnection conn = null;
         try {
@@ -224,7 +225,7 @@ public class NetworkUtilities {
                 StringBuilder returnMessageBuilder = new StringBuilder();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-                    while( true ) {
+                    while (true) {
                         String line = br.readLine();
                         if (line == null)
                             break;
@@ -248,16 +249,16 @@ public class NetworkUtilities {
 
     /**
      * Send a file via HTTP POST with basic authentication.
-     * 
+     *
      * @param context  the context to use.
-     * @param urlStr the server url to POST to.
-     * @param file the file to send.
-     * @param user the user or <code>null</code>.
+     * @param urlStr   the server url to POST to.
+     * @param file     the file to send.
+     * @param user     the user or <code>null</code>.
      * @param password the password or <code>null</code>.
      * @return the return string from the POST.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static String sendFilePost( Context context, String urlStr, File file, String user, String password ) throws Exception {
+    public static String sendFilePost(Context context, String urlStr, File file, String user, String password) throws Exception {
         BufferedOutputStream wr = null;
         FileInputStream fis = null;
         HttpURLConnection conn = null;
@@ -269,6 +270,7 @@ public class NetworkUtilities {
             // return new PasswordAuthentication("test", "test".toCharArray());
             // }
             // });
+            urlStr = urlStr + "?name=" + file.getName();
             conn = makeNewConnection(urlStr);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -278,7 +280,7 @@ public class NetworkUtilities {
 
             // conn.setRequestProperty("Accept-Encoding", "gzip ");
             // conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Content-Type", "application/x-zip-compressed");
+            conn.setRequestProperty("Content-Type", "application/octet-stream");
             // conn.setRequestProperty("Content-Length", "" + fileSize);
             // conn.setRequestProperty("Connection", "Keep-Alive");
 
@@ -295,7 +297,7 @@ public class NetworkUtilities {
             byte[] buffer = new byte[(int) bufferSize];
             int bytesRead = fis.read(buffer, 0, (int) bufferSize);
             long totalBytesWritten = 0;
-            while( bytesRead > 0 ) {
+            while (bytesRead > 0) {
                 wr.write(buffer, 0, (int) bufferSize);
                 totalBytesWritten = totalBytesWritten + bufferSize;
                 if (totalBytesWritten >= fileSize)
@@ -324,45 +326,45 @@ public class NetworkUtilities {
 
     /**
      * Get a default message for an HTTP code.
-     * 
-     * @param context the context to use.
-     * @param responseCode the http code.
+     *
+     * @param context          the context to use.
+     * @param responseCode     the http code.
      * @param defaultOkMessage an optional message for the ok code.
      * @return the message.
      */
-    public static String getMessageForCode( Context context, int responseCode, String defaultOkMessage ) {
+    public static String getMessageForCode(Context context, int responseCode, String defaultOkMessage) {
         Resources resources = context.getResources();
-        switch( responseCode ) {
-        case HttpURLConnection.HTTP_OK:
-            if (defaultOkMessage != null) {
-                return defaultOkMessage;
-            } else {
-                return resources.getString(R.string.http_ok_msg);
-            }
-        case HttpURLConnection.HTTP_FORBIDDEN:
-            return resources.getString(R.string.http_forbidden_msg);
-        case HttpURLConnection.HTTP_UNAUTHORIZED:
-            return resources.getString(R.string.http_forbidden_msg);
-        case HttpURLConnection.HTTP_NOT_FOUND:
-            return resources.getString(R.string.http_not_found_msg);
-        default:
-            return resources.getString(R.string.http_not_implemented_code_msg) + " " + responseCode;
+        switch (responseCode) {
+            case HttpURLConnection.HTTP_OK:
+                if (defaultOkMessage != null) {
+                    return defaultOkMessage;
+                } else {
+                    return resources.getString(R.string.http_ok_msg);
+                }
+            case HttpURLConnection.HTTP_FORBIDDEN:
+                return resources.getString(R.string.http_forbidden_msg);
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
+                return resources.getString(R.string.http_forbidden_msg);
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                return resources.getString(R.string.http_not_found_msg);
+            default:
+                return resources.getString(R.string.http_not_implemented_code_msg) + " " + responseCode;
         }
     }
 
     /**
      * Sends a {@link MultipartEntity} post with text and image files.
-     * 
-     * @param url the url to which to POST to.
-     * @param user the user or <code>null</code>.
-     * @param pwd the password or <code>null</code>.
+     *
+     * @param url        the url to which to POST to.
+     * @param user       the user or <code>null</code>.
+     * @param pwd        the password or <code>null</code>.
      * @param stringsMap the {@link HashMap} containing the key and string pairs to send.
-     * @param filesMap the {@link HashMap} containing the key and image file paths 
-     *                  (jpg, png supported) pairs to send.
-     * @throws Exception  if something goes wrong.
+     * @param filesMap   the {@link HashMap} containing the key and image file paths
+     *                   (jpg, png supported) pairs to send.
+     * @throws Exception if something goes wrong.
      */
-    public static void sentMultiPartPost( String url, String user, String pwd, HashMap<String, String> stringsMap,
-            HashMap<String, File> filesMap ) throws Exception {
+    public static void sentMultiPartPost(String url, String user, String pwd, HashMap<String, String> stringsMap,
+                                         HashMap<String, File> filesMap) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         HttpPost httppost = new HttpPost(url);
@@ -374,13 +376,13 @@ public class NetworkUtilities {
 
         MultipartEntity mpEntity = new MultipartEntity();
         Set<Entry<String, String>> stringsEntrySet = stringsMap.entrySet();
-        for( Entry<String, String> stringEntry : stringsEntrySet ) {
+        for (Entry<String, String> stringEntry : stringsEntrySet) {
             ContentBody cbProperties = new StringBody(stringEntry.getValue());
             mpEntity.addPart(stringEntry.getKey(), cbProperties);
         }
 
         Set<Entry<String, File>> filesEntrySet = filesMap.entrySet();
-        for( Entry<String, File> filesEntry : filesEntrySet ) {
+        for (Entry<String, File> filesEntry : filesEntrySet) {
             String propName = filesEntry.getKey();
             File file = filesEntry.getValue();
             if (file.exists()) {
@@ -401,7 +403,7 @@ public class NetworkUtilities {
         httpclient.getConnectionManager().shutdown();
     }
 
-    private static String getB64Auth( String login, String pass ) {
+    private static String getB64Auth(String login, String pass) {
         String source = login + ":" + pass;
         String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
         return ret;
@@ -409,11 +411,11 @@ public class NetworkUtilities {
 
     /**
      * Checks is the network is available.
-     * 
+     *
      * @param context the {@link Context}.
      * @return true if the network is available.
      */
-    public static boolean isNetworkAvailable( Context context ) {
+    public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity == null) {
             return false;
@@ -425,15 +427,15 @@ public class NetworkUtilities {
 
     /**
      * Send a GET request.
-     * 
-     * @param urlStr the url.
+     *
+     * @param urlStr            the url.
      * @param requestParameters request parameters or <code>null</code>.
-     * @param user user or <code>null</code>.
-     * @param password password or <code>null</code>.
+     * @param user              user or <code>null</code>.
+     * @param password          password or <code>null</code>.
      * @return the fetched text.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static String sendGetRequest( String urlStr, String requestParameters, String user, String password ) throws Exception {
+    public static String sendGetRequest(String urlStr, String requestParameters, String user, String password) throws Exception {
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;
         }
@@ -452,7 +454,7 @@ public class NetworkUtilities {
             InputStream content = entity.getContent();
             BufferedReader reader = new BufferedReader(new InputStreamReader(content));
             String line;
-            while( (line = reader.readLine()) != null ) {
+            while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
         } else {

@@ -52,7 +52,7 @@ public enum WebProjectManager {
     /**
      * The relative path appended to the server url to compose the upload url.
      */
-    public static String UPLOADPATH = "upload";
+    public static String UPLOADPATH = "stage_gpproject_upload";
 
     /**
      * The relative path appended to the server url to compose the download projects list url.
@@ -80,16 +80,8 @@ public enum WebProjectManager {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File databaseFile = resourcesManager.getDatabaseFile();
 
-            File zipFile = new File(databaseFile.getParentFile(), databaseFile.getName() + ".zip");
-            if (zipFile.exists()) {
-                if (!zipFile.delete()) {
-                    throw new IOException();
-                }
-            }
-            CompressionUtilities.createZipFromFiles(zipFile, databaseFile);
-
             server = addActionPath(server, UPLOADPATH);
-            String result = NetworkUtilities.sendFilePost(context, server, zipFile, user, passwd);
+            String result = NetworkUtilities.sendFilePost(context, server, databaseFile, user, passwd);
             if (GPLog.LOG) {
                 GPLog.addLogEntry(this, result);
             }
