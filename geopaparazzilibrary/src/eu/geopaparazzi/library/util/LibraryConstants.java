@@ -169,6 +169,11 @@ public interface LibraryConstants {
     public static final String ROUTE = "ROUTE"; //$NON-NLS-1$
 
     /**
+     * Key used to pass a text string temporarily through bundles.
+     */
+    public static final String TEXT = "TEXT"; //$NON-NLS-1$
+
+    /**
      * Name for a general temporary image.
      */
     public static final String TMPPNGIMAGENAME = "tmp.png"; //$NON-NLS-1$

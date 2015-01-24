@@ -63,6 +63,7 @@ public class NoteActivity extends Activity {
     private double latitude;
     private double longitude;
     private double elevation;
+    private String gpsAvgData;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -73,6 +74,7 @@ public class NoteActivity extends Activity {
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
+            gpsAvgData = extras.getString(LibraryConstants.TEXT); //GPS averaging data
         }
 
         noteText = (EditText) findViewById(R.id.noteentry);
@@ -85,6 +87,10 @@ public class NoteActivity extends Activity {
                     long ts = System.currentTimeMillis();
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
+
+                    if (gpsAvgData != null){
+                        noteString = noteString + " GPS average based on " + gpsAvgData + " points.";
+                    }
 
                     String[] noteArray = {//
                     String.valueOf(longitude), //
