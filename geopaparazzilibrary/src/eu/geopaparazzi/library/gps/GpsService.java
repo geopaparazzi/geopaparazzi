@@ -835,15 +835,6 @@ public class GpsService extends Service implements LocationListener, Listener {
     }
 
     /**
-     * Stops active averaging.
-     */
-//    public void stopAveragingNow() {
-//        broadcast("GPS Averaging complete");
-//        cancelAvgNotify(notifyMgr);
-//    }
-
-
-    /**
      * Creates a notification for users to track (and stop early, if desired) GPS position averaging
      *
      * @param pendingIntent the pending intent for the notification

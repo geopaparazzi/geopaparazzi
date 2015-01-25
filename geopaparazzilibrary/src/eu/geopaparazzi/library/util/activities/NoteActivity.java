@@ -87,7 +87,7 @@ public class NoteActivity extends Activity {
                     long ts = System.currentTimeMillis();
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
-
+                    // Temporary way of storing and displaying number of averaged points
                     if (gpsAvgData != null){
                         noteString = noteString + " GPS average based on " + gpsAvgData + " points.";
                     }
