@@ -185,20 +185,6 @@
             android:title="@string/gpsavg_turn_on"
             android:defaultValue="true">
         </CheckBoxPreference>
-        <!-- Metric / Imperial -->
-        <ListPreference
-            android:key="PREFS_KEY_GPSAVG_UNITS"
-            android:order="252"
-            android:title="@string/gpsavg_units"
-            android:entries="@array/gpsavg_units"
-            android:entryValues="@array/gpsavg_units"/>
-        <!-- dd.ddddd / dd mm.mmm / dd mm sss.ss -->
-        <ListPreference
-            android:key="PREFS_KEY_GPSAVG_FORMAT"
-            android:order="253"
-            android:title="@string/gpsavg_format"
-            android:entryValues="@array/gpsavg_format"
-            android:entries="@array/gpsavg_format"/>
         <EditTextPreference
             android:defaultValue="3"
             android:inputType="number"
