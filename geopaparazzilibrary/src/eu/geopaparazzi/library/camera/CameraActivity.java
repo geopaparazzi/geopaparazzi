@@ -244,6 +244,7 @@ public class CameraActivity extends Activity {
                 String relativeImageFilePath = mediaFolder.getName() + File.separator + imageName;
 
                 Intent intent = getIntent();
+                intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
                 intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
