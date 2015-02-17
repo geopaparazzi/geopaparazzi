@@ -83,9 +83,12 @@
   <string name="http_not_found_msg">Pyydettyä lähdettä ei löytynyt. Tarkista yhteysosoite.</string>
   <string name="http_not_implemented_code_msg">Saatiin paluuviestin koodi (ole hyvä ja lähetä se kehittäjille)</string>
   <string name="post_completed_properly">Viesti lähetettiin onnistuneesti.</string>
+  <string name="http_ok_msg">Pyyntö käsiteltiin onnistuneesti.</string>
   <string name="the_file_exists_wont_overwrite">Tiedosto on olemassa. Ei korvata:</string>
   <string name="share_note_with">Jaa muistiinpano...</string>
   <string name="downloading_mapurl_to_the_device">Lataus valittu palveluksi laitteelle.</string>
   <string name="mapurl_successfully_downloaded">Mapurl on onnistuneesti ladattu ja asennettu. Muista käynnistää Geopaparazzi uudelleen saadaksesi palvelun luetteloon.</string>
   <string name="crash_toast_text">Sovellutusta kohtasi vakava virhe. Kaatumiseen johtaneet tiedot kerätään ja ne ovat hyödyllisiä ongelman ratkaisuun. Ole ystävällinen ja lähetä ne kehitystiimille kun mahdollista.</string>
+  <string name="share_current_position">Jaa nykyinen sijainti</string>
+  <string name="share_current_center">Jaa nykyisen kartan keskipiste</string>
 </resources>

@@ -89,4 +89,6 @@
   <string name="downloading_mapurl_to_the_device">선택한 서비스를 장치에 다운로드.</string>
   <string name="mapurl_successfully_downloaded">mapurl을 성공적으로 다운로드 및 설치하였습니다. 서비스를 사용하기 위해 Geopaparazzi를 다시 시작해야 합니다.</string>
   <string name="crash_toast_text">이 응용플그램에 치명적인 오류가 발생했습니다. 오류 정보는 수집될 것이며, 문제를 해결하는데 많은 도움이 됩니다. 가능하면 개발 팀에게 보내주십시오.</string>
+  <string name="share_current_position">현재 위치 공유</string>
+  <string name="share_current_center">현재 지도 중심 공유</string>
 </resources>

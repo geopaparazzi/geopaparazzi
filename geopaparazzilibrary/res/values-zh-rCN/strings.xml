@@ -6,10 +6,15 @@
   <string name="cantwrite_gpslog">错误：不能保存GPS轨迹</string>
   <string name="gpsloggingoff">停止GPS轨迹记录</string>
   <string name="gpsloggingon">开始GPS 轨迹记录</string>
+  <string name="gpsloggingalarm">避免/停止报警...</string>
+  <string name="last_position">最后的位置</string>
+  <string name="cantcreate_img_folder">不能创建文件夹储存图片</string>
   <string name="gpx_import_title">线或点？</string>
   <string name="gpx_import_processing">读入gpx文件中</string>
   <string name="insert_note">在这里插入您的便签</string>
   <string name="notesaved">便签成功存储</string>
+  <string name="longitude">经度</string>
+  <string name="latitude">纬度</string>
   <string name="okcoord">使用经纬度</string>
   <string name="message_sent">发送消息</string>
   <string name="select_dotdot">选择...</string>
@@ -20,10 +25,21 @@
   <string name="project_successfully_downloaded">项目被成功下载。</string>
   <string name="enterLocationLabel">输入位置：</string>
   <string name="lookupLocationButton">去</string>
+  <string name="openrouteservice">打开导航服务</string>
+  <string name="downloading_route">下载路径中…</string>
+  <string name="go_to_button">目的地</string>
+  <string name="route_to_button">路径指向</string>
+  <string name="route_to">路径指向</string>
+  <string name="enter_geocode_string">输入空间或地址</string>
   <string name="save">保存</string>
   <string name="cancel">取消</string>
   <string name="take_picture">拍照</string>
   <string name="read_nfc_uid">读标签的ID</string>
   <string name="hello_world">Hello world！</string>
   <string name="menu_settings">设定</string>
+  <string name="unable_to_read_tag_id">不能读取标签id</string>
+  <string name="fill_color">填充颜色</string>
+  <string name="point_size">点尺寸</string>
+  <string name="no_data">没有允许的数据</string>
+  <string name="share_note_with">共享记事本给...</string>
 </resources>

@@ -156,6 +156,7 @@
   <string name="proximity_radius">Säde lähestymistä varten</string>
   <string name="add_proximity_radius">Aseta lähestymishälytys metreissä</string>
   <string name="sent_sms">Lähetetyt tekstiviestit:</string>
+  <string name="share_position">Jaa sijainti</string>
   <string name="found_no_data_to_send">Nykyisessä näkymässä ei dataa lähetettäväksi.</string>
   <string name="insert_phone_to_send">valittu data lähetetään tekstiviestillä.\nOle hyvä ja anna oikea puhelin numero johon data lähetetään.</string>
   <string name="no_message_sent">Viestiä ei lähetetty.</string>
@@ -260,4 +261,9 @@
   <string name="saving_to_database">Talletetaan dataa tietokantaan...</string>
   <string name="downloading">Ladataan...</string>
   <string name="requesting_available_services">Åyydetään saatavissa olevia palveluita</string>
+  <string name="custommapfolder_summary">Muuta hakemistoa josta kartat ladataan. Geopaparazzi tulee käynnistää uudelleen</string>
+  <string name="custommapfolder_title">Nykyisin käytetty karttahakemisto</string>
+  <string name="enable_mock_locations_for_demo">Käyttääksesi demotilaa tulee sinun ottaa käyttöön Androidin mock sijainnit kehittäjän asetuksissa. Demotilan poisto.</string>
+  <string name="could_not_open_geosms">Ei voitu avata välitettyä URI. Geopaparazzi kykenee avaamaan ainoastaan  GeoSMS URIn joka sisältää osan kuten:</string>
+  <string name="continue_last_log">Jatka viimeistä lokia.</string>
 </resources>

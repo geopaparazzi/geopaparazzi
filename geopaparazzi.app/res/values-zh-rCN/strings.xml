@@ -3,6 +3,7 @@
   <string name="yes">是</string>
   <string name="no">否</string>
   <string name="app_name">Geopaparazzi</string>
+  <string name="app_file_name">Geopaparazzi 项目数据库</string>
   <string name="kmlsaved">数据成功被输出到：</string>
   <string name="loggingoff">停止所有的传感器</string>
   <string name="nogps_data">没有可用的GPS数据！</string>
@@ -26,7 +27,11 @@
   <string name="gps_preferences">GPS偏好设置</string>
   <string name="gps_logging_distance">最小的GPS日志的距离</string>
   <string name="gps_logging_interval">最小的GPS记录间隔</string>
+  <string name="sms_catcher">启用短信捕捉</string>
+  <string name="chart_profile_view">
+个人资料查看</string>
   <string name="gpx_import_processing">读入gpx中...</string>
+  <string name="osm_additionalinfo">为标签添加信息</string>
   <string name="text_take_a_gps_note">写便签</string>
   <string name="gps_log">GPS轨迹</string>
   <string name="audio_recording">重放语音... 按这里结束</string>

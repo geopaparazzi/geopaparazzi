@@ -153,6 +153,7 @@
   <string name="proximity_radius">Promień Bliskości</string>
   <string name="add_proximity_radius">Dodaj promień w metrach dla alarmu bliskości.</string>
   <string name="sent_sms">Wyślij SMS:</string>
+  <string name="share_position">Udostępnij położenie</string>
   <string name="found_no_data_to_send">W aktualnym widoku mapy nie znaleziono danych do wysłania.</string>
   <string name="no_message_sent">Nie wysłano żadnej wiadomości.</string>
   <string name="logs_will_be_merged">podczas tej operacji logi zostaną złączone. Kontynuować?</string>
@@ -188,6 +189,7 @@
   <string name="prompt_delete_bookmark">Czy jesteś pewien, że chcesz usunąć zakładkę? Operacja jest nieodwracalna.</string>
   <string name="keep_use_imperial">Użyj imperialnych jednostek miar</string>
   <string name="keep_use_imperial_sum">W miarę możliwości używa jednostek imperialnych zamiast metrycznych.</string>
+  <string name="high_density_display">Wyświetlacz o dużej gęstości</string>
   <string name="satellites">satelity</string>
   <string name="start">start</string>
   <string name="end">koniec</string>
@@ -214,4 +216,30 @@
   <string name="tanto_service_query">zapytanie</string>
   <string name="tanto_disclaimer">PRZECZYTAJ UWAŻNIE: Geopaparazzi nie ponosi odpowiedzialności za skutki prawne pobierania danych. Przed pobraniem jakiegokolwiek definicji mapurl WMS, użytkownik musi sprawdzić licencjonowanie usługi i upewnić się, że może z niej skorzystać. Autorzy Geopaparazzi nie mogą być w żaden sposób pociągnięci do odpowiedzialności za naruszenie licencji związanych z niewłaściwym wykorzystaniem usługi.</string>
   <string name="service_name_propmt">Wprowadź nazwę dla serwisu. W przypadku pozostawienia pola pustego, nazwa zastanie pobrana z serwisu.</string>
+  <string name="info">INFORMACJA</string>
+  <string name="calculate_length">Oblicz długość...</string>
+  <string name="spatialite_preferences">Preferencje Spatialite</string>
+  <string name="map">Mapa</string>
+  <string name="name_lc">nazwa</string>
+  <string name="name_uc">Nazwa</string>
+  <string name="bounds">zakres</string>
+  <string name="save">zapisz</string>
+  <string name="goto_feature">idź do</string>
+  <string name="cancel">Anuluj</string>
+  <string name="project_info">Informacja o projekcie</string>
+  <string name="description">Opis</string>
+  <string name="notes">Notatnik</string>
+  <string name="creation_date">Data utworzenia</string>
+  <string name="creation_user">Twórca projektu</string>
+  <string name="last_modification_user">Twórca ostatnio zmodyfikowanego projektu</string>
+  <string name="mapsfolder">Folder z mapami</string>
+  <string name="avaiable_layers">Dostępne warstwy</string>
+  <string name="geometry_saved">Zapisano geometrię.</string>
+  <string name="area_colon">Powierzchnia:</string>
+  <string name="length_colon">Długość:</string>
+  <string name="save_uppercase">ZAPISZ</string>
+  <string name="saving_to_database">Zapisywanie danych do bazy...</string>
+  <string name="downloading">Pobieranie...</string>
+  <string name="custommapfolder_title">Folder z obecnie używanymi mapami</string>
+  <string name="continue_last_log">Kontynuuj ostatni log.</string>
 </resources>

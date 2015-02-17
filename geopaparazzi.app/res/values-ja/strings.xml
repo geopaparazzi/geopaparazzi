@@ -270,4 +270,5 @@
   <string name="custommapfolder_title">マップフォルダの変更</string>
   <string name="enable_mock_locations_for_demo">デモモードを有効にするには開発者向けオプションの疑似ロケーションを許可するを有効にします。デモモードを無効にしています。</string>
   <string name="could_not_open_geosms">指定のURIをオープンできません。GeopaparazziのオープンできるGeoSMS URIは次のようなものです:</string>
+  <string name="continue_last_log">最終ログの継続</string>
 </resources>

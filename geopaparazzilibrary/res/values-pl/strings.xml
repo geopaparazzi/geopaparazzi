@@ -83,8 +83,12 @@
   <string name="http_not_found_msg">Żądany zasób nie został odnaleziony. Sprawdź adres twojego połączenia.</string>
   <string name="http_not_implemented_code_msg">Przechwycono zwrócony kod komunikatu (proszę prześlij go do dewelopera):</string>
   <string name="post_completed_properly">Przesyłanie zakończone poprawnie.</string>
+  <string name="http_ok_msg">Z powodzeniem przetworzono twoje żądanie.</string>
   <string name="the_file_exists_wont_overwrite">Plik istnieje. Nie można nadpisać:</string>
   <string name="share_note_with">Podziel się notatką z...</string>
   <string name="downloading_mapurl_to_the_device">Pobieranie wybranego serwisu na urządzenie.</string>
   <string name="mapurl_successfully_downloaded">Mapurl został poprawnie pobrany i zainstalowany. Pamiętaj o zrestartowaniu Geopaparazzi aby ujrzeć serwis na liście.</string>
+  <string name="crash_toast_text">W aplikacji wystąpił krytyczny błąd. Informacja o błędzie zostanie zapisana, co może być przydatne przy rozwiązywaniu problemu. Jeżeli to możliwe, prosimy o przesłanie jej do zespołu programistów.</string>
+  <string name="share_current_position">Udostępnij aktualną pozycję</string>
+  <string name="share_current_center">Udostępnij aktualny środek mapy</string>
 </resources>

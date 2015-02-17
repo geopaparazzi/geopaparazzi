@@ -156,6 +156,7 @@
   <string name="proximity_radius">근접 반경</string>
   <string name="add_proximity_radius">미터단위의 근접 경고 반경을 추가합니다.</string>
   <string name="sent_sms">보낸 SMS :</string>
+  <string name="share_position">위치 공유</string>
   <string name="found_no_data_to_send">현재 보이는 지도에서 보낼 데이터를 찾을 수 없습니다.</string>
   <string name="insert_phone_to_send">SMS는 선택된 데이터를 전송하려 합니다.\n유효한 전화번호를 입력하십시오.</string>
   <string name="no_message_sent">보낸 메세지가 없습니다.</string>
@@ -264,4 +265,5 @@
   <string name="custommapfolder_title">현재 사용된 지도 폴더</string>
   <string name="enable_mock_locations_for_demo">데모 모드를 사용하기 위해 개발자 설정에서  안드로이드 모의 위치 설정이 필요합니다. 데모 모드를 닫습니다.</string>
   <string name="could_not_open_geosms">입력된 URI를 열 수 없습니다. Geopaparazzi는 다음과 같은 GeoSMS URI만 열 수 있습니다:</string>
+  <string name="continue_last_log">마지막 로그 계속.</string>
 </resources>
