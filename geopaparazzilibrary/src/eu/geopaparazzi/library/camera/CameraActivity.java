@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,7 +37,7 @@ import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -75,9 +77,14 @@ public class CameraActivity extends Activity {
     private double elevation;
     private int lastImageMediastoreId;
     private long noteId = -1;
+    private OrientationSensor orientationSensor;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        orientationSensor = new OrientationSensor(sensorManager, null);
+        orientationSensor.register(this, SensorManager.SENSOR_DELAY_NORMAL);
 
         Bundle extras = getIntent().getExtras();
         File imageSaveFolder = null;
@@ -154,8 +161,7 @@ public class CameraActivity extends Activity {
                     Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
                     IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
-                    SensorsManager sensorsManager = SensorsManager.getInstance(this);
-                    double azimuth = sensorsManager.getPictureAzimuth();
+                    double azimuth = orientationSensor.getAzimuthDegrees();
 
                     long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
                             imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
@@ -174,58 +180,70 @@ public class CameraActivity extends Activity {
 
             setResult(Activity.RESULT_OK, intent);
 
+
             finish();
         }
     }
 
 
+    @Override
+    public void finish() {
+        orientationSensor.unregister();
+        super.finish();
+    }
+
+
     private void checkTakenPictureConsistency() {
-        /*
-         * Checking for duplicate images
-         * This is necessary because some camera implementation not only save where you want them to save but also in their default location.
-         */
-        final String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_TAKEN,
-                MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns._ID};
-        final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
-        final String imageWhere = MediaStore.Images.Media._ID + ">?";
-        final String[] imageArguments = {Integer.toString(lastImageMediastoreId)};
-        Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
-                imageOrderBy);
-        List<File> cameraTakenMediaFiles = new ArrayList<File>();
-        if (imageCursor.getCount() > 0) {
-            while (imageCursor.moveToNext()) {
-                // int id =
-                // imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
-                String path = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                // Long takenTimeStamp =
-                // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN));
-                // Long size =
-                // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
-                cameraTakenMediaFiles.add(new File(path));
+        try {
+            /*
+             * Checking for duplicate images
+             * This is necessary because some camera implementation not only save where you want them to save but also in their default location.
+             */
+            final String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_TAKEN,
+                    MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns._ID};
+            final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
+            final String imageWhere = MediaStore.Images.Media._ID + ">?";
+            final String[] imageArguments = {Integer.toString(lastImageMediastoreId)};
+            Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
+                    imageOrderBy);
+            List<File> cameraTakenMediaFiles = new ArrayList<File>();
+            if (imageCursor.getCount() > 0) {
+                while (imageCursor.moveToNext()) {
+                    // int id =
+                    // imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+                    String path = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    // Long takenTimeStamp =
+                    // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN));
+                    // Long size =
+                    // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                    cameraTakenMediaFiles.add(new File(path));
+                }
             }
-        }
-        imageCursor.close();
+            imageCursor.close();
 
-        File imageFile = new File(imageFilePath);
+            File imageFile = new File(imageFilePath);
 
-        boolean imageExists = imageFile.exists();
-        if (GPLog.LOG)
-            GPLog.addLogEntry("Image file: " + imageFilePath + " exists: " + imageExists);
+            boolean imageExists = imageFile.exists();
+            if (GPLog.LOG)
+                GPLog.addLogEntry("Image file: " + imageFilePath + " exists: " + imageExists);
 
-        if (!imageExists && cameraTakenMediaFiles.size() > 0) {
-            // was not saved where I wanted, but the camera saved one in the media folder
-            // try to copy over the one saved by the camera and then delete
-            try {
-                File cameraDoubleFile = cameraTakenMediaFiles.get(cameraTakenMediaFiles.size() - 1);
-                FileUtilities.copyFile(cameraDoubleFile, imageFile);
-                cameraDoubleFile.delete();
-            } catch (IOException e) {
-                GPLog.error(this, null, e);
+            if (!imageExists && cameraTakenMediaFiles.size() > 0) {
+                // was not saved where I wanted, but the camera saved one in the media folder
+                // try to copy over the one saved by the camera and then delete
+                try {
+                    File cameraDoubleFile = cameraTakenMediaFiles.get(cameraTakenMediaFiles.size() - 1);
+                    FileUtilities.copyFile(cameraDoubleFile, imageFile);
+                    cameraDoubleFile.delete();
+                } catch (IOException e) {
+                    GPLog.error(this, null, e);
+                }
             }
-        }
-        for (File cameraTakenFile : cameraTakenMediaFiles) {
-            // delete the one duplicated
-            cameraTakenFile.delete();
+            for (File cameraTakenFile : cameraTakenMediaFiles) {
+                // delete the one duplicated
+                cameraTakenFile.delete();
+            }
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
         }
     }
 
@@ -239,7 +257,7 @@ public class CameraActivity extends Activity {
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         final String imageWhere = null;
         final String[] imageArguments = null;
-        Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns, imageWhere, imageArguments,
+        Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns, imageWhere, imageArguments,
                 imageOrderBy);
         if (imageCursor.moveToFirst()) {
             int id = imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));

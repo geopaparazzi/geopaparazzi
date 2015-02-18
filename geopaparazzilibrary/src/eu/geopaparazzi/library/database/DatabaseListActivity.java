@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.database;
 
 import android.app.ListActivity;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -55,6 +56,8 @@ public class DatabaseListActivity extends ListActivity {
 
         try {
             if (database != null && query != null) {
+                CursorLoader cl = new CursorLoader(getApplicationContext());
+
                 cursor = database.rawQuery(query, null);
                 startManagingCursor(cursor);
 

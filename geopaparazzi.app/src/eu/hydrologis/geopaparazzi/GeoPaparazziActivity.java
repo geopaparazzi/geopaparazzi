@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -66,14 +67,13 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
-import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
-import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
@@ -100,7 +100,6 @@ import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
@@ -127,7 +126,6 @@ public class GeoPaparazziActivity extends Activity {
     private final int RETURNCODE_SKETCH = 668;
 
     private boolean sliderIsOpen = false;
-    private SensorsManager sensorManager;
     private SlidingDrawer slidingDrawer;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
@@ -135,10 +133,14 @@ public class GeoPaparazziActivity extends Activity {
     private double[] lastGpsPosition;
 
     private static boolean checkedGps = false;
+    private OrientationSensor orientationSensor;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkIncomingProject();
+
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        orientationSensor = new OrientationSensor(sensorManager, null);
 
         GpsServiceUtilities.startGpsService(this);
         gpsServiceBroadcastReceiver = new BroadcastReceiver() {
@@ -310,10 +312,15 @@ public class GeoPaparazziActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        orientationSensor.unregister();
+
     }
 
     protected void onResume() {
         super.onResume();
+        orientationSensor.register(this, SensorManager.SENSOR_DELAY_NORMAL);
+
         checkActionBar();
     }
 
@@ -330,7 +337,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private void checkActionBar() {
         if (actionBar == null) {
-            actionBar = ActionBar.getActionBar(this, R.id.action_bar, sensorManager);
+            actionBar = ActionBar.getActionBar(this, R.id.action_bar, orientationSensor);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
 
             final ImageButton menuButton = actionBar.getMenuButton();
@@ -387,8 +394,6 @@ public class GeoPaparazziActivity extends Activity {
         GPLogPreferencesHandler.checkLog(preferences);
         GPLogPreferencesHandler.checkLogHeavy(preferences);
         GPLogPreferencesHandler.checkLogAbsurd(preferences);
-
-        sensorManager = SensorsManager.getInstance(this);
 
         checkActionBar();
 

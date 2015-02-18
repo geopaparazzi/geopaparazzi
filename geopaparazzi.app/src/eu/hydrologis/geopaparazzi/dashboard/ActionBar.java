@@ -41,7 +41,7 @@ import java.util.List;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
-import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -71,7 +71,7 @@ public class ActionBar {
     private String loggingString;
     private String acquirefixString;
     private String gpsStatusString;
-    private final SensorsManager sensorsManager;
+    private final OrientationSensor orientationSensor;
     private String satellitesString;
     private ImageButton menuButton;
     private String indent = "  ";
@@ -86,9 +86,9 @@ public class ActionBar {
     private String boundsString;
     private File mapsDir;
 
-    private ActionBar(View actionBarView, SensorsManager sensorsManager) {
+    private ActionBar(View actionBarView, OrientationSensor orientationSensor) {
         this.actionBarView = actionBarView;
-        this.sensorsManager = sensorsManager;
+        this.orientationSensor = orientationSensor;
 
         try {
             mapsDir = ResourcesManager.getInstance(actionBarView.getContext()).getMapsDir();
@@ -150,12 +150,12 @@ public class ActionBar {
      *
      * @param activity       the parent activity.
      * @param activityId     the activity id.
-     * @param sensorsManager teh sensor manager.
+     * @param orientationSensor teh sensor manager.
      * @return the actionbar.
      */
-    public static ActionBar getActionBar(Activity activity, int activityId, SensorsManager sensorsManager) {
+    public static ActionBar getActionBar(Activity activity, int activityId, OrientationSensor orientationSensor) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, sensorsManager);
+        return new ActionBar(view, orientationSensor);
     }
 
     /**
@@ -281,7 +281,7 @@ public class ActionBar {
     }
 
     private String createGpsInfo() {
-        double azimuth = sensorsManager.getNormalAzimuth();
+        double azimuth = orientationSensor.getAzimuthDegrees();
 
         StringBuilder sb = new StringBuilder();
         if (mapsDir != null) {
@@ -343,14 +343,14 @@ public class ActionBar {
             sb.append(indent).append(altimString);
             sb.append(" ").append(elev); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(indent).append(azimString);
-            sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
-            sb.append("\n");
             sb.append(indent).append(loggingString);
             sb.append(": ").append(lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON); //$NON-NLS-1$
             sb.append("\n");
             addGpsStatusInfo(sb);
         }
+        sb.append(indent).append(azimString);
+        sb.append(" ").append((int) azimuth); //$NON-NLS-1$
+        sb.append("\n");
         return sb.toString();
     }
 

@@ -147,7 +147,7 @@ public class GpsServiceUtilities {
     }
 
     /**
-     * Register an activity for {@link GpsService} broadcasts.
+     * register an activity for {@link GpsService} broadcasts.
      * 
      * @param activity the activity.
      * @param receiver the receiver.
@@ -157,7 +157,7 @@ public class GpsServiceUtilities {
     }
 
     /**
-     * Unregister an activity from {@link GpsService} broadcasts.
+     * unregister an activity from {@link GpsService} broadcasts.
      * 
      * @param activity the activity.
      * @param receiver the receiver.
