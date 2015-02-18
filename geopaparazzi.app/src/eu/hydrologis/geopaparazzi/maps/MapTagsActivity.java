@@ -70,6 +70,8 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 @SuppressWarnings("nls")
 public class MapTagsActivity extends Activity {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
+    private static final String PREFS_KEY_GPSAVG_ON = "PREFS_KEY_GPSAVG_ON";
+    private static final String GPS_AVG_COMPLETE = "GPS_AVG_COMPLETE";
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
@@ -82,6 +84,8 @@ public class MapTagsActivity extends Activity {
     private double mapCenterElevation;
     private String[] tagNamesArray;
     private double[] gpsLocation;
+    private double[] gpsAvgLocation;
+    private int gpsAvgNumberPointsSampled;
     private ToggleButton togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
@@ -104,11 +108,23 @@ public class MapTagsActivity extends Activity {
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
 
+        final boolean prefsDoGpsAveraging = preferences.getBoolean(PREFS_KEY_GPSAVG_ON,true);
+
         broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    gpsLocation = GpsServiceUtilities.getPosition(intent);
+                    int avgComplete = intent.getIntExtra(GPS_AVG_COMPLETE,0);
+                    if(prefsDoGpsAveraging && avgComplete == 0){
+                        GpsServiceUtilities.startGpsAveraging(context);
+                    } else {
+                        gpsLocation = GpsServiceUtilities.getPosition(intent);
+                        gpsAvgLocation = GpsServiceUtilities.getPositionAverage(intent);
+                        GPLog.addLogEntry("GPSAVG","Standard Lat: " + String.valueOf(gpsLocation[0]));
+                        if(gpsAvgLocation != null) {
+                            GPLog.addLogEntry("GPSAVG", "Averaged Lat:  " + String.valueOf(gpsAvgLocation[0]));
+                        }
+                    }
                     boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                     if (useMapCenterPosition) {
                         togglePositionTypeButtonGps.setChecked(false);
@@ -148,6 +164,8 @@ public class MapTagsActivity extends Activity {
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
+                intent.putExtra(LibraryConstants.TEXT, Integer.toString(gpsAvgNumberPointsSampled));
+                GPLog.addLogEntry("GPSAVG","numPosSamp is " + gpsAvgNumberPointsSampled);
                 MapTagsActivity.this.startActivityForResult(intent, NOTE_RETURN_CODE);
             }
         });
@@ -251,14 +269,19 @@ public class MapTagsActivity extends Activity {
     private void checkPositionCoordinates() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
-        if (useMapCenterPosition || gpsLocation == null) {
+        if (useMapCenterPosition || (gpsLocation == null && gpsAvgLocation == null)) {
             latitude = mapCenterLatitude;
             longitude = mapCenterLongitude;
             elevation = mapCenterElevation;
-        } else {
+        } else if (gpsAvgLocation == null) {
             latitude = gpsLocation[1];
             longitude = gpsLocation[0];
             elevation = gpsLocation[2];
+        } else {
+            latitude = gpsAvgLocation[1];
+            longitude = gpsAvgLocation[0];
+            elevation = gpsAvgLocation[2];
+            gpsAvgNumberPointsSampled = (int)gpsAvgLocation[3];
         }
     }
 
@@ -296,6 +319,12 @@ public class MapTagsActivity extends Activity {
                         double lon = Double.parseDouble(noteArray[0]);
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
+                        //String note3 = noteArray[3];
+                        String note4 = noteArray[4];
+                        //String numPos = data.getStringExtra(LibraryConstants.TEXT);
+                        //GPLog.addLogEntry("GPSAVG","numPos is " + numPos);
+                        GPLog.addLogEntry("GPSAVG","note4 is " + note4);
+
                         DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], noteArray[5], noteArray[6],
                                 null);
                     } catch (Exception e) {

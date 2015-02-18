@@ -283,4 +283,13 @@ public interface Constants {
      * 
      */
     public static final String PREFS_KEY_NOTES_TEXT_SIZE = "PREFS_KEY_NOTES_TEXT_SIZE";
+     /*
+     * GPS averaging properties
+     *
+     */
+    public static final String PREFS_KEY_GPSAVG_NUMBER_SAMPLES = "PREFS_KEY_GPSAVG_NUMBER_SAMPLES";
+
+
+
+
 }

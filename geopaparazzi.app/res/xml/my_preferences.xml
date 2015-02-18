@@ -176,4 +176,21 @@
         </EditTextPreference>
     </PreferenceScreen>
 
+    <PreferenceScreen
+        android:order="250"
+        android:title="@string/gpsavg_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_GPSAVG_ON"
+            android:order="251"
+            android:title="@string/gpsavg_turn_on"
+            android:defaultValue="true">
+        </CheckBoxPreference>
+        <EditTextPreference
+            android:defaultValue="3"
+            android:inputType="number"
+            android:key="PREFS_KEY_GPSAVG_NUMBER_SAMPLES"
+            android:order="354"
+            android:title="@string/gpsavg_number_of_samples" >
+        </EditTextPreference>
+    </PreferenceScreen>
 </PreferenceScreen>

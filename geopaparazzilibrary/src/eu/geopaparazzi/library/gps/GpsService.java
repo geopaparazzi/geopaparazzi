@@ -17,6 +17,12 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSAVG_NUMBER_SAMPLES;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_AVERAGING_SAMPLE_NUMBER;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +41,10 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
+import android.app.PendingIntent;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
@@ -42,10 +52,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
 
 /**
  * A service to handle the GPS data.
@@ -118,6 +124,10 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public static final String GPS_SERVICE_POSITION = "GPS_SERVICE_POSITION";
     /**
+     * Intent key to use for double array gps averaged position data [lon, lat, elev].
+     */
+    public static final String GPS_SERVICE_AVERAGED_POSITION = "GPS_SERVICE_AVERAGED_POSITION";
+    /**
      * Intent key to use for double array position extra data [accuracy, speed, bearing].
      */
     public static final String GPS_SERVICE_POSITION_EXTRAS = "GPS_SERVICE_POSITION_EXTRAS";
@@ -137,6 +147,19 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Intent key to use to trigger a broadcast.
      */
     public static final String GPS_SERVICE_DO_BROADCAST = "GPS_SERVICE_DO_BROADCAST";
+    /**
+     * Intent key to pass the boolean to start gps averaging.
+     */
+    public static final String START_GPS_AVERAGING = "START_GPS_AVERAGING";
+    /**
+     * Intent key to pass the boolean to start gps averaging.
+     */
+    public static final String GPS_AVG_COMPLETE = "GPS_AVG_COMPLETE";
+    /**
+     * Intent key to pass the boolean to stop averaging.
+     */
+    public static final String STOP_AVERAGING_NOW = "STOP_AVERAGING_NOW";
+
 
     private SharedPreferences preferences;
     private LocationManager locationManager;
@@ -175,6 +198,15 @@ public class GpsService extends Service implements LocationListener, Listener {
     private boolean isProviderEnabled;
     private Handler toastHandler;
 
+    /**
+     * for gps avg
+     */
+    private boolean isAveraging = false; //original also declared static
+    private boolean stopAveragingRequest = false;
+    private GpsAvgMeasurements gpsavgmeasurements;
+    private NotificationCompat.Builder nBuilder;
+    private int numberSamplesUsedInAvg = -1;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -203,6 +235,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             registerForLocationUpdates();
             log("onStartCommand: Registered for location updates");
         }
+
         if (intent != null) {
             /*
              * START GPS logging
@@ -240,6 +273,21 @@ public class GpsService extends Service implements LocationListener, Listener {
                 if (doBroadcast) {
                     broadcast("triggered by onStartCommand Intent");
                 }
+            }
+            if (intent.hasExtra(START_GPS_AVERAGING)){
+                log("onStartCommand: Start GPS averaging called");
+                stopAveragingRequest = false;
+                numberSamplesUsedInAvg = -1;
+                gpsavgmeasurements = GpsAvgMeasurements.getInstance();
+                boolean doAverage = intent.getBooleanExtra(START_GPS_AVERAGING, false);
+                if(!isAveraging && doAverage){
+                    startAveraging();
+                }
+            }
+            if (intent.hasExtra(STOP_AVERAGING_NOW)){
+                log("onStartCommand: Stop GPS averaging called");
+                log("GPSAVG: Stop GPS averaging called");
+                stopAveragingRequest = true;
             }
 
         }
@@ -693,6 +741,24 @@ public class GpsService extends Service implements LocationListener, Listener {
             GPLog.addLogEntry("GPSSERVICE", sb.toString());
         }
 
+        if (isAveraging) {
+            Location loc = gpsavgmeasurements.getAveragedLocation();
+            lon = loc.getLongitude();
+            lat = loc.getLatitude();
+            elev = loc.getAltitude();
+            int numSamples = numberSamplesUsedInAvg;
+            double[] GpsAvgPositionArray = new double[]{lon, lat, elev, numSamples};
+            intent.putExtra(GPS_SERVICE_AVERAGED_POSITION, GpsAvgPositionArray);
+            if(message == "GPS Averaging complete") {
+                intent.putExtra(GPS_AVG_COMPLETE, 1);
+                GPLog.addLogEntry("GPSAVG", "put extra AVGCOMPLETE");
+                isAveraging = false;
+            } else {
+                intent.putExtra(GPS_AVG_COMPLETE,0);
+            }
+            GPLog.addLogEntry("GPSAVG","put extra AVERAGED POSITION");
+        }
+
         sendBroadcast(intent);
     }
 
@@ -709,8 +775,111 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
     }
 
+    /**
+     * Starts active averaging.
+     */
+    public void startAveraging() {
+        isAveraging = true;
+        //Toast.makeText(GpsService.this, "Starting GPS Averaging", Toast.LENGTH_SHORT).show();
+        gpsavgmeasurements.clean();
+        final int averagingDelaySeconds = 1;
+
+        final String numSamples = preferences.getString(PREFS_KEY_GPSAVG_NUMBER_SAMPLES,
+                String.valueOf(GPS_AVERAGING_SAMPLE_NUMBER));
+        final Integer numSamps = Integer.parseInt(numSamples);
+
+        //build the notification intents
+        Intent intent = new Intent(this, GpsService.class);
+        intent.setAction("stopGpsAv");
+        intent.putExtra(GPS_SERVICE_STATUS, 1);
+        intent.putExtra(STOP_AVERAGING_NOW, 1);
+        //intent.putExtra("stopGPSAveraging","stopGpsAv");
+
+        final PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < numSamps; i++) {
+                            GPLog.addLogEntry("GPSAVG", "In avg loop");
+                            // can't figure out how to use lastGpsLocation from this class
+                            // need to sample immediate gps location, not delayed or stored
+                            Location location = locationManager.getLastKnownLocation("gps");
+                            if (location != null) {
+                                gpsavgmeasurements.add(location);
+                            }
+                            try {
+                                for (int j = 0; j < averagingDelaySeconds; j++) {
+                                    Thread.sleep(1000L);
+                                }
+                            } catch (InterruptedException e) {
+                                break;
+                            }
+                            notifyAboutAveraging(pendingIntent, notifyMgr, i, numSamps);
+                            if(stopAveragingRequest){
+                                numberSamplesUsedInAvg = i + 1;
+                                break;
+                            }
+                        }
+                        if(numberSamplesUsedInAvg == -1){
+                            numberSamplesUsedInAvg = numSamps;
+                        }
+                        broadcast("GPS Averaging complete");
+                        cancelAvgNotify(notifyMgr);
+                    }
+                }
+        ).start();
+
+    }
+
+    /**
+     * Creates a notification for users to track (and stop early, if desired) GPS position averaging
+     *
+     * @param pendingIntent the pending intent for the notification
+     * @param notifyMgr the notification manager retrieved from the system
+     * @param sampsAcquired the current number of gps samples sent to gpsavgmeasurements for averaging
+     * @param sampsTargeted the total number of gps samples requested for averaging
+     *
+     */
+    public void notifyAboutAveraging(PendingIntent pendingIntent, NotificationManager notifyMgr, Integer sampsAcquired, Integer sampsTargeted) {
+
+        if (nBuilder == null) {
+            String msg = "Averaging " + String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + ".";
+            nBuilder =  new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.action_bar_logo)
+                            .setContentTitle("GPS Position Averaging")
+                            .setContentText(msg)
+                            .setContentIntent(pendingIntent)
+                            //.addAction(R.drawable.goto_position,"Finish now", stopAvgPendingIntent) //button capabilities only for android 5?
+                            .setProgress(sampsTargeted,sampsAcquired,false);
+
+        } else {
+            String msg = String.valueOf(sampsAcquired) + " of " + String.valueOf(sampsTargeted) + " points sampled. Press to stop NOW.";
+            nBuilder.setContentText(msg)
+                    .setProgress(sampsTargeted,sampsAcquired,false);
+        }
+
+        // Issue notification
+        int notificationId = 6;
+        notifyMgr.notify(notificationId, nBuilder.build());
+    }
+
+    /**
+    * Cancels the notification
+    *
+    * @param notifyMgr the notification manager
+    *
+    */
+    public void cancelAvgNotify(NotificationManager notifyMgr) {
+
+    notifyMgr.cancel(6);
+
+    }
+
     // /////////////////////////////////////////////
-    // UNUSET METHODS
+    // UNUSED METHODS
     // /////////////////////////////////////////////
     // @Override
     // public void onCreate() {

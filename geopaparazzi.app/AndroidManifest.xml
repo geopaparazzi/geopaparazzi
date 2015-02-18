@@ -195,7 +195,9 @@
         </activity>
         <activity
             android:name=".maps.MapTagsActivity"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:parentActivityName=".maps.MapsActivity">
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
 
