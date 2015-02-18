@@ -73,19 +73,19 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
      * @param context   the context to use.
      * @param attrs attributes.
      * @param parentView parent
-     * @param key key
+     * @param label label
      * @param value value
      * @param dataMap the map of the data.
      * @param constraintDescription constraints
      */
-    public GTwoConnectedComboView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+    public GTwoConnectedComboView( Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
             LinkedHashMap<String, List<String>> dataMap, String constraintDescription ) {
         super(context, attrs);
         this.value = value;
         this.dataMap = dataMap;
 
         textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -93,16 +93,17 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         parentView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         titleSpinner = new Spinner(context);
-        titleSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        titleSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         titleSpinner.setPadding(15, 5, 15, 5);
-        String[] titlesArray = dataMap.keySet().toArray(new String[0]);
+        Set<String> titlesSet = dataMap.keySet();
+        String[] titlesArray = titlesSet.toArray(new String[titlesSet.size()]);
         String[] titlesArray2 = new String[titlesArray.length + 1];
         System.arraycopy(titlesArray, 0, titlesArray2, 1, titlesArray.length);
         titlesArray2[0] = "";
@@ -139,7 +140,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         }
 
         valuesSpinner = new Spinner(context);
-        valuesSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        valuesSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         valuesSpinner.setPadding(15, 5, 15, 5);
         List<String> dummyValuesList = new ArrayList<String>();
         if (valuesList != null) {

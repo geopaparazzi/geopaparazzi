@@ -102,6 +102,16 @@
                     }
                 ]
             },{
+                "formname": "text example with key and label",
+                "formitems": [
+                    {
+                        "key": "the key used to index",
+                        "label": "the label used to describe",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
+            },{
                 "formname": "numeric text",
                 "formitems": [
                     {

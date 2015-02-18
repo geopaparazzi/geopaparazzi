@@ -67,15 +67,15 @@ public class GNfcUidView extends View implements GView {
      * @param attrs attributes.
      * @param requestCode the request code for the activity return. 
      * @param parentView parent
-     * @param key key
+     * @param label label
      * @param value value
      * @param constraintDescription constraints
      */
-    public GNfcUidView( final Activity activity, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key,
+    public GNfcUidView( final Activity activity, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label,
             String value, String constraintDescription ) {
         super(activity, attrs);
 
-        handleView(activity, requestCode, parentView, key, value, constraintDescription);
+        handleView(activity, requestCode, parentView, label, value, constraintDescription);
     }
 
     /**
@@ -83,23 +83,23 @@ public class GNfcUidView extends View implements GView {
      * @param attrs attributes.
      * @param requestCode the request code for the activity return. 
      * @param parentView parent
-     * @param key key
+     * @param label label
      * @param value value
      * @param constraintDescription constraints
      */
     public GNfcUidView( FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
-            String key, String value, String constraintDescription ) {
+            String label, String value, String constraintDescription ) {
         super(fragmentDetail.getActivity(), attrs);
         this.fragmentDetail = fragmentDetail;
-        handleView(fragmentDetail.getActivity(), requestCode, parentView, key, value, constraintDescription);
+        handleView(fragmentDetail.getActivity(), requestCode, parentView, label, value, constraintDescription);
     }
 
-    private void handleView( final Activity activity, final int requestCode, LinearLayout parentView, String key, String value,
+    private void handleView( final Activity activity, final int requestCode, LinearLayout parentView, String label, String value,
             String constraintDescription ) {
         _value = value;
 
         LinearLayout textLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -107,20 +107,20 @@ public class GNfcUidView extends View implements GView {
         parentView.addView(textLayout);
 
         TextView textView = new TextView(activity);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.read_nfc_uid);
         textLayout.addView(button);
 
         uidText = new EditText(activity);
-        uidText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        uidText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         uidText.setPadding(2, 2, 2, 2);
         uidText.setEnabled(false);
         uidText.setText(value);

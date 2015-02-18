@@ -68,7 +68,7 @@ public class GTextView extends View implements GView {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -77,7 +77,7 @@ public class GTextView extends View implements GView {
         mainView.addView(textLayout);
 
         textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(value);
 

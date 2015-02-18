@@ -92,11 +92,11 @@ public class GSketchView extends View implements GView {
      * @param attrs                 attributes.
      * @param requestCode           the code for starting the activity with result.
      * @param parentView            parent
-     * @param key                   key
+     * @param label                   label
      * @param value                 value
      * @param constraintDescription constraints
      */
-    public GSketchView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
+    public GSketchView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label, String value,
                        String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
         this.noteId = noteId;
@@ -105,7 +105,7 @@ public class GSketchView extends View implements GView {
 
         final FragmentActivity activity = fragmentDetail.getActivity();
         LinearLayout textLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -113,14 +113,14 @@ public class GSketchView extends View implements GView {
         parentView.addView(textLayout);
 
         TextView textView = new TextView(activity);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.draw_sketch);
         textLayout.addView(button);
@@ -148,13 +148,13 @@ public class GSketchView extends View implements GView {
         });
 
         ScrollView scrollView = new ScrollView(activity);
-        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT, 150);
+        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.MATCH_PARENT, 150);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
         imageLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.FILL_PARENT);
+        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
         imageLayout.setLayoutParams(imageLayoutParams);
         // imageLayout.setMinimumHeight(200);
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
