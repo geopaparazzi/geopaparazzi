@@ -383,6 +383,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         overlays.clear();
         overlays.add(dataOverlay);
 
+        readData();
+
         super.onResume();
     }
 
@@ -633,7 +635,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             int currentZoomLevel = getCurrentZoomLevel();
             setGuiZoomText(currentZoomLevel);
 
-            readData();
+//            readData();
             saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
