@@ -20,16 +20,14 @@ package eu.geopaparazzi.library.database;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents an image.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Image implements INote, KmlRepresenter {
+public class Image extends ANote implements KmlRepresenter {
     /**
      * Image name.
      */

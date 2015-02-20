@@ -24,8 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;
@@ -40,7 +40,7 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Note implements INote, KmlRepresenter, GpxRepresenter {
+public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
     public static final String IMAGES_SEPARATOR = ";";
     private final String simpleText;
     private final String description;

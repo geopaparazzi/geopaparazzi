@@ -21,44 +21,48 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.geopaparazzi.library.database.INote;
-import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -67,23 +71,44 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends ListActivity {
-    private static String SHARE_NOTE_WITH = "";
-    private String[] notesNames;
-    private Map<String, INote> notesMap = new HashMap<String, INote>();
-    private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
+    private String SHARE_NOTE_WITH = "";
+    private List<ANote> allNotesList = new ArrayList<ANote>();
+    private List<ANote> visibleNotesList = new ArrayList<ANote>();
+//    private Comparator<ANote> notesSorter = new ItemComparators.NotesComparator(false);
+
+    private ArrayAdapter<ANote> arrayAdapter;
+    private EditText filterText;
+
+    private String share;
+    private String edit;
+    private String delete;
+    private String allNotesSubmenu;
+    private String selectAll;
+    private String invertSelection;
+    private String deleteSelected;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.noteslist);
 
-        SHARE_NOTE_WITH = getResources().getString(eu.geopaparazzi.library.R.string.share_note_with);
+        Resources resources = getResources();
+        SHARE_NOTE_WITH = resources.getString(eu.geopaparazzi.library.R.string.share_note_with);
+
+        share = getString(R.string.share);
+        edit = getString(R.string.edit);
+        delete = getString(R.string.delete);
+        allNotesSubmenu = getString(R.string.all_notes_submenu);
+        selectAll = getString(R.string.select_all);
+        invertSelection = getString(R.string.invert_selection);
+        deleteSelected = getString(R.string.delete_selected);
 
         refreshList();
 
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
     }
+
 
     @Override
     protected void onResume() {
@@ -100,23 +125,10 @@ public class NotesListActivity extends ListActivity {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "refreshing notes list"); //$NON-NLS-1$
         try {
-
-            List<INote> allNotesList = new ArrayList<INote>();
-            List<Note> notesList = DaoNotes.getNotesList(null, false);
-            allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList(false, true);
-            allNotesList.addAll(imagesList);
-            Collections.sort(allNotesList, notesSorter);
-
-            notesNames = new String[allNotesList.size()];
-            notesMap.clear();
-            int index = 0;
-            for (INote note : allNotesList) {
-                String name = note.getName();
-                notesMap.put(name, note);
-                notesNames[index] = name;
-                index++;
-            }
+            visibleNotesList.clear();
+            collectAllNotes();
+            visibleNotesList.addAll(allNotesList);
+//            Collections.sort(allNotesList, notesSorter);
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -125,30 +137,28 @@ public class NotesListActivity extends ListActivity {
         redoAdapter();
     }
 
+    private void collectAllNotes() throws IOException {
+        allNotesList.clear();
+        List<Note> tmpNotesList = DaoNotes.getNotesList(null, false);
+        allNotesList.addAll(tmpNotesList);
+        List<Image> imagesList = DaoImages.getImagesList(false, true);
+        allNotesList.addAll(imagesList);
+    }
+
     private void filterList(String filterText) {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "filter notes list"); //$NON-NLS-1$
         try {
-            List<INote> allNotesList = new ArrayList<INote>();
-            List<Note> notesList = DaoNotes.getNotesList(null, false);
-            allNotesList.addAll(notesList);
-            List<Image> imagesList = DaoImages.getImagesList(false, true);
-            allNotesList.addAll(imagesList);
-            Collections.sort(allNotesList, notesSorter);
-
-            notesMap.clear();
-            filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
-            List<String> namesList = new ArrayList<String>();
-            for (INote note : allNotesList) {
+            collectAllNotes();
+            visibleNotesList.clear();
+            filterText = filterText.toLowerCase();
+            for (ANote note : allNotesList) {
                 String name = note.getName();
                 String nameLower = name.toLowerCase();
-                if (nameLower.matches(filterText)) {
-                    namesList.add(name);
-                    notesMap.put(name, note);
+                if (nameLower.contains(filterText)) {
+                    visibleNotesList.add(note);
                 }
             }
-
-            notesNames = namesList.toArray(new String[0]);
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -158,196 +168,45 @@ public class NotesListActivity extends ListActivity {
     }
 
     private void redoAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.note_row, notesNames) {
+        arrayAdapter = new ArrayAdapter<ANote>(this, R.layout.note_row, visibleNotesList) {
             @Override
-            public View getView(int position, View cView, ViewGroup parent) {
+            public View getView(int position, View rowView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.note_row, null);
+
+                if (rowView == null) {
+                    rowView = inflater.inflate(R.layout.note_row, null);
+                }
+
+                final ANote currentNote = visibleNotesList.get(position);
+                final CheckBox checkButton = (CheckBox) rowView.findViewById(R.id.selectedCheckBox);
+                checkButton.setChecked(currentNote.isChecked());
+                checkButton.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        checkButton.setChecked(isChecked);
+                        currentNote.setChecked(isChecked);
+                    }
+                });
 
                 final TextView notesText = (TextView) rowView.findViewById(R.id.bookmarkrowtext);
-                notesText.setText(notesNames[position]);
-
-                final ImageView shareButton = (ImageView) rowView.findViewById(R.id.sharebutton);
-                shareButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final String name = notesText.getText().toString();
-                        INote iNote = notesMap.get(name);
-                        float lat = (float) iNote.getLat();
-                        float lon = (float) iNote.getLon();
-                        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
-                        if (iNote instanceof Note) {
-                            Note note = (Note) iNote;
-                            if (note.getForm() == null || note.getForm().length() == 0) {
-                                // simple note
-                                String text = note.getName();
-                                text = text + "\n" + osmUrl;
-                                ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, text);
-                            } else {
-                                String description = note.getDescription();
-                                String form = note.getForm();
-                                try {
-                                    String formText = FormUtilities.formToPlainText(form, false);
-                                    formText = formText + "\n" + osmUrl;
-                                    if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
-                                        // double altim = note.getAltim();
-
-                                        IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
-                                        File tempDir = ResourcesManager.getInstance(getContext()).getTempDir();
-
-                                        // for now only one image is shared
-                                        List<String> imageIds = note.getImageIds();
-                                        File imageFile = null;
-                                        if (imageIds.size() > 0) {
-                                            String imageId = imageIds.get(0);
-
-                                            Image image = imageHelper.getImage(Long.parseLong(imageId));
-
-                                            String imageName = image.getName();
-                                            imageFile = new File(tempDir, imageName);
-
-                                            byte[] imageData = imageHelper.getImageDataById(image.getImageDataId(), null);
-                                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
-                                        }
-                                        if (imageFile != null) {
-                                            ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, formText,
-                                                    imageFile);
-                                        } else {
-                                            ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, formText);
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    GPLog.error(this, null, e); //$NON-NLS-1$
-                                    Utilities.errorDialog(NotesListActivity.this, e, null);
-                                }
-                            }
-
-                        } else if (iNote instanceof Image) {
-                            Image image = (Image) iNote;
-                            try {
-                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
-                                String ext = ".jpg";
-                                if (image.getName().endsWith(".png"))
-                                    ext = ".png";
-                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
-                                byte[] imageData = new DaoImages().getImageData(image.getId());
-                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
-                                if (imageFile.exists()) {
-                                    ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
-                                } else {
-                                    Utilities.errorDialog(NotesListActivity.this, new IOException("The image is missing: "
-                                            + imageFile), null);
-                                }
-                            } catch (java.lang.Exception e) {
-                                GPLog.error(this, null, e); //$NON-NLS-1$
-                            }
-                        }
-
-                    }
-                });
-
-                final ImageView editButton = (ImageView) rowView.findViewById(R.id.editbutton);
-                editButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final String name = notesText.getText().toString();
-                        INote iNote = notesMap.get(name);
-                        if (iNote instanceof Note) {
-                            Note note = (Note) iNote;
-                            if (note.getForm() == null || note.getForm().length() == 0) {
-                                // can't edit simple notes
-                                Utilities.messageDialog(NotesListActivity.this,
-                                        "Only complex notes can be edited. Simple notes can be simply replaced.", null);
-                                return;
-                            }
-
-                            String description = note.getDescription();
-                            double lat = note.getLat();
-                            double lon = note.getLon();
-                            String form = note.getForm();
-                            if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
-                                double altim = note.getAltim();
-                                Intent formIntent = new Intent(NotesListActivity.this, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                                NotesListActivity.this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
-                            }
-                        } else if (iNote instanceof Image) {
-                            Image image = (Image) iNote;
-                            Intent intent = new Intent();
-                            intent.setAction(android.content.Intent.ACTION_VIEW);
-
-                            try {
-                                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
-                                String ext = ".jpg";
-                                if (image.getName().endsWith(".png"))
-                                    ext = ".png";
-                                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
-                                byte[] imageData = new DaoImages().getImageData(image.getId());
-                                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
-
-                                intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
-                                NotesListActivity.this.startActivity(intent);
-                            } catch (java.lang.Exception e) {
-                                GPLog.error(NotesListActivity.this, null, e);
-                            }
-
-                        }
-
-                    }
-                });
-
-                final ImageView deleteButton = (ImageView) rowView.findViewById(R.id.deletebutton);
-                deleteButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final String name = notesText.getText().toString();
-                        final INote note = notesMap.get(name);
-                        Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_note),
-                                new Runnable() {
-                                    public void run() {
-                                        new AsyncTask<String, Void, String>() {
-                                            protected String doInBackground(String... params) {
-                                                return "";
-                                            }
-
-                                            protected void onPostExecute(String response) {
-                                                try {
-                                                    if (note instanceof Note) {
-                                                        DaoNotes.deleteNote(note.getId());
-                                                    } else if (note instanceof Image) {
-                                                        DaoImages.deleteImages(note.getId());
-                                                    }
-                                                    refreshList();
-                                                } catch (IOException e) {
-                                                    GPLog.error(this, e.getLocalizedMessage(), e);
-                                                    e.printStackTrace();
-                                                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(),
-                                                            Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        }.execute((String) null);
-
-                                    }
-                                }, null
-                        );
-
-                    }
-                });
+                notesText.setText(currentNote.getName());
 
                 final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
                 goButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        INote note = notesMap.get(notesText.getText().toString());
-                        if (note != null) {
-                            Intent intent = getIntent();
-                            intent.putExtra(LibraryConstants.LATITUDE, note.getLat());
-                            intent.putExtra(LibraryConstants.LONGITUDE, note.getLon());
-                            intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
-                            // if (getParent() == null) {
-                            setResult(Activity.RESULT_OK, intent);
-                        }
+                        Intent intent = getIntent();
+                        intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
+                        intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
+                        intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
+                        // if (getParent() == null) {
+                        setResult(Activity.RESULT_OK, intent);
                         finish();
+                    }
+                });
+
+                final ImageView moreButton = (ImageView) rowView.findViewById(R.id.morebutton);
+                moreButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        openMoreMenu(moreButton, currentNote);
                     }
                 });
 
@@ -357,6 +216,233 @@ public class NotesListActivity extends ListActivity {
         };
 
         setListAdapter(arrayAdapter);
+    }
+
+    private void openMoreMenu(ImageView button, final ANote currentNote) {
+        PopupMenu popup = new PopupMenu(this, button);
+        popup.getMenu().add(edit);
+        popup.getMenu().add(share);
+        popup.getMenu().add(delete);
+        SubMenu subMenu = popup.getMenu().addSubMenu(allNotesSubmenu);
+        subMenu.add(selectAll);
+        subMenu.add(invertSelection);
+        subMenu.add(deleteSelected);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                String actionName = item.getTitle().toString();
+                if (actionName.equals(share)) {
+                    shareNote(currentNote);
+                } else if (actionName.equals(edit)) {
+                    editNote(currentNote);
+                } else if (actionName.equals(delete)) {
+                    deleteNote(currentNote);
+                } else if (actionName.equals(selectAll)) {
+                    for (ANote aNote : visibleNotesList) {
+                        aNote.setChecked(true);
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+                } else if (actionName.equals(invertSelection)) {
+                    for (ANote aNote : visibleNotesList) {
+                        aNote.setChecked(!aNote.isChecked());
+                    }
+                    arrayAdapter.notifyDataSetChanged();
+                } else if (actionName.equals(deleteSelected)) {
+                    deleteSelectedNotes();
+                }
+                return true;
+            }
+
+
+        });
+        popup.show();
+    }
+
+    private void shareNote(ANote currentNote) {
+        float lat = (float) currentNote.getLat();
+        float lon = (float) currentNote.getLon();
+        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+        if (currentNote instanceof Note) {
+            Note note = (Note) currentNote;
+            if (note.getForm() == null || note.getForm().length() == 0) {
+                // simple note
+                String text = note.getName();
+                text = text + "\n" + osmUrl;
+                ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, text);
+            } else {
+                String description = note.getDescription();
+                String form = note.getForm();
+                try {
+                    String formText = FormUtilities.formToPlainText(form, false);
+                    formText = formText + "\n" + osmUrl;
+                    if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
+                        // double altim = note.getAltim();
+
+                        IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+                        File tempDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getTempDir();
+
+                        // for now only one image is shared
+                        List<String> imageIds = note.getImageIds();
+                        File imageFile = null;
+                        if (imageIds.size() > 0) {
+                            String imageId = imageIds.get(0);
+
+                            Image image = imageHelper.getImage(Long.parseLong(imageId));
+
+                            String imageName = image.getName();
+                            imageFile = new File(tempDir, imageName);
+
+                            byte[] imageData = imageHelper.getImageDataById(image.getImageDataId(), null);
+                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+                        }
+                        if (imageFile != null) {
+                            ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, formText,
+                                    imageFile);
+                        } else {
+                            ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, formText);
+                        }
+                    }
+                } catch (Exception e) {
+                    GPLog.error(this, null, e); //$NON-NLS-1$
+                    Utilities.errorDialog(NotesListActivity.this, e, null);
+                }
+            }
+
+        } else if (currentNote instanceof Image) {
+            Image image = (Image) currentNote;
+            try {
+                File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
+                String ext = ".jpg";
+                if (image.getName().endsWith(".png"))
+                    ext = ".png";
+                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                byte[] imageData = new DaoImages().getImageData(image.getId());
+                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+                if (imageFile.exists()) {
+                    ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
+                } else {
+                    Utilities.errorDialog(NotesListActivity.this, new IOException("The image is missing: "
+                            + imageFile), null);
+                }
+            } catch (Exception e) {
+                GPLog.error(this, null, e); //$NON-NLS-1$
+            }
+        }
+    }
+
+    private void editNote(ANote currentNote) {
+        if (currentNote instanceof Note) {
+            Note note = (Note) currentNote;
+            if (note.getForm() == null || note.getForm().length() == 0) {
+                // can't edit simple notes
+                Utilities.messageDialog(this,
+                        "Only complex notes can be edited. Simple notes have to be replaced.", null);
+            } else {
+                String description = note.getDescription();
+                double lat = note.getLat();
+                double lon = note.getLon();
+                String form = note.getForm();
+                if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
+                    double altim = note.getAltim();
+                    Intent formIntent = new Intent(this, FormActivity.class);
+                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
+                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, currentNote.getName());
+                    formIntent.putExtra(LibraryConstants.LATITUDE, lat);
+                    formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
+                    formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                    this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                }
+            }
+        } else if (currentNote instanceof Image) {
+            Image image = (Image) currentNote;
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+
+            try {
+                File tempDir = ResourcesManager.getInstance(this).getTempDir();
+                String ext = ".jpg";
+                if (image.getName().endsWith(".png"))
+                    ext = ".png";
+                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                byte[] imageData = new DaoImages().getImageData(image.getId());
+                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+                intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                this.startActivity(intent);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
+
+        }
+    }
+
+    private void deleteNote(final ANote currentNote) {
+        Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_note),
+                new Runnable() {
+                    public void run() {
+                        new AsyncTask<String, Void, String>() {
+                            protected String doInBackground(String... params) {
+                                return "";
+                            }
+
+                            protected void onPostExecute(String response) {
+                                try {
+                                    if (currentNote instanceof Note) {
+                                        DaoNotes.deleteNote(currentNote.getId());
+                                    } else if (currentNote instanceof Image) {
+                                        DaoImages.deleteImages(currentNote.getId());
+                                    }
+                                    refreshList();
+                                } catch (IOException e) {
+                                    GPLog.error(this, e.getLocalizedMessage(), e);
+                                    e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }.execute((String) null);
+
+                    }
+                }, null
+        );
+    }
+
+    private void deleteSelectedNotes() {
+        Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_selected_notes),
+                new Runnable() {
+                    public void run() {
+                        new AsyncTask<String, Void, String>() {
+                            protected String doInBackground(String... params) {
+                                try {
+                                    for (ANote aNote : visibleNotesList) {
+                                        if (aNote.isChecked()) {
+                                            if (aNote instanceof Note) {
+                                                DaoNotes.deleteNote(aNote.getId());
+                                            } else if (aNote instanceof Image) {
+                                                DaoImages.deleteImages(aNote.getId());
+                                            }
+                                        }
+                                    }
+
+                                    return "";
+                                } catch (Exception e) {
+                                    GPLog.error(this, null, e);
+                                    return "An error occurred while deleting the notes: " + e.getLocalizedMessage();
+                                }
+                            }
+
+                            protected void onPostExecute(String response) {
+                                if (response.length() == 0) {
+                                    refreshList();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), response,
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }.execute((String) null);
+
+                    }
+                }, null
+        );
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -374,8 +460,7 @@ public class NotesListActivity extends ListActivity {
             filterList(s.toString());
         }
     };
-    private ArrayAdapter<String> arrayAdapter;
-    private EditText filterText;
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (GPLog.LOG_ABSURD)
@@ -414,4 +499,6 @@ public class NotesListActivity extends ListActivity {
             }
         }
     }
+
+
 }

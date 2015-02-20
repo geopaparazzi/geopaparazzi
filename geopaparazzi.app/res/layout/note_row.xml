@@ -4,55 +4,46 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/main_background"
-    android:padding="10dip" >
+    android:gravity="center_vertical"
+    android:padding="10dip">
 
-    <ImageView
-        android:id="@+id/gobutton"
+    <CheckBox
+        android:id="@+id/selectedCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:padding="5dip"
-        android:src="@android:drawable/ic_menu_mylocation" />
+        android:layout_centerVertical="true"
+        android:text="" />
 
     <TextView
         android:id="@+id/bookmarkrowtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/editbutton"
-        android:layout_toRightOf="@+id/gobutton"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/selectedCheckBox"
         android:padding="5dip"
         android:scrollHorizontally="false"
+        android:text="asdasdas"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color_neutral" />
 
     <ImageView
-        android:id="@+id/deletebutton"
+        android:id="@+id/morebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:padding="5dip"
-        android:src="@android:drawable/ic_menu_delete" />
+        android:src="@android:drawable/ic_menu_more" />
 
     <ImageView
-        android:id="@+id/editbutton"
+        android:id="@+id/gobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/deletebutton"
-        android:layout_toLeftOf="@+id/deletebutton"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/morebutton"
         android:padding="5dip"
-        android:src="@android:drawable/ic_menu_edit" />
+        android:src="@android:drawable/ic_menu_mylocation" />
 
-    <ImageView
-        android:id="@+id/sharebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/deletebutton"
-        android:layout_toLeftOf="@+id/editbutton"
-        android:padding="5dip"
-        android:src="@android:drawable/ic_menu_share" />
 
 </RelativeLayout>
