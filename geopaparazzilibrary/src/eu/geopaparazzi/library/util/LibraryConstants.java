@@ -144,6 +144,11 @@ public interface LibraryConstants {
     public static final String LONGITUDE = "LONGITUDE"; //$NON-NLS-1$
 
     /**
+     * Key used to pass an array containing [n,s,w,e] temporarily through bundles.
+     */
+    public static final String NSWE = "NSWE"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a zoom level temporarily through bundles.
      */
     public static final String ZOOMLEVEL = "ZOOMLEVEL"; //$NON-NLS-1$

@@ -58,6 +58,7 @@ import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -410,36 +411,51 @@ public class NotesListActivity extends ListActivity {
         Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_selected_notes),
                 new Runnable() {
                     public void run() {
-                        new AsyncTask<String, Void, String>() {
-                            protected String doInBackground(String... params) {
-                                try {
-                                    for (ANote aNote : visibleNotesList) {
-                                        if (aNote.isChecked()) {
-                                            if (aNote instanceof Note) {
-                                                DaoNotes.deleteNote(aNote.getId());
-                                            } else if (aNote instanceof Image) {
-                                                DaoImages.deleteImages(aNote.getId());
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int total = 0;
+                                for (ANote aNote : visibleNotesList) {
+                                    if (aNote.isChecked()) {
+                                        total++;
+                                    }
+                                }
+
+                                StringAsyncTask deletionTask = new StringAsyncTask(NotesListActivity.this) {
+                                    protected String doBackgroundWork() {
+                                        try {
+                                            int index = 0;
+                                            for (ANote aNote : visibleNotesList) {
+                                                if (aNote.isChecked()) {
+                                                    if (aNote instanceof Note) {
+                                                        DaoNotes.deleteNote(aNote.getId());
+                                                    } else if (aNote instanceof Image) {
+                                                        DaoImages.deleteImages(aNote.getId());
+                                                    }
+                                                    publishProgress(index);
+                                                    index++;
+                                                }
                                             }
+                                        } catch (Exception e) {
+                                            return "An error occurred while deleting the notes: " + e.getLocalizedMessage();
                                         }
+                                        return "";
                                     }
 
-                                    return "";
-                                } catch (Exception e) {
-                                    GPLog.error(this, null, e);
-                                    return "An error occurred while deleting the notes: " + e.getLocalizedMessage();
-                                }
+                                    protected void doUiPostWork(String response) {
+                                        dispose();
+                                        if (response.length() != 0) {
+                                            Utilities.warningDialog(NotesListActivity.this, response, null);
+                                        } else {
+                                            refreshList();
+                                        }
+                                    }
+                                };
+                                deletionTask.startProgressDialog("DELETE", "Removing notes...", false, total);
+                                deletionTask.execute();
                             }
-
-                            protected void onPostExecute(String response) {
-                                if (response.length() == 0) {
-                                    refreshList();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), response,
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }.execute((String) null);
-
+                        });
                     }
                 }, null
         );

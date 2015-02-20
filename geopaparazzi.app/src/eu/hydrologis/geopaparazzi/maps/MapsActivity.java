@@ -645,7 +645,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             int currentZoomLevel = getCurrentZoomLevel();
             setGuiZoomText(currentZoomLevel);
 
-//            readData();
+//            readData(); // TODO make sure this is not needed (moved to onResume)
             saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
@@ -793,7 +793,12 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     return false;
                 }
             case MENU_LOADMAPSFORGE_VECTORS_ID: {
-                extractMapsforgeData();
+                float[] mapWorldBounds = getMapWorldBounds();
+                int currentZoomLevel = getCurrentZoomLevel();
+                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
+                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
+                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
+                startActivity(mapsforgeIntent);
                 return true;
             }
             case MENU_GO_TO: {
@@ -816,117 +821,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         return super.onContextItemSelected(item);
     }
 
-    private void extractMapsforgeData() {
-        AbstractSpatialTable selectedSpatialTable = MapsDirManager.getInstance().getSelectedSpatialTable();
-        if (selectedSpatialTable instanceof MapTable) {
-            MapTable mapTable = (MapTable) selectedSpatialTable;
-            File databaseFile = mapTable.getDatabaseFile();
-            final MapDatabase mapFile = new MapDatabase();
 
-            FileOpenResult result = mapFile.openFile(databaseFile);
-            float[] nswe = getMapWorldBounds();
-            final double w = nswe[2];
-            final double s = nswe[1];
-            final double e = nswe[3];
-            final double n = nswe[0];
-            final byte z = (byte) getCurrentZoomLevel();
-
-            final long startXTile = MercatorProjection.longitudeToTileX(w, z);
-            final long endXTile = MercatorProjection.longitudeToTileX(e, z);
-            final long startYTile = MercatorProjection.latitudeToTileY(n, z);
-            final long endYTile = MercatorProjection.latitudeToTileY(s, z);
-
-            long count = (endXTile - startXTile) * (endYTile - startYTile);
-
-
-            StringAsyncTask task = new StringAsyncTask(this) {
-                @Override
-                protected String doBackgroundWork() {
-                    try {
-                        TreeSet<String> pointsSet = new TreeSet<String>();
-                        int index = 0;
-                        for (long tileX = startXTile; tileX <= endXTile; tileX++) {
-                            for (long tileY = startYTile; tileY <= endYTile; tileY++) {
-                                index++;
-                                Tile tile = new Tile(tileX, tileY, z);
-                                MapReadResult mapReadResult = mapFile.readMapData(tile);
-
-                                if (GPLog.LOG_ABSURD) {
-                                    GPLog.addLogEntry(this, "MAPSFORGE EXTRACTION: " + tileX + "/" + tileY + "/" + z + ":" + mapReadResult.pointOfInterests.size());
-                                }
-                                for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-                                    GeoPoint p = pointOfInterest.position;
-                                    double longitude = p.getLongitude();
-                                    double latitude = p.getLatitude();
-
-                                    if (longitude < w || longitude > e || latitude < s || latitude > n) {
-                                        // ignore external points
-                                        continue;
-                                    }
-
-                                    List<Tag> tags = pointOfInterest.tags;
-                                    int tagsSize = tags.size();
-                                    String text = null;
-                                    double elev = -1.0;
-                                    StringBuilder sb = new StringBuilder();
-                                    for (Tag tag : tags) {
-                                        String key = tag.key;
-                                        String value = tag.value;
-                                        if (tagsSize == 1) {
-                                            text = value;
-                                        } else if (key.equals("name")) {
-                                            text = value;
-                                        } else if (key.equals("elev")) {
-                                            try {
-                                                elev = Double.parseDouble(value);
-                                            } catch (Exception e1) {
-                                                // ignore
-                                            }
-                                        }
-                                        sb.append(key).append(" = ").append(value).append("\n");
-                                    }
-                                    if (text == null) {
-                                        text = sb.toString();
-                                    }
-                                    try {
-                                        // check if it is double
-                                        String key = longitude+"_" + latitude + "_" + text;
-                                        if (pointsSet.add(key)) {
-                                            DaoNotes.addNote(longitude, latitude, elev, 0, text, "POI", null, null);
-                                        }
-                                    } catch (IOException ex) {
-                                        GPLog.error(this, null, ex);
-                                    }
-                                }
-                                publishProgress(index);
-                            }
-                        }
-                    } catch (Exception e) {
-                        return "ERROR: " + e.getLocalizedMessage();
-                    } finally {
-                        mapFile.closeFile();
-                    }
-                    return "";
-                }
-
-                @Override
-                protected void doUiPostWork(String response) {
-                    dispose();
-                    if (response.length() != 0) {
-                        Utilities.warningDialog(MapsActivity.this, response, null);
-                    }
-                    readData();
-                    mapView.invalidate();
-                }
-            };
-            task.startProgressDialog("Extraction", "Extracting mapsforge data...", false, (int) count);
-            task.execute();
-
-
-        } else {
-            Utilities.warningDialog(this, "This tool works only when a mapsforge map is loaded.", null);
-        }
-    }
     // THIS IS CURRENTLY DISABLED
     //
     // /**

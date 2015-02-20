@@ -61,7 +61,7 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        CheckBox demoCheckbox = (CheckBox) findViewById(R.id.demoCheckbox);
+        CheckBox demoCheckbox = (CheckBox) findViewById(R.id.poisCheckbox);
         demoCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                 Editor edit = preferences.edit();
