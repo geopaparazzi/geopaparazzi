@@ -103,6 +103,6 @@ public class MapsforgeExtractedFormHelper {
 
     public String getLabelValue() {
         checkLabelValue();
-        return labelValue;
+        return labelValue + " (MF)";
     }
 }

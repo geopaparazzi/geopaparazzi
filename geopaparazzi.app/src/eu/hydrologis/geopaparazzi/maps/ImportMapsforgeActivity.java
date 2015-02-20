@@ -43,11 +43,14 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.gpx.parser.RoutePoint;
+import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
@@ -60,6 +63,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Spatial
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
 import eu.hydrologis.geopaparazzi.util.MapsforgeExtractedFormHelper;
@@ -92,14 +96,20 @@ public class ImportMapsforgeActivity extends Activity {
      */
     public void startExtraction(View view) {
 
+        Date date = new Date();
+        final long dateLong = date.getTime();
+
         CheckBox poisCheckbox = (CheckBox) findViewById(R.id.poisCheckbox);
-        boolean doPois = poisCheckbox.isChecked();
+        final boolean doPois = poisCheckbox.isChecked();
         CheckBox waysCheckbox = (CheckBox) findViewById(R.id.waysCheckbox);
         final boolean doWays = waysCheckbox.isChecked();
 
         if (!doPois && !doWays) {
             return;
         }
+
+        CheckBox contoursCheckbox = (CheckBox) findViewById(R.id.contoursCheckbox);
+        final boolean doContours = contoursCheckbox.isChecked();
 
         EditText filterEditTExt = (EditText) findViewById(R.id.filterEditText);
         final String filter = filterEditTExt.getText().toString().toLowerCase();
@@ -142,6 +152,7 @@ public class ImportMapsforgeActivity extends Activity {
                 protected String doBackgroundWork() {
                     try {
                         TreeSet<String> pointsSet = new TreeSet<String>();
+                        TreeSet<String> waysSet = new TreeSet<String>();
                         boolean doFilter = filter.length() > 0;
                         int index = 0;
                         for (int i = 0; i <= zoomLimit; i++) {
@@ -159,67 +170,128 @@ public class ImportMapsforgeActivity extends Activity {
                                     Tile tile = new Tile(tileX, tileY, (byte) zoom);
                                     MapReadResult mapReadResult = mapFile.readMapData(tile);
 
-                                    if (GPLog.LOG_ABSURD) {
-                                        GPLog.addLogEntry(this, "MAPSFORGE EXTRACTION: " + tileX + "/" + tileY + "/" + zoom + ":" + mapReadResult.pointOfInterests.size());
-                                    }
-                                    for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-                                        GeoPoint p = pointOfInterest.position;
-                                        double longitude = p.getLongitude();
-                                        double latitude = p.getLatitude();
+                                    if (doPois) {
+                                        for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+                                            GeoPoint p = pointOfInterest.position;
+                                            double longitude = p.getLongitude();
+                                            double latitude = p.getLatitude();
 
-                                        if (longitude < w || longitude > e || latitude < s || latitude > n) {
-                                            // ignore external points
-                                            continue;
-                                        }
+                                            if (longitude < w || longitude > e || latitude < s || latitude > n) {
+                                                // ignore external points
+                                                continue;
+                                            }
 
-                                        MapsforgeExtractedFormHelper mapsforgeHelper = new MapsforgeExtractedFormHelper();
-                                        List<Tag> tags = pointOfInterest.tags;
-                                        double elev = -1.0;
-                                        for (Tag tag : tags) {
-                                            String key = tag.key;
-                                            String value = tag.value;
-                                            if (key.equals("elev")) {
-                                                try {
-                                                    elev = Double.parseDouble(value);
-                                                } catch (Exception e1) {
-                                                    // ignore
+                                            MapsforgeExtractedFormHelper mapsforgeHelper = new MapsforgeExtractedFormHelper();
+                                            List<Tag> tags = pointOfInterest.tags;
+                                            double elev = -1.0;
+                                            for (Tag tag : tags) {
+                                                String key = tag.key;
+                                                String value = tag.value;
+                                                if (key.equals("elev")) {
+                                                    try {
+                                                        elev = Double.parseDouble(value);
+                                                    } catch (Exception e1) {
+                                                        // ignore
+                                                    }
+                                                }
+                                                mapsforgeHelper.addTag(key, value);
+                                            }
+
+                                            String form = mapsforgeHelper.toForm();
+                                            String labelValue = mapsforgeHelper.getLabelValue();
+
+                                            // check if the complete text contains the thing
+                                            if (doFilter) {
+                                                String formLC = form.toLowerCase();
+                                                if (filterExcludes && formLC.contains(filter)) {
+                                                    continue;
+                                                } else if (!filterExcludes && !formLC.contains(filter)) {
+                                                    continue;
                                                 }
                                             }
-                                            mapsforgeHelper.addTag(key, value);
-                                        }
-
-                                        String form = mapsforgeHelper.toForm();
-                                        String labelValue = mapsforgeHelper.getLabelValue();
-
-                                        // check if the complete text contains the thing
-                                        if (doFilter) {
-                                            String formLC = form.toLowerCase();
-                                            if (filterExcludes && formLC.contains(filter)) {
-                                                continue;
-                                            } else if (!filterExcludes && !formLC.contains(filter)) {
-                                                continue;
+                                            try {
+                                                // check if it is double
+                                                String key = longitude + "_" + latitude + "_" + form;
+                                                if (pointsSet.add(key)) {
+                                                    DaoNotes.addNote(longitude, latitude, elev, dateLong, labelValue, "POI", form, null);
+                                                }
+                                            } catch (IOException ex) {
+                                                GPLog.error(this, null, ex);
                                             }
-                                        }
-                                        try {
-                                            // check if it is double
-                                            String key = longitude + "_" + latitude + "_" + form;
-                                            if (pointsSet.add(key)) {
-                                                DaoNotes.addNote(longitude, latitude, elev, 0, labelValue, "POI", form, null);
-                                            }
-                                        } catch (IOException ex) {
-                                            GPLog.error(this, null, ex);
                                         }
                                     }
-
                                     // TODO
-//                                    if (i==0 && doWays){
-//                                        List<Way> ways = mapReadResult.ways;
-//                                        for (Way way : ways) {
-//                                            way.tags
-//                                        }
-//
-//
-//                                    }
+                                    if (i == 0 && doWays) {
+                                        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+                                        List<Way> ways = mapReadResult.ways;
+                                        for (Way way : ways) {
+
+                                            DaoGpsLog log = new DaoGpsLog();
+
+                                            List<Tag> tags = way.tags;
+
+                                            boolean isRoad = false;
+                                            boolean isContour = false;
+                                            String name = null;
+                                            for (Tag tag : tags) {
+                                                String key = tag.key;
+                                                String value = tag.value;
+                                                if (key.equals("highway")) {
+                                                    isRoad = true;
+                                                    if (name == null) {
+                                                        name = value;
+                                                    }
+                                                }
+                                                if (key.equals("name")) {
+                                                    name = value;
+                                                }
+                                                if (key.equals("contour_ext") && doContours) {
+                                                    isContour = true;
+                                                }
+                                            }
+                                            float[][] wayNodes = way.wayNodes;
+
+                                            if (!isRoad && !isContour) {
+                                                continue;
+                                            }
+
+                                            String color = "red";
+                                            int width = 6;
+                                            if (isContour) {
+                                                name = "contour";
+                                                color = "grey";
+                                                width = 2;
+                                            }
+
+                                            String trackId = name + "_" + wayNodes[0][0] + "_" + wayNodes[0][1];
+                                            if (!waysSet.add(trackId)) {
+                                                continue;
+                                            }
+                                            long logId = log.addGpsLog(dateLong, 0, 0.0, name, width, color, true);
+
+                                            sqliteDatabase.beginTransaction();
+                                            try {
+                                                long currentTimeMillis = System.currentTimeMillis();
+
+                                                for (float[] wayNode : wayNodes) {
+                                                    for (int j = 0; j < wayNode.length - 1; j = j + 2) {
+                                                        double lon = wayNode[j] / 1000000.0;
+                                                        double lat = wayNode[j + 1] / 1000000.0;
+                                                        log.addGpsLogDataPoint(sqliteDatabase, logId, lon, lat, -1, currentTimeMillis);
+                                                        currentTimeMillis = currentTimeMillis + 1000l;
+                                                    }
+                                                }
+                                                sqliteDatabase.setTransactionSuccessful();
+                                            } catch (Exception e) {
+                                                GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
+                                                throw new IOException(e.getLocalizedMessage());
+                                            } finally {
+                                                sqliteDatabase.endTransaction();
+                                            }
+
+
+                                        }
+                                    }
 
                                     publishProgress(index);
                                 }

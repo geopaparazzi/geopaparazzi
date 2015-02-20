@@ -67,7 +67,7 @@
         android:textColor="@color/main_text_color" />
 
     <CheckBox
-        android:id="@+id/poisCheckbox"
+        android:id="@+id/demoCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/poisCheckbox"
+        android:layout_below="@+id/demoCheckbox"
         android:text="Logging"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/main_text_color" />
