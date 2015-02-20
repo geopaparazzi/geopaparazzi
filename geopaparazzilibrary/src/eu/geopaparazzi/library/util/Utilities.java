@@ -731,6 +731,22 @@ public class Utilities {
     }
 
     /**
+     * Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator
+     * EPSG:900913
+     *
+     * @param lat
+     * @param lon
+     * @return
+     */
+    public static double[] latLonToMeters( double lat, double lon ) {
+        double mx = lon * originShift / 180.0;
+        double my = Math.log(Math.tan((90 + lat) * Math.PI / 360.0)) / (Math.PI / 180.0);
+        my = my * originShift / 180.0;
+        return new double[]{mx, my};
+    }
+
+
+    /**
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
      * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
@@ -746,6 +762,48 @@ public class Utilities {
         double mx = px * res - originShift;
         double my = py * res - originShift;
         return new double[]{mx, my};
+    }
+
+
+    /**
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @param px
+     * @param py
+     * @return
+     */
+    public static int[] pixelsToTile( int px, int py, int tileSize ) {
+        int tx = (int) Math.ceil(px / ((double) tileSize) - 1);
+        int ty = (int) Math.ceil(py / ((double) tileSize) - 1);
+        return new int[]{tx, ty};
+    }
+
+
+    /**
+     * Converts EPSG:900913 to pyramid pixel coordinates in given zoom level
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @param mx
+     * @param my
+     * @param zoom
+     * @return
+     */
+    public static int[] metersToPixels( double mx, double my, int zoom, int tileSize ) {
+        double res = getResolution(zoom, tileSize);
+        int px = (int) Math.round((mx + originShift) / res);
+        int py = (int) Math.round((my + originShift) / res);
+        return new int[]{px, py};
+    }
+
+    /**
+     * Returns tile for given mercator coordinates
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @return
+     */
+    public static int[] metersToTile( double mx, double my, int zoom, int tileSize ) {
+        int[] p = metersToPixels(mx, my, zoom, tileSize);
+        return pixelsToTile(p[0], p[1], tileSize);
     }
 
     /**

@@ -68,6 +68,8 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vividsolutions.jts.math.MathUtil;
+
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapScaleBar;
@@ -81,15 +83,22 @@ import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapReadResult;
+import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.reader.header.FileOpenResult;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -101,12 +110,12 @@ import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
-import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -114,9 +123,11 @@ import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -129,10 +140,8 @@ import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
-import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
-import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -157,7 +166,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private final int MENU_GO_TO = 6;
     private final int MENU_CENTER_ON_MAP = 7;
     private final int MENU_COMPASS_ID = 8;
-    private final int MENU_SENDDATA_ID = 9;
+    private final int MENU_SHAREPOSITION_ID = 9;
+    private final int MENU_LOADMAPSFORGE_VECTORS_ID = 10;
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
@@ -727,8 +737,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 7, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, MENU_GO_TO, 8, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SENDDATA_ID, 8, R.string.share_position).setIcon(android.R.drawable.ic_menu_send);
+        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 8, R.string.share_position).setIcon(android.R.drawable.ic_menu_send);
         menu.add(Menu.NONE, MENU_MIXARE_ID, 9, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 9, "Import mapsforge data").setIcon(R.drawable.icon_datasource);
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -759,16 +770,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     MixareHandler.installMixareFromMarket(this);
                     return true;
                 }
-                float[] nswe = getMapWorldBounds();
 
                 try {
+                    float[] nswe = getMapWorldBounds();
                     MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
                     return true;
                 } catch (Exception e1) {
                     GPLog.error(this, null, e1); //$NON-NLS-1$
                     return false;
                 }
-            case MENU_SENDDATA_ID:
+            case MENU_SHAREPOSITION_ID:
                 try {
                     if (!NetworkUtilities.isNetworkAvailable(this)) {
                         Utilities.messageDialog(this, R.string.available_only_with_network, null);
@@ -781,6 +792,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     GPLog.error(this, null, e1); //$NON-NLS-1$
                     return false;
                 }
+            case MENU_LOADMAPSFORGE_VECTORS_ID: {
+                extractMapsforgeData();
+                return true;
+            }
             case MENU_GO_TO: {
                 return goTo();
             }
@@ -799,6 +814,118 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             default:
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void extractMapsforgeData() {
+        AbstractSpatialTable selectedSpatialTable = MapsDirManager.getInstance().getSelectedSpatialTable();
+        if (selectedSpatialTable instanceof MapTable) {
+            MapTable mapTable = (MapTable) selectedSpatialTable;
+            File databaseFile = mapTable.getDatabaseFile();
+            final MapDatabase mapFile = new MapDatabase();
+
+            FileOpenResult result = mapFile.openFile(databaseFile);
+            float[] nswe = getMapWorldBounds();
+            final double w = nswe[2];
+            final double s = nswe[1];
+            final double e = nswe[3];
+            final double n = nswe[0];
+            final byte z = (byte) getCurrentZoomLevel();
+
+            final long startXTile = MercatorProjection.longitudeToTileX(w, z);
+            final long endXTile = MercatorProjection.longitudeToTileX(e, z);
+            final long startYTile = MercatorProjection.latitudeToTileY(n, z);
+            final long endYTile = MercatorProjection.latitudeToTileY(s, z);
+
+            long count = (endXTile - startXTile) * (endYTile - startYTile);
+
+
+            StringAsyncTask task = new StringAsyncTask(this) {
+                @Override
+                protected String doBackgroundWork() {
+                    try {
+                        TreeSet<String> pointsSet = new TreeSet<String>();
+                        int index = 0;
+                        for (long tileX = startXTile; tileX <= endXTile; tileX++) {
+                            for (long tileY = startYTile; tileY <= endYTile; tileY++) {
+                                index++;
+                                Tile tile = new Tile(tileX, tileY, z);
+                                MapReadResult mapReadResult = mapFile.readMapData(tile);
+
+                                if (GPLog.LOG_ABSURD) {
+                                    GPLog.addLogEntry(this, "MAPSFORGE EXTRACTION: " + tileX + "/" + tileY + "/" + z + ":" + mapReadResult.pointOfInterests.size());
+                                }
+                                for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+                                    GeoPoint p = pointOfInterest.position;
+                                    double longitude = p.getLongitude();
+                                    double latitude = p.getLatitude();
+
+                                    if (longitude < w || longitude > e || latitude < s || latitude > n) {
+                                        // ignore external points
+                                        continue;
+                                    }
+
+                                    List<Tag> tags = pointOfInterest.tags;
+                                    int tagsSize = tags.size();
+                                    String text = null;
+                                    double elev = -1.0;
+                                    StringBuilder sb = new StringBuilder();
+                                    for (Tag tag : tags) {
+                                        String key = tag.key;
+                                        String value = tag.value;
+                                        if (tagsSize == 1) {
+                                            text = value;
+                                        } else if (key.equals("name")) {
+                                            text = value;
+                                        } else if (key.equals("elev")) {
+                                            try {
+                                                elev = Double.parseDouble(value);
+                                            } catch (Exception e1) {
+                                                // ignore
+                                            }
+                                        }
+                                        sb.append(key).append(" = ").append(value).append("\n");
+                                    }
+                                    if (text == null) {
+                                        text = sb.toString();
+                                    }
+                                    try {
+                                        // check if it is double
+                                        String key = longitude+"_" + latitude + "_" + text;
+                                        if (pointsSet.add(key)) {
+                                            DaoNotes.addNote(longitude, latitude, elev, 0, text, "POI", null, null);
+                                        }
+                                    } catch (IOException ex) {
+                                        GPLog.error(this, null, ex);
+                                    }
+                                }
+                                publishProgress(index);
+                            }
+                        }
+                    } catch (Exception e) {
+                        return "ERROR: " + e.getLocalizedMessage();
+                    } finally {
+                        mapFile.closeFile();
+                    }
+                    return "";
+                }
+
+                @Override
+                protected void doUiPostWork(String response) {
+                    dispose();
+                    if (response.length() != 0) {
+                        Utilities.warningDialog(MapsActivity.this, response, null);
+                    }
+                    readData();
+                    mapView.invalidate();
+                }
+            };
+            task.startProgressDialog("Extraction", "Extracting mapsforge data...", false, (int) count);
+            task.execute();
+
+
+        } else {
+            Utilities.warningDialog(this, "This tool works only when a mapsforge map is loaded.", null);
+        }
     }
     // THIS IS CURRENTLY DISABLED
     //

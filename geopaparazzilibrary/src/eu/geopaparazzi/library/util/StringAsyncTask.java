@@ -23,6 +23,35 @@ import android.os.AsyncTask;
 
 /**
  * An simple {@link AsyncTask} string based wrapper.
+ *
+ * <p>example usage:</p>
+ * <code>
+ *            StringAsyncTask task = new StringAsyncTask(this) {
+ *                protected String doBackgroundWork() {
+ *                    try {
+ *                        int index = 0;
+ *                        for (...){
+ *                           // do stuff
+ *                           publishProgress(index);
+ *                        }
+ *                    } catch (Exception e) {
+ *                        return "ERROR: " + e.getLocalizedMessage();
+ *                    }
+ *                    return "";
+ *                }
+ *
+ *                protected void doUiPostWork(String response) {
+ *                    dispose();
+ *                    if (response.length() != 0) {
+ *                        Utilities.warningDialog(YourActivity.this, response, null);
+ *                    }
+ *                    // do UI stuff
+ *                }
+ *            };
+ *            task.startProgressDialog("TITLE", "Process...", false, progressCount);
+ *            task.execute();
+ *</code>
+ *
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -50,10 +79,12 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
         progressDialog.setCancelable(cancelable);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         if (max == null) {
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setIndeterminate(true);
         } else {
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setIndeterminate(false);
             progressDialog.setProgress(0);
             progressDialog.setMax(max);
         }
