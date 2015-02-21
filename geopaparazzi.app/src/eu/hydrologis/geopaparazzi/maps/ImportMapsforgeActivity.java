@@ -111,13 +111,13 @@ public class ImportMapsforgeActivity extends Activity {
         final boolean doPois = poisCheckbox.isChecked();
         CheckBox waysCheckbox = (CheckBox) findViewById(R.id.waysCheckbox);
         final boolean doWays = waysCheckbox.isChecked();
+        CheckBox contoursCheckbox = (CheckBox) findViewById(R.id.contoursCheckbox);
+        final boolean doContours = contoursCheckbox.isChecked();
 
-        if (!doPois && !doWays) {
+        if (!doPois && !doWays && !doContours) {
             return;
         }
 
-        CheckBox contoursCheckbox = (CheckBox) findViewById(R.id.contoursCheckbox);
-        final boolean doContours = contoursCheckbox.isChecked();
 
         EditText filterEditTExt = (EditText) findViewById(R.id.filterEditText);
         final String filter = filterEditTExt.getText().toString().toLowerCase();
@@ -165,6 +165,28 @@ public class ImportMapsforgeActivity extends Activity {
                     try {
                         TreeSet<String> pointsSet = new TreeSet<String>();
                         TreeSet<String> waysSet = new TreeSet<String>();
+                        HashMap<String, String> fieldsMap = new HashMap<String, String>();
+                        List<String> fieldNames = new ArrayList<String>();
+                        for (int j = 1; j <= 20; j++) {
+                            fieldNames.add("field" + j);
+                        }
+
+                        // get mapsforge db
+                        Database database = null;
+                        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+                        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
+                            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+                            if (uniqueNameBasedOnDbFilePath.startsWith(LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME)) {
+                                AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                                        spatialVectorTable);
+                                if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                                    SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
+                                    database = spatialiteDatabaseHandler.getDatabase();
+                                }
+                            }
+                        }
+
+
                         boolean doFilter = filter.length() > 0;
                         int index = 0;
                         for (int i = 0; i <= zoomLimit; i++) {
@@ -233,32 +255,12 @@ public class ImportMapsforgeActivity extends Activity {
                                         }
                                     }
                                     // TODO
-                                    if (i == 0 && doWays) {
+                                    if (i == 0 && (doWays || doContours)) {
                                         List<Way> ways = mapReadResult.ways;
 
-                                        List<String> fieldNames = new ArrayList<String>();
                                         List<String> fieldNamesTmp = new ArrayList<String>();
-                                        for (int j = 1; j <= 20; j++) {
-                                            fieldNames.add("field" + j);
-                                            fieldNamesTmp.add("field" + j);
-                                        }
+                                        fieldNamesTmp.addAll(fieldNames);
 
-                                        // get mapsforge db
-                                        Database database = null;
-                                        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-                                        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                                            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                                            if (uniqueNameBasedOnDbFilePath.startsWith(LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME)) {
-                                                AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                                                        spatialVectorTable);
-                                                if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                                                    SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
-                                                    database = spatialiteDatabaseHandler.getDatabase();
-                                                }
-                                            }
-                                        }
-
-                                        HashMap<String, String> fieldsMap = new HashMap<String, String>();
                                         for (Way way : ways) {
 
                                             List<Tag> tags = way.tags;
@@ -267,32 +269,15 @@ public class ImportMapsforgeActivity extends Activity {
 
                                             boolean isRoad = false;
                                             boolean isContour = false;
-                                            String name = null;
                                             for (Tag tag : tags) {
                                                 String key = tag.key;
-                                                String value = tag.value;
-                                                if (key.equals("highway")) {
+                                                if (key.equals("highway") && doWays) {
                                                     isRoad = true;
-                                                    if (name == null) {
-                                                        name = value;
-                                                    }
-                                                }
-                                                if (key.equals("name")) {
-                                                    name = value;
+                                                    break;
                                                 }
                                                 if (key.equals("contour_ext") && doContours) {
                                                     isContour = true;
-                                                }
-
-                                                if (isRoad || (isContour && doContours)) {
-                                                    // collect field only of necessary data
-                                                    String field = fieldsMap.get(key);
-                                                    if (field == null) {
-                                                        // get next available field
-                                                        field = fieldNamesTmp.remove(0);
-                                                        fieldsMap.put(key, field);
-                                                    }
-                                                    fieldValueMap.put(field, value);
+                                                    break;
                                                 }
                                             }
 
@@ -300,8 +285,22 @@ public class ImportMapsforgeActivity extends Activity {
                                                 continue;
                                             }
 
+                                            for (Tag tag : tags) {
+                                                String key = tag.key;
+                                                String value = tag.value;
+
+                                                // collect field only of necessary data
+                                                String field = fieldsMap.get(key);
+                                                if (field == null) {
+                                                    // get next available field
+                                                    field = fieldNamesTmp.remove(0);
+                                                    fieldsMap.put(key, field);
+                                                }
+                                                fieldValueMap.put(field, value);
+                                            }
+
                                             float[][] wayNodes = way.wayNodes;
-                                            String trackId = name + "_" + wayNodes[0][0] + "_" + wayNodes[0][1];
+                                            String trackId = wayNodes[0][0] + "_" + wayNodes[0][1];
                                             if (!waysSet.add(trackId)) {
                                                 continue;
                                             }

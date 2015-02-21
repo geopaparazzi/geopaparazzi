@@ -34,7 +34,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="Points of interest"
+        android:text="@string/pois"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -46,7 +46,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/poisLabel"
         android:checked="true"
-        android:text="Extract POIS"
+        android:text="@string/extract_pois"
         android:textColor="@color/main_text_color" />
 
     <TextView
@@ -57,7 +57,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/poisCheckbox"
         android:layout_marginTop="10dp"
-        android:text="Filter"
+        android:text="@string/filter"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -80,7 +80,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/filterEditText"
         android:layout_marginLeft="10dp"
-        android:text="filter excludes"
+        android:text="@string/filter_excludes"
         android:textColor="@color/main_text_color" />
 
 
@@ -93,7 +93,7 @@
         android:layout_below="@+id/excludeFilterCheckbox"
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
-        android:text="Ways"
+        android:text="@string/ways"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -104,7 +104,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/waysLabel"
-        android:text="Extract ways"
+        android:text="@string/extract_ways"
         android:textColor="@color/main_text_color" />
 
     <CheckBox
@@ -114,8 +114,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/waysCheckbox"
-        android:text="Extract also contours if available"
-        android:layout_marginLeft="20dp"
+        android:text="@string/extract_contours"
         android:textColor="@color/main_text_color" />
 
     <Button

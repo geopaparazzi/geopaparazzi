@@ -286,4 +286,11 @@
     <string name="default_database">Default Database</string>
     <string name="kmz">KMZ</string>
     <string name="export_uc">EXPORT</string>
+    <string name="pois">Points of interest</string>
+    <string name="extract_pois">Extract POIS</string>
+    <string name="filter">Filter</string>
+    <string name="filter_excludes">filter excludes</string>
+    <string name="ways">Ways</string>
+    <string name="extract_ways">Extract ways</string>
+    <string name="extract_contours">Extract contours if available</string>
 </resources>
