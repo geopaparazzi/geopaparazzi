@@ -478,8 +478,10 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * @throws Exception if something goes wrong.
      */
     public static String getRaster2Version(Database database) throws Exception {
-        Stmt stmt = database.prepare("SELECT RL2_Version();");
+        Stmt stmt = null;
         try {
+            stmt = database.prepare("SELECT RL2_Version();");
+
             if (stmt.step()) {
                 String value = stmt.column_string(0);
                 if (SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) {
@@ -487,8 +489,16 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 }
                 return value;
             }
+        } catch (Exception e) {
+            String localizedMessage = e.getLocalizedMessage();
+            if (!localizedMessage.contains("no such function: RL2_Version")) {
+                // for now ignore this message, since there is no support for that
+                throw e;
+            }
+            return "";
         } finally {
-            stmt.close();
+            if (stmt != null)
+                stmt.close();
         }
         return "";
     }
