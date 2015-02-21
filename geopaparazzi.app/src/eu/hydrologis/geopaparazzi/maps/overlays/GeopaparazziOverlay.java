@@ -68,6 +68,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -175,7 +176,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         this.itemPosition = new Point();
 
         // cross
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
         String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
         int crossColor = ColorUtilities.toColor(crossColorStr);
         String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$

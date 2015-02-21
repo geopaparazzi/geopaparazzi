@@ -83,6 +83,7 @@ public class NotesListActivity extends ListActivity {
     private String share;
     private String edit;
     private String delete;
+    private String asSelection;
     private String allNotesSubmenu;
     private String selectAll;
     private String invertSelection;
@@ -99,6 +100,7 @@ public class NotesListActivity extends ListActivity {
         share = getString(R.string.share);
         edit = getString(R.string.edit);
         delete = getString(R.string.delete);
+        asSelection = "Use as selection";
         allNotesSubmenu = getString(R.string.all_notes_submenu);
         selectAll = getString(R.string.select_all);
         invertSelection = getString(R.string.invert_selection);
@@ -224,6 +226,7 @@ public class NotesListActivity extends ListActivity {
         popup.getMenu().add(edit);
         popup.getMenu().add(share);
         popup.getMenu().add(delete);
+        popup.getMenu().add(asSelection);
         SubMenu subMenu = popup.getMenu().addSubMenu(allNotesSubmenu);
         subMenu.add(selectAll);
         subMenu.add(invertSelection);
@@ -237,6 +240,9 @@ public class NotesListActivity extends ListActivity {
                     editNote(currentNote);
                 } else if (actionName.equals(delete)) {
                     deleteNote(currentNote);
+                } else if (actionName.equals(asSelection)) {
+                    String name = currentNote.getName();
+                    filterList(name);
                 } else if (actionName.equals(selectAll)) {
                     for (ANote aNote : visibleNotesList) {
                         aNote.setChecked(true);
