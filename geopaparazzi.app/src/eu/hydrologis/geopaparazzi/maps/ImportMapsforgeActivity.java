@@ -43,12 +43,17 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Exception;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -58,15 +63,18 @@ import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
 import eu.hydrologis.geopaparazzi.util.MapsforgeExtractedFormHelper;
+import jsqlite.*;
 
 /**
  * The mapsforge data extraction activity.
@@ -133,6 +141,7 @@ public class ImportMapsforgeActivity extends Activity {
             // prepare count for various levels, we go a few into detail
 
             long count = 0;
+            long singleZoomCount = 0;
             final int zoomLimit = 4;
             for (int i = 0; i <= zoomLimit; i++) {
                 int zoom = z + i;
@@ -144,6 +153,9 @@ public class ImportMapsforgeActivity extends Activity {
                 long startYTile = MercatorProjection.latitudeToTileY(n, (byte) zoom);
                 long endYTile = MercatorProjection.latitudeToTileY(s, (byte) zoom);
                 count = count + (endXTile - startXTile) * (endYTile - startYTile);
+                if (i == 0) {
+                    singleZoomCount = (endXTile - startXTile) * (endYTile - startYTile);
+                }
             }
 
 
@@ -222,13 +234,36 @@ public class ImportMapsforgeActivity extends Activity {
                                     }
                                     // TODO
                                     if (i == 0 && doWays) {
-                                        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
                                         List<Way> ways = mapReadResult.ways;
+
+                                        List<String> fieldNames = new ArrayList<String>();
+                                        List<String> fieldNamesTmp = new ArrayList<String>();
+                                        for (int j = 1; j <= 20; j++) {
+                                            fieldNames.add("field" + j);
+                                            fieldNamesTmp.add("field" + j);
+                                        }
+
+                                        // get mapsforge db
+                                        Database database = null;
+                                        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+                                        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
+                                            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+                                            if (uniqueNameBasedOnDbFilePath.startsWith(LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME)) {
+                                                AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                                                        spatialVectorTable);
+                                                if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                                                    SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
+                                                    database = spatialiteDatabaseHandler.getDatabase();
+                                                }
+                                            }
+                                        }
+
+                                        HashMap<String, String> fieldsMap = new HashMap<String, String>();
                                         for (Way way : ways) {
 
-                                            DaoGpsLog log = new DaoGpsLog();
-
                                             List<Tag> tags = way.tags;
+
+                                            HashMap<String, String> fieldValueMap = new HashMap<String, String>();
 
                                             boolean isRoad = false;
                                             boolean isContour = false;
@@ -248,45 +283,63 @@ public class ImportMapsforgeActivity extends Activity {
                                                 if (key.equals("contour_ext") && doContours) {
                                                     isContour = true;
                                                 }
+
+                                                if (isRoad || (isContour && doContours)) {
+                                                    // collect field only of necessary data
+                                                    String field = fieldsMap.get(key);
+                                                    if (field == null) {
+                                                        // get next available field
+                                                        field = fieldNamesTmp.remove(0);
+                                                        fieldsMap.put(key, field);
+                                                    }
+                                                    fieldValueMap.put(field, value);
+                                                }
                                             }
-                                            float[][] wayNodes = way.wayNodes;
 
                                             if (!isRoad && !isContour) {
                                                 continue;
                                             }
 
-                                            String color = "red";
-                                            int width = 6;
-                                            if (isContour) {
-                                                name = "contour";
-                                                color = "grey";
-                                                width = 2;
-                                            }
-
+                                            float[][] wayNodes = way.wayNodes;
                                             String trackId = name + "_" + wayNodes[0][0] + "_" + wayNodes[0][1];
                                             if (!waysSet.add(trackId)) {
                                                 continue;
                                             }
-                                            long logId = log.addGpsLog(dateLong, 0, 0.0, name, width, color, true);
 
-                                            sqliteDatabase.beginTransaction();
-                                            try {
-                                                long currentTimeMillis = System.currentTimeMillis();
+                                            StringBuilder queryBuilder = new StringBuilder();
+                                            queryBuilder.append("insert into lines (geometry,");
+                                            queryBuilder.append("field1,field2,field3,field4,field5,field6,field7,field8,field9,field10,field11,field12,field13,field14,field15,field16,field17,field18,field19,field20) values ");
+                                            queryBuilder.append("(CastToSingle(CastToXY(CastToLineString(GeomFromText('LINESTRING (");
 
-                                                for (float[] wayNode : wayNodes) {
-                                                    for (int j = 0; j < wayNode.length - 1; j = j + 2) {
-                                                        double lon = wayNode[j] / 1000000.0;
-                                                        double lat = wayNode[j + 1] / 1000000.0;
-                                                        log.addGpsLogDataPoint(sqliteDatabase, logId, lon, lat, -1, currentTimeMillis);
-                                                        currentTimeMillis = currentTimeMillis + 1000l;
+                                            for (float[] wayNode : wayNodes) {
+                                                for (int j = 0; j < wayNode.length - 1; j = j + 2) {
+                                                    double lon = wayNode[j] / 1000000.0;
+                                                    double lat = wayNode[j + 1] / 1000000.0;
+
+                                                    if (j != 0) {
+                                                        queryBuilder.append(",");
                                                     }
+                                                    queryBuilder.append(lon).append(" ").append(lat);
                                                 }
-                                                sqliteDatabase.setTransactionSuccessful();
-                                            } catch (Exception e) {
-                                                GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
-                                                throw new IOException(e.getLocalizedMessage());
-                                            } finally {
-                                                sqliteDatabase.endTransaction();
+                                            }
+
+                                            queryBuilder.append(")' , 4326))))");
+
+                                            // now alpha values
+                                            for (String fieldName : fieldNames) {
+                                                String value = fieldValueMap.get(fieldName);
+                                                if (value == null) {
+                                                    value = "";
+                                                }
+                                                value = value.replaceAll("'", "''");
+                                                queryBuilder.append(",'").append(value).append("'");
+                                            }
+                                            queryBuilder.append(")");
+
+                                            try {
+                                                database.exec(queryBuilder.toString(), null);
+                                            } catch (jsqlite.Exception e1) {
+                                                // ignore only the one unable to import
                                             }
 
 
@@ -296,8 +349,12 @@ public class ImportMapsforgeActivity extends Activity {
                                     publishProgress(index);
                                 }
                             }
+                            if (!doPois) {
+                                break;
+                            }
                         }
                     } catch (Exception e) {
+                        GPLog.error(ImportMapsforgeActivity.this, null, e);
                         return "ERROR: " + e.getLocalizedMessage();
                     } finally {
                         mapFile.closeFile();
@@ -309,15 +366,22 @@ public class ImportMapsforgeActivity extends Activity {
                 protected void doUiPostWork(String response) {
                     dispose();
                     if (response.length() != 0) {
-                        Utilities.warningDialog(ImportMapsforgeActivity.this, response, null);
+                        Utilities.warningDialog(ImportMapsforgeActivity.this, response, new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        });
                     }
 
-                    finish();
 //                    Intent intent = new Intent(getApplicationContext(), MapsSupportService.class);
 //                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
 //                    startService(intent);
                 }
             };
+            if (!doPois) {
+                count = singleZoomCount;
+            }
             task.startProgressDialog("Extraction", "Extracting mapsforge data...", false, (int) count);
             task.execute();
 

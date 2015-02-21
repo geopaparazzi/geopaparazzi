@@ -328,6 +328,9 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         }
         sbIn.append(")");
         String insertQuery = sbIn.toString();
+
+//        System.out.println(insertQuery);
+
         database.exec(insertQuery, null);
     }
 
