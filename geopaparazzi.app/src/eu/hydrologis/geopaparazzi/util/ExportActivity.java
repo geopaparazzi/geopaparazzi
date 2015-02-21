@@ -22,7 +22,6 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
@@ -33,7 +32,6 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,25 +94,25 @@ public class ExportActivity extends Activity implements
             GPLog.error(this, e.getLocalizedMessage(), e);
         }
 
-        ImageButton kmzExportButton = (ImageButton) findViewById(R.id.kmzExportButton);
+        Button kmzExportButton = (Button) findViewById(R.id.kmzExportButton);
         kmzExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportKmz();
             }
         });
-        ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxExportButton);
+        Button gpxExportButton = (Button) findViewById(R.id.gpxExportButton);
         gpxExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportGpx();
             }
         });
-        ImageButton bookmarksExportButton = (ImageButton) findViewById(R.id.bookmarksExportButton);
+        Button bookmarksExportButton = (Button) findViewById(R.id.bookmarksExportButton);
         bookmarksExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportBookmarks();
             }
         });
-        ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
+        Button cloudExportButton = (Button) findViewById(R.id.cloudExportButton);
         cloudExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 final ExportActivity context = ExportActivity.this;

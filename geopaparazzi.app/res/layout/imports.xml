@@ -9,8 +9,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IMPORT"
-        android:id="@+id/textView"
+        android:text="@string/import_uc"
+        android:id="@+id/titleView"
         android:layout_margin="15dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color"
@@ -32,7 +32,7 @@
         android:layout_margin="@dimen/button_indent"
         android:background="@drawable/button_background_drawable"
         android:padding="@dimen/button_indent"
-        android:text="Mapurls"
+        android:text="@string/mapurls"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -44,7 +44,7 @@
         android:layout_margin="@dimen/button_indent"
         android:background="@drawable/button_background_drawable"
         android:padding="@dimen/button_indent"
-        android:text="GPX"
+        android:text="@string/gpx"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -56,7 +56,7 @@
         android:layout_margin="@dimen/button_indent"
         android:background="@drawable/button_background_drawable"
         android:padding="@dimen/button_indent"
-        android:text="Geopaparazzi Browser"
+        android:text="@string/geopap_browser"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -68,7 +68,7 @@
         android:layout_margin="@dimen/button_indent"
         android:background="@drawable/button_background_drawable"
         android:padding="@dimen/button_indent"
-        android:text="Bookmarks"
+        android:text="@string/bookmarks"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
@@ -80,7 +80,7 @@
         android:layout_margin="@dimen/button_indent"
         android:background="@drawable/button_background_drawable"
         android:padding="@dimen/button_indent"
-        android:text="Default Database"
+        android:text="@string/default_database"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 

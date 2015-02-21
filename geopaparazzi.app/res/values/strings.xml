@@ -278,4 +278,12 @@
     <string name="invert_selection">Invert Selection</string>
     <string name="delete_selected">Delete selected</string>
     <string name="share">Share</string>
+    <string name="import_uc">IMPORT</string>
+    <string name="mapurls">Mapurls</string>
+    <string name="gpx">GPX</string>
+    <string name="geopap_browser">Geopaparazzi Browser</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="default_database">Default Database</string>
+    <string name="kmz">KMZ</string>
+    <string name="export_uc">EXPORT</string>
 </resources>
