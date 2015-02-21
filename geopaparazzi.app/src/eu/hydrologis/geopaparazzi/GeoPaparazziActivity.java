@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -54,7 +55,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -70,6 +73,7 @@ import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -100,6 +104,8 @@ import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.GEOPAPARAZZI_TEMPLATE_DB_NAME;
+import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
@@ -374,6 +380,15 @@ public class GeoPaparazziActivity extends Activity {
                     }
             );
         } else {
+            // create the default mapsforge data extraction db
+            File mapsDir = resourcesManager.getMapsDir();
+            File newDbFile = new File(mapsDir, MAPSFORGE_EXTRACTED_DB_NAME);
+            if (!newDbFile.exists()) {
+                AssetManager assetManager = this.getAssets();
+                InputStream inputStream = assetManager.open(GEOPAPARAZZI_TEMPLATE_DB_NAME);
+                FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
+            }
+            // initialize rest of resources
             initIfOk();
         }
 

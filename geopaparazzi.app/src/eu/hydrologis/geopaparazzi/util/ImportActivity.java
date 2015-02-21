@@ -139,7 +139,7 @@ public class ImportActivity extends Activity {
                     File newDbFile = new File(mapsDir, theTextToRunOn);
 
                     AssetManager assetManager = ImportActivity.this.getAssets();
-                    InputStream inputStream = assetManager.open("geopaparazzi_template.sqlite");
+                    InputStream inputStream = assetManager.open(LibraryConstants.GEOPAPARAZZI_TEMPLATE_DB_NAME);
 
                     FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
 
