@@ -385,7 +385,7 @@ public class GeoPaparazziActivity extends Activity {
             File newDbFile = new File(mapsDir, MAPSFORGE_EXTRACTED_DB_NAME);
             if (!newDbFile.exists()) {
                 AssetManager assetManager = this.getAssets();
-                InputStream inputStream = assetManager.open(GEOPAPARAZZI_TEMPLATE_DB_NAME);
+                InputStream inputStream = assetManager.open(MAPSFORGE_EXTRACTED_DB_NAME);
                 FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
             }
             // initialize rest of resources

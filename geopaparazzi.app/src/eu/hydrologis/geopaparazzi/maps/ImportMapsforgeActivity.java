@@ -167,9 +167,16 @@ public class ImportMapsforgeActivity extends Activity {
                         TreeSet<String> waysSet = new TreeSet<String>();
                         HashMap<String, String> fieldsMap = new HashMap<String, String>();
                         List<String> fieldNames = new ArrayList<String>();
+                        StringBuilder fieldsStringBuilder = new StringBuilder();
                         for (int j = 1; j <= 20; j++) {
-                            fieldNames.add("field" + j);
+                            String name = "field" + j;
+                            fieldNames.add(name);
+                            if (j != 1) {
+                                fieldsStringBuilder.append(",");
+                            }
+                            fieldsStringBuilder.append(name);
                         }
+                        String fieldsString = fieldsStringBuilder.toString();
 
                         // get mapsforge db
                         Database database = null;
@@ -289,7 +296,6 @@ public class ImportMapsforgeActivity extends Activity {
                                                 String key = tag.key;
                                                 String value = tag.value;
 
-                                                // collect field only of necessary data
                                                 String field = fieldsMap.get(key);
                                                 if (field == null) {
                                                     // get next available field
@@ -305,10 +311,15 @@ public class ImportMapsforgeActivity extends Activity {
                                                 continue;
                                             }
 
+                                            String tableName = "osm_roads";
+                                            if (isContour) {
+                                                tableName = "osm_contours";
+                                            }
+
                                             StringBuilder queryBuilder = new StringBuilder();
-                                            queryBuilder.append("insert into lines (geometry,");
-                                            queryBuilder.append("field1,field2,field3,field4,field5,field6,field7,field8,field9,field10,field11,field12,field13,field14,field15,field16,field17,field18,field19,field20) values ");
-                                            queryBuilder.append("(CastToSingle(CastToXY(CastToLineString(GeomFromText('LINESTRING (");
+                                            queryBuilder.append("insert into ").append(tableName).append(" (geometry,");
+                                            queryBuilder.append(fieldsString);
+                                            queryBuilder.append(") values (CastToSingle(CastToXY(CastToLineString(GeomFromText('LINESTRING (");
 
                                             for (float[] wayNode : wayNodes) {
                                                 for (int j = 0; j < wayNode.length - 1; j = j + 2) {
@@ -373,9 +384,6 @@ public class ImportMapsforgeActivity extends Activity {
                         });
                     }
 
-//                    Intent intent = new Intent(getApplicationContext(), MapsSupportService.class);
-//                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-//                    startService(intent);
                 }
             };
             if (!doPois) {
