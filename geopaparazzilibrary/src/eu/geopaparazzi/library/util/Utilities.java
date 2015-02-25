@@ -438,12 +438,11 @@ public class Utilities {
      * Execute a message dialog in an {@link AsyncTask}.
      *
      * @param context      the {@link Context} to use.
-     * @param title        a title for the input dialog.
      * @param message      a message to show.
      * @param defaultText  a default text to fill in.
      * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
      */
-    public static void inputMessageDialog(final Context context, final String title, final String message,
+    public static void inputMessageDialog(final Context context, final String message,
                                           final String defaultText, final TextRunnable textRunnable) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
@@ -488,14 +487,13 @@ public class Utilities {
      * Execute a message dialog with checkbox in an {@link AsyncTask}.
      *
      * @param context      the {@link Context} to use.
-     * @param title        a title for the input dialog.
      * @param message      a message to show.
      * @param defaultText  a default text to fill in.
      * @param checkBoxText the text of the checkbox.
      * @param defaultCheckboxSelection default selection for checkbox.
      * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
      */
-    public static void inputMessageAndCheckboxDialog(final Context context, final String title, final String message,
+    public static void inputMessageAndCheckboxDialog(final Context context, final String message,
                                                      final String defaultText, final String checkBoxText, final boolean defaultCheckboxSelection, final TextAndBooleanRunnable textRunnable) {
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);

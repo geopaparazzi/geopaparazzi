@@ -294,4 +294,8 @@
     <string name="extract_ways">Extract ways</string>
     <string name="extract_contours">Extract contours</string>
     <string name="extract_waterways">Extract waterways</string>
+    <string name="name_new_teample_db">Enter name for new database</string>
+    <string name="new_template_db_create">Database successfully created.</string>
+    <string name="extract_mapsforge_data">Extracting mapsforge data...</string>
+    <string name="extract_mapsforge_only_when_loaded">This tool works only when a mapsforge map is loaded.</string>
 </resources>

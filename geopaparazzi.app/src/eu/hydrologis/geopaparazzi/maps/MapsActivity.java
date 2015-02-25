@@ -553,7 +553,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                         return;
                     }
 
-                    Utilities.inputMessageDialog(MapsActivity.this, getString(R.string.set_description),
+                    Utilities.inputMessageDialog(MapsActivity.this,
                             getString(R.string.osm_insert_a_changeset_description), "", new TextRunnable() {
                                 public void run() {
                                     sync(theTextToRunOn);

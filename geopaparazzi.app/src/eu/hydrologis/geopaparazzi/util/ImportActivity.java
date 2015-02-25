@@ -130,7 +130,7 @@ public class ImportActivity extends Activity {
     private void importTemplateDatabase() {
         String ts = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
         String newName = "geopaparazzi_" + ts + ".sqlite";
-        Utilities.inputMessageDialog(this, "IMPORT", "Enter name for new database", newName, new TextRunnable() {
+        Utilities.inputMessageDialog(this, getString(R.string.name_new_teample_db), newName, new TextRunnable() {
             @Override
             public void run() {
 
@@ -146,7 +146,7 @@ public class ImportActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Utilities.messageDialog(ImportActivity.this, "Database successfully created.", null);
+                            Utilities.messageDialog(ImportActivity.this, getString(R.string.new_template_db_create), null);
                         }
                     });
                 } catch (final Exception e) {

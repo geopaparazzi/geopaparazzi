@@ -359,12 +359,12 @@ public class ImportMapsforgeActivity extends Activity {
             if (!doPois) {
                 count = singleZoomCount;
             }
-            task.startProgressDialog(null, "Extracting mapsforge data...", false, (int) count);
+            task.startProgressDialog(null, getString(R.string.extract_mapsforge_data), false, (int) count);
             task.execute();
 
 
         } else {
-            Utilities.warningDialog(this, "This tool works only when a mapsforge map is loaded.", null);
+            Utilities.warningDialog(this, getString(R.string.extract_mapsforge_only_when_loaded), null);
         }
     }
 
