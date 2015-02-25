@@ -292,5 +292,6 @@
     <string name="filter_excludes">filter excludes</string>
     <string name="ways">Ways</string>
     <string name="extract_ways">Extract ways</string>
-    <string name="extract_contours">Extract contours if available</string>
+    <string name="extract_contours">Extract contours</string>
+    <string name="extract_waterways">Extract waterways</string>
 </resources>

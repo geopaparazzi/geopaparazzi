@@ -15,20 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps;
+package eu.hydrologis.geopaparazzi.maps.mapsforge;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import org.mapsforge.core.model.GeoPoint;
@@ -45,35 +37,20 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Exception;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
-import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.gpx.parser.RoutePoint;
-import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
-import eu.hydrologis.geopaparazzi.util.MapsforgeExtractedFormHelper;
 import jsqlite.*;
 
 /**
@@ -111,10 +88,12 @@ public class ImportMapsforgeActivity extends Activity {
         final boolean doPois = poisCheckbox.isChecked();
         CheckBox waysCheckbox = (CheckBox) findViewById(R.id.waysCheckbox);
         final boolean doWays = waysCheckbox.isChecked();
+        CheckBox waterCheckbox = (CheckBox) findViewById(R.id.waterCheckbox);
+        final boolean doWater = waterCheckbox.isChecked();
         CheckBox contoursCheckbox = (CheckBox) findViewById(R.id.contoursCheckbox);
         final boolean doContours = contoursCheckbox.isChecked();
 
-        if (!doPois && !doWays && !doContours) {
+        if (!doPois && !doWays && !doContours && !doWater) {
             return;
         }
 
@@ -179,19 +158,7 @@ public class ImportMapsforgeActivity extends Activity {
                         String fieldsString = fieldsStringBuilder.toString();
 
                         // get mapsforge db
-                        Database database = null;
-                        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-                        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                            if (uniqueNameBasedOnDbFilePath.startsWith(LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME)) {
-                                AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                                        spatialVectorTable);
-                                if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                                    SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
-                                    database = spatialiteDatabaseHandler.getDatabase();
-                                }
-                            }
-                        }
+                        Database database = MapsforgeExtractorUtilities.getDatabase();
 
 
                         boolean doFilter = filter.length() > 0;
@@ -228,7 +195,7 @@ public class ImportMapsforgeActivity extends Activity {
                                             for (Tag tag : tags) {
                                                 String key = tag.key;
                                                 String value = tag.value;
-                                                if (key.equals("elev")) {
+                                                if (key.equals(MapsforgeExtractorUtilities.tagPoiElevation)) {
                                                     try {
                                                         elev = Double.parseDouble(value);
                                                     } catch (Exception e1) {
@@ -262,7 +229,7 @@ public class ImportMapsforgeActivity extends Activity {
                                         }
                                     }
                                     // TODO
-                                    if (i == 0 && (doWays || doContours)) {
+                                    if (i == 0 && (doWays || doContours || doWater)) {
                                         List<Way> ways = mapReadResult.ways;
 
                                         List<String> fieldNamesTmp = new ArrayList<String>();
@@ -275,20 +242,23 @@ public class ImportMapsforgeActivity extends Activity {
                                             HashMap<String, String> fieldValueMap = new HashMap<String, String>();
 
                                             boolean isRoad = false;
+                                            boolean isWater = false;
                                             boolean isContour = false;
                                             for (Tag tag : tags) {
                                                 String key = tag.key;
-                                                if (key.equals("highway") && doWays) {
+                                                if (MapsforgeExtractorUtilities.isWay(key) && doWays) {
                                                     isRoad = true;
                                                     break;
-                                                }
-                                                if (key.equals("contour_ext") && doContours) {
+                                                } else if (MapsforgeExtractorUtilities.isContour(key) && doContours) {
                                                     isContour = true;
+                                                    break;
+                                                } else if (MapsforgeExtractorUtilities.isWaterline(key) && doWater) {
+                                                    isWater = true;
                                                     break;
                                                 }
                                             }
 
-                                            if (!isRoad && !isContour) {
+                                            if (!isRoad && !isContour && !isWater) {
                                                 continue;
                                             }
 
@@ -311,9 +281,12 @@ public class ImportMapsforgeActivity extends Activity {
                                                 continue;
                                             }
 
-                                            String tableName = "osm_roads";
+                                            String tableName = MapsforgeExtractorUtilities.TABLENAME_WAYS;
                                             if (isContour) {
-                                                tableName = "osm_contours";
+                                                tableName = MapsforgeExtractorUtilities.TABLENAME_CONTOURS;
+                                            }
+                                            if (isWater) {
+                                                tableName = MapsforgeExtractorUtilities.TABLENAME_WATERLINES;
                                             }
 
                                             StringBuilder queryBuilder = new StringBuilder();
@@ -351,11 +324,8 @@ public class ImportMapsforgeActivity extends Activity {
                                             } catch (jsqlite.Exception e1) {
                                                 // ignore only the one unable to import
                                             }
-
-
                                         }
                                     }
-
                                     publishProgress(index);
                                 }
                             }
@@ -389,7 +359,7 @@ public class ImportMapsforgeActivity extends Activity {
             if (!doPois) {
                 count = singleZoomCount;
             }
-            task.startProgressDialog("Extraction", "Extracting mapsforge data...", false, (int) count);
+            task.startProgressDialog(null, "Extracting mapsforge data...", false, (int) count);
             task.execute();
 
 
@@ -397,5 +367,6 @@ public class ImportMapsforgeActivity extends Activity {
             Utilities.warningDialog(this, "This tool works only when a mapsforge map is loaded.", null);
         }
     }
+
 
 }

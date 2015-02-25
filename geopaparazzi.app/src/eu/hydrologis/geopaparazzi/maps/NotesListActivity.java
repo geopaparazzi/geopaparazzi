@@ -458,7 +458,7 @@ public class NotesListActivity extends ListActivity {
                                         }
                                     }
                                 };
-                                deletionTask.startProgressDialog("DELETE", "Removing notes...", false, total);
+                                deletionTask.startProgressDialog(null, "Removing notes...", false, total);
                                 deletionTask.execute();
                             }
                         });

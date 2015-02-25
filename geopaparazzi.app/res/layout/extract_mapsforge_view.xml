@@ -108,12 +108,22 @@
         android:textColor="@color/main_text_color" />
 
     <CheckBox
-        android:id="@+id/contoursCheckbox"
+        android:id="@+id/waterCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/waysCheckbox"
+        android:text="@string/extract_waterways"
+        android:textColor="@color/main_text_color" />
+
+    <CheckBox
+        android:id="@+id/contoursCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/waterCheckbox"
         android:text="@string/extract_contours"
         android:textColor="@color/main_text_color" />
 

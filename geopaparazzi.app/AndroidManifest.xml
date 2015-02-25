@@ -147,7 +147,7 @@
         <activity android:name=".util.ProjectMetadataActivity" />
         <activity android:name="eu.geopaparazzi.library.util.activities.LogAnalysisActivity" />
         <activity
-            android:name="eu.hydrologis.geopaparazzi.maps.ImportMapsforgeActivity"
+            android:name=".maps.mapsforge.ImportMapsforgeActivity"
             android:configChanges="orientation|screenSize" />
         <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity" />
         <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsListActivity" />
