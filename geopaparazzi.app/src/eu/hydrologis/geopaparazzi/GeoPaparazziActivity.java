@@ -643,7 +643,7 @@ public class GeoPaparazziActivity extends Activity {
                     if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                         final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
-                        Utilities.inputMessageAndCheckboxDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
+                        Utilities.inputMessageAndCheckboxDialog(context, getString(R.string.gps_log_name),
                                 defaultLogName, getString(R.string.continue_last_log), false, new TextAndBooleanRunnable() {
                                     public void run() {
                                         runOnUiThread(new Runnable() {
