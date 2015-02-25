@@ -61,17 +61,17 @@ public class GMultiComboView extends View implements GView {
      * @param context   the context to use.
      * @param attrs attributes.
      * @param parentView parent
-     * @param key key
+     * @param label label
      * @param value value
      * @param itemsArray the items.
      * @param constraintDescription constraints
      */
-    public GMultiComboView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+    public GMultiComboView( final Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
             final String[] itemsArray, String constraintDescription ) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -79,14 +79,14 @@ public class GMultiComboView extends View implements GView {
         parentView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
 
         if (value == null || value.length() == 0) {

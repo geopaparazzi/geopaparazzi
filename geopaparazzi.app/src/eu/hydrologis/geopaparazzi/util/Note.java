@@ -24,8 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.INote;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;
@@ -40,7 +40,7 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Note implements INote, KmlRepresenter, GpxRepresenter {
+public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
     public static final String IMAGES_SEPARATOR = ";";
     private final String simpleText;
     private final String description;
@@ -178,6 +178,11 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                     String key = formItem.getString(FormUtilities.TAG_KEY);
                     String value = formItem.getString(FormUtilities.TAG_VALUE);
 
+                    String label = key;
+                    if (formItem.has(FormUtilities.TAG_LABEL)) {
+                        label = formItem.getString(FormUtilities.TAG_LABEL);
+                    }
+
                     if (type.equals(FormUtilities.TYPE_PICTURES)) {
                         if (value.trim().length() == 0) {
                             continue;
@@ -188,7 +193,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                             String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-                            sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                            sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
@@ -204,7 +209,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                         File imgFile = new File(image);
                         String imgName = imgFile.getName();
                         sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-                        sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                        sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
                         sB.append("</td>");
                         sB.append("</tr>");
                         images.add(image);
@@ -218,7 +223,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                             String imgName = image.getName();
                             sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-                            sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                            sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
 
@@ -227,7 +232,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
                     } else {
                         sB.append("<tr>");
                         sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
-                        sB.append(key);
+                        sB.append(label);
                         sB.append("</td>");
                         sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
                         sB.append(value);

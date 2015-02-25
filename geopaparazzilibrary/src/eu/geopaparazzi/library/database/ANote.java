@@ -18,30 +18,41 @@
 package eu.geopaparazzi.library.database;
 
 /**
- * Utility interface.
+ * Utility abstraction.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface INote {
+public abstract class ANote {
+    /**
+     * Flag to define selection or visibility.
+     */
+    protected boolean isChecked = true;
 
     /**
      * @return the note id.
      */
-    public long getId();
+    public abstract long getId();
 
     /**
      * @return the note name.
      */
-    public String getName();
+    public abstract String getName();
 
     /**
      * @return the note latitude.
      */
-    public double getLat();
+    public abstract double getLat();
 
     /**
      * @return the note longitude.
      */
-    public double getLon();
+    public abstract double getLon();
 
+    public void setChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
 }

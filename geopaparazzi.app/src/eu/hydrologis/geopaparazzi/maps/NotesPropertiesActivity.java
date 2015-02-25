@@ -31,6 +31,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -46,7 +47,7 @@ public class NotesPropertiesActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.notes_properties);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
 
         // notes selection
         CheckBox notesVisibilityCheckbox = (CheckBox) findViewById(R.id.checkVisibility);

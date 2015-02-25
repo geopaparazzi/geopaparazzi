@@ -144,6 +144,11 @@ public interface LibraryConstants {
     public static final String LONGITUDE = "LONGITUDE"; //$NON-NLS-1$
 
     /**
+     * Key used to pass an array containing [n,s,w,e] temporarily through bundles.
+     */
+    public static final String NSWE = "NSWE"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a zoom level temporarily through bundles.
      */
     public static final String ZOOMLEVEL = "ZOOMLEVEL"; //$NON-NLS-1$
@@ -320,5 +325,15 @@ public interface LibraryConstants {
      * Key to passdatabase ids of objects through intents.
      */
     public static final String DATABASE_ID = "DATABASE_ID";
+
+    /**
+     * The name of the db to put mapsforge extracted data in
+     */
+    public static final String MAPSFORGE_EXTRACTED_DB_NAME = "mapsforge_extracted.sqlite";
+
+    /**
+     * The name of the templade db of geopap.
+     */
+    public static final String GEOPAPARAZZI_TEMPLATE_DB_NAME = "geopaparazzi_template.sqlite";
 
 }

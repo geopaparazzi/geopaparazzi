@@ -1,0 +1,147 @@
+<!--
+  ~ Geopaparazzi - Digital field mapping on Android based devices
+  ~ Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:background="@color/main_background"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/poisLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/pois"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <CheckBox
+        android:id="@+id/poisCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/poisLabel"
+        android:checked="true"
+        android:text="@string/extract_pois"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/filterLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/poisCheckbox"
+        android:layout_marginTop="10dp"
+        android:text="@string/filter"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <EditText
+        android:id="@+id/filterEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/filterLabel"
+        android:layout_marginLeft="10dp" />
+
+    <CheckBox
+        android:id="@+id/excludeFilterCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/filterEditText"
+        android:layout_marginLeft="10dp"
+        android:text="@string/filter_excludes"
+        android:textColor="@color/main_text_color" />
+
+
+    <TextView
+        android:id="@+id/waysLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/excludeFilterCheckbox"
+        android:layout_marginTop="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/ways"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <CheckBox
+        android:id="@+id/waysCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/waysLabel"
+        android:text="@string/extract_ways"
+        android:textColor="@color/main_text_color" />
+
+    <CheckBox
+        android:id="@+id/waterCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/waysCheckbox"
+        android:text="@string/extract_waterways"
+        android:textColor="@color/main_text_color" />
+
+    <CheckBox
+        android:id="@+id/contoursCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/waterCheckbox"
+        android:text="@string/extract_contours"
+        android:textColor="@color/main_text_color" />
+
+    <Button
+        android:id="@+id/startExtractionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/poisCheckbox"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/poisCheckbox"
+        android:background="@drawable/button_background_drawable"
+        android:onClick="startExtraction"
+        android:padding="@dimen/button_indent"
+        android:text="@string/start"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+
+</RelativeLayout>

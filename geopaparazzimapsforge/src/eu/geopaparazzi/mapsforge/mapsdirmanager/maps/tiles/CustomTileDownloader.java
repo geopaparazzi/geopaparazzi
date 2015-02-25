@@ -17,6 +17,7 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -36,6 +37,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -98,6 +100,7 @@ public class CustomTileDownloader extends TileDownloader {
     private enum TILESCHEMA {
         tms, google, wms, osm
     }
+
     // no wonder this was causing problems, must must NOT be static with a manager
     private String HOST_NAME = "";
     private String PROTOCOL = HTTP_STR; //$NON-NLS-1$
@@ -142,12 +145,12 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Constructor.
-     * 
+     *
      * @param sourceFile the source file to use as tile source definition.
      * @param parentPath the parent path.
      * @throws IOException if something goes wrong.
      */
-    public CustomTileDownloader( File sourceFile, String parentPath ) throws IOException {
+    public CustomTileDownloader(File sourceFile, String parentPath) throws IOException {
         super();
 
         Context context = GPApplication.getInstance();
@@ -175,14 +178,14 @@ public class CustomTileDownloader extends TileDownloader {
             sb.append("parentPath: ");
             sb.append(parentPath);
             sb.append("\n");
-            for( String fileLine : fileLines ) {
+            for (String fileLine : fileLines) {
                 sb.append("-> " + fileLine);
                 sb.append("\n");
             }
             GPLog.addLogEntry(sb.toString());
         }
 
-        for( String line : fileLines ) {
+        for (String line : fileLines) {
             line = line.trim();
             if (line.length() == 0) {
                 continue;
@@ -377,7 +380,7 @@ public class CustomTileDownloader extends TileDownloader {
                     String[] requestTypeTokens = requestType.split(",");
                     requestType = "";
                     String comma = "";
-                    for( int i = 0; i < requestTypeTokens.length; i++ ) {
+                    for (int i = 0; i < requestTypeTokens.length; i++) {
                         if (requestTypeTokens[i].equals(RUN_STR)) {
                             // no 'run', no fun [ignore all commands]
                             run++;
@@ -510,6 +513,7 @@ public class CustomTileDownloader extends TileDownloader {
         }
         // GPLog.androidLog(-1,"CustomTileDownloader parentPath[" + parentPath+ "]");
     }
+
     public String getHostName() {
         return HOST_NAME;
     }
@@ -536,159 +540,159 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     /**
-      * Return Min Zoom
-      *
-      * <p>default :  0
-      * <p>mbtiles : taken from value of metadata 'minzoom'
-      * <p>map : value is given in 'StartZoomLevel'
-      *
-      * @return integer minzoom
-      */
+     * Return Min Zoom
+     * <p/>
+     * <p>default :  0
+     * <p>mbtiles : taken from value of metadata 'minzoom'
+     * <p>map : value is given in 'StartZoomLevel'
+     *
+     * @return integer minzoom
+     */
     public int getMinZoom() {
         return minZoom;
     }
 
     /**
-      * Return Max Zoom
-      *
-      * <p>default :  22
-      * <p>mbtiles : taken from value of metadata 'maxzoom'
-      * <p>map : value not defined, seems to calculate bitmap from vector data [18]
-      *
-      * @return integer maxzoom
-      */
+     * Return Max Zoom
+     * <p/>
+     * <p>default :  22
+     * <p>mbtiles : taken from value of metadata 'maxzoom'
+     * <p>map : value not defined, seems to calculate bitmap from vector data [18]
+     *
+     * @return integer maxzoom
+     */
     public int getMaxZoom() {
         return maxZoom;
     }
 
     /**
-      * Return West X Value [Longitude]
-      *
-      * <p>default :  -180.0 [if not otherwise set]
-      * <p>mbtiles : taken from 1st value of metadata 'bounds'
-      *
-      * @return double of West X Value [Longitude]
-      */
+     * Return West X Value [Longitude]
+     * <p/>
+     * <p>default :  -180.0 [if not otherwise set]
+     * <p>mbtiles : taken from 1st value of metadata 'bounds'
+     *
+     * @return double of West X Value [Longitude]
+     */
     public double getMinLongitude() {
         return boundsWest;
     }
 
     /**
-      * Return South Y Value [Latitude]
-      *
-      * <p>default :  -85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
-      *
-      * @return double of South Y Value [Latitude]
-      */
+     * Return South Y Value [Latitude]
+     * <p/>
+     * <p>default :  -85.05113 [if not otherwise set]
+     * <p>mbtiles : taken from 2nd value of metadata 'bounds'
+     *
+     * @return double of South Y Value [Latitude]
+     */
     public double getMinLatitude() {
         return boundsSouth;
     }
 
     /**
-      * Return East X Value [Longitude]
-      *
-      * <p>default :  180.0 [if not otherwise set]
-      * <p>mbtiles : taken from 3th value of metadata 'bounds'
-      *
-      * @return double of East X Value [Longitude]
-      */
+     * Return East X Value [Longitude]
+     * <p/>
+     * <p>default :  180.0 [if not otherwise set]
+     * <p>mbtiles : taken from 3th value of metadata 'bounds'
+     *
+     * @return double of East X Value [Longitude]
+     */
     public double getMaxLongitude() {
         return boundsEast;
     }
 
     /**
-      * Return North Y Value [Latitude]
-      *
-      * <p>default :  85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 4th value of metadata 'bounds'
-      *
-      * @return double of North Y Value [Latitude]
-      */
+     * Return North Y Value [Latitude]
+     * <p/>
+     * <p>default :  85.05113 [if not otherwise set]
+     * <p>mbtiles : taken from 4th value of metadata 'bounds'
+     *
+     * @return double of North Y Value [Latitude]
+     */
     public double getMaxLatitude() {
         return boundsNorth;
     }
 
     /**
-      * Return Center X Value [Longitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 1st value of metadata 'center'
-      *
-      * @return double of X Value [Longitude]
-      */
+     * Return Center X Value [Longitude]
+     * <p/>
+     * <p>default : center of bounds
+     * <p>mbtiles : taken from 1st value of metadata 'center'
+     *
+     * @return double of X Value [Longitude]
+     */
     public double getCenterX() {
         return centerX;
     }
 
     /**
-      * Return Center Y Value [Latitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 2nd value of metadata 'center'
-      *
-      * @return double of Y Value [Latitude]
-      */
+     * Return Center Y Value [Latitude]
+     * <p/>
+     * <p>default : center of bounds
+     * <p>mbtiles : taken from 2nd value of metadata 'center'
+     *
+     * @return double of Y Value [Latitude]
+     */
     public double getCenterY() {
         return centerY;
     }
 
     /**
-      * Retrieve Zoom level
-      *
-      * <p>default : minZoom
-      * <p>mbtiles : taken from 3rd value of metadata 'center'
-      *
+     * Retrieve Zoom level
+     * <p/>
+     * <p>default : minZoom
+     * <p>mbtiles : taken from 3rd value of metadata 'center'
+     *
      * @return defaultZoom
-      */
+     */
     public int getDefaultZoom() {
         return defaultZoom;
     }
 
     /**
-      * Return short name of map/file
-      *
-      * <p>default: file name without path and extention
-      * <p>mbtiles : metadata 'name'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_name as short name of map/file
-      */
+     * Return short name of map/file
+     * <p/>
+     * <p>default: file name without path and extention
+     * <p>mbtiles : metadata 'name'
+     * <p>map : will be value of 'comment', if not null
+     *
+     * @return s_name as short name of map/file
+     */
     public String getName() {
         return name;
     }
 
     /**
-      * Return String of bounds [wms-format]
-      *
-      * <p>x_min,y_min,x_max,y_max
-      *
-      * @return bounds formatted using wms format
-      */
+     * Return String of bounds [wms-format]
+     * <p/>
+     * <p>x_min,y_min,x_max,y_max
+     *
+     * @return bounds formatted using wms format
+     */
     public String getBounds_toString() {
         return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
     }
 
     /**
-      * Return String of Map-Center with default Zoom
-      *
-      * <p>x_position,y_position,default_zoom
-      *
-      * @return center formatted using mbtiles format
-      */
+     * Return String of Map-Center with default Zoom
+     * <p/>
+     * <p>x_position,y_position,default_zoom
+     *
+     * @return center formatted using mbtiles format
+     */
     public String getCenter_toString() {
         return centerX + "," + centerY + "," + defaultZoom;
     }
 
     /**
-      * Return long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_description long description of map/file
-      */
+     * Return long description of map/file
+     * <p/>
+     * <p>default: s_name with bounds and center
+     * <p>mbtiles : metadata description'
+     * <p>map : will be value of 'comment', if not null
+     *
+     * @return s_description long description of map/file
+     */
     public String getDescription() {
         if ((this.description == null) || (this.description.length() == 0) || (this.description.equals(this.name)))
             setDescription(getName());
@@ -698,15 +702,15 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     /**
-      * Set long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      * 
-      * @param s_description long description of map/file 
-      */
-    public void setDescription( String s_description ) {
+     * Set long description of map/file
+     * <p/>
+     * <p>default: s_name with bounds and center
+     * <p>mbtiles : metadata description'
+     * <p>map : will be value of 'comment', if not null
+     *
+     * @param s_description long description of map/file
+     */
+    public void setDescription(String s_description) {
         if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.name))) {
             this.description = getName() + " bounds[" + getBounds_toString() + "] center[" + getCenter_toString() + "]";
         } else
@@ -720,7 +724,7 @@ public class CustomTileDownloader extends TileDownloader {
         return mbtilesDatabase;
     }
 
-    public String getTilePath( Tile tile ) {
+    public String getTilePath(Tile tile) {
         int zoomLevel = tile.zoomLevel;
         int tileX = (int) tile.tileX;
         int tileY = (int) tile.tileY;
@@ -754,7 +758,7 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     @Override
-    public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
+    public boolean executeJob(MapGeneratorJob mapGeneratorJob, Bitmap bitmap) {
         try {
             Tile tile = mapGeneratorJob.tile;
             int tileSize = Tile.TILE_SIZE;
@@ -797,22 +801,16 @@ public class CustomTileDownloader extends TileDownloader {
                 isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
             }
             if (isConnectedToInternet || isFile) {
-                URL url = new URL(sb.toString());
-                InputStream inputStream = null;
                 try {
-                    URLConnection urlConnection = url.openConnection();
-                    urlConnection.setRequestProperty(USER_AGENT_STR, GEOPAPARAZZI_STR);
-                    inputStream = urlConnection.getInputStream();
-                    decodedBitmap = BitmapFactory.decodeStream(inputStream);
+                    String urlString = sb.toString();
+                    decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
                     if (doScaleTiles && type != TILESCHEMA.wms)
                         decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
                 } catch (Exception e) {
                     // ignore and set the image as empty
                     if (GPLog.LOG_HEAVY)
                         GPLog.addLogEntry(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
-                } finally {
-                    if (inputStream != null)
-                        inputStream.close();
+                    return false;
                 }
             }
             // check if the input stream could be decoded into a bitmap
@@ -828,7 +826,7 @@ public class CustomTileDownloader extends TileDownloader {
                 // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: retrieved["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
                 decodedBitmap.recycle();
             } else {
-                for( int i = 0; i < pixels.length; i++ ) {
+                for (int i = 0; i < pixels.length; i++) {
                     pixels[i] = Color.WHITE;
                 }
             }
@@ -844,7 +842,7 @@ public class CustomTileDownloader extends TileDownloader {
         }
     }
 
-    private static Bitmap resize( Bitmap bitmap, final int rx, final int ry, final int zoomLevelDiff, int mTileSizePixels ) {
+    private static Bitmap resize(Bitmap bitmap, final int rx, final int ry, final int zoomLevelDiff, int mTileSizePixels) {
         int px = rx % (2 * zoomLevelDiff);
         int py = ry % (2 * zoomLevelDiff);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, //
@@ -867,22 +865,23 @@ public class CustomTileDownloader extends TileDownloader {
             }
         }
     }
+
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
     }
 
     /**
      * Function to check and correct bounds / zoom level [for 'CustomDownloader']
-     *
+     * <p/>
      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation
      * [will be converted to 'tms' notation if needed]
      *
-     * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
+     * @param mapCenterLocation     [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
      * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range
      * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ;
-     *          i_parm=0 no corrections ; 1= correct tileBounds values.
+     * i_parm=0 no corrections ; 1= correct tileBounds values.
      */
-    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
+    public int checkCenterLocation(double[] mapCenterLocation, boolean doCorrectIfOutOfRange) {
         int i_rc = 0; // inside area
         if (((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast))
                 || ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth))

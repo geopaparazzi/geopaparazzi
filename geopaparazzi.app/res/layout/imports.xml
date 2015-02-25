@@ -3,47 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
-    <ImageButton
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/import_uc"
+        android:id="@+id/titleView"
+        android:layout_margin="15dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dip"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dp"
+        android:background="@color/main_decorations" >
+    </LinearLayout>
+
+    <Button
         android:id="@+id/tantoMapurlsImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/import_mapurls" />
+        android:layout_margin="@dimen/button_indent"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/mapurls"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
 
-    <ImageButton
+    <Button
         android:id="@+id/gpxImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_gpx" />
+        android:layout_margin="@dimen/button_indent"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/gpx"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
 
-    <ImageButton
+    <Button
         android:id="@+id/cloudImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_cloud" />
+        android:layout_margin="@dimen/button_indent"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/geopap_browser"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
 
-    <ImageButton
+    <Button
         android:id="@+id/bookmarksImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_bookmarks" />
+        android:layout_margin="@dimen/button_indent"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/bookmarks"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <Button
+        android:id="@+id/templatedatabaseImportButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/button_indent"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="@string/default_database"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
 
 </LinearLayout>

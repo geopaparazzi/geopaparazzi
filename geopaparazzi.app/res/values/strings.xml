@@ -196,6 +196,7 @@
     <string name="cross_properties">Center Cross</string>
     <string name="color">Color</string>
     <string name="prompt_delete_note">Are you sure you want to delete the note? This can\'t be undone.</string>
+    <string name="prompt_delete_selected_notes">Are you sure you want to delete all selected notes? This can\'t be undone.</string>
     <string name="prompt_delete_bookmark">Are you sure you want to delete the bookmark? This can\'t be undone.</string>
     <string name="keep_use_imperial">Use imperial units</string>
     <string name="keep_use_imperial_sum">Uses imperial units instead of metric where possible.</string>
@@ -271,4 +272,26 @@
     <string name="enable_mock_locations_for_demo">To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.</string>
     <string name="could_not_open_geosms">Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like:</string>
     <string name="continue_last_log">Continue last log.</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="all_notes_submenu">All notes</string>
+    <string name="invert_selection">Invert Selection</string>
+    <string name="delete_selected">Delete selected</string>
+    <string name="share">Share</string>
+    <string name="import_uc">IMPORT</string>
+    <string name="mapurls">Mapurls</string>
+    <string name="gpx">GPX</string>
+    <string name="geopap_browser">Geopaparazzi Browser</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="default_database">Default Database</string>
+    <string name="kmz">KMZ</string>
+    <string name="export_uc">EXPORT</string>
+    <string name="pois">Points of interest</string>
+    <string name="extract_pois">Extract POIS</string>
+    <string name="filter">Filter</string>
+    <string name="filter_excludes">filter excludes</string>
+    <string name="ways">Ways</string>
+    <string name="extract_ways">Extract ways</string>
+    <string name="extract_contours">Extract contours</string>
+    <string name="extract_waterways">Extract waterways</string>
 </resources>
