@@ -269,7 +269,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             } catch (NumberFormatException e) {
                 // ignore and use default
             }
-            doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, false);
+            doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, true);
             textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             textPaint.setStyle(Paint.Style.FILL);
             textPaint.setColor(Color.BLACK);
