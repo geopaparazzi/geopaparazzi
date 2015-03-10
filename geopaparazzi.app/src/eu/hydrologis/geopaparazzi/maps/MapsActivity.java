@@ -1157,37 +1157,29 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
         final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
         final float centerLon = mapCenter.longitudeE6 / LibraryConstants.E6;
-        final EditText input = new EditText(this);
-        final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
-        final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
-        input.setText(proposedName);
-        Builder builder = new AlertDialog.Builder(this).setTitle(R.string.mapsactivity_new_bookmark);
-        builder.setMessage(R.string.mapsactivity_enter_bookmark_name);
-        builder.setView(input);
-        builder.setIcon(android.R.drawable.ic_dialog_info)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // ignore
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                try {
-                    Editable value = input.getText();
-                    String newName = value.toString();
-                    if (newName == null || newName.length() < 1) {
-                        newName = proposedName;
-                    }
 
+        final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
+        final String proposedName = "bookmark " + newDate;
+
+        String message = getString(R.string.mapsactivity_enter_bookmark_name);
+        Utilities.inputMessageDialog(this, message, proposedName, new TextRunnable() {
+            @Override
+            public void run() {
+                try {
+                    if (theTextToRunOn.length() < 1) {
+                        theTextToRunOn = proposedName;
+                    }
                     int zoom = mapView.getMapPosition().getZoomLevel();
                     float[] nswe = getMapWorldBounds();
-                    DaoBookmarks.addBookmark(centerLon, centerLat, newName, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
-                    mapView.invalidateOnUiThread();
+                    DaoBookmarks.addBookmark(centerLon, centerLat, theTextToRunOn, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
+                    readData();
                 } catch (IOException e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }
-        }).setCancelable(false).show();
+        });
+
     }
 
     /**
