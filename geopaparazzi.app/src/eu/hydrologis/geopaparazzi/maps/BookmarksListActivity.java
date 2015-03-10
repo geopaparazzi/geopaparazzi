@@ -155,35 +155,40 @@ public class BookmarksListActivity extends ListActivity {
                 renameButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         final String name = bookmarkText.getText().toString();
-                        final EditText input = new EditText(BookmarksListActivity.this);
-                        input.setText(name);
-                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this)
-                                .setTitle(R.string.bookmarks_list_rename);
-                        builder.setView(input);
-                        builder.setIcon(android.R.drawable.ic_dialog_info)
-                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        // ignore
-                                    }
-                                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
+                        String title = getString(R.string.bookmarks_list_rename);
+
+                        Utilities.inputMessageDialog(BookmarksListActivity.this, title, name, new TextRunnable() {
+                            @Override
+                            public void run() {
                                 try {
-                                    Editable value = input.getText();
-                                    String newName = value.toString();
-                                    if (newName == null || newName.length() < 1) {
+                                    if (theTextToRunOn.length() < 1) {
                                         return;
                                     }
                                     Bookmark bookmark = bookmarksMap.get(name);
-                                    DaoBookmarks.updateBookmarkName(bookmark.getId(), newName);
-                                    refreshList();
-                                } catch (IOException e) {
+                                    DaoBookmarks.updateBookmarkName(bookmark.getId(), theTextToRunOn);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            refreshList();
+                                        }
+                                    });
+
+                                } catch (final IOException e) {
                                     GPLog.error(this, e.getLocalizedMessage(), e);
                                     e.printStackTrace();
-                                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
-                                            .show();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+                                    });
+
                                 }
                             }
-                        }).setCancelable(false).show();
+                        });
+
+
                     }
                 });
 
