@@ -91,12 +91,13 @@ public class ActionBar {
         this.orientationSensor = orientationSensor;
 
         try {
-            mapsDir = ResourcesManager.getInstance(actionBarView.getContext()).getMapsDir();
+            Context context = actionBarView.getContext();
+            mapsDir = ResourcesManager.getInstance(context).getMapsDir();
+            initVars(context);
         } catch (Exception e) {
             Log.e("ActionBar", "error", e);
         }
 
-        initVars();
         createQuickActions();
 
         final int gpsInfoButtonId = R.id.action_bar_info;
@@ -128,8 +129,7 @@ public class ActionBar {
         return menuButton;
     }
 
-    private void initVars() {
-        Context context = actionBarView.getContext();
+    private void initVars(Context context) {
         timeString = context.getString(R.string.utctime);
         lonString = context.getString(R.string.lon);
         latString = context.getString(R.string.lat);
