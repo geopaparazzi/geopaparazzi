@@ -21,7 +21,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.view.Display;
 import android.view.Surface;
+import android.view.WindowManager;
 
 /**
  * From: http://stackoverflow.com/questions/16317599/android-compass-that-can-compensate-for-tilt-and-pitch/16386066#16386066
@@ -60,7 +62,7 @@ public class OrientationSensor implements SensorEventListener {
      * Constructor.
      *
      * @param sensorManager the sensormanager to use, as of: sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-     * @param parent non-null if this class should call its parent after onSensorChanged(...) and onAccuracyChanged(...) notifications
+     * @param parent        non-null if this class should call its parent after onSensorChanged(...) and onAccuracyChanged(...) notifications
      */
     public OrientationSensor(SensorManager sensorManager, SensorEventListener parent) {
         this.sensorManager = sensorManager;
@@ -155,21 +157,27 @@ public class OrientationSensor implements SensorEventListener {
                 m_NormNorthVector[2] = North_z / norm_North;
 
                 // take account of screen rotation away from its natural rotation
-                int rotation = parentActivity.getWindowManager().getDefaultDisplay().getRotation();
                 float screen_adjustment = 0;
-                switch (rotation) {
-                    case Surface.ROTATION_0:
-                        screen_adjustment = 0;
-                        break;
-                    case Surface.ROTATION_90:
-                        screen_adjustment = (float) Math.PI / 2;
-                        break;
-                    case Surface.ROTATION_180:
-                        screen_adjustment = (float) Math.PI;
-                        break;
-                    case Surface.ROTATION_270:
-                        screen_adjustment = 3 * (float) Math.PI / 2;
-                        break;
+                WindowManager windowManager = parentActivity.getWindowManager();
+                if (windowManager != null) {
+                    Display defaultDisplay = windowManager.getDefaultDisplay();
+                    if (defaultDisplay != null) {
+                        int rotation = defaultDisplay.getRotation();
+                        switch (rotation) {
+                            case Surface.ROTATION_0:
+                                screen_adjustment = 0;
+                                break;
+                            case Surface.ROTATION_90:
+                                screen_adjustment = (float) Math.PI / 2;
+                                break;
+                            case Surface.ROTATION_180:
+                                screen_adjustment = (float) Math.PI;
+                                break;
+                            case Surface.ROTATION_270:
+                                screen_adjustment = 3 * (float) Math.PI / 2;
+                                break;
+                        }
+                    }
                 }
                 // NB: the rotation matrix has now effectively been calculated. It consists of the three vectors m_NormEastVector[], m_NormNorthVector[] and m_NormGravityVector[]
 
