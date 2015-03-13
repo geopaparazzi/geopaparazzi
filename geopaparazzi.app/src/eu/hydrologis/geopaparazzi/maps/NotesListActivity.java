@@ -88,6 +88,7 @@ public class NotesListActivity extends ListActivity {
     private String selectAll;
     private String invertSelection;
     private String deleteSelected;
+    private String view;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -99,6 +100,7 @@ public class NotesListActivity extends ListActivity {
 
         share = getString(R.string.share);
         edit = getString(R.string.edit);
+        view = getString(R.string.view);
         delete = getString(R.string.delete);
         asSelection = "Use as selection";
         allNotesSubmenu = getString(R.string.all_notes_submenu);
@@ -222,8 +224,23 @@ public class NotesListActivity extends ListActivity {
     }
 
     private void openMoreMenu(ImageView button, final ANote currentNote) {
+        String editLabel = null;
+        if (currentNote instanceof Note) {
+            Note note = (Note) currentNote;
+            if (note.getForm() == null || note.getForm().length() == 0) {
+                // simple note
+                editLabel = null;
+            } else {
+                editLabel = edit;
+            }
+        } else if (currentNote instanceof Image) {
+            // image
+            editLabel = view;
+        }
+
         PopupMenu popup = new PopupMenu(this, button);
-        popup.getMenu().add(edit);
+        if (editLabel != null)
+            popup.getMenu().add(editLabel);
         popup.getMenu().add(share);
         popup.getMenu().add(delete);
         popup.getMenu().add(asSelection);
@@ -236,13 +253,13 @@ public class NotesListActivity extends ListActivity {
                 String actionName = item.getTitle().toString();
                 if (actionName.equals(share)) {
                     shareNote(currentNote);
-                } else if (actionName.equals(edit)) {
+                } else if (actionName.equals(edit) || actionName.equals(view)) {
                     editNote(currentNote);
                 } else if (actionName.equals(delete)) {
                     deleteNote(currentNote);
                 } else if (actionName.equals(asSelection)) {
                     String name = currentNote.getName();
-                    filterList(name);
+                    filterText.setText(name);
                 } else if (actionName.equals(selectAll)) {
                     for (ANote aNote : visibleNotesList) {
                         aNote.setChecked(true);
@@ -524,4 +541,7 @@ public class NotesListActivity extends ListActivity {
     }
 
 
+    public void clearFilter(View view) {
+        filterText.setText("");
+    }
 }
