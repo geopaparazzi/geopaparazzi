@@ -356,6 +356,7 @@ public class NotesListActivity extends ListActivity {
                     formIntent.putExtra(LibraryConstants.LATITUDE, lat);
                     formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
                     formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
                     this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                 }
             }
