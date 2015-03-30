@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.ANote;
@@ -145,7 +146,7 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
         sB.append("<Placemark>\n");
         // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#info-icon</styleUrl>\n");
-        sB.append("<simpleText>").append(name).append("</simpleText>\n");
+        sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
 
         if (form != null && form.length() > 0) {
@@ -205,14 +206,14 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
                         }
                         sB.append("<tr>");
                         // FIXME
-                        String image = value.trim();
-                        File imgFile = new File(image);
-                        String imgName = imgFile.getName();
+                        String imageId = value.trim();
+                        Image image = daoImages.getImage(Long.parseLong(imageId));
+                        String imgName = image.getName();
                         sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                         sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
                         sB.append("</td>");
                         sB.append("</tr>");
-                        images.add(image);
+                        images.add(imageId);
                     } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
                         if (value.trim().length() == 0) {
                             continue;
@@ -248,7 +249,7 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
             String description = Utilities.makeXmlSafe(this.description);
             sB.append(description);
             sB.append("\n");
-            sB.append(timeStamp);
+            sB.append(new Date(timeStamp));
         }
 
         sB.append("</description>\n");

@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -118,17 +119,24 @@ public class KmzExport {
          */
         Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
         IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
+        TreeSet<String> addedImages = new TreeSet<String>();
         for (KmlRepresenter kmlRepresenter : kmlRepresenters) {
             if (kmlRepresenter.hasImages()) {
                 List<String> imageIds = kmlRepresenter.getImageIds();
                 for (String imageId : imageIds) {
                     long id = Long.parseLong(imageId);
                     Image image = imagesDbHelper.getImage(id);
+                    String imageName = image.getName();
+
+                    if (!addedImages.add(imageName)){
+                        // don't add double images
+                        continue;
+                    }
                     byte[] imageData = imagesDbHelper.getImageData(id);
 
                     crc.reset();
                     crc.update(imageData);
-                    ZipEntry imageEntry = new ZipEntry(image.getName());
+                    ZipEntry imageEntry = new ZipEntry(imageName);
                     imageEntry.setMethod(ZipEntry.STORED);
                     imageEntry.setCompressedSize(imageData.length);
                     imageEntry.setSize(imageData.length);
