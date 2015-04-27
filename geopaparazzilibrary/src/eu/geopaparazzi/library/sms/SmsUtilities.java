@@ -74,12 +74,6 @@ public class SmsUtilities {
             sB.append(osmUrl);
             if (messageText != null)
                 sB.append(" ").append(messageText);
-
-            String msg = sB.toString();
-            if (sB.toString().length() > 160) {
-                // if longer than 160 chars it will not work
-                sB = new StringBuilder(msg);
-            }
         } else {
             sB.append(context.getString(R.string.last_position_unknown));
         }

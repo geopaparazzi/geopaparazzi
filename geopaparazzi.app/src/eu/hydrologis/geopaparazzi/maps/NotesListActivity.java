@@ -512,22 +512,11 @@ public class NotesListActivity extends ListActivity {
                     String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
                     if (formArray != null) {
                         try {
-                            double lon = Double.parseDouble(formArray[0]);
-                            double lat = Double.parseDouble(formArray[1]);
-                            String textStr = formArray[4];
-                            String jsonStr = formArray[6];
+                            String textStr = formArray[5];
+                            String jsonStr = formArray[7];
 
-                            float n = (float) (lat + 0.00001f);
-                            float s = (float) (lat - 0.00001f);
-                            float w = (float) (lon - 0.00001f);
-                            float e = (float) (lon + 0.00001f);
-
-                            List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
-                            if (notesInWorldBounds.size() > 0) {
-                                Note note = notesInWorldBounds.get(0);
-                                long id = note.getId();
-                                DaoNotes.updateForm(id, textStr, jsonStr);
-                            }
+                            long noteId = Long.parseLong(formArray[0]);
+                            DaoNotes.updateForm(noteId, textStr, jsonStr);
 
                         } catch (Exception e) {
                             GPLog.error(this, null, e); //$NON-NLS-1$

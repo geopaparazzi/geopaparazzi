@@ -298,6 +298,57 @@ public class DaoNotes {
         return notes;
     }
 
+    public static Note getNoteById(long checkId) throws IOException {
+
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+
+        String query = "SELECT " +//
+                NotesTableFields.COLUMN_ID.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_LON.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_LAT.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_ALTIM.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_TEXT.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_TS.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_DESCRIPTION.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_STYLE.getFieldName() +
+                ", " +//
+                NotesTableFields.COLUMN_FORM.getFieldName() +//
+                ", " +//
+                NotesTableFields.COLUMN_ISDIRTY.getFieldName() +//
+                " FROM " + TABLE_NOTES;
+        query = query + " WHERE " + NotesTableFields.COLUMN_ID.getFieldName() + "=" + checkId;
+
+        Cursor c = sqliteDatabase.rawQuery(query, null);
+        try {
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                long id = c.getLong(0);
+                double lon = c.getDouble(1);
+                double lat = c.getDouble(2);
+                double altim = c.getDouble(3);
+                String text = c.getString(4);
+                long timestamp = c.getLong(5);
+                String description = c.getString(6);
+                String style = c.getString(7);
+                String form = c.getString(8);
+                int isDirty = c.getInt(9);
+
+                Note note = new Note(id, text, description, timestamp, lon, lat, altim, form, isDirty, style);
+                return note;
+            }
+        } finally {
+            c.close();
+        }
+        return null;
+    }
+
     /**
      * Get the list of notes from the db as OverlayItems.
      *
