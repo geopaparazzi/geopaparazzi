@@ -127,6 +127,13 @@
         android:summary="@string/custommapfolder_summary"
         android:title="@string/custommapfolder_title" />
 
+    <eu.hydrologis.geopaparazzi.preferences.ForceLocalePreference
+        android:defaultValue="en"
+        android:key="PREFS_KEY_FORCELOCALE"
+        android:order="102"
+        android:summary="@string/force_locale_summary"
+        android:title="@string/force_locale_title" />
+
     <PreferenceScreen
         android:order="200"
         android:title="@string/osm_preferences" >

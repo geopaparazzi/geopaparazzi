@@ -299,4 +299,6 @@
     <string name="extract_mapsforge_data">Extracting mapsforge data...</string>
     <string name="extract_mapsforge_only_when_loaded">This tool works only when a mapsforge map is loaded.</string>
     <string name="view">View</string>
+    <string name="force_locale_title">Force locale</string>
+    <string name="force_locale_summary">Forces the selected locale regardless of Android\'s current locale.</string>
 </resources>

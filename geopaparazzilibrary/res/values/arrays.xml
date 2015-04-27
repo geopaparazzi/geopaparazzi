@@ -70,5 +70,27 @@
         <item>triangle</item>
         <item>X</item>
     </string-array>
+    <string-array name="locales">
+        <item>cs</item>
+        <item>de</item>
+        <item>el</item>
+        <item>es</item>
+        <item>en</item>
+        <item>fa</item>
+        <item>fi</item>
+        <item>fr</item>
+        <item>hu</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>no</item>
+        <item>pl</item>
+        <item>pt-rBR</item>
+        <item>ru</item>
+        <item>sk</item>
+        <item>sr</item>
+        <item>uk</item>
+        <item>zh-rCN</item>
+    </string-array>
 
 </resources>
