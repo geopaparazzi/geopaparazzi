@@ -60,7 +60,7 @@ public class NotesPropertiesActivity extends Activity {
 
         // use custom
         final CheckBox useCustomCheckbox = (CheckBox) findViewById(R.id.checkUseCustom);
-        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
+        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         useCustomCheckbox.setChecked(doCustom);
         useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
@@ -73,7 +73,7 @@ public class NotesPropertiesActivity extends Activity {
         int arraySizeId = R.array.array_size;
         int sizespinnerId = R.id.sizeSpinner;
         String prefsKey = Constants.PREFS_KEY_NOTES_SIZE;
-        String defaultStr = "15";
+        String defaultStr = "40";
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
         int arrayColorId = R.array.array_colornames;
@@ -90,7 +90,7 @@ public class NotesPropertiesActivity extends Activity {
 
         // show labels
         final CheckBox showLabelsCheckbox = (CheckBox) findViewById(R.id.checkShowLabels);
-        boolean showLabels = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
+        boolean showLabels = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         showLabelsCheckbox.setChecked(showLabels);
         showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
@@ -102,7 +102,7 @@ public class NotesPropertiesActivity extends Activity {
 
         int fontSizeSpinnerId = R.id.fontSizeSpinner;
         prefsKey = Constants.PREFS_KEY_NOTES_TEXT_SIZE;
-        defaultStr = "30";
+        defaultStr = "40";
         makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
 
         final CheckBox haloCheckbox = (CheckBox) findViewById(R.id.checkHalo);

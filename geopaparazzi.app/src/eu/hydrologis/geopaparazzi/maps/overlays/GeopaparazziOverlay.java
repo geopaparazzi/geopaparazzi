@@ -260,10 +260,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsBlueFill.setStyle(Paint.Style.FILL);
         gpsBlueFill.setColor(resources.getColor(R.color.gpsblue_fill));
 
-        isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
+        isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         if (isNotesTextVisible) {
-            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30"); //$NON-NLS-1$
-            float notesTextSize = 30f;
+            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "40"); //$NON-NLS-1$
+            float notesTextSize = 40f;
             try {
                 notesTextSize = (float) Double.parseDouble(notesTextSizeStr);
             } catch (NumberFormatException e) {

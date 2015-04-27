@@ -77,7 +77,7 @@
         </PreferenceScreen>
 
         <EditTextPreference
-            android:defaultValue="1.0"
+            android:defaultValue="2.5"
             android:inputType="numberDecimal"
             android:key="mapsview_textsize_factor"
             android:order="80"
