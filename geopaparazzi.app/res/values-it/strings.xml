@@ -298,4 +298,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="new_template_db_create">Database creato con successo.</string>
   <string name="extract_mapsforge_data">Estrazione dati mapsforge...</string>
   <string name="extract_mapsforge_only_when_loaded">Questo strumento funziona solo quando una mappa mapsforge è caricata.</string>
+  <string name="view">Visualizza</string>
+  <string name="force_locale_title">Forza la lingua</string>
+  <string name="force_locale_summary">Forza la lingua dell\'interfaccia indipendentemente dall\'impostazione di Android.</string>
 </resources>

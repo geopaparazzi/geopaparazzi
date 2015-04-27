@@ -266,4 +266,11 @@
   <string name="enable_mock_locations_for_demo">Um den Demo-Modus zu verwenden, müssen Sie Androids simulierte Standorte in den Entwickler-Einstellungen aktivieren. Deaktivieren des Demo-Modus.</string>
   <string name="could_not_open_geosms">Die übergebene URI konnte nicht geöffnet werden. Geopaparazzi ist nur in der Lage, GeoSMS URIs zu öffnen, die ein solches Element enthalten:</string>
   <string name="continue_last_log">Weiter mit dem letzten Log.</string>
+  <string name="edit">Bearbeiten</string>
+  <string name="delete">Löschen</string>
+  <string name="share">Teilen</string>
+  <string name="gpx">GPX</string>
+  <string name="geopap_browser">Geopaparazzi Browser</string>
+  <string name="kmz">KMZ</string>
+  <string name="filter">Filter</string>
 </resources>

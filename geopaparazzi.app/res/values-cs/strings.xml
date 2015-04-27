@@ -293,4 +293,7 @@
   <string name="new_template_db_create">Databáze úspěšně vytvořena.</string>
   <string name="extract_mapsforge_data">Natahuji data mapsforge...</string>
   <string name="extract_mapsforge_only_when_loaded">Tento nástroj funguje pouze po načtení mapsforge mapy.</string>
+  <string name="view">Pohled</string>
+  <string name="force_locale_title">Vynutit jazyk</string>
+  <string name="force_locale_summary">Vynutí vybrané jazykové nastavení bez ohledu na nynější jazykové nastavení Androidu.</string>
 </resources>
