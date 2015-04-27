@@ -47,7 +47,12 @@ public interface LibraryConstants {
     public final float PICKRADIUS = 0.00001f;
 
     /**
-     * 
+     * Default width of new logs.
+     */
+    public final float DEFAULT_LOG_WIDTH = 8f;
+
+    /**
+     *
      */
     public final DecimalFormat COORDINATE_FORMATTER = new DecimalFormat("#.00000000"); //$NON-NLS-1$
     /**

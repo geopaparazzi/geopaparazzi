@@ -131,6 +131,8 @@ import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -1023,7 +1025,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             DaoGpsLog logDumper = new DaoGpsLog();
                             SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
                             long now = new java.util.Date().getTime();
-                            long newLogId = logDumper.addGpsLog(now, now, 0, name, 3, "blue", true); //$NON-NLS-1$
+                            long newLogId = logDumper.addGpsLog(now, now, 0, name, DEFAULT_LOG_WIDTH, "blue", true); //$NON-NLS-1$
 
                             sqliteDatabase.beginTransaction();
                             try {

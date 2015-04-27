@@ -36,6 +36,8 @@ import android.database.sqlite.SQLiteDatabase;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
+
 /**
  * Open route service class. 
  * 
@@ -232,7 +234,7 @@ public class OpenRouteServiceHandler {
     public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
         SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
         long now = new java.util.Date().getTime();
-        long newLogId = logDumper.addGpsLog(now, now, 0, name, 1, "blue", true); //$NON-NLS-1$
+        long newLogId = logDumper.addGpsLog(now, now, 0, name, DEFAULT_LOG_WIDTH, "blue", true); //$NON-NLS-1$
 
         sqliteDatabase.beginTransaction();
         try {
