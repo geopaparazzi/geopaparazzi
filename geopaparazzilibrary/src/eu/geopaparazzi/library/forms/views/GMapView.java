@@ -25,6 +25,7 @@ import java.io.File;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -36,6 +37,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -97,9 +99,9 @@ public class GMapView extends View implements GView {
             textView.setTextColor(context.getResources().getColor(R.color.formcolor));
             mainLayout.addView(textView);
 
-            long imageId = Long.parseLong(value.trim());
+            final long imageId = Long.parseLong(value.trim());
 
-            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
+            final IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
 
             byte[] imageThumbnail = imagesDbHelper.getImageThumbnail(imageId);
             Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
@@ -109,21 +111,39 @@ public class GMapView extends View implements GView {
             imageView.setPadding(5, 5, 5, 5);
             imageView.setImageBitmap(thumbnail);
             imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-//            imageView.setOnClickListener(new OnClickListener() {
-//                public void onClick(View v) {
-//                    // the old way
-//                    // Intent intent = new Intent();
-//                    // intent.setAction(android.content.Intent.ACTION_VIEW);
-//                    //                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-//                    // context.startActivity(intent);
+            imageView.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    // the old way
+                    // Intent intent = new Intent();
+                    // intent.setAction(android.content.Intent.ACTION_VIEW);
+                    //                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                    // context.startActivity(intent);
 //
 //                        /*
 //                         * open in markers to edit it
 //                         */
 //                    MarkersUtilities.launchOnImage(context, image);
-//                }
-//
-//            });
+
+                    try {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        Image image = imagesDbHelper.getImage(imageId);
+                        File tempDir = ResourcesManager.getInstance(context).getTempDir();
+                        String ext = ".jpg";
+                        if (image.getName().endsWith(".png"))
+                            ext = ".png";
+                        File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                        byte[] imageData = imagesDbHelper.getImageData(image.getId());
+                        ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+                        intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                        context.startActivity(intent);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                    }
+                }
+
+            });
             mainLayout.addView(imageView);
         } catch (Exception e) {
             GPLog.error(this, null, e);
