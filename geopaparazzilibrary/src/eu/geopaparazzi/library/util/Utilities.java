@@ -486,12 +486,12 @@ public class Utilities {
     /**
      * Execute a message dialog with checkbox in an {@link AsyncTask}.
      *
-     * @param context      the {@link Context} to use.
-     * @param message      a message to show.
-     * @param defaultText  a default text to fill in.
-     * @param checkBoxText the text of the checkbox.
+     * @param context                  the {@link Context} to use.
+     * @param message                  a message to show.
+     * @param defaultText              a default text to fill in.
+     * @param checkBoxText             the text of the checkbox.
      * @param defaultCheckboxSelection default selection for checkbox.
-     * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
+     * @param textRunnable             optional {@link TextRunnable} to trigger after ok was pressed.
      */
     public static void inputMessageAndCheckboxDialog(final Context context, final String message,
                                                      final String defaultText, final String checkBoxText, final boolean defaultCheckboxSelection, final TextAndBooleanRunnable textRunnable) {
@@ -736,7 +736,7 @@ public class Utilities {
      * @param lon
      * @return
      */
-    public static double[] latLonToMeters( double lat, double lon ) {
+    public static double[] latLonToMeters(double lat, double lon) {
         double mx = lon * originShift / 180.0;
         double my = Math.log(Math.tan((90 + lat) * Math.PI / 360.0)) / (Math.PI / 180.0);
         my = my * originShift / 180.0;
@@ -770,7 +770,7 @@ public class Utilities {
      * @param py
      * @return
      */
-    public static int[] pixelsToTile( int px, int py, int tileSize ) {
+    public static int[] pixelsToTile(int px, int py, int tileSize) {
         int tx = (int) Math.ceil(px / ((double) tileSize) - 1);
         int ty = (int) Math.ceil(py / ((double) tileSize) - 1);
         return new int[]{tx, ty};
@@ -786,7 +786,7 @@ public class Utilities {
      * @param zoom
      * @return
      */
-    public static int[] metersToPixels( double mx, double my, int zoom, int tileSize ) {
+    public static int[] metersToPixels(double mx, double my, int zoom, int tileSize) {
         double res = getResolution(zoom, tileSize);
         int px = (int) Math.round((mx + originShift) / res);
         int py = (int) Math.round((my + originShift) / res);
@@ -799,7 +799,7 @@ public class Utilities {
      *
      * @return
      */
-    public static int[] metersToTile( double mx, double my, int zoom, int tileSize ) {
+    public static int[] metersToTile(double mx, double my, int zoom, int tileSize) {
         int[] p = metersToPixels(mx, my, zoom, tileSize);
         return pixelsToTile(p[0], p[1], tileSize);
     }
@@ -919,18 +919,24 @@ public class Utilities {
      */
     @SuppressWarnings("nls")
     public static String osmUrlFromLatLong(float lat, float lon, boolean withMarker, boolean withGeosmsParam) {
+        // http://www.osm.org/?mlat=45.79668&mlon=9.12342#map=18/45.79668/9.12342 -> with marker
+        // http://www.osm.org/#map=18/45.79668/9.12275
+
         StringBuilder sB = new StringBuilder();
-        sB.append("http://www.osm.org/?lat=");
-        sB.append(lat);
-        sB.append("&lon=");
-        sB.append(lon);
-        sB.append("&zoom=14");
+        sB.append("http://www.osm.org/");
         if (withMarker) {
-            sB.append("&layers=M&mlat=");
+            sB.append("?mlat=");
             sB.append(lat);
             sB.append("&mlon=");
             sB.append(lon);
         }
+        sB.append("#map=");
+        sB.append(18);
+        sB.append("/");
+        sB.append(lat);
+        sB.append("/");
+        sB.append(lon);
+
         if (withGeosmsParam) {
             sB.append("&GeoSMS");
         }
