@@ -62,7 +62,7 @@ public class CustomTileDownloader extends TileDownloader {
     private static final String USER_AGENT_STR = "User-Agent";
     private static final String HTTP_STR = "http";
     private static final String HTTP_PROTOCOL_STR = "http://";
-    private static final String FILE_PROTOCOL_STR = "file:";
+    //private static final String FILE_PROTOCOL_STR = "file:";
     private static final String REQUEST_PROTOCOL_STR = "request_protocol";
     private static final String REQUEST_Y_TYPE_STR = "request_y_type";
     private static final String REQUEST_ZOOM_LEVELS_URL_STR = "request_zoom_levels_url";
@@ -775,11 +775,8 @@ public class CustomTileDownloader extends TileDownloader {
                 }
             }
             StringBuilder sb = new StringBuilder();
-            if (isFile) {
-                sb.append(FILE_PROTOCOL_STR); //$NON-NLS-1$
-            } else {
-                if (!tilePath.startsWith(HTTP_STR)) //$NON-NLS-1$
-                    sb.append(HTTP_PROTOCOL_STR); //$NON-NLS-1$
+            if (!isFile && !tilePath.startsWith(HTTP_STR)) {
+                sb.append(HTTP_PROTOCOL_STR);
             }
             String s_host_name = HOST_NAME;
             if (i_tile_server > 0) {
@@ -803,7 +800,13 @@ public class CustomTileDownloader extends TileDownloader {
             if (isConnectedToInternet || isFile) {
                 try {
                     String urlString = sb.toString();
-                    decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+                    if (isFile) {
+                        File bitmapFile = new File(urlString);
+                        if (bitmapFile.exists())
+                            decodedBitmap = BitmapFactory.decodeFile(urlString);
+                    } else {
+                        decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+                    }
                     if (doScaleTiles && type != TILESCHEMA.wms)
                         decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
                 } catch (Exception e) {

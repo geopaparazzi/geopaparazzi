@@ -357,7 +357,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         if (doCustom) {
             String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
-            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15"); //$NON-NLS-1$
+            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
             String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
             float opacity = Float.parseFloat(opacityStr) * 255 / 100;

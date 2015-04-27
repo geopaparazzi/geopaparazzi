@@ -262,8 +262,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         if (isNotesTextVisible) {
-            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "40"); //$NON-NLS-1$
-            float notesTextSize = 40f;
+            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+            float notesTextSize = LibraryConstants.DEFAULT_NOTES_SIZE;
             try {
                 notesTextSize = (float) Double.parseDouble(notesTextSizeStr);
             } catch (NumberFormatException e) {

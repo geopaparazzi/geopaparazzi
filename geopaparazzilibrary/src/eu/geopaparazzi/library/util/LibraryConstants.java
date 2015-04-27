@@ -51,6 +51,8 @@ public interface LibraryConstants {
      */
     public final float DEFAULT_LOG_WIDTH = 8f;
 
+    public final int DEFAULT_NOTES_SIZE = 50;
+
     /**
      *
      */

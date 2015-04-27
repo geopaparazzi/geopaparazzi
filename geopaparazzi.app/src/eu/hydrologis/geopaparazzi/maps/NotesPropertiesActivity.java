@@ -31,6 +31,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -73,7 +74,7 @@ public class NotesPropertiesActivity extends Activity {
         int arraySizeId = R.array.array_size;
         int sizespinnerId = R.id.sizeSpinner;
         String prefsKey = Constants.PREFS_KEY_NOTES_SIZE;
-        String defaultStr = "40";
+        String defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
         int arrayColorId = R.array.array_colornames;
@@ -102,7 +103,7 @@ public class NotesPropertiesActivity extends Activity {
 
         int fontSizeSpinnerId = R.id.fontSizeSpinner;
         prefsKey = Constants.PREFS_KEY_NOTES_TEXT_SIZE;
-        defaultStr = "40";
+        defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
 
         final CheckBox haloCheckbox = (CheckBox) findViewById(R.id.checkHalo);
