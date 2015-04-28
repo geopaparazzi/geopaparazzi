@@ -12,4 +12,8 @@
   <string name="min_zoom">Ampliação mínima</string>
   <string name="max_zoom">Ampliação máxima</string>
   <string name="dash_pattern">Textura do tracejado</string>
+  <string name="label_properties">Propriedades do rótulo</string>
+  <string name="toggle_visibility">alternar visibilidade.</string>
+  <string name="label_field">rótulo do campo</string>
+  <string name="label_size">tamanho do rótulo</string>
 </resources>

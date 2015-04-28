@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">Mene</string>
   <string name="geocodeErrorTitle">Virhe geokoodauksessa</string>
   <string name="geocodeErrorMessage">Paikan geokoodaus epäonnistui. Yritä uudelleen.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Ladataan reittiä...</string>
   <string name="go_to_button">Mene</string>
   <string name="route_to_button">Reitti</string>

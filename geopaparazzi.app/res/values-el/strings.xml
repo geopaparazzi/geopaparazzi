@@ -296,4 +296,7 @@
   <string name="new_template_db_create">Η βάση δεδομένων έχει δημιουργηθεί με επιτυχία</string>
   <string name="extract_mapsforge_data">Εξαγωγή δεδομένων mapsforge...</string>
   <string name="extract_mapsforge_only_when_loaded">Αυτό το εργαλείο λειτουργεί μόνο όταν ένας mapsforge χάρτης φορτώνεται.</string>
+  <string name="view">Εμφάνιση</string>
+  <string name="force_locale_title">Δύναμη τοπικής ρύθμισης</string>
+  <string name="force_locale_summary">Επιβάλλει την επιλεγμένη τοπική ρύθμιση ανεξάρτητα από την τρέχουσα γλώσσα του Android.</string>
 </resources>

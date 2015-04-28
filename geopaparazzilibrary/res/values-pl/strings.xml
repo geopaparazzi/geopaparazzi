@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">idź</string>
   <string name="geocodeErrorTitle">Błąd Geokodowania</string>
   <string name="geocodeErrorMessage">Błąd przy geokodowaniu lokalizacji. Spróbuj ponownie przesłać lokalizację.</string>
-  <string name="openrouteservice">Serwis OpenRoute</string>
   <string name="downloading_route">Pobieranie trasy...</string>
   <string name="go_to_button">idź do</string>
   <string name="route_to_button">prowadź do</string>

@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">Přejít</string>
   <string name="geocodeErrorTitle">Chyba při vyhledání místa / adresy.</string>
   <string name="geocodeErrorMessage">Vyhledání místa / adresy se nezdařilo. Zkuste to znovu.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Stahuje se trasa...</string>
   <string name="go_to_button">Přejít do</string>
   <string name="route_to_button">Trasa do</string>

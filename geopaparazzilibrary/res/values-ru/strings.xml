@@ -43,7 +43,6 @@
   <string name="lookupLocationButton">идти</string>
   <string name="geocodeErrorTitle">Ошибка геокодирования</string>
   <string name="geocodeErrorMessage">Не удалось геокодировать положение, попробуйте снова.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Загружается маршрут…</string>
   <string name="go_to_button">идти к</string>
   <string name="route_to_button">маршрут к</string>

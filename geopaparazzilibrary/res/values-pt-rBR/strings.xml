@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">ir</string>
   <string name="geocodeErrorTitle">Erro na Geocodificação</string>
   <string name="geocodeErrorMessage">Geocodificação de localização falhou. Tente re-enviar.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Baixando rota…</string>
   <string name="go_to_button">ir para</string>
   <string name="route_to_button">rota para</string>
@@ -83,6 +82,12 @@
   <string name="http_not_found_msg">Não foi possível localizar o recurso solicitado. Por gentileza, verifique o url da sua conexão.</string>
   <string name="http_not_implemented_code_msg">Foi interceptado um código de mensagem de retorno (por gentileza, envie-o ao desenvolvedor): </string>
   <string name="post_completed_properly">Publicação concluída apropriadamente.</string>
+  <string name="http_ok_msg">A requisição foi processada com sucesso.</string>
   <string name="the_file_exists_wont_overwrite">O arquivo já existe. Não será sobrescrito: </string>
   <string name="share_note_with">Compartilhar nota com...</string>
+  <string name="downloading_mapurl_to_the_device">Baixando o serviço selecionado para o dispositivo.</string>
+  <string name="mapurl_successfully_downloaded">O mapurl foi baixado e instalado com sucesso. Lembre-se de reiniciar o Geopaparazzi para ter o serviço listado.</string>
+  <string name="crash_toast_text">O aplicativo sofreu um erro fatal. Informações sobre a falha será coletada, isso é útil para resolver o problema. Por favor envie-o para o time de desenvolvimento quando possível.</string>
+  <string name="share_current_position">Compartilhar a posição atual.</string>
+  <string name="share_current_center">Compartilhar o centro do mapa atual.</string>
 </resources>

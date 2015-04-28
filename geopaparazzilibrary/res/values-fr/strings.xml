@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">aller</string>
   <string name="geocodeErrorTitle">Erreur de géocodage</string>
   <string name="geocodeErrorMessage">Géocodage de l\'emplacement a échoué. Essayez de nouveau cet emplacement.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Téléchargement d\'itinéraire...</string>
   <string name="go_to_button">aller à</string>
   <string name="route_to_button">itinéraire vers</string>

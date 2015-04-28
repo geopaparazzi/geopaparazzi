@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">πήγαινε</string>
   <string name="geocodeErrorTitle">Σφάλμα γεωκωδικοποίησης</string>
   <string name="geocodeErrorMessage">Η γεωκωδικοποίηση της τοποθεσίας απέτυχε. Δοκιμάστε να εισάγετε ξανά τοποθεσία.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Μεταφόρτωση διαδρομής...</string>
   <string name="go_to_button">πήγαινε στο</string>
   <string name="route_to_button">διαδρομή προς</string>

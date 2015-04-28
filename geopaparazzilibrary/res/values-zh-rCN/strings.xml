@@ -25,7 +25,6 @@
   <string name="project_successfully_downloaded">项目被成功下载。</string>
   <string name="enterLocationLabel">输入位置：</string>
   <string name="lookupLocationButton">去</string>
-  <string name="openrouteservice">打开导航服务</string>
   <string name="downloading_route">下载路径中…</string>
   <string name="go_to_button">目的地</string>
   <string name="route_to_button">路径指向</string>

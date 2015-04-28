@@ -293,4 +293,7 @@
   <string name="new_template_db_create">Base de données crée avec succès.</string>
   <string name="extract_mapsforge_data">Extraction de données mapsforge</string>
   <string name="extract_mapsforge_only_when_loaded">Cet outil ne marche qu\'avec un carte mapsforge chargée</string>
+  <string name="view">Voir</string>
+  <string name="force_locale_title">Forcer language</string>
+  <string name="force_locale_summary">Force language sans tenir compte de ce qui est courant dans Android</string>
 </resources>
