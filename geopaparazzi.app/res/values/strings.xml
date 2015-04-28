@@ -301,4 +301,10 @@
     <string name="view">View</string>
     <string name="force_locale_title">Force locale</string>
     <string name="force_locale_summary">Forces the selected locale regardless of Android\'s current locale.</string>
+    <string name="export_images">Images</string>
+    <string name="export_img_unable_to_create_folder">"Unable to create folder on sdcard: "</string>
+    <string name="export_img_ok_exported">"Images exported to folder: "</string>
+    <string name="export_img_processing">Exporting images...</string>
+    <string name="routing_pref_title">Routing api key</string>
+    <string name="routing_pref_summary">To use MapQuest and Graphhopper routing services insert the proper ApiKey.</string>
 </resources>

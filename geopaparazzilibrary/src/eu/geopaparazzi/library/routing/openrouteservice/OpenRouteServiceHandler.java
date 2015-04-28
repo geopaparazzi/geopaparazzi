@@ -39,8 +39,10 @@ import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
- * Open route service class. 
- * 
+ * Open route service class.
+ *
+ *
+ * @deprecated since it stopped working
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")

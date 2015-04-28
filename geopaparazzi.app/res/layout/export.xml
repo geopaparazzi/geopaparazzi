@@ -75,5 +75,17 @@
             android:text="@string/bookmarks"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
+
+        <Button
+            android:id="@+id/imagesExportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/export_images"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
     </LinearLayout>
 </ScrollView>
