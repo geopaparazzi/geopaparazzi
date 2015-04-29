@@ -293,4 +293,13 @@
   <string name="new_template_db_create">데이터베이스를 성공적으로 생성했습니다.</string>
   <string name="extract_mapsforge_data">Mapsforge 데이터 추출중...</string>
   <string name="extract_mapsforge_only_when_loaded">이 도구는 Mapsforge 지도가 로딩된 경우에만 사용가능합니다.</string>
+  <string name="view">뷰</string>
+  <string name="force_locale_title">로케일 적용</string>
+  <string name="force_locale_summary">안드로이드의 현재 로케일을 무시하고 선택한 로케일로 설정</string>
+  <string name="export_images">이미지</string>
+  <string name="export_img_unable_to_create_folder">SD카드에 폴더를 생성할 수 없습니다:</string>
+  <string name="export_img_ok_exported">폴더에 내보낸 이미지:</string>
+  <string name="export_img_processing">이미지 내보내는 중...</string>
+  <string name="routing_pref_title">경로탐색 API 키</string>
+  <string name="routing_pref_summary">MapQuest와 Graphhopper 경로탐색 서비스를 사용하기 위해 API 키를 입력하십시오.</string>
 </resources>
