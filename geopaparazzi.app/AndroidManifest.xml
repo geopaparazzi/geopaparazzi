@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="70"
-    android:versionName="4.2.5">
+    android:versionCode="71"
+    android:versionName="4.3.0">
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
