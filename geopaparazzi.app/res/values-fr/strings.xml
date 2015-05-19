@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Aucune carte SD ne semble être disponible (vérifier si elle n\'est pas montée sur un PC).  Souhaitez vous utiliser la mémoire interne de l\'appareil à la place ? Veuillez noter que dans ce cas, il n\'y aura pas d\'affichage de carte pour des raisons d\'espace.</string>
   <string name="add_message">AJOUTER UN MESSAGE</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Insérer un texte optionnel à envoyer avec le GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Entrer un nom pour le nouveau projet</string>
   <string name="chosen_project_exists">Le nom du projet choisi existe déjà, veuillez choisir un autre nom</string>
   <string name="no_external_sdcard_for_db_renderer">Le rendu de cette base de données est suporté seulement à partir d\'un sockage externe. Aucun stockage externe a été trouvé, est ce qu\'il y en a un disponible?</string>
   <string name="no_map_files_found_go_online">Aucun fichier carte trouvé dans le dossier /sdcard/maps. Activation des cartes en ligne.\nLes cartes peuvent être téléchargées à : http://download.mapsforge.org</string>
@@ -229,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">Si oui, au prochain démarrage une tentative sera faite pour corriger tableaux défectueux.</string>
   <string name="map">Carte</string>
   <string name="name_lc">nom</string>
-  <string name="name_uc">Nom</string>
   <string name="bounds">limites</string>
   <string name="maps_loading_not_finished_yet">Le chargement de cartes n\'a pas encore fini. S\'il vous plaît patientez quelques instants et essayez à nouveau.</string>
   <string name="save">sauvegarder</string>

@@ -45,6 +45,7 @@
   <string name="lookupLocationButton">Los</string>
   <string name="geocodeErrorTitle">Geocodierungsfehler</string>
   <string name="geocodeErrorMessage">Geokodierung zur Lokation fehlgeschlagen. Versuchen Sie erneut die Lokation zu übertragen.</string>
+  <string name="routing_service">Routing</string>
   <string name="downloading_route">Lade Route herunter...</string>
   <string name="go_to_button">Gehe zu</string>
   <string name="route_to_button">Weg zum</string>

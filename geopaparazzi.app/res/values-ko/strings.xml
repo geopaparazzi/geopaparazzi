@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">사용가능한(PC에 설치되어 있지 않은지 확인) SdCard가 없습니다.  대신 장치 내부 메모리를 사용 하시겠습니까? 이 경우 공간 문제로 인해 지도 뷰는 어떤 지도도 표시하지 않습니다.</string>
   <string name="add_message">메세지 추가</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">GeoSMS와 함께 보낼 추가 텍스트 삽입</string>
-  <string name="enter_a_name_for_the_new_project">새로운 프로젝트의 이름 입력</string>
   <string name="chosen_project_exists">선택한 프로젝트 이름이 이미 있습니다, 다른 이름을 선택하십시오.</string>
   <string name="no_external_sdcard_for_db_renderer">데이터베이스 렌더링은 외부 저장 장치에서 지원됩니다. 외부 저장 장치를 찾을 수 없습니다. 사용 가능합니까?</string>
   <string name="no_map_files_found_go_online">/sdcard/maps 폴더에서 지도를 찾을 수 없습니다. 온라인 지도로 전환합니다. \n지도는 다음 사이트에서 다운로드할 수 있습니다: http://download.mapsforge.org</string>
@@ -229,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">켜져 있으면, 다음 시작할 때  이 오류 테이블을 수정합니다.</string>
   <string name="map">지도</string>
   <string name="name_lc">이름</string>
-  <string name="name_uc">이름</string>
   <string name="bounds">영역</string>
   <string name="maps_loading_not_finished_yet">지도 로딩이 아직 완료되지 않았습니다. 잠시 후에 다시 시도해 주십시오.</string>
   <string name="save">저장</string>

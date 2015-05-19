@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Es scheint keine SD-Card vorhanden zu sein (prüfen Sie, ob das Gerät nicht mit einem PC verbunden ist). Möchten Sie stattdessen den internen Speicher des Geräts verwenden? Bitte beachten Sie, dass in diesem Fall die Kartenansicht aus Platzgründen kein Karte anzeigen wird.</string>
   <string name="add_message">Nachricht hinzufügen</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Geben Sie einen optionalen Text an, der zur GeoSMS mit gesendet werden soll.</string>
-  <string name="enter_a_name_for_the_new_project">Geben Sie einen Namen für das Projekt ein</string>
   <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
   <string name="no_external_sdcard_for_db_renderer">Databank-Rendering wird nur von externem Speicher unterstützt. Externer Speicher konnte nicht gefunden werden. Ist eine solcher vorhanden?</string>
   <string name="no_map_files_found_go_online">Es wurden keine Karten-Dateien im Ordner /sdcard/maps gefunden. Wechsle zu Online-Karten.\nKarten können heruntergeladen werden von: http://download.mapsforge.org</string>
@@ -229,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">Falls aktiviert wird beim nächsten Start versucht, die fehlerhaften Tabellen zu korrigieren.</string>
   <string name="map">Karte</string>
   <string name="name_lc">Name</string>
-  <string name="name_uc">Name</string>
   <string name="bounds">Grenzen</string>
   <string name="maps_loading_not_finished_yet">Das Laden der Karten wurde noch nicht abgeschlossen. Bitte warten Sie einen Moment und versuchen es noch einmal.</string>
   <string name="save">speichere</string>
@@ -296,4 +294,10 @@
   <string name="view">Ansicht</string>
   <string name="force_locale_title">Ländereinstellung erzwingen</string>
   <string name="force_locale_summary">Erzwingt die ausgewählte Ländereinstellung unabhängig von der aktuellen Ländereinstellung des Androids.</string>
+  <string name="export_images">Bilder</string>
+  <string name="export_img_unable_to_create_folder">Es war nicht möglich, einen Ordner auf der SD-Karte anzulegen:</string>
+  <string name="export_img_ok_exported">Bilder wurden zum Ordner exportiert:</string>
+  <string name="export_img_processing">Bilder werden exportiert...</string>
+  <string name="routing_pref_title">Routing-API-Schlüssel</string>
+  <string name="routing_pref_summary">Zur Nutzung der MapQuest und Graphhopper Routing-Dienste fügen Sie die richtige apikey hinzu.</string>
 </resources>

@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Muistikorttia ei ole saatavilla. Halutko käyttää laitteen sisäistä muistia sen sijaan? Tällöin karttanäytössä ei ole karttaa muistin säästämiseksi.</string>
   <string name="add_message">Lisää viesti</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Kirjoita halutessasi viesti GeoSMS yhteyteen</string>
-  <string name="enter_a_name_for_the_new_project">Anna nimi uudelle projektille</string>
   <string name="chosen_project_exists">Projektin nimi on jo käytössä, valitse uusi</string>
   <string name="no_external_sdcard_for_db_renderer">Tietokannan mallinnus on tuettu vain ulkoisesta tietolähteestä. Ulkoista tietolähdettä ei löytynyt.</string>
   <string name="no_map_files_found_go_online">Karttoja ei löytynyt hakemistosta /sdcard/maps. Vaihdetaan online karttoihin.\nVoit ladata kartat osoitteesta</string>
@@ -229,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">Jos voimassa, seuraavassa käynnistyksessä tehdään yritys virheellisten taulujen korjaamiseksi.</string>
   <string name="map">Kartta</string>
   <string name="name_lc">nimi</string>
-  <string name="name_uc">Nimi</string>
   <string name="bounds">rajat</string>
   <string name="maps_loading_not_finished_yet">Karttojen lataus ei ole vielä päättynyt. Ole hyvä ja odota hetki ja yritä uudelleen.</string>
   <string name="save">tallenna</string>

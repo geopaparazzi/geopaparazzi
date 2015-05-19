@@ -132,7 +132,6 @@
   <string name="loaded_project_in">Проект загружен в:</string>
   <string name="add_message">ДОБАВИТЬ СООБЩЕНИЕ</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Добавьте текст, отправляемый вместе с GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Введите название нового проекта</string>
   <string name="chosen_project_exists">Такой проект уже существует, выберите другое имя</string>
   <string name="select_map_to_use">Выберите карту для использования</string>
   <string name="no_map_file_found_going_to_mapnik">Не найден .map файл, используются тайлы Mapnik</string>
@@ -203,7 +202,6 @@
   <string name="spatialite_recover_mode_tooltip">Провести проверку таблиц при следущем запуске программы</string>
   <string name="map">Карта</string>
   <string name="name_lc">имя</string>
-  <string name="name_uc">Имя</string>
   <string name="bounds">охват</string>
   <string name="maps_loading_not_finished_yet">Загрузка карты не удалась, попробуйте позже.</string>
   <string name="save">сохранить</string>

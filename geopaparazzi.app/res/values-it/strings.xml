@@ -142,7 +142,7 @@ Vuoi rimuovere le note dal dispositivo?</string>
   <string name="no_sdcard_use_internal_memory">Nessuna scheda SD disponibile (controllare se è montata su un PC). Utilizzare in alternativa la memoria interna del dispositivo? In questo caso non verranno visualizzate le mappe nella vista mappa per motivi di spazio.</string>
   <string name="add_message">AGGIUNGI MESSAGGIO</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Inserire un eventuale testo da inviare con il GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Immettere un nome per il nuovo progetto</string>
+  <string name="enter_a_name_for_the_new_project">Immettere un nome per il file del nuovo progetto</string>
   <string name="chosen_project_exists">Il nome di progetto scelto esiste già, per favore scegli un altro nome</string>
   <string name="no_external_sdcard_for_db_renderer">Mappe da database sono supportate solo con supporto di scheda di memoria. E\' disponibile?</string>
   <string name="no_map_files_found_go_online">Non sono state trovate mappe nella cartella /sdcard/maps. Uso le mappe online.
@@ -234,7 +234,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="spatialite_recover_mode_tooltip">Se attivata, al prossimo avvio tenterà di correggere tabelle non compatibili.</string>
   <string name="map">Mappa</string>
   <string name="name_lc">nome</string>
-  <string name="name_uc">Nome</string>
+  <string name="name_uc">Nome del progetto</string>
   <string name="bounds">limiti</string>
   <string name="maps_loading_not_finished_yet">Il caricamento delle mappe non è completo. Si prega di attendere un attimo e riprovare.</string>
   <string name="save">salva</string>

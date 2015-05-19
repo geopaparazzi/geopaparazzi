@@ -143,7 +143,6 @@
   <string name="no_sdcard_use_internal_memory">利用可能なSDカードがありません(PCにマウントされていないか確認してください) 。デバイスの内部メモリを代わりに使用しますか。この場合、マップ ビューのスペース上の理由から任意のマップ表示されないことに注意してください。</string>
   <string name="add_message">メッセージの追加</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">GeoSMS で送信するオプションのテキストを挿入します。</string>
-  <string name="enter_a_name_for_the_new_project">新しいプロジェクトの名前を入力してください。</string>
   <string name="chosen_project_exists">選択したプロジェクトの名前は既に存在します、別の名前を選んでください。</string>
   <string name="no_external_sdcard_for_db_renderer">データベースのレンダリングは、外部ストレージからのみサポートされています。外部ストレージが見つかりませんでした、外部ストレージは利用可能ですか？</string>
   <string name="no_map_files_found_go_online">/Sdcard/maps フォルダー内にマップ ファイルが見つかりませんでした。オンライン マップへ切り替えます。
@@ -234,7 +233,6 @@
   <string name="spatialite_recover_mode_tooltip">オンにした場合、次の起動の際に不良のあるテーブルの修正が試みられます。</string>
   <string name="map">地図</string>
   <string name="name_lc">名称</string>
-  <string name="name_uc">名称</string>
   <string name="bounds">境界</string>
   <string name="maps_loading_not_finished_yet">マップのロードがまだ終了していません。少し待ってからもう一度試してください。</string>
   <string name="save">保存</string>

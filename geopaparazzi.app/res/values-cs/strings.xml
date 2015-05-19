@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Zdá se, že není dostupná žádná SD karta (zkontrolujte, zda není připojena k PC). Chcete místo ní použít vnitřní paměť zařízení? V tomto případě nebude z důvodu místa zobrazena žádná mapa.</string>
   <string name="add_message">Přidat zprávu</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Vložit volitelný text k odeslání s GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Zadejte název nového projektu</string>
   <string name="chosen_project_exists">Zvolený název projektu již existuje. Vyberte, prosím, jiný název</string>
   <string name="no_external_sdcard_for_db_renderer">Dělání databáze je podporováno jen z vnějšího úložiště. Vnější úložiště se nepodařilo najít. Je nějaké dostupné?</string>
   <string name="no_map_files_found_go_online">Ve složce /sdcard/maps nebyly nalezeny žádné soubory s mapami. Přepíná se na mapy na internetu.\nMapy lze stahovat z: http://download.mapsforge.org</string>
@@ -229,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">Je-li zapnuto, bude při příštím spuštění proveden pokus o opravu špatných tabulek.</string>
   <string name="map">Mapa</string>
   <string name="name_lc">Název</string>
-  <string name="name_uc">Název</string>
   <string name="bounds">Hranice</string>
   <string name="maps_loading_not_finished_yet">Nahrávání map ještě neskončilo. Počkejte, prosím, chvíli a zkuste to znovu.</string>
   <string name="save">Uložit</string>
@@ -296,4 +294,10 @@
   <string name="view">Pohled</string>
   <string name="force_locale_title">Vynutit jazyk</string>
   <string name="force_locale_summary">Vynutí vybrané jazykové nastavení bez ohledu na nynější jazykové nastavení Androidu.</string>
+  <string name="export_images">Obrázky</string>
+  <string name="export_img_unable_to_create_folder">Nepodařilo se vytvořit složku na SD kartě:</string>
+  <string name="export_img_ok_exported">Obrázky vyvedeny do složky:</string>
+  <string name="export_img_processing">Vyvádí se obrázky...</string>
+  <string name="routing_pref_title">Klíč pro api směrování</string>
+  <string name="routing_pref_summary">Pro používání směrovacích služeb MapQuest a Graphhopper vložte správný klíč Api.</string>
 </resources>

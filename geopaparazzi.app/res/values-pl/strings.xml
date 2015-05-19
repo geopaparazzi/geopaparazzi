@@ -138,7 +138,6 @@
   <string name="no_sdcard_use_internal_memory">Wygląda na to, że nie ma dostępnej żadnej karty SD (sprawdź czy nie jest zamontowana w PC). Czy chcesz zamiast tego użyć wewnętrznej pamięci urządzenia? Miej na uwadze, że w tym przypadku w widoku mapy nie będzie prezentowana żadna mapa z powodu ograniczonej przestrzeni.</string>
   <string name="add_message">DODAJ WIADOMOŚĆ</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Wstaw opcjonalny tekst do wysłania przez GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Wprowadź nazwę dla nowego projektu</string>
   <string name="chosen_project_exists">Wybrana nazwa projektu już istnieje, proszę podać inna</string>
   <string name="no_external_sdcard_for_db_renderer">Renderowanie bazy danych jest możliwe tylko z zewnętrznego magazynu. Nie mogę znaleźć zewnętrznego magazynu, czy jest jakikolwiek dostępny?</string>
   <string name="select_map_to_use">Wskaż mapę do użycia</string>
@@ -221,7 +220,6 @@
   <string name="spatialite_preferences">Preferencje Spatialite</string>
   <string name="map">Mapa</string>
   <string name="name_lc">nazwa</string>
-  <string name="name_uc">Nazwa</string>
   <string name="bounds">zakres</string>
   <string name="save">zapisz</string>
   <string name="goto_feature">idź do</string>

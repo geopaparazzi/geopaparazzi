@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">sdcard nije dostupna (proverite da nije prikačena na PC). Da li želite umesto toga da koristite internu memoriju uredjaja? Napomena da u tom slučaju, opcija \"prikaz mape\" neće prikazati nikakvu mapu zbog prostora na uredjaju</string>
   <string name="add_message">DODATI PORUKU</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Ubacite proizvoljni tekst koji biste poslali uz GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Unesite naziv novog projekta</string>
   <string name="chosen_project_exists">Projekat sa ovakvim nazivom  već postoji, molimo Vas pokušajte ponovo</string>
   <string name="no_external_sdcard_for_db_renderer">Izrada baze podataka je podržana samo sa eksterne memorije. U nemogućnosti da se pronadje eksterna memorija, da li je dostupna neka?</string>
   <string name="no_map_files_found_go_online">U direktorijumu /sdcard/maps nisu pronadjene datoteke sa mapama. Prelazak na onlajn mape.\nMape možete preuzeti sa: http://download.mapsforge.org</string>
@@ -227,7 +226,6 @@
   <string name="spatialite_recover_mode_tooltip">Ako je uključeno, prilikom sledećeg pokretanja neispravne tablete će biti pokušane da se isprave</string>
   <string name="map">Mapa</string>
   <string name="name_lc">ime</string>
-  <string name="name_uc">Ime</string>
   <string name="bounds">granice</string>
   <string name="maps_loading_not_finished_yet">Učitavanje mapa jos uvek nije završeno. Sačekajte momenat i pokušajte ponovo</string>
   <string name="save">sačuvaj</string>

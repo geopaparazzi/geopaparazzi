@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Parece que la tarjeta sdcard no está disponible (compruebe por si estuviera  montada en un PC). ¿Quiere utilizar en su lugar la memoria interna del dispositivo?. En este caso, por razones de espacio, la vista de mapa no mostrará cualquier mapa.</string>
   <string name="add_message">AÑADIR MENSAJE</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Insertar un texto opcional para enviar junto con el GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Introducir un nombre para el nuevo proyecto</string>
   <string name="chosen_project_exists">El nombre elegido para el proyecto ya existe, elija por favor otro nombre</string>
   <string name="no_external_sdcard_for_db_renderer">El renderizado de la base de datos solamente se soporta para almacenamiento externo. No se ha podido encontrar almacenamiento externo, ¿Hay alguno disponible?</string>
   <string name="no_map_files_found_go_online">No se han encontrado ficheros de mapa en la carpeta /sdcard/maps. Cambiando a mapas en línea.\nPuede descargar mapas desde: http://download.mapsforge.org</string>
@@ -227,7 +226,6 @@
   <string name="spatialite_recover_mode_tooltip">si está activo, en el siguiente inicio se intentarán corregir las tablas defectuosas.</string>
   <string name="map">Mapa</string>
   <string name="name_lc">nombre</string>
-  <string name="name_uc">Nombre</string>
   <string name="bounds">límites</string>
   <string name="maps_loading_not_finished_yet">Todavía no ha finalizado la carga de mapas. Espere unos momentos e inténtelo de nuevo.</string>
   <string name="save">guardar</string>

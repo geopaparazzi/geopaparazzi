@@ -123,7 +123,6 @@
   <string name="no_sdcard_use_internal_memory">Minnekort er ikke tilgjengelig (sjekk hvis det ikke er montert på en PC). Vil du bruke enhetens interne minnet i stedet? Vær oppmerksom på at enheten i såfall ikke vil vise kartutsnittet, på grunn av lagringsplass.</string>
   <string name="add_message">LEGGE TIL MELDING</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Sette inn en valgfri tekst å sende med GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Skriv inn et navn for det nye prosjektet</string>
   <string name="chosen_project_exists">Det valgte prosjektnavnet finnes allerede, Velg et annet navn</string>
   <string name="no_external_sdcard_for_db_renderer">Database-visning støttes bare fra ekstern lagring. Kunne ikke finne ekstern lagring, er det tilgjengelig?</string>
   <string name="select_map_to_use">Velg kart</string>

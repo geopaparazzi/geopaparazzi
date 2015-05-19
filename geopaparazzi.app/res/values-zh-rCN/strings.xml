@@ -79,7 +79,6 @@
   <string name="exporting_data_to_gpx">输出数据用KMZ格式</string>
   <string name="media_upload">上传媒体</string>
   <string name="add_message">添加信息</string>
-  <string name="enter_a_name_for_the_new_project">请给新项目输入名称</string>
   <string name="select_map_to_use">选择要使用的地图</string>
   <string name="enter_project_description">为项目输入一个描写</string>
   <string name="no_images">没有图片</string>

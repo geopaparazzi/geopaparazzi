@@ -45,6 +45,7 @@
   <string name="lookupLocationButton">이동</string>
   <string name="geocodeErrorTitle">지오코딩 오류</string>
   <string name="geocodeErrorMessage">해당 위치의 지오코딩에 실패했습니다. 위치를 다시 입력하십시오.</string>
+  <string name="routing_service">경로탐색</string>
   <string name="downloading_route">경로 다운로드 중...</string>
   <string name="go_to_button">이동</string>
   <string name="route_to_button">경로이동</string>

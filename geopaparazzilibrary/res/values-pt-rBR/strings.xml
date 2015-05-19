@@ -45,6 +45,7 @@
   <string name="lookupLocationButton">ir</string>
   <string name="geocodeErrorTitle">Erro na Geocodificação</string>
   <string name="geocodeErrorMessage">Geocodificação de localização falhou. Tente re-enviar.</string>
+  <string name="routing_service">Roteando</string>
   <string name="downloading_route">Baixando rota…</string>
   <string name="go_to_button">ir para</string>
   <string name="route_to_button">rota para</string>
