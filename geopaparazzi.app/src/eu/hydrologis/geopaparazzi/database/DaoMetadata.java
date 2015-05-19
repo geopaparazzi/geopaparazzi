@@ -86,7 +86,7 @@ public class DaoMetadata {
     public static void initProjectMetadata(String name, String description, String notes, String creationUser) throws IOException {
         Date creationDate = new Date();
         if (name == null) {
-            name = "project-" + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(creationDate);
+            name = "";
         }
         if (description == null) {
             description = EMPTY_VALUE;
