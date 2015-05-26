@@ -140,6 +140,7 @@
   <string name="no_sdcard_use_internal_memory">Muistikorttia ei ole saatavilla. Halutko käyttää laitteen sisäistä muistia sen sijaan? Tällöin karttanäytössä ei ole karttaa muistin säästämiseksi.</string>
   <string name="add_message">Lisää viesti</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Kirjoita halutessasi viesti GeoSMS yhteyteen</string>
+  <string name="enter_a_name_for_the_new_project">Anna tiedostonimi uudelle projektille</string>
   <string name="chosen_project_exists">Projektin nimi on jo käytössä, valitse uusi</string>
   <string name="no_external_sdcard_for_db_renderer">Tietokannan mallinnus on tuettu vain ulkoisesta tietolähteestä. Ulkoista tietolähdettä ei löytynyt.</string>
   <string name="no_map_files_found_go_online">Karttoja ei löytynyt hakemistosta /sdcard/maps. Vaihdetaan online karttoihin.\nVoit ladata kartat osoitteesta</string>
@@ -228,6 +229,7 @@
   <string name="spatialite_recover_mode_tooltip">Jos voimassa, seuraavassa käynnistyksessä tehdään yritys virheellisten taulujen korjaamiseksi.</string>
   <string name="map">Kartta</string>
   <string name="name_lc">nimi</string>
+  <string name="name_uc">Projektin nimi</string>
   <string name="bounds">rajat</string>
   <string name="maps_loading_not_finished_yet">Karttojen lataus ei ole vielä päättynyt. Ole hyvä ja odota hetki ja yritä uudelleen.</string>
   <string name="save">tallenna</string>
@@ -291,4 +293,13 @@
   <string name="new_template_db_create">Tietokanta luotiin onnistuneesti.</string>
   <string name="extract_mapsforge_data">Poimi mapsforge tiedot...</string>
   <string name="extract_mapsforge_only_when_loaded">Tämä työkalu toimii ainoastaan kun mapsforge kartta on ladattu.</string>
+  <string name="view">Näyttö</string>
+  <string name="force_locale_title">Pakota locale asetukseen</string>
+  <string name="force_locale_summary">Pakottaa valittuun locale asetukseen huolimatta Android\'in nykyisestä   locale asetuksesta.</string>
+  <string name="export_images">Kuvat</string>
+  <string name="export_img_unable_to_create_folder">SD kortille ei voida  luoda hakemistoa:</string>
+  <string name="export_img_ok_exported">Kuvat viety hakemistoon:</string>
+  <string name="export_img_processing">Viedään kuvia...</string>
+  <string name="routing_pref_title">Reititys api:n avain</string>
+  <string name="routing_pref_summary">Käyttääksesi MapQuest ja Graphhopper reititys palveluita aseta oikea api avain.</string>
 </resources>
