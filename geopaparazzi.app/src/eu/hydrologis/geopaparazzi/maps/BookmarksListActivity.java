@@ -59,7 +59,7 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 
 /**
  * Bookmarks listing activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class BookmarksListActivity extends ListActivity {
@@ -67,7 +67,7 @@ public class BookmarksListActivity extends ListActivity {
     private Map<String, Bookmark> bookmarksMap = new HashMap<String, Bookmark>();
     private Comparator<Bookmark> bookmarksSorter = new ItemComparators.BookmarksComparator(false);
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.bookmarkslist);
@@ -99,7 +99,7 @@ public class BookmarksListActivity extends ListActivity {
             bookmarksNames = new String[bookmarksList.size()];
             bookmarksMap.clear();
             int index = 0;
-            for( Bookmark bookmark : bookmarksList ) {
+            for (Bookmark bookmark : bookmarksList) {
                 String name = bookmark.getName();
                 bookmarksMap.put(name, bookmark);
                 bookmarksNames[index] = name;
@@ -113,7 +113,7 @@ public class BookmarksListActivity extends ListActivity {
         redoAdapter();
     }
 
-    private void filterList( String filterText ) {
+    private void filterList(String filterText) {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "filter bookmarks list"); //$NON-NLS-1$
         try {
@@ -123,7 +123,7 @@ public class BookmarksListActivity extends ListActivity {
             bookmarksMap.clear();
             filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
             List<String> namesList = new ArrayList<String>();
-            for( Bookmark bookmark : bookmarksList ) {
+            for (Bookmark bookmark : bookmarksList) {
                 String name = bookmark.getName();
                 String nameLower = name.toLowerCase();
                 if (nameLower.matches(filterText)) {
@@ -142,9 +142,9 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void redoAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames){
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames) {
             @Override
-            public View getView( int position, View cView, ViewGroup parent ) {
+            public View getView(int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.bookmark_row, null);
 
@@ -152,55 +152,60 @@ public class BookmarksListActivity extends ListActivity {
                 bookmarkText.setText(bookmarksNames[position]);
 
                 final ImageView renameButton = (ImageView) rowView.findViewById(R.id.renamebutton);
-                renameButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                renameButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final String name = bookmarkText.getText().toString();
-                        final EditText input = new EditText(BookmarksListActivity.this);
-                        input.setText(name);
-                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this)
-                                .setTitle(R.string.bookmarks_list_rename);
-                        builder.setView(input);
-                        builder.setIcon(android.R.drawable.ic_dialog_info)
-                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                                    public void onClick( DialogInterface dialog, int whichButton ) {
-                                        // ignore
+                        String title = getString(R.string.bookmarks_list_rename);
+
+                        Utilities.inputMessageDialog(BookmarksListActivity.this, title, name, new TextRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (theTextToRunOn.length() < 1) {
+                                        return;
                                     }
-                                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                    public void onClick( DialogInterface dialog, int whichButton ) {
-                                        try {
-                                            Editable value = input.getText();
-                                            String newName = value.toString();
-                                            if (newName == null || newName.length() < 1) {
-                                                return;
-                                            }
-                                            Bookmark bookmark = bookmarksMap.get(name);
-                                            DaoBookmarks.updateBookmarkName(bookmark.getId(), newName);
+                                    Bookmark bookmark = bookmarksMap.get(name);
+                                    DaoBookmarks.updateBookmarkName(bookmark.getId(), theTextToRunOn);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
                                             refreshList();
-                                        } catch (IOException e) {
-                                            GPLog.error(this, e.getLocalizedMessage(), e);
-                                            e.printStackTrace();
+                                        }
+                                    });
+
+                                } catch (final IOException e) {
+                                    GPLog.error(this, e.getLocalizedMessage(), e);
+                                    e.printStackTrace();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
                                             Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
                                                     .show();
                                         }
-                                    }
-                                }).setCancelable(false).show();
+                                    });
+
+                                }
+                            }
+                        });
+
+
                     }
                 });
 
                 final ImageView deleteButton = (ImageView) rowView.findViewById(R.id.deletebutton);
-                deleteButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final String name = bookmarkText.getText().toString();
                         final Bookmark bookmark = bookmarksMap.get(name);
                         Utilities.yesNoMessageDialog(BookmarksListActivity.this, getString(R.string.prompt_delete_bookmark),
-                                new Runnable(){
+                                new Runnable() {
                                     public void run() {
-                                        new AsyncTask<String, Void, String>(){
-                                            protected String doInBackground( String... params ) {
+                                        new AsyncTask<String, Void, String>() {
+                                            protected String doInBackground(String... params) {
                                                 return ""; //$NON-NLS-1$
                                             }
 
-                                            protected void onPostExecute( String response ) {
+                                            protected void onPostExecute(String response) {
                                                 try {
                                                     DaoBookmarks.deleteBookmark(bookmark.getId());
                                                     refreshList();
@@ -220,8 +225,8 @@ public class BookmarksListActivity extends ListActivity {
                 });
 
                 final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
-                goButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                goButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
 
@@ -237,13 +242,13 @@ public class BookmarksListActivity extends ListActivity {
                 });
 
                 final ImageView proximityButton = (ImageView) rowView.findViewById(R.id.alertbutton);
-                proximityButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                proximityButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         final Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
 
-                            Utilities.inputMessageDialog(BookmarksListActivity.this, getString(R.string.proximity_radius),
-                                    getString(R.string.add_proximity_radius), "100", new TextRunnable(){ //$NON-NLS-1$
+                            Utilities.inputMessageDialog(BookmarksListActivity.this,
+                                    getString(R.string.add_proximity_radius), "100", new TextRunnable() { //$NON-NLS-1$
                                         public void run() {
                                             double radius = 100;
                                             if (theTextToRunOn.length() > 0) {
@@ -276,17 +281,18 @@ public class BookmarksListActivity extends ListActivity {
 
         setListAdapter(arrayAdapter);
     }
-    private TextWatcher filterTextWatcher = new TextWatcher(){
 
-        public void afterTextChanged( Editable s ) {
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
             // ignore
         }
 
-        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
 
-        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             // arrayAdapter.getFilter().filter(s);
             filterList(s.toString());
         }

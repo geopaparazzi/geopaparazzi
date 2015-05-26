@@ -20,10 +20,39 @@ package eu.geopaparazzi.library.util;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.Window;
 
 /**
  * An simple {@link AsyncTask} string based wrapper.
- * 
+ * <p/>
+ * <p>example usage:</p>
+ * <code>
+ * StringAsyncTask task = new StringAsyncTask(this) {
+ * protected String doBackgroundWork() {
+ * try {
+ * int index = 0;
+ * for (...){
+ * // do stuff
+ * publishProgress(index);
+ * }
+ * } catch (Exception e) {
+ * return "ERROR: " + e.getLocalizedMessage();
+ * }
+ * return "";
+ * }
+ * <p/>
+ * protected void doUiPostWork(String response) {
+ * dispose();
+ * if (response.length() != 0) {
+ * Utilities.warningDialog(YourActivity.this, response, null);
+ * }
+ * // do UI stuff
+ * }
+ * };
+ * task.startProgressDialog("TITLE", "Process...", false, progressCount);
+ * task.execute();
+ * </code>
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class StringAsyncTask extends AsyncTask<String, Integer, String> {
@@ -31,46 +60,52 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
     private ProgressDialog progressDialog;
 
     /**
-     * @param context  the context to use.
+     * @param context the context to use.
      */
-    public StringAsyncTask( Context context ) {
+    public StringAsyncTask(Context context) {
         this.context = context;
     }
 
     /**
      * Also create a {@link ProgressDialog} and start it.
-     * 
-     * @param title a title.
-     * @param message a message.
+     *
+     * @param title      a title.
+     * @param message    a message.
      * @param cancelable if it is cancelable.
-     * @param max the max progress. If <code>null</code>, indeterminate is used.
+     * @param max        the max progress. If <code>null</code>, indeterminate is used.
      */
-    public void startProgressDialog( String title, String message, boolean cancelable, Integer max ) {
+    public void startProgressDialog(String title, String message, boolean cancelable, Integer max) {
         progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle(title);
+        if (title == null) {
+            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        } else {
+            progressDialog.setTitle(title);
+        }
         progressDialog.setMessage(message);
         progressDialog.setCancelable(cancelable);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         if (max == null) {
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setIndeterminate(true);
         } else {
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setIndeterminate(false);
             progressDialog.setProgress(0);
             progressDialog.setMax(max);
         }
         progressDialog.show();
     }
 
-    protected String doInBackground( String... params ) {
+    protected String doInBackground(String... params) {
         return doBackgroundWork();
     }
 
-    protected void onProgressUpdate( Integer... progress ) {
+    protected void onProgressUpdate(Integer... progress) {
         if (progressIsOk()) {
             progressDialog.setProgress(progress[0]);
         }
     }
 
-    protected void onPostExecute( String response ) {
+    protected void onPostExecute(String response) {
         if (progressIsOk()) {
             progressDialog.dismiss();
         }
@@ -92,23 +127,23 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
 
     /**
      * Do the background work (non UI).
-     * 
+     * <p/>
      * <p>To update progress:
      * <code>
      * publishProgress(1);
      * // and to escape early if cancel() is called
      * if (isCancelled())
-     *    break;
+     * break;
      * </code>
-     * 
+     *
      * @return the result of the work.
      */
     protected abstract String doBackgroundWork();
 
     /**
      * Do the UI work after the {@link #doBackgroundWork()}.
-     * 
+     *
      * @param response the response coming from the {@link #doBackgroundWork()}.
      */
-    protected abstract void doUiPostWork( String response );
+    protected abstract void doUiPostWork(String response);
 }

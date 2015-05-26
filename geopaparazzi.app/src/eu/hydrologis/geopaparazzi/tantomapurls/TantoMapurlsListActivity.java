@@ -55,7 +55,7 @@ import eu.hydrologis.geopaparazzi.R;
 
 /**
  * Web projects listing activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -68,7 +68,7 @@ public class TantoMapurlsListActivity extends ListActivity {
 
     private ProgressDialog downloadProgressDialog;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.tanto_mapurl_list);
 
@@ -85,7 +85,7 @@ public class TantoMapurlsListActivity extends ListActivity {
         try {
             mapurlsList.clear();
             JSONArray baseArray = new JSONArray(layersJson);
-            for( int i = 0; i < baseArray.length(); i++ ) {
+            for (int i = 0; i < baseArray.length(); i++) {
                 JSONObject layerObj = baseArray.getJSONObject(i);
                 int id = layerObj.getInt("id");
                 String layerTitle = layerObj.getString("title");
@@ -126,7 +126,7 @@ public class TantoMapurlsListActivity extends ListActivity {
         filterText.removeTextChangedListener(filterTextWatcher);
     }
 
-    private void filterList( String filterText ) {
+    private void filterList(String filterText) {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "filter projects list"); //$NON-NLS-1$
 
@@ -134,7 +134,7 @@ public class TantoMapurlsListActivity extends ListActivity {
         if (filterText.length() == 0) {
             mapurlsToLoad.addAll(mapurlsList);
         } else {
-            for( TantoMapurl project : mapurlsList ) {
+            for (TantoMapurl project : mapurlsList) {
                 if (project.matches(filterText)) {
                     mapurlsToLoad.add(project);
                 }
@@ -146,9 +146,9 @@ public class TantoMapurlsListActivity extends ListActivity {
     private void refreshList() {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "refreshing projects list"); //$NON-NLS-1$
-        arrayAdapter = new ArrayAdapter<TantoMapurl>(this, R.layout.tanto_mapurl_row, mapurlsToLoad){
+        arrayAdapter = new ArrayAdapter<TantoMapurl>(this, R.layout.tanto_mapurl_row, mapurlsToLoad) {
             @Override
-            public View getView( int position, View cView, ViewGroup parent ) {
+            public View getView(int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.tanto_mapurl_row, null);
 
@@ -162,16 +162,15 @@ public class TantoMapurlsListActivity extends ListActivity {
                 idText.setText(tantoMapurl.id + "");
 
                 ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
-                imageText.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                imageText.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         if (!NetworkUtilities.isNetworkAvailable(TantoMapurlsListActivity.this)) {
                             Utilities.messageDialog(TantoMapurlsListActivity.this, R.string.available_only_with_network, null);
                             return;
                         }
 
-                        String title = getString(R.string.tanto_mapurl_download_service);
-                        Utilities.inputMessageDialog(TantoMapurlsListActivity.this, title,
-                                getString(R.string.service_name_propmt), "", new TextRunnable(){
+                        Utilities.inputMessageDialog(TantoMapurlsListActivity.this,
+                                getString(R.string.service_name_propmt), "", new TextRunnable() {
                                     public void run() {
                                         downloadProject(tantoMapurl, theTextToRunOn);
                                     }
@@ -187,31 +186,31 @@ public class TantoMapurlsListActivity extends ListActivity {
         setListAdapter(arrayAdapter);
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher(){
+    private TextWatcher filterTextWatcher = new TextWatcher() {
 
-        public void afterTextChanged( Editable s ) {
+        public void afterTextChanged(Editable s) {
             // ignore
         }
 
-        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
 
-        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             // arrayAdapter.getFilter().filter(s);
             filterList(s.toString());
         }
     };
 
-    private void downloadProject( final TantoMapurl tantoMapurl, final String fileName ) {
-        runOnUiThread(new Runnable(){
+    private void downloadProject(final TantoMapurl tantoMapurl, final String fileName) {
+        runOnUiThread(new Runnable() {
             public void run() {
                 downloadProgressDialog = ProgressDialog.show(TantoMapurlsListActivity.this, getString(R.string.downloading),
                         getString(R.string.downloading_mapurl_to_the_device), true, true);
             }
         });
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 try {
                     String url = TantoMapurlsActivity.BASEURL + tantoMapurl.id + "/download";
                     // String mapurlFileNameBkp = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
@@ -240,7 +239,7 @@ public class TantoMapurlsListActivity extends ListActivity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(downloadProgressDialog);
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(TantoMapurlsListActivity.this, response, null);

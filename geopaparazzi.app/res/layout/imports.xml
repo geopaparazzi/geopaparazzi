@@ -1,49 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="15dp"
+            android:text="@string/import_uc"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="3dip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="15dp"
+            android:background="@color/main_decorations"/>
 
 
-    <ImageButton
-        android:id="@+id/tantoMapurlsImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/import_mapurls" />
+        <Button
+            android:id="@+id/tantoMapurlsImportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/mapurls"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
 
-    <ImageButton
-        android:id="@+id/gpxImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_gpx" />
+        <Button
+            android:id="@+id/gpxImportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/gpx"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
 
-    <ImageButton
-        android:id="@+id/cloudImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_cloud" />
+        <Button
+            android:id="@+id/cloudImportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/geopap_browser"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
 
-    <ImageButton
-        android:id="@+id/bookmarksImportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
-        android:src="@drawable/export_bookmarks" />
+        <Button
+            android:id="@+id/bookmarksImportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/bookmarks"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/templatedatabaseImportButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/button_indent"
+            android:background="@drawable/button_background_drawable"
+            android:padding="@dimen/button_indent"
+            android:text="@string/default_database"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+    </LinearLayout>
+</ScrollView>

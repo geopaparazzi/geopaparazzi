@@ -22,7 +22,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
@@ -33,9 +33,10 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -44,18 +45,23 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
@@ -96,25 +102,25 @@ public class ExportActivity extends Activity implements
             GPLog.error(this, e.getLocalizedMessage(), e);
         }
 
-        ImageButton kmzExportButton = (ImageButton) findViewById(R.id.kmzExportButton);
+        Button kmzExportButton = (Button) findViewById(R.id.kmzExportButton);
         kmzExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportKmz();
             }
         });
-        ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxExportButton);
+        Button gpxExportButton = (Button) findViewById(R.id.gpxExportButton);
         gpxExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportGpx();
             }
         });
-        ImageButton bookmarksExportButton = (ImageButton) findViewById(R.id.bookmarksExportButton);
+        Button bookmarksExportButton = (Button) findViewById(R.id.bookmarksExportButton);
         bookmarksExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 exportBookmarks();
             }
         });
-        ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
+        Button cloudExportButton = (Button) findViewById(R.id.cloudExportButton);
         cloudExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 final ExportActivity context = ExportActivity.this;
@@ -134,6 +140,13 @@ public class ExportActivity extends Activity implements
 
                 exportToCloud(context, serverUrl, user, pwd);
 
+            }
+        });
+
+        Button imagesExportButton = (Button) findViewById(R.id.imagesExportButton);
+        imagesExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                exportImages();
             }
         });
     }
@@ -390,6 +403,61 @@ public class ExportActivity extends Activity implements
             Utilities.messageDialog(this, "An error occurred while exporting the bookmarks.", null);
         }
 
+    }
+
+    private void exportImages() {
+        try {
+            File sdcardDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getSdcardDir();
+            final File outFolder = new File(sdcardDir, "geopaparazzi_images_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()));
+            if(!outFolder.mkdir()){
+                Utilities.warningDialog(this, getString(R.string.export_img_unable_to_create_folder) + outFolder, null);
+                return;
+            }
+            final List<Image> imagesList = DaoImages.getImagesList(false, false);
+            final DaoImages imageHelper = new DaoImages();
+
+
+            StringAsyncTask task = new StringAsyncTask(this) {
+                protected String doBackgroundWork() {
+                    try {
+                        for (int i = 0; i < imagesList.size(); i++) {
+                            Image image = imagesList.get(i);
+                            try {
+                                byte[] imageData = imageHelper.getImageData(image.getId());
+                                File imageFile = new File(outFolder, image.getName());
+
+                                FileOutputStream fos = new FileOutputStream(imageFile);
+                                fos.write(imageData);
+                                fos.close();
+                            } catch (IOException e) {
+                                GPLog.error(this, "For file: " + image.getName(), e);
+                            } finally {
+                                publishProgress(i);
+                            }
+                        }
+                    } catch (Exception e) {
+                        return "ERROR: " + e.getLocalizedMessage();
+                    }
+                    return "";
+                }
+
+                protected void doUiPostWork(String response) {
+                    dispose();
+                    if (response.length() != 0) {
+                        Utilities.warningDialog(ExportActivity.this, response, null);
+                    } else {
+                        Utilities.messageDialog(ExportActivity.this, getString(R.string.export_img_ok_exported) + outFolder, null);
+                    }
+                }
+            };
+            task.startProgressDialog(getString(R.string.export_uc), getString(R.string.export_img_processing), false, imagesList.size());
+            task.execute();
+
+
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            Utilities.errorDialog(this, e, null);
+        }
     }
 
     @Override

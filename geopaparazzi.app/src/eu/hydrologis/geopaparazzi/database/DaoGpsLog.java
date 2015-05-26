@@ -48,6 +48,7 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.*;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_GPSLOGS;
 
@@ -1007,7 +1008,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         // tracks
         List<TrackSegment> trackSegments = gpxItem.getTrackSegments();
         if (trackSegments.size() > 0) {
-            float width = 2f;
+            float width = DEFAULT_LOG_WIDTH;
             for (TrackSegment trackSegment : trackSegments) {
                 String tsName = trackSegment.getName();
                 if (tsName == null) {
@@ -1068,7 +1069,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     endDate = System.currentTimeMillis();
                 }
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(startDate, endDate, 0, rName, 2f, "green", true);
+                long logId = helper.addGpsLog(startDate, endDate, 0, rName, DEFAULT_LOG_WIDTH, "green", true);
 
                 sqliteDatabase.beginTransaction();
                 try {

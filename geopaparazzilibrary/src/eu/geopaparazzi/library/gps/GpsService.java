@@ -42,6 +42,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
@@ -322,7 +323,7 @@ public class GpsService extends Service implements LocationListener, Listener {
 
                     if (gpsLogId < 0) {
                         long now = System.currentTimeMillis();
-                        gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
+                        gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, DEFAULT_LOG_WIDTH, "red", true);
                         log("Beginning a new log with log id: " + gpsLogId);
                     }
                     currentRecordedLogId = gpsLogId;

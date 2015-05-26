@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">Aucune carte SD ne semble être disponible (vérifier si elle n\'est pas montée sur un PC).  Souhaitez vous utiliser la mémoire interne de l\'appareil à la place ? Veuillez noter que dans ce cas, il n\'y aura pas d\'affichage de carte pour des raisons d\'espace.</string>
   <string name="add_message">AJOUTER UN MESSAGE</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Insérer un texte optionnel à envoyer avec le GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Entrer un nom pour le nouveau projet</string>
   <string name="chosen_project_exists">Le nom du projet choisi existe déjà, veuillez choisir un autre nom</string>
   <string name="no_external_sdcard_for_db_renderer">Le rendu de cette base de données est suporté seulement à partir d\'un sockage externe. Aucun stockage externe a été trouvé, est ce qu\'il y en a un disponible?</string>
   <string name="no_map_files_found_go_online">Aucun fichier carte trouvé dans le dossier /sdcard/maps. Activation des cartes en ligne.\nLes cartes peuvent être téléchargées à : http://download.mapsforge.org</string>
@@ -190,6 +189,7 @@
   <string name="cross_properties">Centrage la croix</string>
   <string name="color">Couleur</string>
   <string name="prompt_delete_note">Êtes-vous sûr de vouloir supprimer la note ? Cette action ne peut pas être annulée.</string>
+  <string name="prompt_delete_selected_notes">Êtes-vous sûr de que vouloir supprimer toutes les notes sélectionnées ? Cette action ne peut pas être annulée.</string>
   <string name="prompt_delete_bookmark">Êtes-vous sûr de vouloir supprimer le signet ? Cette action ne peut pas être annulée.</string>
   <string name="keep_use_imperial">Utiliser les unités impériales</string>
   <string name="keep_use_imperial_sum">Utilise les unités impériales à la place des métriques lorsque cela est possible.</string>
@@ -228,7 +228,6 @@
   <string name="spatialite_recover_mode_tooltip">Si oui, au prochain démarrage une tentative sera faite pour corriger tableaux défectueux.</string>
   <string name="map">Carte</string>
   <string name="name_lc">nom</string>
-  <string name="name_uc">Nom</string>
   <string name="bounds">limites</string>
   <string name="maps_loading_not_finished_yet">Le chargement de cartes n\'a pas encore fini. S\'il vous plaît patientez quelques instants et essayez à nouveau.</string>
   <string name="save">sauvegarder</string>
@@ -266,4 +265,33 @@
   <string name="enable_mock_locations_for_demo">Pour utiliser le mode de démonstration, vous devez activer les positions fictives dans Android, dans paramètres de développement. Désactivation mode démo.</string>
   <string name="could_not_open_geosms">Impossible d\'ouvrir l\'URI passée. Geopaparazzi est capable d\'ouvrir seulement l\'URI de GeoSMS qui contient une partie comme ceci:</string>
   <string name="continue_last_log">Continue le dernier log.</string>
+  <string name="edit">Editer</string>
+  <string name="delete">Effacer</string>
+  <string name="all_notes_submenu">Toutes les notes</string>
+  <string name="invert_selection">Inverser la sélection</string>
+  <string name="delete_selected">Effacer la sélection</string>
+  <string name="share">Partager</string>
+  <string name="import_uc">IMPORTER</string>
+  <string name="mapurls">Urls de cartes</string>
+  <string name="gpx">GPX</string>
+  <string name="geopap_browser">Exploreur Geopaparazzi</string>
+  <string name="bookmarks">Signets</string>
+  <string name="default_database">Base de données par défault</string>
+  <string name="kmz">KMZ</string>
+  <string name="export_uc">EXPORTER</string>
+  <string name="pois">Point d\'intérêt</string>
+  <string name="extract_pois">Extrait les points d\'intérêt</string>
+  <string name="filter">Filtre</string>
+  <string name="filter_excludes">Exclusions du filtre</string>
+  <string name="ways">Chemins</string>
+  <string name="extract_ways">Extraction de chemins</string>
+  <string name="extract_contours">Extraction de contours</string>
+  <string name="extract_waterways">Extraction de voies d\'eau</string>
+  <string name="name_new_teample_db">Entrer un nom pour la nouvelle base de données</string>
+  <string name="new_template_db_create">Base de données crée avec succès.</string>
+  <string name="extract_mapsforge_data">Extraction de données mapsforge</string>
+  <string name="extract_mapsforge_only_when_loaded">Cet outil ne marche qu\'avec un carte mapsforge chargée</string>
+  <string name="view">Voir</string>
+  <string name="force_locale_title">Forcer language</string>
+  <string name="force_locale_summary">Force language sans tenir compte de ce qui est courant dans Android</string>
 </resources>

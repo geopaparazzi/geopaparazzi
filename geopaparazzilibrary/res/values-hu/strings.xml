@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">indulj</string>
   <string name="geocodeErrorTitle">Geokódolási hiba</string>
   <string name="geocodeErrorMessage">A hely geokódolása sikertelen volt. Próbálja újra!</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Útvonal letöltése...</string>
   <string name="go_to_button">menj oda</string>
   <string name="route_to_button">navigálj oda</string>

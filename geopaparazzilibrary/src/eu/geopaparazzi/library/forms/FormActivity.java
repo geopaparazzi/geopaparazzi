@@ -17,12 +17,11 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ISLABEL;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_IS_RENDER_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
 import java.io.File;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,6 @@ import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -245,7 +243,7 @@ public class FormActivity extends FragmentActivity {
 
         // extract and check constraints
         List<String> availableFormNames = TagsManager.getFormNames4Section(sectionObject);
-        String label = null;
+        String renderingLabel = null;
         for (String formName : availableFormNames) {
             JSONObject formObject = TagsManager.getForm4Name(formName, sectionObject);
 
@@ -263,11 +261,11 @@ public class FormActivity extends FragmentActivity {
                 if (jsonObject.has(TAG_VALUE)) {
                     value = jsonObject.getString(TAG_VALUE).trim();
                 }
-                if (jsonObject.has(TAG_ISLABEL)) {
-                    String isLabelStr = jsonObject.getString(TAG_ISLABEL).trim();
-                    boolean isLabel = Boolean.parseBoolean(isLabelStr);
-                    if (isLabel)
-                        label = value;
+                if (jsonObject.has(TAG_IS_RENDER_LABEL)) {
+                    String isRenderingLabelStr = jsonObject.getString(TAG_IS_RENDER_LABEL).trim();
+                    boolean isRenderingLabel = Boolean.parseBoolean(isRenderingLabelStr);
+                    if (isRenderingLabel)
+                        renderingLabel = value;
                 }
 
                 // inject latitude
@@ -298,8 +296,8 @@ public class FormActivity extends FragmentActivity {
         String sectionObjectString = sectionObject.toString();
         long timestamp = System.currentTimeMillis();
 
-        if (label == null) {
-            label = sectionName;
+        if (renderingLabel == null) {
+            renderingLabel = sectionName;
         }
         String[] formDataArray = {//
                 String.valueOf(noteId), //
@@ -307,7 +305,7 @@ public class FormActivity extends FragmentActivity {
                 String.valueOf(latitude), //
                 String.valueOf(elevation), //
                 String.valueOf(timestamp), //
-                label, //
+                renderingLabel, //
                 "POI", //
                 sectionObjectString};
         Intent intent = getIntent();

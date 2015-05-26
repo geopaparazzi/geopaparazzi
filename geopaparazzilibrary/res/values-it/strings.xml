@@ -45,7 +45,7 @@
   <string name="lookupLocationButton">Vai</string>
   <string name="geocodeErrorTitle">Errore di geocoding</string>
   <string name="geocodeErrorMessage">Geocodifica della posizione impossibile. Provare inviando una nuova posizione.</string>
-  <string name="openrouteservice">OpenRouteService</string>
+  <string name="routing_service">Routing</string>
   <string name="downloading_route">Download itinerario...</string>
   <string name="go_to_button">vai a</string>
   <string name="route_to_button">naviga verso</string>

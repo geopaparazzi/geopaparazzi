@@ -22,15 +22,18 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -39,6 +42,8 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextRunnable;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
@@ -52,18 +57,18 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 
 /**
  * Activity for export tasks.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ImportActivity extends Activity {
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.imports);
 
-        ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxImportButton);
-        gpxExportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        Button gpxExportButton = (Button) findViewById(R.id.gpxImportButton);
+        gpxExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 try {
                     importGpx();
                 } catch (Exception e) {
@@ -71,17 +76,17 @@ public class ImportActivity extends Activity {
                 }
             }
         });
-        ImageButton tantoMapurlsImportButton = (ImageButton) findViewById(R.id.tantoMapurlsImportButton);
-        tantoMapurlsImportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        Button tantoMapurlsImportButton = (Button) findViewById(R.id.tantoMapurlsImportButton);
+        tantoMapurlsImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 Intent browseIntent = new Intent(ImportActivity.this, TantoMapurlsActivity.class);
                 startActivity(browseIntent);
                 finish();
             }
         });
-        ImageButton cloudImportButton = (ImageButton) findViewById(R.id.cloudImportButton);
-        cloudImportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        Button cloudImportButton = (Button) findViewById(R.id.cloudImportButton);
+        cloudImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 final ImportActivity context = ImportActivity.this;
 
                 if (!NetworkUtilities.isNetworkAvailable(context)) {
@@ -107,12 +112,57 @@ public class ImportActivity extends Activity {
             }
         });
 
-        ImageButton bookmarksImportButton = (ImageButton) findViewById(R.id.bookmarksImportButton);
-        bookmarksImportButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
+        Button bookmarksImportButton = (Button) findViewById(R.id.bookmarksImportButton);
+        bookmarksImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 importBookmarks();
             }
         });
+
+        Button defaultDatabaseImportButton = (Button) findViewById(R.id.templatedatabaseImportButton);
+        defaultDatabaseImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                importTemplateDatabase();
+            }
+        });
+    }
+
+    private void importTemplateDatabase() {
+        String ts = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
+        String newName = "geopaparazzi_" + ts + ".sqlite";
+        Utilities.inputMessageDialog(this, getString(R.string.name_new_teample_db), newName, new TextRunnable() {
+            @Override
+            public void run() {
+
+                try {
+                    File mapsDir = ResourcesManager.getInstance(ImportActivity.this).getMapsDir();
+                    File newDbFile = new File(mapsDir, theTextToRunOn);
+
+                    AssetManager assetManager = ImportActivity.this.getAssets();
+                    InputStream inputStream = assetManager.open(LibraryConstants.GEOPAPARAZZI_TEMPLATE_DB_NAME);
+
+                    FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utilities.messageDialog(ImportActivity.this, getString(R.string.new_template_db_create), null);
+                        }
+                    });
+                } catch (final Exception e) {
+                    GPLog.error(ImportActivity.this, null, e);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utilities.errorDialog(ImportActivity.this, e, null);
+                        }
+                    });
+                }
+
+            }
+        });
+
     }
 
     private void importGpx() throws Exception {
@@ -135,8 +185,8 @@ public class ImportActivity extends Activity {
             GPLog.error(this, null, e1);
         }
         final File sdcardDir = resourcesManager.getSdcardDir();
-        File[] bookmarksfileList = sdcardDir.listFiles(new FilenameFilter(){
-            public boolean accept( File dir, String filename ) {
+        File[] bookmarksfileList = sdcardDir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String filename) {
                 return filename.startsWith("bookmarks") && filename.endsWith(".csv");
             }
         });
@@ -146,14 +196,14 @@ public class ImportActivity extends Activity {
         }
 
         final String[] items = new String[bookmarksfileList.length];
-        for( int i = 0; i < items.length; i++ ) {
+        for (int i = 0; i < items.length; i++) {
             items[i] = bookmarksfileList[i].getName();
         }
 
         new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
-                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    public void onClick(DialogInterface dialog, int whichButton) {
                         int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         String selectedItem = items[selectedPosition];
                         dialog.dismiss();
@@ -163,21 +213,21 @@ public class ImportActivity extends Activity {
 
     }
 
-    private void doImport( final ImportActivity context, File sdcardDir, String fileName ) {
+    private void doImport(final ImportActivity context, File sdcardDir, String fileName) {
         File bookmarksfile = new File(sdcardDir, fileName); //$NON-NLS-1$
         if (bookmarksfile.exists()) {
             try {
                 // try to load it
                 List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
                 TreeSet<String> bookmarksNames = new TreeSet<String>();
-                for( Bookmark bookmark : allBookmarks ) {
+                for (Bookmark bookmark : allBookmarks) {
                     String tmpName = bookmark.getName();
                     bookmarksNames.add(tmpName.trim());
                 }
 
                 List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
                 int imported = 0;
-                for( String bookmarkLine : bookmarksList ) {
+                for (String bookmarkLine : bookmarksList) {
                     String[] split = bookmarkLine.split(","); //$NON-NLS-1$
                     // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969, 12
                     if (split.length < 3) {

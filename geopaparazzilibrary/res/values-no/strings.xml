@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">gå</string>
   <string name="geocodeErrorTitle">Geokoding-feil</string>
   <string name="geocodeErrorMessage">Geokoding av sted mislyktes. Prøv å legge inn sted på nytt.</string>
-  <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Laster ned ruten…</string>
   <string name="go_to_button">gå til</string>
   <string name="route_to_button">rute til</string>

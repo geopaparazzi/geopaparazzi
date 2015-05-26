@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.forms;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_READONLY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SIZE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
@@ -152,6 +153,10 @@ public class FragmentDetail extends Fragment {
                     if (jsonObject.has(TAG_KEY))
                         key = jsonObject.getString(TAG_KEY).trim();
 
+                    String label = key;
+                    if (jsonObject.has(TAG_LABEL))
+                        label = jsonObject.getString(TAG_LABEL).trim();
+
                     String value = ""; //$NON-NLS-1$
                     if (jsonObject.has(TAG_VALUE)) {
                         value = jsonObject.getString(TAG_VALUE).trim();
@@ -174,22 +179,22 @@ public class FragmentDetail extends Fragment {
 
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription,
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 0, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_STRINGAREA)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription,
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 7, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_DOUBLE)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription,
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 1, 0, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_INTEGER)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 4, 0, constraintDescription,
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 4, 0, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_DATE)) {
-                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription,
+                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, label, value, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_TIME)) {
-                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription,
+                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, label, value, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_LABEL)) {
                         String size = "20"; //$NON-NLS-1$
@@ -208,24 +213,24 @@ public class FragmentDetail extends Fragment {
                             url = jsonObject.getString(TAG_URL);
                         addedView = FormUtilities.addTextView(activity, mainView, value, size, true, url);
                     } else if (type.equals(TYPE_BOOLEAN)) {
-                        addedView = FormUtilities.addBooleanView(activity, mainView, key, value, constraintDescription, readonly);
+                        addedView = FormUtilities.addBooleanView(activity, mainView, label, value, constraintDescription, readonly);
                     } else if (type.equals(TYPE_STRINGCOMBO)) {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-                        addedView = FormUtilities.addComboView(activity, mainView, key, value, itemsArray, constraintDescription);
+                        addedView = FormUtilities.addComboView(activity, mainView, label, value, itemsArray, constraintDescription);
                     } else if (type.equals(TYPE_CONNECTEDSTRINGCOMBO)) {
                         LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
-                        addedView = FormUtilities.addConnectedComboView(activity, mainView, key, value, valuesMap,
+                        addedView = FormUtilities.addConnectedComboView(activity, mainView, label, value, valuesMap,
                                 constraintDescription);
                     } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-                        addedView = FormUtilities.addMultiSelectionView(activity, mainView, key, value, itemsArray,
+                        addedView = FormUtilities.addMultiSelectionView(activity, mainView, label, value, itemsArray,
                                 constraintDescription);
                     } else if (type.equals(TYPE_PICTURES)) {
-                        addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, label, value, constraintDescription);
                     } else if (type.equals(TYPE_SKETCH)) {
-                        addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, label, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value.length() <= 0) {
                             // need to read image
@@ -241,9 +246,9 @@ public class FragmentDetail extends Fragment {
                                 value = "" + imageId;
                             }
                         }
-                        addedView = FormUtilities.addMapView(activity, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addMapView(activity, mainView, label, value, constraintDescription);
                     } else if (type.equals(TYPE_NFCUID)) {
-                        addedView = new GNfcUidView(this, null, requestCode, mainView, key, value, constraintDescription);
+                        addedView = new GNfcUidView(this, null, requestCode, mainView, label, value, constraintDescription);
                     } else {
                         GPLog.addLogEntry(this, null, null, "Type non implemented yet: " + type);
                     }

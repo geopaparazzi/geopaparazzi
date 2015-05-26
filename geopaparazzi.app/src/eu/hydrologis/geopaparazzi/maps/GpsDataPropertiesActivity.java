@@ -154,7 +154,7 @@ public class GpsDataPropertiesActivity extends Activity {
                             return lengthText + " " + newLen + "m";
                         }
                     };
-                    task.startProgressDialog(getString(R.string.info), getString(R.string.calculate_length), false, null);
+                    task.startProgressDialog(null, getString(R.string.calculate_length), false, null);
                     task.execute();
 
                 }

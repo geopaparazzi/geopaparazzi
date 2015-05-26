@@ -31,6 +31,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -46,7 +48,7 @@ public class NotesPropertiesActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.notes_properties);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
 
         // notes selection
         CheckBox notesVisibilityCheckbox = (CheckBox) findViewById(R.id.checkVisibility);
@@ -59,7 +61,7 @@ public class NotesPropertiesActivity extends Activity {
 
         // use custom
         final CheckBox useCustomCheckbox = (CheckBox) findViewById(R.id.checkUseCustom);
-        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
+        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         useCustomCheckbox.setChecked(doCustom);
         useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
@@ -72,7 +74,7 @@ public class NotesPropertiesActivity extends Activity {
         int arraySizeId = R.array.array_size;
         int sizespinnerId = R.id.sizeSpinner;
         String prefsKey = Constants.PREFS_KEY_NOTES_SIZE;
-        String defaultStr = "15";
+        String defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
         int arrayColorId = R.array.array_colornames;
@@ -89,7 +91,7 @@ public class NotesPropertiesActivity extends Activity {
 
         // show labels
         final CheckBox showLabelsCheckbox = (CheckBox) findViewById(R.id.checkShowLabels);
-        boolean showLabels = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
+        boolean showLabels = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         showLabelsCheckbox.setChecked(showLabels);
         showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
@@ -101,7 +103,7 @@ public class NotesPropertiesActivity extends Activity {
 
         int fontSizeSpinnerId = R.id.fontSizeSpinner;
         prefsKey = Constants.PREFS_KEY_NOTES_TEXT_SIZE;
-        defaultStr = "30";
+        defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
 
         final CheckBox haloCheckbox = (CheckBox) findViewById(R.id.checkHalo);

@@ -140,7 +140,6 @@
   <string name="no_sdcard_use_internal_memory">SD karta nie je dostupná (skontrolujte či nie je pripojená k PC). Chcete namiesto nej použiť vnútornú pamäť zariadenia? Prosím uvedomte si, že v takom prípade mapové zobrazenie kvôli šetreniu priestoru nezobrazí žiadnu mapu.</string>
   <string name="add_message">PRIDAJ SPRÁVU</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Vlož voliteľný text pre poslanie cez GeoSMS</string>
-  <string name="enter_a_name_for_the_new_project">Vlož meno nového projektu</string>
   <string name="chosen_project_exists">Projekt so zvoleným menom už existuje, prosím zvoľ iné meno</string>
   <string name="no_external_sdcard_for_db_renderer">Vykreslenie databázy je podporované iba pre externé úložisko. Nemôžem nájsť externé úložisko, je dostupné?</string>
   <string name="no_map_files_found_go_online">Žiadne mapové súbory neboli nájdené v priečinku /sdcard/maps. Prepínam na online mapy.\nMapy môžu byť stiahnuté z: http://download.mapsforge.org</string>
@@ -227,7 +226,6 @@
   <string name="spatialite_recover_mode_tooltip">Ak je zapnuté, pri nasledujúcom štarte bude vykonaný pokus o opravu chybných tabuliek.</string>
   <string name="map">Mapa</string>
   <string name="name_lc">meno</string>
-  <string name="name_uc">Meno</string>
   <string name="bounds">hranice</string>
   <string name="maps_loading_not_finished_yet">Načítanie mapy nebolo ukončené. Prosím chvíľu počkajte a skúste znova.</string>
   <string name="save">uložiť</string>

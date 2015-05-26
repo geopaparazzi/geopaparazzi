@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
@@ -45,6 +46,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FragmentDetail;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
@@ -92,11 +94,11 @@ public class GSketchView extends View implements GView {
      * @param attrs                 attributes.
      * @param requestCode           the code for starting the activity with result.
      * @param parentView            parent
-     * @param key                   key
+     * @param label                 label
      * @param value                 value
      * @param constraintDescription constraints
      */
-    public GSketchView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
+    public GSketchView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label, String value,
                        String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
         this.noteId = noteId;
@@ -105,7 +107,7 @@ public class GSketchView extends View implements GView {
 
         final FragmentActivity activity = fragmentDetail.getActivity();
         LinearLayout textLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -113,14 +115,14 @@ public class GSketchView extends View implements GView {
         parentView.addView(textLayout);
 
         TextView textView = new TextView(activity);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.draw_sketch);
         textLayout.addView(button);
@@ -148,13 +150,13 @@ public class GSketchView extends View implements GView {
         });
 
         ScrollView scrollView = new ScrollView(activity);
-        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT, 150);
+        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.MATCH_PARENT, 150);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
         imageLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.FILL_PARENT);
+        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
         imageLayout.setLayoutParams(imageLayoutParams);
         // imageLayout.setMinimumHeight(200);
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -176,7 +178,7 @@ public class GSketchView extends View implements GView {
             log("Handling images: " + _value);
 
 
-            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
+            final IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
 
             for (String imageId : imageSplit) {
                 log("img: " + imageId);
@@ -184,7 +186,7 @@ public class GSketchView extends View implements GView {
                 if (imageId.length() == 0) {
                     continue;
                 }
-                long imageIdLong;
+                final long imageIdLong;
                 try {
                     imageIdLong = Long.parseLong(imageId);
                 } catch (Exception e) {
@@ -203,14 +205,31 @@ public class GSketchView extends View implements GView {
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-//                imageView.setOnClickListener(new View.OnClickListener() {
-//                    public void onClick(View v) {
-//                        /*
-//                         * open in markers to edit it
-//                         */
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        /*
+                         * open in markers to edit it
+                         */
 //                        MarkersUtilities.launchOnImage(context, image);
-//                    }
-//                });
+                        try {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            Image image = imagesDbHelper.getImage(imageIdLong);
+                            File tempDir = ResourcesManager.getInstance(context).getTempDir();
+                            String ext = ".jpg";
+                            if (image.getName().endsWith(".png"))
+                                ext = ".png";
+                            File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                            byte[] imageData = imagesDbHelper.getImageData(image.getId());
+                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+                            intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            GPLog.error(this, null, e);
+                        }
+                    }
+                });
                 log("Creating thumb and adding it: " + imageId);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();

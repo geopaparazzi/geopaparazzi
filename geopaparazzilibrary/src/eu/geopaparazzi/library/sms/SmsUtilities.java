@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -42,25 +43,25 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Utilities for sms handling.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class SmsUtilities {
 
     /**
-     * 
+     *
      */
     public static String SMSHOST = "gp.eu";
 
     /**
      * Create a text containing the OSM link to the current position.
-     * 
-     * @param context the {@link Context} to use.
+     *
+     * @param context     the {@link Context} to use.
      * @param messageText the text to add before the url.
      * @return the position url.
      */
-    public static String createPositionText( final Context context, String messageText ) {
+    public static String createPositionText(final Context context, String messageText) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
@@ -69,37 +70,10 @@ public class SmsUtilities {
         }
         StringBuilder sB = new StringBuilder();
         if (gpsLocation != null) {
-            String latString = LibraryConstants.COORDINATE_FORMATTER.format(gpsLocation[1]).replaceAll(",", ".");
-            String lonString = LibraryConstants.COORDINATE_FORMATTER.format(gpsLocation[0]).replaceAll(",", ".");
-            // http://www.osm.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393&GeoSMS
-            // http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
-
-            // google maps has the url that is geosms compliant
-            sB.append("http://maps.google.com/maps?q=");
-            sB.append(latString);
-            sB.append(",");
-            sB.append(lonString);
-            sB.append("&GeoSMS");
-
-            // TODO use OSM again when the coordinates in the url will be geosms compliant
-            // sB.append("http://www.osm.org/?lat=");
-            // sB.append(latString);
-            // sB.append("&lon=");
-            // sB.append(lonString);
-            // sB.append("&zoom=14");
-            // sB.append("&layers=M&mlat=");
-            // sB.append(latString);
-            // sB.append("&mlon=");
-            // sB.append(lonString);
-            // sB.append("&GeoSMS");
+            String osmUrl = Utilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, true);
+            sB.append(osmUrl);
             if (messageText != null)
                 sB.append(" ").append(messageText);
-
-            String msg = sB.toString();
-            if (sB.toString().length() > 160) {
-                // if longer than 160 chars it will not work
-                sB = new StringBuilder(msg);
-            }
         } else {
             sB.append(context.getString(R.string.last_position_unknown));
         }
@@ -109,13 +83,13 @@ public class SmsUtilities {
 
     /**
      * Send an SMS.
-     * 
-     * @param context the {@link Context} to use.
-     * @param number the number to which to send the SMS.
-     * @param msg the SMS body text.
+     *
+     * @param context     the {@link Context} to use.
+     * @param number      the number to which to send the SMS.
+     * @param msg         the SMS body text.
      * @param sendMessage if <code>true</code>, a {@link Toast} tells the user that the message was sent.
      */
-    public static void sendSMS( Context context, String number, String msg, boolean sendMessage ) {
+    public static void sendSMS(Context context, String number, String msg, boolean sendMessage) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
             TelephonyManager telManager = (TelephonyManager) systemService;
@@ -144,14 +118,14 @@ public class SmsUtilities {
     }
 
     /**
-     * Opens the system sms app to send the message.  
-     * 
+     * Opens the system sms app to send the message.
+     *
      * @param context the {@link Context} to use.
-     * @param number the number to which to send to or <code>null</code>, in which
-     *          case the number will be prompted in the sms app.
-     * @param msg the message to send or <code>null</code>.
+     * @param number  the number to which to send to or <code>null</code>, in which
+     *                case the number will be prompted in the sms app.
+     * @param msg     the message to send or <code>null</code>.
      */
-    public static void sendSMSViaApp( Context context, String number, String msg ) {
+    public static void sendSMSViaApp(Context context, String number, String msg) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
 
@@ -173,7 +147,7 @@ public class SmsUtilities {
 
         if (Build.VERSION.SDK_INT >= 19) {
             try {
-                Class< ? > smsClass = Class.forName("android.provider.Telephony$Sms");
+                Class<?> smsClass = Class.forName("android.provider.Telephony$Sms");
                 Method getPackageMethod = smsClass.getMethod("getDefaultSmsPackage", Context.class);
                 Object defaultSmsPackageNameObj = getPackageMethod.invoke(null, context);
                 if (defaultSmsPackageNameObj instanceof String) {
@@ -194,20 +168,21 @@ public class SmsUtilities {
             context.startActivity(intent);
         }
     }
+
     /**
      * Parses a GeoSMS body and tries to extract the coordinates to show them.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param smsBody the body of the sms.
      */
-    public static void openGeoSms( final Context context, String smsBody ) {
+    public static void openGeoSms(final Context context, String smsBody) {
         /*
          * a geosms is supposed to be at least in the form:
          * 
          * http://url?params...?XYZASD=lat,lon?params...?GeoSMS
          */
         String[] split = smsBody.toLowerCase().split("\\?");
-        for( String string : split ) {
+        for (String string : split) {
             if (string.startsWith("http") || string.startsWith("www")) {
                 continue;
             }
@@ -266,20 +241,20 @@ public class SmsUtilities {
 
     /**
      * Converts an sms data content to the data.
-     * 
+     * <p/>
      * <p>
      * The format is of the type <b>gp.eu/n:x,y,desc;n:x,y,z,desc;b:x,y,desc;b:x,y,z,desc;...</b>
      * </p>
      * <p>
-     * Where n = note, in which case z can be added and is the altitude; and 
+     * Where n = note, in which case z can be added and is the altitude; and
      * b = bookmark, in which case z can be added and is the zoom.
      * </p>
-     * 
+     *
      * @param url the sms data url to convert.
      * @return the list of {@link SmsData} containing notes and bookmarks data.
-     * @throws IOException   if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static List<SmsData> sms2Data( String url ) throws IOException {
+    public static List<SmsData> sms2Data(String url) throws IOException {
         List<SmsData> smsDataList = new ArrayList<SmsData>();
 
         url = url.replaceFirst("http://", "");
@@ -287,7 +262,7 @@ public class SmsUtilities {
         url = url.substring(6);
 
         String[] dataSplit = url.split(";");
-        for( String data : dataSplit ) {
+        for (String data : dataSplit) {
             if (data.startsWith("n:") || data.startsWith("b:")) {
                 String dataTmp = data.substring(2);
                 String[] values = dataTmp.split(",");
@@ -326,12 +301,12 @@ public class SmsUtilities {
     }
 
     /**
-     * Checks if the device supports phone. 
-     * 
-     * @param context  the context to use.
-     * @return  if something goes wrong.
+     * Checks if the device supports phone.
+     *
+     * @param context the context to use.
+     * @return if something goes wrong.
      */
-    public static boolean hasPhone( Context context ) {
+    public static boolean hasPhone(Context context) {
         TelephonyManager telephonyManager1 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager1.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
             return false;

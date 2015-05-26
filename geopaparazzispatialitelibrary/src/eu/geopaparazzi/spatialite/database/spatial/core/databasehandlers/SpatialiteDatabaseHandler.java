@@ -44,7 +44,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DatabaseCreationAndProperties;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.GeopaparazziDatabaseProperties;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;

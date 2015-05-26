@@ -46,7 +46,7 @@
     <string name="lookupLocationButton">go</string>
     <string name="geocodeErrorTitle">Geocoding Error</string>
     <string name="geocodeErrorMessage">Geocoding of location failed. Try re-submitting location.</string>
-    <string name="openrouteservice">OpenRouteService</string>
+    <string name="routing_service">Routing</string>
     <string name="downloading_route">Downloading route…</string>
     <string name="go_to_button">go to</string>
     <string name="route_to_button">route to</string>

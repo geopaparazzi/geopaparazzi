@@ -143,7 +143,6 @@
   <string name="no_sdcard_use_internal_memory">利用可能なSDカードがありません(PCにマウントされていないか確認してください) 。デバイスの内部メモリを代わりに使用しますか。この場合、マップ ビューのスペース上の理由から任意のマップ表示されないことに注意してください。</string>
   <string name="add_message">メッセージの追加</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">GeoSMS で送信するオプションのテキストを挿入します。</string>
-  <string name="enter_a_name_for_the_new_project">新しいプロジェクトの名前を入力してください。</string>
   <string name="chosen_project_exists">選択したプロジェクトの名前は既に存在します、別の名前を選んでください。</string>
   <string name="no_external_sdcard_for_db_renderer">データベースのレンダリングは、外部ストレージからのみサポートされています。外部ストレージが見つかりませんでした、外部ストレージは利用可能ですか？</string>
   <string name="no_map_files_found_go_online">/Sdcard/maps フォルダー内にマップ ファイルが見つかりませんでした。オンライン マップへ切り替えます。
@@ -195,6 +194,7 @@
   <string name="cross_properties">センタークロス</string>
   <string name="color">色</string>
   <string name="prompt_delete_note">ノートを削除してもよろしいですか。この操作は取り消しできません。</string>
+  <string name="prompt_delete_selected_notes">選択したすべてのノートを削除してもよろしいですか。この操作は取り消しできません。</string>
   <string name="prompt_delete_bookmark">ブックマークを削除してもよろしいですか？この操作は取り消しできません。</string>
   <string name="keep_use_imperial">インペリアル単位を使用する</string>
   <string name="keep_use_imperial_sum">可能であればメートルの代わりにインペリアルを使用する</string>
@@ -233,7 +233,6 @@
   <string name="spatialite_recover_mode_tooltip">オンにした場合、次の起動の際に不良のあるテーブルの修正が試みられます。</string>
   <string name="map">地図</string>
   <string name="name_lc">名称</string>
-  <string name="name_uc">名称</string>
   <string name="bounds">境界</string>
   <string name="maps_loading_not_finished_yet">マップのロードがまだ終了していません。少し待ってからもう一度試してください。</string>
   <string name="save">保存</string>
@@ -270,4 +269,31 @@
   <string name="custommapfolder_title">マップフォルダの変更</string>
   <string name="enable_mock_locations_for_demo">デモモードを有効にするには開発者向けオプションの疑似ロケーションを許可するを有効にします。デモモードを無効にしています。</string>
   <string name="could_not_open_geosms">指定のURIをオープンできません。GeopaparazziのオープンできるGeoSMS URIは次のようなものです:</string>
+  <string name="continue_last_log">最終ログの継続</string>
+  <string name="edit">編集</string>
+  <string name="delete">削除</string>
+  <string name="all_notes_submenu">すべてのノート</string>
+  <string name="invert_selection">選択の反転</string>
+  <string name="delete_selected">選択を削除</string>
+  <string name="share">共有</string>
+  <string name="import_uc">インポート</string>
+  <string name="mapurls">Mapurls</string>
+  <string name="gpx">GPX</string>
+  <string name="geopap_browser">Geopaparazzi Browser</string>
+  <string name="bookmarks">ブックマーク</string>
+  <string name="default_database">初期データベース</string>
+  <string name="kmz">KMZ</string>
+  <string name="export_uc">エクスポート</string>
+  <string name="pois">POI</string>
+  <string name="extract_pois">POI抽出</string>
+  <string name="filter">フィルター</string>
+  <string name="filter_excludes">除外フィルター</string>
+  <string name="ways">ウェイ</string>
+  <string name="extract_ways">ウェイ抽出</string>
+  <string name="extract_contours">コンター抽出</string>
+  <string name="extract_waterways">水路抽出</string>
+  <string name="name_new_teample_db">新規データベースの名前を入力</string>
+  <string name="new_template_db_create">データベースは正常に作成されました</string>
+  <string name="extract_mapsforge_data">mapsforge データの抽出中...</string>
+  <string name="extract_mapsforge_only_when_loaded">このツールはmapsforge マップがロードされているときのみ使用できます。</string>
 </resources>

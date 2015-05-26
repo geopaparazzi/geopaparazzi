@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orderingFromXml="true" >
+    android:orderingFromXml="true">
 
     <PreferenceScreen
         android:order="1"
-        android:title="@string/gps_preferences" >
+        android:title="@string/gps_preferences">
         <EditTextPreference
             android:defaultValue="1"
             android:inputType="number"
             android:key="PREFS_KEY_GPS_LOGGING_DISTANCE"
             android:order="3"
-            android:title="@string/gps_logging_distance" >
-        </EditTextPreference>
+            android:title="@string/gps_logging_distance"></EditTextPreference>
 
         <ListPreference
             android:defaultValue="3"
@@ -19,43 +18,38 @@
             android:entryValues="@array/gps_time_value"
             android:key="PREFS_KEY_GPS_LOGGING_INTERVAL"
             android:order="4"
-            android:title="@string/gps_logging_interval" >
-        </ListPreference>
+            android:title="@string/gps_logging_interval"></ListPreference>
 
         <CheckBoxPreference
             android:key="enable_automatic_center_on_gps"
             android:order="5"
-            android:title="@string/enable_automatic_center_on_gps" >
-        </CheckBoxPreference>
+            android:title="@string/enable_automatic_center_on_gps"></CheckBoxPreference>
         <CheckBoxPreference
             android:key="PREFS_KEY_GPS_USE_NETWORK_POSITION"
             android:order="6"
-            android:title="@string/gps_use_coarse" >
-        </CheckBoxPreference>
+            android:title="@string/gps_use_coarse"></CheckBoxPreference>
     </PreferenceScreen>
     <PreferenceScreen
         android:order="7"
-        android:title="@string/sms_preferences" >
+        android:title="@string/sms_preferences">
         <CheckBoxPreference
             android:key="PREFS_KEY_SMSCATCHER"
             android:order="8"
-            android:title="@string/sms_catcher" >
-        </CheckBoxPreference>
+            android:title="@string/sms_catcher"></CheckBoxPreference>
 
         <EditTextPreference
             android:defaultValue=""
             android:key="panic_number"
             android:order="10"
-            android:title="@string/panic_number" >
-        </EditTextPreference>
+            android:title="@string/panic_number"></EditTextPreference>
     </PreferenceScreen>
     <PreferenceScreen
         android:order="30"
-        android:title="@string/screen_preferences" >
+        android:title="@string/screen_preferences">
         <PreferenceScreen
             android:order="60"
             android:summary="@string/cross_properties_summary"
-            android:title="@string/cross_properties" >
+            android:title="@string/cross_properties">
             <ListPreference
                 android:entries="@array/array_colornames"
                 android:entryValues="@array/array_colornames"
@@ -77,7 +71,7 @@
         </PreferenceScreen>
 
         <EditTextPreference
-            android:defaultValue="1.0"
+            android:defaultValue="2.5"
             android:inputType="numberDecimal"
             android:key="mapsview_textsize_factor"
             android:order="80"
@@ -87,30 +81,26 @@
             android:key="PREFS_KEY_SCREEN_ON"
             android:order="90"
             android:summary="@string/keep_screen_on_summary"
-            android:title="@string/keep_screen_on" >
-        </CheckBoxPreference>
+            android:title="@string/keep_screen_on"></CheckBoxPreference>
         <CheckBoxPreference
             android:key="PREFS_KEY_IMPERIAL"
             android:order="91"
             android:summary="@string/keep_use_imperial_sum"
-            android:title="@string/keep_use_imperial" >
-        </CheckBoxPreference>
+            android:title="@string/keep_use_imperial"></CheckBoxPreference>
         <CheckBoxPreference
             android:key="PREFS_KEY_RETINA"
             android:order="92"
             android:summary="@string/high_density_display_sum"
-            android:title="@string/high_density_display" >
-        </CheckBoxPreference>
+            android:title="@string/high_density_display"></CheckBoxPreference>
     </PreferenceScreen>
     <PreferenceScreen
         android:order="40"
-        android:title="@string/spatialite_preferences" >
+        android:title="@string/spatialite_preferences">
         <CheckBoxPreference
             android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"
             android:order="41"
-            android:title="@string/spatialite_recovery_mode"
-            android:summary="@string/spatialite_recover_mode_tooltip" >
-        </CheckBoxPreference>
+            android:summary="@string/spatialite_recover_mode_tooltip"
+            android:title="@string/spatialite_recovery_mode"></CheckBoxPreference>
     </PreferenceScreen>
 
     <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference
@@ -127,53 +117,61 @@
         android:summary="@string/custommapfolder_summary"
         android:title="@string/custommapfolder_title" />
 
+    <eu.hydrologis.geopaparazzi.preferences.ForceLocalePreference
+        android:defaultValue="en"
+        android:key="PREFS_KEY_FORCELOCALE"
+        android:order="102"
+        android:summary="@string/force_locale_summary"
+        android:title="@string/force_locale_title" />
+
     <PreferenceScreen
         android:order="200"
-        android:title="@string/osm_preferences" >
+        android:title="@string/osm_preferences">
         <CheckBoxPreference
             android:key="PREFS_KEY_DOOSM"
             android:order="201"
-            android:title="@string/osm_do_it" >
-        </CheckBoxPreference>
+            android:title="@string/osm_do_it"></CheckBoxPreference>
 
         <EditTextPreference
             android:key="osm_user_key"
             android:order="202"
-            android:title="@string/osm_user_label" >
-        </EditTextPreference>
+            android:title="@string/osm_user_label"></EditTextPreference>
         <EditTextPreference
             android:inputType="textPassword"
             android:key="osm_pwd_key"
             android:order="203"
-            android:title="@string/osm_password_label" >
-        </EditTextPreference>
+            android:title="@string/osm_password_label"></EditTextPreference>
         <EditTextPreference
             android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
             android:key="osm_server_key"
             android:order="204"
-            android:title="@string/osm_server_label" >
-        </EditTextPreference>
+            android:title="@string/osm_server_label"></EditTextPreference>
     </PreferenceScreen>
     <PreferenceScreen
         android:order="210"
-        android:title="@string/geopapcloud_preferences" >
+        android:title="@string/geopapcloud_preferences">
         <EditTextPreference
             android:key="geopapcloud_user_key"
             android:order="212"
-            android:title="@string/geopapcloud_user_label" >
-        </EditTextPreference>
+            android:title="@string/geopapcloud_user_label"></EditTextPreference>
         <EditTextPreference
             android:inputType="textPassword"
             android:key="geopapcloud_pwd_key"
             android:order="213"
-            android:title="@string/geopapcloud_password_label" >
-        </EditTextPreference>
+            android:title="@string/geopapcloud_password_label"></EditTextPreference>
         <EditTextPreference
             android:defaultValue=""
             android:key="geopapcloud_server_key"
             android:order="214"
-            android:title="@string/geopapcloud_server_label" >
-        </EditTextPreference>
+            android:title="@string/geopapcloud_server_label"></EditTextPreference>
     </PreferenceScreen>
+
+    <EditTextPreference
+        android:key="ROUTING_API_KEY"
+        android:order="220"
+        android:title="@string/routing_pref_title"
+        android:summary="@string/routing_pref_summary"
+        android:defaultValue=""
+        ></EditTextPreference>
 
 </PreferenceScreen>

@@ -45,7 +45,6 @@
   <string name="lookupLocationButton">Idi</string>
   <string name="geocodeErrorTitle">Greška u geokodiranju</string>
   <string name="geocodeErrorMessage">Neuspešno geokodiranje lokacije. Pokušajte da ponovo unesete lokaciju</string>
-  <string name="openrouteservice">OpenRoute usluga</string>
   <string name="downloading_route">Preuzimanje rute...</string>
   <string name="go_to_button">idi do</string>
   <string name="route_to_button">odredi put do:</string>

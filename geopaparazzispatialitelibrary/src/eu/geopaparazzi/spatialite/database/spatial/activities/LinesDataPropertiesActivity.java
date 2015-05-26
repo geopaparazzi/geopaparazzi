@@ -20,6 +20,7 @@ package eu.geopaparazzi.spatialite.database.spatial.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -52,6 +53,7 @@ public class LinesDataPropertiesActivity extends Activity {
         super.onCreate(icicle);
 
         setContentView(R.layout.data_line_properties);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);

@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.forms.views;
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
@@ -43,10 +45,12 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
+import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FragmentDetail;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * A custom pictures view.
@@ -88,11 +92,11 @@ public class GPictureView extends View implements GView {
      * @param attrs                 attributes.
      * @param requestCode           the code for starting the activity with result.
      * @param parentView            parent
-     * @param key                   key
+     * @param label                 label
      * @param value                 in case of pictures, the value are the ids of the image, semicolonseparated.
      * @param constraintDescription constraints
      */
-    public GPictureView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key, String value,
+    public GPictureView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label, String value,
                         String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
 
@@ -100,7 +104,7 @@ public class GPictureView extends View implements GView {
 
         final FragmentActivity activity = fragmentDetail.getActivity();
         LinearLayout textLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -108,14 +112,14 @@ public class GPictureView extends View implements GView {
         parentView.addView(textLayout);
 
         TextView textView = new TextView(activity);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText(R.string.take_picture);
         textLayout.addView(button);
@@ -139,14 +143,15 @@ public class GPictureView extends View implements GView {
         });
 
         ScrollView scrollView = new ScrollView(activity);
-        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT,
+        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
         imageLayout = new LinearLayout(activity);
-        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
+        imageLayoutParams.setMargins(10, 10, 10, 10);
         imageLayout.setLayoutParams(imageLayoutParams);
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
         scrollView.addView(imageLayout);
@@ -165,7 +170,7 @@ public class GPictureView extends View implements GView {
             String[] imageSplit = _value.split(IMAGE_ID_SEPARATOR);
             log("Handling images: " + _value);
 
-            IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
+            final IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
 
             for (String imageId : imageSplit) {
                 log("img: " + imageId);
@@ -173,9 +178,8 @@ public class GPictureView extends View implements GView {
                 if (imageId.length() == 0) {
                     continue;
                 }
-                long imageIdLong;
                 try {
-                    imageIdLong = Long.parseLong(imageId);
+                    Long.parseLong(imageId);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                     continue;
@@ -183,6 +187,7 @@ public class GPictureView extends View implements GView {
                 if (addedImages.contains(imageId.trim())) {
                     continue;
                 }
+                final long imageIdLong = Long.parseLong(imageId);
 
                 byte[] imageThumbnail = imagesDbHelper.getImageThumbnail(imageIdLong);
                 Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
@@ -192,19 +197,31 @@ public class GPictureView extends View implements GView {
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
-//                imageView.setOnClickListener(new View.OnClickListener() {
-//                    public void onClick(View v) {
-//                        /*
-//                         * open in markers to edit it
-//                         */
-//                        // FIXME
-//                        MarkersUtilities.launchOnImage(context, image);
-//                        // Intent intent = new Intent();
-//                        // intent.setAction(android.content.Intent.ACTION_VIEW);
-//                        //                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-//                        // context.startActivity(intent);
-//                    }
-//                });
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        /*
+                         * open in markers to edit it
+                         */
+                        // MarkersUtilities.launchOnImage(context, image);
+                        try {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_VIEW);
+                            Image image = imagesDbHelper.getImage(imageIdLong);
+                            File tempDir = ResourcesManager.getInstance(context).getTempDir();
+                            String ext = ".jpg";
+                            if (image.getName().endsWith(".png"))
+                                ext = ".png";
+                            File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                            byte[] imageData = imagesDbHelper.getImageData(image.getId());
+                            ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+                            intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            GPLog.error(this, null, e);
+                        }
+                    }
+                });
                 log("Creating thumb and adding it: " + imageId);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
