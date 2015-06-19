@@ -27,27 +27,27 @@ public enum SpatialDataType {
     /**
      * Mbtiles based database.
      */
-    MBTILES("mbtiles", ".mbtiles", 0, true),
+    MBTILES("MBTiles", ".mbtiles", 0, true),
     /**
      * A spatialite/sqlite database.
      */
-    DB("db", ".db", 1, true),
+    DB("Db", ".db", 1, true),
     /**
      * A spatialite/sqlite database.
      */
-    SQLITE("sqlite", ".sqlite", 2, true),
+    SQLITE("SQLite", ".sqlite", 2, true),
     /**
      * A geopackage database. 
      */
-    GPKG("gpkg", ".gpkg", 3, true),
+    GPKG("Gpkg", ".gpkg", 3, true),
     /**
      * A mapsforge map file.
      */
-    MAP("map", ".map", 4, false),
+    MAP("Map", ".map", 4, false),
     /**
      * A mapsurl definition file.
      */
-    MAPURL("mapurl", ".mapurl", 5, false),
+    MAPURL("Mapurl", ".mapurl", 5, false),
     /**
      * A Rasterlite2 Image in a spatialite 4.2.0 database. 
      * - avoids .db being read 2x

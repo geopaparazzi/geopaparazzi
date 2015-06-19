@@ -355,8 +355,19 @@ public class MapsDirManager {
         folderPath2TablesDataMap = new LinkedHashMap<String, List<String[]>>();
         List<String> parentPaths = new ArrayList<String>();
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
-            File file = spatialTable.getDatabaseFile();
-            File parentFolder = file.getParentFile();
+            File parentFolder;
+            if (spatialTable instanceof SpatialRasterTable) {
+                /*
+                 * spatial raster dbs can have many raster tables
+                 * for now do this with an if. This should later be taken to interface.
+                 */
+                SpatialRasterTable table = (SpatialRasterTable) spatialTable;
+                File file = table.getDatabaseFile();
+                parentFolder = file;
+            }else{
+                File file = spatialTable.getDatabaseFile();
+                parentFolder = file.getParentFile();
+            }
             String absolutePath = parentFolder.getAbsolutePath();
             if (!parentPaths.contains(absolutePath))
                 parentPaths.add(absolutePath);
@@ -379,8 +390,19 @@ public class MapsDirManager {
             folderPath2TablesDataMap.put(parentPath, new ArrayList<String[]>());
         }
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
-            File file = spatialTable.getDatabaseFile();
-            File parentFolder = file.getParentFile();
+            File parentFolder;
+            if (spatialTable instanceof SpatialRasterTable) {
+                /*
+                 * spatial raster dbs can have many raster tables
+                 * for now do this with an if. This should later be taken to interface.
+                 */
+                SpatialRasterTable table = (SpatialRasterTable) spatialTable;
+                File file = table.getDatabaseFile();
+                parentFolder = file;
+            }else{
+                File file = spatialTable.getDatabaseFile();
+                parentFolder = file.getParentFile();
+            }
             String absolutePath = parentFolder.getAbsolutePath();
             List<String[]> list = folderPath2TablesDataMap.get(absolutePath);
             String[] data = new String[]{//
