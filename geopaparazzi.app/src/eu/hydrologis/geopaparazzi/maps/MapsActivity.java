@@ -1330,6 +1330,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private void onGpsServiceUpdate(Intent intent) {
         lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
+        lastGpsPosition = GpsServiceUtilities.getPosition(intent);
 
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
