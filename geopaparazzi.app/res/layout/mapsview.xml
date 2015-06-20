@@ -14,6 +14,52 @@
         <!-- space for map view -->
     </RelativeLayout>
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <FrameLayout
+            android:id="@+id/centerCrossVertical"
+            android:layout_width="3dp"
+            android:layout_height="50dp"
+            android:background="#FF0000"
+            android:layout_gravity="center_horizontal" />
+        <FrameLayout
+            android:id="@+id/centerCrossHorizontal"
+            android:layout_width="50dp"
+            android:layout_height="3dp"
+            android:background="#FF0000"
+            android:layout_gravity="center_vertical" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/coordtextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dummyCoordsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/main_text_color"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/coordsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/main_text_color_neutral"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <!-- the tools slider -->
 
     <FrameLayout

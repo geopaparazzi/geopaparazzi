@@ -46,6 +46,7 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,6 +60,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -191,6 +193,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private ImageButton centerOnGps;
     private Button batteryButton;
     private BroadcastReceiver mapsSupportBroadcastReceiver;
+    private TextView coordView;
+    private String latString;
+    private String lonString;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -227,6 +232,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // COORDINATE TEXT VIEW
+        coordView = (TextView) findViewById(R.id.coordsText);
+        latString = getString(R.string.lat);
+        lonString = getString(R.string.lon);
+
+        // CENTER CROSS
+        setCenterCross();
+
         Button menuButton = (Button) findViewById(R.id.menu_map_btn);
         menuButton.setOnClickListener(this);
         menuButton.setOnLongClickListener(this);
@@ -234,8 +249,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
         // - 'checkCenterLocation' will change this value if out of range
@@ -342,6 +355,35 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             activeToolGroup.initUI();
             setLeftButtoonsEnablement(true);
         }
+    }
+
+    private void setCenterCross() {
+        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
+        int crossColor = ColorUtilities.toColor(crossColorStr);
+        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
+        int crossThickness = 3;
+        try {
+            crossThickness = (int) Double.parseDouble(crossWidthStr);
+        } catch (NumberFormatException e) {
+            // ignore and use default
+        }
+        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "50"); //$NON-NLS-1$
+        int crossLength = 20;
+        try {
+            crossLength = (int) Double.parseDouble(crossSizeStr);
+        } catch (NumberFormatException e) {
+            // ignore and use default
+        }
+        FrameLayout crossHor = (FrameLayout) findViewById(R.id.centerCrossHorizontal);
+        FrameLayout crossVer = (FrameLayout) findViewById(R.id.centerCrossVertical);
+        crossHor.setBackgroundColor(crossColor);
+        ViewGroup.LayoutParams layHor = crossHor.getLayoutParams();
+        layHor.width = crossLength;
+        layHor.height = crossThickness;
+        crossVer.setBackgroundColor(crossColor);
+        ViewGroup.LayoutParams layVer = crossVer.getLayoutParams();
+        layVer.width = crossThickness;
+        layVer.height = crossLength;
     }
 
     @Override
@@ -473,7 +515,19 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
 
+        if (action == MotionEvent.ACTION_MOVE) {
+            MapViewPosition mapPosition = mapView.getMapPosition();
+            GeoPoint mapCenter = mapPosition.getMapCenter();
+            double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
+            double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+            if (coordView != null) {
+                coordView.setText(lonString + " " + LibraryConstants.COORDINATE_FORMATTER.format(lon) //
+                        + "\n" + latString + " " + LibraryConstants.COORDINATE_FORMATTER.format(lat));
+            }
+        }
         if (action == MotionEvent.ACTION_UP) {
+            if (coordView != null)
+                coordView.setText("");
             saveCenterPref();
 
             // update zoom ui a bit later. This is ugly but
@@ -1526,4 +1580,5 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

@@ -87,7 +87,6 @@ import jsqlite.Exception;
  */
 public abstract class GeopaparazziOverlay extends Overlay {
 
-    private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
 
     /**
@@ -102,17 +101,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         return balloon;
     }
 
-    //    /**
-    //     * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
-    //     *
-    //     * @param balloon the drawable whose bounds should be set.
-    //     * @return the given drawable with set bounds.
-    //     */
-    //    public static Drawable boundCenterBottom(Drawable balloon) {
-    //        balloon.setBounds(balloon.getIntrinsicWidth() / -2, -balloon.getIntrinsicHeight(), balloon.getIntrinsicWidth() / 2, 0);
-    //        return balloon;
-    //    }
-
     /*
      * way stuff
      */
@@ -125,12 +113,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Point itemPosition;
     private final List<Integer> visibleItems = new ArrayList<Integer>();
     private final List<Integer> visibleItemsRedraw = new ArrayList<Integer>();
-
-    /*
-     * cross stuff
-     */
-    private Path crossPath;
-    private Paint crossPaint = new Paint();
 
     /*
      * gps stuff
@@ -177,28 +159,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
-        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
-        int crossColor = ColorUtilities.toColor(crossColorStr);
-        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
-        float crossWidth = 3f;
-        try {
-            crossWidth = (float) Double.parseDouble(crossWidthStr);
-        } catch (NumberFormatException e) {
-            // ignore and use default
-        }
-        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20"); //$NON-NLS-1$
-        try {
-            crossSize = (int) Double.parseDouble(crossSizeStr);
-        } catch (NumberFormatException e) {
-            // ignore and use default
-        }
         boolean isHighDensity = preferences.getBoolean(Constants.PREFS_KEY_RETINA, false);
-
-        crossPath = new Path();
-        crossPaint.setAntiAlias(true);
-        crossPaint.setColor(crossColor);
-        crossPaint.setStrokeWidth(crossWidth);
-        crossPaint.setStyle(Paint.Style.STROKE);
 
         // gps
         overlayGps = new GpsData();
@@ -683,17 +644,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsStatusPath.lineTo(canvasWidth, canvasHeight);
         gpsStatusPath.close();
         canvas.drawPath(gpsStatusPath, gpsStatusFill);
-
-        /*
-         * draw cross on top
-         */
-        Point center = new Point(canvasWidth / 2, canvasHeight / 2);
-        crossPath.reset();
-        crossPath.moveTo(center.x, center.y - crossSize);
-        crossPath.lineTo(center.x, center.y + crossSize);
-        crossPath.moveTo(center.x - crossSize, center.y);
-        crossPath.lineTo(center.x + crossSize, center.y);
-        canvas.drawPath(crossPath, crossPaint);
 
     }
 

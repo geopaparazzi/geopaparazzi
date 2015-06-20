@@ -54,11 +54,12 @@ public interface LibraryConstants {
     public final int DEFAULT_NOTES_SIZE = 50;
 
     /**
-     *
+     * Formatter for lat/long coordinates. 6 digits will suffice.
      */
-    public final DecimalFormat COORDINATE_FORMATTER = new DecimalFormat("#.00000000"); //$NON-NLS-1$
+    public final DecimalFormat COORDINATE_FORMATTER = new DecimalFormat("#.000000"); //$NON-NLS-1$
+
     /**
-     * 
+     * Decimal formatter with 2 digits.
      */
     public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00"); //$NON-NLS-1$
 
