@@ -17,19 +17,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
+
         <FrameLayout
             android:id="@+id/centerCrossVertical"
             android:layout_width="3dp"
             android:layout_height="50dp"
-            android:background="#FF0000"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:background="#FF0000" />
+
         <FrameLayout
             android:id="@+id/centerCrossHorizontal"
             android:layout_width="50dp"
             android:layout_height="3dp"
-            android:background="#FF0000"
-            android:layout_gravity="center_vertical" />
-        </FrameLayout>
+            android:layout_gravity="center_vertical"
+            android:background="#FF0000" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/coordtextLayout"
@@ -54,8 +56,8 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:text=""
-            android:textColor="@color/main_text_color_neutral"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color_neutral"
             android:textStyle="bold" />
     </LinearLayout>
 
