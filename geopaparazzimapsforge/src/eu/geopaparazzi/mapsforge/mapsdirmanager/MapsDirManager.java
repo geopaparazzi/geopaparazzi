@@ -418,13 +418,9 @@ public class MapsDirManager {
             List<String[]> value = entry.getValue();
             Comparator<String[]> sourceNameComparator = new Comparator<String[]>(){
                 public int compare( String[] p1, String[] p2 ) {
-                    String path1 = p1[0];
-                    String path2 = p2[0];
-                    File file1 = new File(path1);
-                    File file2 = new File(path2);
-                    String name1 = file1.getName();
-                    String name2 = file2.getName();
-                    return name1.compareTo(name2);
+                    String title1 = p1[2];
+                    String title2 = p2[2];
+                    return title1.compareTo(title2);
                 }
             };
             Collections.sort(value, sourceNameComparator);
