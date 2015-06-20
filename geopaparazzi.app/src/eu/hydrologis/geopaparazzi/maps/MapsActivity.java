@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -190,7 +191,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
-    private ImageButton centerOnGps;
+    private Button centerOnGps;
     private Button batteryButton;
     private BroadcastReceiver mapsSupportBroadcastReceiver;
     private TextView coordView;
@@ -229,8 +230,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 onGpsServiceUpdate(intent);
             }
         };
-        GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
-        GpsServiceUtilities.triggerBroadcast(this);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -314,7 +313,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         batteryButton = (Button) findViewById(R.id.battery);
 
-        centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        centerOnGps = (Button) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
 
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
@@ -355,6 +354,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             activeToolGroup.initUI();
             setLeftButtoonsEnablement(true);
         }
+
+        GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
+        GpsServiceUtilities.triggerBroadcast(this);
     }
 
     private void setCenterCross() {
@@ -1326,12 +1328,26 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     }
 
     private void onGpsServiceUpdate(Intent intent) {
-        lastGpsPosition = GpsServiceUtilities.getPosition(intent);
+        lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
+
+        Resources resources = getResources();
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+            centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_red));
+        } else {
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_blue));
+            } else {
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                    centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_green));
+                } else {
+                    centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_orange));
+                }
+            }
+        }
         if (lastGpsPosition == null) {
             return;
         }
-        lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
-        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
 
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         float accuracy = 0;

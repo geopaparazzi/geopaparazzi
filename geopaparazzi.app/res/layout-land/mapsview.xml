@@ -194,13 +194,13 @@
                 android:textColor="@color/main_text_color_neutral"
                 android:textStyle="bold" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/center_on_gps_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/action_bar_button_drawable"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:padding="@dimen/mapview_sides_space"
-                android:src="@android:drawable/ic_menu_mylocation" />
+                android:background="@drawable/ic_center_gps_red" />
 
             <Button
                 android:id="@+id/toggleEditingButton"

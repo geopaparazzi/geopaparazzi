@@ -130,12 +130,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsOutline;
     private Paint gpsFill;
 
-    private Path gpsStatusPath;
-    private Paint gpsRedFill;
-    private Paint gpsOrangeFill;
-    private Paint gpsGreenFill;
-    private Paint gpsBlueFill;
-
     private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
     private static final int inset = 5;
     private Paint textPaint;
@@ -206,20 +200,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
 
         Resources resources = context.getResources();
-
-        gpsStatusPath = new Path();
-        gpsRedFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsRedFill.setStyle(Paint.Style.FILL);
-        gpsRedFill.setColor(resources.getColor(R.color.gpsred_fill));
-        gpsOrangeFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsOrangeFill.setStyle(Paint.Style.FILL);
-        gpsOrangeFill.setColor(resources.getColor(R.color.gpsorange_fill));
-        gpsGreenFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsGreenFill.setStyle(Paint.Style.FILL);
-        gpsGreenFill.setColor(resources.getColor(R.color.gpsgreen_fill));
-        gpsBlueFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsBlueFill.setStyle(Paint.Style.FILL);
-        gpsBlueFill.setColor(resources.getColor(R.color.gpsblue_fill));
 
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         if (isNotesTextVisible) {
@@ -619,31 +599,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
         }
-
-        /*
-         * show gps status
-         */
-        Paint gpsStatusFill;
-        if (gpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            gpsStatusFill = gpsRedFill;
-        } else {
-            if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                gpsStatusFill = gpsBlueFill;
-            } else {
-                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    gpsStatusFill = gpsGreenFill;
-                } else {
-                    gpsStatusFill = gpsOrangeFill;
-                }
-            }
-        }
-        gpsStatusPath.reset();
-        gpsStatusPath.moveTo(0, canvasHeight);
-        gpsStatusPath.lineTo(0, canvasHeight - inset);
-        gpsStatusPath.lineTo(canvasWidth, canvasHeight - inset);
-        gpsStatusPath.lineTo(canvasWidth, canvasHeight);
-        gpsStatusPath.close();
-        canvas.drawPath(gpsStatusPath, gpsStatusFill);
 
     }
 

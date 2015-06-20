@@ -667,6 +667,7 @@ public class GeoPaparazziActivity extends Activity {
                                                         DefaultHelperClasses.GPSLOG_HELPER_CLASS);
                                                 actionBar.checkLogging();
                                                 DataManager.getInstance().setLogsVisible(true);
+                                                GpsServiceUtilities.triggerBroadcast(GeoPaparazziActivity.this);
                                             }
                                         });
                                     }
