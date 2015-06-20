@@ -119,11 +119,13 @@ public class GeopackageTileDownloader extends TileDownloader {
                 rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
             }
             Bitmap decodedBitmap = null;
-            try {
-                decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
-            } catch (Exception e) {
-                // ignore and set the image as empty
-                GPLog.error(this, "Could not find image: " + tileQuery, e); //$NON-NLS-1$
+            if(rasterBytes!=null) {
+                try {
+                    decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
+                } catch (Exception e) {
+                    // ignore and set the image as empty
+                    GPLog.error(this, "Could not find image: " + tileQuery, e); //$NON-NLS-1$
+                }
             }
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {
