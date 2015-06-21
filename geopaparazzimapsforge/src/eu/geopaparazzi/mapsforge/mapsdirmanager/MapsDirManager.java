@@ -356,16 +356,14 @@ public class MapsDirManager {
         List<String> parentPaths = new ArrayList<String>();
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
             File parentFolder;
-            if (spatialTable instanceof SpatialRasterTable) {
+            File file = spatialTable.getDatabaseFile();
+            if (spatialTable.getMapType().equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                 /*
                  * spatial raster dbs can have many raster tables
                  * for now do this with an if. This should later be taken to interface.
                  */
-                SpatialRasterTable table = (SpatialRasterTable) spatialTable;
-                File file = table.getDatabaseFile();
                 parentFolder = file;
             }else{
-                File file = spatialTable.getDatabaseFile();
                 parentFolder = file.getParentFile();
             }
             String absolutePath = parentFolder.getAbsolutePath();
@@ -391,16 +389,14 @@ public class MapsDirManager {
         }
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
             File parentFolder;
-            if (spatialTable instanceof SpatialRasterTable) {
+            File file = spatialTable.getDatabaseFile();
+            if (spatialTable.getMapType().equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                 /*
                  * spatial raster dbs can have many raster tables
                  * for now do this with an if. This should later be taken to interface.
                  */
-                SpatialRasterTable table = (SpatialRasterTable) spatialTable;
-                File file = table.getDatabaseFile();
                 parentFolder = file;
             }else{
-                File file = spatialTable.getDatabaseFile();
                 parentFolder = file.getParentFile();
             }
             String absolutePath = parentFolder.getAbsolutePath();
