@@ -24,4 +24,5 @@
  <string name="mapsdir_treeview_delete_menu">Delete</string>
  <string name="mapsdir_treeview_delete_menu_condensed">Delete</string>
  <string name="mapsdir_treeview_item_fields_options_button">Options</string>
+    <string name="select_map_types">Select types</string>
 </resources>

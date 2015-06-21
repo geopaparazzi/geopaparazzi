@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -49,9 +50,7 @@ public class MultipleChoiceDialog {
         if (!buttonString.equals("...")) { //$NON-NLS-1$
             // we have values already
             String[] split = buttonString.split(";"); //$NON-NLS-1$
-            for( String string : split ) {
-                allSelected.add(string);
-            }
+            Collections.addAll(allSelected, split);
         }
 
         boolean[] checkedValues = new boolean[items.length];

@@ -199,8 +199,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
             gpsTrackPaintBlack.setStrokeWidth(12);
         }
 
-        Resources resources = context.getResources();
-
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         if (isNotesTextVisible) {
             String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$

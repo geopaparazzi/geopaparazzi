@@ -38,6 +38,13 @@ public class SPL_Rasterlite {
      */
     public static String Rasterlite2Version_CPU = "";
 
+    /*
+     * @return true, if there is rasterlite support.
+     */
+    public static boolean hasRasterLiteSupport(){
+        return !SPL_Rasterlite.Rasterlite2Version_CPU.equals("");
+    }
+
     /**
      * Retrieve rasterlite2 image of a given bound and size.
      * <p/>
