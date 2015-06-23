@@ -45,15 +45,11 @@ public class DefaultMapurls {
         /** */
         opencycle(eu.geopaparazzi.mapsforge.R.raw.opencycle),
         /** */
-        mapquest(eu.geopaparazzi.mapsforge.R.raw.mapquest),
-        /** */
-        mapquest_arial(eu.geopaparazzi.mapsforge.R.raw.mapquest_arial),
-        /** */
-        realvista_arial(eu.geopaparazzi.mapsforge.R.raw.realvista_ortofoto_italy);
+        mapquest(eu.geopaparazzi.mapsforge.R.raw.mapquest);
 
         private int resourceId;
 
-        private Mapurls( int resourceId ) {
+        Mapurls( int resourceId ) {
             this.resourceId = resourceId;
         }
 

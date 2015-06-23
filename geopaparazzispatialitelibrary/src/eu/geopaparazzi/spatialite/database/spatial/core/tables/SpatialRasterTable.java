@@ -172,6 +172,11 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
     }
 
     @Override
+    public double[] longLat2Srid(double lon, double lat) {
+        throw new RuntimeException("Not implemented yet");
+    }
+
+    @Override
     public boolean isEditable() {
         return false;
     }
