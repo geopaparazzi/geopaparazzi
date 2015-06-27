@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
 import android.content.Context;
@@ -132,7 +132,7 @@ public class CustomTileDownloader extends TileDownloader {
     private String requestUrl = "";
     private String requestBounds = "";
     private String requestedZoomLevels = "";
-    private GeoPoint centerPoint = new GeoPoint(0, 0);
+    private Point centerPoint = new Point(0, 0);
 
     private String tilePart = "";
     private boolean isFile = false;
@@ -261,7 +261,7 @@ public class CustomTileDownloader extends TileDownloader {
                         double y = Double.parseDouble(coord[1]);
                         center[0] = x;
                         center[1] = y;
-                        centerPoint = new GeoPoint(y, x);
+                        centerPoint = new Point(y, x);
                     } catch (NumberFormatException e) {
                         GPLog.error(this, null, e);
                     }
@@ -530,7 +530,7 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     @Override
-    public GeoPoint getStartPoint() {
+    public Point getStartPoint() {
         return centerPoint;
     }
 

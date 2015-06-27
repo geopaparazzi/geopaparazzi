@@ -1,9 +1,9 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
+import org.mapsforge.map.android.mapgenerator.MapGenerator;
+import org.mapsforge.map.android.mapgenerator.databaserenderer.DatabaseRenderer;
+import org.mapsforge.map.android.mapgenerator.tiledownloader.MapnikTileDownloader;
+import org.mapsforge.map.android.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
 
 public enum MapGeneratorInternal {
     /**

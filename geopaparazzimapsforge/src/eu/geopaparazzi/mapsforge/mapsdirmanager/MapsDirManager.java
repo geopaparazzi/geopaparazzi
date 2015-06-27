@@ -32,10 +32,12 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryMo
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapPositionUtil;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.mapgenerator.MapGenerator;
+import org.mapsforge.core.model.Point;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -668,16 +670,16 @@ public class MapsDirManager {
     public double[] getMapViewBoundsInfo( MapView mapView ) {
         double[] bounds_zoom = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         if (mapView != null) {
-            Projection projection = mapView.getProjection();
-            GeoPoint nw_Point = projection.fromPixels(0, 0);
-            GeoPoint se_Point = projection.fromPixels(mapView.getWidth(), mapView.getHeight());
-            bounds_zoom[0] = nw_Point.getLongitude(); // West
-            bounds_zoom[3] = nw_Point.getLatitude(); // North
-            bounds_zoom[1] = se_Point.getLatitude(); // South
-            bounds_zoom[2] = se_Point.getLongitude(); // East
-            bounds_zoom[4] = (double) mapView.getMapPosition().getZoomLevel();
-            bounds_zoom[5] = Utilities.longitudeToMeters(se_Point.getLongitude(), nw_Point.getLongitude());
-            bounds_zoom[6] = Utilities.latitudeToMeters(nw_Point.getLatitude(), se_Point.getLatitude());
+            // mj10777: Adapted for mapsforge 0.5.1 - must be tested
+           	BoundingBox bbox = MapPositionUtil.getBoundingBox(mapView.getModel().mapViewPosition.getMapPosition(),
+								    mapView.getDimension(), mapView.getModel().displayModel.getTileSize());
+            bounds_zoom[0] = bbox.minLongitude; // West
+            bounds_zoom[3] = bbox.maxLatitude; // North
+            bounds_zoom[1] = bbox.minLatitude; // South
+            bounds_zoom[2] = bbox.maxLongitude; // East
+            bounds_zoom[4] = (double) mapView.getModel().mapViewPosition.getZoomLevel();
+            bounds_zoom[5] = Utilities.longitudeToMeters(bounds_zoom[2], bounds_zoom[0] );
+            bounds_zoom[6] = Utilities.latitudeToMeters(bounds_zoom[3], bounds_zoom[1]);
             s_bounds_zoom = bounds_zoom[0] + "," + bounds_zoom[1] + "," + bounds_zoom[2] + "," + bounds_zoom[3] + ";"
                     + (int) bounds_zoom[4] + ";" + bounds_zoom[5] + "," + bounds_zoom[6];
         }
@@ -931,7 +933,7 @@ public class MapsDirManager {
             centerY = mapCenterLocation[1];
             zoom = (int) mapCenterLocation[2];
             if (zoomType == ZOOMTYPE.SAME)
-                zoom = mapView.getMapPosition().getZoomLevel();
+                zoom = mapView.getModel().mapViewPosition.getZoomLevel();
         } else {
             if (mapCenterLocation.length > 1) {
                 centerX = mapCenterLocation[0];
@@ -940,7 +942,7 @@ public class MapsDirManager {
                     zoom = (int) mapCenterLocation[2];
                 } else {
                     // function was incorrectly called with only 2 parameters, instead of 3
-                    zoom = mapView.getMapPosition().getZoomLevel();
+                    zoom = mapView.getModel().mapViewPosition.getZoomLevel();
                 }
             } else {
                 // function was incorrectly called, use default postions from active map
@@ -952,10 +954,10 @@ public class MapsDirManager {
             // "MapsDirInfo: setMapViewCenter[mapCenterLocation != null] ["+mapCenterLocation.length+"]");
         }
         checkPosition(centerX, centerY, zoom);
-        GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
+        LatLong ll_center=LatLong(getCurrentY(),getCurrentX());
         int setZoom = getCurrentZoom();
-        mapView.getController().setZoom(setZoom);
-        mapView.getController().setCenter(geoPoint);
+        mapView.getModel().mapViewPosition.setZoomLevel(setZoom);
+        mapView.getModel().mapViewPosition.setCenter(l_center);
         return setZoom;
     }
 

@@ -17,9 +17,9 @@
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.map.android.mapgenerator.MapGeneratorJob;
+import org.mapsforge.map.android.mapgenerator.tiledownloader.TileDownloader;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
 import android.graphics.Bitmap;
@@ -46,7 +46,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     private byte ZOOM_MAX = 18;
     private SpatialDataType mapType;
     private SpatialRasterTable rasterTable;
-    private GeoPoint centerPoint = new GeoPoint(0, 0);
+    private Point centerPoint = new Point(0, 0);
 
     private String tilePart;
     private AbstractSpatialDatabaseHandler spatialDatabaseHandler;
@@ -79,7 +79,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     }
 
     @Override
-    public GeoPoint getStartPoint() {
+    public Point getStartPoint() {
         return centerPoint;
     }
 
