@@ -258,4 +258,8 @@ public class SelectionTool extends MapTool {
 
     }
 
+    @Override
+    public void onViewChanged() {
+        // ignore
+    }
 }

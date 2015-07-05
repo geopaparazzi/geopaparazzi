@@ -208,4 +208,8 @@ public class TapMeasureTool extends MapTool {
         measurePath = null;
     }
 
+    @Override
+    public void onViewChanged() {
+        // ignore
+    }
 }

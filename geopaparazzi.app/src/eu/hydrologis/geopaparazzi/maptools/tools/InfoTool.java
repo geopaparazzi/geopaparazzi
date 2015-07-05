@@ -282,4 +282,8 @@ public class InfoTool extends MapTool {
         }
     }
 
+    @Override
+    public void onViewChanged() {
+        // ignore
+    }
 }

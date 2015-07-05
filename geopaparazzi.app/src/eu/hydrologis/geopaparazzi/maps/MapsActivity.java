@@ -96,6 +96,7 @@ import java.util.List;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -126,6 +127,7 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.mapsforge.ImportMapsforgeActivity;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.MainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
@@ -1423,6 +1425,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 mapView.getController().setZoom(newZoom);
                 invalidateMap();
                 saveCenterPref();
+                Tool activeTool = EditManager.INSTANCE.getActiveTool();
+                if (activeTool instanceof MapTool) {
+                    ((MapTool) activeTool).onViewChanged();
+                }
                 break;
             case R.id.zoomout:
                 currentZoom = getCurrentZoomLevel();
@@ -1432,6 +1438,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 mapView.getController().setZoom(newZoom);
                 invalidateMap();
                 saveCenterPref();
+                Tool activeTool1 = EditManager.INSTANCE.getActiveTool();
+                if (activeTool1 instanceof MapTool) {
+                    ((MapTool) activeTool1).onViewChanged();
+                }
                 break;
             case R.id.center_on_gps_btn:
                 if (lastGpsPosition != null) {
