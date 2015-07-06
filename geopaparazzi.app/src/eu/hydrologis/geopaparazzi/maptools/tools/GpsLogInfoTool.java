@@ -46,6 +46,7 @@ import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
@@ -66,6 +67,10 @@ public class GpsLogInfoTool extends MapTool {
     private final Paint whiteBoxPaint = new Paint();
     private final Paint measureTextPaint = new Paint();
     private final SliderDrawProjection projection;
+    private final String timeString;
+    private final String lonString;
+    private final String latString;
+    private final String altimString;
 
     private float currentX;
     private float currentY;
@@ -86,8 +91,12 @@ public class GpsLogInfoTool extends MapTool {
         super(mapView);
 
         Context context = GeopaparazziApplication.getInstance().getApplicationContext();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics());
+
+        timeString = context.getString(R.string.utctime);
+        lonString = context.getString(R.string.lon);
+        latString = context.getString(R.string.lat);
+        altimString = context.getString(R.string.altim);
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         projection = new SliderDrawProjection(mapView, editingView);
@@ -147,11 +156,20 @@ public class GpsLogInfoTool extends MapTool {
         measureTextPaint.setColor(color);
         measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-        String name = "Log: " + logInfo.logName;
-        String time = "Time: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(logInfo.timestamp));
-        String lon = "Lon: " + logInfo.pointXYZ.x;
-        String lat = "Lat: " + logInfo.pointXYZ.y;
-        String altim = "Altim: " + logInfo.pointXYZ.z;
+        String name = logInfo.logName;
+        String ts = " - ";
+        try {
+            ts = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(logInfo.timestamp));
+        } catch (Exception e) {
+            GPLog.error(this, "Error in timestamp: " + logInfo.timestamp, e);
+        }
+        String time = timeString + ts;
+        Coordinate pointXYZ = logInfo.pointXYZ;
+        if (pointXYZ == null)
+            pointXYZ = new Coordinate(-999, -999);
+        String lon = lonString + pointXYZ.x;
+        String lat = latString + pointXYZ.y;
+        String altim = altimString + pointXYZ.z;
 
         String[] texts = {name, time, lon, lat, altim};
 
@@ -177,7 +195,7 @@ public class GpsLogInfoTool extends MapTool {
             runningY += textHeight + 3;
         }
 
-        GeoPoint geoPoint = new GeoPoint(logInfo.pointXYZ.y, logInfo.pointXYZ.x);
+        GeoPoint geoPoint = new GeoPoint(pointXYZ.y, pointXYZ.x);
         Point point = projection.toPixels(geoPoint, null);
         canvas.drawLine(point.x, point.y, cWidth / 2, runningY, linePaint);
     }
