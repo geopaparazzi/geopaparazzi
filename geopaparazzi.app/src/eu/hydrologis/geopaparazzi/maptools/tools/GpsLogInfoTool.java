@@ -192,7 +192,7 @@ public class GpsLogInfoTool extends MapTool {
             int textHeight = rect.height();
             int x = cWidth / 2 - textWidth / 2;
             canvas.drawText(text, x, runningY, measureTextPaint);
-            runningY += textHeight + 3;
+            runningY += textHeight + 7;
         }
 
         GeoPoint geoPoint = new GeoPoint(pointXYZ.y, pointXYZ.x);
