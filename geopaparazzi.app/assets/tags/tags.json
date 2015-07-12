@@ -125,6 +125,20 @@
                     }
                 ]
             },{
+                "formname": "numeric text used as label in map",
+                "formitems": [
+                    {
+                        "key": "a number",
+                        "value": "",
+                        "islabel": "true",
+                        "type": "double"
+                    },{
+                        "key": "an integer number",
+                        "value": "",
+                        "type": "integer"
+                    }
+                ]
+            },{
                 "formname": "date",
                 "formitems": [
                     {
@@ -147,12 +161,12 @@
                 "formitems": [
                     {
                         "value": "a simple label of size 20",
-						"size": "20",
+                        "size": "20",
                         "type": "label"
                     },{
                         "value": "a underlined label of size 24",
                         "size": "24",
-						"type": "labelwithline"
+                        "type": "labelwithline"
                     },{
                         "value": "a label with link to the geopaparazzi homepage",
                         "url": "http://www.geopaparazzi.eu",
