@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Main View &mdash; Geopaparazzi 4.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Geopaparazzi 4.4.0 documentation" href="index.html" />
+    <link rel="next" title="The Main View Menu" href="main_view_menu.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="main_view_menu.html" title="The Main View Menu"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-main-view">
+<span id="dashboard"></span><span id="index-0"></span><h1>The Main View<a class="headerlink" href="#the-main-view" title="Permalink to this headline">¶</a></h1>
+<p>Once you launch Geopaparazzi, the dashboard appears.</p>
+<p>All the features that need to be quickly accessed, such as toggling GPS on and off,
+creating a note or taking a picture, as well as visualizing the current position
+on a map, are accessible from the dashboard.</p>
+<div class="figure align-center" id="id9">
+<a class="reference internal image-reference" href="_images/00_dashboard.png"><img alt="_images/00_dashboard.png" src="_images/00_dashboard.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The dashboard of geopaparazzi.</span></p>
+</div>
+<p>From the dashboard these primary functions can be accessed:</p>
+<ul class="simple">
+<li>the action bar functions</li>
+<li>take notes</li>
+<li>view or modify the project metadata</li>
+<li>take a GPS Track</li>
+<li>switch to Map View</li>
+<li>import Data</li>
+<li>export Data</li>
+</ul>
+<div class="section" id="action-bar">
+<span id="actionbar"></span><span id="index-1"></span><h2>Action Bar<a class="headerlink" href="#action-bar" title="Permalink to this headline">¶</a></h2>
+<p>The action bar, from right to left, presents the following functions:</p>
+<ul class="simple">
+<li>the main menu</li>
+<li>the info button</li>
+<li>the gps status application access button</li>
+<li>the gps status icon</li>
+</ul>
+<div class="figure align-center" id="id10">
+<a class="reference internal image-reference" href="_images/01_actionbar.png"><img alt="_images/01_actionbar.png" src="_images/01_actionbar.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The actionbar of the main view.</span></p>
+</div>
+<p>The info button shows information about the used maps folder,
+the current selected map and the status of the gps. If the
+gps has acquired a fix, information about the position is given:</p>
+<div class="figure align-center" id="id11">
+<a class="reference internal image-reference" href="_images/10_info_button.png"><img alt="_images/10_info_button.png" src="_images/10_info_button.png" style="width: 604px;" /></a>
+<p class="caption"><span class="caption-text">Information shown when tapping the info button.</span></p>
+</div>
+<p>The gps status application button opens the
+<a class="reference external" href="https://play.google.com/store/apps/details?id=com.eclipsim.gpsstatus2&amp;hl=en">GPS Status &amp; Toolbox</a>
+app, which gives a lot of information about the gps and is useful
+in cases in which one waits long for the gps to acquire the fix.</p>
+<div class="figure align-center" id="id12">
+<a class="reference internal image-reference" href="_images/11_gps_status_app.png"><img alt="_images/11_gps_status_app.png" src="_images/11_gps_status_app.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The free (but not open source) Gps Status &amp; Toolbox app.</span></p>
+</div>
+<p>Last but not least, the gps status icon, shows the current status:</p>
+<ul class="simple">
+<li>RED: GPS is not switched on</li>
+<li>ORANGE: GPS is on but no fix was acquired</li>
+<li>GREEN: GPS is on, has fix, but no log is being recorded</li>
+<li>BLUE: GPS is logging</li>
+</ul>
+<div class="figure align-center" id="id13">
+<a class="reference internal image-reference" href="_images/02_gps_states.png"><img alt="_images/02_gps_states.png" src="_images/02_gps_states.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The different gps states available.</span></p>
+</div>
+</div>
+<div class="section" id="the-panic-button">
+<span id="panicbutton"></span><span id="index-2"></span><h2>The panic button<a class="headerlink" href="#the-panic-button" title="Permalink to this headline">¶</a></h2>
+<p>At the opposite end of the actionbar the <strong>Panic Bar</strong> is visible.
+Il can be dragged up and presents 2 big buttons:</p>
+<ul class="simple">
+<li>the <em>PANIC!</em> button</li>
+<li>the <em>send position</em> button</li>
+</ul>
+<div class="figure align-center" id="id14">
+<a class="reference internal image-reference" href="_images/20_panic.png"><img alt="_images/20_panic.png" src="_images/20_panic.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The panic panel.</span></p>
+</div>
+<p>The panic button sends a request for help sms with the last available GPS
+position to a phone number that can be configured in the <a class="reference internal" href="settings.html#settings"><span>Settings &amp; Preferences</span></a> of geopaparazzi.</p>
+<p>If no number is configured, the system sms dialog opens up with a precompiled message
+and the user will have to select the contact to which to send the message:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/21_panic_sms.png"><img alt="_images/21_panic_sms.png" src="_images/21_panic_sms.png" style="width: 300px;" /></a>
+</div>
+<p>The send position button opens up the sms dialog directly filling in the position without
+any request for help message. It is meant for quick sending the current position via sms
+so that it can be opened from Geopaparazzi.</p>
+</div>
+<div class="section" id="notes">
+<span id="index-3"></span><span id="id1"></span><h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<p>Geopaparazzi supports 4 different types of notes:</p>
+<ul class="simple">
+<li>text notes</li>
+<li>picture notes</li>
+<li>sketch notes</li>
+<li>form-based notes</li>
+</ul>
+<p>To access them you can tap on the first icon of the dashboard,
+the <em>take notes</em> icon. Once you tap on it, the <em>take notes</em> dialog
+appears:</p>
+<div class="figure align-center" id="id15">
+<a class="reference internal image-reference" href="_images/03_notes.png"><img alt="_images/03_notes.png" src="_images/03_notes.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The view from which notes are taken.</span></p>
+</div>
+<p>The uppermost button gives the possibility to choose if the note
+will be inserted in the <strong>current gps position</strong> (in case gps is on)
+or in the the <strong>center of the map</strong> (aka, the crossfade).</p>
+<p>Below the button, three quick note buttons are presented:</p>
+<ul>
+<li><p class="first">The Quick text note button, which opens a simple dialog,
+inside which the text note can be written. Want to save the note?
+Tap on the <em>ok</em> button. Want to trash it? Tap on the <em>cancel</em> button.</p>
+<p>Remember that the position of the note is taken when the note view is
+opened, not closed, so you have all the time you need to insert the text.</p>
+</li>
+</ul>
+<div class="figure align-center" id="id16">
+<a class="reference internal image-reference" href="_images/04_textnotes.png"><img alt="_images/04_textnotes.png" src="_images/04_textnotes.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The simple text note view.</span></p>
+</div>
+<ul>
+<li><p class="first">The Quick picture note button, which will launch the camera application
+that comes with your android system. We decided to switch from our custom
+camera application to the default one, because it gives many more
+possibilities of customization of the images size, focus and so on.
+This has one drawback, which is the fact that we are not able to pick
+the azimuth of the camera shot at the exact moment it is taken.
+The azimuth is therefore recorded at the moment the camera application is closed.
+That means that to have a realistic azimuth, you need to take the picture
+and stay with the device in the same position of the snapshot until
+you have closed the camera app.</p>
+</li>
+<li><p class="first">The Quick sketch note button, which allows you to draw on a small panel and
+save your sketch. One can change stroke style, color, and width.
+Other buttons such as undo, clear, save, and share are also available.</p>
+<p>Once the note has been saved, it can&#8217;t be changed.</p>
+</li>
+</ul>
+<div class="figure align-center" id="id17">
+<a class="reference internal image-reference" href="_images/05_sketchnotes.png"><img alt="_images/05_sketchnotes.png" src="_images/05_sketchnotes.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">An example of taking sketch note.</span></p>
+</div>
+<div class="section" id="form-based-notes">
+<h3>Form based notes<a class="headerlink" href="#form-based-notes" title="Permalink to this headline">¶</a></h3>
+<p>Form based notes are complex notes that allow for better surveys.
+Some examples are available in the base installation of geopaparazzi.</p>
+<p>The <strong>example</strong> button in particular shows all the possible form widgets available:</p>
+<div class="figure align-center" id="id18">
+<a class="reference internal image-reference" href="_images/06_form_based_notes.png"><img alt="_images/06_form_based_notes.png" src="_images/06_form_based_notes.png" style="height: 300px;" /></a>
+<p class="caption"><span class="caption-text">An example of form based notes.</span></p>
+</div>
+<p>The notes can be saved and modified in a second moment.</p>
+<p>To understand how to create forms, have a look at the
+<a class="reference internal" href="forms.html#forms"><span>section dedicated to forms</span></a>.</p>
+</div>
+</div>
+<div class="section" id="project-information">
+<span id="projectinformation"></span><span id="index-4"></span><h2>Project Information<a class="headerlink" href="#project-information" title="Permalink to this headline">¶</a></h2>
+<p>The project view shows information about the project database.</p>
+<p>It shows:</p>
+<ul class="simple">
+<li>the database file name</li>
+<li>the project name</li>
+<li>the project description</li>
+<li>project notes</li>
+<li>creation and last closing date</li>
+<li>the user that created the project</li>
+<li>the user that last modified the project</li>
+</ul>
+<p>Apart of the dates, that are set by the system, all data can be changed and
+saved through the save button.</p>
+<div class="figure align-center" id="id19">
+<a class="reference internal image-reference" href="_images/07_project_info.png"><img alt="_images/07_project_info.png" src="_images/07_project_info.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The project metadata view.</span></p>
+</div>
+</div>
+<div class="section" id="gps-logging">
+<span id="gpslogging"></span><span id="index-5"></span><h2>Gps Logging<a class="headerlink" href="#gps-logging" title="Permalink to this headline">¶</a></h2>
+<p>To start logging, the user simply has to push the <strong>logging</strong> button.</p>
+<p>Once it is tapped, the user is prompted to insert a name for the
+log or to accept the one generated based on the current date and time
+( log_YYYYMMDD_HHMMSS ).</p>
+<p>It is also possible to attach the new log to the last created log by
+checking the box: <em>Continue last log</em>. In that case the proposed name
+of the log (or any user inserted) is ignored, since no new log is created.</p>
+<div class="figure align-center" id="id20">
+<a class="reference internal image-reference" href="_images/08_start_logging.png"><img alt="_images/08_start_logging.png" src="_images/08_start_logging.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The new log dialog. From here it is possible to continue the last log.</span></p>
+</div>
+<p>Once the logging has started, the logging icon will change and present a
+red sign. Also, the gps status icon has turned blue.</p>
+<div class="figure align-center" id="id21">
+<a class="reference internal image-reference" href="_images/09_logging_on.png"><img alt="_images/09_logging_on.png" src="_images/09_logging_on.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The stop logging button with its red sign.</span></p>
+</div>
+<p>To stop logging, the same button is used. Once tapped, the user is prompted
+to verify the action.</p>
+</div>
+<div class="section" id="map-view">
+<h2>Map View<a class="headerlink" href="#map-view" title="Permalink to this headline">¶</a></h2>
+<p>The map view presents a map and a set of tools that can be used to navigate
+the map, make measurements or edit datasets. The various tools are presented
+in the <a class="reference internal" href="mapview.html#mapview"><span>section dedicated to the Map View</span></a>.</p>
+<div class="figure align-center" id="id22">
+<a class="reference internal image-reference" href="_images/12_map_view.png"><img alt="_images/12_map_view.png" src="_images/12_map_view.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The map view.</span></p>
+</div>
+</div>
+<div class="section" id="import">
+<span id="index-6"></span><span id="id2"></span><h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id23">
+<a class="reference internal image-reference" href="_images/13_import.png"><img alt="_images/13_import.png" src="_images/13_import.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The import view.</span></p>
+</div>
+<p>Geopaparazzi supports the import of:</p>
+<ul class="simple">
+<li>mapurl configuration files for online tiles</li>
+<li>gpx datasets</li>
+<li>geopaparazzi cloud projects</li>
+<li>bookmarks</li>
+<li>default spatialite databases</li>
+</ul>
+<div class="section" id="mapurls">
+<span id="index-7"></span><span id="id3"></span><h3>Mapurls<a class="headerlink" href="#mapurls" title="Permalink to this headline">¶</a></h3>
+<p>Since the creation of a mapurl configuration file for WMS services is complex,
+a small service has been created, that automatically generates mapurls for known services.</p>
+<p>Once chosen the services query view appears:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/14_mapurls.png"><img alt="_images/14_mapurls.png" src="_images/14_mapurls.png" style="width: 300px;" /></a>
+</div>
+<p>If wanted, the service will consider the device&#8217;s position to gather
+only dataset in that area. Also some minor text filters can be added.</p>
+<p>An example with the gps placed in Italy is the following:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/15_mapurls.png"><img alt="_images/15_mapurls.png" src="_images/15_mapurls.png" style="width: 300px;" /></a>
+</div>
+<p>The service can then simply be downloaded. It will install the mapurl
+inside your system. The user is prompted for a custom name to name
+the service after, else the original name will be used. Since the
+original name could be duplicated in different services, the
+prefix <em>tanto_</em> will be added in that case.</p>
+<p>This service is in an experimental state right now, but it works fairly well.
+If you experience problems, please report them at
+<a class="reference external" href="http://tanto.github.io/geopapurls/">the homepage of the service</a>.</p>
+<p>The same link also contains instruction about how to suggest to suggest new WMS services.</p>
+</div>
+<div class="section" id="gpx">
+<span id="importgpx"></span><span id="index-8"></span><h3>GPX<a class="headerlink" href="#gpx" title="Permalink to this headline">¶</a></h3>
+<p>By tabbing on the <em>GPX</em> icon, the user is taken to a simple file browser.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/16_import_gpx.png"><img alt="_images/16_import_gpx.png" src="_images/16_import_gpx.png" style="width: 300px;" /></a>
+</div>
+<p>The browser only shows folders and files with gpx extensions. On selection, the
+file is imported.</p>
+</div>
+<div class="section" id="geopaparazzi-cloud-projects">
+<h3>Geopaparazzi cloud projects<a class="headerlink" href="#geopaparazzi-cloud-projects" title="Permalink to this headline">¶</a></h3>
+<p><strong>This section needs to be done...</strong></p>
+</div>
+<div class="section" id="bookmarks">
+<span id="importbookmarks"></span><span id="index-9"></span><h3>Bookmarks<a class="headerlink" href="#bookmarks" title="Permalink to this headline">¶</a></h3>
+<p>Bookmarks can be imported from csv files that <em>must be placed in the root of the sdcard</em>
+and the name of which has to start with the part <strong>bookmarks</strong> and to end with the
+extension <strong>.csv</strong>.</p>
+<p>Geopaparazzi will let the user select the files to import if more than one are available
+and load the bookmarks from there and import only those that do not exist already.</p>
+<p>The format of the csv is: <strong>NAME, LATITUDE, LONGITUDE</strong>
+as for example:</p>
+<div class="highlight-python"><div class="highlight"><pre>Uscita Vicenza Est, 45.514237, 11.593432
+Le Bistrot, 46.070037, 11.220296
+Ciolda, 46.024756, 11.230184
+Hotel Trieste, 45.642043,13.780791
+Grassday Trieste,45.65844,13.79320
+</pre></div>
+</div>
+</div>
+<div class="section" id="default-databases">
+<span id="index-10"></span><h3>Default databases<a class="headerlink" href="#default-databases" title="Permalink to this headline">¶</a></h3>
+<p>When tapping the default database import button, the user is asked to name the new
+database to create. Let&#8217;s use testdb for the sake of this example:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/19_mapsforge.png"><img alt="_images/19_mapsforge.png" src="_images/19_mapsforge.png" style="width: 300px;" /></a>
+</div>
+<p>Now you will have to restart geopap, sadly that is still required.
+Once it is done, in the spatialite database view 3 new layer of the database
+<strong>testdb.sqlite</strong> will be visible:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/19_mapsforge1.png"><img alt="_images/19_mapsforge1.png" src="_images/19_mapsforge1.png" style="width: 300px;" /></a>
+</div>
+<p>While lines and points won&#8217;t be of much use in geopap yet, you will find
+the polygon layer interesting, since it is <strong>editing ready</strong>. Enable editing
+and edit right away. Since it is a template db, the attributes table have
+been created as generic fields with names from <strong>field1 to field10</strong>. As
+said, very simple, but still of use when you have to quickly collect some
+polygon data with attributes.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/19_mapsforge2.png"><img alt="_images/19_mapsforge2.png" src="_images/19_mapsforge2.png" style="width: 300px;" /></a>
+</div>
+</div>
+</div>
+<div class="section" id="export">
+<span id="index-11"></span><span id="id4"></span><h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center" id="id24">
+<a class="reference internal image-reference" href="_images/18_export.png"><img alt="_images/18_export.png" src="_images/18_export.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The export view.</span></p>
+</div>
+<p>Geopaparazzi supports the export to the following formats:</p>
+<ul class="simple">
+<li>kmz</li>
+<li>gpx</li>
+<li>geopaparazzi cloud projects</li>
+<li>bookmarks</li>
+<li>images</li>
+</ul>
+<div class="section" id="exportgpx">
+<span id="index-12"></span><span id="id5"></span><h3>GPX<a class="headerlink" href="#exportgpx" title="Permalink to this headline">¶</a></h3>
+<p>The lines and notes data are exported to gpx, creating tracks and waypoints.</p>
+</div>
+<div class="section" id="kmz">
+<span id="index-13"></span><span id="id6"></span><h3>KMZ<a class="headerlink" href="#kmz" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to export all collected data to kmz format.
+KMZ is well known as it can be visualized in the 3D viewer <a class="reference external" href="http://earth.google.com/">Google Earth</a>.</p>
+<p>In the export:</p>
+<ul class="simple">
+<li>the notes are placed as red pins having the first letters of the text content as label</li>
+<li>the images are placed as yellow pins</li>
+<li>the gps logs are visualized as tracks</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h3>Geopaparazzi cloud projects<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>Find more about geopaparazzi web project protocol in the dedicated page.</p>
+</div>
+<div class="section" id="exportbookmarks">
+<span id="index-14"></span><span id="id8"></span><h3>Bookmarks<a class="headerlink" href="#exportbookmarks" title="Permalink to this headline">¶</a></h3>
+<p>Bookmarks can be exported to a csv file that has to be called <em>bookmarks.csv</em> and
+must be placed in the root of the sdcard.</p>
+<p>Geopaparazzi will write to the file only those bookmarks that do not exist already in the csv.</p>
+</div>
+<div class="section" id="images">
+<span id="exportimages"></span><span id="index-15"></span><h3>Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h3>
+<p>Since images are kept inside the database, this export is handy if the user needs
+to use the images inside a different software. In this case all the images of the project
+are exported inside a folder and a popup message shows the folder path.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/17_export_img.png"><img alt="_images/17_export_img.png" src="_images/17_export_img.png" style="width: 300px;" /></a>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/ic_launcher.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Main View</a><ul>
+<li><a class="reference internal" href="#action-bar">Action Bar</a></li>
+<li><a class="reference internal" href="#the-panic-button">The panic button</a></li>
+<li><a class="reference internal" href="#notes">Notes</a><ul>
+<li><a class="reference internal" href="#form-based-notes">Form based notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#project-information">Project Information</a></li>
+<li><a class="reference internal" href="#gps-logging">Gps Logging</a></li>
+<li><a class="reference internal" href="#map-view">Map View</a></li>
+<li><a class="reference internal" href="#import">Import</a><ul>
+<li><a class="reference internal" href="#mapurls">Mapurls</a></li>
+<li><a class="reference internal" href="#gpx">GPX</a></li>
+<li><a class="reference internal" href="#geopaparazzi-cloud-projects">Geopaparazzi cloud projects</a></li>
+<li><a class="reference internal" href="#bookmarks">Bookmarks</a></li>
+<li><a class="reference internal" href="#default-databases">Default databases</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#export">Export</a><ul>
+<li><a class="reference internal" href="#exportgpx">GPX</a></li>
+<li><a class="reference internal" href="#kmz">KMZ</a></li>
+<li><a class="reference internal" href="#id7">Geopaparazzi cloud projects</a></li>
+<li><a class="reference internal" href="#exportbookmarks">Bookmarks</a></li>
+<li><a class="reference internal" href="#images">Images</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="main_view_menu.html"
+                        title="next chapter">The Main View Menu</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="main_view_menu.html" title="The Main View Menu"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, HydroloGIS S.r.l..
+      Last updated on Jul 14, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,849 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using form based notes &mdash; Geopaparazzi 4.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Geopaparazzi 4.4.0 documentation" href="index.html" />
+    <link rel="next" title="The Geopaparazzi Database" href="database.html" />
+    <link rel="prev" title="Handling datasets from and for Geopaparazzi" href="maps_handling.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="database.html" title="The Geopaparazzi Database"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="maps_handling.html" title="Handling datasets from and for Geopaparazzi"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-form-based-notes">
+<span id="forms"></span><span id="index-0"></span><h1>Using form based notes<a class="headerlink" href="#using-form-based-notes" title="Permalink to this headline">¶</a></h1>
+<p>Geopaparazzi supports complex notes called <em>form based notes</em>.
+To use them, a <strong>tags.json</strong> file needs to be created and placed inside
+the geopaparazzi folder inside the sdcard. In that file
+a <a class="reference external" href="http://en.wikipedia.org/wiki/JSON">json format</a>
+description of the wanted tags and forms needs to be placed.</p>
+<p>By default, to help the user to start, a sample tags.json is created
+in the Geopaparazzi installation. It contains form samples and examples
+to show all supported form widgets.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/01_tags.png"><img alt="_images/01_tags.png" src="_images/01_tags.png" style="height: 300px;" /></a>
+</div>
+<p>Currently no tool is available to create forms in an interactive way,
+they have to be created manually.</p>
+<p>A good online tool to at least validate your json form is the <a class="reference external" href="http://www.jsonlint.com/">Json Lint
+Validator</a>. Make sure it passes that test before
+putting it on the device and test it in geopaparazzi.</p>
+<div class="section" id="supported-tags-via-the-example-form">
+<span id="tags"></span><span id="index-1"></span><h2>Supported tags (via the example form)<a class="headerlink" href="#supported-tags-via-the-example-form" title="Permalink to this headline">¶</a></h2>
+<p>The example form that is available by default shows all the possible options available.</p>
+<div class="section" id="text">
+<span id="textform"></span><h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/02_text.png"><img alt="_images/02_text.png" src="_images/02_text.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;text&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;some text&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;string&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="text-with-key-and-label">
+<h3>Text with key and label<a class="headerlink" href="#text-with-key-and-label" title="Permalink to this headline">¶</a></h3>
+<p>In simple forms the key element is also used as label for the widget (ex. <em>some text</em> in the <a class="reference internal" href="#textform"><span>text note</span></a>).
+Some charactersets are not suitable to be used as keys for a database, so in that cases the user should consider
+to define both the key (ex. in English) and the label (in the own language). Here an example:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/03_text_key.png"><img alt="_images/03_text_key.png" src="_images/03_text_key.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;text example with key and label&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;the key used to index&quot;,
+              &quot;label&quot;: &quot;the label used to describe&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;string&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="numbers">
+<h3>Numbers<a class="headerlink" href="#numbers" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/04_numeric.png"><img alt="_images/04_numeric.png" src="_images/04_numeric.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;numeric text&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a number&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;double&quot;
+          },{
+              &quot;key&quot;: &quot;an integer number&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;integer&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="labels-rendered-in-the-map-view">
+<h3>Labels rendered in the map view<a class="headerlink" href="#labels-rendered-in-the-map-view" title="Permalink to this headline">¶</a></h3>
+<p>Text and numbers can also be shown as labels in the map view.</p>
+<p>To do so, the tag <strong>islabel</strong> has to be added and set to true:</p>
+<div class="highlight-json"><div class="highlight"><pre>                &quot;formname&quot;: &quot;numeric text used as label in map&quot;,
+                &quot;formitems&quot;: [
+                    {
+                        &quot;key&quot;: &quot;a number&quot;,
+                        &quot;value&quot;: &quot;&quot;,
+<span class="hll">                        &quot;islabel&quot;: &quot;true&quot;,
+</span>                        &quot;type&quot;: &quot;double&quot;
+                    },{
+                        &quot;key&quot;: &quot;an integer number&quot;,
+                        &quot;value&quot;: &quot;&quot;,
+                        &quot;type&quot;: &quot;integer&quot;
+                    }
+                ]
+</pre></div>
+</div>
+<p>Only one text or number item is accepted as label, so if more than one is added, the last read will be picked.</p>
+</div>
+<div class="section" id="date">
+<h3>Date<a class="headerlink" href="#date" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/05_date.png"><img alt="_images/05_date.png" src="_images/05_date.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;date&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a date&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;date&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="time">
+<h3>Time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/06_time.png"><img alt="_images/06_time.png" src="_images/06_time.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;time&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a time&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;time&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="labels">
+<h3>Labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/07_labels.png"><img alt="_images/07_labels.png" src="_images/07_labels.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;labels&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;value&quot;: &quot;a simple label of size 20&quot;,
+              &quot;size&quot;: &quot;20&quot;,
+              &quot;type&quot;: &quot;label&quot;
+          },{
+              &quot;value&quot;: &quot;a underlined label of size 24&quot;,
+              &quot;size&quot;: &quot;24&quot;,
+              &quot;type&quot;: &quot;labelwithline&quot;
+          },{
+              &quot;value&quot;: &quot;a label with link to the geopaparazzi homepage&quot;,
+              &quot;url&quot;: &quot;http://www.geopaparazzi.eu&quot;,
+              &quot;size&quot;: &quot;20&quot;,
+              &quot;type&quot;: &quot;labelwithline&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="checkbox">
+<h3>Checkbox<a class="headerlink" href="#checkbox" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/08_boolean.png"><img alt="_images/08_boolean.png" src="_images/08_boolean.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;boolean&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a boolean choice&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;boolean&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="combos">
+<h3>Combos<a class="headerlink" href="#combos" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/09_combos.png"><img alt="_images/09_combos.png" src="_images/09_combos.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;combos&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a single choice combo&quot;,
+              &quot;values&quot;: {
+                  &quot;items&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1&quot;},
+                      {&quot;item&quot;: &quot;choice 2&quot;},
+                      {&quot;item&quot;: &quot;choice 3&quot;},
+                      {&quot;item&quot;: &quot;choice 4&quot;},
+                      {&quot;item&quot;: &quot;choice 5&quot;}
+                  ]
+              },
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;stringcombo&quot;
+          },{
+              &quot;key&quot;: &quot;a multiple choice combo&quot;,
+              &quot;values&quot;: {
+                  &quot;items&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1&quot;},
+                      {&quot;item&quot;: &quot;choice 2&quot;},
+                      {&quot;item&quot;: &quot;choice 3&quot;},
+                      {&quot;item&quot;: &quot;choice 4&quot;},
+                      {&quot;item&quot;: &quot;choice 5&quot;}
+                  ]
+              },
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;multistringcombo&quot;
+          },{
+              &quot;key&quot;: &quot;two connected combos&quot;,
+              &quot;values&quot;: {
+                  &quot;items 1&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 2 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 3 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 4 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 5 of 1&quot;}
+                  ],
+                  &quot;items 2&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 2 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 3 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 4 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 5 of 2&quot;}
+                  ]
+              },
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;connectedstringcombo&quot;
+          },{
+              &quot;key&quot;: &quot;two connected combos, default selected&quot;,
+              &quot;values&quot;: {
+                  &quot;items 1&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 2 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 3 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 4 of 1&quot;},
+                      {&quot;item&quot;: &quot;choice 5 of 1&quot;}
+                  ],
+                  &quot;items 2&quot;: [
+                      {&quot;item&quot;: &quot;&quot;},
+                      {&quot;item&quot;: &quot;choice 1 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 2 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 3 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 4 of 2&quot;},
+                      {&quot;item&quot;: &quot;choice 5 of 2&quot;}
+                  ]
+              },
+              &quot;value&quot;: &quot;choice 4 of 2&quot;,
+              &quot;type&quot;: &quot;connectedstringcombo&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="pictures">
+<h3>Pictures<a class="headerlink" href="#pictures" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/10_pictures.png"><img alt="_images/10_pictures.png" src="_images/10_pictures.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;pictures&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a picture archive&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;pictures&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="sketches">
+<h3>Sketches<a class="headerlink" href="#sketches" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/11_sketches.png"><img alt="_images/11_sketches.png" src="_images/11_sketches.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;sketches&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;a sketches archive&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;sketch&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="map-screenshot">
+<h3>Map screenshot<a class="headerlink" href="#map-screenshot" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Looks like</th>
+<th class="head">Created by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last figure align-center">
+<a class="reference internal image-reference" href="_images/12_map.png"><img alt="_images/12_map.png" src="_images/12_map.png" style="height: 300px;" /></a>
+</div>
+</td>
+<td><div class="first last highlight-json"><div class="highlight"><pre>      &quot;formname&quot;: &quot;map&quot;,
+      &quot;formitems&quot;: [
+          {
+              &quot;key&quot;: &quot;an image of the last seen map&quot;,
+              &quot;value&quot;: &quot;&quot;,
+              &quot;type&quot;: &quot;map&quot;
+          }
+      ]
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="other-supported-tags">
+<h3>Other supported tags<a class="headerlink" href="#other-supported-tags" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="hidden">
+<h4>hidden<a class="headerlink" href="#hidden" title="Permalink to this headline">¶</a></h4>
+<p>Not shown in the gui, but useful for the application to fill in infos like the GPS position:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;LONGITUDE&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;hidden&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="primary-key">
+<h4>primary_key<a class="headerlink" href="#primary-key" title="Permalink to this headline">¶</a></h4>
+<p>An item of particular importance, can be used by the application to link to particular infos:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;tourism&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;primary_key&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="constraints">
+<h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
+<p>Constraints are conditions that are checked when the ok button of the form is pushed.</p>
+<div class="section" id="mandatory">
+<h4>mandatory<a class="headerlink" href="#mandatory" title="Permalink to this headline">¶</a></h4>
+<p>To make an item mandatory, just add:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;mandatory&quot;: &quot;yes&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="range">
+<h4>range<a class="headerlink" href="#range" title="Permalink to this headline">¶</a></h4>
+<p>To peform a range check on a numeric field you can add something like:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;range&quot;:&quot;[0,10)&quot;
+</pre></div>
+</div>
+<p>which would check that the inserted number is between 0 (inclusive) and 10 (exclusive).</p>
+</div>
+</div>
+</div>
+<div class="section" id="create-a-simple-form-to-map-fountains">
+<h2>Create a simple form to map fountains<a class="headerlink" href="#create-a-simple-form-to-map-fountains" title="Permalink to this headline">¶</a></h2>
+<p>As an excercise we will now create a simple form to map fountains.</p>
+<div class="section" id="sections">
+<h3>Sections<a class="headerlink" href="#sections" title="Permalink to this headline">¶</a></h3>
+<p>Every form is composed of sections, each of which create a button in the
+<a class="reference internal" href="main_view.html#notes"><span>add notes</span></a> view.</p>
+<p>We want to create a form for a fountain, so one section is enough.</p>
+<p>The blueprint for such a form, i.e. the empty button shell starts with:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;sectionname&quot;</span><span class="p">:</span> <span class="s2">&quot;fountain&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sectiondescription&quot;</span><span class="p">:</span> <span class="s2">&quot;fountain&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;forms&quot;</span><span class="p">:</span> <span class="p">[</span>
+</pre></div>
+</div>
+<p>and ends with:</p>
+<div class="highlight-json"><div class="highlight"><pre>        ]
+    }
+]
+</pre></div>
+</div>
+</div>
+<div class="section" id="form-subsections">
+<h3>Form subsections<a class="headerlink" href="#form-subsections" title="Permalink to this headline">¶</a></h3>
+<p>Each section can contain several sub-forms, that will create a tab each.</p>
+<p>A sub-form starts with:</p>
+<div class="highlight-json"><div class="highlight"><pre>            <span class="p">{</span>
+                <span class="nt">&quot;formname&quot;</span><span class="p">:</span> <span class="s2">&quot;General data&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+</pre></div>
+</div>
+<p>and ends with:</p>
+<div class="highlight-json"><div class="highlight"><pre>                ]
+            },
+</pre></div>
+</div>
+<p>Note that the comma at the end is only needed if more than one sub-form
+is added.</p>
+</div>
+<div class="section" id="form-elements">
+<h3>Form elements<a class="headerlink" href="#form-elements" title="Permalink to this headline">¶</a></h3>
+<p>To add content to the sub-forms, any of the tags described <a class="reference internal" href="#tags"><span>in the supported tags
+section</span></a> can be used.</p>
+<p>For example lets add two textfields to prompt the user for a name and
+street. Also the name should then be the label rendered in the map view.</p>
+<div class="highlight-json"><div class="highlight"><pre>                    {
+<span class="hll">                        &quot;key&quot;: &quot;name&quot;,
+</span>                        &quot;value&quot;: &quot;&quot;,
+<span class="hll">                        &quot;islabel&quot;: &quot;true&quot;,
+</span>                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;mandatory&quot;: &quot;yes&quot;
+                    },
+                    {
+<span class="hll">                        &quot;key&quot;: &quot;street&quot;,
+</span>                        &quot;value&quot;: &quot;&quot;,
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;mandatory&quot;: &quot;no&quot;
+                    }
+</pre></div>
+</div>
+</div>
+<div class="section" id="finalize-the-form">
+<h3>Finalize the form<a class="headerlink" href="#finalize-the-form" title="Permalink to this headline">¶</a></h3>
+<p>This is everything that needs to be done. Let&#8217;s also add some technical data
+in a dedicated tab and also a tab for media, inside which it is possible to
+take pictures.</p>
+<p>We leave the exercise to the reader.</p>
+<p>Here below the tags file of a possible implementation is presented:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;sectionname&quot;</span><span class="p">:</span> <span class="s2">&quot;fountain&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sectiondescription&quot;</span><span class="p">:</span> <span class="s2">&quot;fountain&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;forms&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;formname&quot;</span><span class="p">:</span> <span class="s2">&quot;General data&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;islabel&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;yes&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;street&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;formname&quot;</span><span class="p">:</span> <span class="s2">&quot;Technical data&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;protected&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;manual&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;electrical&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;gravity&quot;</span>
+                                <span class="p">}</span>
+                            <span class="p">]</span>
+                        <span class="p">},</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;manual&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stringcombo&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;PH&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;PH &lt; 5&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;5 &lt; PH &lt; 7&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;PH &gt; 7&quot;</span>
+                                <span class="p">}</span>
+                            <span class="p">]</span>
+                        <span class="p">},</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;PH &lt; 5&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stringcombo&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;number of served people&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;double&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;is working&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;needs&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;nothing&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;maintainance&quot;</span>
+                                <span class="p">},</span>
+                                <span class="p">{</span>
+                                    <span class="nt">&quot;item&quot;</span><span class="p">:</span> <span class="s2">&quot;rehabilitation&quot;</span>
+                                <span class="p">}</span>
+                            <span class="p">]</span>
+                        <span class="p">},</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;nothing&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;stringcombo&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;formname&quot;</span><span class="p">:</span> <span class="s2">&quot;Media&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="nt">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;Images&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;pictures&quot;</span><span class="p">,</span>
+                        <span class="nt">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/ic_launcher.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using form based notes</a><ul>
+<li><a class="reference internal" href="#supported-tags-via-the-example-form">Supported tags (via the example form)</a><ul>
+<li><a class="reference internal" href="#text">Text</a></li>
+<li><a class="reference internal" href="#text-with-key-and-label">Text with key and label</a></li>
+<li><a class="reference internal" href="#numbers">Numbers</a></li>
+<li><a class="reference internal" href="#labels-rendered-in-the-map-view">Labels rendered in the map view</a></li>
+<li><a class="reference internal" href="#date">Date</a></li>
+<li><a class="reference internal" href="#time">Time</a></li>
+<li><a class="reference internal" href="#labels">Labels</a></li>
+<li><a class="reference internal" href="#checkbox">Checkbox</a></li>
+<li><a class="reference internal" href="#combos">Combos</a></li>
+<li><a class="reference internal" href="#pictures">Pictures</a></li>
+<li><a class="reference internal" href="#sketches">Sketches</a></li>
+<li><a class="reference internal" href="#map-screenshot">Map screenshot</a></li>
+<li><a class="reference internal" href="#other-supported-tags">Other supported tags</a><ul>
+<li><a class="reference internal" href="#hidden">hidden</a></li>
+<li><a class="reference internal" href="#primary-key">primary_key</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#constraints">Constraints</a><ul>
+<li><a class="reference internal" href="#mandatory">mandatory</a></li>
+<li><a class="reference internal" href="#range">range</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#create-a-simple-form-to-map-fountains">Create a simple form to map fountains</a><ul>
+<li><a class="reference internal" href="#sections">Sections</a></li>
+<li><a class="reference internal" href="#form-subsections">Form subsections</a></li>
+<li><a class="reference internal" href="#form-elements">Form elements</a></li>
+<li><a class="reference internal" href="#finalize-the-form">Finalize the form</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="maps_handling.html"
+                        title="previous chapter">Handling datasets from and for Geopaparazzi</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="database.html"
+                        title="next chapter">The Geopaparazzi Database</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="database.html" title="The Geopaparazzi Database"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="maps_handling.html" title="Handling datasets from and for Geopaparazzi"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, HydroloGIS S.r.l..
+      Last updated on Jul 14, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

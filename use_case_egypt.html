@@ -1,0 +1,485 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>A use case &mdash; Geopaparazzi 4.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Geopaparazzi 4.4.0 documentation" href="index.html" />
+    <link rel="next" title="Projects that base on Geopaparazzi" href="projects_using_it.html" />
+    <link rel="prev" title="The Geopaparazzi Database" href="database.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="projects_using_it.html" title="Projects that base on Geopaparazzi"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="database.html" title="The Geopaparazzi Database"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="a-use-case">
+<h1>A use case<a class="headerlink" href="#a-use-case" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="use-of-geopaparazzi-in-egypt-to-create-a-map-to-improve-the-management-of-small-wastewater-treatment-plants">
+<h2>Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.<a class="headerlink" href="#use-of-geopaparazzi-in-egypt-to-create-a-map-to-improve-the-management-of-small-wastewater-treatment-plants" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p>Have you ever tried to type in google: <em>sanitation maps, sanitation coverage, sanitation or inventory tracking</em>?</p>
+<p>It is interesting to note that the agencies managing the wastewater treatment plants in the United States
+and Canada <strong>monitor and continuously update the inventory of small delocalized plants in order to optimize
+their management</strong>, while the numerous development agencies that deal with <em>sanitation in developing countries</em>
+express and declare the <strong>state of inadequacy</strong> of the system of waste treatment but <strong>do not quantify the state of art</strong>.</p>
+<p>The management of small treatment plants of domestic sewage in decentralized communities is an
+issue with different perspectives. In any place on earth it involves many actors, linking <strong>technical to cultural,
+environmental, educational and health services</strong>. It is a topic that often touches critical as well as hidden
+issues. Experts in this field are well aware of that!</p>
+<p>When you think of a small village, a rural setting with a few houses and lots of animals, or
+a peri-urban area that grew quickly and without any planning or again neighboring communities
+linked by a waterway that carries waste from upstream to valley, it is not immediat to think
+that all these places (due to the presence of man and animal) are a source of biomass.
+They are a sources of waste and organic material that often brings a high and invisible pathogenic charge.</p>
+<p><strong>Many projects related to developing countries today focus the attention on the proper disposal
+of the waste and on prevention as fundamental for the health of the inhabitants.</strong> Numerous agencies and
+associations dedicated to development cooperation have shown that untreated wastewater spilled
+into the surrounding environment without any attention is the primary vector of diseases and
+therefore often of epidemics in areas with deficits at levels of hygiene and public health
+(see the <a class="reference external" href="http://www.unhcr.org/pages/49c3646cef.html">Water, Sanitation and Hygiene</a> and
+<a class="reference external" href="http://www.wssinfo.org/about-the-jmp/introduction/">the Joint Monitoring Programme</a>).</p>
+<p>The target C of the seventh Millennium Development Goal aimed to halve by 2015 the proportion
+of people without sustainable access to safe water and basic health services. The assessment
+tool implemented in recent years has been the count of the percentage of population using the
+health service.</p>
+<p>But:</p>
+<ul class="simple">
+<li>But what is the scenario in terms of plants?</li>
+<li>Where are they?</li>
+<li>What do they produce?</li>
+<li>How much?</li>
+<li>What is the trend?</li>
+<li>What are the possible risk factors?</li>
+<li>What are the environmental characteristics of their location?</li>
+<li>And the social context?</li>
+<li>The cultural?</li>
+<li>How many and which animals contribute?</li>
+<li>What are the types of installations in operation?</li>
+</ul>
+<p>It is clear that to get a <strong>complete picture</strong> of this kind takes <strong>time</strong>, lots of <strong>data collection</strong>,
+<strong>laboratory tests</strong>, and then <strong>hypothesis, correlations, ideas</strong> and possible strategies.</p>
+<p>It is now well known that from a technical standpoint there are no prepackaged solutions
+exportable in contexts with very different boundary conditions. Some causes may seem trivial,
+but if underestimated they end up affecting the efficiency of the treatment.</p>
+<p>It should be enough to say that there are places in the world where the toilet paper is not
+thrown into the toilet; there are places where after defecation you clean up with your hand;
+others where even plastic, cloth and diapers are thrown into the toilet
+and places in which under the sink there is a shredder and everything ends up into the sewer
+system.</p>
+<p>These are information that decide the diameter of the pipes even before the type of treatment
+and planting. And if the diameter of the tubes is wrong the whole system becomes meaningless.</p>
+<p>How many socio-cultural aspects exist in the various regions of the world that we
+do not know, that we can&#8217;t even imagine, that can make you smile or frighten, but that in
+the construction of a plant have the same weight as the distribution of BOD5?</p>
+<p>There is no doubt that a tool that allows you to collect data of this kind, to catalog them,
+and most important geotag them to make them visible on a map and return the state of the existing
+as well as facilitates the correlation is crucial in the whole process of planning and
+improvement of health services in developing contexts.</p>
+</div>
+<div class="section" id="monitoring-activities">
+<h3>Monitoring activities<a class="headerlink" href="#monitoring-activities" title="Permalink to this headline">¶</a></h3>
+<p>During fall of 2010 Geopaparazzi has been used in the monitoring of <strong>small waste water treatment
+plants in decentralized communities</strong> of the Nile Delta, in a thesis project in Environmental
+Engineering within a larger project of technical development cooperation (<a class="reference external" href="http://www.eawag.ch/forschung/sandec/gruppen/sesp/esriss/index_EN">ESRISS project</a>).</p>
+<p>The idea was to be able to do an <strong>effective analysis and mapping of the plants</strong> in the area of
+the Nile Delta to <strong>compare different types of treatment and analyze the parameters that contribute
+to the success or failure of a solution</strong>. The result of this campaign suggested the usefulness
+of this application and the need to widen its use to build the existing maps that consider
+all the complexity of the factors involved in the search for solutions to improve the health
+conditions of the contexts under analysis. Only in this way it is possible to build an updated database
+on the basis of which appropriate solutions can be proposed.</p>
+<p>The main goal has been to integrate missing plants data.</p>
+<p>To give an idea, information about the available data are shown for some of the plants:</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/07_plant1.png"><img alt="_images/07_plant1.png" src="_images/07_plant1.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">The El Moufty plant, the one with most available information.</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/08_plant2.png"><img alt="_images/08_plant2.png" src="_images/08_plant2.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">The OM SEN plant, with no lab information available and some general information missing.</span></p>
+</div>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/09_plant3.png"><img alt="_images/09_plant3.png" src="_images/09_plant3.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">The EL KOLEAAH plant, with no lab information available and some general information missing.</span></p>
+</div>
+</div>
+<div class="section" id="technical-background">
+<h3>Technical background<a class="headerlink" href="#technical-background" title="Permalink to this headline">¶</a></h3>
+<p>Based on the available data a dedicated form has been designed to collect in a standardized
+way as much data as possible.</p>
+<p>Once the form has been loaded into Geopaparazzi, it has been possible to access it from the
+<a class="reference internal" href="main_view.html#notes"><span>add notes</span></a> section.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/01_tags1.png"><img alt="_images/01_tags1.png" src="_images/01_tags1.png" style="height: 300px;" /></a>
+</div>
+<p>The form has been divided into 5 main sections to make it easier to read:</p>
+<ul class="simple">
+<li>General data</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/02_general.png"><img alt="_images/02_general.png" src="_images/02_general.png" style="height: 300px;" /></a>
+</div>
+<ul class="simple">
+<li>Construction info</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/03_construction.png"><img alt="_images/03_construction.png" src="_images/03_construction.png" style="height: 300px;" /></a>
+</div>
+<ul class="simple">
+<li>Technical data</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/04_technical.png"><img alt="_images/04_technical.png" src="_images/04_technical.png" style="height: 300px;" /></a>
+</div>
+<ul class="simple">
+<li>Lab data: this section has been added even if it is quite impossible to
+gather lab data in the field. But since the form based notes can be opened
+and modified at any time, the section has been added for further update</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/05_lab.png"><img alt="_images/05_lab.png" src="_images/05_lab.png" style="height: 300px;" /></a>
+</div>
+<ul class="simple">
+<li>Media</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/06_media.png"><img alt="_images/06_media.png" src="_images/06_media.png" style="height: 300px;" /></a>
+</div>
+</div>
+<div class="section" id="the-complete-json-tags-file">
+<h3>The complete json tags file<a class="headerlink" href="#the-complete-json-tags-file" title="Permalink to this headline">¶</a></h3>
+<p>For completeness the tags file that creates the above form is
+attached here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+
+    <span class="p">{</span>
+        <span class="s">&quot;sectionname&quot;</span><span class="p">:</span> <span class="s">&quot;WWT-plant&quot;</span><span class="p">,</span>
+        <span class="s">&quot;sectiondescription&quot;</span><span class="p">:</span> <span class="s">&quot;WWT-plant&quot;</span><span class="p">,</span>
+        <span class="s">&quot;forms&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+            <span class="s">&quot;formname&quot;</span><span class="p">:</span> <span class="s">&quot;General data&quot;</span><span class="p">,</span>
+            <span class="s">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Plant name&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;El Moufty Plant&quot;</span><span class="p">,</span>
+             <span class="s">&quot;islabel&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;yes&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Local Responsible Admin&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;Kafr el Sheikh&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;District&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;Sidi Salim&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Village&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;El Moufty&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+             <span class="p">]</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s">&quot;formname&quot;</span><span class="p">:</span> <span class="s">&quot;Construction info&quot;</span><span class="p">,</span>
+            <span class="s">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;WWTP technology&quot;</span><span class="p">,</span>
+             <span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                 <span class="s">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;Stabilization ponds (GTZ model)&quot;</span><span class="p">}</span>                 <span class="p">]</span>
+             <span class="p">},</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;stringcombo&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Designed by&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;Prof M.Abdel Azeem&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;string&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Year of construction&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;date&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Startup&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;date&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+             <span class="p">]</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s">&quot;formname&quot;</span><span class="p">:</span> <span class="s">&quot;Technical data&quot;</span><span class="p">,</span>
+            <span class="s">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Served population [inhab]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;3000.0&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Plant capacity [m3/d]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;450.0&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Surface [m2]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;6000.0&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Pro capita inflow [m3/inhab d]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;0.066&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Pro capita water use [l/inhab d]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;111.0&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Inflow [m3/d]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;200.0&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Outflow quality analysis&quot;</span><span class="p">,</span>
+             <span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                 <span class="s">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;monthly&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;yearly&quot;</span><span class="p">}</span>                 <span class="p">]</span>
+             <span class="p">},</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;stringcombo&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+             <span class="p">]</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s">&quot;formname&quot;</span><span class="p">:</span> <span class="s">&quot;Lab data&quot;</span><span class="p">,</span>
+            <span class="s">&quot;formitems&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;PH&quot;</span><span class="p">,</span>
+             <span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">{</span>
+                 <span class="s">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;PH &lt; 5&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;5 &lt; PH &lt; 7&quot;</span><span class="p">},</span>
+                     <span class="p">{</span><span class="s">&quot;item&quot;</span><span class="p">:</span> <span class="s">&quot;PH &gt; 7&quot;</span><span class="p">}</span>                 <span class="p">]</span>
+             <span class="p">},</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;PH &lt; 5&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;stringcombo&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;BOD in [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;BOD out [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Coliforms in [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Coliforms out [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;COD in [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;COD out [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Suspended solids in [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+<span class="p">,</span>
+        <span class="p">{</span>
+             <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;Suspended solids out [mg/l]&quot;</span><span class="p">,</span>
+             <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+             <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;double&quot;</span><span class="p">,</span>
+             <span class="s">&quot;mandatory&quot;</span><span class="p">:</span> <span class="s">&quot;no&quot;</span>
+        <span class="p">}</span>
+             <span class="p">]</span>
+        <span class="p">}</span>
+         <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="acknowledgement">
+<h3>Acknowledgement<a class="headerlink" href="#acknowledgement" title="Permalink to this headline">¶</a></h3>
+<p>This usecase is a very small and superficial extract of the Geopaparazzi
+related part from the master thesis of Vania Zillante: <em>ANALISI DI TECNOLOGIE
+PER LA DEPURAZIONE DEI REFLUI DOMESTICI IN COMUNITÀ DECENTRATE DEL DELTA
+DEL NILO E PROPOSTA PER IL TRATTAMENTO DELLA FRAZIONE ORGANICA. APPLICAZIONE
+DI UN SOFTWARE OPEN SOURCE PER LA GEOREFERENZIAZIONE DEGLI IMPIANTI ESISTENTI.</em>.</p>
+<p>Focus has been put only on the data collection and form creation. It is beyond
+the scope of this document to describe or comment any other of the contents
+of Vania&#8217;s thesis.</p>
+<p>Vania&#8217;s thesis also won the scolarship prize by ABL <strong>Premio Giovanni Lorenzin</strong>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/ic_launcher.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">A use case</a><ul>
+<li><a class="reference internal" href="#use-of-geopaparazzi-in-egypt-to-create-a-map-to-improve-the-management-of-small-wastewater-treatment-plants">Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#monitoring-activities">Monitoring activities</a></li>
+<li><a class="reference internal" href="#technical-background">Technical background</a></li>
+<li><a class="reference internal" href="#the-complete-json-tags-file">The complete json tags file</a></li>
+<li><a class="reference internal" href="#acknowledgement">Acknowledgement</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="database.html"
+                        title="previous chapter">The Geopaparazzi Database</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="projects_using_it.html"
+                        title="next chapter">Projects that base on Geopaparazzi</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="projects_using_it.html" title="Projects that base on Geopaparazzi"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="database.html" title="The Geopaparazzi Database"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, HydroloGIS S.r.l..
+      Last updated on Jul 14, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

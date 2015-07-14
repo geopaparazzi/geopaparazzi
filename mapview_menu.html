@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Map View Menu &mdash; Geopaparazzi 4.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Geopaparazzi 4.4.0 documentation" href="index.html" />
+    <link rel="next" title="Settings &amp; Preferences" href="settings.html" />
+    <link rel="prev" title="The Map View" href="mapview.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="settings.html" title="Settings &amp; Preferences"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mapview.html" title="The Map View"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-map-view-menu">
+<span id="mapviewmenu"></span><span id="index-0"></span><h1>The Map View Menu<a class="headerlink" href="#the-map-view-menu" title="Permalink to this headline">¶</a></h1>
+<p>The map menu gives the possibility to access some additional map tools:</p>
+<ul class="simple">
+<li>access the gps data list</li>
+<li>access the spatialite data list.</li>
+<li>toggle the scalebar</li>
+<li>open the compass</li>
+<li>toggle automatic centering on the gps position</li>
+<li>center the view on the current base map (if possible)</li>
+<li>go to a location</li>
+<li>share the current position</li>
+<li>view the data visible in the viewport in <a class="reference external" href="http://www.mixare.org/">Mixare</a></li>
+<li>import data from the underlying mapsforge map</li>
+</ul>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/13_map_menu.png"><img alt="_images/13_map_menu.png" src="_images/13_map_menu.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The upper part of the map menu.</span></p>
+</div>
+<div class="section" id="gps-data-list">
+<span id="gpsdatalist"></span><span id="index-1"></span><h2>Gps data list<a class="headerlink" href="#gps-data-list" title="Permalink to this headline">¶</a></h2>
+<p>The gps data list shows the data surveyed, both points and tracks.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/14_gpsdatalist.png"><img alt="_images/14_gpsdatalist.png" src="_images/14_gpsdatalist.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The gps data view. In the upper part the notes button, in the
+lower part the gps logs list.</span></p>
+</div>
+<p>The <strong>notes</strong> are all kept inside a single layer and therefore have a dedicated
+panel in the upper part.</p>
+<p>From there the user can change the visibility.</p>
+<p>Notes can be visualized as icons or as circular shapes. The size, color and opacity can be customized by
+the user. This can be usefull in those cases in which many notes have to coexist in a small space
+for better readability.</p>
+<p>It is also possible to show the label for the note and customize its size and halo.</p>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/15_notes_properties.png"><img alt="_images/15_notes_properties.png" src="_images/15_notes_properties.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The notes properties panel.</span></p>
+</div>
+<p>Below the notes panel, a checkbox can be used to toggled visibility of
+image notes.</p>
+<p>The <strong>list of gps logs</strong> gives the possibility to customize the
+logs. It is possible to change the visibility of the single track
+using the checkbox, but also to tap on it and enter its properties panel.</p>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="_images/16_log_properties.png"><img alt="_images/16_log_properties.png" src="_images/16_log_properties.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The gps log properties panel.</span></p>
+</div>
+<p>From the properties panel it is possible to:</p>
+<ul class="simple">
+<li>change the name of the track</li>
+<li>check the start and end date and time</li>
+<li>update and read the track length</li>
+<li>change the track stroke width</li>
+<li>change the track stroke color</li>
+<li>zoom to the first point of the track in the map view</li>
+<li>chart the track. The chart has two axes, speed [m/s] on the left
+and elevation [m.s.l.] on the right.</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/17_chart_log.png"><img alt="_images/17_chart_log.png" src="_images/17_chart_log.png" style="height: 300px;" /></a>
+</div>
+<ul class="simple">
+<li>remove the track</li>
+</ul>
+</div>
+<div class="section" id="spatialite-data-list">
+<span id="spatialitedatalist"></span><span id="index-2"></span><h2>Spatialite data list<a class="headerlink" href="#spatialite-data-list" title="Permalink to this headline">¶</a></h2>
+<p>To be done...</p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="_images/18_spatialite_data_list.png"><img alt="_images/18_spatialite_data_list.png" src="_images/18_spatialite_data_list.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The list of spatialite based data.</span></p>
+</div>
+</div>
+<div class="section" id="go-to">
+<span id="goto"></span><span id="index-3"></span><h2>Go to<a class="headerlink" href="#go-to" title="Permalink to this headline">¶</a></h2>
+<p>The go to function has two possibilities:</p>
+<blockquote>
+<div><ul class="simple">
+<li>go to coordinate</li>
+<li>use geocoding and/or routing</li>
+</ul>
+</div></blockquote>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/19_goto1.png"><img alt="_images/19_goto1.png" src="_images/19_goto1.png" style="width: 300px;" /></a>
+</div>
+<p>In the <strong>go to coordinate</strong> panel it is possible to insert lat/long
+coordinates and navigate to the inserted point on the map view:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/20_goto_coord.png"><img alt="_images/20_goto_coord.png" src="_images/20_goto_coord.png" style="width: 300px;" /></a>
+</div>
+<p>Through geocoding it is possible to insert some address and find
+its location (uses google maps geocoding).</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/21_goto_point.png"><img alt="_images/21_goto_point.png" src="_images/21_goto_point.png" style="width: 300px;" /></a>
+</div>
+<p>From the same panel it is possible to create a route from the
+current position to the inserted location.</p>
+<p>The services that can be used are <a class="reference external" href="http://project-osrm.org/">OSRM</a>,
+<a class="reference external" href="http://developer.mapquest.com/">MapQuest</a> and
+<a class="reference external" href="https://graphhopper.com/">Graphhopper</a>.</p>
+<div class="figure align-center" id="id6">
+<a class="reference internal image-reference" href="_images/23_goto_route_api.png"><img alt="_images/23_goto_route_api.png" src="_images/23_goto_route_api.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The routing service selection dialog with all supported services.</span></p>
+</div>
+<p>For both MapQuest and Graphhopper the user will need to register to their website
+and ask for an API-KEY. That key can be inserted in the Geopaparazzi settings.
+If no key is available, those two routing services will not appear in the available
+services choice list.</p>
+<div class="figure align-center" id="id7">
+<a class="reference internal image-reference" href="_images/22_goto_route_noapi.png"><img alt="_images/22_goto_route_noapi.png" src="_images/22_goto_route_noapi.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">If no API-KEY is supplied, only OSRM is proposed.</span></p>
+</div>
+<p>Once the OK button is tapped, the route is calculated by the service
+starting from the current map center to the destination point.
+The route is then downloaded and placed in the gps logs tracks.</p>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="_images/24_route_rome.png"><img alt="_images/24_route_rome.png" src="_images/24_route_rome.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The fresh downloaded route from Bolzano to Rome.</span></p>
+</div>
+</div>
+<div class="section" id="share-position">
+<span id="index-4"></span><h2>Share position<a class="headerlink" href="#share-position" title="Permalink to this headline">¶</a></h2>
+<p>The <em>share position</em> entry opens the usual sharing dialog of Android:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/25_share1.png"><img alt="_images/25_share1.png" src="_images/25_share1.png" style="width: 300px;" /></a>
+</div>
+<p>If for example <a class="reference external" href="https://telegram.org/">telegram</a> is chosen, the sent link will
+look like:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/26_telegram.png"><img alt="_images/26_telegram.png" src="_images/26_telegram.png" style="height: 300px;" /></a>
+</div>
+</div>
+<div class="section" id="import-mapsforge-data">
+<span id="importmapsforgedata"></span><span id="index-5"></span><h2>Import mapsforge data<a class="headerlink" href="#import-mapsforge-data" title="Permalink to this headline">¶</a></h2>
+<p>The mapsforge tiles are generated on the device from a particular vector format.
+This means that there are information available in the database. Problem is that,
+very very simply put, the information contained is extracted differently at
+different zoom levels, because in fact the library and the format have been done
+that way to allow best rendering performance.</p>
+<p>But still it is possible to extract almost everything we see, which is nice.</p>
+<p>Let&#8217;s see how this works. <strong>For this to work it is mandatory that the loaded
+background map is of type &#8220;map&#8221;</strong>.
+Assume you have a job to do, are out in the field and want
+view information overlayed on the ortofoto pictures from the local WMS service.</p>
+<p>Well, the map file you get from mapsforge looks like the following:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge1.png"><img alt="_images/27_mapsforge1.png" src="_images/27_mapsforge1.png" style="width: 300px;" /></a>
+</div>
+<p>Once the <em>import mapsforge data</em> has been chosen, its panel appears:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge2.png"><img alt="_images/27_mapsforge2.png" src="_images/27_mapsforge2.png" style="width: 300px;" /></a>
+</div>
+<p>From the view you can see that 2 types of data can be imported: points and ways.</p>
+<p><strong>Points</strong></p>
+<p>Since the points are often visible on a different zoomlevel then the current,
+also 3 zoomlevels below the current are investigated to extract data and
+double points are not considered. So if you start this at zoomlevel 16,
+you will also get 17, 18, 19. Since the same are at a different zoomlevel
+will have many more tiles, about 10000 tiles are read to import the data.</p>
+<p>You can add a filter text to import only tags containing a given text
+or exclude all those containing the text.</p>
+<p>Points are imported in the current projectdatabase and saved as forms
+notes containing all the values Openstreetmap has. As such they can
+also be edited.</p>
+<p>All imported notes have a (MF) in their name. That is done so one can quickly
+select and remove them. Believe us, that is a feature you want to have since
+such imports can generate very crowded notes lists.</p>
+<div class="figure align-center" id="id9">
+<a class="reference internal image-reference" href="_images/27_mapsforge10.png"><img alt="_images/27_mapsforge10.png" src="_images/27_mapsforge10.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The notes list after a mapsforge import.</span></p>
+</div>
+<p><strong>Ways</strong></p>
+<p>Many types of ways are stored in the mapsforge map files and many of them
+are actually related to areas.</p>
+<p>The user can choose to import:</p>
+<ul class="simple">
+<li>ways: roads, railways, cableways and similar</li>
+<li>waterways: lines that represent water</li>
+<li>contours: contour lines if they are available</li>
+</ul>
+<p>Since these data are heavy, the data are imported into a dedicated
+spatialite database. A database for mapsforge extracted data is automatically
+created if there is none present. You will find a database named
+<strong>mapsforge_extracted.sqlite</strong> always present in your maps folder.
+And you will find 3 layers always present in the spatialite data layers:
+<strong>osm_waterlines, osm_roads and osm_contours</strong>.</p>
+<div class="figure align-center" id="id10">
+<a class="reference internal image-reference" href="_images/27_mapsforge3.png"><img alt="_images/27_mapsforge3.png" src="_images/27_mapsforge3.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">The mapsforge database and layer that host imported data.</span></p>
+</div>
+<p>Just select the data you want to import and push the start button.
+In the case you selected all data types, you should see first an
+import dialog like this:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge4.png"><img alt="_images/27_mapsforge4.png" src="_images/27_mapsforge4.png" style="width: 300px;" /></a>
+</div>
+<p>and then something like this:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge5.png"><img alt="_images/27_mapsforge5.png" src="_images/27_mapsforge5.png" style="width: 300px;" /></a>
+</div>
+<p>Depending on what has been imported first, the labels might not be coming from
+the right osm field. In that case it can be simply changed in the spatialite
+layer settings. Refer to the <a class="reference internal" href="#spatialitedatalist"><span>spatialite data list section</span></a>.</p>
+<p>What happens in the case we use a map that also shows contour lines? To do so, we want
+to clear those layers. The fastest way to do so is to simply delete the mapsforge database
+and let Geopaparazzi recreate it on restart.</p>
+<p>After doing so and loading a map with contours the same region will import:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge7.png"><img alt="_images/27_mapsforge7.png" src="_images/27_mapsforge7.png" style="width: 300px;" /></a>
+</div>
+<p>To have a better idea, change the background map to something different. Here I also changed
+the contours color to white:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge8.png"><img alt="_images/27_mapsforge8.png" src="_images/27_mapsforge8.png" style="width: 300px;" /></a>
+</div>
+<p>Label support is not very advanced, so they get readable only once you zoom in:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/27_mapsforge9.png"><img alt="_images/27_mapsforge9.png" src="_images/27_mapsforge9.png" style="width: 300px;" /></a>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/ic_launcher.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Map View Menu</a><ul>
+<li><a class="reference internal" href="#gps-data-list">Gps data list</a></li>
+<li><a class="reference internal" href="#spatialite-data-list">Spatialite data list</a></li>
+<li><a class="reference internal" href="#go-to">Go to</a></li>
+<li><a class="reference internal" href="#share-position">Share position</a></li>
+<li><a class="reference internal" href="#import-mapsforge-data">Import mapsforge data</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="mapview.html"
+                        title="previous chapter">The Map View</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="settings.html"
+                        title="next chapter">Settings &amp; Preferences</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="settings.html" title="Settings &amp; Preferences"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mapview.html" title="The Map View"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, HydroloGIS S.r.l..
+      Last updated on Jul 14, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

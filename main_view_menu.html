@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Main View Menu &mdash; Geopaparazzi 4.4.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Geopaparazzi 4.4.0 documentation" href="index.html" />
+    <link rel="next" title="The Map View" href="mapview.html" />
+    <link rel="prev" title="The Main View" href="main_view.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="mapview.html" title="The Map View"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="main_view.html" title="The Main View"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-main-view-menu">
+<span id="mainmenu"></span><span id="index-0"></span><h1>The Main View Menu<a class="headerlink" href="#the-main-view-menu" title="Permalink to this headline">¶</a></h1>
+<p>The main presents the following options:</p>
+<ul class="simple">
+<li><strong>Select tile source</strong>: allows the selection of a map tile source to be used as base map</li>
+<li><strong>Create new project</strong>: this will create a new project on the sdcard. A timestamp based name is proposed to the user</li>
+<li><strong>Load existing project</strong>: gives the possibility to browse the filesystem to select an existing geopaparazzi project folder (the one with the database in it) to load it</li>
+<li><strong>Settings</strong>: accesses the settings page</li>
+<li><strong>About</strong>: visualises the about page, which contains infos, links and acknowledgements</li>
+<li><strong>Exit</strong>: shuts down geopaparazzi</li>
+</ul>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/01_menu.png"><img alt="_images/01_menu.png" src="_images/01_menu.png" style="width: 300px;" /></a>
+</div>
+<div class="section" id="select-tile-source">
+<span id="selecttilesource"></span><span id="index-1"></span><h2>Select tile source<a class="headerlink" href="#select-tile-source" title="Permalink to this headline">¶</a></h2>
+<p>From the main menu, when pushing the tile source button, the list of available tile sources are presented,
+properly divided by path inside the maps folder on the device:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/02_select_tiles.png"><img alt="_images/02_select_tiles.png" src="_images/02_select_tiles.png" style="width: 300px;" /></a>
+</div>
+<p>Each map source has a name and a type description between brackets.</p>
+<p>At the current time 4 types are supported:</p>
+<ul class="simple">
+<li>Map</li>
+<li>Mapurl</li>
+<li>MBTiles</li>
+<li>RasterLite</li>
+</ul>
+<p>The <a class="reference internal" href="maps.html#maps"><span>supported datasets</span></a> section lists and describes all supported
+map types.</p>
+<p>Through the button at the top of the view the user can filter the source
+types to show.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/03_select_tiles.png"><img alt="_images/03_select_tiles.png" src="_images/03_select_tiles.png" style="width: 300px;" /></a>
+</div>
+<p>which makes searching simpler when a lot of sources are present on the device.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/04_select_tiles.png"><img alt="_images/04_select_tiles.png" src="_images/04_select_tiles.png" style="width: 300px;" /></a>
+</div>
+<p>A few map sources, as for example <strong>mapnik.mapurl</strong> and <strong>opencycle.mapurl</strong> are available by default.</p>
+<p>To appear in the sources list, all the data sources need to be placed
+in the <strong>folder named &#8220;maps&#8221; in the root of the sdcard</strong>.
+We will refer to it on this page as <strong>maps</strong> folder.</p>
+<p>The user can change the location of the maps folder from the <a class="reference internal" href="settings.html#settings"><span>Settings &amp; Preferences</span></a>.</p>
+</div>
+<div class="section" id="create-a-new-project">
+<span id="newproject"></span><span id="index-2"></span><h2>Create a new project<a class="headerlink" href="#create-a-new-project" title="Permalink to this headline">¶</a></h2>
+<p>When a new project is created, the user is prompted to insert a name
+for the new project file. This is the name that will be given to the
+database file that contains all data surveyed in Geopaparazzi.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/05_new_project.png"><img alt="_images/05_new_project.png" src="_images/05_new_project.png" style="width: 300px;" /></a>
+</div>
+<p>Once the name is defined, an new empty database is created and Geopaparazzi is
+restarted and opened loading the new created project.</p>
+</div>
+<div class="section" id="load-an-existing-project">
+<span id="loadproject"></span><span id="index-3"></span><h2>Load an existing project<a class="headerlink" href="#load-an-existing-project" title="Permalink to this headline">¶</a></h2>
+<p>Existing projects can be loaded through a simple file browser
+from within Geoapaparazzi:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/06_load_project.png"><img alt="_images/06_load_project.png" src="_images/06_load_project.png" style="width: 300px;" /></a>
+</div>
+<p>The Geopaparazzi project are visualized with a different icon to
+help the user to choose the proper files.</p>
+</div>
+<div class="section" id="settings-preferences">
+<h2>Settings &amp; Preferences<a class="headerlink" href="#settings-preferences" title="Permalink to this headline">¶</a></h2>
+<p>All settings and preferences are described in <a class="reference external" href="settings">the dedicated section</a>.</p>
+</div>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>The about page list information about the current version of
+Geopaparazzi, as well as information about the authors and
+contributors.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/07_about.png"><img alt="_images/07_about.png" src="_images/07_about.png" style="width: 300px;" /></a>
+</div>
+</div>
+<div class="section" id="exit">
+<h2>Exit<a class="headerlink" href="#exit" title="Permalink to this headline">¶</a></h2>
+<p>The exit button closes Geopaparazzi and stoppes any ongoing logging and
+sensor activity.</p>
+<p>This might seem obvious, but it is important to note that this is the
+<strong>only way to properly close Geopaparazzi</strong>.</p>
+<p>Pushing the home button of the device will not close Geopaparazzi,
+which will continue any activity started.</p>
+<p>This is important, because it makes very long loggings possible even
+if interrupted by phone calls or other uses of the device.</p>
+<p>Often users that ignore this, after pushing the
+home screen and thinking that Geopaparazzi has been closed,
+experience a faster battery drop, because of the active application
+in the background.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/ic_launcher.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Main View Menu</a><ul>
+<li><a class="reference internal" href="#select-tile-source">Select tile source</a></li>
+<li><a class="reference internal" href="#create-a-new-project">Create a new project</a></li>
+<li><a class="reference internal" href="#load-an-existing-project">Load an existing project</a></li>
+<li><a class="reference internal" href="#settings-preferences">Settings &amp; Preferences</a></li>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#exit">Exit</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="main_view.html"
+                        title="previous chapter">The Main View</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mapview.html"
+                        title="next chapter">The Map View</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="mapview.html" title="The Map View"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="main_view.html" title="The Main View"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Geopaparazzi 4.4.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, HydroloGIS S.r.l..
+      Last updated on Jul 14, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
