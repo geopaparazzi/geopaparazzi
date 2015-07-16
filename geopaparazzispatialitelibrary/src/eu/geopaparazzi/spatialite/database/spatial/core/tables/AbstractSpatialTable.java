@@ -56,7 +56,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     protected String tableName;
     /**
-     * A name for the style-name.
+     * A name for the table-style name.
      */
     protected String styleName;
     /**
@@ -123,6 +123,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      *
      * @param databasePath the db path.
      * @param tableName    a name for the table.
+     * @param styleName    a name for the table-style.
      * @param mapType      the map type.
      * @param srid         srid of the table.
      * @param minZoom      min zoom.
@@ -131,11 +132,11 @@ public abstract class AbstractSpatialTable implements Serializable {
      * @param centerY      center y.
      * @param bounds       the bounds as [w,s,e,n]
      */
-    public AbstractSpatialTable(String databasePath, String tableName, String mapType, String srid, int minZoom, int maxZoom,
+    public AbstractSpatialTable(String databasePath, String tableName, String styleName, String mapType, String srid, int minZoom, int maxZoom,
                                 double centerX, double centerY, double[] bounds) {
         this.databasePath = databasePath;
         this.tableName = tableName;
-        this.styleName = "%"; // for RasterLite2: Style-Name as wildcard
+        this.styleName = styleName; // for RasterLite2: Style-Name (only 1) or empty, resurved for others
         this.mapType = mapType;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
@@ -221,6 +222,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      * <p> - only one style supported. Where than more than one: others will be ignored
      * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
      * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
+     * <p>Both Raster and Vectors can have a table-style]
      *
      * @return the name of the {@link AbstractSpatialTable}.
      */

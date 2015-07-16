@@ -83,7 +83,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 fieldNamesToTypeMap.put(name, sqlCreationString + ";" + tableType.toUpperCase(Locale.US));
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE",
+            GPLog.error("DaoSpatialite",
                     "collectTableFields[" + tableName + "] sql[" + s_sql_command + "] db[" + database.getFilename()
                             + "]", e_stmt
             );
@@ -165,7 +165,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 }
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE", "spatialiteRetrieveBounds sql[" + s_select_bounds + "] db[" + database.getFilename() + "]",
+            GPLog.error("DaoSpatialite", "spatialiteRetrieveBounds sql[" + s_select_bounds + "] db[" + database.getFilename() + "]",
                     e_stmt);
         } finally {
             if (statement != null)
@@ -204,7 +204,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 return i_count;
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE", "spatialiteCountGeometries sql[" + s_CountGeometries
+            GPLog.error("DaoSpatialite", "spatialiteCountGeometries sql[" + s_CountGeometries
                     + "] db[" + database.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null)
@@ -473,7 +473,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 return new double[]{area, length};
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE",
+            GPLog.error("DaoSpatialite",
                     "getAreaAndLengthById[" + tableName + "] sql[" + selectQuery + "] db[" + database.getFilename()
                             + "]", e_stmt
             );
@@ -483,5 +483,29 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             }
         }
         return null;
+    }
+    /**
+     * To be used only when tests are after changes in these very important queries.
+     * - called, when needed, in DatabaseCreationAndProperties.checkDatabaseTypeAndValidity()
+     */
+    public static void dump_GeneralQueriesPreparer()  {
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VECTOR_LAYERS_QUERY_EXTENT_VALID_V4["+ GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_VALID_V4.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4["+ GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VECTOR_LAYERS_QUERY_EXTENT_LIST_V4["+ GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_LIST_V4.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_VALID_V4["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V4.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_INVALID_V4["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V4.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_LIST_V4["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_LIST_V4.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_VALID_V3["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V3.getQuery()+"] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_INVALID_V3["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V3.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: LAYERS_QUERY_EXTENT_LIST_V3["+ GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_LIST_V3.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VIEWS_QUERY_EXTENT_VALID_V3["+ GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_VALID_V3.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VIEWS_QUERY_EXTENT_INVALID_V3["+ GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_INVALID_V3.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: VIEWS_QUERY_EXTENT_LIST_V3["+ GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_LIST_V3.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: RASTER_COVERAGES_QUERY_EXTENT_VALID_V42["+ GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42["+ GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: RASTER_COVERAGES_QUERY_EXTENT_LIST_V42["+ GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_LIST_V42.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_VALID_R10.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_INVALID_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_INVALID_R10.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_LIST_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_LIST_R10.getQuery() + "] ");
     }
 }

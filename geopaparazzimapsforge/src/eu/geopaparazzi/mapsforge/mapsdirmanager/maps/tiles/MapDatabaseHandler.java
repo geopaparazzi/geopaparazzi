@@ -115,7 +115,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
         if (mapTableList == null || forceRead) {
             mapTableList = new ArrayList<MapTable>();
             double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
-            MapTable table = new MapTable(databasePath, tableName, LibraryConstants.SRID_MERCATOR_3857, minZoom, maxZoom,
+            MapTable table = new MapTable(databasePath, tableName,"", LibraryConstants.SRID_MERCATOR_3857, minZoom, maxZoom,
                     centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
             mapTableList.add(table);

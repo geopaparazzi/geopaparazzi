@@ -198,6 +198,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         String vector_extent = ""; // term used when building the sql
         String vector_value = ""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name = "";
+        String style_name = "";
         String geometry_column = "";
         int spatialIndex = 1;
         if ((VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT) && (spatialVectorMapErrors.size() > 0)) {
@@ -209,12 +210,13 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 vector_value = vector_entry.getValue();
 //                vector_data = "";
                 String[] sa_string = vector_key.split(";");
-                if (sa_string.length == 5) {
+                if (sa_string.length == 6) {
                     table_name = sa_string[0];
                     geometry_column = sa_string[1];
 //                    String s_layer_type = sa_string[2];
 //                    String s_ROWID_PK = sa_string[3];
 //                    int i_view_read_only = Integer.parseInt(sa_string[4]);
+                    style_name = sa_string[5];
                     sa_string = vector_value.split(";");
                     if (sa_string.length == 7) { // vector_value[1;2;2913;1;row_count;extent_min_x,extent_min_y,extent_max_x,extent_max_y;last_verified]
                         String s_geometry_type = sa_string[0];
@@ -370,6 +372,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         String vector_extent = ""; // term used when building the sql
         String vector_value = ""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name = "";
+        String style_name = "";
         String geometry_column = "";
         String[] sa_string;
         // for pre-Spatialite : Views and Table must be done in 2 steps
@@ -419,8 +422,9 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     // Do not call RecoverSpatialIndex
                     // for SpatialViews
                     sa_string = vector_key.split(";");
-                    if (sa_string.length == 5) {
+                    if (sa_string.length == 6) {
                         table_name = sa_string[0];
+                        style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
                         String ROWID_PK = SPL_Views.getViewRowid(database, table_name, SpatialiteDatabaseType.SPATIALITE3);
@@ -488,16 +492,18 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @throws Exception if something goes wrong.
      */
     static void getSpatialVectorMap_V4(Database database, HashMap<String, String> spatialVectorMap,
-                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages)
+                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles)
             throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
         String vector_data = ""; // term used when building the sql
         String vector_extent = ""; // term used when building the sql
         String vector_value = ""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name = "";
+        String style_name = "";
         String geometry_column = "";
         String[] sa_string;
         Stmt statement = null;
+        Stmt sub_query = null;
         try {
             statement = database.prepare(GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery());
             while (statement.step()) {
@@ -520,12 +526,15 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
                 vector_extent = "";
+                // sa_string = vector_key.split(";");
+                // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] vector_key["+ vector_key+"] length["+sa_string.length+"]");
                 if (vector_key.contains("SpatialView")) { // berlin_1000;map_linestring;SpatialView;ROWID
                     // Do not call RecoverSpatialIndex
                     // for SpatialViews
                     sa_string = vector_key.split(";");
-                    if (sa_string.length == 5) {
+                    if (sa_string.length == 6) {
                         table_name = sa_string[0];
+                        style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
                         String ROWID_PK = SPL_Views.getViewRowid(database, table_name, SpatialiteDatabaseType.SPATIALITE4);
@@ -579,6 +588,74 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     vector_data = statement.column_string(1);
                     vector_extent = "";
                     vector_extent = statement.column_string(2);
+                    if ((b_raster_styles) || (b_vector_styles))
+                    {
+                     sa_string = vector_key.split(";");
+                     if (sa_string.length == 6) 
+                     {
+                      table_name = sa_string[0];
+                      style_name ="";
+                      if (b_raster_styles)
+                      {
+                       String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
+                       try 
+                       {
+                        sub_query = database.prepare(s_sql);
+                        while (sub_query.step()) 
+                        {
+                         style_name = sub_query.column_string(0);
+                        }
+                       }
+                       catch (jsqlite.Exception e_stmt) 
+                       {
+                        GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
+                        + s_sql + "] db[" + database.getFilename() + "]", e_stmt);
+                       }
+                       finally 
+                       {
+                        if (sub_query != null) 
+                        {
+                         sub_query.close();
+                        }
+                       }
+                       if ((!style_name.equals("default")) && (!style_name.equals("")))
+                       {
+                        vector_key = vector_key.replace("default", style_name);
+                       }
+                       // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] table_name["+ table_name+"] vector_key["+ vector_key+"] sql["+s_sql+"]");
+                      }
+                      if ((b_vector_styles) && (style_name.equals("default")))
+                      {
+                       /*
+                       String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
+                       try 
+                       {
+                        sub_query = database.prepare(s_sql);
+                        while (sub_query.step()) 
+                        {
+                         style_name = sub_query.column_string(0);
+                        }
+                       }
+                       catch (jsqlite.Exception e_stmt) 
+                       {
+                        GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
+                        + s_sql + "] db[" + database.getFilename() + "]", e_stmt);
+                       }
+                       finally 
+                       {
+                        if (sub_query != null) 
+                        {
+                         sub_query.close();
+                        }
+                       }
+                       if if ((!style_name.equals("default")) && (!style_name.equals("")))
+                       {
+                        vector_key = vector_key.replace("default", style_name);
+                       }  
+                       */                     
+                      }
+                     }
+                    }
                     if (vector_extent != null) { // mj10777: for some reason, this is being filled
                         // twice
                         spatialVectorMap.put(vector_key, vector_data + vector_extent);

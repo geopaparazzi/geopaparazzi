@@ -158,7 +158,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
             rasterTableList = new ArrayList<SpatialRasterTable>();
             open();
             double[] d_bounds = {this.boundsWest, this.boundsSouth, this.boundsEast, this.boundsNorth};
-            SpatialRasterTable table = new SpatialRasterTable(databasePath, databaseFileNameNoExtension, "3857", this.minZoom,
+            SpatialRasterTable table = new SpatialRasterTable(databasePath, databaseFileNameNoExtension,"", "3857", this.minZoom,
                     this.maxZoom, centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
             // table.setDescription(getDescription());

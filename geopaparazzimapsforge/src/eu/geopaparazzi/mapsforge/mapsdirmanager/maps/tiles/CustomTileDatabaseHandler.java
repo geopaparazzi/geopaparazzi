@@ -94,7 +94,7 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler {
             customtileTableList = new ArrayList<CustomTileTable>();
             double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
             // String tableName = metadata.name;
-            CustomTileTable table = new CustomTileTable(databasePath, tableName, "3857", minZoom, maxZoom, centerX, centerY,
+            CustomTileTable table = new CustomTileTable(databasePath, tableName,"", "3857", minZoom, maxZoom, centerX, centerY,
                     "?,?,?", d_bounds);
             if (table != null) {
                 table.setDefaultZoom(defaultZoom);

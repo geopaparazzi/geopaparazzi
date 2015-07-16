@@ -88,6 +88,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      *
      * @param databasePath            the database file the table belongs to.
      * @param tableName               the name of the table to use.
+     * @param style                         the name of the table-style.
      * @param geometryColumn          the name of the geometry column.
      * @param geomType                the geometry type as off {@link GeometryType}.
      * @param srid                    the srid code.
@@ -95,9 +96,9 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * @param bounds                  the table bounds in wgs84.
      * @param layerTypeDescription    the layer type description.
      */
-    public SpatialVectorTable(String databasePath, String tableName, String geometryColumn, int geomType, String srid,
+    public SpatialVectorTable(String databasePath, String tableName,String styleName, String geometryColumn, int geomType, String srid,
                               double[] center, double[] bounds, String layerTypeDescription) {
-        super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+        super(databasePath, tableName,styleName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;
@@ -215,9 +216,9 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     }
 
     /**
-     * Getter for the style.
+     * Getter for the geopaparazzi-style.
      *
-     * @return the style of this table.
+     * @return the geopaparazzi-style of this table.
      */
     public Style getStyle() {
         return style;

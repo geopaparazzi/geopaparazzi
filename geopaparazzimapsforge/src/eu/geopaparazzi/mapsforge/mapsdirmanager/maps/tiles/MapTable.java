@@ -38,7 +38,8 @@ public class MapTable extends AbstractSpatialTable {
      * constructor.
      * 
      * @param dbPath the db path.
-     * @param name the name.
+     * @param name the name of the table.
+     * @param styleName a name for the table-style.
      * @param srid srid of the table.
      * @param minZoom min zoom.
      * @param maxZoom max zoom.
@@ -47,9 +48,9 @@ public class MapTable extends AbstractSpatialTable {
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public MapTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
+    public MapTable( String dbPath, String name, String styleName,String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialDataType.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name,styleName, SpatialDataType.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         this.dbStyleFile = findXmlFile(databaseFile);
         checkZooms();

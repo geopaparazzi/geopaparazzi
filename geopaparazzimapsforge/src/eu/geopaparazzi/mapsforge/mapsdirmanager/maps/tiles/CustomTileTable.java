@@ -34,7 +34,8 @@ public class CustomTileTable extends AbstractSpatialTable {
      * constructor.
      * 
      * @param dbPath the db path.
-     * @param name the name.
+     * @param name the name of the table.
+     * @param styleName a name for the table-style.
      * @param srid srid of the table.
      * @param minZoom min zoom.
      * @param maxZoom max zoom.
@@ -43,9 +44,9 @@ public class CustomTileTable extends AbstractSpatialTable {
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public CustomTileTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
+    public CustomTileTable( String dbPath, String name,String styleName, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name,styleName, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         // todo: change this
         if (tileQuery != null) {

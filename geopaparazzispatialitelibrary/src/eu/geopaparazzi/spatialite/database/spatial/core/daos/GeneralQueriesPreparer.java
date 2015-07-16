@@ -19,6 +19,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 
 import java.util.HashMap;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * General sql query to retrieve vector data of the whole Database in 1 query
@@ -42,12 +43,13 @@ import java.util.HashMap;
  * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/GEOPACKAGE_QUERY_R10-geopaparazzi-specific
  * <p/>
  * <ol>
- * <li>3 Fields will be returned with the following structure</li>
+ * <li>6 Fields will be returned with the following structure[They may not be empty, otherwise lenght of split will not return the correct amount]</li>
  * <li>0 table_name: berlin_stadtteile</li>
  * <li>1: geometry_column - soldner_polygon</li>
- * <li>2: layer_type - SpatialView or AbstractSpatialTable</li>
+ * <li>2: layer_type - SpatialView or SpatialTable</li>
  * <li>3: ROWID - AbstractSpatialTable: default ; when SpatialView or will be replaced</li>
- * <li>4: view_read_only - AbstractSpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
+ * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
+ * <li>5: style_name - RasterLite2: can be blank, for none-RL2 allways for the moment</li>
  * <li>vector_data: Seperator: ';' 7 values</li>
  * <li>0: geometry_type - 3</li>
  * <li>1: coord_dimension - 2</li>
@@ -62,11 +64,18 @@ import java.util.HashMap;
  * <li>6:last_verified - 2014-03-12T12:22:39.688Z</li>
  * </ol>
  * <p/>
- * Validity: s_vector_key.split(";"); must return the length of 5
+ * Validity: s_vector_key.split(";"); must return the length of 6
  * <p/>
  * Validity: s_vector_data.split(";"); must return the length of 7
  * <p/>
  * sa_vector_data[5].split(","); must return the length of 4
+  * <p/>
+ * <ol>
+ * <li>Any changes in the Structure, must be adapted in SpatialiteDatabaseHandler</li>
+ * <li> collectVectorTables()</li>
+ * <li> collectGpkgTables()</li>
+ * </ol>
+ * <p/>
  *
  * @author Mark Johnson
  * @author Andrea Antonello - refactoring to enum
@@ -247,7 +256,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
     private HashMap<String, String> queriesMap = new HashMap<String, String>();
 
     private GeneralQueriesPreparer() {
-
+        String STYLES_QUERY = "";
         String VECTOR_LAYERS_QUERY_BASE = "";
         {
             StringBuilder sb_query = new StringBuilder();
@@ -255,7 +264,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type");
-            sb_query.append("||';ROWID;-1'");
+            sb_query.append("||';ROWID;-1;default;'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(" AS vector_key," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_type");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "srid");
@@ -303,7 +312,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" f_table_name"); // 0 of 1st field
             sb_query.append("||';'||f_geometry_column"); // 1 of 1st field
             sb_query.append("||';'||'AbstractSpatialTable'"); // 2 of 1st field
-            sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
+            sb_query.append("||';ROWID;-1;;'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             LAYERS_QUERY_BASE_V3 = sb_query.toString();
         }
@@ -314,7 +323,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" view_name"); // 0 of 1st field
             sb_query.append("||';'||view_geometry"); // 1 of 1st field
             sb_query.append("||';'||'SpatialView'"); // 2 of 1st field
-            sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
+            sb_query.append("||';ROWID;-1;;'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             VIEWS_QUERY_BASE_V3 = sb_query.toString();
         }
@@ -620,7 +629,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||';'||compression"); // 1 of 1st field
             sb_query.append("||';'||'RasterLite2'"); // 2 of 1st field
             sb_query.append("||';'||REPLACE(title,';','-')"); // 3 of 1st field
-            sb_query.append("||';'||REPLACE(abstract,';','-')"); // 4 of 1st field
+            sb_query.append("||';'||REPLACE(abstract,';','-')||';'"); // 4 of 1st field
+            sb_query.append("||'default;'"); // 5 of 1st field for Styles-Table
             sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
             sb_query.append("||';'||tile_width"); // 2
             sb_query.append("||';'||srid"); // 3
@@ -739,8 +749,10 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // field
             sb_query.append(" WHEN data_type = 'tiles' THEN 'GeoPackage_tiles'"); // 2 of 1st field
             sb_query.append(" END"); // 2 of 1st field
-            sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of second field
-            sb_query.append("||';'||REPLACE(description,';','-') AS vector_key,"); // 4 of second field
+            sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of 1st field
+            sb_query.append("||';'||REPLACE(description,';','-')"); // 4 of 1st field
+            sb_query.append("||';default;"); // 5 (reserved for Styles) of 1st field
+            sb_query.append(" AS vector_key,"); 
             // fromosm_tiles;tile_data;GeoPackage_tiles;© OpenStreetMap contributors, See
             // http://www.openstreetmap.org/copyright;OSM Tiles;
             // geonames;geometry;GeoPackage_features;Data from http://www.geonames.org/, under Creative
@@ -889,26 +901,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         // GoPackage support - end
         // -------------------
         // This is not something that should be developed more than once ...
-        /*
-        GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_VALID_V4["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4+"]");
-        GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4[" + VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_LIST_V4["+ VECTOR_LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_VALID_V4["+ LAYERS_QUERY_EXTENT_VALID_V4+"]");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_INVALID_V4[" + LAYERS_QUERY_EXTENT_INVALID_V4 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_LIST_V4["+ LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_VALID_V3["+ LAYERS_QUERY_EXTENT_VALID_V3+"] ");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_INVALID_V3[" + LAYERS_QUERY_EXTENT_INVALID_V3 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_LIST_V3["+ LAYERS_QUERY_EXTENT_LIST_V3 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_VALID_V3["+ VIEWS_QUERY_EXTENT_VALID_V3+"]");
-        GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_INVALID_V3[" + VIEWS_QUERY_EXTENT_INVALID_V3 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_LIST_V3["+ VIEWS_QUERY_EXTENT_LIST_V3 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_VALID_V42["+ RASTER_COVERAGES_QUERY_EXTENT_VALID_V42+"]");
-        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42[" + RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_LIST_V42["+ RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10+"]");
-        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_INVALID_R10[" + GEOPACKAGE_QUERY_EXTENT_INVALID_R10 + "] ");
-        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_LIST_R10["+ GEOPACKAGE_QUERY_EXTENT_LIST_R10 + "] ");
-        */
+        // Output of these strings done in GeneralQueriesPreparer.dump_GeneralQueriesPreparer()
+        // - which is called, when needed in DatabaseCreationAndProperties.checkDatabaseTypeAndValidity()
     }
 
     /**

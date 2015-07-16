@@ -129,7 +129,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 try {
                     databaseType = DatabaseCreationAndProperties.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
                 } catch (Exception e) {
-                    GPLog.error(this, null, e);
+                    GPLog.error(this, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "].checkDatabaseTypeAndValidity has failed", e);
                     isDatabaseValid = false;
                 }
                 switch (databaseType) {
@@ -583,12 +583,13 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             // http://www.openstreetmap.org/copyright;OSM Tiles;
             // geonames;geometry;GeoPackage_features;Data from http://www.geonames.org/, under
             // Creative Commons Attribution 3.0 License;Geonames;
-            if (sa_string.length == 5) {
+            if (sa_string.length == 6) {
                 String table_name = sa_string[0]; // fromosm_tiles / geonames
                 String geometry_column = sa_string[1]; // tile_data / geometry
                 String layerType = sa_string[2]; // GeoPackage_tiles / GeoPackage_features
                 String s_identifier = sa_string[3]; // short description
                 String s_description = sa_string[4]; // long description
+                String s_style_name = sa_string[5]; // style_name [reserved for future use]
                 sa_string = vector_value.split(";");
                 // RGB;512;3068;1890 -
                 // 1:17777;3;17903.0354299312,17211.5335278146,29889.8601630003,26582.2086184726;2014-05-09T09:18:07.230Z
@@ -623,7 +624,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                         if (vector_key.contains("GeoPackage_tiles")) {
                             int i_min_zoom = Integer.parseInt(s_geometry_type);
                             int i_max_zoom = Integer.parseInt(s_coord_dimension);
-                            SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), "", s_srid, i_min_zoom,
+                            SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(),s_style_name, "", s_srid, i_min_zoom,
                                     i_max_zoom, centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
                             table.setMapType(layerType);
                             // table.setTableName(s_table_name);
@@ -650,7 +651,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                                 // no Zoom levels with
                                 // vector data
                                 if (i_spatial_index_enabled == 1) {
-                                    SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name,
+                                    SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name,s_style_name,
                                             geometry_column, i_geometry_type, s_srid, centerCoordinate, boundsCoordinates,
                                             layerType);
                                     // compleate list of fields of
@@ -693,12 +694,13 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             String[] sa_string = vector_key.split(";");
             // berlin_postgrenzen.1890;LOSSY_WEBP;RasterLite2;Berlin Straube Postgrenzen;1890 -
             // 1:17777;
-            if (sa_string.length == 5) {
+            if (sa_string.length == 6) {
                 String table_name = sa_string[0];
                 String geometry_column = sa_string[1];
                 String layerType = sa_string[2];
                 String s_ROWID_PK = sa_string[3];
                 s_view_read_only = sa_string[4];
+                String s_style_name = sa_string[5]; // style_name [for RasterLite2, otherwise reserved for future use]
                 sa_string = vector_value.split(";");
                 // RGB;512;3068;1.13008623862252;3;17903.0354299312,17211.5335278146,29889.8601630003,26582.2086184726;2014-05-09T09:18:07.230Z
                 if (sa_string.length == 7) {
@@ -740,7 +742,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             //                            int i_num_bands = Integer.parseInt(s_row_count_enabled);
                             // TODO in next version add RasterTable
                             // berlin_postgrenzen.1890
-                            SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), table_name, s_srid, 0, 22,
+                            SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), table_name, s_style_name, s_srid, 0, 22,
                                     centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
                             table.setMapType(layerType);
                             table.setTitle(s_ROWID_PK);
@@ -763,7 +765,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             // no Zoom levels with
                             // vector data
                             if (i_spatial_index_enabled == 1) {
-                                SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
+                                SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, s_style_name, geometry_column,
                                         i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, layerType);
                                 // compleate list of fields of
                                 // this table
@@ -873,7 +875,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-     * Update a style definiton in the db.
+     * Update a geopaparazzi-style definiton in the db.
      *
      * @param style the {@link Style} to update.
      * @throws Exception if something goes wrong.
@@ -883,7 +885,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-     * Delete and recreate a default properties table for this database.
+     * Delete and recreate a default geopaparazzi-properties table for this database.
      *
      * @throws Exception if something goes wrong.
      */

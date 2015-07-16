@@ -33,7 +33,8 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
      * constructor.
      * 
      * @param dbPath the db path.
-     * @param name the name.
+     * @param name the name of the table.
+     * @param style the name of the table-style.
      * @param srid srid of the table.
      * @param minZoom min zoom.
      * @param maxZoom max zoom.
@@ -42,9 +43,9 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public SpatialRasterTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
+    public SpatialRasterTable( String dbPath, String name, String style, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialDataType.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, style, SpatialDataType.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         // todo: change this
         if (tileQuery != null) {

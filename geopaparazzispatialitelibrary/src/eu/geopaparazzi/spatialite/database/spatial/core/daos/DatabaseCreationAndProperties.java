@@ -66,7 +66,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
             createSpatialiteDb(spatialiteDatabase, false);
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE", "create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
+            GPLog.error("DatabaseCreationAndProperties", "create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
                     + "]", e_stmt); //$NON-NLS-1$
         }
         return spatialiteDatabase;
@@ -104,12 +104,12 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 sqliteDatabase.exec(s_sql_command, null);
             } catch (jsqlite.Exception e_stmt) {
                 int errorCode = sqliteDatabase.last_error();
-                GPLog.error("DAOSPATIALIE", "create_spatialite sql[" + s_sql_command + "] errorCode=" + errorCode + "]", e_stmt); //$NON-NLS-1$ //$NON-NLS-2$
+                GPLog.error("DatabaseCreationAndProperties", "create_spatialite sql[" + s_sql_command + "] errorCode=" + errorCode + "]", e_stmt); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             SpatialiteVersion spatialiteVersion = getSpatialiteDatabaseVersion(sqliteDatabase, ""); //$NON-NLS-1$
             if (spatialiteVersion.getCode() < 3) { // error, should be 3 or 4
-                GPLog.addLogEntry("DAOSPATIALIE", "create_spatialite spatialite_version[" + spatialiteVersion + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+                GPLog.addLogEntry("DatabaseCreationAndProperties", "create_spatialite spatialite_version[" + spatialiteVersion + "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
@@ -131,8 +131,11 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         if (DatabaseCreationAndProperties.JavaSqliteDescription.equals("")) { // Rasterlite2Version_CPU will NOT be empty, if the
             // Driver was compiled with RasterLite2 support
             DatabaseCreationAndProperties.getJavaSqliteDescription(database, "DaoSpatialite.checkDatabaseTypeAndValidity");
-            GPLog.addLogEntry("DAOSPATIALIE", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
+            // Called on once during Application
+            GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
                     + SPL_Vectors.VECTORLAYER_QUERYMODE + "]");
+            // Comment this out when not needed (only to check any changed sql-queries)
+            DaoSpatialite.dump_GeneralQueriesPreparer();
         }
         // views: vector_layers_statistics,vector_layers
         // pre-spatialite 3.0 Databases often do not have a Virtual-SpatialIndex table
@@ -146,6 +149,10 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         boolean b_views_geometry_columns = false;
         // spatialite 4.2.0 - RasterLite2 table [raster_coverages]
         boolean b_raster_coverages = false;
+        // spatialite 4.3.0 - RasterLite2 table [SE_raster_styles, may not exist - not madatory, alpha-version did not exist]
+        boolean b_raster_styles = false;
+        // spatialite 4.3.0 - RasterLite2 table [SE_vector_styles_layers, may not exist - not madatory, alpha-version did not exist]
+        boolean b_vector_styles = false;
         // this table dissapered (maybe 4.1.0) - when vector_layers_statistics is not set, this may
         // be used for the bounds
         boolean b_layers_statistics = false;
@@ -169,6 +176,10 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                         b_views_geometry_columns = true;
                     } else if (name.equals("raster_coverages")) {
                         b_raster_coverages = true;
+                    } else if (name.equals("SE_raster_styles")) {
+                        b_raster_styles = true;
+                    } else if (name.equals("SE_vector_styles")) {
+                        b_vector_styles = true;
                     } else if (name.equals("layers_statistics")) {
                         b_layers_statistics = true;
                     } else if (name.equals(METADATA_GEOPACKAGE_TABLE_NAME)) {
@@ -190,7 +201,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 }
             }
         } catch (Exception e) {
-            GPLog.error("DAOSPATIALITE",
+            GPLog.error("DatabaseCreationAndProperties",
                     "Error in checkDatabaseTypeAndValidity sql[" + sqlCommand + "] db[" + database.getFilename() + "]", e);
         } finally {
             if (statement != null) {
@@ -212,7 +223,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
                 SPL_Vectors.getSpatialVectorMap_V4(database, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
-                        b_raster_coverages);
+                        b_raster_coverages,b_raster_styles,b_vector_styles);
                 if (spatialVectorMap.size() > 0)
                     return SpatialiteDatabaseType.SPATIALITE4;
                 else
@@ -303,7 +314,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 } else {
                     JavaSqliteDescription += "exception[? not a spatialite database, or spatialite < 4 ?]]";
                 }
-                GPLog.error("DAOSPATIALIE", "[" + name + "].getJavaSqliteDescription[" + JavaSqliteDescription + "]", e);
+                GPLog.error("DatabaseCreationAndProperties", "[" + name + "].getJavaSqliteDescription[" + JavaSqliteDescription + "]", e);
             }
         }
         return JavaSqliteDescription;
@@ -612,7 +623,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 return i_count;
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DAOSPATIALIE", "spatialiteCountTriggers[" + databaseType + "] sql[" + s_CountTriggers + "] db["
+            GPLog.error("DatabaseCreationAndProperties", "spatialiteCountTriggers[" + databaseType + "] sql[" + s_CountTriggers + "] db["
                     + database.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null)
