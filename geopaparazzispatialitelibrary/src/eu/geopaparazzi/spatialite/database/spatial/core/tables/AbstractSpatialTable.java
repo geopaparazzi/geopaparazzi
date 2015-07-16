@@ -56,6 +56,10 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     protected String tableName;
     /**
+     * A name for the style-name.
+     */
+    protected String styleName;
+    /**
      * A description.
      */
     protected String description;
@@ -131,6 +135,7 @@ public abstract class AbstractSpatialTable implements Serializable {
                                 double centerX, double centerY, double[] bounds) {
         this.databasePath = databasePath;
         this.tableName = tableName;
+        this.styleName = "%"; // for RasterLite2: Style-Name as wildcard
         this.mapType = mapType;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
@@ -208,6 +213,19 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     public String getTableName() {
         return tableName;
+    }
+    /**
+     * Getter for the style name [for RasterLite2].
+     * <p/>
+     * <p> RasterLite2 Style logic: basic rules
+     * <p> - only one style supported. Where than more than one: others will be ignored
+     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
+     * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
+     *
+     * @return the name of the {@link AbstractSpatialTable}.
+     */
+    public String getStyleName() {
+        return styleName;
     }
 
     /**

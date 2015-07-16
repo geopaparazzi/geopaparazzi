@@ -59,7 +59,7 @@ public class SPL_Rasterlite {
     public static byte[] getRasterTileInBounds(Database db, AbstractSpatialTable rasterTable, double[] tileBounds, int tileSize) {
 
         byte[] bytes = SPL_Rasterlite.rl2_GetMapImageFromRasterTile(db, rasterTable.getSrid(), rasterTable.getTableName(),
-                tileBounds, tileSize);
+                tileBounds, tileSize, rasterTable.getStyleName());
         if (bytes != null) {
             return bytes;
         }
@@ -76,12 +76,13 @@ public class SPL_Rasterlite {
      * @param coverageName the table to use.
      * @param tileBounds   [west,south,east,north] [minx, miny, maxx, maxy] bounds.
      * @param i_tile_size  default 256 [Tile.TILE_SIZE].
+     * @param styleName the table to use.
      * @return the image data as byte[] as jpeg
      */
     public static byte[] rl2_GetMapImageFromRasterTile(Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
-                                             int i_tile_size) {
+                                             int i_tile_size,String styleName) {
         return rl2_GetMapImageFromRaster(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
-                "default", "image/jpeg", "#ffffff", 0, 80, 1);
+                styleName, "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
 
