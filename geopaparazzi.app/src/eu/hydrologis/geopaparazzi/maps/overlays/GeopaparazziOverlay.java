@@ -73,6 +73,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
+import eu.hydrologis.geopaparazzi.osm.OsmFormActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
 import jsqlite.Exception;
@@ -1053,18 +1054,27 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
                             String description = note.getDescription();
-                            String form = note.getForm();
-                            if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
-                                String name = note.getName();
-                                double altim = note.getAltim();
-                                Intent formIntent = new Intent(context, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                                mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                            String name = note.getName();
+                            if (!description.equals(LibraryConstants.OSM)) {
+                                String form = note.getForm();
+                                if (form != null && form.length() > 0) {
+                                    double altim = note.getAltim();
+                                    Intent formIntent = new Intent(context, FormActivity.class);
+                                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
+                                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
+                                    formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
+                                    formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
+                                    formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                                    mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                                    doInfo = false;
+                                }
+                            } else {
+                                Intent osmCategoryIntent = new Intent(context, OsmFormActivity.class);
+                                osmCategoryIntent.putExtra(Constants.OSM_FORM, "[" + note.getForm() + "]");
+                                osmCategoryIntent.putExtra(Constants.OSM_TAG_KEY, name);
+                                osmCategoryIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                                mapActivity.startActivity(osmCategoryIntent);
                                 doInfo = false;
                             }
                         }
