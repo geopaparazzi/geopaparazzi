@@ -623,9 +623,28 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 }
 
                 private void sync(final String description) {
-                    syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
+                        }
+                    });
+
+                    while (syncProgressDialog == null) {
+                        try {
+                            Thread.sleep(20);
+                        } catch (InterruptedException e) {
+                        }
+                    }
                     new AsyncTask<String, Void, String>() {
                         private Exception e = null;
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+
+                        }
 
                         protected String doInBackground(String... params) {
                             String response = null;
