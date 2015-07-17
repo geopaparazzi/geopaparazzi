@@ -34,18 +34,10 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 public class OsmTagsManager {
 
     private static final String MAINICON_POSTFIX = ".n.48.png";
-    /**
-     * 
-     */
-    public static final String ICON_POSTFIX_LOWDENSITY = ".n.32.png";
-    /**
-     * 
-     */
-    public static final String ICON_POSTFIX_MEDIUMDENSITY = ".n.48.png";
-    /**
-     * 
-     */
-    public static final String ICON_POSTFIX_HIGHDENSITY = ".n.64.png";
+
+    public static final String ICON_POSTFIX_LOWDENSITY = ".n.48.png";
+    public static final String ICON_POSTFIX_MEDIUMDENSITY = ".n.64.png";
+    public static final String ICON_POSTFIX_HIGHDENSITY = ".n.128.png";
     /**
      * 
      */
