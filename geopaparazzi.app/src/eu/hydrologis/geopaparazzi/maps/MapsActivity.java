@@ -673,13 +673,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                                     } else {
                                         Utilities.yesNoMessageDialog(MapsActivity.this, msg, new Runnable() {
                                             public void run() {
-//                                                try {
-                                                // FIXME needs to be fixed
-
-//                                                    DaoNotes.deleteNotesByType(NoteType.OSM);
-//                                                } catch (IOException e) {
-//                                                    e.printStackTrace();
-//                                                }
+                                                try {
+                                                    DaoNotes.deleteOsmNotes();
+                                                } catch (IOException e) {
+                                                    GPLog.error(this, null, e);
+                                                }
                                             }
                                         }, null);
                                     }
