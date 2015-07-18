@@ -18,6 +18,7 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import jsqlite.Database;
 /**
  * A cutom tiles producer table.
  *
@@ -44,17 +45,8 @@ public class CustomTileTable extends AbstractSpatialTable {
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public CustomTileTable( String dbPath, String name,String styleName, String srid, int minZoom, int maxZoom, double centerX, double centerY,
-            String tileQuery, double[] bounds ) {
-        super(dbPath, name,styleName, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
-
-        // todo: change this
-        if (tileQuery != null) {
-            this.tileQuery = tileQuery;
-        } else {
-            tileQuery = "select " + tableName + " from " + databasePath
-                    + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
-        }
+    public CustomTileTable(Database spatialite_db,String vector_key,String  vector_value) {
+         super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
     }
 
     // /**

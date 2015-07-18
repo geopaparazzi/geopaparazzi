@@ -152,18 +152,52 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         return Collections.emptyList();
     }
-
+    
+     /**
+      * Load list of Table [Raster] for MbTiles using  [SpatialRasterTable]
+      * 
+      * <p>[GeneralQueriesPreparer] Documentation of vector_key /  vector_value   
+      * <ol>
+      * <li>vector_key: 6 Fields will be returned with the following structure[They may not be empty, otherwise lenght of split will not return the correct amount]</li>
+      * <li>0 table_name: databaseFileNameNoExtensiony/li>
+      * <li>1: geometry_column - not used '0'</li>
+      * <li>2: layer_type - SpatialDataType.MBTILES.getTypeName()</li>
+      * <li>3: ROWID - short discription[databaseFileNameNoExtension]</li>
+      * <li>4: view_read_only - long discription [tableName]</li>
+      * </ol>
+      * <li>vector_data: Seperator: ';' 7 values minimum [more must be made known to parse_vector_key_value()]</li>
+      * <li>0: geometry_type - this.minZoom</li>
+      * <li>1: coord_dimension - this.maxZoom</li>
+      * <li>2: srid - 4326</li>
+      * <li>3: spatial_index_enabled - not used '0'</li>
+      * <li>4: rows - not used '0'
+      * <li>5: extent_min/max - Seperator ',' - 4 values [mbtiles,map,mapurl: 7 values : centerX,centerY,defaultZoom]
+      * <li>5.1:extent_min_x - boundsWest</li>
+      * <li>5.2:extent_min_y - boundsSouth</li>
+      * <li>5.3:extent_max_x - boundsEast</li>
+      * <li>5.4:extent_max_y - boundsNorth</li>
+      * <li>5.5: centerX - can be user defined</li>
+      * <li>5.6: centerY - can be user defined</li>
+      * <li>5.7: defaultZoom - can be user defined</li>
+      * <li>6:last_verified - tileQuery as '?,?,?'</li>
+      * <li>7:getDatabasePath()</li>
+      * <li>8-?:not used</li>
+      * </ol>
+      * <p> vector_key/data documetation : 20150718
+      * 
+      * @return list of RasterTabes.
+      */     
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
             open();
-            double[] d_bounds = {this.boundsWest, this.boundsSouth, this.boundsEast, this.boundsNorth};
-            SpatialRasterTable table = new SpatialRasterTable(databasePath, databaseFileNameNoExtension,"", "3857", this.minZoom,
-                    this.maxZoom, centerX, centerY, "?,?,?", d_bounds);
-            table.setDefaultZoom(defaultZoom);
-            // table.setDescription(getDescription());
-            table.setMapType(SpatialDataType.MBTILES.getTypeName());
-            rasterTableList.add(table);
+           String layerType = SpatialDataType.MBTILES.getTypeName();
+           String vector_key=databaseFileNameNoExtension+";0;"+layerType+";"+databaseFileNameNoExtension+";"+tableName+"";
+           String s_bounds=this.boundsWest + "," + this.boundsSouth + "," + this.boundsEast + "," + this.boundsNorth+ "," + this.centerX+ "," + this.centerY+","+defaultZoom;
+           String vector_value=this.minZoom+";"+this.maxZoom+";4326;0;0;"+s_bounds+";?,?,?;"+getDatabasePath();
+           SpatialRasterTable table = new SpatialRasterTable(null,vector_key,vector_value);
+           if ((table != null) && (table.isValid()))
+             rasterTableList.add(table);
         }
         return rasterTableList;
     }
@@ -282,7 +316,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         double[] d_bounds = {bounds[0], bounds[1], bounds[2], bounds[3]};
         float[] center = metadata.center;// center_x,center_y,zoom
         this.databaseFileNameNoExtension = metadata.name;
-        // String tableName = metadata.name;
+        this.tableName = metadata.description;
         this.defaultZoom = metadata.maxZoom;
         this.minZoom = metadata.minZoom;
         this.maxZoom = metadata.maxZoom;

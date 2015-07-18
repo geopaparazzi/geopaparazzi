@@ -18,6 +18,8 @@
 package eu.geopaparazzi.spatialite.database.spatial.core.tables;
 import java.io.Serializable;
 
+import jsqlite.Database;
+
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 /**
  * A raster table from the spatial db.
@@ -27,7 +29,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 @SuppressWarnings("nls")
 public class SpatialRasterTable extends AbstractSpatialTable implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String tileQuery;
 
     /**
      * constructor.
@@ -43,16 +44,9 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public SpatialRasterTable( String dbPath, String name, String style, String srid, int minZoom, int maxZoom, double centerX, double centerY,
-            String tileQuery, double[] bounds ) {
-        super(dbPath, name, style, SpatialDataType.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
-
-        // todo: change this
-        if (tileQuery != null) {
-            this.tileQuery = tileQuery;
-        } else {
-            this.tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
-        }
+    public SpatialRasterTable(Database spatialite_db, String vector_key,String  vector_value) 
+    {
+      super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
     }
 
     /**
@@ -161,15 +155,6 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
             }
         }
         return i_rc;
-    }
-
-    /**
-     * Get the tile retrieve query with place holders for zoom, column and row.
-     *
-     * @return the query to use for this raster set.
-     */
-    public String getTileQuery() {
-        return tileQuery;
     }
 
     @Override

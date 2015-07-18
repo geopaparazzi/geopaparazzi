@@ -71,7 +71,7 @@ public class SPL_Rasterlite {
      * <p/>
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
-     * @param sqlite_db    Database connection to use
+     * @param dbSpatialite    Database connection to use
      * @param destSrid     the destination srid (of the rasterlite2 image).
      * @param coverageName the table to use.
      * @param tileBounds   [west,south,east,north] [minx, miny, maxx, maxy] bounds.
@@ -79,9 +79,9 @@ public class SPL_Rasterlite {
      * @param styleName the table to use.
      * @return the image data as byte[] as jpeg
      */
-    public static byte[] rl2_GetMapImageFromRasterTile(Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
+    public static byte[] rl2_GetMapImageFromRasterTile(Database dbSpatialite, String destSrid, String coverageName, double[] tileBounds,
                                              int i_tile_size,String styleName) {
-        return rl2_GetMapImageFromRaster(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
+        return rl2_GetMapImageFromRaster(dbSpatialite, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
                 styleName, "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
@@ -91,7 +91,7 @@ public class SPL_Rasterlite {
      * - used by: SpatialiteUtilities.rl2_GetMapImageFromRasterTile to retrieve tiles only
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
-     * @param sqlite_db    Database connection to use
+     * @param dbSpatialite    Database connection to use
      * @param sourceSrid   the srid (of the n/s/e/w positions).
      * @param destSrid     the destination srid (of the rasterlite2 image).
      * @param coverageName the table to use.
@@ -106,7 +106,7 @@ public class SPL_Rasterlite {
      * @param reaspect     1 = adapt image width,height if needed based on given bounds
      * @return the image data as byte[]
      */
-    public static byte[] rl2_GetMapImageFromRaster(Database sqlite_db, String sourceSrid, String destSrid, String coverageName, int width,
+    public static byte[] rl2_GetMapImageFromRaster(Database dbSpatialite, String sourceSrid, String destSrid, String coverageName, int width,
                                          int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality,
                                          int reaspect) {
         boolean doTransform = false;
@@ -175,7 +175,7 @@ public class SPL_Rasterlite {
         byte[] ba_image = null;
         if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) { // only if rasterlite2 driver is active
             try {
-                stmt = sqlite_db.prepare(s_sql_command);
+                stmt = dbSpatialite.prepare(s_sql_command);
                 if (stmt.step()) {
                     ba_image = stmt.column_bytes(0);
                 }
@@ -188,7 +188,7 @@ public class SPL_Rasterlite {
                   '/data/app-lib/eu.hydrologis.geopaparazzi-2/libjsqlite.so (rl2_raster_decode+8248)'
                   'I WindowState: WIN DEATH: Window{41ee0100 u0 eu.hydrologis.geopaparazzi/eu.hydrologis.geopaparazzi.GeoPaparazziActivity}'
                 */
-                int i_rc = sqlite_db.last_error();
+                int i_rc = dbSpatialite.last_error();
                 GPLog.error("SPL_Rasterlite", "rl2_GetMapImageFromRaster sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
             } finally {
                 if(stmt!=null)

@@ -31,9 +31,16 @@ public enum TableTypes {
     /**
      * spatial view
      */
-    SPATIALVIEW("SpatialView");
-
-    private String description;
+    SPATIALVIEW("SpatialView"),
+    /**
+     * GeoPackage Geometries/Vectors
+     */
+    GPKGVECTOR("GeoPackage_features"),
+    /**
+     * GeoPackage Raster/Tiles
+     */
+    GPKGRASTER("GeoPackage_tiles");
+   private String description;
 
     /**
      * @param description a description for the table type.

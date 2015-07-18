@@ -59,7 +59,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      * @return the {@link HashMap} of fields: [name of field, type of field]
      * @throws Exception if something goes wrong.
      */
-    public static HashMap<String, String> collectTableFields(Database database, String tableName) throws Exception {
+    public static HashMap<String, String> collectTableFields(Database dbSpatialite, String tableName) throws Exception {
 
         HashMap<String, String> fieldNamesToTypeMap = new LinkedHashMap<String, String>();
         String s_sql_command = "pragma table_info('" + tableName + "')";
@@ -68,7 +68,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         Stmt statement = null;
         String name = "";
         try {
-            statement = database.prepare(s_sql_command);
+            statement = dbSpatialite.prepare(s_sql_command);
             while (statement.step()) {
                 name = statement.column_string(1);
                 tableType = statement.column_string(2);
@@ -84,7 +84,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error("DaoSpatialite",
-                    "collectTableFields[" + tableName + "] sql[" + s_sql_command + "] db[" + database.getFilename()
+                    "collectTableFields[" + tableName + "] sql[" + s_sql_command + "] db[" + dbSpatialite.getFilename()
                             + "]", e_stmt
             );
         } finally {
@@ -133,7 +133,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      * @return 'rows_count;min_x,min_y,max_x,max_y;datetimestamp_now'.
      * @throws Exception if something goes wrong.
      */
-    public static String getGeometriesBoundsString(Database database, String tableName, String geometryColumn)
+    public static String getGeometriesBoundsString(Database dbSpatialite, String tableName, String geometryColumn)
             throws Exception {
         StringBuilder queryBuilder = new StringBuilder();
         String s_vector_extent = "";
@@ -156,7 +156,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         String s_select_bounds = queryBuilder.toString();
         Stmt statement = null;
         try {
-            statement = database.prepare(s_select_bounds);
+            statement = dbSpatialite.prepare(s_select_bounds);
             if (statement.step()) {
                 if (statement.column_string(0) != null) { // The geometries may be null, thus
                     // returns null
@@ -165,7 +165,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 }
             }
         } catch (jsqlite.Exception e_stmt) {
-            GPLog.error("DaoSpatialite", "spatialiteRetrieveBounds sql[" + s_select_bounds + "] db[" + database.getFilename() + "]",
+            GPLog.error("DaoSpatialite", "spatialiteRetrieveBounds sql[" + s_select_bounds + "] db[" + dbSpatialite.getFilename() + "]",
                     e_stmt);
         } finally {
             if (statement != null)
@@ -189,7 +189,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      * @return count of Geometries NOT NULL
      * @throws Exception if something goes wrong.
      */
-    public static int getGeometriesCount(Database database, String tableName, String geometryColumn) throws Exception {
+    public static int getGeometriesCount(Database dbSpatialite, String tableName, String geometryColumn) throws Exception {
         int i_count = 0;
         if ((tableName.equals("")) || (geometryColumn.equals("")))
             return i_count;
@@ -198,14 +198,14 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 + "' IS NOT NULL;";
         Stmt statement = null;
         try {
-            statement = database.prepare(s_CountGeometries);
+            statement = dbSpatialite.prepare(s_CountGeometries);
             if (statement.step()) {
                 i_count = statement.column_int(0);
                 return i_count;
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error("DaoSpatialite", "spatialiteCountGeometries sql[" + s_CountGeometries
-                    + "] db[" + database.getFilename() + "]", e_stmt);
+                    + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null)
                 statement.close();
@@ -226,7 +226,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         Feature firstFeature = features.get(0);
 
         String uniqueTableName = firstFeature.getUniqueTableName();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        Database dbSpatialite = getDatabaseFromUniqueTableName(uniqueTableName);
         String tableName = firstFeature.getTableName();
 
         StringBuilder sbIn = new StringBuilder();
@@ -244,7 +244,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         sbIn.append(valuesPart);
 
         String updateQuery = sbIn.toString();
-        database.exec(updateQuery, null);
+        dbSpatialite.exec(updateQuery, null);
     }
 
     /**
@@ -260,7 +260,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
     public static void addNewFeatureByGeometry(Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable)
             throws Exception {
         String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        Database dbSpatialite = getDatabaseFromUniqueTableName(uniqueTableName);
         String tableName = spatialVectorTable.getTableName();
         String geometryFieldName = spatialVectorTable.getGeomName();
         String srid = spatialVectorTable.getSrid();
@@ -331,17 +331,17 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
 
 //        System.out.println(insertQuery);
 
-        database.exec(insertQuery, null);
+        dbSpatialite.exec(insertQuery, null);
     }
 
     /**
      * Updates the alphanumeric values of a feature in the given database.
      *
-     * @param database the database.
+     * @param dbSpatialite the database.
      * @param feature  the feature.
      * @throws Exception if something goes wrong.
      */
-    public static void updateFeatureAlphanumericAttributes(Database database, Feature feature) throws Exception {
+    public static void updateFeatureAlphanumericAttributes(Database dbSpatialite, Feature feature) throws Exception {
         String tableName = feature.getTableName();
         List<String> attributeNames = feature.getAttributeNames();
         List<String> attributeValuesStrings = feature.getAttributeValuesStrings();
@@ -376,7 +376,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         sbIn.append(feature.getId());
 
         String updateQuery = sbIn.toString();
-        database.exec(updateQuery, null);
+        dbSpatialite.exec(updateQuery, null);
     }
 
     /**
@@ -387,7 +387,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
     public static void updateFeatureGeometry(String id, Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable)
             throws Exception {
         String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        Database dbSpatialite = getDatabaseFromUniqueTableName(uniqueTableName);
         String tableName = spatialVectorTable.getTableName();
         String geometryFieldName = spatialVectorTable.getGeomName();
         String srid = spatialVectorTable.getSrid();
@@ -436,7 +436,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append("=");
         sbIn.append(id);
         String insertQuery = sbIn.toString();
-        database.exec(insertQuery, null);
+        dbSpatialite.exec(insertQuery, null);
     }
 
     /**
@@ -450,7 +450,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      */
     public static double[] getAreaAndLengthById(String id, SpatialVectorTable spatialVectorTable) throws Exception {
         String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        Database dbSpatialite = getDatabaseFromUniqueTableName(uniqueTableName);
         String tableName = spatialVectorTable.getTableName();
         String geomName = spatialVectorTable.getGeomName();
 
@@ -465,7 +465,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         String selectQuery = sbIn.toString();
         Stmt statement = null;
         try {
-            statement = database.prepare(selectQuery);
+            statement = dbSpatialite.prepare(selectQuery);
             if (statement.step()) {
                 double area = statement.column_double(0);
                 double length = statement.column_double(1);
@@ -474,7 +474,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error("DaoSpatialite",
-                    "getAreaAndLengthById[" + tableName + "] sql[" + selectQuery + "] db[" + database.getFilename()
+                    "getAreaAndLengthById[" + tableName + "] sql[" + selectQuery + "] db[" + dbSpatialite.getFilename()
                             + "]", e_stmt
             );
         } finally {

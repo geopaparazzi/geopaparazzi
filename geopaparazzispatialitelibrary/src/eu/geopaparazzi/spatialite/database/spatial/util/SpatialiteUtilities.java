@@ -43,12 +43,47 @@ public class SpatialiteUtilities {
      * Array of fields that will be ingored in attributes handling.
      */
     public static String[] IGNORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
-
+     
     /**
      * Name/path separator for spatialite table names.
      */
     public static final String UNIQUENAME_SEPARATOR = "#"; //$NON-NLS-1$
 
+    /**
+     * Active Connection to a  Spatialite Database
+    * <p/>
+     * <p>Indented for general use for Transformation etc.
+     */
+    private static Database dbSpatialite=null;
+    
+     /**
+     * Retrieve an active spatialite Connection
+     * 
+     * @param i_parm 0:[default] retrieve only ; 1=create Memory-db if not active
+     * @return dbSpatialite for general use
+     */
+    public static Database getDatabase(int i_parm) {
+        if (dbSpatialite == null)
+        { 
+         if (i_parm == 1)
+         { // TODO: create Memory Database with Spatialite 'SELECT InitSpatialMetadata(1);'
+         }
+        }
+        return dbSpatialite;
+    }
+    
+    /**
+     * Set an active spatialite Connection for genral use
+     * - should only be done when sure that it a valid Spatialite Database ( version >= 4)
+     * -- done in DatabaseCreationAndProperties.checkDatabaseTypeAndValidity()
+     * @return dbSpatialite
+     */
+    public static void setDatabase(Database spatialite_db) {
+        if ((dbSpatialite == null) && (spatialite_db != null))
+        { 
+         dbSpatialite=spatialite_db;
+        }
+    }
 
     /**
      * Checks if a field needs to be ignores.
@@ -221,6 +256,8 @@ public class SpatialiteUtilities {
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square
+     * 'sqlite_db' is probly no nonger needed, when this function is called, 'dbSpatialite' must have been set
+     * @param sqlite_db Spatialite Database connection as fallback for Centeral Database connection
      * @param srid the source srid.
      * @param centerCoordinate the coordinate array to fill with the center.
      * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
@@ -228,6 +265,10 @@ public class SpatialiteUtilities {
     public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate,
             double[] boundsCoordinates ) {
         String centerQuery = "";
+        if ((dbSpatialite == null) && (sqlite_db != null))
+        {
+         dbSpatialite=sqlite_db;
+        }
         try {
             Stmt centerStmt = null;
             double bounds_west = boundsCoordinates[0];
@@ -263,7 +304,7 @@ public class SpatialiteUtilities {
                 centerQuery = centerBuilder.toString();
                 // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" +
                 // centerQuery + "]");
-                centerStmt = sqlite_db.prepare(centerQuery);
+                centerStmt = dbSpatialite.prepare(centerQuery);
                 if (centerStmt.step()) {
                     byte[] geomBytes = centerStmt.column_bytes(0);
                     Geometry geometry = wkbReader.read(geomBytes);
@@ -285,7 +326,7 @@ public class SpatialiteUtilities {
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            GPLog.error("SpatialiteUtilities","[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
+            GPLog.error("SpatialiteUtilities","[" + dbSpatialite.getFilename() + "] sql[" + centerQuery + "]", e);
         }
     }
 

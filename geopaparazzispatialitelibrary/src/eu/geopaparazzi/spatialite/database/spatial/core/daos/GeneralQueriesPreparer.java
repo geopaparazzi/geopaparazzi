@@ -32,6 +32,9 @@ import eu.geopaparazzi.library.database.GPLog;
  * -- 'vector_key'   : fields often needed and used in map.key [always valid]
  * -- 'vector_data'  : fields NOT often needed and used in map.value [first portion and always valid]
  * -- 'vector_extent': fields NOT often needed and used in map.value [second portion and NOT always valid]
+ * -- 'vector_value': combination of 'vector_data'+'vector_extent' when creating the (Map.Entry<String, String> vector_entry
+ * --- vector_key = vector_entry.getKey();
+ * --- vector_value = vector_entry.getValue();
  * <p/>
  * Queries for Spatialite (all versions) at:
  * https://github.com/mj10777/Spatialite-Tasks-with-Sql-Scripts/wiki/VECTOR_LAYERS_QUERYS-geopaparazzi-specific
@@ -43,37 +46,42 @@ import eu.geopaparazzi.library.database.GPLog;
  * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/GEOPACKAGE_QUERY_R10-geopaparazzi-specific
  * <p/>
  * <ol>
- * <li>6 Fields will be returned with the following structure[They may not be empty, otherwise lenght of split will not return the correct amount]</li>
+ * <li>vector_key: 6 Fields will be returned with the following structure[They may not be empty, otherwise lenght of split will not return the correct amount]</li>
  * <li>0 table_name: berlin_stadtteile</li>
  * <li>1: geometry_column - soldner_polygon</li>
  * <li>2: layer_type - SpatialView or SpatialTable</li>
  * <li>3: ROWID - AbstractSpatialTable: default ; when SpatialView or will be replaced</li>
  * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
  * <li>5: style_name - RasterLite2: can be blank, for none-RL2 allways for the moment</li>
- * <li>vector_data: Seperator: ';' 7 values</li>
+ * </ol>
+ * <li>vector_data: Seperator: ';' 7 values minimum [more must be made known to parse_vector_key_value()]</li>
  * <li>0: geometry_type - 3</li>
  * <li>1: coord_dimension - 2</li>
  * <li>2: srid - 3068</li>
  * <li>3: spatial_index_enabled - 0 or 1</li>
  * <li>4: rows 4
- * <li>5: extent_min/max - Seperator ',' - 4 values
- * <li>5.1:extent_min_x - 20847.6171111586</li>
- * <li>5.2:extent_min_y - 18733.613614603</li>
- * <li>5.3:extent_max_x - 20847.6171111586</li>
- * <li>5.4:extent_max_y - 18733.613614603</li></li>
+ * <li>5: extent_min/max - Seperator ',' - 4 values [mbtiles,map,mapurl: 7 values : centerX,centerY,defaultZoom]
+ * <li>5.1:extent_min_x - boundsWest</li>
+ * <li>5.2:extent_min_y - boundsSouth</li>
+ * <li>5.3:extent_max_x - boundsEast</li>
+ * <li>5.4:extent_max_y - boundsNorth</li>
+ * <li>5.5: centerX - can be user defined [mbtiles,map,mapurl]</li>
+ * <li>5.7: centerY - can be user defined [mbtiles,map,mapurl]</li>
+ * <li>5.7: defaultZoom - can be user defined [mbtiles,map,mapurl]</li>
  * <li>6:last_verified - 2014-03-12T12:22:39.688Z</li>
+ * <li>7-?:special usage for specific layer_type in parse_vector_key_value()</li>
  * </ol>
+ * <p> vector_key/data documetation : 20150718
  * <p/>
  * Validity: s_vector_key.split(";"); must return the length of 6
  * <p/>
- * Validity: s_vector_data.split(";"); must return the length of 7
+ * Validity: s_vector_data.split(";"); must return at least the length of 7
  * <p/>
- * sa_vector_data[5].split(","); must return the length of 4
+ * sa_vector_data[5].split(","); must return the length of 4 or 6 [Mbtiles]
   * <p/>
  * <ol>
- * <li>Any changes in the Structure, must be adapted in SpatialiteDatabaseHandler</li>
- * <li> collectVectorTables()</li>
- * <li> collectGpkgTables()</li>
+ * <li>Any changes in the Structure, must be adapted in AbstractSpatialTable</li>
+ * <li> parse_vector_key_value()</li>
  * </ol>
  * <p/>
  *

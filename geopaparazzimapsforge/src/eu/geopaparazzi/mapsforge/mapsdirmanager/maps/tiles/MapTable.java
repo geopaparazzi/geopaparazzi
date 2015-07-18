@@ -21,6 +21,7 @@ import java.io.File;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import jsqlite.Database;
 /**
  * A map table from the map db.
  *
@@ -48,18 +49,12 @@ public class MapTable extends AbstractSpatialTable {
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
      */
-    public MapTable( String dbPath, String name, String styleName,String srid, int minZoom, int maxZoom, double centerX, double centerY,
-            String tileQuery, double[] bounds ) {
-        super(dbPath, name,styleName, SpatialDataType.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+    public MapTable(Database spatialite_db,String vector_key,String  vector_value) {
+        super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
 
         this.dbStyleFile = findXmlFile(databaseFile);
         checkZooms();
 
-        if (tileQuery != null) {
-            this.tileQuery = tileQuery;
-        } else {
-            tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
-        }
     }
 
     private void checkZooms() {

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteVersion;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -60,16 +61,16 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 throw new IOException("DaoSpatialite: create_db: dir_db[" + dir_db.getAbsolutePath() + "] creation failed"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
-        Database spatialiteDatabase = new Database();
+        Database dbSpatialite = new Database();
         try {
-            spatialiteDatabase.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
+            dbSpatialite.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
-            createSpatialiteDb(spatialiteDatabase, false);
+            createSpatialiteDb(dbSpatialite, false);
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error("DatabaseCreationAndProperties", "create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
                     + "]", e_stmt); //$NON-NLS-1$
         }
-        return spatialiteDatabase;
+        return dbSpatialite;
     }
 
     /**
@@ -80,14 +81,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <li> needed Tables/View and default values for metadata-table will be created</li>
      * </ol>
      *
-     * @param sqliteDatabase pointer to Database
+     * @param dbSpatialite pointer to Database
      * @param doCheck        is true, a new Database is created without checking if it is already one.
      * @throws jsqlite.Exception if something goes wrong.
      */
-    public static void createSpatialiteDb(Database sqliteDatabase, boolean doCheck) throws jsqlite.Exception {
+    public static void createSpatialiteDb(Database dbSpatialite, boolean doCheck) throws jsqlite.Exception {
         boolean createDb = true;
         if (doCheck) {
-            SpatialiteVersion spatialiteVersion = getSpatialiteDatabaseVersion(sqliteDatabase, "");
+            SpatialiteVersion spatialiteVersion = getSpatialiteDatabaseVersion(dbSpatialite, "");
             // this is a spatialite Database, do not create
             if (spatialiteVersion.getCode() > SpatialiteVersion.NO_SPATIALITE.getCode()) {
                 createDb = false;
@@ -101,13 +102,13 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         if (createDb) {
             String s_sql_command = "SELECT InitSpatialMetadata();"; //$NON-NLS-1$
             try {
-                sqliteDatabase.exec(s_sql_command, null);
+                dbSpatialite.exec(s_sql_command, null);
             } catch (jsqlite.Exception e_stmt) {
-                int errorCode = sqliteDatabase.last_error();
+                int errorCode = dbSpatialite.last_error();
                 GPLog.error("DatabaseCreationAndProperties", "create_spatialite sql[" + s_sql_command + "] errorCode=" + errorCode + "]", e_stmt); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            SpatialiteVersion spatialiteVersion = getSpatialiteDatabaseVersion(sqliteDatabase, ""); //$NON-NLS-1$
+            SpatialiteVersion spatialiteVersion = getSpatialiteDatabaseVersion(dbSpatialite, ""); //$NON-NLS-1$
             if (spatialiteVersion.getCode() < 3) { // error, should be 3 or 4
                 GPLog.addLogEntry("DatabaseCreationAndProperties", "create_spatialite spatialite_version[" + spatialiteVersion + "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -119,29 +120,30 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * Checks the database type and its validity.
      * - Spatialite 2.4 to present version are supported (2.4 will be set as 3)
      *
-     * @param database               the database to check.
+     * @param dbSpatialite              the database to check.
      * @param spatialVectorMap       the {@link java.util.HashMap} of database views data to clear and repopulate.
      * @param spatialVectorMapErrors
      * @return the {@link SpatialiteDatabaseType}.
      */
-    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity(Database database, HashMap<String, String> spatialVectorMap, HashMap<String, String> spatialVectorMapErrors) throws Exception {
+    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity(Database dbSpatialite, HashMap<String, String> spatialVectorMap, HashMap<String, String> spatialVectorMapErrors) throws Exception {
         // clear views
         spatialVectorMap.clear();
         spatialVectorMapErrors.clear();
         if (DatabaseCreationAndProperties.JavaSqliteDescription.equals("")) { // Rasterlite2Version_CPU will NOT be empty, if the
             // Driver was compiled with RasterLite2 support
-            DatabaseCreationAndProperties.getJavaSqliteDescription(database, "DaoSpatialite.checkDatabaseTypeAndValidity");
+            DatabaseCreationAndProperties.getJavaSqliteDescription(dbSpatialite, "DaoSpatialite.checkDatabaseTypeAndValidity");
             // Called on once during Application
             GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
                     + SPL_Vectors.VECTORLAYER_QUERYMODE + "]");
             // Comment this out when not needed (only to check any changed sql-queries)
-            DaoSpatialite.dump_GeneralQueriesPreparer();
+            // DaoSpatialite.dump_GeneralQueriesPreparer();
         }
         // views: vector_layers_statistics,vector_layers
         // pre-spatialite 3.0 Databases often do not have a Virtual-SpatialIndex table
         boolean b_SpatialIndex = false;
         boolean b_vector_layers_statistics = false;
         boolean b_vector_layers = false;
+        boolean b_spatial_ref_sys = false;
 
         // tables: geometry_columns,raster_columns
         boolean b_geometry_columns = false;
@@ -163,7 +165,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         String name = "";
         Stmt statement = null;
         try {
-            statement = database.prepare(sqlCommand);
+            statement = dbSpatialite.prepare(sqlCommand);
             while (statement.step()) {
                 name = statement.column_string(0);
                 tableType = statement.column_string(1);
@@ -184,7 +186,10 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                         b_layers_statistics = true;
                     } else if (name.equals(METADATA_GEOPACKAGE_TABLE_NAME)) {
                         b_gpkg_contents = true;
+                    } else if (name.equals("spatial_ref_sys")) {
+                     b_spatial_ref_sys=true;                        
                     }
+                    
                     // if (name.equals("raster_columns")) {
                     // b_raster_columns = true;
                     // }
@@ -202,7 +207,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             }
         } catch (Exception e) {
             GPLog.error("DatabaseCreationAndProperties",
-                    "Error in checkDatabaseTypeAndValidity sql[" + sqlCommand + "] db[" + database.getFilename() + "]", e);
+                    "Error in checkDatabaseTypeAndValidity sql[" + sqlCommand + "] db[" + dbSpatialite.getFilename() + "]", e);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -213,7 +218,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             // vector_layers_statistics and vector_layers
             // - the results are empty, it does reference the table
             // also referenced in gpkg_contents
-            SPL_Geopackage.getGeoPackageMap_R10(database, spatialVectorMap, spatialVectorMapErrors);
+            SPL_Geopackage.getGeoPackageMap_R10(dbSpatialite, spatialVectorMap, spatialVectorMapErrors);
             if (spatialVectorMap.size() > 0)
                 return SpatialiteDatabaseType.UNKNOWN;
                 // return SpatialiteDatabaseType.GEOPACKAGE;
@@ -221,8 +226,15 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 // if empty, nothing to load
                 return SpatialiteDatabaseType.UNKNOWN;
         } else {
+            if (b_spatial_ref_sys)
+            {
+             if (SpatialiteUtilities.getDatabase(0) == null)
+             {
+              SpatialiteUtilities.setDatabase(dbSpatialite);
+             }
+            }
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                SPL_Vectors.getSpatialVectorMap_V4(database, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
+                SPL_Vectors.getSpatialVectorMap_V4(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
                         b_raster_coverages,b_raster_styles,b_vector_styles);
                 if (spatialVectorMap.size() > 0)
                     return SpatialiteDatabaseType.SPATIALITE4;
@@ -232,7 +244,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             } else {
                 if ((b_geometry_columns) && (b_views_geometry_columns)) { // Spatialite from 2.4
                     // until 4.0
-                    SPL_Vectors.getSpatialVectorMap_V3(database, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
+                    SPL_Vectors.getSpatialVectorMap_V3(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
                             b_SpatialIndex);
                     if (spatialVectorMap.size() > 0)
                         return SpatialiteDatabaseType.SPATIALITE3;
@@ -249,16 +261,16 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
     /**
      * Checks if a table exists.
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @param name     the table name to check.
      * @return the number of columns, if the table exists or 0 if the table doesn't exist.
      * @throws Exception if something goes wrong.
      */
-    public static int checkTableExistence(Database database, String name) throws Exception {
+    public static int checkTableExistence(Database dbSpatialite, String name) throws Exception {
         String checkTableQuery = "SELECT sql  FROM sqlite_master WHERE type='table' AND name='" + name + "';";
         Stmt statement = null;
         try {
-            statement = database.prepare(checkTableQuery);
+            statement = dbSpatialite.prepare(checkTableQuery);
             if (statement.step()) {
                 String creationSql = statement.column_string(0);
                 if (creationSql != null) {
@@ -289,25 +301,25 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <br>-- there is no Spatialite function to retrieve the Sqlite version
      * <br>-- the Has() functions do not work with spatialite 3.0.1
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @param name     a name for the log.
      * @return info of supported versions in JavaSqlite.
      */
-    public static String getJavaSqliteDescription(Database database, String name) {
+    public static String getJavaSqliteDescription(Database dbSpatialite, String name) {
         if (JavaSqliteDescription.equals("")) {
             int majorVersion = 0;
             try {
                 // s_javasqlite_description = "javasqlite[" + getJavaSqliteVersion() + "],";
-                JavaSqliteDescription = "sqlite[" + getSqliteVersion(database) + "],";
+                JavaSqliteDescription = "sqlite[" + getSqliteVersion(dbSpatialite) + "],";
 
-                String spatialiteVersionNumber = getSpatialiteVersionNumber(database);
+                String spatialiteVersionNumber = getSpatialiteVersionNumber(dbSpatialite);
                 if (!spatialiteVersionNumber.equals("-"))
                     majorVersion = Integer.parseInt(spatialiteVersionNumber.substring(0, 1));
                 JavaSqliteDescription += "spatialite[" + spatialiteVersionNumber + "],";
-                JavaSqliteDescription += "proj4[" + getProj4Version(database) + "],";
-                JavaSqliteDescription += "geos[" + getGeosVersion(database) + "],";
-                JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(database) + "],";
-                JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(database) + "]]";
+                JavaSqliteDescription += "proj4[" + getProj4Version(dbSpatialite) + "],";
+                JavaSqliteDescription += "geos[" + getGeosVersion(dbSpatialite) + "],";
+                JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(dbSpatialite) + "],";
+                JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(dbSpatialite) + "]]";
             } catch (Exception e) {
                 if (majorVersion > 3) {
                     JavaSqliteDescription += "rasterlite2_properties[none]]";
@@ -324,24 +336,24 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * Return SQLite version number as string.
      * - as used by the Driver that queries for Spatialite
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the version of sqlite.
      * @throws Exception if something goes wrong.
      */
-    public static String getSqliteVersion(Database database) throws Exception {
-        return database.dbversion();
+    public static String getSqliteVersion(Database dbSpatialite) throws Exception {
+        return dbSpatialite.dbversion();
     }
 
 
     /**
      * Get the version of Spatialite.
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the version of Spatialite.
      * @throws Exception if something goes wrong.
      */
-    public static String getSpatialiteVersionNumber(Database database) throws Exception {
-        Stmt stmt = database.prepare("SELECT spatialite_version();");
+    public static String getSpatialiteVersionNumber(Database dbSpatialite) throws Exception {
+        Stmt stmt = dbSpatialite.prepare("SELECT spatialite_version();");
         try {
             if (stmt.step()) {
                 return stmt.column_string(0);
@@ -372,12 +384,12 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <p/>
      * <p>20131129: at the moment not possible to distinguish between 2.4.0 and 3.0.0 [no '2']
      *
-     * @param database Database connection to use
+     * @param dbSpatialite Database connection to use
      * @param table    name of table to read [if empty: list of tables in Database]
      * @return the {@link eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteVersion}.
      * @throws Exception if something goes wrong.
      */
-    public static SpatialiteVersion getSpatialiteDatabaseVersion(Database database, String table) throws Exception {
+    public static SpatialiteVersion getSpatialiteDatabaseVersion(Database dbSpatialite, String table) throws Exception {
         // views: vector_layers_statistics,vector_layers
         // boolean b_vector_layers_statistics = false;
         // boolean b_vector_layers = false;
@@ -401,7 +413,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         }
         String type;
         String name;
-        Stmt this_stmt = database.prepare(s_sql_command);
+        Stmt this_stmt = dbSpatialite.prepare(s_sql_command);
         try {
             while (this_stmt.step()) {
                 if (!table.equals("")) { // pragma table_info(berlin_strassen_geometry)
@@ -450,7 +462,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         if (table.equals("")) {
             if ((b_geometry_columns) && (b_spatial_ref_sys)) {
                 if (b_spatial_ref_sys) {
-                    versionFromSrswktPresence = getSpatialiteDatabaseVersion(database, "spatial_ref_sys");
+                    versionFromSrswktPresence = getSpatialiteDatabaseVersion(dbSpatialite, "spatial_ref_sys");
                     if (versionFromSrswktPresence == SpatialiteVersion.AFTER_4_0_0_RC1) { // Spatialite 4.0
                         spatialiteVersion = SpatialiteVersion.AFTER_4_0_0_RC1;
                     } else {
@@ -484,14 +496,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * note: this is returning the version number of the first static lib being compilrd into it
      * - 2014-05-22: libpng 1.6.10
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the version of Spatialite.
      * @throws Exception if something goes wrong.
      */
-    public static String getRaster2Version(Database database) throws Exception {
+    public static String getRaster2Version(Database dbSpatialite) throws Exception {
         Stmt stmt = null;
         try {
-            stmt = database.prepare("SELECT RL2_Version();");
+            stmt = dbSpatialite.prepare("SELECT RL2_Version();");
 
             if (stmt.step()) {
                 String value = stmt.column_string(0);
@@ -521,13 +533,13 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <br>- use the known 'SELECT Has..' functions
      * <br>- when HasIconv=0: no VirtualShapes,VirtualXL
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the properties of Spatialite.
      * @throws Exception if something goes wrong.
      */
-    public static String getSpatialiteProperties(Database database) throws Exception {
+    public static String getSpatialiteProperties(Database dbSpatialite) throws Exception {
         String s_value = "-";
-        Stmt stmt = database
+        Stmt stmt = dbSpatialite
                 .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasLwGeom(),HasLibXML2(),HasEpsg(),HasFreeXL();");
         try {
             if (stmt.step()) {
@@ -543,7 +555,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             stmt.close();
         }
         try { // since spatialite 4.2.0-rc1
-            stmt = database.prepare("SELECT HasGeoPackage(),spatialite_target_cpu();");
+            stmt = dbSpatialite.prepare("SELECT HasGeoPackage(),spatialite_target_cpu();");
             if (stmt.step()) {
                 if (stmt.column_int(0) == 1)
                     SPL_Geopackage.hasGeoPackage = true;
@@ -558,12 +570,12 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
     /**
      * Get the version of proj.
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the version of proj.
      * @throws Exception if something goes wrong.
      */
-    public static String getProj4Version(Database database) throws Exception {
-        Stmt stmt = database.prepare("SELECT proj4_version();");
+    public static String getProj4Version(Database dbSpatialite) throws Exception {
+        Stmt stmt = dbSpatialite.prepare("SELECT proj4_version();");
         try {
             if (stmt.step()) {
                 return stmt.column_string(0);
@@ -577,12 +589,12 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
     /**
      * Get the version of geos.
      *
-     * @param database the db to use.
+     * @param dbSpatialite the db to use.
      * @return the version of geos.
      * @throws Exception if something goes wrong.
      */
-    public static String getGeosVersion(Database database) throws Exception {
-        Stmt stmt = database.prepare("SELECT geos_version();");
+    public static String getGeosVersion(Database dbSpatialite) throws Exception {
+        Stmt stmt = dbSpatialite.prepare("SELECT geos_version();");
         try {
             if (stmt.step()) {
                 return stmt.column_string(0);
@@ -602,13 +614,13 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * --- there is no way to check if these triggers really work correctly
      * --- this the reason why writable Views can be VERY dangerous
      *
-     * @param database     the db to use.
+     * @param dbSpatialite     the db to use.
      * @param table_name   the table of the db to use.
      * @param databaseType for Spatialite 3 and 4 specific Tasks
      * @return count of Triggers found
      * @throws Exception if something goes wrong.
      */
-    public static int spatialiteCountTriggers(Database database, String table_name, SpatialiteDatabaseType databaseType)
+    public static int spatialiteCountTriggers(Database dbSpatialite, String table_name, SpatialiteDatabaseType databaseType)
             throws Exception {
         int i_count = 0;
         if (table_name.equals(""))
@@ -617,14 +629,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 + "');";
         Stmt statement = null;
         try {
-            statement = database.prepare(s_CountTriggers);
+            statement = dbSpatialite.prepare(s_CountTriggers);
             if (statement.step()) {
                 i_count = statement.column_int(0);
                 return i_count;
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error("DatabaseCreationAndProperties", "spatialiteCountTriggers[" + databaseType + "] sql[" + s_CountTriggers + "] db["
-                    + database.getFilename() + "]", e_stmt);
+                    + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null)
                 statement.close();

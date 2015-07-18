@@ -55,13 +55,13 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws jsqlite.Exception if something goes wrong.
      */
-    private static int spatialiteUpdateLayerStatistics(Database database, String tableName, String geometryColumn,
+    private static int spatialiteUpdateLayerStatistics(Database dbSpatialite, String tableName, String geometryColumn,
                                                        int spatialIndex, SpatialiteDatabaseType databaseType) throws jsqlite.Exception {
         if (spatialIndex == 1) {
-            spatialIndex = SpatialiteIndexing.spatialiteRecoverSpatialIndex(database, tableName, geometryColumn, 0, databaseType);
+            spatialIndex = SpatialiteIndexing.spatialiteRecoverSpatialIndex(dbSpatialite, tableName, geometryColumn, 0, databaseType);
             if (spatialIndex == 0) {
                 GPLog.addLogEntry(LOGTAG, "spatialiteUpdateLayerStatistics[" + databaseType
-                        + "] [spatialiteRecoverSpatialIndex failed] table_name[" + tableName + "] geometry_column[" + geometryColumn + "]db[" + database.getFilename() + "]");
+                        + "] [spatialiteRecoverSpatialIndex failed] table_name[" + tableName + "] geometry_column[" + geometryColumn + "]db[" + dbSpatialite.getFilename() + "]");
                 return spatialIndex; // Invalid for use with geopaparazzi
             }
         }
@@ -76,15 +76,15 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         Stmt statement = null;
         try {
             // when done here it, will catch sql-syntax errors
-            statement = database.prepare(s_UpdateLayerStatistics);
+            statement = dbSpatialite.prepare(s_UpdateLayerStatistics);
             if (statement.step()) {
                 spatialIndex = statement.column_int(0);
                 if (spatialIndex == 1) {
-                    HashMap<String, String> fieldNamesToTypeMap = collectTableFields(database, layerStatistics);
+                    HashMap<String, String> fieldNamesToTypeMap = collectTableFields(dbSpatialite, layerStatistics);
                     if (fieldNamesToTypeMap.size() > 0) { // AbstractSpatialTable virts_layer_statistics
                         b_valid = true;
                     } else {
-                        fieldNamesToTypeMap = collectTableFields(database, "virts_layer_statistics");
+                        fieldNamesToTypeMap = collectTableFields(dbSpatialite, "virts_layer_statistics");
                         if (fieldNamesToTypeMap.size() > 0) { // VirtualTable virts_layer_statistics
                             b_valid = true;
                             spatialIndex = 2;
@@ -93,13 +93,13 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     if (!b_valid) {
                         spatialIndex = 0;
                         GPLog.addLogEntry(LOGTAG, "spatialiteUpdateLayerStatistics[" + databaseType
-                                + "] [no valid layer_statistics table found] table_name[" + tableName + "] geometry_column[" + geometryColumn + "]db[" + database.getFilename() + "]");
+                                + "] [no valid layer_statistics table found] table_name[" + tableName + "] geometry_column[" + geometryColumn + "]db[" + dbSpatialite.getFilename() + "]");
                     }
                 }
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "spatialiteUpdateLayerStatistics[" + databaseType + "] sql["
-                    + s_UpdateLayerStatistics + "] db[" + database.getFilename() + "]", e_stmt);
+                    + s_UpdateLayerStatistics + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null)
                 statement.close();
@@ -119,18 +119,18 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @return the retrieved bounds data, if possible (vector_extent).
      * @throws jsqlite.Exception if something goes wrong.
      */
-    private static String getSpatialiteUpdateLayerStatistics(Database database, String tableName, String geometryColumn,
+    private static String getSpatialiteUpdateLayerStatistics(Database dbSpatialite, String tableName, String geometryColumn,
                                                              int spatialIndex, SpatialiteDatabaseType databaseType) throws Exception {
         String vectorExtent = "";
-        if (DaoSpatialite.getGeometriesCount(database, tableName, geometryColumn) == 0) {
-            GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[getGeometriesCount == 0] db[" + database.getFilename() + "]");
+        if (DaoSpatialite.getGeometriesCount(dbSpatialite, tableName, geometryColumn) == 0) {
+            GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[getGeometriesCount == 0] db[" + dbSpatialite.getFilename() + "]");
             return vectorExtent;
         }
         if (spatialIndex == 1) {
-            spatialIndex = spatialiteUpdateLayerStatistics(database, tableName, geometryColumn, spatialIndex,
+            spatialIndex = spatialiteUpdateLayerStatistics(dbSpatialite, tableName, geometryColumn, spatialIndex,
                     databaseType);
             if (spatialIndex != 1) {
-                GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[UpdateLayerStatistic != 1 ][" + spatialIndex + "] db[" + database.getFilename() + "]");
+                GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[UpdateLayerStatistic != 1 ][" + spatialIndex + "] db[" + dbSpatialite.getFilename() + "]");
                 return vectorExtent; // Invalid for use with geopaparazzi
             }
         }
@@ -156,7 +156,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             Stmt statement = null;
             try {
                 // when done here it, will catch sql-syntax errors
-                statement = database.prepare(VECTOR_LAYERS_QUERY_BASE);
+                statement = dbSpatialite.prepare(VECTOR_LAYERS_QUERY_BASE);
                 if (statement.step()) {
                     if (statement.column_string(2) != null) { // without further checking, consider
                         // this valid
@@ -165,16 +165,16 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 }
             } catch (jsqlite.Exception e_stmt) {
                 GPLog.error(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] sql["
-                        + VECTOR_LAYERS_QUERY_BASE + "] db[" + database.getFilename() + "]", e_stmt);
+                        + VECTOR_LAYERS_QUERY_BASE + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
             } finally {
                 if (statement != null)
                     statement.close();
             }
             // Last attempt, if this does not work - then the geometry must be considered invalid
             if (vectorExtent.equals("")) {
-                vectorExtent = DaoSpatialite.getGeometriesBoundsString(database, tableName, geometryColumn);
+                vectorExtent = DaoSpatialite.getGeometriesBoundsString(dbSpatialite, tableName, geometryColumn);
                 if (vectorExtent.equals(""))
-                    GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[GeometriesBoundsString empty] db[" + database.getFilename() + "]");
+                    GPLog.addLogEntry(LOGTAG, "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[GeometriesBoundsString empty] db[" + dbSpatialite.getFilename() + "]");
             }
         }
         return vectorExtent;
@@ -190,7 +190,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @param databaseType           for Spatialite 3 and 4 specific Tasks
      * @throws Exception if something goes wrong.
      */
-    private static void getSpatialVectorMap_Errors(Database database, HashMap<String, String> spatialVectorMap,
+    private static void getSpatialVectorMap_Errors(Database dbSpatialite, HashMap<String, String> spatialVectorMap,
                                                    HashMap<String, String> spatialVectorMapErrors, SpatialiteDatabaseType databaseType) throws Exception {
         HashMap<String, String> spatialVectorMapCorrections = new HashMap<String, String>();
         String vector_key = ""; // term used when building the sql, used as map.key
@@ -226,7 +226,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                         // always be 1
                         // This should NOT be the default behavior, there may be a reason why no SpatialIndex was created
                         if ((i_spatial_index_enabled == 0) && (VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVE || VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVEWITHINDEX)) {
-                            i_spatial_index_enabled = SpatialiteIndexing.spatialiteCreateSpatialIndex(database, table_name, geometry_column,
+                            i_spatial_index_enabled = SpatialiteIndexing.spatialiteCreateSpatialIndex(dbSpatialite, table_name, geometry_column,
                                     databaseType);
                             if (!recovery_text.equals(""))
                                 recovery_text += ",";
@@ -272,7 +272,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             }
                             // we do not try to query the dementions of faulty SpatialView's
                             if ((VECTORLAYER_QUERYMODE == VectorLayerQueryModes.TOLERANT) && (spatialIndex == 1)) {
-                                vector_extent = DaoSpatialite.getGeometriesBoundsString(database, table_name, geometry_column);
+                                vector_extent = DaoSpatialite.getGeometriesBoundsString(dbSpatialite, table_name, geometry_column);
                                 if (!recovery_text.equals(""))
                                     recovery_text += ",";
                                 if (!vector_extent.equals(""))
@@ -286,7 +286,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                                      afterwhich 2 attemts will be made to return valid result
                                      - if empty: geometry is to be considered invalid
                                     */
-                                vector_extent = getSpatialiteUpdateLayerStatistics(database, table_name, geometry_column,
+                                vector_extent = getSpatialiteUpdateLayerStatistics(dbSpatialite, table_name, geometry_column,
                                         spatialIndex, databaseType);
                                 if (!recovery_text.equals(""))
                                     recovery_text += ",";
@@ -302,11 +302,11 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             if (vector_key.contains("SpatialView")) {
                                 try { // replace placeholder with used primary-key and read_only
                                     // parameter of SpatialView
-                                    String ROWID_PK = SPL_Views.getViewRowid(database, table_name, databaseType);
+                                    String ROWID_PK = SPL_Views.getViewRowid(dbSpatialite, table_name, databaseType);
                                     vector_key = vector_key.replace("ROWID;-1", ROWID_PK);
                                 } catch (Exception e) {
                                     GPLog.error(LOGTAG, "getSpatialVectorMap_Errors[" + databaseType
-                                            + "] vector_key[" + vector_key + "] db[" + database.getFilename() + "]", e);
+                                            + "] vector_key[" + vector_key + "] db[" + dbSpatialite.getFilename() + "]", e);
                                 }
                             }
                             // one way or another, we have resolved the faulty geometry, add to the
@@ -321,7 +321,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             // GPLog.asd(-1,"getSpatialVectorMap_Errors[not resolved]["+VECTOR_LAYERS_QUERY_MODE+"]  vector_key["+vector_key+"]  vector_value["+vector_value+"] vector_extent["+vector_extent+"]");
                         }
                         GPLog.addLogEntry(LOGTAG, "getSpatialVectorMap_Errors[" + databaseType
-                                + "] [" + recovery_text + "] vector_key[" + vector_key + "] db[" + database.getFilename() + "]");
+                                + "] [" + recovery_text + "] vector_key[" + vector_key + "] db[" + dbSpatialite.getFilename() + "]");
                     }
                 }
             }
@@ -332,7 +332,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     spatialVectorMapErrors.remove(vector_entry.getKey());
                 } catch (java.lang.Exception e) {
                     GPLog.error(LOGTAG, "getSpatialVectorMap_Errors[" + databaseType + "] vector_key[" + vector_key
-                            + "] db[" + database.getFilename() + "]", e);
+                            + "] db[" + dbSpatialite.getFilename() + "]", e);
                 }
             }
         }
@@ -347,13 +347,13 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @param b_layers_statistics    if a layers_statistics had been found
      * @throws Exception if something goes wrong.
      */
-    static void getSpatialVectorMap_V3(Database database, HashMap<String, String> spatialVectorMap,
+    static void getSpatialVectorMap_V3(Database dbSpatialite, HashMap<String, String> spatialVectorMap,
                                        HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_SpatialIndex)
             throws Exception {
         int spatialIndex = 0;
         if (!b_SpatialIndex) { // pre-spatilite 3.0 Database may not have this Virtual-Table, it
             // must be created to query the geometrys using the SpatialIndex
-            spatialIndex = SpatialiteIndexing.spatialiteVirtualSpatialIndex(database, SpatialiteDatabaseType.SPATIALITE3);
+            spatialIndex = SpatialiteIndexing.spatialiteVirtualSpatialIndex(dbSpatialite, SpatialiteDatabaseType.SPATIALITE3);
             if (spatialIndex == 0) { // if this fails then we may have to consider this Database
                 // invalid
                 return;
@@ -361,7 +361,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         if (!b_layers_statistics) { // if layers_statistics does not exist a UpdateLayerStatistics()
             // is needed for the whole Database
-            spatialIndex = spatialiteUpdateLayerStatistics(database, "", "", spatialIndex, SpatialiteDatabaseType.SPATIALITE3);
+            spatialIndex = spatialiteUpdateLayerStatistics(dbSpatialite, "", "", spatialIndex, SpatialiteDatabaseType.SPATIALITE3);
             if (spatialIndex != 1) { // if this fails then we may have to consider this Database
                 // invalid
                 return;
@@ -379,7 +379,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         // First: Views
         Stmt statement = null;
         try {
-            statement = database.prepare(GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_INVALID_V3.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_INVALID_V3.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -388,7 +388,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V3[" + SpatialiteDatabaseType.SPATIALITE3 + "] sql["
-                    + GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_INVALID_V3.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_INVALID_V3.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -396,7 +396,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         // Second: Tables
         try {
-            statement = database.prepare(GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V3.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V3.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -405,7 +405,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V3[" + SpatialiteDatabaseType.SPATIALITE3 + "] sql["
-                    + GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V3.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_INVALID_V3.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -413,7 +413,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         // First Views
         try {
-            statement = database.prepare(GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_VALID_V3.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_VALID_V3.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -427,7 +427,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                         style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
-                        String ROWID_PK = SPL_Views.getViewRowid(database, table_name, SpatialiteDatabaseType.SPATIALITE3);
+                        String ROWID_PK = SPL_Views.getViewRowid(dbSpatialite, table_name, SpatialiteDatabaseType.SPATIALITE3);
                         vector_key = vector_key.replace("ROWID;-1", ROWID_PK);
                     }
                 }
@@ -443,7 +443,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V3[" + SpatialiteDatabaseType.SPATIALITE3 + "] sql["
-                    + GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_VALID_V3.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.VIEWS_QUERY_EXTENT_VALID_V3.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -451,7 +451,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         // Second Tables
         try {
-            statement = database.prepare(GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V3.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V3.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -468,7 +468,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V3[" + SpatialiteDatabaseType.SPATIALITE3 + "] sql["
-                    + GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V3.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.LAYERS_QUERY_EXTENT_VALID_V3.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -476,7 +476,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         // if empty: there are nothing to correct
         if ((VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT) && (spatialVectorMapErrors.size() > 0)) {
-            getSpatialVectorMap_Errors(database, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE3);
+            getSpatialVectorMap_Errors(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE3);
         }
     }
 
@@ -491,7 +491,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @param b_raster_coverages     if a raster_coverages had been found [RasterLite2 support]
      * @throws Exception if something goes wrong.
      */
-    static void getSpatialVectorMap_V4(Database database, HashMap<String, String> spatialVectorMap,
+    static void getSpatialVectorMap_V4(Database dbSpatialite, HashMap<String, String> spatialVectorMap,
                                        HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles)
             throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
@@ -505,7 +505,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         Stmt statement = null;
         Stmt sub_query = null;
         try {
-            statement = database.prepare(GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -514,14 +514,14 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                    + GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
             }
         }
         try {
-            statement = database.prepare(GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_VALID_V4.getQuery());
+            statement = dbSpatialite.prepare(GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_VALID_V4.getQuery());
             while (statement.step()) {
                 vector_key = statement.column_string(0);
                 vector_data = statement.column_string(1);
@@ -537,7 +537,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                         style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
-                        String ROWID_PK = SPL_Views.getViewRowid(database, table_name, SpatialiteDatabaseType.SPATIALITE4);
+                        String ROWID_PK = SPL_Views.getViewRowid(dbSpatialite, table_name, SpatialiteDatabaseType.SPATIALITE4);
                         vector_key = vector_key.replace("ROWID;-1", ROWID_PK);
                     }
                 }
@@ -553,7 +553,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             }
         } catch (jsqlite.Exception e_stmt) {
             GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                    + GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_VALID_V4.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                    + GeneralQueriesPreparer.VECTOR_LAYERS_QUERY_EXTENT_VALID_V4.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
         } finally {
             if (statement != null) {
                 statement.close();
@@ -561,12 +561,12 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         }
         // if empty: there are nothing to correct [do before RasterLite2 logic - there is no error control for that]
         if ((VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT) && (spatialVectorMapErrors.size() > 0)) {
-            getSpatialVectorMap_Errors(database, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4);
+            getSpatialVectorMap_Errors(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4);
         }
         // RasterLite2 support: a raster_coverages has been found and the driver supports it
         if ((!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) && (b_raster_coverages)) {
             try {
-                statement = database.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery());
+                statement = dbSpatialite.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery());
                 while (statement.step()) {
                     vector_key = statement.column_string(0);
                     vector_data = statement.column_string(1);
@@ -575,14 +575,14 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 }
             } catch (jsqlite.Exception e_stmt) {
                 GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                        + GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                        + GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
             } finally {
                 if (statement != null) {
                     statement.close();
                 }
             }
             try {
-                statement = database.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery());
+                statement = dbSpatialite.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery());
                 while (statement.step()) {
                     vector_key = statement.column_string(0);
                     vector_data = statement.column_string(1);
@@ -600,7 +600,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
                        try 
                        {
-                        sub_query = database.prepare(s_sql);
+                        sub_query = dbSpatialite.prepare(s_sql);
                         while (sub_query.step()) 
                         {
                          style_name = sub_query.column_string(0);
@@ -609,7 +609,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        catch (jsqlite.Exception e_stmt) 
                        {
                         GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                        + s_sql + "] db[" + database.getFilename() + "]", e_stmt);
+                        + s_sql + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
                        }
                        finally 
                        {
@@ -630,7 +630,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
                        try 
                        {
-                        sub_query = database.prepare(s_sql);
+                        sub_query = dbSpatialite.prepare(s_sql);
                         while (sub_query.step()) 
                         {
                          style_name = sub_query.column_string(0);
@@ -639,7 +639,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        catch (jsqlite.Exception e_stmt) 
                        {
                         GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                        + s_sql + "] db[" + database.getFilename() + "]", e_stmt);
+                        + s_sql + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
                        }
                        finally 
                        {
@@ -669,7 +669,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 }
             } catch (jsqlite.Exception e_stmt) {
                 GPLog.error(LOGTAG, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] sql["
-                        + GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery() + "] db[" + database.getFilename() + "]", e_stmt);
+                        + GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery() + "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
             } finally {
                 if (statement != null) {
                     statement.close();

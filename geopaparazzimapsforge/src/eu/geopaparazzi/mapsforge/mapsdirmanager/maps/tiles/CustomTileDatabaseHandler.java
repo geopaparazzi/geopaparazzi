@@ -28,6 +28,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * An utility class to handle an custom tiles database.
@@ -84,6 +85,34 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * Get the available tables.
      * 
      * <p>Currently this is a list with a single table.
+     * <p>[GeneralQueriesPreparer] Documentation of vector_key /  vector_value   
+     * <ol>
+     * <li>vector_key: 6 Fields will be returned with the following structure[They may not be empty, otherwise lenght of split will not return the correct amount]</li>
+     * <li>0 table_name: tableName/li>
+     * <li>1: geometry_column - not used '0'</li>
+     * <li>2: layer_type - SpatialDataType.MAPURL.getTypeName()</li>
+     * <li>3: ROWID - short discription[databaseFileNameNoExtension]</li>
+     * <li>4: view_read_only - long discription [tableName]</li>
+     * </ol>
+     * <li>vector_data: Seperator: ';' 7 values minimum [more must be made known to parse_vector_key_value()]</li>
+     * <li>0: geometry_type - this.minZoom</li>
+     * <li>1: coord_dimension - this.maxZoom</li>
+     * <li>2: srid - 4326</li>
+     * <li>3: spatial_index_enabled - defaultZoom</li>
+     * <li>4: rows - not used '0'
+     * <li>5: extent_min/max - Seperator ',' - 4 values [mbtiles,map,mapurl: 7 values : centerX,centerY,defaultZoom]
+     * <li>5.1:extent_min_x - boundsWest</li>
+     * <li>5.2:extent_min_y - boundsSouth</li>
+     * <li>5.3:extent_max_x - boundsEast</li>
+     * <li>5.4:extent_max_y - boundsNorth</li>
+     * <li>5.5: centerX - can be user defined</li>
+     * <li>5.6: centerY - can be user defined</li>
+     * <li>5.7: defaultZoom - can be user defined</li>
+     * <li>6:last_verified - tileQuery as '?,?,?'</li>
+     * <li>7:getDatabasePath()</li>
+     * <li>8-?:not used</li>
+     * </ol>
+     * <p> vector_key/data documetation : 20150718
      * 
      * @param forceRead force a re-reading of the resources.
      * @return the list of available tables.
@@ -92,15 +121,14 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler {
     public List<CustomTileTable> getTables( boolean forceRead ) throws Exception {
         if (customtileTableList == null || forceRead) {
             customtileTableList = new ArrayList<CustomTileTable>();
-            double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
-            // String tableName = metadata.name;
-            CustomTileTable table = new CustomTileTable(databasePath, tableName,"", "3857", minZoom, maxZoom, centerX, centerY,
-                    "?,?,?", d_bounds);
-            if (table != null) {
-                table.setDefaultZoom(defaultZoom);
-                // setDescription(table.getDescription());
-                customtileTableList.add(table);
-            }
+           String layerType = SpatialDataType.MAPURL.getTypeName();
+           String vector_key=tableName+";0;"+layerType+";"+databaseFileNameNoExtension+";"+tableName+"";
+           String s_bounds=this.boundsWest + "," + this.boundsSouth + "," + this.boundsEast + "," + this.boundsNorth+ "," + this.centerX+ "," + this.centerY+","+defaultZoom;
+           String vector_value=this.minZoom+";"+this.maxZoom+";4326;0;0;"+s_bounds+";?,?,?;"+getDatabasePath();
+           CustomTileTable table = new CustomTileTable(null,vector_key,vector_value);
+           if ((table != null) && (table.isValid())) {
+               customtileTableList.add(table);
+           }
         }
         return customtileTableList;
     }
