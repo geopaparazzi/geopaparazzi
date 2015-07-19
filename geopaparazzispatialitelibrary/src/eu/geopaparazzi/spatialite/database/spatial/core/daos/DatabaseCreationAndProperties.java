@@ -151,10 +151,12 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         boolean b_views_geometry_columns = false;
         // spatialite 4.2.0 - RasterLite2 table [raster_coverages]
         boolean b_raster_coverages = false;
-        // spatialite 4.3.0 - RasterLite2 table [SE_raster_styles, may not exist - not madatory, alpha-version did not exist]
+        // spatialite 4.3.0 - RasterLite2 table [SE_raster_styles, may not exist - not maditory, alpha-version did not exist]
         boolean b_raster_styles = false;
-        // spatialite 4.3.0 - RasterLite2 table [SE_vector_styles_layers, may not exist - not madatory, alpha-version did not exist]
+        // spatialite 4.3.0 - RasterLite2 table [SE_vector_styles_layers, may not exist - not maditory, alpha-version did not exist]
         boolean b_vector_styles = false;
+        // spatialite 4.3.0 - RasterLite2 table [SE_group_styles, may not exist - not maditory, alpha-version did not exist]
+        boolean b_group_styles = false;
         // this table dissapered (maybe 4.1.0) - when vector_layers_statistics is not set, this may
         // be used for the bounds
         boolean b_layers_statistics = false;
@@ -182,6 +184,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                         b_raster_styles = true;
                     } else if (name.equals("SE_vector_styles")) {
                         b_vector_styles = true;
+                    } else if (name.equals("SE_group_styles")) {
+                        b_group_styles = true;
                     } else if (name.equals("layers_statistics")) {
                         b_layers_statistics = true;
                     } else if (name.equals(METADATA_GEOPACKAGE_TABLE_NAME)) {
@@ -235,7 +239,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             }
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
                 SPL_Vectors.getSpatialVectorMap_V4(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, b_layers_statistics,
-                        b_raster_coverages,b_raster_styles,b_vector_styles);
+                        b_raster_coverages,b_raster_styles,b_vector_styles,b_group_styles);
                 if (spatialVectorMap.size() > 0)
                     return SpatialiteDatabaseType.SPATIALITE4;
                 else

@@ -18,6 +18,7 @@
 
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
+import java.util.HashMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.*;
@@ -59,7 +60,7 @@ public class SPL_Rasterlite {
     public static byte[] getRasterTileInBounds(Database db, AbstractSpatialTable rasterTable, double[] tileBounds, int tileSize) {
 
         byte[] bytes = SPL_Rasterlite.rl2_GetMapImageFromRasterTile(db, rasterTable.getSrid(), rasterTable.getTableName(),
-                tileBounds, tileSize, rasterTable.getStyleName());
+                tileBounds, tileSize, rasterTable.getStyleNameRaster());
         if (bytes != null) {
             return bytes;
         }
@@ -80,9 +81,9 @@ public class SPL_Rasterlite {
      * @return the image data as byte[] as jpeg
      */
     public static byte[] rl2_GetMapImageFromRasterTile(Database dbSpatialite, String destSrid, String coverageName, double[] tileBounds,
-                                             int i_tile_size,String styleName) {
+                                             int i_tile_size,String styleNameRaster) {
         return rl2_GetMapImageFromRaster(dbSpatialite, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
-                styleName, "image/jpeg", "#ffffff", 0, 80, 1);
+                styleNameRaster, "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
 
@@ -107,15 +108,15 @@ public class SPL_Rasterlite {
      * @return the image data as byte[]
      */
     public static byte[] rl2_GetMapImageFromRaster(Database dbSpatialite, String sourceSrid, String destSrid, String coverageName, int width,
-                                         int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality,
+                                         int height, double[] tileBounds, String styleNameRaster, String mimeType, String bgColor, int transparent, int quality,
                                          int reaspect) {
         boolean doTransform = false;
         if (!sourceSrid.equals(destSrid)) {
             doTransform = true;
         }
         // sanity checks
-        if (styleName.equals(""))
-            styleName = "default";
+        if (styleNameRaster.equals(""))
+            styleNameRaster = "default";
         if (mimeType.equals(""))
             mimeType = "image/png";
         if (bgColor.equals(""))
@@ -158,7 +159,7 @@ public class SPL_Rasterlite {
         qSb.append(",");
         qSb.append(Integer.toString(height));
         qSb.append(",'");
-        qSb.append(styleName);
+        qSb.append(styleNameRaster);
         qSb.append("','");
         qSb.append(mimeType);
         qSb.append("','");
@@ -195,12 +196,105 @@ public class SPL_Rasterlite {
                     try {
                         stmt.close();
                     } catch (jsqlite.Exception e) {
-                        GPLog.error("SPL_Rasterlite", null, e);
+                        GPLog.error("SPL_Rasterlite", "rl2_GetMapImageFromRaster sql[" + s_sql_command + "]", e);
                     }
             }
         }
         return ba_image;
     }
-
+    /**
+     *  HashMap<Integer, Double> of Zoom-Levels 0-30
+     *  Zoom-Level, Width in World-Mercator-Meters of a 256x256 Tile
+     *  - 'WGS 84 / World Mercator' (3395) - UNIT=Meters            
+     * @return zoom_levels
+     */     
+    public static int[] rl2_calculate_zoom_levels(Database dbSpatialite, String coverageName, String s_tile_size) {
+        HashMap<Integer, Double> zoom_levels = new HashMap<Integer, Double>();  
+        // TODO: remove to Mercator-specific definitions
+        // 'WGS 84 / World Mercator' (3395) - UNIT=Meters            
+        // Zoom-Level, Width in Meters of a 256x256 Tile
+        // Value returned by gdalinfo for a geo-referenced Tile
+        // values based on the position: 13.37771496361961 52.51628011262304 [Brandenburg Gate, Berlin, Germany]
+        zoom_levels.put( 0,40032406.294);
+        zoom_levels.put( 1,20016203.147);
+        zoom_levels.put( 2,9999156.402);
+        zoom_levels.put( 3,4995382.840);
+        zoom_levels.put( 4,2501025.826);
+        zoom_levels.put( 5,1250779.611);
+        zoom_levels.put( 6,625329.273);
+        zoom_levels.put( 7,312680.586);
+        zoom_levels.put( 8,156344.180);
+        zoom_levels.put( 9,78173.049);
+        zoom_levels.put(10,39086.762);
+        zoom_levels.put(11,19543.440) ;
+        zoom_levels.put(12,9771.764);
+        zoom_levels.put(13,4885.886);
+        zoom_levels.put(14,2442.942);
+        zoom_levels.put(15,1221.471);
+        zoom_levels.put(16,610.735);
+        zoom_levels.put(17,305.367);
+        zoom_levels.put(18,152.683);
+        zoom_levels.put(19,76.341);
+        zoom_levels.put(20,38.170);
+        zoom_levels.put(21,19.085);
+        zoom_levels.put(22,9.542); // Last supported Zoom-level
+        zoom_levels.put(23,4.771); 
+        zoom_levels.put(24,2.385); 
+        zoom_levels.put(25,1.192); 
+        zoom_levels.put(26,0.596); 
+        zoom_levels.put(27,0.298); 
+        zoom_levels.put(28,0.149); 
+        zoom_levels.put(29,0.074); 
+        zoom_levels.put(30,0.037); // Last possible value that gdalwarp can create
+        // Zoom 31. [gdalwarp] Failed to compute GCP transform: Transform is not solvable     
+        String s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_ZOOMLEVEL_QUERY.getQuery();
+        String s_sql_command = s_rl2_min_max_zoom_base.replace("COVERAGE_NAME", coverageName); 
+        s_sql_command = s_sql_command.replace("TILE_WIDTH", s_tile_size);        
+        double d_width_min=0.0;
+        double d_width_max=0.0;
+        Stmt stmt = null;
+        try {
+                stmt = dbSpatialite.prepare(s_sql_command);
+                if (stmt.step()) {
+                    d_width_min = stmt.column_double(0);
+                    d_width_max = stmt.column_double(1);
+                }
+            } catch (jsqlite.Exception e_stmt) {
+                int i_rc = dbSpatialite.last_error();
+                GPLog.error("SPL_Rasterlite", "rl2_calculate_zoom_levels sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+            } finally {
+                if(stmt!=null)
+                    try {
+                        stmt.close();
+                    } catch (jsqlite.Exception e) {
+                        GPLog.error("SPL_Rasterlite", "rl2_calculate_zoom_levels sql[" + s_sql_command + "]", e);
+                    }
+            }
+            int i_zoom_min=-1;
+            int i_zoom_max=-1;
+            int i_zoom_default=-1;
+            int i_max_zoom=22;
+            for (int i=0;i<=i_max_zoom;i++)
+            {
+             double meters=zoom_levels.get(i);
+             if (i_zoom_min < 0)
+             {
+              if (meters < d_width_min)
+              i_zoom_min=i;
+             }
+             if (i_zoom_default < 0)
+             {
+              if (meters > d_width_max)
+               i_zoom_default=i;
+             }
+            }
+            if (i_zoom_default > i_max_zoom)
+             i_zoom_default=i_max_zoom;
+            i_zoom_max=i_zoom_default+(i_zoom_default-i_zoom_min);
+            if (i_zoom_max > i_max_zoom)
+             i_zoom_max = i_max_zoom;
+            int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
+        return zoom_level_min_max;
+    }
 
 }

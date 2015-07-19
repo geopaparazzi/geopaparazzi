@@ -257,14 +257,40 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
      * further documentation can be found here:
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/GEOPACKAGE_QUERY_R10-geopaparazzi-specificGEOPACKAGE_QUERY_EXTENT_LIST_R10
      */
-    GEOPACKAGE_QUERY_EXTENT_LIST_R10;
+    GEOPACKAGE_QUERY_EXTENT_LIST_R10,
+    /**
+     * The Sql-String to retrieve a extimated min/max Zoom-Level for a Rasterite2 coverage.
+     * <p/>
+     * 2 Placeholders are reserved : 
+     * - 'COVERAGE_NAME' : will be replace with the 'coverage_name' found
+     * - 'TILE_WIDTH': will be replaced with the 'tile_width' found
+     * returned values:
+     * - 'zoom_max' width in World Mercator-Meters of a 256x256 tile in the original resolution of the coverage (pyramid_level 0)
+     * - 'zoom_min' width in World Mercator-Meters of the resolution of the last Pyramid (pyramid_level x)
+     * 'SPL_Rasterlite.rl2_calculate_zoom_levels':
+     * will compair these result with the values stored in the HashMap zoom_levels [getZoomLevelsWidths()]
+     * <p/>
+     */
+    RL2_MINMAX_ZOOMLEVEL_QUERY;
 
     private String VIEWS_QUERY_EXTENT_INVALID = "";
 
     private HashMap<String, String> queriesMap = new HashMap<String, String>();
-
+    
     private GeneralQueriesPreparer() {
-        String STYLES_QUERY = "";
+        {
+            StringBuilder sb_query = new StringBuilder();
+            sb_query.append("SELECT ( ((ST_MaxX(ST_Transform(geometry,3395))-");
+            sb_query.append("ST_MinX(ST_Transform(geometry,3395)))/TILE_WIDTH)*256");
+            sb_query.append("FROM 'COVERAGE_NAME_tiles' ORDER BY pyramid_level ASC LIMIT 1");
+            String sub_query = sb_query.toString();
+            sb_query = new StringBuilder();
+            sb_query.append("SELECT  (" + sub_query + ") AS zoom_max,"); // Zoom 22;
+            sub_query = sub_query.replace("ASC", "DESC");
+            sb_query.append("(" + sub_query + ") AS zoom_min;"); // Zoom 00;
+            queriesMap.put("RL2_MINMAX_ZOOMLEVEL_QUERY", sb_query.toString());
+        }
+        
         String VECTOR_LAYERS_QUERY_BASE = "";
         {
             StringBuilder sb_query = new StringBuilder();
@@ -272,7 +298,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type");
-            sb_query.append("||';ROWID;-1;default;'"); // 3+4+5 (reserved for Style-Name) of 1st field
+            sb_query.append("||';ROWID'"); // 3+4 of 1st field
             sb_query.append(" AS vector_key," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_type");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "srid");
@@ -637,12 +663,11 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||';'||compression"); // 1 of 1st field
             sb_query.append("||';'||'RasterLite2'"); // 2 of 1st field
             sb_query.append("||';'||REPLACE(title,';','-')"); // 3 of 1st field
-            sb_query.append("||';'||REPLACE(abstract,';','-')||';'"); // 4 of 1st field
-            sb_query.append("||'default;'"); // 5 of 1st field for Styles-Table
+            sb_query.append("||';'||REPLACE(abstract,';','-')"); // 4 of 1st field
             sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
-            sb_query.append("||';'||tile_width"); // 2
-            sb_query.append("||';'||srid"); // 3
-            sb_query.append("||';'||horz_resolution||';' AS vector_data,"); // 4
+            sb_query.append("||';'||tile_width"); // 1
+            sb_query.append("||';'||srid"); // 2
+            sb_query.append("||';'||horz_resolution||';' AS vector_data,"); // 3
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
         }
         {
@@ -722,7 +747,9 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||','||CASE WHEN extent_miny IS NULL THEN 'extent_miny' ELSE extent_miny END"); // 1.1
             sb_query.append("||','||CASE WHEN extent_maxx IS NULL THEN 'extent_maxx' ELSE extent_maxx END"); // 1.2
             sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE extent_maxy END"); // 1.3
-            sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
+            sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')"); // 2
+            sb_query.append("||';default,default,default'"); // 5 (reserved for Styles[raster,vector,group]) 
+            sb_query.append(" AS vector_extent"); // 2
             VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
         }
         {
@@ -759,7 +786,6 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" END"); // 2 of 1st field
             sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of 1st field
             sb_query.append("||';'||REPLACE(description,';','-')"); // 4 of 1st field
-            sb_query.append("||';default;"); // 5 (reserved for Styles) of 1st field
             sb_query.append(" AS vector_key,"); 
             // fromosm_tiles;tile_data;GeoPackage_tiles;© OpenStreetMap contributors, See
             // http://www.openstreetmap.org/copyright;OSM Tiles;

@@ -210,7 +210,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 vector_value = vector_entry.getValue();
 //                vector_data = "";
                 String[] sa_string = vector_key.split(";");
-                if (sa_string.length == 6) {
+                if (sa_string.length == 5) {
                     table_name = sa_string[0];
                     geometry_column = sa_string[1];
 //                    String s_layer_type = sa_string[2];
@@ -422,7 +422,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     // Do not call RecoverSpatialIndex
                     // for SpatialViews
                     sa_string = vector_key.split(";");
-                    if (sa_string.length == 6) {
+                    if (sa_string.length == 5) {
                         table_name = sa_string[0];
                         style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
@@ -492,16 +492,20 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @throws Exception if something goes wrong.
      */
     static void getSpatialVectorMap_V4(Database dbSpatialite, HashMap<String, String> spatialVectorMap,
-                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles)
+                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles,boolean b_group_styles)
             throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
         String vector_data = ""; // term used when building the sql
         String vector_extent = ""; // term used when building the sql
         String vector_value = ""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name = "";
-        String style_name = "";
+        String style_raster = "";
+        String style_vector = "";
+        String style_group = "";
+        String tile_width = "";
         String geometry_column = "";
         String[] sa_string;
+        int[] zoom_level_min_max;
         Stmt statement = null;
         Stmt sub_query = null;
         try {
@@ -532,9 +536,8 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     // Do not call RecoverSpatialIndex
                     // for SpatialViews
                     sa_string = vector_key.split(";");
-                    if (sa_string.length == 6) {
+                    if (sa_string.length == 5) {
                         table_name = sa_string[0];
-                        style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
                         String ROWID_PK = SPL_Views.getViewRowid(dbSpatialite, table_name, SpatialiteDatabaseType.SPATIALITE4);
@@ -588,13 +591,25 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     vector_data = statement.column_string(1);
                     vector_extent = "";
                     vector_extent = statement.column_string(2);
-                    if ((b_raster_styles) || (b_vector_styles))
+                    table_name="";
+                    tile_width = "";
+                    sa_string = vector_key.split(";");
+                    if (sa_string.length == 5) 
                     {
-                     sa_string = vector_key.split(";");
-                     if (sa_string.length == 6) 
+                     table_name = sa_string[0];
+                     sa_string = vector_data.split(";");
+                     if (sa_string.length == 4) 
                      {
-                      table_name = sa_string[0];
-                      style_name ="";
+                      tile_width = sa_string[1];
+                     }
+                    }                   
+                    if ((b_raster_styles) || (b_vector_styles) || (b_group_styles))
+                    {                     
+                     if (!table_name.equals("")) 
+                     {
+                      style_raster = "";
+                      style_vector = "";
+                      style_group = "";
                       if (b_raster_styles)
                       {
                        String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
@@ -603,7 +618,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                         sub_query = dbSpatialite.prepare(s_sql);
                         while (sub_query.step()) 
                         {
-                         style_name = sub_query.column_string(0);
+                         style_raster = sub_query.column_string(0);
                         }
                        }
                        catch (jsqlite.Exception e_stmt) 
@@ -618,13 +633,13 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                          sub_query.close();
                         }
                        }
-                       if ((!style_name.equals("default")) && (!style_name.equals("")))
+                       if ((!style_raster.equals("default")) && (!style_raster.equals("")))
                        {
-                        vector_key = vector_key.replace("default", style_name);
+                        vector_extent = vector_extent.replace(";default", ";"+style_raster);
                        }
                        // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] table_name["+ table_name+"] vector_key["+ vector_key+"] sql["+s_sql+"]");
                       }
-                      if ((b_vector_styles) && (style_name.equals("default")))
+                      if (b_vector_styles)
                       {
                        /*
                        String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
@@ -654,7 +669,16 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        }  
                        */                     
                       }
+                      if (b_group_styles)
+                      {
+                      }
                      }
+                    }
+                    if ((!table_name.equals("")) && (!tile_width.equals(""))) 
+                    { //  int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
+                      zoom_level_min_max=SPL_Rasterlite.rl2_calculate_zoom_levels(dbSpatialite,table_name,tile_width);
+                      String s_zoom_levels=";"+Integer.toString(zoom_level_min_max[0])+","+Integer.toString(zoom_level_min_max[1])+","+Integer.toString(zoom_level_min_max[2]);
+                      vector_extent=vector_extent+s_zoom_levels;
                     }
                     if (vector_extent != null) { // mj10777: for some reason, this is being filled
                         // twice

@@ -102,9 +102,17 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     protected String tableName;
     /**
-     * A name for the table-style name.
+     * A name for the Raster-table-style name.
      */
-    protected String styleName;
+    protected String styleName_Raster;
+    /**
+     * A name for the Vector-table-style name.
+     */
+    protected String styleName_Vector;
+    /**
+     * A name for the Group-table-style name.
+     */
+    protected String styleName_Group;
     /**
      * A description.
      */
@@ -176,7 +184,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      *
      * @param databasePath the db path.
      * @param tableName    a name for the table.
-     * @param styleName    a name for the table-style.
+     * @param styleName_Raster    a name for the table-style.
      * @param mapType      the map type.
      * @param srid         srid of the table.
      * @param minZoom      min zoom.
@@ -248,6 +256,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      int i_rc=2; // unknown 'layerTypeDescription'
      double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
      double[] centerCoordinate = new double[]{0.0, 0.0};
+     int[] zoomLevels = new int[]{this.minZoom,this.maxZoom, this.defaultZoom};
      HashMap<String, String> fields_list = new HashMap<String, String>();
      int i_geometry_type = 0;
      int i_view_read_only = -1;
@@ -259,7 +268,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      String s_view_read_only = "";
      String[] sa_string = vector_key.split(";");
      this.tileQuery="";
-     if (sa_string.length == 6) 
+     if (sa_string.length == 5) 
      {
       String layerType = sa_string[2];
       if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
@@ -283,7 +292,7 @@ public abstract class AbstractSpatialTable implements Serializable {
       // For SpatialTable/Views
       s_view_read_only = sa_string[4];
       // TODO: remove this from vector_key and store in vector_value
-      String s_style_name = sa_string[5]; // style_name [for RasterLite2, otherwise reserved for future use]
+      String s_style_name_raster = sa_string[5]; // style_name [for RasterLite2, otherwise reserved for future use]
       sa_string = vector_value.split(";");
       if (sa_string.length >= 7) 
       { // We may be overriding some of these values, before setting the final values
@@ -337,7 +346,6 @@ public abstract class AbstractSpatialTable implements Serializable {
         i_rc=4;
        if (i_rc == 0)
        {
-        checkAndAdaptDatabaseBounds(boundsCoordinates, null);
         // Vector-Specfic tasks
         if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
              (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
@@ -431,7 +439,8 @@ public abstract class AbstractSpatialTable implements Serializable {
          this.defaultZoom=i_default_zoom;
          this.minZoom=i_min_zoom;
          this.maxZoom=i_max_zoom;
-         this.styleName = s_style_name; // for RasterLite2: Style-Name (only 1) or empty, resurved for others
+         checkAndAdaptDatabaseBounds(boundsCoordinates, centerCoordinate, zoomLevels);
+         this.styleName_Raster = s_style_name_raster; // for RasterLite2: Style-Name (only 1) or empty, resurved for others
          if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
              (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
              (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())))
@@ -478,7 +487,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      *
      * @param boundsCoordinates bounds to check against the overall.
      */
-    private void checkAndAdaptDatabaseBounds(double[] boundsCoordinates, int[] zoomLevels) {
+    private void checkAndAdaptDatabaseBounds(double[] boundsCoordinates,double[] centerCoordinates, int[] zoomLevels) {
         if ((this.boundsWest == 0.0) && (this.boundsSouth == 0.0) && (this.boundsEast == 0.0) && (this.boundsNorth == 0.0)) {
             this.boundsWest = boundsCoordinates[0];
             this.boundsSouth = boundsCoordinates[1];
@@ -494,8 +503,12 @@ public abstract class AbstractSpatialTable implements Serializable {
             if (boundsCoordinates[3] < this.boundsNorth)
                 this.boundsNorth = boundsCoordinates[3];
         }
-        centerX = this.boundsWest + (this.boundsEast - this.boundsWest) / 2;
-        centerY = this.boundsSouth + (this.boundsNorth - this.boundsSouth) / 2;
+        if ((centerCoordinates != null) && (centerCoordinates.length == 2)) {
+         if ((this.centerX == 0) && (this.centerY == 0)) {
+          this.centerX = this.boundsWest + (this.boundsEast - this.boundsWest) / 2;
+          this.centerY = this.boundsSouth + (this.boundsNorth - this.boundsSouth) / 2;
+         }
+       }
         if ((zoomLevels != null) && (zoomLevels.length == 2)) {
             if ((this.minZoom == 0) && (this.maxZoom == 0)) {
                 this.minZoom = zoomLevels[0];
@@ -736,7 +749,7 @@ public abstract class AbstractSpatialTable implements Serializable {
         return tableName;
     }
     /**
-     * Getter for the style name [for RasterLite2].
+     * Getter for the Raster-style name [for RasterLite2].
      * <p/>
      * <p> RasterLite2 Style logic: basic rules
      * <p> - only one style supported. Where than more than one: others will be ignored
@@ -746,10 +759,37 @@ public abstract class AbstractSpatialTable implements Serializable {
      *
      * @return the name of the {@link AbstractSpatialTable}.
      */
-    public String getStyleName() {
-        return styleName;
+    public String getStyleNameRaster() {
+        return styleName_Raster;
     }
-
+    /**
+     * Getter for the Vector-style name [for RasterLite2].
+     * <p/>
+     * <p> RasterLite2 Style logic: basic rules
+     * <p> - only one style supported. Where than more than one: others will be ignored
+     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
+     * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
+     * <p>Both Raster and Vectors can have a table-style]
+     *
+     * @return the name of the {@link AbstractSpatialTable}.
+     */
+    public String getStyleNameVector() {
+        return styleName_Vector;
+    }
+    /**
+     * Getter for the Group-style name [for RasterLite2].
+     * <p/>
+     * <p> RasterLite2 Style logic: basic rules
+     * <p> - only one style supported. Where than more than one: others will be ignored
+     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
+     * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
+     * <p>Both Raster and Vectors can have a table-style]
+     *
+     * @return the name of the {@link AbstractSpatialTable}.
+     */
+    public String getStyleNameGroup() {
+        return styleName_Group;
+    }
     /**
      * Return type of map/file
      * <p/>
