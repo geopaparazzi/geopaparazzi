@@ -410,8 +410,8 @@ public class SPL_Rasterlite {
         try {
                 stmt = dbSpatialite.prepare(s_sql_command);
                 if (stmt.step()) {
-                    d_width_min = stmt.column_double(0);
-                    d_width_max = stmt.column_double(1);
+                    d_width_max = stmt.column_double(0);
+                    d_width_min = stmt.column_double(1);
                 }
             } catch (jsqlite.Exception e_stmt) {
                 int i_rc = dbSpatialite.last_error();
@@ -438,8 +438,8 @@ public class SPL_Rasterlite {
              }
              if (i_zoom_default < 0)
              {
-              if (meters > d_width_max)
-               i_zoom_default=i;
+              if (meters < d_width_max)
+               i_zoom_default=i-1;
              }
             }
             if (i_zoom_default > i_max_zoom)
@@ -448,6 +448,7 @@ public class SPL_Rasterlite {
             if (i_zoom_max > i_max_zoom)
              i_zoom_max = i_max_zoom;
             int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
+            //GPLog.androidLog(-1, "rl2_calculate_zoom_levels["+coverageName+"]: d_width_min["+d_width_min+"] d_width_max["+d_width_max+"]  zoom_min["+i_zoom_min+"]   zoom_max["+i_zoom_max+"]   zoom_default["+i_zoom_default+"] ");
         return zoom_level_min_max;
     }
 

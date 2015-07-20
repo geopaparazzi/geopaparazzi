@@ -690,7 +690,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                        }
                       }
                       // Rebuild the 'vector_extent' string, replacing the found values
-                      vector_extent = vector_extent.replace(vector_extent_styles, style_raster+","+style_vector+","+style_raster_group+","+style_vector_group);
+                      // vector_extent = vector_extent.replace(vector_extent_styles, style_raster+","+style_vector+","+style_raster_group+","+style_vector_group);
                      }
                     }
                     if ((!table_name.equals("")) && (!tile_width.equals(""))) 

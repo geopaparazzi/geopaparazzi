@@ -280,12 +280,12 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
     private GeneralQueriesPreparer() {
         {
             StringBuilder sb_query = new StringBuilder();
-            sb_query.append("SELECT ( ((ST_MaxX(ST_Transform(geometry,3395))-");
-            sb_query.append("ST_MinX(ST_Transform(geometry,3395)))/TILE_WIDTH)*256");
-            sb_query.append("FROM 'COVERAGE_NAME_tiles' ORDER BY pyramid_level ASC LIMIT 1");
+            sb_query.append("SELECT (((ST_MaxX(ST_Transform(geometry,3395))-");
+            sb_query.append("ST_MinX(ST_Transform(geometry,3395)))/TILE_WIDTH)*256)");
+            sb_query.append(" FROM 'COVERAGE_NAME_tiles' ORDER BY pyramid_level ASC LIMIT 1");
             String sub_query = sb_query.toString();
             sb_query = new StringBuilder();
-            sb_query.append("SELECT  (" + sub_query + ") AS zoom_max,"); // Zoom 22;
+            sb_query.append("SELECT (" + sub_query + ") AS zoom_max,"); // Zoom 22;
             sub_query = sub_query.replace("ASC", "DESC");
             sb_query.append("(" + sub_query + ") AS zoom_min;"); // Zoom 00;
             queriesMap.put("RL2_MINMAX_ZOOMLEVEL_QUERY", sb_query.toString());

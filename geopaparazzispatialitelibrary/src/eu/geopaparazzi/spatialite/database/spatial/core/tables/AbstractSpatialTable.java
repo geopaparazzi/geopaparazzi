@@ -303,19 +303,20 @@ public abstract class AbstractSpatialTable implements Serializable {
      String style_raster_group = "default";
      String style_vector_group = "default";
      String s_view_read_only = "";
-     String[] sa_string = vector_key.split(";");
      this.tileQuery="";
      this.view_read_only=0;
+     String[] sa_string = vector_key.split(";");
+     int i_length_key=sa_string.length; // remove later
      if (sa_string.length == 5) 
      {
       String layerType = sa_string[2];
-      if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
-           (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
-           (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())) ||
-           (this.layerTypeDescription.equals(TableTypes.GPKGRASTER.getDescription())) ||
-           (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName())) ||
-           (this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
-           (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())))
+      if ((layerType.equals(TableTypes.SPATIALTABLE.getDescription())) ||
+           (layerType.equals(TableTypes.SPATIALVIEW.getDescription())) ||
+           (layerType.equals(TableTypes.GPKGVECTOR.getDescription())) ||
+           (layerType.equals(TableTypes.GPKGRASTER.getDescription())) ||
+           (layerType.equals(SpatialDataType.MBTILES.getTypeName())) ||
+           (layerType.equals(SpatialDataType.MAP.getTypeName())) ||
+           (layerType.equals(SpatialDataType.MAPURL.getTypeName())))
       {
        this.layerTypeDescription=layerType;
        this.isTableValid = true;
@@ -331,6 +332,7 @@ public abstract class AbstractSpatialTable implements Serializable {
       s_view_read_only = sa_string[4];
       // vector_value=vector_data+";"+vector_extent [MUST be a least length=7]
       sa_string = vector_value.split(";");
+      GPLog.androidLog(-1, "parse_vector_key_value: vector_key["+ vector_key+"] key.length["+i_length_key+"] value.length["+sa_string.length+"] vector_value["+ vector_value+"]");
       if (sa_string.length >= 7) 
       { // We may be overriding some of these values, before setting the final values
       // Warning: to NOT reuse 'sa_string', we may be retrieng more data
