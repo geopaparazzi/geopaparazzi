@@ -113,8 +113,8 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * <li>0 table_name: tableName/li>
      * <li>1: geometry_column - not used '0'</li>
      * <li>2: layer_type - SpatialDataType.MAP.getTypeName()</li>
-     * <li>3: ROWID - short discription[databaseFileNameNoExtension]</li>
-     * <li>4: view_read_only - long discription [tableName]</li>
+     * <li>3: ROWID - short description[databaseFileNameNoExtension]</li>
+     * <li>4: view_read_only - long description [tableName]</li>
      * </ol>
      * <li>vector_data: Seperator: ';' 7 values minimum [more must be made known to parse_vector_key_value()]</li>
      * <li>0: geometry_type - this.minZoom</li>
@@ -133,6 +133,12 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * <li>6:last_verified - tileQuery as '?,?,?'</li>
      * <li>7:getDatabasePath()</li>
      * <li>8-?:not used</li>
+     * </ol>
+     * <p>vector_key and vector_value
+     * <ol>
+     * <li>vector_key[map]='databaseFileNameNoExtension;0;Map;title;abstract' = length=5[0-4]</li>
+     * <li>vector_data[map]='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
+     * <li>vector_extent[map]='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
      * </ol>
      * <p> vector_key/data documetation : 20150718
      * 

@@ -43,7 +43,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
 
     /**
      * Attemt to execute a UpdateLayerStatistics for this geometry field or whole Database.
-     * - Note: only for AbstractSpatialTable, SpatialViews ALWAYS returns 0.
+     * - Note: only for SpatialTable, SpatialViews ALWAYS returns 0.
      * - Note: only for VirtualTable, returns 2.
      * - if table_name and geometry_column are empty: for whole Database
      *
@@ -81,7 +81,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 spatialIndex = statement.column_int(0);
                 if (spatialIndex == 1) {
                     HashMap<String, String> fieldNamesToTypeMap = collectTableFields(dbSpatialite, layerStatistics);
-                    if (fieldNamesToTypeMap.size() > 0) { // AbstractSpatialTable virts_layer_statistics
+                    if (fieldNamesToTypeMap.size() > 0) { // SpatialTable virts_layer_statistics
                         b_valid = true;
                     } else {
                         fieldNamesToTypeMap = collectTableFields(dbSpatialite, "virts_layer_statistics");
@@ -205,7 +205,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             for (Map.Entry<String, String> vector_entry : spatialVectorMapErrors.entrySet()) {
                 vector_key = vector_entry.getKey();
                 // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
-                // vector_key[priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID;-1]
+                // vector_key[priority_marks_joined_lincoln;geometry;SpatialTable;ROWID;-1]
                 String recovery_text = "";
                 vector_value = vector_entry.getValue();
 //                vector_data = "";
@@ -216,7 +216,6 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
 //                    String s_layer_type = sa_string[2];
 //                    String s_ROWID_PK = sa_string[3];
 //                    int i_view_read_only = Integer.parseInt(sa_string[4]);
-                    style_name = sa_string[5];
                     sa_string = vector_value.split(";");
                     if (sa_string.length == 7) { // vector_value[1;2;2913;1;row_count;extent_min_x,extent_min_y,extent_max_x,extent_max_y;last_verified]
                         String s_geometry_type = sa_string[0];
@@ -424,7 +423,6 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     sa_string = vector_key.split(";");
                     if (sa_string.length == 5) {
                         table_name = sa_string[0];
-                        style_name = sa_string[5];
                         // replace placeholder with used primary-key and read_only parameter
                         // of SpatialView
                         String ROWID_PK = SPL_Views.getViewRowid(dbSpatialite, table_name, SpatialiteDatabaseType.SPATIALITE3);
@@ -492,7 +490,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @throws Exception if something goes wrong.
      */
     static void getSpatialVectorMap_V4(Database dbSpatialite, HashMap<String, String> spatialVectorMap,
-                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles,boolean b_group_styles)
+                                       HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics, boolean b_raster_coverages,boolean b_raster_styles,boolean b_vector_styles,boolean b_group_styles, boolean b_styled_group_refs)
             throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
         String vector_data = ""; // term used when building the sql
@@ -501,7 +499,9 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         String table_name = "";
         String style_raster = "";
         String style_vector = "";
-        String style_group = "";
+        String style_raster_group = "";
+        String style_vector_group = "";
+        String vector_extent_styles="";
         String tile_width = "";
         String geometry_column = "";
         String[] sa_string;
@@ -565,9 +565,10 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         // if empty: there are nothing to correct [do before RasterLite2 logic - there is no error control for that]
         if ((VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT) && (spatialVectorMapErrors.size() > 0)) {
             getSpatialVectorMap_Errors(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4);
-        }
+        }       
         // RasterLite2 support: a raster_coverages has been found and the driver supports it
         if ((!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) && (b_raster_coverages)) {
+           
             try {
                 statement = dbSpatialite.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery());
                 while (statement.step()) {
@@ -587,12 +588,19 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             try {
                 statement = dbSpatialite.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_VALID_V42.getQuery());
                 while (statement.step()) {
+                    // vector_key[rasterlite2]='coverage_name;compression;RasterLite2;title;abstract' = length=5[0-4]
                     vector_key = statement.column_string(0);
+                    // vector_data[rasterlite2]='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]
                     vector_data = statement.column_string(1);
-                    vector_extent = "";
+                    // vector_extent[rasterlite2]='num_bands;extent_0-3;styles_0-2' = length=3 [0-2]              
                     vector_extent = statement.column_string(2);
                     table_name="";
                     tile_width = "";
+                    vector_extent_styles="";
+                    style_raster = "";
+                    style_vector = "";
+                    style_raster_group = "";
+                    style_vector_group = "";
                     sa_string = vector_key.split(";");
                     if (sa_string.length == 5) 
                     {
@@ -602,14 +610,24 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                      {
                       tile_width = sa_string[1];
                      }
+                     sa_string = vector_extent.split(";");
+                     if (sa_string.length >= 7) 
+                     {
+                      vector_extent_styles = sa_string[2];
+                      sa_string = vector_extent_styles.split(",");
+                      if (sa_string.length == 4) 
+                      {
+                       style_raster = sa_string[0];
+                       style_vector = sa_string[1];
+                       style_raster_group = sa_string[2];
+                       style_vector_group = sa_string[3];                       
+                      }
+                     }
                     }                   
                     if ((b_raster_styles) || (b_vector_styles) || (b_group_styles))
                     {                     
                      if (!table_name.equals("")) 
-                     {
-                      style_raster = "";
-                      style_vector = "";
-                      style_group = "";
+                     {                      
                       if (b_raster_styles)
                       {
                        String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
@@ -633,22 +651,23 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                          sub_query.close();
                         }
                        }
-                       if ((!style_raster.equals("default")) && (!style_raster.equals("")))
+                       if (style_raster.equals(""))
                        {
-                        vector_extent = vector_extent.replace(";default", ";"+style_raster);
+                        style_raster="default";
                        }
-                       // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] table_name["+ table_name+"] vector_key["+ vector_key+"] sql["+s_sql+"]");
+                       // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] table_name["+ table_name+"] vector_key["+ vector_key+"] sql["+s_sql+"]");     
                       }
-                      if (b_vector_styles)
+                      if ((b_group_styles) && (b_styled_group_refs))
                       {
-                       /*
-                       String s_sql="SELECT s.style_name FROM SE_raster_styled_layers AS r JOIN SE_raster_styles AS s ON (r.style_id = s.style_id)  WHERE  Lower(r.coverage_name) = Lower('"+table_name+"')  LIMIT 1";
+                       if (!table_name.equals("")) 
+                       { // SELECT group_name FROM SE_styled_group_refs WHERE raster_coverage_name = '' [vector_coverage_name]
+                       String s_sql="SELECT group_name FROM SE_styled_group_refs WHERE raster_coverage_name = Lower('"+table_name+"')  LIMIT 1";
                        try 
                        {
                         sub_query = dbSpatialite.prepare(s_sql);
                         while (sub_query.step()) 
                         {
-                         style_name = sub_query.column_string(0);
+                         style_raster_group = sub_query.column_string(0);
                         }
                        }
                        catch (jsqlite.Exception e_stmt) 
@@ -663,15 +682,15 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                          sub_query.close();
                         }
                        }
-                       if if ((!style_name.equals("default")) && (!style_name.equals("")))
+                       if (style_raster_group.equals(""))
                        {
-                        vector_key = vector_key.replace("default", style_name);
-                       }  
-                       */                     
+                        style_raster_group="default";
+                       }
+                       // GPLog.androidLog(-1, "getSpatialVectorMap_V4[" + SpatialiteDatabaseType.SPATIALITE4 + "] table_name["+ table_name+"] vector_key["+ vector_key+"] sql["+s_sql+"]");
+                       }
                       }
-                      if (b_group_styles)
-                      {
-                      }
+                      // Rebuild the 'vector_extent' string, replacing the found values
+                      vector_extent = vector_extent.replace(vector_extent_styles, style_raster+","+style_vector+","+style_raster_group+","+style_vector_group);
                      }
                     }
                     if ((!table_name.equals("")) && (!tile_width.equals(""))) 
@@ -699,6 +718,16 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     statement.close();
                 }
             }
+            // TODO [20150720]: an extra VECTOR_COVERAGES_QUERY_EXTENT_VALID_V42 Query will probly be needed
+            // - retrieve VECTOR_COVERAGES as loop
+            if ((b_vector_styles) && (b_styled_group_refs))
+            { // - retrieve Styles for vector_coverages
+              // - retrieve Group-Styles for vector_coverages
+              // SELECT group_name FROM SE_styled_group_refs WHERE rvector_coverage_name = 'something' 
+              // Rebuild the 'vector_extent' string, replacing the found values
+             // vector_extent = vector_extent.replace(vector_extent_styles, style_raster+","+style_vector+","+style_raster_group+","+style_vector_group);
+             // -end- TODO [20150720]
+            }            
         }
     }
 }

@@ -50,7 +50,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * <li>0 table_name: berlin_stadtteile</li>
  * <li>1: geometry_column - soldner_polygon</li>
  * <li>2: layer_type - SpatialView or SpatialTable</li>
- * <li>3: ROWID - AbstractSpatialTable: default ; when SpatialView or will be replaced</li>
+ * <li>3: ROWID - SpatialTable: default ; when SpatialView or will be replaced</li>
  * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
  * <li>5: style_name - RasterLite2: can be blank, for none-RL2 allways for the moment</li>
  * </ol>
@@ -293,16 +293,19 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         
         String VECTOR_LAYERS_QUERY_BASE = "";
         {
+            // vector_key[SpatialTable/SpatialView]='table_name;geometry_column;SpatialTable/SpatialView;ROWID;-1' = length=5[0-4]
+            // vector_data[SpatialTable/SpatialView]='geometry_type;coord_dimension;srid;spatial_index_enabled' = length=4[0-3]
             StringBuilder sb_query = new StringBuilder();
             sb_query.append("SELECT DISTINCT ");
             sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type");
-            sb_query.append("||';ROWID'"); // 3+4 of 1st field
-            sb_query.append(" AS vector_key," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_type");
+            sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
+            sb_query.append(" AS vector_key," + METADATA_VECTOR_LAYERS_TABLE_NAME + ".geometry_type");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension");
-            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "srid");
-            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".spatial_index_enabled||';' AS vector_data,");
+            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".srid");
+            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".spatial_index_enabled");
+            sb_query.append(" AS vector_data,");
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
         }
 
@@ -345,8 +348,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("SELECT DISTINCT ");
             sb_query.append(" f_table_name"); // 0 of 1st field
             sb_query.append("||';'||f_geometry_column"); // 1 of 1st field
-            sb_query.append("||';'||'AbstractSpatialTable'"); // 2 of 1st field
-            sb_query.append("||';ROWID;-1;;'"); // 3+4+5 (reserved for Style-Name) of 1st field
+            sb_query.append("||';'||'SpatialTable'"); // 2 of 1st field
+            sb_query.append("||';ROWID;-1'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             LAYERS_QUERY_BASE_V3 = sb_query.toString();
         }
@@ -415,12 +418,14 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             StringBuilder sb_query = new StringBuilder();
             // if the record is invalid, only this field will be null
             // 'vector_key' and 'vector_data' will be use to attempt to recover from the error.
+            // vector_extent[SpatialTable/SpatialView]='row_count;extent_0-3;last_verified' = length=3[0-2]
             sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count"); // 0
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_min_x"); // 1.0
             sb_query.append("||','||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_min_y"); // 1.1
             sb_query.append("||','||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_x"); // 1.2
             sb_query.append("||','||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y"); // 1.3
-            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".last_verified AS vector_extent"); // 2
+            sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".last_verified"); // 2
+            sb_query.append(" AS vector_extent"); 
             VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
         }
         String LAYERS_QUERY_EXTENT_VALID = "";
@@ -468,7 +473,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         String VECTOR_LAYERS_QUERY_ORDER = "";
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type DESC");
             sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "table_name ASC");
             sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
@@ -555,7 +560,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VECTOR_LAYERS_QUERY_FROM);
             sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
             sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VECTOR_LAYERS_QUERY_EXTENT_VALID_V4", query);
         }
@@ -566,7 +571,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(LAYERS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("LAYERS_QUERY_EXTENT_VALID_V3", query);
         }
@@ -577,7 +582,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VIEWS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VIEWS_QUERY_EXTENT_VALID_V3", query);
         }
@@ -588,7 +593,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(LAYERS_QUERY_FROM_V4);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V4);
-            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("LAYERS_QUERY_EXTENT_VALID_V4", query);
         }
@@ -637,7 +642,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VIEWS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VIEWS_QUERY_EXTENT_INVALID_V3", query);
         }
@@ -657,6 +662,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // -------------------
             // RasterLite2 support - begin
             // -------------------
+            // vector_key[rasterlite2]='coverage_name;compression;RasterLite2;title;abstract' = length=5[0-4]
+            // vector_data[rasterlite2]='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]
             StringBuilder sb_query = new StringBuilder();
             sb_query.append("SELECT DISTINCT ");
             sb_query.append("coverage_name"); // 0 of 1st field
@@ -674,13 +681,16 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             StringBuilder sb_query = new StringBuilder();
             // if the record is invalid, only this field will be null
             // 'vector_key' and 'vector_data' will be use to attempt to recover from the error.
+            // vector_extent[rasterlite2]='num_bands;extent_0-3;styles_0-3' = length=3[0-2]
             sb_query.append("num_bands"); // 0
             sb_query.append("||';'||extent_minx"); // 1.0
             sb_query.append("||','||extent_miny"); // 1.1
             sb_query.append("||','||extent_maxx"); // 1.2
             sb_query.append("||','||extent_maxy"); // 1.3
-            sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
-            VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
+            sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')"); // 2
+            sb_query.append("||';default,default,default:default'"); // 3.1,3.2,3.3,3.4 (reserved for Styles[raster,vector,raster_group,vector_group]) 
+            sb_query.append(" AS vector_extent"); // 2
+             VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
         }
         {
             StringBuilder sb_query = new StringBuilder();
@@ -689,7 +699,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         }
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY coverage_name ASC");
             sb_query.append(",title ASC");
             VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();
@@ -741,6 +751,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             StringBuilder sb_query = new StringBuilder();
             // if the record is invalid, only this field will what is invalid
             // - where 'field_name' is shown, that field is invalid
+            // vector_extent[rasterlite2]='num_bands;extent_0-3;now;styles_0-2' = length=4[0-3]
             sb_query.append("CASE WHEN statistics IS NULL THEN 'statistics' ELSE "); // 0
             sb_query.append("pixel_type END "); // 0
             sb_query.append("||';'||CASE WHEN extent_minx IS NULL THEN 'extent_minx' ELSE extent_minx END"); // 1.0
@@ -749,6 +760,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE extent_maxy END"); // 1.3
             sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')"); // 2
             sb_query.append("||';default,default,default'"); // 5 (reserved for Styles[raster,vector,group]) 
+            // SPL_Vectors.getSpatialVectorMap_V4 will ADD zoom_min/max/default values as default[';0,22,18']
             sb_query.append(" AS vector_extent"); // 2
             VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
         }
@@ -768,15 +780,14 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // -------------------
             // GeoPackage support - begin
             // -------------------
+            // vector_key[GeoPackage_features/GeoPackage_tiles]='table_name;column_name;GeoPackage_features/GeoPackage_tiles;identifier;description' = length=5[0-4]
             StringBuilder sb_query = new StringBuilder();
             sb_query.append("SELECT DISTINCT ");
             sb_query.append("table_name"); // 0 of 1st field
             sb_query.append("||';'||CASE"); // 1 of 1st field
             sb_query.append(" WHEN data_type = 'features' THEN ("); // 1 of 1st field
             sb_query.append("SELECT column_name FROM gpkg_geometry_columns WHERE table_name = ''||table_name||''"); // 1
-            // of
-            // 1st
-            // field
+            // of 1st field
             sb_query.append(") WHEN data_type = 'tiles' THEN 'tile_data'"); // 1 of 1st field
             sb_query.append(" END"); // 1 of 1st field
             sb_query.append(" ||';'||CASE"); // 2 of 1st field
@@ -791,6 +802,9 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // http://www.openstreetmap.org/copyright;OSM Tiles;
             // geonames;geometry;GeoPackage_features;Data from http://www.geonames.org/, under Creative
             // Commons Attribution 3.0 License;Geonames;
+            // GeoPackage: has no row_count(-1)
+            // vector_data[GeoPackage_features]='geometry_type_name;'z,m';srid;-1' = length=4[0-3]
+            // vector_data[GeoPackage_tiles]='min_zoom;max_zoom;srid;-1' = length=4[0-3]
             sb_query.append("CASE"); // 0 of second field
             sb_query.append(" WHEN data_type = 'features' THEN ("); // 0 of second field
             sb_query.append(""); // 0 of second field
@@ -850,8 +864,10 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||','||min_y"); // 1.1
             sb_query.append("||','||max_x"); // 1.2
             sb_query.append("||','||max_y"); // 1.3
-            sb_query.append("||';'||last_change AS vector_extent"); // 2
+            sb_query.append("||';'||last_change"); // 2
+            sb_query.append(" AS vector_extent"); 
             // -1;-180.0;-90.0;180.0;90.0;2013-01-18T17:39:20.000Z
+            // vector_extent[GeoPackage_features/GeoPackage_tiles]='-1;extent_0-3;last_change' = length=3[0-2]
             VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
         }
         {
@@ -872,7 +888,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         }
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY table_name ASC");
             sb_query.append(",identifier ASC");
             VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();

@@ -110,15 +110,19 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     protected String styleName_Vector;
     /**
-     * A name for the Group-table-style name.
+     * A name for the Raster-Group-table-style name.
      */
-    protected String styleName_Group;
+    protected String styleName_Raster_Group;
     /**
-     * A description.
+     * A name for the Vector-Group-table-style name.
+     */
+    protected String styleName_Vector_Group;
+    /**
+     * A description [Long description].
      */
     protected String description;
     /**
-     * A title.
+     * A title [Short description].
      */
     protected String title;
     /**
@@ -174,9 +178,9 @@ public abstract class AbstractSpatialTable implements Serializable {
      */
     protected boolean isView = false;
     
-    // AbstractSpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
+    // SpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
     protected String ROWID_PK = "ROWID";
-    // AbstractSpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
+    // SpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
     protected int view_read_only = -1;
 
     /**
@@ -244,6 +248,33 @@ public abstract class AbstractSpatialTable implements Serializable {
     /**
      * Parse the given vector key and values
      * Goal is to replace the multiple parsing that was done in about 4-5 different functions
+     * <p>vector_key [ALWAYS length=5] and vector_value
+     * <p>-->  vector_value=vector_data+";"+vector_extent [MUST have at least length=7, may have more]
+     * <p>SpatialTable/SpatialView
+     * <ol>
+     * <li>vector_key='table_name;geometry_column;SpatialTable/SpatialView;ROWID;-1' = length=5[0-4]</li>
+     * <li>vector_data='geometry_type;coord_dimension;srid;spatial_index_enabled' = length=4[0-3]</li>
+     * <li>vector_extent='row_count;extent_0-3;last_verified' = length=3[0-2]</li>
+     * </ol>
+     * <p>GeoPackage_features/GeoPackage_tiles
+     * <ol>
+     * <li>vector_key='table_name;column_name;GeoPackage_features/GeoPackage_tiles;identifier;description = length=5[0-4]</li>
+     * <li>vector_data[GeoPackage_features]='geometry_type_name;'z,m';srid;-1' = length=4[0-3]</li>
+     * <li>vector_data[GeoPackage_tiles]='min_zoom;max_zoom;srid;-1' = length=4[0-3]</li>
+     * <li>vector_extent='-1;extent_0-3;last_change' = length=3[0-2]</li>
+     * </ol>
+     * <p>RasterLite2
+     * <ol>
+     * <li>vector_key='coverage_name;compression;RasterLite2;title;abstract' = length=5[0-4]</li>
+     * <li>vector_data='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]</li>
+     * <li>vector_extent='num_bands;extent_0-3;now;styles_0-4;zoom_levels_0-2' = length=5[0-4]</li>
+     * </ol>
+     * <p>MbTiles, Map, Mapurl
+     * <ol>
+     * <li>vector_key='databaseFileNameNoExtension;0;MBTiles/Map/Mapurl;title;abstract' = length=5[0-4]</li>
+     * <li>vector_data='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
+     * <li>vector_extent='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
+     * </ol>
      * <p/>
      * <p>[GeneralQueriesPreparer] Documentation of vector_key /  vector_value   
      * <p>[SpatialRasterTable] 'RasterLite2'
@@ -265,9 +296,16 @@ public abstract class AbstractSpatialTable implements Serializable {
      int i_default_zoom=this.defaultZoom;
      int i_min_zoom=this.minZoom;
      int i_max_zoom=this.maxZoom;
+     String s_vector_extent_styles="";
+     String s_vector_extent_zoom_levels="";
+     String style_raster = "default";
+     String style_vector = "default";
+     String style_raster_group = "default";
+     String style_vector_group = "default";
      String s_view_read_only = "";
      String[] sa_string = vector_key.split(";");
      this.tileQuery="";
+     this.view_read_only=0;
      if (sa_string.length == 5) 
      {
       String layerType = sa_string[2];
@@ -287,26 +325,36 @@ public abstract class AbstractSpatialTable implements Serializable {
        return  i_rc;
       this.tableName = sa_string[0];
       String geometry_column = sa_string[1];      
-      // For SpatialTable/Views
+      // For SpatialTable/Views ; for RasterLite2/GeoPackage short description (title/identifier)
       String s_ROWID_PK = sa_string[3];
-      // For SpatialTable/Views
+      // For SpatialTable/Views  ; for RasterLite2/GeoPackage long description (abstract/description)
       s_view_read_only = sa_string[4];
-      // TODO: remove this from vector_key and store in vector_value
-      String s_style_name_raster = sa_string[5]; // style_name [for RasterLite2, otherwise reserved for future use]
+      // vector_value=vector_data+";"+vector_extent [MUST be a least length=7]
       sa_string = vector_value.split(";");
       if (sa_string.length >= 7) 
       { // We may be overriding some of these values, before setting the final values
       // Warning: to NOT reuse 'sa_string', we may be retrieng more data
-       String s_geometry_type = sa_string[0];  // 1= POINT / OR min_zoom
-       String s_coord_dimension = sa_string[1]; // 2= XY / OR max_zoom
+       String s_geometry_type = sa_string[0];  // 1= POINT / min_zoom /  pixel_type
+       String s_coord_dimension = sa_string[1]; // 2= XY / OR max_zoom / tile_width
        String s_srid = sa_string[2]; // 4326
-       String s_spatial_index_enabled = sa_string[3]; // 0
+       String s_spatial_index_enabled = sa_string[3]; // spatial_index /  horz_resolution
        // -1;-75.5;18.0;-71.06667;20.08333;2013-12-24T16:32:14.000000Z
        // 0 = not possible as sub-query - but also not needed
-       String s_row_count = sa_string[4]; 
+       String s_row_count = sa_string[4];  // row_count / num_bands
        String s_bounds = sa_string[5]; // -75.5;18.0;-71.06667;20.08333
        // For 'MbTiles' : TileQuery
        String s_last_verified = sa_string[6]; // 2013-12-24T16:32:14.000000Z
+       if (sa_string.length >= 8) 
+       {
+        if (this.layerTypeDescription.equals(SpatialDataType.RASTERLITE2.getTypeName()))
+        { // RasterLite2-Styles
+         s_vector_extent_styles= sa_string[7];
+         if (sa_string.length >= 9) 
+         { // RasterLite2-Zoom-Levels
+          s_vector_extent_zoom_levels= sa_string[8];
+         }
+        }
+       }
        String[] sa_bounds = s_bounds.split(",");
        if ((sa_bounds.length == 4)  || (sa_bounds.length == 6))
        {
@@ -320,7 +368,7 @@ public abstract class AbstractSpatialTable implements Serializable {
               ((this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
                (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
                (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))))
-         { // MbTiles only
+         { // MbTiles,Map,Mapurl only
           centerCoordinate[0] = Double.parseDouble(sa_bounds[4]);
           centerCoordinate[1] = Double.parseDouble(sa_bounds[5]);
           i_default_zoom = Integer.parseInt(sa_bounds[6]);
@@ -352,15 +400,21 @@ public abstract class AbstractSpatialTable implements Serializable {
              (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())))
         {
          this.geometryColumn = geometry_column;
-         this.geomType = geomType;
-         i_view_read_only = Integer.parseInt(s_view_read_only);
+         this.view_read_only=Integer.parseInt(s_view_read_only);
+         // function internal: to check if table is valid
          i_spatial_index_enabled = Integer.parseInt(s_spatial_index_enabled); // 0=no 1=yes
+         // coord_dimension/'z,m' not used
+         // - s_coord_dimension = sa_string[1]; // 2= XY 
+         // s_last_verified is not used
          i_geometry_type = Integer.parseInt(s_geometry_type);
-         GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
-         s_geometry_type = geometry_type.toString();  
+         this.geomType = i_geometry_type;
+         // It is not clear why the next two statements were done
+         // GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
+         // s_geometry_type = geometry_type.toString();  
          if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
               (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())))
          {
+          this.ROWID_PK=s_ROWID_PK;
           if (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription()))
           {
            isView = true;
@@ -368,7 +422,9 @@ public abstract class AbstractSpatialTable implements Serializable {
          }
          if (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription()))
          { // TODO: ?? SpatialIndex ?? - has its own version now - this may change
-          i_view_read_only = 0; // always       
+          this.view_read_only=0; // always    
+          this.title=s_ROWID_PK;   // Short description
+          this.description= s_view_read_only; // Long description
          }
          if (i_spatial_index_enabled  != 1)
          {
@@ -382,14 +438,47 @@ public abstract class AbstractSpatialTable implements Serializable {
         // Raster-Specfic tasks
         if (this.layerTypeDescription.equals(SpatialDataType.RASTERLITE2.getTypeName()))
         {
+         // num_bands;;;;styles_0-2
+         // not used: s_geometry_type =  //  pixel_type
+         // not used: s_coord_dimension // tile_width
+         // not used: s_spatial_index_enabled //  horz_resolution
+         // not used: s_last_verified // now
+         // not used: s_row_count // num_bands
+         // not used:  geometry_column; // 'compression'
+         this.title=s_ROWID_PK;   // Short description
+         this.description= s_view_read_only; // Long description
+         if (!s_vector_extent_styles.equals("")) 
+         {           
+          String[] sa_styles = s_vector_extent_styles.split(",");
+          if (sa_styles.length == 4) 
+          {
+           style_raster=sa_styles[0];
+           style_vector=sa_styles[1];
+           style_raster_group=sa_styles[3];
+           style_vector_group=sa_styles[4];
+          }
+         }
+         if (!s_vector_extent_zoom_levels.equals("")) 
+         {           
+          String[] sa_zoom_levels = s_vector_extent_zoom_levels.split(",");
+          if (sa_zoom_levels.length == 3) 
+          { // Zoom-Levels: min/max/default
+           i_min_zoom = Integer.parseInt(sa_zoom_levels[0]); 
+           i_max_zoom = Integer.parseInt(sa_zoom_levels[1]); 
+           i_default_zoom = Integer.parseInt(sa_zoom_levels[1]); 
+          }
+         }         
         }
         if ((this.layerTypeDescription.equals(TableTypes.GPKGRASTER.getDescription())) ||
              (this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
              (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
              (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName())))
         {
-         this.minZoom = Integer.parseInt(s_geometry_type);
-         this.maxZoom = Integer.parseInt(s_coord_dimension);
+         i_min_zoom = Integer.parseInt(s_geometry_type);
+         i_max_zoom = Integer.parseInt(s_coord_dimension);
+         // for  GPKGRASTER  : default_zoom ?? [seems not suppored in the Specification]
+         this.title=s_ROWID_PK;   // Short description
+         this.description= s_view_read_only; // Long description
          if (this.layerTypeDescription.equals(TableTypes.GPKGRASTER.getDescription()))
          {
          }
@@ -397,6 +486,8 @@ public abstract class AbstractSpatialTable implements Serializable {
              (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
              (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName())))
          {
+          this.tileQuery=s_last_verified;
+          i_default_zoom = Integer.parseInt(s_spatial_index_enabled);
           if (this.dbSpatialite  == null)
           {
             // TODO: ? create MemoryDB ?
@@ -410,26 +501,26 @@ public abstract class AbstractSpatialTable implements Serializable {
           }
          }
          if (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))
-         { //vector_value=this.minZoom+";"+this.maxZoom+";4326;"+defaultZoom+";0;"+s_bounds+";?,?,?";
-          this.tileQuery=s_last_verified;
-          this.defaultZoom = Integer.parseInt(s_spatial_index_enabled);
-          s_srid="3857"; // why?
+         { //vector_value=this.minZoom+";"+this.maxZoom+";4326;"+defaultZoom+";0;"+s_bounds+";?,?,?";         
+          // s_srid="3857"; // why?
           // else: this.tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
          }
         }
         if (this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName()))
         {
-         s_srid="3857"; // why?
+         // s_srid="3857"; // why?
         }         
         if (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName()))
         {
-         s_srid="3857"; // why?
+         // s_srid="3857"; // why?
         }   
         if (i_rc == 0)
         { // Set final results
          this.srid = s_srid;
-         this.view_read_only=i_view_read_only;
-         this.ROWID_PK=s_ROWID_PK;
+         this.styleName_Raster=style_raster;
+         this.styleName_Vector=style_vector;
+         this.styleName_Raster_Group=style_raster_group;
+         this.styleName_Vector_Group=style_vector_group;
          this.centerX = centerCoordinate[0];
          this.centerY = centerCoordinate[1];
          this.boundsWest = boundsCoordinates[0];
@@ -439,8 +530,11 @@ public abstract class AbstractSpatialTable implements Serializable {
          this.defaultZoom=i_default_zoom;
          this.minZoom=i_min_zoom;
          this.maxZoom=i_max_zoom;
+         zoomLevels[0] = this.minZoom;
+         zoomLevels[1] = this.maxZoom;
+         zoomLevels[2] = this.defaultZoom;
+         // Sanity-Checks
          checkAndAdaptDatabaseBounds(boundsCoordinates, centerCoordinate, zoomLevels);
-         this.styleName_Raster = s_style_name_raster; // for RasterLite2: Style-Name (only 1) or empty, resurved for others
          if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
              (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
              (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())))
@@ -509,15 +603,18 @@ public abstract class AbstractSpatialTable implements Serializable {
           this.centerY = this.boundsSouth + (this.boundsNorth - this.boundsSouth) / 2;
          }
        }
-        if ((zoomLevels != null) && (zoomLevels.length == 2)) {
-            if ((this.minZoom == 0) && (this.maxZoom == 0)) {
+        if ((zoomLevels != null) && (zoomLevels.length == 3)) {
+            if ((this.minZoom == 0) && (this.maxZoom == 0)  && (this.defaultZoom == 0)) {
                 this.minZoom = zoomLevels[0];
                 this.maxZoom = zoomLevels[1];
+                this.defaultZoom = zoomLevels[2];
             } else {
                 if (zoomLevels[0] < this.minZoom)
                     this.minZoom = zoomLevels[0];
                 if (zoomLevels[1] > this.maxZoom)
                     this.maxZoom = zoomLevels[1];
+                if (zoomLevels[2] > this.defaultZoom)
+                    this.defaultZoom = zoomLevels[2];
             }
         }
     }
@@ -643,7 +740,7 @@ public abstract class AbstractSpatialTable implements Serializable {
         // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only
         // +"] primaryKeyFields["+primaryKeyFields+"]");
         if ((i_view_read_only == 0) || (i_view_read_only == 1))
-            view_read_only = i_view_read_only; // -1=AbstractSpatialTable otherwise SpatialView
+            view_read_only = i_view_read_only; // -1=SpatialTable otherwise SpatialView
         if ((!s_ROWID_PK.equals("")) && (!s_ROWID_PK.contains("ROWID"))) {
             ROWID_PK = s_ROWID_PK;
         }
@@ -715,7 +812,6 @@ public abstract class AbstractSpatialTable implements Serializable {
     public String getSrid() {
         return srid;
     }
-
     /*
      * Convert a longitude and latitude to the table's
      * original SRID.
@@ -752,43 +848,41 @@ public abstract class AbstractSpatialTable implements Serializable {
      * Getter for the Raster-style name [for RasterLite2].
      * <p/>
      * <p> RasterLite2 Style logic: basic rules
-     * <p> - only one style supported. Where than more than one: others will be ignored
-     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
+     * <p> - only one style supported. Where than more than one: others will be ignored when the sql [RL2_GetMapImageFromRaster] is called
+     * <p>-- the assumtion [20150720] is that 'Raster_Group' should be used when more than one Style is used
+     * <p>--> this function will return the 'styleName_Raster_Group' if it has NON-default values, otherwise 'styleName_Raster'
      * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
-     * <p>Both Raster and Vectors can have a table-style]
+     * <p>[Both Raster and Vectors can have a table-style]
+     * <p>[When empty or 'default': RL2_GetMapImageFromRaster will show the Raster without Styling (even if registered)]
      *
      * @return the name of the {@link AbstractSpatialTable}.
      */
-    public String getStyleNameRaster() {
-        return styleName_Raster;
+    public String getStyleNameRaster() 
+    {
+        String s_style=this.styleName_Raster;
+        if ((!this.styleName_Raster_Group.equals("")) && (!this.styleName_Raster_Group.equals("default")))
+         s_style=this.styleName_Raster_Group;
+        return s_style;
     }
     /**
      * Getter for the Vector-style name [for RasterLite2].
      * <p/>
      * <p> RasterLite2 Style logic: basic rules
-     * <p> - only one style supported. Where than more than one: others will be ignored
-     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
-     * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
-     * <p>Both Raster and Vectors can have a table-style]
+     * <p> - only one style supported. Where than more than one: others will be ignored when the sql [RL2_GetMapImageFromVector] is called
+     * <p>-- the assumtion [20150720] is that 'Vector_Group' should be used when more than one Style is used
+     * <p>--> this function will return the 'styleName_Vector_Group' if it has NON-default values, otherwise 'styleName_Vector'
+     * <p>TODO : set to '', if Vector should be shown without a Style [rl2_GetMapImageFromVector will set this to 'default']
+     * <p>[Both Raster and Vectors can have a table-style]
+     * <p>[When empty or 'default': RL2_GetMapImageFromVector will show the Vector without Styling (even if registered)]
      *
      * @return the name of the {@link AbstractSpatialTable}.
      */
-    public String getStyleNameVector() {
-        return styleName_Vector;
-    }
-    /**
-     * Getter for the Group-style name [for RasterLite2].
-     * <p/>
-     * <p> RasterLite2 Style logic: basic rules
-     * <p> - only one style supported. Where than more than one: others will be ignored
-     * <p>default :  '%' [Wildcard: RasterLite2 will return the first Style for this Raster] - expermintal changes in RasterLite2 lib
-     * <p>TODO : set to '', if Raster should be shown without a Style [rl2_GetMapImageFromRaster will set this to 'default']
-     * <p>Both Raster and Vectors can have a table-style]
-     *
-     * @return the name of the {@link AbstractSpatialTable}.
-     */
-    public String getStyleNameGroup() {
-        return styleName_Group;
+    public String getStyleNameVector() 
+    {
+        String s_style=this.styleName_Vector;
+        if ((!this.styleName_Vector_Group.equals("")) && (!this.styleName_Vector_Group.equals("default")))
+         s_style=this.styleName_Vector_Group;
+        return s_style;
     }
     /**
      * Return type of map/file
