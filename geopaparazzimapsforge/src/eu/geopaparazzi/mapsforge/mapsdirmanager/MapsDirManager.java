@@ -295,10 +295,10 @@ public class MapsDirManager {
             List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
             if (GPLog.LOG) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("MapsDirManager manager[SpatialDatabasesManager] size_raster[");
+                sb.append("MapsDirManager handleTileSources[SpatialDatabasesManager] size_raster[");
                 sb.append(SpatialDatabasesManager.getInstance().getRasterDbCount());
-                sb.append("]");
-                sb.append("MapsDirManager manager[SpatialDatabasesManager] size_vector[");
+                sb.append("]\n");
+                sb.append("MapsDirManager handleTileSources[SpatialDatabasesManager] size_vector[");
                 sb.append(SpatialDatabasesManager.getInstance().getVectorDbCount());
                 sb.append("]");
                 GPLog.addLogEntry(this, sb.toString());

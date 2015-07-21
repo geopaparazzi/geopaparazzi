@@ -21,6 +21,8 @@ import java.io.Serializable;
 import jsqlite.Database;
 
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
+import eu.geopaparazzi.library.database.GPLog;
 /**
  * A raster table from the spatial db.
  *
@@ -33,20 +35,13 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
     /**
      * constructor.
      * 
-     * @param dbPath the db path.
-     * @param name the name of the table.
-     * @param style the name of the table-style.
-     * @param srid srid of the table.
-     * @param minZoom min zoom.
-     * @param maxZoom max zoom.
-     * @param centerX center x.
-     * @param centerY center y.
-     * @param tileQuery query to use for tiles fetching.
-     * @param bounds the bounds as [w,s,e,n]
+     * @param spatialite_db the class 'Database' connection [will be null].
+     * @param vector_key major Parameters  needed for creation in AbstractSpatialTable.
+     * @param vector_value minor Parameters needed for creation in AbstractSpatialTable.
      */
     public SpatialRasterTable(Database spatialite_db, String vector_key,String  vector_value) 
     {
-      super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
+      super(spatialite_db,vector_key,vector_value);
     }
 
     /**
@@ -159,7 +154,17 @@ public class SpatialRasterTable extends AbstractSpatialTable implements Serializ
 
     @Override
     public double[] longLat2Srid(double lon, double lat) {
-        throw new RuntimeException("Not implemented yet");
+        // For MBTiles,Map,Mapurl: a Memory-Database will be used
+        double[] srid_Coordinate=new double[]{lon,lat};
+         try 
+          {
+           srid_Coordinate=DaoSpatialite.longLat2Srid(getDatabase(1),lon,lat,getSrid());
+          } 
+          catch (jsqlite.Exception e_stmt) 
+          {
+           GPLog.error("SpatialRasterTable", "longLat2Srid[" +getSrid()+ "] db[" + getDatabase(1).getFilename() + "]", e_stmt);
+          }      
+          return srid_Coordinate;   
     }
 
     @Override

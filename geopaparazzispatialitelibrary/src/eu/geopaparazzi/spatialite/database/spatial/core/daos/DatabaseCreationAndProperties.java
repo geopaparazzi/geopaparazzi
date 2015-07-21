@@ -136,7 +136,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
                     + SPL_Vectors.VECTORLAYER_QUERYMODE + "]");
             // Comment this out when not needed (only to check any changed sql-queries)
-           // DaoSpatialite.dump_GeneralQueriesPreparer();
+            // DaoSpatialite.dump_GeneralQueriesPreparer();
         }
         // views: vector_layers_statistics,vector_layers
         // pre-spatialite 3.0 Databases often do not have a Virtual-SpatialIndex table

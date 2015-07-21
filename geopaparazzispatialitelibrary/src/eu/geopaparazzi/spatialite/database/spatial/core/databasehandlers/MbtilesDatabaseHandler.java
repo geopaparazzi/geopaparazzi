@@ -189,6 +189,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * <li>vector_data[mbtiles]='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
      * <li>vector_extent[mbtiles]='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
      * </ol>
+     * Note: title and abstract (short/long descriptions) replace ';' with '-'
      * <p> vector_key/data documetation : 20150718
      * 
      * @return list of RasterTabes.
@@ -198,7 +199,9 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
             rasterTableList = new ArrayList<SpatialRasterTable>();
             open();
            String layerType = SpatialDataType.MBTILES.getTypeName();
-           String vector_key=databaseFileNameNoExtension+";0;"+layerType+";"+databaseFileNameNoExtension+";"+tableName+"";
+           String s_title=databaseFileNameNoExtension.replace(";","-");
+           String s_abstract=tableName.replace(";","-");
+           String vector_key=s_title+";0;"+layerType+";"+s_title+";"+s_abstract+"";
            String s_bounds=this.boundsWest + "," + this.boundsSouth + "," + this.boundsEast + "," + this.boundsNorth+ "," + this.centerX+ "," + this.centerY+","+defaultZoom;
            String vector_value=this.minZoom+";"+this.maxZoom+";4326;0;0;"+s_bounds+";?,?,?;"+getDatabasePath();
            SpatialRasterTable table = new SpatialRasterTable(null,vector_key,vector_value);

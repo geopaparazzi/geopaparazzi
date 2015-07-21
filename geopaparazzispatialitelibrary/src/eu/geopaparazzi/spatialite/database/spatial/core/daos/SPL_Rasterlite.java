@@ -362,7 +362,7 @@ public class SPL_Rasterlite {
      *  - 'WGS 84 / World Mercator' (3395) - UNIT=Meters            
      * @return zoom_levels
      */     
-    public static int[] rl2_calculate_zoom_levels(Database dbSpatialite, String coverageName, String s_tile_size) {
+    public static int[] rl2_calculate_zoom_levels(Database dbSpatialite, String coverageName, String s_tile_size,int i_srid) {
         HashMap<Integer, Double> zoom_levels = new HashMap<Integer, Double>();  
         // TODO: remove to Mercator-specific definitions
         // 'WGS 84 / World Mercator' (3395) - UNIT=Meters            
@@ -402,12 +402,16 @@ public class SPL_Rasterlite {
         zoom_levels.put(30,0.037); // Last possible value that gdalwarp can create
         // Zoom 31. [gdalwarp] Failed to compute GCP transform: Transform is not solvable     
         String s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_ZOOMLEVEL_QUERY.getQuery();
+        if (i_srid <= 0)
+        { // No Transformation possible, retrieve resolution
+         s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_RESOLUTION_QUERY.getQuery();
+        }
         String s_sql_command = s_rl2_min_max_zoom_base.replace("COVERAGE_NAME", coverageName); 
         s_sql_command = s_sql_command.replace("TILE_WIDTH", s_tile_size);        
         double d_width_min=0.0;
         double d_width_max=0.0;
         Stmt stmt = null;
-        try {
+         try {
                 stmt = dbSpatialite.prepare(s_sql_command);
                 if (stmt.step()) {
                     d_width_max = stmt.column_double(0);
@@ -424,31 +428,44 @@ public class SPL_Rasterlite {
                         GPLog.error("SPL_Rasterlite", "rl2_calculate_zoom_levels sql[" + s_sql_command + "]", e);
                     }
             }
-            int i_zoom_min=-1;
-            int i_zoom_max=-1;
-            int i_zoom_default=-1;
-            int i_max_zoom=22;
-            for (int i=0;i<=i_max_zoom;i++)
-            {
-             double meters=zoom_levels.get(i);
-             if (i_zoom_min < 0)
-             {
-              if (meters < d_width_min)
-              i_zoom_min=i;
-             }
-             if (i_zoom_default < 0)
-             {
-              if (meters < d_width_max)
-               i_zoom_default=i-1;
-             }
-            }
-            if (i_zoom_default > i_max_zoom)
-             i_zoom_default=i_max_zoom;
-            i_zoom_max=i_zoom_default+(i_zoom_default-i_zoom_min);
-            if (i_zoom_max > i_max_zoom)
-             i_zoom_max = i_max_zoom;
-            int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
-            //GPLog.androidLog(-1, "rl2_calculate_zoom_levels["+coverageName+"]: d_width_min["+d_width_min+"] d_width_max["+d_width_max+"]  zoom_min["+i_zoom_min+"]   zoom_max["+i_zoom_max+"]   zoom_default["+i_zoom_default+"] ");
+
+        if (d_width_max == d_width_min)
+        {
+        }
+        int i_zoom_min=-1;
+        int i_zoom_max=-1;
+        int i_zoom_default=-1;
+        for (int i=0;i<zoom_levels.size();i++)
+         {
+          double meters=zoom_levels.get(i);
+          if (i_zoom_min < 0)
+          {
+           if (meters < d_width_min)
+            i_zoom_min=i;
+          }
+          if (i_zoom_default < 0)
+          {
+           if (meters < d_width_max)
+            i_zoom_default=i-1;
+          }
+         }
+         // Sanity checks
+         if (i_zoom_min < 0)
+          i_zoom_min= 0;
+          if (i_zoom_min > i_zoom_default)
+          { // switch
+           i_zoom_max=i_zoom_default;
+           i_zoom_default=i_zoom_min;
+           i_zoom_min=i_zoom_max;
+          }
+         if (i_zoom_default > zoom_levels.size())
+          i_zoom_default=((zoom_levels.size()-i_zoom_min)/2);
+         i_zoom_max=i_zoom_default+(i_zoom_default-i_zoom_min);
+         if (i_zoom_max > zoom_levels.size())
+          i_zoom_max = zoom_levels.size();
+         // Let the Application reset supported min/max zoom-levels
+         int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
+         // GPLog.androidLog(-1, "rl2_calculate_zoom_levels["+coverageName+"] srid["+i_srid+"] d_width_min["+d_width_min+"] d_width_max["+d_width_max+"]  zoom_min["+i_zoom_min+"] zoom_max["+i_zoom_max+"] zoom_default["+i_zoom_default+"] ");
         return zoom_level_min_max;
     }
 

@@ -505,6 +505,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
         String tile_width = "";
         String geometry_column = "";
         String[] sa_string;
+        int i_srid=-1;
         int[] zoom_level_min_max;
         Stmt statement = null;
         Stmt sub_query = null;
@@ -609,6 +610,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                      if (sa_string.length == 4) 
                      {
                       tile_width = sa_string[1];
+                      i_srid=Integer.parseInt(sa_string[2]);
                      }
                      sa_string = vector_extent.split(";");
                      if (sa_string.length >= 7) 
@@ -695,7 +697,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                     }
                     if ((!table_name.equals("")) && (!tile_width.equals(""))) 
                     { //  int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
-                      zoom_level_min_max=SPL_Rasterlite.rl2_calculate_zoom_levels(dbSpatialite,table_name,tile_width);
+                      zoom_level_min_max=SPL_Rasterlite.rl2_calculate_zoom_levels(dbSpatialite,table_name,tile_width,i_srid);
                       String s_zoom_levels=";"+Integer.toString(zoom_level_min_max[0])+","+Integer.toString(zoom_level_min_max[1])+","+Integer.toString(zoom_level_min_max[2]);
                       vector_extent=vector_extent+s_zoom_levels;
                     }

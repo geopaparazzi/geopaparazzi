@@ -33,6 +33,14 @@ public enum TableTypes {
      */
     SPATIALVIEW("SpatialView"),
     /**
+     * RasterLite2 Geometries/Vectors (vector_coverages)
+     */
+    RL2VECTOR("RL2_Vector"),
+    /**
+     * RasterLite2 Images/Maps (raster_coverages)
+     */
+    RL2RASTER("RL2_Raster"),
+    /**
      * GeoPackage Geometries/Vectors
      */
     GPKGVECTOR("GeoPackage_features"),

@@ -55,10 +55,15 @@ public class SpatialiteUtilities {
      * <p>Indented for general use for Transformation etc.
      */
     private static Database dbSpatialite=null;
+    /**
+     * Active Connection to a  Spatialite Database
+    * <p/>
+     * <p>Indented for general use for Transformation etc.
+     */
+    private static Database dbMemSpatialite=null;
     
      /**
      * Retrieve an active spatialite Connection
-     * 
      * @param i_parm 0:[default] retrieve only ; 1=create Memory-db if not active
      * @return dbSpatialite for general use
      */
@@ -67,9 +72,31 @@ public class SpatialiteUtilities {
         { 
          if (i_parm == 1)
          { // TODO: create Memory Database with Spatialite 'SELECT InitSpatialMetadata(1);'
+          dbSpatialite=getMemoryDatabase();
          }
         }
         return dbSpatialite;
+    }
+    /**
+     * Retrieve an active spatialite-memory Connection
+     *  'mapsforge_extracted.sqlite' without full 'spatial_ref_sys' 151.5 KB
+     * --> not usable for Transformations
+     *  INSERT INTO spatial_ref_sys SELECT * FROM a.spatial_ref_sys WHERE srid NOT IN (-1,0,4326)
+     *  'mapsforge_extracted.sqlite' with full 'spatial_ref_sys' 5.3 MB
+     * @return dbSpatialite for general use
+     */
+    public static Database getMemoryDatabase() {
+        if (dbMemSpatialite == null)
+        { 
+         dbMemSpatialite = new jsqlite.Database();
+            try {
+                dbMemSpatialite.open("file::memory:?cache=shared", jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+                dbMemSpatialite.exec("SELECT InitSpatialMetadata(1)", null);
+            } catch (Exception e) {
+                GPLog.androidLog(4, "SpatialiteUtilities.getMemoryDatabase[file::memory:?cache=shared'].open has failed", e);
+            }
+         }
+        return dbMemSpatialite;
     }
     
     /**
@@ -256,19 +283,15 @@ public class SpatialiteUtilities {
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square
-     * 'sqlite_db' is probly no nonger needed, when this function is called, 'dbSpatialite' must have been set
-     * @param sqlite_db Spatialite Database connection as fallback for Centeral Database connection
+     * 'dbSpatialite' is probly no nonger needed, when this function is called, 'dbSpatialite' must have been set
+     * @param dbSpatialite Spatialite Database connection as fallback for Centeral Database connection
      * @param srid the source srid.
      * @param centerCoordinate the coordinate array to fill with the center.
      * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
     */
-    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate,
+    public static void collectBoundsAndCenter( Database Spatialitedb, String srid, double[] centerCoordinate,
             double[] boundsCoordinates ) {
         String centerQuery = "";
-        if ((dbSpatialite == null) && (sqlite_db != null))
-        {
-         dbSpatialite=sqlite_db;
-        }
         try {
             Stmt centerStmt = null;
             double bounds_west = boundsCoordinates[0];
@@ -304,7 +327,7 @@ public class SpatialiteUtilities {
                 centerQuery = centerBuilder.toString();
                 // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" +
                 // centerQuery + "]");
-                centerStmt = dbSpatialite.prepare(centerQuery);
+                centerStmt = Spatialitedb.prepare(centerQuery);
                 if (centerStmt.step()) {
                     byte[] geomBytes = centerStmt.column_bytes(0);
                     Geometry geometry = wkbReader.read(geomBytes);
@@ -320,7 +343,7 @@ public class SpatialiteUtilities {
                     boundsCoordinates[3] = envelope.getMaxY();
                 }
             } catch (java.lang.Exception e) {
-                GPLog.error("SpatialiteUtilities",".collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
+                GPLog.error("SpatialiteUtilities","[" + dbSpatialite.getFilename() + "] collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
             } finally {
                 if (centerStmt != null)
                     centerStmt.close();

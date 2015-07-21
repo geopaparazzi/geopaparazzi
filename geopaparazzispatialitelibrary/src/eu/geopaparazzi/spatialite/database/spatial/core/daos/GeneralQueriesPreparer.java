@@ -20,6 +20,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 import java.util.HashMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 
 /**
  * General sql query to retrieve vector data of the whole Database in 1 query
@@ -271,7 +272,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
      * will compair these result with the values stored in the HashMap zoom_levels [getZoomLevelsWidths()]
      * <p/>
      */
-    RL2_MINMAX_ZOOMLEVEL_QUERY;
+    RL2_MINMAX_ZOOMLEVEL_QUERY,
+    RL2_MINMAX_RESOLUTION_QUERY;
 
     private String VIEWS_QUERY_EXTENT_INVALID = "";
 
@@ -290,6 +292,17 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("(" + sub_query + ") AS zoom_min;"); // Zoom 00;
             queriesMap.put("RL2_MINMAX_ZOOMLEVEL_QUERY", sb_query.toString());
         }
+        {
+            StringBuilder sb_query = new StringBuilder();
+            sb_query.append("SELECT x_resolution_1_1");
+            sb_query.append(" FROM 'COVERAGE_NAME_levels' ORDER BY pyramid_level ASC LIMIT 1");
+            String sub_query = sb_query.toString();
+            sb_query = new StringBuilder();
+            sb_query.append("SELECT (" + sub_query + ") AS zoom_max,"); // Zoom 22;
+            sub_query = sub_query.replace("ASC", "DESC");
+            sb_query.append("(" + sub_query + ") AS zoom_min;"); // Zoom 00;
+            queriesMap.put("RL2_MINMAX_RESOLUTION_QUERY", sb_query.toString());
+        }
         
         String VECTOR_LAYERS_QUERY_BASE = "";
         {
@@ -305,7 +318,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".srid");
             sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".spatial_index_enabled");
-            sb_query.append(" AS vector_data,");
+            sb_query.append("||';' AS vector_data,");  //  must end with a: ';'
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
         }
 
@@ -333,7 +346,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" WHEN ((coord_dimension = '4') OR (coord_dimension = 'XYZM')) THEN '4'");
             sb_query.append(" END"); // 0
             sb_query.append("||';'||srid"); // 3
-            sb_query.append("||';'||spatial_index_enabled||';' AS vector_data,"); // 4
+            sb_query.append("||';'||spatial_index_enabled"); // 4
+            sb_query.append("||';' AS vector_data,");  //  must end with a: ';'
             VECTOR_KEY_BASE = sb_query.toString();
         }
 
@@ -348,18 +362,19 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("SELECT DISTINCT ");
             sb_query.append(" f_table_name"); // 0 of 1st field
             sb_query.append("||';'||f_geometry_column"); // 1 of 1st field
-            sb_query.append("||';'||'SpatialTable'"); // 2 of 1st field
+            sb_query.append("||';'||'"+TableTypes.SPATIALTABLE.getDescription()+"'"); // 2 of 1st field
             sb_query.append("||';ROWID;-1'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             LAYERS_QUERY_BASE_V3 = sb_query.toString();
-        }
+        }                
+
         String VIEWS_QUERY_BASE_V3 = "";
         {
             StringBuilder sb_query = new StringBuilder();
             sb_query.append("SELECT DISTINCT");
             sb_query.append(" view_name"); // 0 of 1st field
             sb_query.append("||';'||view_geometry"); // 1 of 1st field
-            sb_query.append("||';'||'SpatialView'"); // 2 of 1st field
+            sb_query.append("||';'||'"+TableTypes.SPATIALVIEW.getDescription()+"'"); // 2 of 1st field
             sb_query.append("||';ROWID;-1;;'"); // 3+4+5 (reserved for Style-Name) of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             VIEWS_QUERY_BASE_V3 = sb_query.toString();
@@ -663,18 +678,20 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // RasterLite2 support - begin
             // -------------------
             // vector_key[rasterlite2]='coverage_name;compression;RasterLite2;title;abstract' = length=5[0-4]
-            // vector_data[rasterlite2]='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]
+            // vector_data[rasterlite2]='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]                             
+            //     TableTypes.RL2VECTOR.getDescription()
             StringBuilder sb_query = new StringBuilder();
             sb_query.append("SELECT DISTINCT ");
             sb_query.append("coverage_name"); // 0 of 1st field
             sb_query.append("||';'||compression"); // 1 of 1st field
-            sb_query.append("||';'||'RasterLite2'"); // 2 of 1st field
+            sb_query.append("||';'||'"+TableTypes.RL2RASTER.getDescription()+"'"); // 2 of 1st field
             sb_query.append("||';'||REPLACE(title,';','-')"); // 3 of 1st field
             sb_query.append("||';'||REPLACE(abstract,';','-')"); // 4 of 1st field
             sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
             sb_query.append("||';'||tile_width"); // 1
             sb_query.append("||';'||srid"); // 2
-            sb_query.append("||';'||horz_resolution||';' AS vector_data,"); // 3
+            sb_query.append("||';'||horz_resolution"); // 3
+            sb_query.append("||';' AS vector_data,");  //  must end with a: ';'
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
         }
         {
@@ -791,9 +808,9 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(") WHEN data_type = 'tiles' THEN 'tile_data'"); // 1 of 1st field
             sb_query.append(" END"); // 1 of 1st field
             sb_query.append(" ||';'||CASE"); // 2 of 1st field
-            sb_query.append(" WHEN data_type = 'features' THEN 'GeoPackage_features'"); // 2 of 1st
+            sb_query.append(" WHEN data_type = 'features' THEN '"+TableTypes.GPKGVECTOR.getDescription()+"'"); // 2 of 1st
             // field
-            sb_query.append(" WHEN data_type = 'tiles' THEN 'GeoPackage_tiles'"); // 2 of 1st field
+            sb_query.append(" WHEN data_type = 'tiles' THEN '"+TableTypes.GPKGRASTER.getDescription()+"'"); // 2 of 1st field
             sb_query.append(" END"); // 2 of 1st field
             sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of 1st field
             sb_query.append("||';'||REPLACE(description,';','-')"); // 4 of 1st field
@@ -850,7 +867,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" WHEN srs_id = '2' THEN '3857'"); // 2 of second field
             sb_query.append(" ELSE srs_id "); // 2 of second field
             sb_query.append(" END"); // 2 of 1st field
-            sb_query.append("||';'||'-1'||';' AS vector_data,"); // 3 of second field
+            sb_query.append("||';'||'-1'"); // 3 of second field
+            sb_query.append("'||';' AS vector_data,"); //  must end with a: ';'
             // 0;10;3857;0;
             // 1;2;4326;0;
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();

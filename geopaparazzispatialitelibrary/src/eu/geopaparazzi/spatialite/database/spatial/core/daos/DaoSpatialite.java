@@ -18,6 +18,8 @@
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.io.WKBReader;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,6 +35,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -438,7 +441,49 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         String insertQuery = sbIn.toString();
         dbSpatialite.exec(insertQuery, null);
     }
-
+    public static double[] longLat2Srid(Database dbSpatialite, double lon, double lat, String s_srid)  throws Exception {
+        double[] srid_Coordinate=new double[]{lon,lat};
+        if (s_srid.equals(LibraryConstants.SRID_WGS84_4326))
+         return srid_Coordinate;
+        StringBuilder sb_sql = new StringBuilder();
+        sb_sql.append("SELECT ST_Transform (MakePoint(");
+        sb_sql.append(lon).append(",");
+        sb_sql.append(lat).append(",").append(LibraryConstants.SRID_WGS84_4326);
+        sb_sql.append("),").append(s_srid).append(")");
+                String s_sql=sb_sql.toString();
+        Stmt statement = null;
+        Geometry geometry;
+        Coordinate coordinate;
+        try {
+         statement = dbSpatialite.prepare(s_sql);
+         if (statement.step()) 
+         {
+          byte[] geomBytes = statement.column_bytes(0);   
+          WKBReader wkbReader = new WKBReader();          
+          try
+          {
+           geometry = wkbReader.read(geomBytes);
+           coordinate = geometry.getCoordinate();
+           srid_Coordinate[0] = coordinate.x;
+          srid_Coordinate[1] = coordinate.y;
+          }
+          catch (java.lang.Exception e) 
+          {
+           GPLog.error("DaoSpatialite"," wkbReader[" + dbSpatialite.getFilename() + "] sql[" +s_sql + "]", e);
+          }          
+         }
+        } catch (jsqlite.Exception e_stmt) {
+            GPLog.error("DaoSpatialite",
+                    "longLat2Srid["+s_srid+"] sql[" + s_sql+ "] db[" + dbSpatialite.getFilename()
+                            + "]", e_stmt
+            );
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return srid_Coordinate;
+    }
     /**
      * Get the area and length in original units of a feature by its id.
      *
@@ -507,5 +552,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_VALID_R10.getQuery()+"]");
         GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_INVALID_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_INVALID_R10.getQuery() + "] ");
         GPLog.androidLog(-1, "GeneralQueriesPreparer: GEOPACKAGE_QUERY_EXTENT_LIST_R10["+ GeneralQueriesPreparer.GEOPACKAGE_QUERY_EXTENT_LIST_R10.getQuery() + "] ");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: RL2_MINMAX_ZOOMLEVEL_QUERY["+ GeneralQueriesPreparer.RL2_MINMAX_ZOOMLEVEL_QUERY.getQuery()+"]");
+        GPLog.androidLog(-1, "GeneralQueriesPreparer: RL2_MINMAX_RESOLUTION_QUERY["+ GeneralQueriesPreparer.RL2_MINMAX_RESOLUTION_QUERY.getQuery()+"]");
     }
 }

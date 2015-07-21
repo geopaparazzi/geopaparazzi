@@ -65,21 +65,18 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     /**
      * Constructor.
      *
-     * @param databasePath            the database file the table belongs to.
-     * @param tableName               the name of the table to use.
-     * @param style                         the name of the table-style.
-     * @param geometryColumn          the name of the geometry column.
-     * @param geomType                the geometry type as off {@link GeometryType}.
-     * @param srid                    the srid code.
-     * @param center                  the wgs84 center coordinates.
-     * @param bounds                  the table bounds in wgs84.
-     * @param layerTypeDescription    the layer type description.
+     * @param spatialite_db the class 'Database' connection [will be null].
+     * @param vector_key major Parameters  needed for creation in AbstractSpatialTable.
+     * @param vector_value minor Parameters needed for creation in AbstractSpatialTable.
      */
     public SpatialVectorTable(Database spatialite_db,String vector_key,String  vector_value) 
     {
-        super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
-        createUniqueNames();
-        checkType();
+        super(spatialite_db,vector_key,vector_value);
+        if (isValid())
+        { //only continue if valid
+         createUniqueNames();
+         checkType();
+        }
     }
 
     /**
@@ -279,7 +276,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
                 isGeometryCollection = true;
                 break;
             default:
-                throw new IllegalArgumentException("No geom type for: " + TYPE + " isGeometryCollection[" + isGeometryCollection
+                throw new IllegalArgumentException("["+getLayerTypeDescription()+"."+getTableName()+"."+getGeomName()+"] No geom type for: " + TYPE + " isGeometryCollection[" + isGeometryCollection
                         + "]");
         }
         layerTypeDescription = TYPE.getDescription();

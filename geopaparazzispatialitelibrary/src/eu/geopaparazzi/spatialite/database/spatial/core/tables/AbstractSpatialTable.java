@@ -186,30 +186,45 @@ public abstract class AbstractSpatialTable implements Serializable {
     /**
      * Constructor.
      *
-     * @param databasePath the db path.
-     * @param tableName    a name for the table.
-     * @param styleName_Raster    a name for the table-style.
-     * @param mapType      the map type.
-     * @param srid         srid of the table.
-     * @param minZoom      min zoom.
-     * @param maxZoom      max zoom.
-     * @param centerX      center x.
-     * @param centerY      center y.
-     * @param bounds       the bounds as [w,s,e,n]
+     * @param spatialite_db the class 'Database' connection [will be null].
+     * @param vector_key major Parameters  needed for creation in AbstractSpatialTable.
+     * @param vector_value minor Parameters needed for creation in AbstractSpatialTable.
      */
-    public AbstractSpatialTable(Database spatialite_db, String mapType, String vector_key,String  vector_value) 
+    public AbstractSpatialTable(Database spatialite_db, String vector_key,String  vector_value) 
     {
-        setDatabase(spatialite_db);
-        this.mapType = mapType;
+        setDatabase(spatialite_db);        
         int i_rc=parse_vector_key_value(vector_key,vector_value);
         if (i_rc != 0)
         { // error
-         // i_rc=1 : unexpected size for 'vector_key'
-         // i_rc=2 : unknown 'layerTypeDescription'
-         // i_rc=3 : unexpected size for 'vector_value', to small
-         // i_rc=4 : unexpected size for 'bounds', not 4
-         // i_rc=5 : 'spatial_index' not 1 where needed for 'SpatialTable'+'SpatialView'
-         // i_rc=6 : no spatialite Database connection  for 'SpatialTable'+'SpatialView'
+        String s_error="";
+         switch (i_rc) 
+         {
+          case 1:
+           s_error="unexpected size for 'vector_key'";
+          break;
+          case 2:
+           s_error="unknown 'layerTypeDescription'";
+          break;
+          case 3:
+           s_error="unexpected size for 'vector_value', to small";
+          break;
+          case 4:
+           s_error="unexpected size for 'bounds', not >= 4";
+          break;
+          case 5:
+           s_error="'spatial_index' not 1 where needed for 'SpatialTable'+'SpatialView'";
+          break;
+          case 6:
+           s_error="no spatialite Database connection  for 'SpatialTable'+'SpatialView'";
+          break;
+          case 7:
+           s_error="unexpected srid (srid <= 0)";
+          break;
+          default:
+           s_error="unknow error return code["+i_rc+"]";
+          break;
+         }
+         GPLog.androidLog(-1, "-E-> parse_vector_key_value["+i_rc+"]["+s_error+"]: vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
          isTableValid=false;
         }
      }
@@ -224,6 +239,7 @@ public abstract class AbstractSpatialTable implements Serializable {
         { 
          if (i_parm == 1)
          { // TODO: create Memory Database with Spatialite 'SELECT InitSpatialMetadata(1);'
+          dbSpatialite=SpatialiteUtilities.getMemoryDatabase();
          }
         }
         return dbSpatialite;
@@ -275,6 +291,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      * <li>vector_data='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
      * <li>vector_extent='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
      * </ol>
+     * Note: title and abstract (short/long descriptions) replace ';' with '-'
      * <p/>
      * <p>[GeneralQueriesPreparer] Documentation of vector_key /  vector_value   
      * <p>[SpatialRasterTable] 'RasterLite2'
@@ -312,14 +329,15 @@ public abstract class AbstractSpatialTable implements Serializable {
       String layerType = sa_string[2];
       if ((layerType.equals(TableTypes.SPATIALTABLE.getDescription())) ||
            (layerType.equals(TableTypes.SPATIALVIEW.getDescription())) ||
+           (layerType.equals(TableTypes.RL2RASTER.getDescription())) ||
+           (layerType.equals(TableTypes.RL2VECTOR.getDescription())) ||
            (layerType.equals(TableTypes.GPKGVECTOR.getDescription())) ||
            (layerType.equals(TableTypes.GPKGRASTER.getDescription())) ||
            (layerType.equals(SpatialDataType.MBTILES.getTypeName())) ||
            (layerType.equals(SpatialDataType.MAP.getTypeName())) ||
            (layerType.equals(SpatialDataType.MAPURL.getTypeName())))
       {
-       this.layerTypeDescription=layerType;
-       this.isTableValid = true;
+       this.layerTypeDescription=layerType;       
        i_rc=0;
       }
       else
@@ -332,13 +350,16 @@ public abstract class AbstractSpatialTable implements Serializable {
       s_view_read_only = sa_string[4];
       // vector_value=vector_data+";"+vector_extent [MUST be a least length=7]
       sa_string = vector_value.split(";");
-      GPLog.androidLog(-1, "parse_vector_key_value: vector_key["+ vector_key+"] key.length["+i_length_key+"] value.length["+sa_string.length+"] vector_value["+ vector_value+"]");
+      // GPLog.androidLog(-1, "parse_vector_key_value: vector_key["+ vector_key+"] key.length["+i_length_key+"] value.length["+sa_string.length+"] vector_value["+ vector_value+"]");
+      // vector_value[5;2;3068;120;-4.24035848509084,1208.43017876675,49230.1528101726,38747.9589061869;2014-06-21T08:53:45.706Z]
       if (sa_string.length >= 7) 
       { // We may be overriding some of these values, before setting the final values
       // Warning: to NOT reuse 'sa_string', we may be retrieng more data
        String s_geometry_type = sa_string[0];  // 1= POINT / min_zoom /  pixel_type
        String s_coord_dimension = sa_string[1]; // 2= XY / OR max_zoom / tile_width
-       String s_srid = sa_string[2]; // 4326
+       String s_srid = sa_string[2]; // srid - 4326
+       if (Integer.parseInt(s_srid) <= 0)
+        i_rc=7; // unexpected srid (srid <= 0)
        String s_spatial_index_enabled = sa_string[3]; // spatial_index /  horz_resolution
        // -1;-75.5;18.0;-71.06667;20.08333;2013-12-24T16:32:14.000000Z
        // 0 = not possible as sub-query - but also not needed
@@ -348,7 +369,7 @@ public abstract class AbstractSpatialTable implements Serializable {
        String s_last_verified = sa_string[6]; // 2013-12-24T16:32:14.000000Z
        if (sa_string.length >= 8) 
        {
-        if (this.layerTypeDescription.equals(SpatialDataType.RASTERLITE2.getTypeName()))
+        if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
         { // RasterLite2-Styles
          s_vector_extent_styles= sa_string[7];
          if (sa_string.length >= 9) 
@@ -358,7 +379,7 @@ public abstract class AbstractSpatialTable implements Serializable {
         }
        }
        String[] sa_bounds = s_bounds.split(",");
-       if ((sa_bounds.length == 4)  || (sa_bounds.length == 6))
+       if (sa_bounds.length >= 4) 
        {
         try 
         {
@@ -366,7 +387,7 @@ public abstract class AbstractSpatialTable implements Serializable {
          boundsCoordinates[1] = Double.parseDouble(sa_bounds[1]);
          boundsCoordinates[2] = Double.parseDouble(sa_bounds[2]);
          boundsCoordinates[3] = Double.parseDouble(sa_bounds[3]);
-         if ((sa_string.length == 7) && 
+         if ((sa_bounds.length == 7) && 
               ((this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
                (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
                (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))))
@@ -381,7 +402,7 @@ public abstract class AbstractSpatialTable implements Serializable {
         }
         if (!s_srid.equals(LibraryConstants.SRID_WGS84_4326)) 
         { // Transform into wsg84 if needed
-         SpatialiteUtilities.collectBoundsAndCenter(null, s_srid, centerCoordinate, boundsCoordinates);
+         SpatialiteUtilities.collectBoundsAndCenter(getDatabase(1), s_srid, centerCoordinate, boundsCoordinates);
         } 
         else 
         {
@@ -416,6 +437,7 @@ public abstract class AbstractSpatialTable implements Serializable {
          if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
               (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())))
          {
+          this.mapType = SpatialDataType.SQLITE.getTypeName();
           this.ROWID_PK=s_ROWID_PK;
           if (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription()))
           {
@@ -427,6 +449,7 @@ public abstract class AbstractSpatialTable implements Serializable {
           this.view_read_only=0; // always    
           this.title=s_ROWID_PK;   // Short description
           this.description= s_view_read_only; // Long description
+          this.mapType = SpatialDataType.GPKG.getTypeName();
          }
          if (i_spatial_index_enabled  != 1)
          {
@@ -438,8 +461,9 @@ public abstract class AbstractSpatialTable implements Serializable {
          }  
         }
         // Raster-Specfic tasks
-        if (this.layerTypeDescription.equals(SpatialDataType.RASTERLITE2.getTypeName()))
+        if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
         {
+         this.mapType = SpatialDataType.RASTERLITE2.getTypeName();
          // num_bands;;;;styles_0-2
          // not used: s_geometry_type =  //  pixel_type
          // not used: s_coord_dimension // tile_width
@@ -483,6 +507,7 @@ public abstract class AbstractSpatialTable implements Serializable {
          this.description= s_view_read_only; // Long description
          if (this.layerTypeDescription.equals(TableTypes.GPKGRASTER.getDescription()))
          {
+          this.mapType = SpatialDataType.GPKG.getTypeName();
          }
          if ((this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
              (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
@@ -506,14 +531,17 @@ public abstract class AbstractSpatialTable implements Serializable {
          { //vector_value=this.minZoom+";"+this.maxZoom+";4326;"+defaultZoom+";0;"+s_bounds+";?,?,?";         
           // s_srid="3857"; // why?
           // else: this.tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+          this.mapType = SpatialDataType.MBTILES.getTypeName();
          }
         }
         if (this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName()))
         {
          // s_srid="3857"; // why?
+         this.mapType = SpatialDataType.MAP.getTypeName();
         }         
         if (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName()))
         {
+         this.mapType = SpatialDataType.MAPURL.getTypeName();
          // s_srid="3857"; // why?
         }   
         if (i_rc == 0)
@@ -538,8 +566,8 @@ public abstract class AbstractSpatialTable implements Serializable {
          // Sanity-Checks
          checkAndAdaptDatabaseBounds(boundsCoordinates, centerCoordinate, zoomLevels);
          if ((this.layerTypeDescription.equals(TableTypes.SPATIALTABLE.getDescription())) ||
-             (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
-             (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())))
+              (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) ||
+              (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription())))
          { // this will set the final values needed - NEVER for MbTiles,Map,Mapurl
           try 
           {
@@ -550,6 +578,8 @@ public abstract class AbstractSpatialTable implements Serializable {
            GPLog.error("AbstractSpatialTable", "parse_vector_key_value table[" +this.tableName+ "] db[" + dbSpatialite.getFilename() + "]", e_stmt);
           }          
          }
+         // The final task
+         this.isTableValid = true;
         }
        }  
       }

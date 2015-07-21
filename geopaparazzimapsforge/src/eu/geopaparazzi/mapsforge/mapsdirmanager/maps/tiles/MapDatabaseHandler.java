@@ -140,6 +140,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * <li>vector_data[map]='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
      * <li>vector_extent[map]='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
      * </ol>
+     * Note: title and abstract (short/long descriptions) replace ';' with '-'
      * <p> vector_key/data documetation : 20150718
      * 
      * @param forceRead force a re-reading of the resources.
@@ -150,7 +151,9 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
         if (mapTableList == null || forceRead) {
             mapTableList = new ArrayList<MapTable>();
            String layerType = SpatialDataType.MAP.getTypeName();
-           String vector_key=tableName+";0;"+layerType+";"+databaseFileNameNoExtension+";"+tableName+"";
+           String s_title=databaseFileNameNoExtension.replace(";","-");
+           String s_abstract=tableName.replace(";","-");
+           String vector_key=s_abstract+";0;"+layerType+";"+s_title+";"+s_abstract+"";
            String s_bounds=this.boundsWest + "," + this.boundsSouth + "," + this.boundsEast + "," + this.boundsNorth+ "," + this.centerX+ "," + this.centerY+","+defaultZoom;
            String vector_value=this.minZoom+";"+this.maxZoom+";4326;0;0;"+s_bounds+";?,?,?;"+getDatabasePath();
            MapTable table = new MapTable(null,vector_key,vector_value);

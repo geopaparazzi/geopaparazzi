@@ -34,19 +34,18 @@ public class CustomTileTable extends AbstractSpatialTable {
     /**
      * constructor.
      * 
-     * @param dbPath the db path.
-     * @param name the name of the table.
-     * @param styleName a name for the table-style.
-     * @param srid srid of the table.
-     * @param minZoom min zoom.
-     * @param maxZoom max zoom.
-     * @param centerX center x.
-     * @param centerY center y.
-     * @param tileQuery query to use for tiles fetching.
-     * @param bounds the bounds as [w,s,e,n]
+     * <p>vector_key and vector_value
+     * <ol>
+     * <li>vector_key[map]='databaseFileNameNoExtension;0;Mapurl;title;abstract' = length=5[0-4]</li>
+     * <li>vector_data[map]='minZoom;maxZoom;srid;0' = length=4[0-3]</li>
+     * <li>vector_extent[map]='0;extent_0-6;?,?,?;getDatabasePath()' = length=4[0-3]</li>
+     * 
+     * @param spatialite_db the class 'Database' connection [will be null].
+     * @param vector_key major Parameters  needed for creation in AbstractSpatialTable.
+     * @param vector_value minor Parameters needed for creation in AbstractSpatialTable.
      */
     public CustomTileTable(Database spatialite_db,String vector_key,String  vector_value) {
-         super(spatialite_db, SpatialDataType.SQLITE.getTypeName(),vector_key,vector_value);
+         super(spatialite_db,vector_key,vector_value);
     }
 
     // /**

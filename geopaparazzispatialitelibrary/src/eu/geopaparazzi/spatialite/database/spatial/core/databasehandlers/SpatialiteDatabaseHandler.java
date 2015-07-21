@@ -579,38 +579,35 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             // - SpatialDataType.MAPURL.getTypeName() [--> CustomTileDatabaseHandler]
             if ((vector_key.contains(TableTypes.SPATIALTABLE.getDescription())) ||
                  (vector_key.contains(TableTypes.SPATIALVIEW.getDescription())) ||
+                 (vector_key.contains(TableTypes.RL2RASTER.getDescription())) ||
+                 (vector_key.contains(TableTypes.RL2VECTOR.getDescription())) ||
                  (vector_key.contains(TableTypes.GPKGVECTOR.getDescription())) ||
-                 (vector_key.contains(SpatialDataType.RASTERLITE2.getTypeName())) ||
                  (vector_key.contains(TableTypes.GPKGRASTER.getDescription())))
             {
              if ((vector_key.contains(TableTypes.SPATIALTABLE.getDescription())) ||
                   (vector_key.contains(TableTypes.SPATIALVIEW.getDescription())) ||
+                  (vector_key.contains(TableTypes.RL2VECTOR.getDescription())) ||
                   (vector_key.contains(TableTypes.GPKGVECTOR.getDescription()))) 
-             { // Vector-Specfic tasks
+             { // Vector-Specific tasks
               SpatialVectorTable table = new SpatialVectorTable(dbSpatialite,vector_key,vector_value);
-              // fields_list = DaoSpatialite.collectTableFields(dbSpatialite, table_name); // GPKGVECTOR
-              // table.setFieldsList(fields_list, "ROWID", i_view_read_only); // GPKGVECTOR
-              // fields_list = DaoSpatialite.collectTableFields(dbSpatialite, table_name); // SPATIALTABLE,SPATIALVIEW
-              // table.setFieldsList(fields_list, s_ROWID_PK, i_view_read_only);  // SPATIALTABLE,SPATIALVIEW
               if ((table != null) && (table.isValid()))
               {
                if (vectorTableList == null)
                 vectorTableList = new ArrayList<SpatialVectorTable>();
                vectorTableList.add(table);
+               // GPLog.androidLog(-1, "-I-> collectTables(SpatialVectorTable) vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
               }
              }
-             if ((vector_key.contains(SpatialDataType.RASTERLITE2.getTypeName())) ||
+             if ((vector_key.contains(TableTypes.RL2RASTER.getDescription())) ||
                   (vector_key.contains(TableTypes.GPKGRASTER.getDescription())))
-             { // Raster-Specfic tasks
+             { // Raster-Specific tasks
               SpatialRasterTable table = new SpatialRasterTable(dbSpatialite,vector_key,vector_value);
-              // table.setColumnName(geometry_column); // GPKGRASTER
-              // table.setTitle(s_ROWID_PK); // RASTERLITE2
-              // table.setDescription(s_view_read_only); // RASTERLITE2
               if (table.isValid())
               {
                if (rasterTableList == null)
                 rasterTableList = new ArrayList<SpatialRasterTable>();
                rasterTableList.add(table);
+               // GPLog.androidLog(-1, "-I-> collectTables(SpatialRasterTable) vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
               }
              }
            }
@@ -636,7 +633,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             }
             break;
             default:
-                break;
+            break;
         }
         if (isValid()) {
             if (vectorTableList != null) {
