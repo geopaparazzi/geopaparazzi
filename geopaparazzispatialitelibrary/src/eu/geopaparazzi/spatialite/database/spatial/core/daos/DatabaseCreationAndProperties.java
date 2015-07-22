@@ -132,8 +132,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         if (DatabaseCreationAndProperties.JavaSqliteDescription.equals("")) { // Rasterlite2Version_CPU will NOT be empty, if the
             // Driver was compiled with RasterLite2 support
             DatabaseCreationAndProperties.getJavaSqliteDescription(dbSpatialite, "DaoSpatialite.checkDatabaseTypeAndValidity");
-            // Called on once during Application
-            GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
+            // Called only once during Application
+            GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode_["
                     + SPL_Vectors.VECTORLAYER_QUERYMODE + "]");
             // Comment this out when not needed (only to check any changed sql-queries)
             // DaoSpatialite.dump_GeneralQueriesPreparer();

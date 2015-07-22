@@ -74,7 +74,7 @@ public class SPL_Geopackage {
                     table_name = sa_string[0];
                     geometry_column = sa_string[1];
                     sa_string = vector_value.split(";");
-                    if (sa_string.length == 7) { // vector_value[0;2;4326;0;;-1;min_x,min_y,max_x,max_y;2015-04-22T14:58:01.000Z]
+                    if (sa_string.length >= 7)  { // vector_value[0;2;4326;0;;-1;min_x,min_y,max_x,max_y;2015-04-22T14:58:01.000Z]
                         String s_geometry_type = sa_string[0];
                         String s_coord_dimension = sa_string[1];
                         String s_srid = sa_string[2];
@@ -85,45 +85,52 @@ public class SPL_Geopackage {
                         // GeoPackage: has no row_count(-1)
                        String s_bounds = sa_string[5];
                        //SELECT count(geometry)||';'||Min(MbrMinX(geometry))||','||Min(MbrMinY(geometry))||','||Max(MbrMaxX(geometry))||','||Max(MbrMaxY(geometry))||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM geometry_gpkg;
-                       if (s_bounds.equals("extent_min_x,extent_min_y,extent_max_x,extent_max_y")) 
+                       if (s_bounds.equals("min_x,min_y,max_x,max_y")) 
                        {
-                         if ((VECTORLAYER_QUERYMODE == VectorLayerQueryModes.TOLERANT) && (spatialIndex == 1)) 
+                         if ((VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVE || VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVEWITHINDEX))
                          {
                                 vector_extent = DaoSpatialite.getGeometriesBoundsString(dbSpatialite, table_name, geometry_column);
+                                
                                 if (!recovery_text.equals(""))
                                     recovery_text += ",";
                                 if (!vector_extent.equals(""))
                                 {
                                     sa_string = vector_extent.split(";");
-                                    if (sa_string.length == 5) 
-                                    {
-                                     String s_min_x = sa_string[0];
-                                     String s_min_y = sa_string[1];
-                                     String s_max_x = sa_string[0];
-                                     String s_max_y = sa_string[1];
-                                     StringBuilder sb_sql = new StringBuilder();
-                                     sb_sql.append("UPDATE 'gpkg_contents' SET  ");
-                                     sb_sql.append("min_x=").append(s_min_x).append(",");
-                                     sb_sql.append("min_y=").append(s_min_y).append(",");
-                                     sb_sql.append("max_x=").append(s_max_x).append(",");
-                                     sb_sql.append("max_y=").append(s_max_y).append(" ");
-                                     sb_sql.append("WHERE table_name='").append(table_name).append("'");
-                                     String s_sql=sb_sql.toString();
-                                     dbSpatialite.exec(s_sql, null);
-                                     recovery_text += "GeometriesBoundsString[corrected]";
-                                     spatialVectorMap.put(vector_key, vector_data + vector_extent);
-                                     if (VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT && VECTORLAYER_QUERYMODE != VectorLayerQueryModes.TOLERANT) 
-                                     { // remove from the errors, since they may have been permanently resolved, but not here    
-                                      spatialVectorMapCorrections.put(vector_entry.getKey(), vector_entry.getValue());
+                                    if (sa_string.length == 3) 
+                                    { // row_count;bounds;now
+                                     s_bounds=sa_string[1];
+                                     sa_string = s_bounds.split(",");
+                                     if (sa_string.length == 4) 
+                                     { // min_x,min_y,max_x,max_y
+                                      String s_min_x = sa_string[0];
+                                      String s_min_y = sa_string[1];
+                                      String s_max_x = sa_string[2];
+                                      String s_max_y = sa_string[3];
+                                      StringBuilder sb_sql = new StringBuilder();
+                                      sb_sql.append("UPDATE 'gpkg_contents' SET  ");
+                                      sb_sql.append("min_x=").append(s_min_x).append(",");
+                                      sb_sql.append("min_y=").append(s_min_y).append(",");
+                                      sb_sql.append("max_x=").append(s_max_x).append(",");
+                                      sb_sql.append("max_y=").append(s_max_y).append(" ");
+                                      sb_sql.append("WHERE table_name='").append(table_name).append("'");
+                                      String s_sql=sb_sql.toString();
+                                      dbSpatialite.exec(s_sql, null);
+                                      recovery_text += "GeometriesBoundsString[corrected]";
+                                      // GPLog.androidLog(-1, "getGeoPackageMap_R10_Errors[" + dbSpatialite.getFilename() + "] table_name["+ table_name+"] vector_key["+  vector_key+"] vector_extent["+vector_extent+"] sql["+s_sql+"]");
+                                      spatialVectorMap.put(vector_key, vector_data + vector_extent);
+                                      if (VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT && VECTORLAYER_QUERYMODE != VectorLayerQueryModes.TOLERANT) 
+                                      { // remove from the errors, since they may have been permanently resolved, but not here    
+                                       spatialVectorMapCorrections.put(vector_entry.getKey(), vector_entry.getValue());
+                                      }
                                      }
                                    }                                    
                                 }
                                 else
-                                    recovery_text += "GeometriesBoundsString[failed]";
+                                    recovery_text += "GeometriesBoundsString[failed] vector_key["+  vector_key+"] vector_value["+vector_value+"] ";
                         }
                        }
                         GPLog.addLogEntry(LOGTAG, "getGeoPackageMap_R10_Errors[" + databaseType
-                                + "] [" + recovery_text + "] vector_key[" + vector_key + "] db[" + dbSpatialite.getFilename() + "]");
+                                + "] recovery_text[" + recovery_text + "] vector_key[" + vector_key + "] db[" + dbSpatialite.getFilename() + "]");
                     }
                 }
             }
@@ -170,6 +177,8 @@ public class SPL_Geopackage {
                 statement.close();
             }
         }
+        GPLog.androidLog(-1, "getGeoPackageMap_R10[" + dbSpatialite.getFilename() + "] errors["+spatialVectorMapErrors.size()+"] VECTORLAYER_QUERYMODE["+ VECTORLAYER_QUERYMODE+"]");
+        // VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
         if ((VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT) && (spatialVectorMapErrors.size() > 0)) {
             getGeoPackageMap_R10_Errors(dbSpatialite, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.GEOPACKAGE);
         }  

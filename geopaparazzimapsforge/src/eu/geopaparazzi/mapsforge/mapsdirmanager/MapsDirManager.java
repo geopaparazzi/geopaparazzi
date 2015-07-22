@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Geopackage;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
@@ -177,6 +178,7 @@ public class MapsDirManager {
         if (doSpatialiteRecoveryMode) {
             // Turn on Spatialite Recovery Modus
             SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
+            SPL_Geopackage.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
         }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
@@ -216,6 +218,7 @@ public class MapsDirManager {
                 if (doSpatialiteRecoveryMode) {
                     // Turn off Spatialite Recovery Modus after compleation
                     SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.STRICT;
+                    SPL_Geopackage.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.STRICT;
                     Editor editor = preferences.edit();
                     editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
                     editor.commit();

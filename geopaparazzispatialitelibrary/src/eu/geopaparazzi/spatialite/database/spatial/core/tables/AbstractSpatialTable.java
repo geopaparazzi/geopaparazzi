@@ -218,7 +218,7 @@ public abstract class AbstractSpatialTable implements Serializable {
            s_error="no spatialite Database connection  for 'SpatialTable'+'SpatialView'";
           break;
           case 7:
-           s_error="unexpected srid (srid <= 0)";
+           s_error="unexpected srid (Not supported: 'srid <= 0')";
           break;
           default:
            s_error="unknow error return code["+i_rc+"]";
@@ -306,6 +306,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      double[] centerCoordinate = new double[]{0.0, 0.0};
      int[] zoomLevels = new int[]{this.minZoom,this.maxZoom, this.defaultZoom};
      HashMap<String, String> fields_list = new HashMap<String, String>();
+     String s_srid_brandenburger_tor="187999";
      int i_geometry_type = 0;
      int i_view_read_only = -1;
      double horz_resolution = 0.0;
@@ -359,7 +360,16 @@ public abstract class AbstractSpatialTable implements Serializable {
        String s_coord_dimension = sa_string[1]; // 2= XY / OR max_zoom / tile_width
        String s_srid = sa_string[2]; // srid - 4326
        if (Integer.parseInt(s_srid) <= 0)
-        i_rc=7; // unexpected srid (srid <= 0)
+       {
+        if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
+        {
+         s_srid=LibraryConstants.SRID_BRANDENBURGER_TOR_187999;
+        }
+        else
+        {
+         i_rc=7; // "unexpected srid (Not supported: 'srid <= 0')
+        }
+       }
        String s_spatial_index_enabled = sa_string[3]; // spatial_index /  horz_resolution
        // -1;-75.5;18.0;-71.06667;20.08333;2013-12-24T16:32:14.000000Z
        // 0 = not possible as sub-query - but also not needed
@@ -367,54 +377,57 @@ public abstract class AbstractSpatialTable implements Serializable {
        String s_bounds = sa_string[5]; // -75.5;18.0;-71.06667;20.08333
        // For 'MbTiles' : TileQuery
        String s_last_verified = sa_string[6]; // 2013-12-24T16:32:14.000000Z
-       if (sa_string.length >= 8) 
+       if (i_rc == 0)
        {
-        if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
-        { // RasterLite2-Styles
-         s_vector_extent_styles= sa_string[7];
-         if (sa_string.length >= 9) 
-         { // RasterLite2-Zoom-Levels
-          s_vector_extent_zoom_levels= sa_string[8];
+        if (sa_string.length >= 8) 
+        {
+         if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
+         { // RasterLite2-Styles
+          s_vector_extent_styles= sa_string[7];
+          if (sa_string.length >= 9) 
+          { // RasterLite2-Zoom-Levels
+           s_vector_extent_zoom_levels= sa_string[8];
+          }
          }
         }
-       }
-       String[] sa_bounds = s_bounds.split(",");
-       if (sa_bounds.length >= 4) 
-       {
-        try 
+        String[] sa_bounds = s_bounds.split(",");
+        if (sa_bounds.length >= 4) 
         {
-         boundsCoordinates[0] = Double.parseDouble(sa_bounds[0]);
-         boundsCoordinates[1] = Double.parseDouble(sa_bounds[1]);
-         boundsCoordinates[2] = Double.parseDouble(sa_bounds[2]);
-         boundsCoordinates[3] = Double.parseDouble(sa_bounds[3]);
-         if ((sa_bounds.length == 7) && 
-              ((this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
-               (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
-               (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))))
-         { // MbTiles,Map,Mapurl only
-          centerCoordinate[0] = Double.parseDouble(sa_bounds[4]);
-          centerCoordinate[1] = Double.parseDouble(sa_bounds[5]);
-          i_default_zoom = Integer.parseInt(sa_bounds[6]);
-         }
-        } 
-        catch (NumberFormatException e) 
-        {
-        }
-        if (!s_srid.equals(LibraryConstants.SRID_WGS84_4326)) 
-        { // Transform into wsg84 if needed
-         SpatialiteUtilities.collectBoundsAndCenter(getDatabase(1), s_srid, centerCoordinate, boundsCoordinates);
-        } 
-        else 
-        {
-         if ((centerCoordinate[0]  == 0.0) && (centerCoordinate[1] == 0.0))
+         try 
          {
-          centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
-          centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
+          boundsCoordinates[0] = Double.parseDouble(sa_bounds[0]);          
+          boundsCoordinates[2] = Double.parseDouble(sa_bounds[2]);
+          boundsCoordinates[1] = Double.parseDouble(sa_bounds[1]);
+          boundsCoordinates[3] = Double.parseDouble(sa_bounds[3]);   
+          if ((sa_bounds.length == 7) && 
+               ((this.layerTypeDescription.equals(SpatialDataType.MAP.getTypeName())) ||
+                (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
+                (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))))
+          { // MbTiles,Map,Mapurl only
+           centerCoordinate[0] = Double.parseDouble(sa_bounds[4]);
+           centerCoordinate[1] = Double.parseDouble(sa_bounds[5]);
+           i_default_zoom = Integer.parseInt(sa_bounds[6]);
+          }
+         } 
+         catch (NumberFormatException e) 
+         {
+         }
+         if (!s_srid.equals(LibraryConstants.SRID_WGS84_4326)) 
+         { // Transform into wsg84 if needed
+          SpatialiteUtilities.collectBoundsAndCenter(getDatabase(1), s_srid, centerCoordinate, boundsCoordinates);
+         } 
+         else 
+         {
+          if ((centerCoordinate[0]  == 0.0) && (centerCoordinate[1] == 0.0))
+          {
+           centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
+           centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
+          }
          }
         }
+        else
+         i_rc=4;
        }
-       else
-        i_rc=4;
        if (i_rc == 0)
        {
         // Vector-Specfic tasks
@@ -446,6 +459,7 @@ public abstract class AbstractSpatialTable implements Serializable {
          }
          if (this.layerTypeDescription.equals(TableTypes.GPKGVECTOR.getDescription()))
          { // TODO: ?? SpatialIndex ?? - has its own version now - this may change
+          GPLog.androidLog(-1, "-I-> parse_vector_key_value["+this.layerTypeDescription+"] drid["+s_srid+"]: vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
           this.view_read_only=0; // always    
           this.title=s_ROWID_PK;   // Short description
           this.description= s_view_read_only; // Long description
@@ -480,8 +494,8 @@ public abstract class AbstractSpatialTable implements Serializable {
           {
            style_raster=sa_styles[0];
            style_vector=sa_styles[1];
-           style_raster_group=sa_styles[3];
-           style_vector_group=sa_styles[4];
+           style_raster_group=sa_styles[2];
+           style_vector_group=sa_styles[3];
           }
          }
          if (!s_vector_extent_zoom_levels.equals("")) 

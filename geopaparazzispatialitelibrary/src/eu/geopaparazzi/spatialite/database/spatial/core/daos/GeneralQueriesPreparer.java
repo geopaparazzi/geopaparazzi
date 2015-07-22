@@ -381,7 +381,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         }
         String VECTOR_LAYERS_QUERY_FROM = "";
         {
-            // sb_query.append(" FROM FROM geometry_columns ORDER BY f_table_name ASC,f_geometry_column";
+            // sb_query.append(" FROM geometry_columns ORDER BY f_table_name ASC,f_geometry_column";
             StringBuilder sb_query = new StringBuilder();
             sb_query.append(" FROM " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + " INNER JOIN "
                     + METADATA_VECTOR_LAYERS_TABLE_NAME);
@@ -560,6 +560,9 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_min_y IS NOT NULL)");
             sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_x IS NOT NULL)");
             sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y IS NOT NULL)");
+            // Do not query RasterLite2 Admin-Tables that themselfs have Geometries
+            sb_query.append(" AND ((" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name NOT LIKE '%_tiles')");
+            sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name NOT LIKE '%_sections'))");
             VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
         }
         String LAYERS_QUERY_WHERE = "";
@@ -685,8 +688,8 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("coverage_name"); // 0 of 1st field
             sb_query.append("||';'||compression"); // 1 of 1st field
             sb_query.append("||';'||'"+TableTypes.RL2RASTER.getDescription()+"'"); // 2 of 1st field
-            sb_query.append("||';'||REPLACE(title,';','-')"); // 3 of 1st field
-            sb_query.append("||';'||REPLACE(abstract,';','-')"); // 4 of 1st field
+            sb_query.append("||';'||CASE WHEN (title IS NULL) OR  (title = '') THEN 'no title supplied' ELSE REPLACE(title,';','-') END"); // 3 of 1st field
+            sb_query.append("||';'|| CASE WHEN (abstract IS NULL) OR  (abstract = '') THEN 'no abstract supplied' ELSE REPLACE(abstract,';','-') END"); // 4 of 1st field           
             sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
             sb_query.append("||';'||tile_width"); // 1
             sb_query.append("||';'||srid"); // 2
@@ -812,8 +815,9 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             // field
             sb_query.append(" WHEN data_type = 'tiles' THEN '"+TableTypes.GPKGRASTER.getDescription()+"'"); // 2 of 1st field
             sb_query.append(" END"); // 2 of 1st field
-            sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of 1st field
-            sb_query.append("||';'||REPLACE(description,';','-')"); // 4 of 1st field
+            sb_query.append("||';'||CASE WHEN (identifier IS NULL) OR  (identifier = '') THEN 'no identifier supplied' ELSE REPLACE(identifier,';','-') END"); // 3 of 1st field
+            sb_query.append("||';'||CASE WHEN (description IS NULL) OR  (description = '') THEN 'no description supplied' ELSE REPLACE(description,';','-') END"); // 4 of 1st field
+            
             sb_query.append(" AS vector_key,"); 
             // fromosm_tiles;tile_data;GeoPackage_tiles;© OpenStreetMap contributors, See
             // http://www.openstreetmap.org/copyright;OSM Tiles;
@@ -868,7 +872,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(" ELSE srs_id "); // 2 of second field
             sb_query.append(" END"); // 2 of 1st field
             sb_query.append("||';'||'-1'"); // 3 of second field
-            sb_query.append("'||';' AS vector_data,"); //  must end with a: ';'
+            sb_query.append("||';' AS vector_data,"); //  must end with a: ';'
             // 0;10;3857;0;
             // 1;2;4326;0;
             VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
@@ -950,7 +954,6 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||';'||CASE WHEN min_x IS NULL THEN 'min_x' ELSE min_x END"); // 1.0
             sb_query.append("||','||CASE WHEN min_y IS NULL THEN 'min_y' ELSE min_y END"); // 1.1
             sb_query.append("||','||CASE WHEN max_x IS NULL THEN 'max_x' ELSE max_x END"); // 1.2
-            sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE max_y END"); // 1.3
             sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE max_y END"); // 1.3
             sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
             VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();

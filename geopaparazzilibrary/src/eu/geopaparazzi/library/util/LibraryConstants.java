@@ -40,6 +40,17 @@ public interface LibraryConstants {
      */
     public final String SRID_MERCATOR_3857 = "3857"; //$NON-NLS-1$
     /**
+     * The epsg DHDN / Brandenburger Tor used by RasterLite2.
+     * - Images (Photos) imported to RasterLite2 will recieve the srid=-1
+     * - since this value cannot be transformed to Wsg84
+     * Since 2012, Spatialite contains historical 'DHDN / Soldner *' values that have been in use since 1879
+     * --> SELECT * FROM spatial_ref_sys WHERE auth_name = 'mj10777.de';
+     * I also 'sneaked' in an  imaginary Projection based on the Brandenburg Gate, Berlin, Germany at point 0,0
+     * - this (otherwise unused) Projection will be reserved to render Photo-Images
+     * -- since every Spatialite-Database with a full 'spatial_ref_sys',since 2012, contains this Projection.
+     */
+    public final String SRID_BRANDENBURGER_TOR_187999 = "187999"; //$NON-NLS-1$
+    /**
      * 
      */
     public final float E6 = 1000000f;

@@ -465,7 +465,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
            geometry = wkbReader.read(geomBytes);
            coordinate = geometry.getCoordinate();
            srid_Coordinate[0] = coordinate.x;
-          srid_Coordinate[1] = coordinate.y;
+           srid_Coordinate[1] = coordinate.y;
           }
           catch (java.lang.Exception e) 
           {

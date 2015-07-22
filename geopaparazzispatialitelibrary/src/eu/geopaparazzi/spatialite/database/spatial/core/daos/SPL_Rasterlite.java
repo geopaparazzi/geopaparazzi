@@ -21,6 +21,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 import java.util.HashMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import jsqlite.*;
 
 /**
@@ -400,11 +401,14 @@ public class SPL_Rasterlite {
         zoom_levels.put(28,0.149); 
         zoom_levels.put(29,0.074); 
         zoom_levels.put(30,0.037); // Last possible value that gdalwarp can create
+        // -- 89.877466 min[19]	39498.490933 default[14] max[23]
         // Zoom 31. [gdalwarp] Failed to compute GCP transform: Transform is not solvable     
         String s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_ZOOMLEVEL_QUERY.getQuery();
         if (i_srid <= 0)
         { // No Transformation possible, retrieve resolution
-         s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_RESOLUTION_QUERY.getQuery();
+         // s_rl2_min_max_zoom_base=GeneralQueriesPreparer.RL2_MINMAX_RESOLUTION_QUERY.getQuery();
+         i_srid=Integer.parseInt(LibraryConstants.SRID_BRANDENBURGER_TOR_187999);
+         s_rl2_min_max_zoom_base=s_rl2_min_max_zoom_base.replace("ST_Transform(geometry,3395)","ST_Transform(SetSRID(geometry,"+i_srid+"),3395)");
         }
         String s_sql_command = s_rl2_min_max_zoom_base.replace("COVERAGE_NAME", coverageName); 
         s_sql_command = s_sql_command.replace("TILE_WIDTH", s_tile_size);        
@@ -430,7 +434,8 @@ public class SPL_Rasterlite {
             }
 
         if (d_width_max == d_width_min)
-        {
+        { // No Pyramids ??
+         d_width_min=d_width_max*8; // pyramind_level_0.x_resolution_1_8=8*pyramind_level_0.x_resolution_1_1
         }
         int i_zoom_min=-1;
         int i_zoom_max=-1;
@@ -441,12 +446,12 @@ public class SPL_Rasterlite {
           if (i_zoom_min < 0)
           {
            if (meters < d_width_min)
-            i_zoom_min=i;
+            i_zoom_min=i+1;
           }
           if (i_zoom_default < 0)
           {
            if (meters < d_width_max)
-            i_zoom_default=i-1;
+            i_zoom_default=i;
           }
          }
          // Sanity checks
@@ -463,9 +468,10 @@ public class SPL_Rasterlite {
          i_zoom_max=i_zoom_default+(i_zoom_default-i_zoom_min);
          if (i_zoom_max > zoom_levels.size())
           i_zoom_max = zoom_levels.size();
+         // GPLog.androidLog(-1, "rl2_calculate_zoom_levels["+coverageName+"] srid["+i_srid+"] d_width_min["+d_width_min+"] d_width_max["+d_width_max+"] zoom_min["+i_zoom_min+"] zoom_max["+i_zoom_max+"] zoom_default["+i_zoom_default+"]  s_sql_command["+s_sql_command+"]");
+         // i_zoom_max = zoom_levels.size();
          // Let the Application reset supported min/max zoom-levels
          int[] zoom_level_min_max={i_zoom_min,i_zoom_max,i_zoom_default};
-         // GPLog.androidLog(-1, "rl2_calculate_zoom_levels["+coverageName+"] srid["+i_srid+"] d_width_min["+d_width_min+"] d_width_max["+d_width_max+"]  zoom_min["+i_zoom_min+"] zoom_max["+i_zoom_max+"] zoom_default["+i_zoom_default+"] ");
         return zoom_level_min_max;
     }
 
