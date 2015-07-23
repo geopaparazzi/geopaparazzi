@@ -25,6 +25,10 @@ import android.graphics.Paint;
 import android.location.Location;
 import android.util.Log;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.index.strtree.STRtree;
+
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
 
@@ -46,6 +50,7 @@ import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
+import eu.hydrologis.geopaparazzi.util.GpsLogInfo;
 import eu.hydrologis.geopaparazzi.util.Line;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -837,6 +842,73 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 c.close();
         }
         return linesMap;
+    }
+
+
+    /**
+     * Get a tree index of gps points in a defined area.
+     *
+     * @param n
+     * @param s
+     * @param e
+     * @param w
+     * @return
+     * @throws IOException
+     */
+    public static STRtree getGpsLogInfoTree(double n, double s, double e, double w) throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+
+        String idField1 = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName();
+        String lonField = GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName();
+        String latField = GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName();
+        String altimField = GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName();
+        String tsField = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName();
+
+        String idField = GpsLogsTableFields.COLUMN_ID.getFieldName();
+        String nameField = GpsLogsTableFields.COLUMN_LOG_TEXT.getFieldName();
+
+        String idField2 = GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName();
+        String colorField = GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_COLOR.getFieldName();
+        String visibleField = GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName();
+
+
+        String sql = "select d." + lonField + ", d." + latField + ", d." + altimField + ", d." + tsField +
+                ", g." + nameField + ", p." + colorField + ", p." + visibleField +
+                " from " + TableDescriptions.TABLE_GPSLOG_DATA + " d, " + TableDescriptions.TABLE_GPSLOGS +
+                " g, " + TableDescriptions.TABLE_GPSLOG_PROPERTIES + " p where " +
+                "d." + idField1 + "=g." + idField + " and p." + idField2 + "=g." + idField + " and " +
+                "d." + lonField + " > " + w + " and d." + lonField + " < " + e + " and " +
+                "d." + latField + " > " + s + " and d." + latField + " < " + n;
+
+        STRtree tree = new STRtree();
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.rawQuery(sql, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                int i = 0;
+                double lon = c.getDouble(i++);
+                double lat = c.getDouble(i++);
+                double altim = c.getDouble(i++);
+                long ts = c.getLong(i++);
+                String name = c.getString(i++);
+                String color = c.getString(i++);
+                int visible = c.getInt(i++);
+                if (visible == 1) {
+                    GpsLogInfo gli = new GpsLogInfo();
+                    gli.pointXYZ = new Coordinate(lon, lat, altim);
+                    gli.timestamp = ts;
+                    gli.logName = name;
+                    gli.color = color;
+                    tree.insert(new Envelope(gli.pointXYZ), gli);
+                }
+                c.moveToNext();
+            }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return tree;
     }
 
 

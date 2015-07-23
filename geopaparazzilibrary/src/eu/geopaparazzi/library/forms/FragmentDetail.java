@@ -349,14 +349,14 @@ public class FragmentDetail extends Fragment {
 
         FragmentList listFragment = (FragmentList) getFragmentManager().findFragmentById(R.id.listFragment);
         if (listFragment != null) {
-            FormUtilities.updateExtras(formItems, listFragment.getLatitude(), listFragment.getLongitude());
+            FormUtilities.updateExtras(formItems, listFragment.getLatitude(), listFragment.getLongitude(), null);
         } else {
             FragmentActivity activity = getActivity();
             if (activity instanceof FragmentDetailActivity) {
                 // case of portrait mode
                 FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
                 FormUtilities
-                        .updateExtras(formItems, fragmentDetailActivity.getLatitude(), fragmentDetailActivity.getLongitude());
+                        .updateExtras(formItems, fragmentDetailActivity.getLatitude(), fragmentDetailActivity.getLongitude(), null);
             } else {
                 throw new RuntimeException("Fragmentlist not available"); //$NON-NLS-1$
             }

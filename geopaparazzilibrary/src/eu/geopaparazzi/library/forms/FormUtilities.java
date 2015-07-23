@@ -335,7 +335,7 @@ public class FormUtilities {
      *
      * @param context               the context.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @param readonly              if <code>true</code>, it is disabled for editing.
@@ -351,7 +351,7 @@ public class FormUtilities {
      *
      * @param context               the context.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param itemsArray            the items to put in the spinner.
      * @param constraintDescription constraint
@@ -367,7 +367,7 @@ public class FormUtilities {
      *
      * @param context               the context.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param valuesMap             the map of connected strings to put in the spinners.
      * @param constraintDescription constraint
@@ -384,7 +384,7 @@ public class FormUtilities {
      *
      * @param context               the context.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param itemsArray            the items to put in the spinner.
      * @param constraintDescription constraint
@@ -402,7 +402,7 @@ public class FormUtilities {
      * @param fragmentDetail        the fragmentDetail.
      * @param requestCode           the code to use for activity return.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @return the added view.
@@ -419,7 +419,7 @@ public class FormUtilities {
      * @param fragmentDetail        the fragmentDetail.
      * @param requestCode           the code to use for activity return.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @return the added view.
@@ -434,7 +434,7 @@ public class FormUtilities {
      *
      * @param context               the context.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @return the added view.
@@ -449,7 +449,7 @@ public class FormUtilities {
      *
      * @param fragment              the parent {@link Fragment}.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @param readonly              if <code>true</code>, it is disabled for editing.
@@ -465,7 +465,7 @@ public class FormUtilities {
      *
      * @param fragment              the parent {@link Fragment}.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @param readonly              if <code>true</code>, it is disabled for editing.
@@ -482,7 +482,7 @@ public class FormUtilities {
      * @param activity              the activity
      * @param requestCode           teh requestcode for activity return.
      * @param mainView              the main view to which to add the new widget to.
-     * @param label                   the label of the widget.
+     * @param label                 the label of the widget.
      * @param value                 the value to put in the widget.
      * @param constraintDescription constraint
      * @return the added view.
@@ -552,9 +552,10 @@ public class FormUtilities {
      * @param formItemsArray the items array.
      * @param latitude       the lat value.
      * @param longitude      the long value.
+     * @param pkValue        an optional value to set the PRIMARYKEY to.
      * @throws JSONException if something goes wrong.
      */
-    public static void updateExtras(JSONArray formItemsArray, double latitude, double longitude) throws JSONException {
+    public static void updateExtras(JSONArray formItemsArray, double latitude, double longitude, String pkValue) throws JSONException {
         int length = formItemsArray.length();
         // TODO check back if it would be good to check also on labels
         for (int i = 0; i < length; i++) {
@@ -566,6 +567,10 @@ public class FormUtilities {
                 } else if (objKey.contains(TYPE_LONGITUDE)) {
                     itemObject.put(TAG_VALUE, longitude);
                 }
+                if (pkValue != null && itemObject.has(TAG_TYPE))
+                    if (itemObject.getString(TAG_TYPE).trim().equals(TYPE_PRIMARYKEY)) {
+                        itemObject.put(TAG_VALUE, pkValue);
+                    }
             }
         }
     }

@@ -16,22 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Switch;
+import android.widget.ToggleButton;
+
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
@@ -39,62 +47,75 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * Activity for tile source visualisation.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SourcesTreeListActivity extends Activity implements OnClickListener {
 
+    public static final String SHOW_MAPS = "showMaps";
+    public static final String SHOW_MAPURLS = "showMapurls";
+    public static final String SHOW_MBTILES = "showMbtiles";
+    public static final String SHOW_RASTER_LITE_2 = "showRasterLite2";
     SourcesExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    private Button mapToggleButton;
-    private Button mapurlToggleButton;
-    private Button mbtilesToggleButton;
-    private Button rasterLite2ToggleButton;
+    private Button mapTypeToggleButton;
     private boolean showMaps = true;
     private boolean showMapurls = true;
     private boolean showMbtiles = true;
     private boolean showRasterLite2 = true;
     private EditText filterText;
     private String textToFilter = "";
+    private SharedPreferences preferences;
+    private boolean[] checkedValues;
+    private boolean hasRL2;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sources_list);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
-        mapToggleButton = (Button) findViewById(R.id.toggleMapButton);
-        mapToggleButton.setOnClickListener(this);
-        mapToggleButton.setText(SpatialDataType.MAP.getTypeName());
-        mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+        hasRL2 = SPL_Rasterlite.hasRasterLiteSupport();
 
-        mapurlToggleButton = (Button) findViewById(R.id.toggleMapurlButton);
-        mapurlToggleButton.setOnClickListener(this);
-        mapurlToggleButton.setText(SpatialDataType.MAPURL.getTypeName());
-        mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+        showMaps = preferences.getBoolean(SHOW_MAPS, true);
+        showMapurls = preferences.getBoolean(SHOW_MAPURLS, true);
+        showMbtiles = preferences.getBoolean(SHOW_MBTILES, true);
+        showRasterLite2 = preferences.getBoolean(SHOW_RASTER_LITE_2, true);
 
-        mbtilesToggleButton = (Button) findViewById(R.id.toggleMbtilesButton);
-        mbtilesToggleButton.setOnClickListener(this);
-        mbtilesToggleButton.setText(SpatialDataType.MBTILES.getTypeName());
-        mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
-
-        rasterLite2ToggleButton = (Button) findViewById(R.id.toggleRasterLite2Button);
-        if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) { //$NON-NLS-1$
-            // show this only if the driver is installed and active
-            rasterLite2ToggleButton.setOnClickListener(this);
-            rasterLite2ToggleButton.setText(SpatialDataType.RASTERLITE2.getTypeName());
-            rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
-                    R.drawable.button_background_drawable_selected));
+        String mapTypeName = SpatialDataType.MAP.getTypeName();
+        String mapurlTypeName = SpatialDataType.MAPURL.getTypeName();
+        String mbtilesTypeName = SpatialDataType.MBTILES.getTypeName();
+        final List<String> typeNames = new ArrayList<String>();
+        typeNames.add(mapTypeName);
+        typeNames.add(mapurlTypeName);
+        typeNames.add(mbtilesTypeName);
+        if (hasRL2) {
+            String rasterLiteTypeName = SpatialDataType.RASTERLITE2.getTypeName();
+            typeNames.add(rasterLiteTypeName);
         } else {
-            // hide R.id.toggleRasterLite2Button ?
-            rasterLite2ToggleButton.setVisibility(View.GONE);
             showRasterLite2 = false;
         }
+        checkedValues = new boolean[typeNames.size()];
+        checkedValues[0] = showMaps;
+        checkedValues[1] = showMapurls;
+        checkedValues[2] = showMbtiles;
+        if (hasRL2)
+            checkedValues[3] = showRasterLite2;
+
+        mapTypeToggleButton = (Button) findViewById(R.id.toggleTypesButton);
+        mapTypeToggleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
+                dialog.open(mapTypeToggleButton.getText().toString(), SourcesTreeListActivity.this, typeNames, checkedValues);
+            }
+        });
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
@@ -111,23 +132,31 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         filterText.removeTextChangedListener(filterTextWatcher);
     }
 
-    private void refreshData() throws Exception {
+    public void refreshData() throws Exception {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(SHOW_MAPS, checkedValues[0]);
+        editor.putBoolean(SHOW_MAPURLS, checkedValues[1]);
+        editor.putBoolean(SHOW_MBTILES, checkedValues[2]);
+        if (hasRL2)
+            editor.putBoolean(SHOW_RASTER_LITE_2, checkedValues[3]);
+        editor.apply();
+
         LinkedHashMap<String, List<String[]>> folder2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
         final LinkedHashMap<String, List<String[]>> newMap = new LinkedHashMap<String, List<String[]>>();
-        for( Entry<String, List<String[]>> item : folder2TablesMap.entrySet() ) {
+        for (Entry<String, List<String[]>> item : folder2TablesMap.entrySet()) {
             String key = item.getKey();
             ArrayList<String[]> newValues = new ArrayList<String[]>();
 
             List<String[]> values = item.getValue();
-            for( String[] value : values ) {
+            for (String[] value : values) {
                 boolean doAdd = false;
-                if (showMaps && value[1].equals(SpatialDataType.MAP.getTypeName())) {
+                if (checkedValues[0] && value[1].equals(SpatialDataType.MAP.getTypeName())) {
                     doAdd = true;
-                } else if (showMapurls && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
+                } else if (checkedValues[1] && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
                     doAdd = true;
-                } else if (showMbtiles && value[1].equals(SpatialDataType.MBTILES.getTypeName())) {
+                } else if (checkedValues[2] && value[1].equals(SpatialDataType.MBTILES.getTypeName())) {
                     doAdd = true;
-                } else if (showRasterLite2 && value[1].equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+                } else if (hasRL2 && checkedValues[3] && value[1].equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                     doAdd = true;
                 }
 
@@ -157,11 +186,11 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         expListView.setClickable(true);
         expListView.setFocusable(true);
         expListView.setFocusableInTouchMode(true);
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener(){
-            public boolean onChildClick( ExpandableListView parent, View v, int groupPosition, int childPosition, long id ) {
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 int index = 0;
                 String[] spatialTableDate = null;
-                for( Entry<String, List<String[]>> entry : newMap.entrySet() ) {
+                for (Entry<String, List<String[]>> entry : newMap.entrySet()) {
                     if (groupPosition == index) {
                         List<String[]> value = entry.getValue();
                         spatialTableDate = value.get(childPosition);
@@ -179,68 +208,22 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
             }
         });
         int groupCount = listAdapter.getGroupCount();
-        for( int i = 0; i < groupCount; i++ ) {
+        for (int i = 0; i < groupCount; i++) {
             expListView.expandGroup(i);
         }
     }
-    @Override
-    public void onClick( View view ) {
-        if (view == mapToggleButton) {
-            if (!showMaps) {
-                mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
-            } else {
-                mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
-            }
-            showMaps = !showMaps;
-        }
-        if (view == mapurlToggleButton) {
-            if (!showMapurls) {
-                mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(
-                        R.drawable.button_background_drawable_selected));
-            } else {
-                mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
-            }
-            showMapurls = !showMapurls;
-        }
-        if (view == mbtilesToggleButton) {
-            if (!showMbtiles) {
-                mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(
-                        R.drawable.button_background_drawable_selected));
-            } else {
-                mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
-            }
-            showMbtiles = !showMbtiles;
-        }
 
-        if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals(""))
-            if (view == rasterLite2ToggleButton) {
-                if (!showRasterLite2) {
-                    rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
-                            R.drawable.button_background_drawable_selected));
-                } else {
-                    rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
-                            R.drawable.button_background_drawable));
-                }
-                showRasterLite2 = !showRasterLite2;
-            }
-        try {
-            refreshData();
-        } catch (Exception e) {
-            GPLog.error(this, "Error getting source data.", e); //$NON-NLS-1$
-        }
-    }
+    private TextWatcher filterTextWatcher = new TextWatcher() {
 
-    private TextWatcher filterTextWatcher = new TextWatcher(){
-
-        public void afterTextChanged( Editable s ) {
+        public void afterTextChanged(Editable s) {
             // ignore
         }
 
-        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
 
-        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             textToFilter = s.toString();
             try {
                 refreshData();
@@ -249,4 +232,10 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
             }
         }
     };
+
+
+    @Override
+    public void onClick(View view) {
+
+    }
 }

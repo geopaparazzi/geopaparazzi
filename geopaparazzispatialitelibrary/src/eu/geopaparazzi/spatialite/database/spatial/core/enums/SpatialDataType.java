@@ -27,33 +27,33 @@ public enum SpatialDataType {
     /**
      * Mbtiles based database.
      */
-    MBTILES("mbtiles", ".mbtiles", 0, true),
+    MBTILES("MBTiles", ".mbtiles", 0, true, "MBT"),
     /**
      * A spatialite/sqlite database.
      */
-    DB("db", ".db", 1, true),
+    DB("Db", ".db", 1, true, "Db"),
     /**
      * A spatialite/sqlite database.
      */
-    SQLITE("sqlite", ".sqlite", 2, true),
+    SQLITE("SQLite", ".sqlite", 2, true, "SQLi"),
     /**
      * A geopackage database. 
      */
-    GPKG("gpkg", ".gpkg", 3, true),
+    GPKG("Gpkg", ".gpkg", 3, true, "Gpkg"),
     /**
      * A mapsforge map file.
      */
-    MAP("map", ".map", 4, false),
+    MAP("Map", ".map", 4, false, "Map"),
     /**
      * A mapsurl definition file.
      */
-    MAPURL("mapurl", ".mapurl", 5, false),
+    MAPURL("Mapurl", ".mapurl", 5, false, "Mapurl"),
     /**
      * A Rasterlite2 Image in a spatialite 4.2.0 database. 
      * - avoids .db being read 2x
      * - real spatialite .atlas files can also be read
      */
-    RASTERLITE2("RasterLite2", ".atlas", 6, true);
+    RASTERLITE2("RasterLite2", ".atlas", 6, true, "RL2");
 
     private String name;
     // extention must be unique 
@@ -61,17 +61,19 @@ public enum SpatialDataType {
     private String extension;
     private int code;
     private boolean isSpatialiteBased;
+    private String shortName;
 
     /**
      * @param name a name for the db type. 
      * @param extension the extension used by the db type.
      * @param code a code for the db type.
      */
-    private SpatialDataType( String name, String extension, int code, boolean isSpatialiteBased ) {
+    private SpatialDataType( String name, String extension, int code, boolean isSpatialiteBased, String shortName ) {
         this.name = name;
         this.extension = extension;
         this.code = code;
         this.isSpatialiteBased = isSpatialiteBased;
+        this.shortName = shortName;
     }
 
     /**
@@ -145,5 +147,12 @@ public enum SpatialDataType {
      */
     public boolean isSpatialiteBased() {
         return isSpatialiteBased;
+    }
+
+    /*
+     * @return a short name for the db type.
+     */
+    public String getShortTypeName() {
+        return shortName;
     }
 }

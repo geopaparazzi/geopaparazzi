@@ -355,8 +355,17 @@ public class MapsDirManager {
         folderPath2TablesDataMap = new LinkedHashMap<String, List<String[]>>();
         List<String> parentPaths = new ArrayList<String>();
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
+            File parentFolder;
             File file = spatialTable.getDatabaseFile();
-            File parentFolder = file.getParentFile();
+            if (spatialTable.getMapType().equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+                /*
+                 * spatial raster dbs can have many raster tables
+                 * for now do this with an if. This should later be taken to interface.
+                 */
+                parentFolder = file;
+            }else{
+                parentFolder = file.getParentFile();
+            }
             String absolutePath = parentFolder.getAbsolutePath();
             if (!parentPaths.contains(absolutePath))
                 parentPaths.add(absolutePath);
@@ -379,8 +388,17 @@ public class MapsDirManager {
             folderPath2TablesDataMap.put(parentPath, new ArrayList<String[]>());
         }
         for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
+            File parentFolder;
             File file = spatialTable.getDatabaseFile();
-            File parentFolder = file.getParentFile();
+            if (spatialTable.getMapType().equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+                /*
+                 * spatial raster dbs can have many raster tables
+                 * for now do this with an if. This should later be taken to interface.
+                 */
+                parentFolder = file;
+            }else{
+                parentFolder = file.getParentFile();
+            }
             String absolutePath = parentFolder.getAbsolutePath();
             List<String[]> list = folderPath2TablesDataMap.get(absolutePath);
             String[] data = new String[]{//
@@ -396,13 +414,9 @@ public class MapsDirManager {
             List<String[]> value = entry.getValue();
             Comparator<String[]> sourceNameComparator = new Comparator<String[]>(){
                 public int compare( String[] p1, String[] p2 ) {
-                    String path1 = p1[0];
-                    String path2 = p2[0];
-                    File file1 = new File(path1);
-                    File file2 = new File(path2);
-                    String name1 = file1.getName();
-                    String name2 = file2.getName();
-                    return name1.compareTo(name2);
+                    String title1 = p1[2];
+                    String title2 = p2[2];
+                    return title1.compareTo(title2);
                 }
             };
             Collections.sort(value, sourceNameComparator);

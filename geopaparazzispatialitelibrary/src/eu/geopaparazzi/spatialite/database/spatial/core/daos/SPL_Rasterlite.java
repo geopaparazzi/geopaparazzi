@@ -38,10 +38,17 @@ public class SPL_Rasterlite {
      */
     public static String Rasterlite2Version_CPU = "";
 
+    /*
+     * @return true, if there is rasterlite support.
+     */
+    public static boolean hasRasterLiteSupport(){
+        return !SPL_Rasterlite.Rasterlite2Version_CPU.equals("");
+    }
+
     /**
      * Retrieve rasterlite2 image of a given bound and size.
      * <p/>
-     * <p>https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * <p>https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
      * @param db the database to use.
      * @param rasterTable the table to use.
@@ -51,7 +58,7 @@ public class SPL_Rasterlite {
      */
     public static byte[] getRasterTileInBounds(Database db, AbstractSpatialTable rasterTable, double[] tileBounds, int tileSize) {
 
-        byte[] bytes = SPL_Rasterlite.rl2_GetMapImageTile(db, rasterTable.getSrid(), rasterTable.getTableName(),
+        byte[] bytes = SPL_Rasterlite.rl2_GetMapImageFromRasterTile(db, rasterTable.getSrid(), rasterTable.getTableName(),
                 tileBounds, tileSize);
         if (bytes != null) {
             return bytes;
@@ -62,7 +69,7 @@ public class SPL_Rasterlite {
     /**
      * Retrieve rasterlite2 tile of a given bound [4326,wsg84] with the given size.
      * <p/>
-     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
      * @param sqlite_db    Database connection to use
      * @param destSrid     the destination srid (of the rasterlite2 image).
@@ -71,17 +78,17 @@ public class SPL_Rasterlite {
      * @param i_tile_size  default 256 [Tile.TILE_SIZE].
      * @return the image data as byte[] as jpeg
      */
-    public static byte[] rl2_GetMapImageTile(Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
+    public static byte[] rl2_GetMapImageFromRasterTile(Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
                                              int i_tile_size) {
-        return rl2_GetMapImage(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
+        return rl2_GetMapImageFromRaster(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
                 "default", "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
 
     /**
      * Retrieve rasterlite2 image of a given bound and size.
-     * - used by: SpatialiteUtilities.rl2_GetMapImageTile to retrieve tiles only
-     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * - used by: SpatialiteUtilities.rl2_GetMapImageFromRasterTile to retrieve tiles only
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
      * @param sqlite_db    Database connection to use
      * @param sourceSrid   the srid (of the n/s/e/w positions).
@@ -98,7 +105,7 @@ public class SPL_Rasterlite {
      * @param reaspect     1 = adapt image width,height if needed based on given bounds
      * @return the image data as byte[]
      */
-    public static byte[] rl2_GetMapImage(Database sqlite_db, String sourceSrid, String destSrid, String coverageName, int width,
+    public static byte[] rl2_GetMapImageFromRaster(Database sqlite_db, String sourceSrid, String destSrid, String coverageName, int width,
                                          int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality,
                                          int reaspect) {
         boolean doTransform = false;
@@ -138,10 +145,10 @@ public class SPL_Rasterlite {
         }
         mbrSb.append(")");
         // SELECT
-        // RL2_GetMapImage('berlin_postgrenzen.1890',BuildMBR(20800.0,22000.0,24000.0,19600.0),1200,1920,'default','image/png','#ffffff',0,0,1);
+        // RL2_GetMapImageFromRaster('1890.berlin_postgrenzen',BuildMBR(20800.0,22000.0,24000.0,19600.0),1200,1920,'default','image/png','#ffffff',0,0,1);
         String mbr = mbrSb.toString();
         StringBuilder qSb = new StringBuilder();
-        qSb.append("SELECT RL2_GetMapImage('");
+        qSb.append("SELECT RL2_GetMapImageFromRaster('");
         qSb.append(coverageName);
         qSb.append("',");
         qSb.append(mbr);
@@ -181,7 +188,7 @@ public class SPL_Rasterlite {
                   'I WindowState: WIN DEATH: Window{41ee0100 u0 eu.hydrologis.geopaparazzi/eu.hydrologis.geopaparazzi.GeoPaparazziActivity}'
                 */
                 int i_rc = sqlite_db.last_error();
-                GPLog.error("SPL_Rasterlite", "rl2_GetMapImage sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+                GPLog.error("SPL_Rasterlite", "rl2_GetMapImageFromRaster sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
             } finally {
                 if(stmt!=null)
                     try {

@@ -39,4 +39,8 @@ public abstract class MapTool implements DrawingTool {
         this.mapView = mapView;
     }
 
+    /*
+     * Called when something in the view changes (ex. zoom, pan).
+     */
+    public abstract void onViewChanged();
 }

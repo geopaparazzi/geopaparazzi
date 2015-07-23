@@ -3,27 +3,72 @@
     android:id="@+id/osm_frameLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/innerlayout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <!-- space for map view -->
     </RelativeLayout>
 
-    <!-- the tools slider -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:id="@+id/centerCrossVertical"
+            android:layout_width="3dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#FF0000" />
+
+        <FrameLayout
+            android:id="@+id/centerCrossHorizontal"
+            android:layout_width="50dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center_vertical"
+            android:background="#FF0000" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/coordtextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/dummyCoordsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/main_text_color"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/coordsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color_neutral"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <eu.geopaparazzi.library.features.EditingView
             android:id="@+id/editingview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-        </eu.geopaparazzi.library.features.EditingView>
+            android:layout_height="fill_parent" />
 
         <!-- the zoombar -->
 
@@ -32,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/zoomin"
@@ -40,8 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/mapview_sides_space"
-                android:background="@drawable/buttoncirclezoomin" >
-            </Button>
+                android:background="@drawable/buttoncirclezoomin" />
 
             <TextView
                 android:id="@+id/zoomlevel"
@@ -55,8 +99,7 @@
                 android:shadowRadius="0.01"
                 android:text="01"
                 android:textColor="@color/main_text_color_neutral"
-                android:textStyle="bold" >
-            </TextView>
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/zoomout"
@@ -67,8 +110,7 @@
                 android:layout_marginLeft="@dimen/mapview_sides_space"
                 android:layout_marginRight="@dimen/mapview_sides_space"
                 android:layout_marginTop="@dimen/mapview_sides_space"
-                android:background="@drawable/buttoncirclezoomout" >
-            </Button>
+                android:background="@drawable/buttoncirclezoomout" />
         </LinearLayout>
         <!-- the tools buttons -->
 
@@ -77,28 +119,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|bottom"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <ImageButton
                     android:id="@+id/addnotebytagbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/mapview_sides_space"
-                    android:background="@drawable/addnote" >
-                </ImageButton>
+                    android:background="@drawable/addnote" />
 
                 <ImageButton
                     android:id="@+id/listnotesbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/mapview_sides_space"
-                    android:background="@drawable/noteslist" >
-                </ImageButton>
+                    android:background="@drawable/noteslist" />
 
                 <ImageButton
                     android:id="@+id/togglemeasuremodebutton"
@@ -108,23 +148,21 @@
                     android:layout_marginLeft="@dimen/mapview_sides_space"
                     android:layout_marginRight="@dimen/mapview_sides_space"
                     android:layout_marginTop="@dimen/mapview_sides_space"
-                    android:background="@drawable/measuremode" >
-                </ImageButton>
+                    android:background="@drawable/measuremode" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <ImageButton
                     android:id="@+id/addbookmarkbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/mapview_sides_space"
-                    android:background="@drawable/addbookmark" >
-                </ImageButton>
+                    android:background="@drawable/addbookmark" />
 
                 <ImageButton
                     android:id="@+id/bookmarkslistbutton"
@@ -134,8 +172,7 @@
                     android:layout_marginLeft="@dimen/mapview_sides_space"
                     android:layout_marginRight="@dimen/mapview_sides_space"
                     android:layout_marginTop="@dimen/mapview_sides_space"
-                    android:background="@drawable/bookmarkslist" >
-                </ImageButton>
+                    android:background="@drawable/bookmarkslist" />
             </LinearLayout>
         </LinearLayout>
         <!-- the center on gps button -->
@@ -144,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/battery"
@@ -155,17 +192,15 @@
                 android:background="@drawable/battery"
                 android:text="-"
                 android:textColor="@color/main_text_color_neutral"
-                android:textStyle="bold" >
-            </Button>
+                android:textStyle="bold" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/center_on_gps_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/action_bar_button_drawable"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:padding="@dimen/mapview_sides_space"
-                android:src="@android:drawable/ic_menu_mylocation" >
-            </ImageButton>
+                android:background="@drawable/ic_center_gps_red" />
 
             <Button
                 android:id="@+id/toggleEditingButton"
@@ -173,14 +208,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_bottom_space"
-                android:background="@drawable/ic_toggle_editing_off" >
-            </Button>
+                android:background="@drawable/ic_toggle_editing_off" />
         </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <SlidingDrawer
             android:id="@+id/osmslide"
@@ -188,14 +222,13 @@
             android:layout_height="wrap_content"
             android:content="@+id/osmslidecontent"
             android:handle="@+id/osmslidehandle"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/osmslidehandle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/osm" >
-            </ImageView>
+                android:background="@drawable/osm" />
 
             <LinearLayout
                 android:id="@+id/osmslidecontent"
@@ -204,7 +237,7 @@
                 android:layout_gravity="center"
                 android:background="@color/main_background"
                 android:orientation="vertical"
-                android:padding="10dip" >
+                android:padding="10dip">
 
                 <GridView
                     android:id="@+id/osmcategoriesview"
@@ -221,8 +254,7 @@
                     android:layout_height="fill_parent"
                     android:layout_margin="5dip"
                     android:layout_weight="10"
-                    android:text="Sync OSM notes with server" >
-                </Button>
+                    android:text="Sync OSM notes with server" />
             </LinearLayout>
         </SlidingDrawer>
     </FrameLayout>
@@ -234,7 +266,7 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="@dimen/mapview_sides_space"
         android:layout_marginTop="@dimen/mapview_bottom_space"
-        android:background="@drawable/menu" >
+        android:background="@drawable/menu">
 
         <!-- android:alpha="0.5" -->
     </Button>
@@ -246,7 +278,7 @@
         android:layout_gravity="left|bottom"
         android:orientation="vertical"
         android:paddingBottom="@dimen/mapview_sides_space"
-        android:paddingLeft="@dimen/mapview_sides_space" >
-    </LinearLayout>
+        android:paddingLeft="@dimen/mapview_sides_space" />
+
 
 </FrameLayout>

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,10 +36,11 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.mapsforge.R;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * Expandable list for tile sources.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
@@ -49,10 +51,10 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
     private String mapsParentPath;
 
     /**
-     * @param activity activity to use.
+     * @param activity         activity to use.
      * @param folder2TablesMap the folder and table map.
      */
-    public SourcesExpandableListAdapter( Activity activity, LinkedHashMap<String, List<String[]>> folder2TablesMap ) {
+    public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<String[]>> folder2TablesMap) {
         this.activity = activity;
         try {
             File mapsDir = ResourcesManager.getInstance(activity).getMapsDir();
@@ -62,24 +64,24 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         }
         folderList = new ArrayList<String>();
         tablesList = new ArrayList<List<String[]>>();
-        for( Entry<String, List<String[]>> entry : folder2TablesMap.entrySet() ) {
+        for (Entry<String, List<String[]>> entry : folder2TablesMap.entrySet()) {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
 
     }
 
-    public Object getChild( int groupPosition, int childPosititon ) {
+    public Object getChild(int groupPosition, int childPosititon) {
         List<String[]> list = tablesList.get(groupPosition);
         String[] spatialTable = list.get(childPosititon);
         return spatialTable;
     }
 
-    public long getChildId( int groupPosition, int childPosition ) {
+    public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
-    public View getChildView( int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent ) {
+    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final String[] spatialTableData = (String[]) getChild(groupPosition, childPosition);
 
@@ -88,32 +90,23 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.sources_list_item, null);
         }
 
-        // convertView.setOnClickListener(new View.OnClickListener(){
-        // public void onClick( View v ) {
-        //
-        // MapsDirManager.getInstance().setSelectedSpatialTable(activity, spatialTableData);
-        // activity.finish();
-        // }
-        // });
-
         TextView tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
         tableNameView.setTypeface(null, Typeface.BOLD);
-        File dbFile = new File(spatialTableData[0]);
-        String name = FileUtilities.getNameWithoutExtention(dbFile);
-        tableNameView.setText(name);
+
+        tableNameView.setText(spatialTableData[2]);
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
-        tableTypeView.setText("[" + spatialTableData[1] + "] ["+spatialTableData[2]+"]");
+        tableTypeView.setText("[" + spatialTableData[1] + "]");
 
         return convertView;
     }
 
-    public int getChildrenCount( int groupPosition ) {
+    public int getChildrenCount(int groupPosition) {
         List<String[]> list = tablesList.get(groupPosition);
         return list.size();
     }
 
-    public Object getGroup( int groupPosition ) {
+    public Object getGroup(int groupPosition) {
         return folderList.get(groupPosition);
     }
 
@@ -121,11 +114,11 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         return folderList.size();
     }
 
-    public long getGroupId( int groupPosition ) {
+    public long getGroupId(int groupPosition) {
         return groupPosition;
     }
 
-    public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent ) {
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String folder = (String) getGroup(groupPosition);
         folder = folder.replaceFirst(mapsParentPath, ""); //$NON-NLS-1$
         if (convertView == null) {
@@ -139,11 +132,12 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
         return convertView;
     }
+
     public boolean hasStableIds() {
         return false;
     }
 
-    public boolean isChildSelectable( int groupPosition, int childPosition ) {
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 

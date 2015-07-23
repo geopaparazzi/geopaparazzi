@@ -177,6 +177,12 @@ public abstract class AbstractSpatialTable implements Serializable {
         return srid;
     }
 
+    /*
+     * Convert a longitude and latitude to the table's
+     * original SRID.
+     */
+    public abstract double[] longLat2Srid(double lon, double lat);
+
     /**
      * Returns the database file name with extension.
      *

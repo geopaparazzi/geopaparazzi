@@ -198,6 +198,7 @@ public interface Constants {
      * 
      */
     public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
+    public static final String OSM_FORM = "OSM_FORM";
     /**
      * 
      */

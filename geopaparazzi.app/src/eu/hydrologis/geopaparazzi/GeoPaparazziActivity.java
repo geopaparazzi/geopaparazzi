@@ -640,6 +640,7 @@ public class GeoPaparazziActivity extends Activity {
                                             GpsServiceUtilities.stopDatabaseLogging(appContext);
                                             logButton.setImageResource(R.drawable.dashboard_log_item);
                                             actionBar.checkLogging();
+                                            GpsServiceUtilities.triggerBroadcast(GeoPaparazziActivity.this);
                                         }
                                     });
                                 }
@@ -667,6 +668,7 @@ public class GeoPaparazziActivity extends Activity {
                                                         DefaultHelperClasses.GPSLOG_HELPER_CLASS);
                                                 actionBar.checkLogging();
                                                 DataManager.getInstance().setLogsVisible(true);
+                                                GpsServiceUtilities.triggerBroadcast(GeoPaparazziActivity.this);
                                             }
                                         });
                                     }

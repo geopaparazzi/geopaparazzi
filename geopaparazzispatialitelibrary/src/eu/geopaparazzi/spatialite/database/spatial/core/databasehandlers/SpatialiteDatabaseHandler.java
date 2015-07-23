@@ -34,7 +34,9 @@ import java.util.Map;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -708,7 +710,9 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                     String s_bounds = sa_string[5];
                     String s_last_verified = sa_string[6];
                     sa_string = s_bounds.split(",");
-                    if (sa_string.length == 4) {
+                    // must be > 0 for Wsg84 support
+                    int i_srid = Integer.parseInt(s_srid);
+                    if ((sa_string.length == 4) && (i_srid > 0)) {
                         try {
                             boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
                             boundsCoordinates[1] = Double.parseDouble(sa_string[1]);
@@ -717,14 +721,14 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                         } catch (NumberFormatException e) {
                             // ignore
                         }
-                        if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
+                        if (!s_srid.equals(LibraryConstants.SRID_WGS84_4326)) { // Transform into wsg84 if needed
                             SpatialiteUtilities.collectBoundsAndCenter(dbJava, s_srid, centerCoordinate, boundsCoordinates);
                         } else {
                             centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
                             centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                         }
                         checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                        if (layerType.equals("RasterLite2")) {
+                        if (layerType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                             // s_ROWID_PK == title [Berlin Straube Postgrenzen] - needed
                             // s_view_read_only == abstract [1890 - 1:17777] - needed
                             // s_geometry_type == pixel_type [RGB] - not needed

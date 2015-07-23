@@ -475,6 +475,11 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     }
 
     @Override
+    public double[] longLat2Srid(double lon, double lat) {
+        throw new RuntimeException("Not implemented yet");
+    }
+
+    @Override
     public boolean isEditable() {
         return view_read_only < 0;
     }

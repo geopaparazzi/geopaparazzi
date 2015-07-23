@@ -345,4 +345,9 @@ public class CutExtendTool extends MapTool {
         Feature feature = new Feature(startFeature.getTableName(),startFeature.getUniqueTableName(), startFeature.getId(),  geomBytes);
         return new Feature[]{feature, endFeature}; // new geom feature + feature to remove
     }
+
+    @Override
+    public void onViewChanged() {
+        // ignore
+    }
 }

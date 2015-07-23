@@ -73,6 +73,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
+import eu.hydrologis.geopaparazzi.osm.OsmFormActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
 import jsqlite.Exception;
@@ -87,7 +88,6 @@ import jsqlite.Exception;
  */
 public abstract class GeopaparazziOverlay extends Overlay {
 
-    private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
 
     /**
@@ -102,17 +102,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         return balloon;
     }
 
-    //    /**
-    //     * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
-    //     *
-    //     * @param balloon the drawable whose bounds should be set.
-    //     * @return the given drawable with set bounds.
-    //     */
-    //    public static Drawable boundCenterBottom(Drawable balloon) {
-    //        balloon.setBounds(balloon.getIntrinsicWidth() / -2, -balloon.getIntrinsicHeight(), balloon.getIntrinsicWidth() / 2, 0);
-    //        return balloon;
-    //    }
-
     /*
      * way stuff
      */
@@ -125,12 +114,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Point itemPosition;
     private final List<Integer> visibleItems = new ArrayList<Integer>();
     private final List<Integer> visibleItemsRedraw = new ArrayList<Integer>();
-
-    /*
-     * cross stuff
-     */
-    private Path crossPath;
-    private Paint crossPaint = new Paint();
 
     /*
      * gps stuff
@@ -147,12 +130,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsTrackPaintBlack;
     private Paint gpsOutline;
     private Paint gpsFill;
-
-    private Path gpsStatusPath;
-    private Paint gpsRedFill;
-    private Paint gpsOrangeFill;
-    private Paint gpsGreenFill;
-    private Paint gpsBlueFill;
 
     private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
     private static final int inset = 5;
@@ -177,28 +154,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
-        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
-        int crossColor = ColorUtilities.toColor(crossColorStr);
-        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
-        float crossWidth = 3f;
-        try {
-            crossWidth = (float) Double.parseDouble(crossWidthStr);
-        } catch (NumberFormatException e) {
-            // ignore and use default
-        }
-        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20"); //$NON-NLS-1$
-        try {
-            crossSize = (int) Double.parseDouble(crossSizeStr);
-        } catch (NumberFormatException e) {
-            // ignore and use default
-        }
         boolean isHighDensity = preferences.getBoolean(Constants.PREFS_KEY_RETINA, false);
-
-        crossPath = new Path();
-        crossPaint.setAntiAlias(true);
-        crossPaint.setColor(crossColor);
-        crossPaint.setStrokeWidth(crossWidth);
-        crossPaint.setStyle(Paint.Style.STROKE);
 
         // gps
         overlayGps = new GpsData();
@@ -243,22 +199,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
             gpsTrackPaintYellow.setStrokeWidth(8);
             gpsTrackPaintBlack.setStrokeWidth(12);
         }
-
-        Resources resources = context.getResources();
-
-        gpsStatusPath = new Path();
-        gpsRedFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsRedFill.setStyle(Paint.Style.FILL);
-        gpsRedFill.setColor(resources.getColor(R.color.gpsred_fill));
-        gpsOrangeFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsOrangeFill.setStyle(Paint.Style.FILL);
-        gpsOrangeFill.setColor(resources.getColor(R.color.gpsorange_fill));
-        gpsGreenFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsGreenFill.setStyle(Paint.Style.FILL);
-        gpsGreenFill.setColor(resources.getColor(R.color.gpsgreen_fill));
-        gpsBlueFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsBlueFill.setStyle(Paint.Style.FILL);
-        gpsBlueFill.setColor(resources.getColor(R.color.gpsblue_fill));
 
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         if (isNotesTextVisible) {
@@ -658,42 +598,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
         }
-
-        /*
-         * show gps status
-         */
-        Paint gpsStatusFill;
-        if (gpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            gpsStatusFill = gpsRedFill;
-        } else {
-            if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                gpsStatusFill = gpsBlueFill;
-            } else {
-                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    gpsStatusFill = gpsGreenFill;
-                } else {
-                    gpsStatusFill = gpsOrangeFill;
-                }
-            }
-        }
-        gpsStatusPath.reset();
-        gpsStatusPath.moveTo(0, canvasHeight);
-        gpsStatusPath.lineTo(0, canvasHeight - inset);
-        gpsStatusPath.lineTo(canvasWidth, canvasHeight - inset);
-        gpsStatusPath.lineTo(canvasWidth, canvasHeight);
-        gpsStatusPath.close();
-        canvas.drawPath(gpsStatusPath, gpsStatusFill);
-
-        /*
-         * draw cross on top
-         */
-        Point center = new Point(canvasWidth / 2, canvasHeight / 2);
-        crossPath.reset();
-        crossPath.moveTo(center.x, center.y - crossSize);
-        crossPath.lineTo(center.x, center.y + crossSize);
-        crossPath.moveTo(center.x - crossSize, center.y);
-        crossPath.lineTo(center.x + crossSize, center.y);
-        canvas.drawPath(crossPath, crossPaint);
 
     }
 
@@ -1150,18 +1054,27 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
                             String description = note.getDescription();
-                            String form = note.getForm();
-                            if (form != null && form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
-                                String name = note.getName();
-                                double altim = note.getAltim();
-                                Intent formIntent = new Intent(context, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                                mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                            String name = note.getName();
+                            if (!description.equals(LibraryConstants.OSM)) {
+                                String form = note.getForm();
+                                if (form != null && form.length() > 0) {
+                                    double altim = note.getAltim();
+                                    Intent formIntent = new Intent(context, FormActivity.class);
+                                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
+                                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
+                                    formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
+                                    formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
+                                    formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                                    mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                                    doInfo = false;
+                                }
+                            } else {
+                                Intent osmCategoryIntent = new Intent(context, OsmFormActivity.class);
+                                osmCategoryIntent.putExtra(Constants.OSM_FORM, "[" + note.getForm() + "]");
+                                osmCategoryIntent.putExtra(Constants.OSM_TAG_KEY, name);
+                                osmCategoryIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                                mapActivity.startActivity(osmCategoryIntent);
                                 doInfo = false;
                             }
                         }

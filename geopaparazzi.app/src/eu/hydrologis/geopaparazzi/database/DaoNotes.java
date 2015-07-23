@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
@@ -208,6 +209,30 @@ public class DaoNotes {
             sqliteDatabase.endTransaction();
         }
     }
+
+    /**
+     * Delete all OSM type notes.
+     *
+     * @throws IOException if something goes wrong.
+     */
+    public static void deleteOsmNotes() throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        sqliteDatabase.beginTransaction();
+        try {
+            // delete note
+            String query = "delete from " + TABLE_NOTES + " where " + NotesTableFields.COLUMN_DESCRIPTION.getFieldName() + " = " + LibraryConstants.OSM;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.error("DAONOTES", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
 
     /**
      * Update the form of a note.

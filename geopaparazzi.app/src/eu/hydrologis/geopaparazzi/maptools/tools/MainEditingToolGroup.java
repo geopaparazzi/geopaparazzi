@@ -33,6 +33,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import org.mapsforge.android.maps.MapView;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,8 +71,9 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     private ImageButton cutButton;
     private ImageButton extendButton;
     private ImageButton commitButton;
-    private ImageButton undoButton;
+    private ImageButton logInfoButton;
 
+    private ImageButton undoButton;
     private Feature cutExtendProcessedFeature;
     private Feature cutExtendFeatureToRemove;
 
@@ -142,6 +144,14 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
         parent.addView(selectAllButton);
+
+        logInfoButton = new ImageButton(context);
+        logInfoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        logInfoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_gpsloginfo_off));
+        logInfoButton.setPadding(0, padding, 0, padding);
+        logInfoButton.setOnClickListener(this);
+        logInfoButton.setOnTouchListener(this);
+        parent.addView(logInfoButton);
 
         if (editLayer != null) {
             undoButton = new ImageButton(context);
@@ -285,7 +295,22 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 undoButton.setVisibility(View.GONE);
                 EditManager.INSTANCE.invalidateEditingView();
             }
+        } else if (v == logInfoButton) {
+            Tool currentTool = EditManager.INSTANCE.getActiveTool();
+            if (currentTool != null && currentTool instanceof GpsLogInfoTool) {
+                // if the same tool is re-selected, it is disabled
+                EditManager.INSTANCE.setActiveTool(null);
+            } else {
+                Tool activeTool = null;
+                try {
+                    activeTool = new GpsLogInfoTool(mapView);
+                    EditManager.INSTANCE.setActiveTool(activeTool);
+                } catch (IOException e) {
+                    GPLog.error(this, "Activating gpslog tool", e);
+                }
+            }
         }
+
         handleToolIcons(v);
     }
 
@@ -308,6 +333,13 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                         .setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all_active));
             } else {
                 selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+            }
+        if (logInfoButton != null)
+            if (currentTool != null && activeToolButton == logInfoButton) {
+                logInfoButton
+                        .setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_gpsloginfo_on));
+            } else {
+                logInfoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_gpsloginfo_off));
             }
         if (cutButton != null)
             if (currentTool != null && activeToolButton == cutButton) {
