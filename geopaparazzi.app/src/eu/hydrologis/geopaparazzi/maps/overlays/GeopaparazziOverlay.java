@@ -368,55 +368,64 @@ public abstract class GeopaparazziOverlay extends Overlay {
      * @return the way.
      */
     protected abstract OverlayWay createWay(int index);
-
+    
+     /**
+     * drawOverlayBitmap  (Application specfic)
+     * - Items (Images,Notes,Bookmarks)
+     * - Geometries
+     * - Gps and Gpx-Tracks
+     * - Gps-Logging while active
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
     @Override
     protected void drawOverlayBitmap(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
-
-        /*
-         * first spatialite layers, if any
-         */
+        // ------------------------------------------
+        // first spatialite layers, if any
+        // ------------------------------------------
         drawFromSpatialite(canvas, drawPosition, projection, drawZoomLevel);
-
-        /*
-         * WAYS
-         */
-        int numberOfWays = waySize();
-        for (int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex) {
-            if (stopDrawing()) {
-                // stop working
-                return;
-            }
-
-            // get the current way
-            OverlayWay overlayWay = createWay(wayIndex);
-            if (overlayWay == null) {
-                continue;
-            }
-
-            // make sure that the current way has way nodes
-            if (overlayWay.wayNodes == null || overlayWay.wayNodes.length == 0) {
-                continue;
-            }
-
-            // make sure that the cached way node positions are valid
-            if (drawZoomLevel != overlayWay.cachedZoomLevel) {
-                for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
-                    for (int j = 0; j < overlayWay.cachedWayPositions[i].length; ++j) {
-                        overlayWay.cachedWayPositions[i][j] = projection.toPoint(overlayWay.wayNodes[i][j],
-                                overlayWay.cachedWayPositions[i][j], drawZoomLevel);
-                    }
-                }
-                overlayWay.cachedZoomLevel = drawZoomLevel;
-            }
-
-            drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
-        }
-
-        /*
-         * ITEMS
-         */
-
-        // erase the list of visible items
+        // ------------------------------------------
+        // WAYS (gps+gpx Log-Tracks)
+        // ------------------------------------------
+        drawWays(canvas,drawPosition,projection,drawZoomLevel); 
+        // ------------------------------------------
+        // ITEMS (Images,Notes,Bookmarks)
+        // ------------------------------------------
+        drawItems(canvas,drawPosition,projection,drawZoomLevel); 
+        // ------------------------------------------
+        // gps logging track (active-Log ?)
+        // ------------------------------------------
+        drawGpsLog(canvas,drawPosition,projection,drawZoomLevel); 
+        // ------------------------------------------
+        // GPS position
+        // ------------------------------------------
+        drawGpsMarker(canvas,drawPosition,projection,drawZoomLevel); 
+    }
+    /**
+     * stopDrawing()  
+     * (called from drawing function to Interupt the drawing,  when needed )
+     *
+     * @return true/false
+     */
+    private boolean stopDrawing() {
+        return isInterrupted() || sizeHasChanged() || needRedraw();
+    }
+    /**
+     * Draws Items  (Images,Notes,Bookmarks)
+     * (called fromdrawOverlayBitmap )
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
+    private void drawItems(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
+     // erase the list of visible items
         this.visibleItemsRedraw.clear();
 
         int canvasHeight = canvas.getHeight();
@@ -486,7 +495,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
                 // add the current item index to the list of visible items
                 this.visibleItemsRedraw.add(itemIndex);
-
                 if (isNotesTextVisible && overlayItem instanceof NoteOverlayItem) {
                     String title = overlayItem.getTitle();
                     float delta = markerBounds.width() / 4f;
@@ -506,11 +514,62 @@ public abstract class GeopaparazziOverlay extends Overlay {
             visibleItems.addAll(visibleItemsRedraw);
             visibleItemsRedraw.addAll(visibleItemsTemp);
         }
-
-        /*
-         * gps logging track
-         */
-        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+    }
+    /**
+     * Draws Ways (gps+gpx Log-Tracks)
+     * (called from drawOverlayBitmap )
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
+    private void drawWays(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
+        int numberOfWays = waySize();
+        for (int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex) {
+            if (stopDrawing()) {
+                // stop working
+                return;
+            }
+            // get the current way
+            OverlayWay overlayWay = createWay(wayIndex);
+            if (overlayWay == null) {
+                continue;
+            }
+            // make sure that the current way has way nodes
+            if (overlayWay.wayNodes == null || overlayWay.wayNodes.length == 0) {
+                continue;
+            }
+            // make sure that the cached way node positions are valid
+            if (drawZoomLevel != overlayWay.cachedZoomLevel) {
+                for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
+                    for (int j = 0; j < overlayWay.cachedWayPositions[i].length; ++j) {
+                        overlayWay.cachedWayPositions[i][j] = projection.toPoint(overlayWay.wayNodes[i][j],
+                                overlayWay.cachedWayPositions[i][j], drawZoomLevel);
+                    }
+                }
+                overlayWay.cachedZoomLevel = drawZoomLevel;
+            }
+            drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
+        }
+    }
+    /**
+     * Draws GpsLog  (while Logging is on)
+     * (called from drawOverlayBitmap )
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
+    private void drawGpsLog(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
+     if (stopDrawing()) {
+        // stop working
+        return;
+     }
+     if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
@@ -529,24 +588,26 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                             gpslogOverlay.cachedZoomLevel = drawZoomLevel;
                         }
-
                         assembleGpsWayPath(drawPosition, gpslogOverlay);
                         drawGpsWayPathOnCanvas(canvas);
                     }
                 }
             }
         }
-
-        /*
-         * GPS position
-         */
-
-        if (stopDrawing()) {
-            // stop working
-            return;
-        }
-
-        // get the current circle
+    }
+    
+     /**
+     * Draws GpsMarker (when Gps is on and in range)
+     * (called from drawOverlayBitmap )
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
+    private void drawGpsMarker(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
+             // get the current circle
         if (gpsServiceStatus == GpsServiceStatus.GPS_FIX && overlayGps.center != null) {
             synchronized (overlayGps) {
                 // make sure that the current circle has a center position and a radius
@@ -558,12 +619,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         overlayGps.cachedZoomLevel = drawZoomLevel;
                         overlayGps.cachedRadius = projection.metersToPixels(overlayGps.radius, drawZoomLevel);
                     }
-
+                    int canvasHeight = canvas.getHeight();
+                    int canvasWidth = canvas.getWidth();
                     // calculate the relative circle position on the canvas
                     this.circlePosition.x = overlayGps.cachedCenterPosition.x - drawPosition.x;
                     this.circlePosition.y = overlayGps.cachedCenterPosition.y - drawPosition.y;
                     float circleRadius = overlayGps.cachedRadius;
-
                     // check if the bounding box of the circle intersects with the canvas
                     if ((this.circlePosition.x + circleRadius) >= 0 && (this.circlePosition.x - circleRadius) <= canvasWidth
                             && (this.circlePosition.y + circleRadius) >= 0
@@ -597,13 +658,21 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
         }
-
-    }
-
+    }    
+     /**
+     * Draws Geometries (that are active and in range)
+     * (called from drawOverlayBitmap )
+     *
+     * @param canvas
+     * @param drawPosition
+     * @param projection
+     * @param drawZoomLevel
+     * @return nothing
+     */
     private void drawFromSpatialite(Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel) {
-        /*
-         * draw from spatialite
-         */
+        // ------------------------------------------
+        // draw from spatialite
+        // ------------------------------------------
         double n = 90;
         double w = -180;
         double s = -90;
@@ -622,9 +691,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
             List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
-            /*
-             * draw geometries
-             */
+            // ------------------------------------------
+            // draw geometries
+            // ------------------------------------------
             for (SpatialVectorTable spatialTable : spatialVectorTables) {
                 if (stopDrawing()) {
                     // stop working
@@ -713,9 +782,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         geometryIterator.close();
                 }
             }
-            /*
-             * draw labels
-             */
+            // ------------------------------------------
+            // draw labels
+            // ------------------------------------------
             for (SpatialVectorTable spatialTable : spatialVectorTables) {
                 if (stopDrawing()) {
                     // stop working
@@ -814,10 +883,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private boolean stopDrawing() {
-        return isInterrupted() || sizeHasChanged() || needRedraw();
-    }
-
+     /**
+     * drawGeometry (draws a specific Geometry)
+     * (called from drawFromSpatialite )
+     * Note: for a GeometryCollection
+     * - this will be called for each Geometry inside the Collection
+     * @param geometry  [from vividsolutions]
+     * @param canvas
+     * @param shape_writer [from vividsolutions]
+     * @param fill (colour for Points and Polygons)
+     * @param stroke (colour for Points and Linestring)
+     * @return nothing
+     */
     private static void drawGeometry(Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke) {
         String s_geometry_type = geom.getGeometryType();
         int i_geometry_type = GeometryType.forValue(s_geometry_type);
@@ -869,7 +946,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 break;
         }
     }
-
+     /**
+     * drawLabel (draws a label for a specific Geometry, when activated)
+     * (called from drawFromSpatialite )
+     * Note: for a GeometryCollection
+     * - this will be called for each Geometry inside the Collection
+     * @param pointTransformer  [from vividsolutions]
+     * @param geometry  [from vividsolutions]
+     * @param label  [from AbstractSpatialTable]
+     * @param canvas
+     * @param dbTextPaint (colour Text/foreground)
+     * @param dbTextHaloPaint (colour for Background)
+     * @param linesWriter [from vividsolutions]
+     * @return nothing
+     */
     private static void drawLabel(PointTransformation pointTransformer, Geometry geom, String label, Canvas canvas,
                                   Paint dbTextPaint, Paint dbTextHaloPaint, float delta, ShapeWriter linesWriter) {
 
