@@ -124,6 +124,7 @@ public class CustomTileDownloader extends TileDownloader {
     private String tileRowType = "tms"; // mbtiles specific
     private int i_force_unique = 0;
     private MbtilesDatabaseHandler mbtilesDatabase = null;
+    private int mbtiles_status = 0;
     private HashMap<String, String> mapurlMetadata = null; // list for future editing
     private HashMap<String, String> mbtilesMetadataMap = null; // list for mbtiles support
     private HashMap<String, String> mbtilesRequestUrl = null; // list for mbtiles request support
@@ -502,11 +503,9 @@ public class CustomTileDownloader extends TileDownloader {
                 mbtilesMetadataMap.put(MINZOOM_STR, Integer.toString(this.minZoom));
                 mbtilesMetadataMap.put(MAXZOOM_STR, Integer.toString(this.maxZoom));
             }
-            if (mbtilesFile.exists()) { // this will open an existing mbtiles_db
-                mbtilesDatabase = new MbtilesDatabaseHandler(mbtilesFile.getAbsolutePath(), null);
-            } else { // this will create the mbtiles_db and set default values
-                mbtilesDatabase = new MbtilesDatabaseHandler(mbtilesFile.getAbsolutePath(), mbtilesMetadataMap);
-            }
+            // this will open an existing mbtiles_db OR
+            // this will create the mbtiles_db and set default values
+            getMBTilesDatabase();
             if (mbtilesRequestUrl.size() > 0) {
                 mbtilesDatabase.runRetrieveUrl(mbtilesRequestUrl, mbtilesMetadataMap);
             }
@@ -718,9 +717,31 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     /**
+     * Open mbtilesDatabase
+     * common open logic for both Constructor and executeJob
+     * - resolving Issues 289 and 290
+     * <p/>
+     * <p>Database connection is lost, when leaving MapView
+     * <p>executeJob will call this, that will open the database if needed
+     * <p>this is also called in Constructor
+     * <p>for mapurl with no mbtiles support: mbtilesFile will be NULL
+     *
      * @return the mbtiles database handler.
      */
-    public MbtilesDatabaseHandler getMBTilesDatabase() {
+    public MbtilesDatabaseHandler getMBTilesDatabase() throws IOException {
+        if (mbtilesDatabase == null)
+        {
+         if (mbtilesFile != null)
+         { // 1=created ; 2=existed
+          if (mbtilesFile.exists()) { // this will open an existing mbtiles_db
+                mbtilesDatabase = new MbtilesDatabaseHandler(mbtilesFile.getAbsolutePath(), null);
+                mbtiles_status=2;
+            } else { // this will create the mbtiles_db and set default values
+                mbtilesDatabase = new MbtilesDatabaseHandler(mbtilesFile.getAbsolutePath(), mbtilesMetadataMap);
+                mbtiles_status=1;
+            }
+           }
+         }
         return mbtilesDatabase;
     }
 
@@ -766,11 +787,12 @@ public class CustomTileDownloader extends TileDownloader {
             int zoom = tile.zoomLevel;
             int tileX = (int) tile.tileX;
             int tileYOsm = (int) tile.tileY;
-            if (mbtilesDatabase != null) { // try to retrieve this tile from the active mbtiles.db
+            // Database will be opened when needed
+            if (getMBTilesDatabase() != null) { 
+                // try to retrieve this tile from the active mbtiles.db
                 if (mbtilesDatabase.getBitmapTile(tileX, tileYOsm, zoom, tileSize, bitmap)) {
                     // tile was found and the bitmap filled, return
-                    // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
-                    // +"] mbtiles_db["+mbtiles_db.getFileName()+"] tilePath["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
+                    // GPLog.androidLog(-1,"-I-> CustomTileDownloader.executeJob[1a -> returning existing mbtiles]: mbtiles_status["+ mbtiles_status+"] connected["+isConnectedToInternet+"] name["+getName()+"] mbtiles_db["+mbtilesDatabase.getFileName()+"] tilePath["+zoom+"/"+tileX+"/"+tileYOsm+"] ");
                     return true;
                 }
             }
@@ -786,7 +808,6 @@ public class CustomTileDownloader extends TileDownloader {
             }
             sb.append(s_host_name);
             sb.append(tilePath);
-            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()+"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
             if (isFile) {
                 if (GPLog.LOG_ABSURD)
                     GPLog.androidLog(-1, "CustomTileDownloader.executeJob: request[" + sb.toString() + "] ");
@@ -797,6 +818,7 @@ public class CustomTileDownloader extends TileDownloader {
             if (context != null) {
                 isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
             }
+            // GPLog.androidLog(-1,"-I-> CustomTileDownloader.executeJob[2 -> requesting Tile]: mbtiles_status["+ mbtiles_status+"]  connected["+isConnectedToInternet+"] isFile["+isFile+"] name["+getName()+"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
             if (isConnectedToInternet || isFile) {
                 try {
                     String urlString = sb.toString();
