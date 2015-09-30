@@ -134,11 +134,18 @@
                     android:background="@drawable/addnote" />
 
                 <ImageButton
-                    android:id="@+id/listnotesbutton"
+                    android:id="@+id/addbookmarkbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/mapview_sides_space"
-                    android:background="@drawable/noteslist" />
+                    android:background="@drawable/addbookmark" />
+
+                <ImageButton
+                    android:id="@+id/toggleloginfobutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mapview_sides_space"
+                    android:background="@drawable/ic_loginfo_off"/>
 
                 <ImageButton
                     android:id="@+id/togglemeasuremodebutton"
@@ -149,30 +156,7 @@
                     android:layout_marginRight="@dimen/mapview_sides_space"
                     android:layout_marginTop="@dimen/mapview_sides_space"
                     android:background="@drawable/measuremode" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|bottom"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/addbookmarkbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/mapview_sides_space"
-                    android:background="@drawable/addbookmark" />
-
-                <ImageButton
-                    android:id="@+id/bookmarkslistbutton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/mapview_bottom_space"
-                    android:layout_marginLeft="@dimen/mapview_sides_space"
-                    android:layout_marginRight="@dimen/mapview_sides_space"
-                    android:layout_marginTop="@dimen/mapview_sides_space"
-                    android:background="@drawable/bookmarkslist" />
             </LinearLayout>
         </LinearLayout>
         <!-- the center on gps button -->
