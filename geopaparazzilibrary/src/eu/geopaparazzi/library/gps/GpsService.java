@@ -445,7 +445,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         }
                     }
 
-                    if (currentPointsNum < 4) {
+                    if (currentPointsNum < 4 && !continueLastLog) {
                         log("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(gpsLogId);
                     } else {
