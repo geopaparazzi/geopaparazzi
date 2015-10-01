@@ -168,7 +168,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
             continueLineFeatureButton = new ImageButton(context);
             continueLineFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            continueLineFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_line));
+            continueLineFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_continue_line));
             continueLineFeatureButton.setPadding(0, padding, 0, padding);
             continueLineFeatureButton.setOnClickListener(this);
             continueLineFeatureButton.setOnTouchListener(this);
