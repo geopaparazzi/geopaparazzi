@@ -66,7 +66,7 @@ import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private final MapView mapView;
 
@@ -109,7 +109,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
      * @param mapView the map view.
      * @param selectedFeatures the set of selected features.
      */
-    public OnSelectionToolGroup( MapView mapView, List<Feature> selectedFeatures ) {
+    public PolygonOnSelectionToolGroup(MapView mapView, List<Feature> selectedFeatures) {
         this.mapView = mapView;
         this.selectedFeatures.addAll(selectedFeatures);
 

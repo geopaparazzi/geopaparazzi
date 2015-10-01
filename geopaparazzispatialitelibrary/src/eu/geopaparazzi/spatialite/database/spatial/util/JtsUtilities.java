@@ -58,9 +58,6 @@ public class JtsUtilities {
      * @return the created line.
      */
     public static LineString createLineString(List<Coordinate> coordinatesList) {
-        coordinatesList = new ArrayList<Coordinate>(coordinatesList);
-        Coordinate firstCoord = coordinatesList.get(0);
-        coordinatesList.add(firstCoord);
         LineString lineString = gf.createLineString(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         return lineString;
     }

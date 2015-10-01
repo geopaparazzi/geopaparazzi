@@ -50,7 +50,8 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Spatial
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
-import eu.hydrologis.geopaparazzi.maptools.tools.OnSelectionToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.LineOnSelectionToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.PolygonOnSelectionToolGroup;
 import jsqlite.Database;
 import jsqlite.Exception;
 
@@ -190,8 +191,11 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
             context.startService(intent);
 
             ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-            if (activeToolGroup instanceof OnSelectionToolGroup) {
-                OnSelectionToolGroup toolGroup = (OnSelectionToolGroup) activeToolGroup;
+            if (activeToolGroup instanceof PolygonOnSelectionToolGroup) {
+                PolygonOnSelectionToolGroup toolGroup = (PolygonOnSelectionToolGroup) activeToolGroup;
+                toolGroup.setSelectedFeatures(Arrays.asList(selectedFeature));
+            } else if (activeToolGroup instanceof LineOnSelectionToolGroup) {
+                LineOnSelectionToolGroup toolGroup = (LineOnSelectionToolGroup) activeToolGroup;
                 toolGroup.setSelectedFeatures(Arrays.asList(selectedFeature));
             }
 

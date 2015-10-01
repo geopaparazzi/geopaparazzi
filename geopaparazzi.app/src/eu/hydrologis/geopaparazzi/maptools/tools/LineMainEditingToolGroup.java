@@ -18,7 +18,6 @@
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
@@ -29,30 +28,19 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 import org.mapsforge.android.maps.MapView;
 
-import java.util.Arrays;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
-import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
 /**
  * The main line layer editing tool group, which just shows the tool palette.
@@ -99,7 +87,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_polygon));
+            createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_line));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -192,7 +180,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == createFeatureButton) {
-            ToolGroup createFeatureToolGroup = new PolygonCreateFeatureToolGroup(mapView);
+            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == undoButton) {
 //            if (cutExtendProcessedFeature != null) {
