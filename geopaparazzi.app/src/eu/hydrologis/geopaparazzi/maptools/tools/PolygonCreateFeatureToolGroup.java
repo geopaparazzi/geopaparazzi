@@ -80,7 +80,7 @@ import static java.lang.Math.round;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
+public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
 
     private final MapView mapView;
 
@@ -124,7 +124,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
      *
      * @param mapView the map view.
      */
-    public CreateFeatureToolGroup(MapView mapView) {
+    public PolygonCreateFeatureToolGroup(MapView mapView) {
         this.mapView = mapView;
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
@@ -299,7 +299,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             }
         } else if (v == undoButton) {
             if (coordinatesList.size() == 0) {
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 return;
             } else if (coordinatesList.size() > 0) {

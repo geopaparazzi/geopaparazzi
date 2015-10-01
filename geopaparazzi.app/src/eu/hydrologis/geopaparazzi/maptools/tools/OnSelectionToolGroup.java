@@ -242,7 +242,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 context.startActivity(intent);
 
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
 
             }
@@ -261,7 +261,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                  * if in selection mode, clear the selection
                  */
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 commitButton.setVisibility(View.GONE);
             }
@@ -281,7 +281,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                     context.startService(intent);
 
                     // reset drawview
-                    EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                    EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                     EditManager.INSTANCE.setActiveTool(null);
 
                 } catch (jsqlite.Exception e) {

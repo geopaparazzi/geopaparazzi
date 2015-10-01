@@ -33,7 +33,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import org.mapsforge.android.maps.MapView;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,11 +55,11 @@ import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
 /**
- * The main editing tool, which just shows the tool palette.
+ * The main polygon layer editing tool group, which just shows the tool palette.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private ImageButton selectAllButton;
     private MapView mapView;
@@ -81,7 +80,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
      *
      * @param mapView the map view.
      */
-    public MainEditingToolGroup(MapView mapView) {
+    public PolygonMainEditingToolGroup(MapView mapView) {
         this.mapView = mapView;
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
@@ -213,24 +212,24 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == createFeatureButton) {
-            ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
+            ToolGroup createFeatureToolGroup = new PolygonCreateFeatureToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == cutButton) {
             Tool currentTool = EditManager.INSTANCE.getActiveTool();
-            if (currentTool != null && currentTool instanceof CutExtendTool) {
+            if (currentTool != null && currentTool instanceof PolygonCutExtendTool) {
                 // if the same tool is re-selected, it is disabled
                 EditManager.INSTANCE.setActiveTool(null);
             } else {
-                Tool activeTool = new CutExtendTool(mapView, true);
+                Tool activeTool = new PolygonCutExtendTool(mapView, true);
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == extendButton) {
             Tool currentTool = EditManager.INSTANCE.getActiveTool();
-            if (currentTool != null && currentTool instanceof CutExtendTool) {
+            if (currentTool != null && currentTool instanceof PolygonCutExtendTool) {
                 // if the same tool is re-selected, it is disabled
                 EditManager.INSTANCE.setActiveTool(null);
             } else {
-                Tool activeTool = new CutExtendTool(mapView, false);
+                Tool activeTool = new PolygonCutExtendTool(mapView, false);
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == commitButton) {
@@ -343,8 +342,8 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onToolFinished(Tool tool) {
-        if (tool instanceof CutExtendTool) {
-            CutExtendTool cutExtendTool = (CutExtendTool) tool;
+        if (tool instanceof PolygonCutExtendTool) {
+            PolygonCutExtendTool cutExtendTool = (PolygonCutExtendTool) tool;
             Feature[] processedFeatures = cutExtendTool.getProcessedFeatures();
             cutExtendProcessedFeature = processedFeatures[0];
             cutExtendFeatureToRemove = processedFeatures[1];
