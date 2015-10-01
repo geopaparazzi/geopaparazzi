@@ -44,4 +44,18 @@ public class SpatialVectorTableLayer implements ILayer {
         return spatialVectorTable;
     }
 
+    @Override
+    public boolean isPolygon() {
+        return spatialVectorTable.isPolygon();
+    }
+
+    @Override
+    public boolean isLine() {
+        return spatialVectorTable.isLine();
+    }
+
+    @Override
+    public boolean isPoint() {
+        return spatialVectorTable.isPoint();
+    }
 }

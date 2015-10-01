@@ -237,16 +237,23 @@ public class SelectionTool extends MapTool {
                             int geomsCount = 0;
                             for (Feature feature : features) {
                                 Geometry geometry = FeatureUtilities.getGeometry(feature);
-                                if(geometry!=null)
+                                if (geometry != null)
                                     geomsCount = geomsCount + geometry.getNumGeometries();
                             }
-                            Utilities.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                            if (spatialVectorTable.isPolygon()) {
+                                Utilities.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                                PolygonOnSelectionToolGroup selectionGroup = new PolygonOnSelectionToolGroup(mapView, features);
+                                EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                            } else if (spatialVectorTable.isLine()) {
+                                Utilities.toast(context, String.format(context.getString(R.string.selected_line_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                                LineOnSelectionToolGroup selectionGroup = new LineOnSelectionToolGroup(mapView, features);
+                                EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                            }
                         } catch (java.lang.Exception e) {
                             GPLog.error(this, null, e); //$NON-NLS-1$
                         }
-                        OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
-                        EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
-                    }else{
+
+                    } else {
                         rect.setEmpty();
                         EditManager.INSTANCE.invalidateEditingView();
                     }

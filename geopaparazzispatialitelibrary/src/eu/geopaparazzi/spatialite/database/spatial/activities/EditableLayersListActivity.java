@@ -103,6 +103,17 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                             editableSpatialVectorTables.add(spatialVectorTable);
                             editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
                             break;
+                        case LINESTRING_XY:
+                        case LINESTRING_XYM:
+                        case LINESTRING_XYZ:
+                        case LINESTRING_XYZM:
+                        case MULTILINESTRING_XY:
+                        case MULTILINESTRING_XYM:
+                        case MULTILINESTRING_XYZ:
+                        case MULTILINESTRING_XYZM:
+                            editableSpatialVectorTables.add(spatialVectorTable);
+                            editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                            break;
                         default:
                             break;
                     }

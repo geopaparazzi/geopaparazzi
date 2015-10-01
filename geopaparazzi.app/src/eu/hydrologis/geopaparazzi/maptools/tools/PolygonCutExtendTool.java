@@ -67,7 +67,7 @@ import static java.lang.Math.round;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CutExtendTool extends MapTool {
+public class PolygonCutExtendTool extends MapTool {
 
     private final Paint drawingPaintStroke = new Paint();
     private final Paint drawingPaintFill = new Paint();
@@ -111,7 +111,7 @@ public class CutExtendTool extends MapTool {
      * @param mapView the mapview reference.
      * @param doCut if <code>true</code>, do cut as opposed to extend.
      */
-    public CutExtendTool( MapView mapView, boolean doCut ) {
+    public PolygonCutExtendTool(MapView mapView, boolean doCut) {
         super(mapView);
         this.doCut = doCut;
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
@@ -323,7 +323,7 @@ public class CutExtendTool extends MapTool {
 
                     ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
                     if (activeToolGroup != null) {
-                        activeToolGroup.onToolFinished(CutExtendTool.this);
+                        activeToolGroup.onToolFinished(PolygonCutExtendTool.this);
                     }
                 }
             }

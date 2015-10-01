@@ -40,7 +40,7 @@ import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.LineString;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
@@ -49,11 +49,13 @@ import org.mapsforge.core.model.GeoPoint;
 
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
@@ -61,17 +63,19 @@ import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
+import jsqlite.*;
 
 import static java.lang.Math.round;
 
@@ -80,9 +84,10 @@ import static java.lang.Math.round;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
+public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
 
     private final MapView mapView;
+    private Feature featureToContinue;
 
     private int buttonSelectionColor;
 
@@ -92,7 +97,6 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private final Paint createdGeometryPaintHaloStroke = new Paint();
     private final Paint createdGeometryPaintStroke = new Paint();
-    private final Paint createdGeometryPaintFill = new Paint();
 
     /**
      * Stores the top-left map position at which the redraw should happen.
@@ -109,9 +113,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private ImageButton undoButton;
 
-    private Geometry polygonGeometry;
-
-    private boolean firstInvalid = true;
+    private Geometry lineGeometry;
 
     private boolean gpsStreamActive = false;
 
@@ -124,18 +126,27 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
      *
      * @param mapView the map view.
      */
-    public CreateFeatureToolGroup(MapView mapView) {
+    public LineCreateFeatureToolGroup(MapView mapView, Feature featureToContinue) {
         this.mapView = mapView;
+        this.featureToContinue = featureToContinue;
+
+        if (this.featureToContinue != null) {
+            // go get the last inserted feature by rowid
+            try {
+                lineGeometry = FeatureUtilities.WKBREADER.read(this.featureToContinue.getDefaultGeometry());
+                List<Coordinate> oldCoords = Arrays.asList(lineGeometry.getCoordinates());
+                coordinatesList.addAll(oldCoords);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                this.featureToContinue = null;
+            }
+        }
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
         int selectionStroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
-        createdGeometryPaintFill.setAntiAlias(true);
-        createdGeometryPaintFill.setColor(selectionStroke);
-        createdGeometryPaintFill.setAlpha(180);
-        createdGeometryPaintFill.setStyle(Paint.Style.FILL);
 
         createdGeometryPaintHaloStroke.setAntiAlias(true);
         createdGeometryPaintHaloStroke.setStrokeWidth(7f);
@@ -251,32 +262,24 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             addVertexByTapActive = !addVertexByTapActive;
             gpsStreamActive = false;
         } else if (v == commitButton) {
-            if (coordinatesList.size() > 2) {
+            if (coordinatesList.size() > 1) {
                 List<Geometry> geomsList = new ArrayList<Geometry>();
-                Polygon polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
-                if (polygonGeometry.isValid()) {
-                    geomsList.add(polygonGeometry);
-                } else {
-                    try {
-                        Geometry polygonSplit = FeatureUtilities.invalidPolygonSplit(polygonGeometry);
-                        for (int i = 0; i < polygonSplit.getNumGeometries(); i++) {
-                            geomsList.add(polygonSplit.getGeometryN(i));
-                        }
-                    } catch (Exception e) {
-                        GPLog.error(this, null, e);
-                        // just clean it up through buffer
-                        Geometry buffer = polygonGeometry.buffer(0);
-                        geomsList.add(buffer);
-                    }
-                }
+                LineString lineGeometry = JtsUtilities.createLineString(coordinatesList);
+                geomsList.add(lineGeometry);
 
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
                 if (editLayer instanceof SpatialVectorTableLayer) {
                     SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
                     try {
-                        for (Geometry geometry : geomsList) {
-                            DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
-                                    spatialVectorTableLayer.getSpatialVectorTable());
+                        if (this.featureToContinue == null) {
+                            for (Geometry geometry : geomsList) {
+                                DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
+                                        spatialVectorTableLayer.getSpatialVectorTable());
+                            }
+                        } else {
+                            DaoSpatialite.updateFeatureGeometry(
+                                    featureToContinue.getId(),
+                                    lineGeometry, LibraryConstants.SRID_WGS84_4326, spatialVectorTableLayer.getSpatialVectorTable());
                         }
                         Utilities.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                         coordinatesList.clear();
@@ -290,7 +293,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                         if (e.getMessage().contains("UNIQUE constraint failed")) {
                             Utilities.messageDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);
                             coordinatesList.clear();
-                            this.polygonGeometry = null;
+                            this.lineGeometry = null;
                         } else {
                             GPLog.error(this, null, e);
                         }
@@ -299,7 +302,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             }
         } else if (v == undoButton) {
             if (coordinatesList.size() == 0) {
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 return;
             } else if (coordinatesList.size() > 0) {
@@ -309,7 +312,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 reCreateGeometry(v.getContext());
             }
         }
-        if (coordinatesList.size() > 2) {
+        if (coordinatesList.size() > 1) {
             commitButton.setVisibility(View.VISIBLE);
         } else {
             commitButton.setVisibility(View.GONE);
@@ -329,22 +332,9 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
     }
 
     private void reCreateGeometry(Context context) {
-        polygonGeometry = null;
-        if (coordinatesList.size() > 2) {
-            polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
-            if (!polygonGeometry.isValid() && firstInvalid) {
-                ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-                if (editLayer instanceof SpatialVectorTableLayer) {
-                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
-                    SpatialVectorTable spatialVectorTable = spatialVectorTableLayer.getSpatialVectorTable();
-                    int geomType = spatialVectorTable.getGeomType();
-                    GeometryType geometryType = GeometryType.forValue(geomType);
-                    if (!geometryType.isGeometryCompatible(polygonGeometry)) {
-                        Utilities.messageDialog(context, context.getString(R.string.selfintersection_message), null);
-                    }
-                }
-                firstInvalid = false;
-            }
+        lineGeometry = null;
+        if (coordinatesList.size() > 1) {
+            lineGeometry = JtsUtilities.createLineString(coordinatesList);
         }
     }
 
@@ -415,10 +405,8 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
 
             // draw features
-            if (polygonGeometry != null) {
-                FeatureUtilities.drawGeometry(polygonGeometry, canvas, shapeWriter, createdGeometryPaintFill,
-                        createdGeometryPaintHaloStroke);
-                FeatureUtilities.drawGeometry(polygonGeometry, canvas, shapeWriter, null, createdGeometryPaintStroke);
+            if (lineGeometry != null) {
+                FeatureUtilities.drawGeometry(lineGeometry, canvas, shapeWriter, null, createdGeometryPaintStroke);
             }
 
             final PointF vertexPoint = new PointF();

@@ -24,4 +24,10 @@ package eu.geopaparazzi.library.features;
  */
 public interface ILayer {
 
+    boolean isPolygon();
+
+    boolean isLine();
+
+    boolean isPoint();
+
 }

@@ -20,6 +20,7 @@ package eu.geopaparazzi.spatialite.database.spatial.util;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -48,6 +49,17 @@ public class JtsUtilities {
         coordinatesList.add(firstCoord);
         Polygon polygon = gf.createPolygon(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         return polygon;
+    }
+
+    /**
+     * Create a {@link com.vividsolutions.jts.geom.LineString} from a list of coordinates.
+     *
+     * @param coordinatesList the list of coordinates.
+     * @return the created line.
+     */
+    public static LineString createLineString(List<Coordinate> coordinatesList) {
+        LineString lineString = gf.createLineString(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        return lineString;
     }
 
     /**

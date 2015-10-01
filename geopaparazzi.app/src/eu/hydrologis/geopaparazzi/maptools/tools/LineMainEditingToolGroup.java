@@ -18,7 +18,6 @@
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
@@ -29,38 +28,26 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 import org.mapsforge.android.maps.MapView;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
-import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
 /**
- * The main editing tool, which just shows the tool palette.
+ * The main line layer editing tool group, which just shows the tool palette.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private ImageButton selectAllButton;
     private MapView mapView;
@@ -68,20 +55,16 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     private ImageButton selectEditableButton;
     private int selectionColor;
     private ImageButton createFeatureButton;
-    private ImageButton cutButton;
-    private ImageButton extendButton;
     private ImageButton commitButton;
 
     private ImageButton undoButton;
-    private Feature cutExtendProcessedFeature;
-    private Feature cutExtendFeatureToRemove;
 
     /**
      * Constructor.
      *
      * @param mapView the map view.
      */
-    public MainEditingToolGroup(MapView mapView) {
+    public LineMainEditingToolGroup(MapView mapView) {
         this.mapView = mapView;
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
@@ -101,26 +84,10 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         int padding = 2;
 
         if (editLayer != null) {
-            cutButton = new ImageButton(context);
-            cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
-            cutButton.setPadding(0, padding, 0, padding);
-            cutButton.setOnClickListener(this);
-            cutButton.setOnTouchListener(this);
-            parent.addView(cutButton);
-
-            extendButton = new ImageButton(context);
-            extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
-            extendButton.setPadding(0, padding, 0, padding);
-            extendButton.setOnClickListener(this);
-            extendButton.setOnTouchListener(this);
-            parent.addView(extendButton);
-
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_polygon));
+            createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_line));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -213,79 +180,15 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == createFeatureButton) {
-            ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
+            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView, null);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
-        } else if (v == cutButton) {
-            Tool currentTool = EditManager.INSTANCE.getActiveTool();
-            if (currentTool != null && currentTool instanceof CutExtendTool) {
-                // if the same tool is re-selected, it is disabled
-                EditManager.INSTANCE.setActiveTool(null);
-            } else {
-                Tool activeTool = new CutExtendTool(mapView, true);
-                EditManager.INSTANCE.setActiveTool(activeTool);
-            }
-        } else if (v == extendButton) {
-            Tool currentTool = EditManager.INSTANCE.getActiveTool();
-            if (currentTool != null && currentTool instanceof CutExtendTool) {
-                // if the same tool is re-selected, it is disabled
-                EditManager.INSTANCE.setActiveTool(null);
-            } else {
-                Tool activeTool = new CutExtendTool(mapView, false);
-                EditManager.INSTANCE.setActiveTool(activeTool);
-            }
-        } else if (v == commitButton) {
-            if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null) {
-                // substitute the feature's geometry in the db
-                try {
-                    String tableName = cutExtendProcessedFeature.getUniqueTableName();
-                    List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-
-                    for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                        String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                        if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                            AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                                    spatialVectorTable);
-                            if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                                int tableGeomTypeCode = spatialVectorTable.getGeomType();
-                                GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
-
-                                Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
-
-                                if (tableGeometryType.isGeometryCompatible(newGeom)) {
-                                    DaoSpatialite.updateFeatureGeometry(
-                                            cutExtendProcessedFeature.getId(),
-                                            newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
-
-                                    DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
-                                    // reset mapview
-                                    Context context = v.getContext();
-                                    Intent intent = new Intent(context, MapsSupportService.class);
-                                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                                    context.startService(intent);
-                                } else {
-                                    Utilities.messageDialog(v.getContext(), R.string.geom_incompatible_with_layer, null);
-                                    return;
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    EditManager.INSTANCE.setActiveTool(null);
-                    commitButton.setVisibility(View.GONE);
-                    undoButton.setVisibility(View.GONE);
-                    EditManager.INSTANCE.invalidateEditingView();
-                } catch (Exception e) {
-                    GPLog.error(this, null, e); //$NON-NLS-1$
-                }
-            }
         } else if (v == undoButton) {
-            if (cutExtendProcessedFeature != null) {
-                EditManager.INSTANCE.setActiveTool(null);
-                commitButton.setVisibility(View.GONE);
-                undoButton.setVisibility(View.GONE);
-                EditManager.INSTANCE.invalidateEditingView();
-            }
+//            if (cutExtendProcessedFeature != null) {
+//                EditManager.INSTANCE.setActiveTool(null);
+//                commitButton.setVisibility(View.GONE);
+//                undoButton.setVisibility(View.GONE);
+//                EditManager.INSTANCE.invalidateEditingView();
+//            }
         }
 
         handleToolIcons(v);
@@ -311,19 +214,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             } else {
                 selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
             }
-        if (cutButton != null)
-            if (currentTool != null && activeToolButton == cutButton) {
-                cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut_active));
-            } else {
-                cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
-            }
-        if (extendButton != null)
-            if (currentTool != null && activeToolButton == extendButton) {
-                extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend_active));
-            } else {
-                extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
-            }
-
     }
 
     public boolean onTouch(View v, MotionEvent event) {
@@ -343,23 +233,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onToolFinished(Tool tool) {
-        if (tool instanceof CutExtendTool) {
-            CutExtendTool cutExtendTool = (CutExtendTool) tool;
-            Feature[] processedFeatures = cutExtendTool.getProcessedFeatures();
-            cutExtendProcessedFeature = processedFeatures[0];
-            cutExtendFeatureToRemove = processedFeatures[1];
-
-            commitButton.setVisibility(View.VISIBLE);
-            undoButton.setVisibility(View.VISIBLE);
-        }
-        // if (activeTool == null) {
-        // return;
-        // }
-        // if (tool == activeTool) {
-        // sliderDrawView.disableTool();
-        // activeTool.disable();
-        // activeTool = null;
-        // }
     }
 
     public void onToolDraw(Canvas canvas) {

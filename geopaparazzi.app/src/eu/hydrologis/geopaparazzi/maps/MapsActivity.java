@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,10 +43,8 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,7 +57,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -96,6 +92,7 @@ import java.util.List;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
@@ -129,7 +126,8 @@ import eu.hydrologis.geopaparazzi.maps.mapsforge.ImportMapsforgeActivity;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
-import eu.hydrologis.geopaparazzi.maptools.tools.MainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
@@ -1576,7 +1574,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (activeToolGroup == null) {
             toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
 
-            activeToolGroup = new MainEditingToolGroup(mapView);
+            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+            if (editLayer.isPolygon())
+                activeToolGroup = new PolygonMainEditingToolGroup(mapView);
+            else if (editLayer.isLine())
+                activeToolGroup = new LineMainEditingToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {

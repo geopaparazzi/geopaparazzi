@@ -66,7 +66,7 @@ import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private final MapView mapView;
 
@@ -109,7 +109,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
      * @param mapView the map view.
      * @param selectedFeatures the set of selected features.
      */
-    public OnSelectionToolGroup( MapView mapView, List<Feature> selectedFeatures ) {
+    public PolygonOnSelectionToolGroup(MapView mapView, List<Feature> selectedFeatures) {
         this.mapView = mapView;
         this.selectedFeatures.addAll(selectedFeatures);
 
@@ -242,7 +242,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 context.startActivity(intent);
 
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
 
             }
@@ -261,7 +261,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                  * if in selection mode, clear the selection
                  */
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 commitButton.setVisibility(View.GONE);
             }
@@ -281,7 +281,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                     context.startService(intent);
 
                     // reset drawview
-                    EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                    EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
                     EditManager.INSTANCE.setActiveTool(null);
 
                 } catch (jsqlite.Exception e) {
