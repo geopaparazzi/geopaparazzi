@@ -57,13 +57,12 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
-import eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
 /**
  * The group of tools active when a selection has been done.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
@@ -98,12 +97,13 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
     private ImageButton commitButton;
 
     private ImageButton undoButton;
+    private ImageButton continueLineFeatureButton;
 //    private ImageButton copyFeatureButton;
 
     /**
      * Constructor.
      *
-     * @param mapView the map view.
+     * @param mapView          the map view.
      * @param selectedFeatures the set of selected features.
      */
     public LineOnSelectionToolGroup(MapView mapView, List<Feature> selectedFeatures) {
@@ -165,6 +165,15 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 //            copyFeatureButton.setOnClickListener(this);
 //            parent.addView(copyFeatureButton);
 
+            continueLineFeatureButton = new ImageButton(context);
+            continueLineFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            continueLineFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_line));
+            continueLineFeatureButton.setPadding(0, padding, 0, padding);
+            continueLineFeatureButton.setOnClickListener(this);
+            continueLineFeatureButton.setOnTouchListener(this);
+            parent.addView(continueLineFeatureButton);
+
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
@@ -200,13 +209,13 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
         parent = null;
     }
 
-    public void onClick( View v ) {
+    public void onClick(View v) {
         if (v == editAttributesButton) {
             if (selectedFeatures.size() > 0) {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, FeaturePagerActivity.class);
                 intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        (ArrayList< ? extends Parcelable>) selectedFeatures);
+                        (ArrayList<? extends Parcelable>) selectedFeatures);
                 intent.putExtra(FeatureUtilities.KEY_READONLY, false);
                 context.startActivity(intent);
             }
@@ -231,6 +240,13 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 //                EditManager.INSTANCE.setActiveTool(null);
 //
 //            }
+        } else if (v == continueLineFeatureButton) {
+            Feature featureToContinue = null;
+            if (selectedFeatures.size() > 0) {
+                featureToContinue = selectedFeatures.get(0);
+            }
+            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView, featureToContinue);
+            EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == undoButton) {
             if (isInDeletePreview) {
                 /*
@@ -277,28 +293,28 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
         }
     }
 
-    public boolean onTouch( View v, MotionEvent event ) {
-        switch( event.getAction() ) {
-        case MotionEvent.ACTION_DOWN: {
-            v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
-            v.invalidate();
-            break;
-        }
-        case MotionEvent.ACTION_UP: {
-            v.getBackground().clearColorFilter();
-            v.invalidate();
-            break;
-        }
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
+                v.invalidate();
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                v.getBackground().clearColorFilter();
+                v.invalidate();
+                break;
+            }
         }
         return false;
     }
 
-    public void onToolFinished( Tool tool ) {
+    public void onToolFinished(Tool tool) {
         // nothing
     }
 
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         try {
             if (selectedFeatures.size() > 0) {
                 Projection projection = editingViewProjection;
@@ -323,9 +339,9 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
                 // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
 
                 // draw features
-                for( Feature feature : selectedFeatures ) {
+                for (Feature feature : selectedFeatures) {
                     byte[] defaultGeometry = feature.getDefaultGeometry();
-                    if(defaultGeometry!=null) {
+                    if (defaultGeometry != null) {
                         try {
                             Geometry geometry = wkbReader.read(defaultGeometry);
                             FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, null, geometryPaintStroke);
@@ -340,17 +356,17 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
         }
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         return false;
     }
 
-    public void onGpsUpdate( double lon, double lat ) {
+    public void onGpsUpdate(double lon, double lat) {
         // ignore
     }
 
     /**
      * Forces a feature selection.
-     *
+     * <p/>
      * <p>Previous selections are cleared and a redrawing is triggered.
      *
      * @param features the new features to select.

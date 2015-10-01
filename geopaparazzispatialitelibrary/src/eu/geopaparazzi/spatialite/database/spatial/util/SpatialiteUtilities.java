@@ -218,6 +218,52 @@ public class SpatialiteUtilities {
     }
 
     /**
+     * Get the query to run for a bounding box intersection to retrieve features.
+     *
+     * <p>This assures that the first element of the query is
+     * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
+     * and the last one the geometry.
+     *
+     * @param resultSrid the requested srid.
+     * @param spatialTable the {@link SpatialVectorTable} to query.
+     * @return the query to run to get the last inserted feature.
+     */
+    public static String getLastInsertedFeatureQuery(String resultSrid, SpatialVectorTable spatialTable ) {
+        String query = null;
+        boolean doTransform = false;
+        String fieldNamesList = SPATIALTABLE_ID_FIELD;
+        // List of non-blob fields
+        for( String field : spatialTable.getTableFieldNamesList() ) {
+            boolean ignore = doIgnoreField(field);
+            if (!ignore)
+                fieldNamesList += "," + field;
+        }
+        if (!spatialTable.getSrid().equals(resultSrid)) {
+            doTransform = true;
+        }
+        StringBuilder sbQ = new StringBuilder();
+        sbQ.append("SELECT ");
+        sbQ.append(fieldNamesList);
+        sbQ.append(",ST_AsBinary(CastToXY(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append(spatialTable.getGeomName());
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(resultSrid);
+            sbQ.append(")");
+        }
+        sbQ.append("))");
+        sbQ.append(" FROM ").append(spatialTable.getTableName());
+        sbQ.append(" order by " + SPATIALTABLE_ID_FIELD + " desc limit 1");
+        sbQ.append(");");
+
+        query = sbQ.toString();
+        return query;
+    }
+
+
+    /**
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square

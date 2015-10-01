@@ -180,7 +180,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == createFeatureButton) {
-            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView);
+            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView, null);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == undoButton) {
 //            if (cutExtendProcessedFeature != null) {

@@ -47,12 +47,15 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
+import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
@@ -65,12 +68,14 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
+import jsqlite.*;
 
 import static java.lang.Math.round;
 
@@ -82,6 +87,7 @@ import static java.lang.Math.round;
 public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener, View.OnLongClickListener {
 
     private final MapView mapView;
+    private Feature featureToContinue;
 
     private int buttonSelectionColor;
 
@@ -120,8 +126,21 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
      *
      * @param mapView the map view.
      */
-    public LineCreateFeatureToolGroup(MapView mapView) {
+    public LineCreateFeatureToolGroup(MapView mapView, Feature featureToContinue) {
         this.mapView = mapView;
+        this.featureToContinue = featureToContinue;
+
+        if (this.featureToContinue != null) {
+            // go get the last inserted feature by rowid
+            try {
+                lineGeometry = FeatureUtilities.WKBREADER.read(this.featureToContinue.getDefaultGeometry());
+                List<Coordinate> oldCoords = Arrays.asList(lineGeometry.getCoordinates());
+                coordinatesList.addAll(oldCoords);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                this.featureToContinue = null;
+            }
+        }
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
@@ -252,9 +271,15 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
                 if (editLayer instanceof SpatialVectorTableLayer) {
                     SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
                     try {
-                        for (Geometry geometry : geomsList) {
-                            DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
-                                    spatialVectorTableLayer.getSpatialVectorTable());
+                        if (this.featureToContinue == null) {
+                            for (Geometry geometry : geomsList) {
+                                DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
+                                        spatialVectorTableLayer.getSpatialVectorTable());
+                            }
+                        } else {
+                            DaoSpatialite.updateFeatureGeometry(
+                                    featureToContinue.getId(),
+                                    lineGeometry, LibraryConstants.SRID_WGS84_4326, spatialVectorTableLayer.getSpatialVectorTable());
                         }
                         Utilities.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                         coordinatesList.clear();
