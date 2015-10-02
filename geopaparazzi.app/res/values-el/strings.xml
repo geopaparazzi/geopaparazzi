@@ -142,6 +142,7 @@
   <string name="no_sdcard_use_internal_memory">Η sdcard δεν είναι διαθέσιμη (ελέγξτε εάν δεν έχει τοποθετηθεί σε ένα PC). Θέλετε να χρησιμοποιήσετε την εσωτερική μνήμη της συσκευής; Παρακαλώ σημειώστε ότι σε αυτή την περίπτωση η προβολή χάρτη δεν θα δείχνει κανέναν χάρτη για λόγους χώρου.</string>
   <string name="add_message">ΠΡΟΣΘΗΚΗ ΜΗΝΥΜΑΤΟΣ</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Εισάγετε ένα προαιρετικό κείμενο να στείλετε με το GeoSMS</string>
+  <string name="enter_a_name_for_the_new_project">Εισάγετε ένα όνομα αρχείου για το νέο έργο</string>
   <string name="chosen_project_exists">Το επιλεγμένο όνομα έργου υπάρχει ήδη, παρακαλώ επιλέξτε ένα άλλο όνομα</string>
   <string name="no_external_sdcard_for_db_renderer">Η απόδοση της βάσης δεδομένων υποστηρίζεται μόνο από εξωτερική αποθήκευση. Δε μπορεί να βρεθεί εξωτερική αποθήκευση, είναι διαθέσιμη κάποια;</string>
   <string name="no_map_files_found_go_online">Δε βρέθηκαν αρχεία χάρτη στον φάκελο /sdcard/maps. Μετάβαση σε online χάρτες. Χάρτες μπορούν να μεταφορτωθούν από: http://download.mapsforge.org</string>
@@ -231,6 +232,7 @@
   <string name="spatialite_recover_mode_tooltip">Αν ενεργοποιηθει, κατά την επόμενη εκκίνηση θα γίνει μια προσπάθεια να διορθωθούν ελαττωματικοι πίνακες.</string>
   <string name="map">Χάρτης</string>
   <string name="name_lc">όνομα</string>
+  <string name="name_uc">Όνομα έργου</string>
   <string name="bounds">όρια</string>
   <string name="maps_loading_not_finished_yet">Η φόρτωση χαρτών δεν έχει τελειώσει ακόμα. Παρακαλώ περιμένετε λίγα λεπτά και δοκιμάστε ξανά.</string>
   <string name="save">αποθήκευση</string>

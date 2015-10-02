@@ -259,6 +259,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="extracting_info">Estrazione informazioni...</string>
   <string name="geom_incompatible_with_layer">La geometria risultante non è compatibile con il piano di destinazione.</string>
   <string name="selected_features_in_layer">Selezionate %1$d features con %2$d polygoni.</string>
+  <string name="selected_line_features_in_layer">Selezionate %1$d features con %2$d linee.</string>
   <string name="no_compatible_layers_found">Non sono stati trovati piani compatibili.</string>
   <string name="copied_features_to_layer">Copiate %1$d geometrie nel piano: %2$s</string>
   <string name="area_colon">Area:</string>

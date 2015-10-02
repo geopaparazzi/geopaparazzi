@@ -45,6 +45,7 @@
   <string name="lookupLocationButton">行く</string>
   <string name="geocodeErrorTitle">ジオコーディングエラー</string>
   <string name="geocodeErrorMessage">ロケーションのジオコーディングに失敗しました。ロケーションを再送信してください。</string>
+  <string name="routing_service">経路検索</string>
   <string name="downloading_route">ルートをダウンロードしています。</string>
   <string name="go_to_button">目的地</string>
   <string name="route_to_button">ルート</string>

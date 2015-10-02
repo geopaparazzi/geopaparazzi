@@ -1,2 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="stroke_color">Колір штриха</string>
+  <string name="width">Ширина штриху</string>
+  <string name="alpha">Альфа штриха</string>
+  <string name="fill_color">Колір заповнення</string>
+  <string name="fill_alpha">Заповнення альфа</string>
+  <string name="point_shape_">Форма точки</string>
+  <string name="point_size">Розмір точки</string>
+  <string name="decimation">Децимація</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Мін збільшення</string>
+  <string name="max_zoom">Макс збільшення</string>
+  <string name="dash_pattern">Шаблон тире</string>
+  <string name="label_properties">Властивості мітки</string>
+  <string name="toggle_visibility">включити видимість</string>
+  <string name="label_field">поле мітки</string>
+  <string name="label_size">розмір мітки</string>
+</resources>
