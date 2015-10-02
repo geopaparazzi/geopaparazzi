@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">sí</string>
+  <string name="no">no</string>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="about">Acerca de</string>
+  <string name="exit">Salir</string>
+  <string name="utctime">tiempo:</string>
+  <string name="altim">altim:</string>
+  <string name="lat">lat:</string>
+  <string name="lon">lon:</string>
+  <string name="azimuth">acimut:</string>
+  <string name="go_to">Ir a</string>
+  <string name="goto_coordinate">ir a coordenada</string>
+  <string name="prompt_gpsenable">¡Su GPS está deshabilitado! ¿Desea habilitarlo?</string>
+  <string name="width_label">anchura</string>
+  <!--added after 2.1.2-->
+  <!--added after 2.1.4-->
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+  <!--ellipsis character instead of three dots-->
+  <string name="gpx">GPX</string>
+  <string name="kmz">KMZ</string>
+  <string name="export_uc">EXPORTAR</string>
+  <string name="filter">Filtro</string>
+  <string name="filter_excludes">filtrar excluídos</string>
+  <string name="ways">Vías</string>
+  <string name="extract_ways">Extraer vías</string>
+  <string name="extract_contours">Extraer contornos</string>
+  <string name="extract_waterways">Extraer vías de agua</string>
+  <string name="name_new_teample_db">Introducir nombre para la nueva base de datos</string>
+  <string name="new_template_db_create">Base de datos creada satisfactoriamente.</string>
+  <string name="extract_mapsforge_data">Extrayendo datos de mapsforge...</string>
+  <string name="extract_mapsforge_only_when_loaded">Esta herramienta sólo funciona cuando un mapa mapsforge está cargado.</string>
+  <string name="view">Vista</string>
+  <string name="force_locale_title">Forzar localización</string>
+  <string name="force_locale_summary">Fuerza la selección de la localización independientemente de la localización actual de Android</string>
+  <string name="export_images">Imágenes</string>
+  <string name="export_img_unable_to_create_folder">Imposible crear carpeta en la tarjeta SD:</string>
+  <string name="export_img_ok_exported">Imágenes exportadas a la carpeta:</string>
+  <string name="export_img_processing">Exportando imágenes...</string>
+  <string name="routing_pref_title">Clave de la API de enrutado</string>
+  <string name="routing_pref_summary">Para utilizar los servicios de enrutado MapQuest y Graphhopper inserte la ApiKey apropiada</string>
+</resources>
