@@ -1060,12 +1060,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 if (form != null && form.length() > 0) {
                                     double altim = note.getAltim();
                                     Intent formIntent = new Intent(context, FormActivity.class);
-                                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
                                     formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
                                     formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
                                     formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
                                     formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
                                     formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                                    formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
                                     mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                                     doInfo = false;
                                 }

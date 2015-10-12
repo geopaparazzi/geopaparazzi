@@ -76,6 +76,7 @@ public class FormActivity extends FragmentActivity {
     private List<String> formNames4Section = new ArrayList<String>();
     private String sectionObjectString;
     private long noteId = -1;
+    private boolean noteIsNew = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +97,7 @@ public class FormActivity extends FragmentActivity {
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
             noteId = extras.getLong(LibraryConstants.DATABASE_ID);
+            noteIsNew = !extras.getBoolean(LibraryConstants.OBJECT_EXISTS);
         }
 
         try {
@@ -194,6 +196,9 @@ public class FormActivity extends FragmentActivity {
      * @param view parent.
      */
     public void cancelClicked(View view) {
+        Intent intent = getIntent();
+        intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+        setResult(Activity.RESULT_CANCELED, intent);
         finish();
     }
 

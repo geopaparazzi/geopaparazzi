@@ -42,6 +42,7 @@ import android.widget.ToggleButton;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import eu.geopaparazzi.library.camera.CameraActivity;
@@ -218,6 +219,7 @@ public class MapTagsActivity extends Activity {
                                 formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
                                 formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
                                 formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
+                                formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } catch (Exception e) {
                                 GPLog.error(this, null, e);
@@ -264,7 +266,21 @@ public class MapTagsActivity extends Activity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED && requestCode == FORM_RETURN_CODE) {
+            long noteId = data.getLongExtra(LibraryConstants.DATABASE_ID, -1);
+            if (noteId != -1) {
+                // this note needs to be removed, since is was created but then
+                // cancel was pressed
+                try {
+                    DaoNotes.deleteNote(noteId);
+                    return;
+                } catch (IOException e) {
+                    GPLog.error(this, null, e);
+                }
+            }
+        }
         if (resultCode != Activity.RESULT_OK) {
+            // only ok stuff passes here
             return;
         }
         switch (requestCode) {

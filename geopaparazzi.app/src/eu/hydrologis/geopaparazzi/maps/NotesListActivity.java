@@ -374,6 +374,7 @@ public class NotesListActivity extends ListActivity {
                     formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
                     formIntent.putExtra(LibraryConstants.ELEVATION, altim);
                     formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
+                    formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
                     this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                 }
             }
