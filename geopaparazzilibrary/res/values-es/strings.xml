@@ -45,10 +45,11 @@
   <string name="lookupLocationButton">Ir</string>
   <string name="geocodeErrorTitle">Error de geocodificación</string>
   <string name="geocodeErrorMessage">Ha fallado la geocodificación del emplazamiento. Intente reenviar la localización</string>
+  <string name="routing_service">Enrutamiento</string>
   <string name="downloading_route">Descargando ruta...</string>
   <string name="go_to_button">Ir a</string>
   <string name="route_to_button">ruta a</string>
-  <string name="route_to">Ruta de:</string>
+  <string name="route_to">Ruta a:</string>
   <string name="route_extraction_error">Se ha producido un error durante la extracción de la ruta</string>
   <string name="available_only_with_network">Esta función solo es operativa si existe una conexión de red activa</string>
   <string name="error_while_storing_form_data">Se ha producido un error al almacenar el formulario de datos</string>
@@ -84,8 +85,10 @@
   <string name="post_completed_properly">La publicación se ha completado correctamente.</string>
   <string name="http_ok_msg">La solicitud fue procesada con éxito.</string>
   <string name="the_file_exists_wont_overwrite">El fichero ya existe. No se sobrescribirá:</string>
-  <string name="share_note_with">Compartir nota con:</string>
+  <string name="share_note_with">Compartir nota con...</string>
   <string name="downloading_mapurl_to_the_device">Descargando en el dispositivo el servicio seleccionado.</string>
   <string name="mapurl_successfully_downloaded">El fichero mapurl se ha descargado e instalado con éxito. Recuerde reiniciar Geopaparazzi para tener el servicio disponible.</string>
   <string name="crash_toast_text">La aplicación ha sufrido un error grave. Se recopilará la información del colapso por ser útil para resolver el problema. Por favor, si es posible remítala al equipo de desarrollo.</string>
+  <string name="share_current_position">Compartir posición actual</string>
+  <string name="share_current_center">Compartir centro actual del mapa</string>
 </resources>

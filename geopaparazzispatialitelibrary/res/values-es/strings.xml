@@ -3,7 +3,7 @@
   <string name="stroke_color">Color del borde</string>
   <string name="width">Anchura de borde</string>
   <string name="alpha">Valor alpha del borde</string>
-  <string name="fill_color">Colord de relleno</string>
+  <string name="fill_color">Color de relleno</string>
   <string name="fill_alpha">Valor alpha de relleno</string>
   <string name="point_shape_">Forma del punto</string>
   <string name="point_size">Tamaño del punto</string>
