@@ -505,6 +505,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * LibraryConstants.E6),
                         (int) (lastGpsPosition[0] * LibraryConstants.E6));
                 dataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
+                dataOverlay.requestRedraw();
             }
             // dataOverlay.requestRedraw();
         } catch (IOException e1) {

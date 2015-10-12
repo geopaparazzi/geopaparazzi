@@ -64,7 +64,7 @@ import static java.lang.Math.round;
 
 /**
  * A tool to cut or extend features.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PolygonCutExtendTool extends MapTool {
@@ -81,7 +81,7 @@ public class PolygonCutExtendTool extends MapTool {
 
     private final Point tmpP = new Point();
     private final Point startP = new Point();
-    private final Point endP =  new Point();
+    private final Point endP = new Point();
 
     private Path drawingPath = new Path();
 
@@ -107,9 +107,9 @@ public class PolygonCutExtendTool extends MapTool {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the mapview reference.
-     * @param doCut if <code>true</code>, do cut as opposed to extend.
+     * @param doCut   if <code>true</code>, do cut as opposed to extend.
      */
     public PolygonCutExtendTool(MapView mapView, boolean doCut) {
         super(mapView);
@@ -148,13 +148,13 @@ public class PolygonCutExtendTool extends MapTool {
             mapView.setClickable(false);
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         if (startP.x == 0 && startP.y == 0) return;
         canvas.drawCircle(startP.x, startP.y, 15, drawingPaintFill);
         canvas.drawPath(drawingPath, drawingPaintStroke);
         canvas.drawCircle(endP.x, endP.y, 15, drawingPaintFill);
 
-        if (previewGeometry!=null) {
+        if (previewGeometry != null) {
             Projection projection = editingViewProjection;
 
             byte zoomLevelBeforeDraw;
@@ -179,7 +179,7 @@ public class PolygonCutExtendTool extends MapTool {
         }
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
@@ -190,45 +190,45 @@ public class PolygonCutExtendTool extends MapTool {
         currentY = event.getY();
 
         int action = event.getAction();
-        switch( action ) {
-        case MotionEvent.ACTION_DOWN:
-            startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(startGeoPoint, startP);
-            endP.set(startP.x, startP.y);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(startGeoPoint, startP);
+                endP.set(startP.x, startP.y);
 
-            drawingPath.reset();
-            drawingPath.moveTo(startP.x, startP.y);
+                drawingPath.reset();
+                drawingPath.moveTo(startP.x, startP.y);
 
-            lastX = currentX;
-            lastY = currentY;
-            break;
-        case MotionEvent.ACTION_MOVE:
-            float dx = currentX - lastX;
-            float dy = currentY - lastY;
-            if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
-                return true;
-            }
-            GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(currentGeoPoint, tmpP);
-            drawingPath.lineTo(tmpP.x, tmpP.y);
-            endP.set(tmpP.x, tmpP.y);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                if (abs(dx) < 1 && abs(dy) < 1) {
+                    lastX = currentX;
+                    lastY = currentY;
+                    return true;
+                }
+                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(currentGeoPoint, tmpP);
+                drawingPath.lineTo(tmpP.x, tmpP.y);
+                endP.set(tmpP.x, tmpP.y);
 
-            EditManager.INSTANCE.invalidateEditingView();
-            break;
-        case MotionEvent.ACTION_UP:
+                EditManager.INSTANCE.invalidateEditingView();
+                break;
+            case MotionEvent.ACTION_UP:
 
-            GeoPoint endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            GeometryFactory gf = new GeometryFactory();
-            Coordinate startCoord = new Coordinate(startGeoPoint.getLongitude(), startGeoPoint.getLatitude());
-            com.vividsolutions.jts.geom.Point startPoint = gf.createPoint(startCoord);
-            Coordinate endCoord = new Coordinate(endGeoPoint.getLongitude(), endGeoPoint.getLatitude());
-            com.vividsolutions.jts.geom.Point endPoint = gf.createPoint(endCoord);
-            Envelope env = new Envelope(startCoord, endCoord);
-            select(env.getMaxY(), env.getMinX(), env.getMinY(), env.getMaxX(), startPoint, endPoint);
-            //            EditManager.INSTANCE.invalidateEditingView();
-            break;
+                GeoPoint endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                GeometryFactory gf = new GeometryFactory();
+                Coordinate startCoord = new Coordinate(startGeoPoint.getLongitude(), startGeoPoint.getLatitude());
+                com.vividsolutions.jts.geom.Point startPoint = gf.createPoint(startCoord);
+                Coordinate endCoord = new Coordinate(endGeoPoint.getLongitude(), endGeoPoint.getLatitude());
+                com.vividsolutions.jts.geom.Point endPoint = gf.createPoint(endCoord);
+                Envelope env = new Envelope(startCoord, endCoord);
+                select(env.getMaxY(), env.getMinX(), env.getMinY(), env.getMaxX(), startPoint, endPoint);
+                //            EditManager.INSTANCE.invalidateEditingView();
+                break;
         }
 
         return true;
@@ -245,7 +245,7 @@ public class PolygonCutExtendTool extends MapTool {
     }
 
     private void select(final double n, final double w, final double s, final double e,//
-     final com.vividsolutions.jts.geom.Point startPoint, final com.vividsolutions.jts.geom.Point endPoint) {
+                        final com.vividsolutions.jts.geom.Point startPoint, final com.vividsolutions.jts.geom.Point endPoint) {
 
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
         SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
@@ -282,23 +282,24 @@ public class PolygonCutExtendTool extends MapTool {
                     List<Feature> features = FeatureUtilities.buildFeatures(query, spatialVectorTable);
                     Geometry startGeometry = null;
                     Geometry endGeometry = null;
-                    for (Feature feature: features) {
+                    for (Feature feature : features) {
                         if (startGeometry != null && endGeometry != null) break;
                         Geometry geometry = FeatureUtilities.getGeometry(feature);
-                        if (startGeometry == null && geometry.intersects(startPoint)) {
+                        if (startGeometry == null && geometry != null && geometry.intersects(startPoint)) {
                             startGeometry = geometry;
-                            startFeature  = feature;
-                        } else if (endGeometry == null && geometry.intersects(endPoint)) {
+                            startFeature = feature;
+                        } else if (endGeometry == null && geometry != null && geometry.intersects(endPoint)) {
                             endGeometry = geometry;
                             endFeature = feature;
                         }
                     }
 
-                    if (!doCut) {
-                        previewGeometry = startGeometry.union(endGeometry);
-                    }else{
-                        previewGeometry = startGeometry.difference(endGeometry);
-                    }
+                    if (startGeometry != null)
+                        if (!doCut) {
+                            previewGeometry = startGeometry.union(endGeometry);
+                        } else {
+                            previewGeometry = startGeometry.difference(endGeometry);
+                        }
                     return "";
                 } catch (Exception e) {
                     GPLog.error(this, null, e); //$NON-NLS-1$
@@ -308,7 +309,7 @@ public class PolygonCutExtendTool extends MapTool {
             }
 
             protected void onProgressUpdate(Integer... progress) { // on UI thread!
-                if (infoProgressDialog != null && infoProgressDialog.isShowing())
+                if (infoProgressDialog.isShowing())
                     infoProgressDialog.incrementProgressBy(progress[0]);
             }
 
@@ -334,7 +335,7 @@ public class PolygonCutExtendTool extends MapTool {
 
     /**
      * Get the features as processed by the cut or extend.
-     *
+     * <p/>
      * <p>The first feature is assured to have the right id and geometry to be used
      * for the db update.</p>
      *
@@ -342,7 +343,7 @@ public class PolygonCutExtendTool extends MapTool {
      */
     public Feature[] getProcessedFeatures() {
         byte[] geomBytes = FeatureUtilities.WKBWRITER.write(previewGeometry);
-        Feature feature = new Feature(startFeature.getTableName(),startFeature.getUniqueTableName(), startFeature.getId(),  geomBytes);
+        Feature feature = new Feature(startFeature.getTableName(), startFeature.getUniqueTableName(), startFeature.getId(), geomBytes);
         return new Feature[]{feature, endFeature}; // new geom feature + feature to remove
     }
 
