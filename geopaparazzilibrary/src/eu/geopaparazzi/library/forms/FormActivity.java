@@ -196,9 +196,11 @@ public class FormActivity extends FragmentActivity {
      * @param view parent.
      */
     public void cancelClicked(View view) {
-        Intent intent = getIntent();
-        intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
-        setResult(Activity.RESULT_CANCELED, intent);
+        if(noteIsNew) {
+            Intent intent = getIntent();
+            intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+            setResult(Activity.RESULT_CANCELED, intent);
+        }
         finish();
     }
 
