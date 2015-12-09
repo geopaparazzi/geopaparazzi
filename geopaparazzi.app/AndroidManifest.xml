@@ -33,7 +33,7 @@
     <!-- compatibility -->
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="23" />
 
     <supports-screens
         android:anyDensity="true"

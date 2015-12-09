@@ -49,6 +49,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
     }
 
     private static Notification createNotification() {
+
         Notification notification = new Notification();
 
         notification.icon = R.drawable.current_position;

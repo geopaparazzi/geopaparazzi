@@ -19,9 +19,9 @@ dependencies {
 
 
 android {
-        compileSdkVersion 19
-        buildToolsVersion "19.1"
-        
+    compileSdkVersion project.ext.myCompileSdkVersion
+    buildToolsVersion project.ext.myBuildToolsVersion
+
         sourceSets {
                 main {
                         manifest {

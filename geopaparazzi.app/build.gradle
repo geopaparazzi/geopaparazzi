@@ -35,10 +35,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1"
-
-
+    compileSdkVersion project.ext.myCompileSdkVersion
+    buildToolsVersion project.ext.myBuildToolsVersion
 
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
@@ -92,11 +90,14 @@ android {
 
     buildTypes {
         release {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+//                    'proguard-rules.pro'
             signingConfig signingConfigs.release
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     def file = output.outputFile
-                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk");
+                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + project.ext.geopaparazziVersion + ".apk");
                     output.outputFile = new File(file.parentFile, fileName)
                 }
             }

@@ -1,6 +1,3 @@
-ext {
-    geopaparazziVersion = "4.4.0"
-}
 
 buildscript {
     repositories {
@@ -16,6 +13,16 @@ allprojects {
 
     repositories {
        jcenter()
+    }
+
+    project.ext {
+        geopaparazziVersion = "4.4.0"
+        myBuildToolsVersion="19.1"
+        myCompileSdkVersion=19
+//        myBuildToolsVersion="22.0.1"
+//        myCompileSdkVersion=22
+//    myMinSdkVersion=10
+//    myTargetSdkVersion=22
     }
 }
 
