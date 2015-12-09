@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.0'
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 
@@ -20,12 +20,6 @@ task copyNativeLibs(type: Copy) {
 }
 tasks.withType(JavaCompile) { compileTask -> compileTask.dependsOn copyNativeLibs }
 clean.dependsOn 'cleanCopyNativeLibs'
-
-tasks.withType(PackageApplication) { pkgTask ->
-    //pkgTask.jniDir new File(buildDir, 'native-libs')
-    pkgTask.jniFolders = new HashSet<File>()
-    pkgTask.jniFolders.add(new File(buildDir, 'native-libs'))
-}
 
 tasks.whenTaskAdded { task ->
     if (task.name.startsWith("lint")) {
@@ -71,6 +65,7 @@ android {
             aidl {
                 srcDir 'src'
             }
+            jniLibs.srcDir new File(buildDir, 'native-libs')
         }
     }
     signingConfigs {
@@ -101,7 +96,8 @@ android {
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     def file = output.outputFile
-                    output.outputFile = new File(file.parent, file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk"))
+                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk");
+                    output.outputFile = new File(file.parentFile, fileName)
                 }
             }
         }

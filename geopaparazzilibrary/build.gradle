@@ -1,10 +1,10 @@
 buildscript {
-        repositories {
-                mavenCentral()
-        }
-        dependencies {
-            classpath 'com.android.tools.build:gradle:1.1.0'
-        }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
 }
 
 apply plugin: 'com.android.library'
@@ -22,30 +22,44 @@ dependencies {
     compile files('libs/acra-4.5.0.jar')
 }
 
-android {
-        compileSdkVersion 19
-        buildToolsVersion "19.1"
 
-        sourceSets {
-                main {
-                        manifest {
-                                srcFile 'AndroidManifest.xml'
-                        }
-                        java {
-                                srcDir 'src'
-                        }
-                        res {
-                                srcDir 'res'
-                        }
-                        assets {
-                                srcDir 'assets'
-                        }
-                        resources {
-                                srcDir 'src'
-                        }
-                        aidl {
-                                srcDir 'src'
-                        }
-                }
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1"
+
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+            aidl {
+                srcDir 'src'
+            }
         }
+    }
+
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+    }
 }
