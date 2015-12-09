@@ -28,6 +28,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_CONNECTEDSTRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DYNAMICSTRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_INTEGER;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
@@ -180,6 +181,9 @@ public class FragmentDetail extends Fragment {
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
                         addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 0, constraintDescription,
+                                readonly);
+                    } else if (type.equals(TYPE_DYNAMICSTRING)) {
+                        addedView = FormUtilities.addDynamicEditText(activity, mainView, label, value, 0, constraintDescription,
                                 readonly);
                     } else if (type.equals(TYPE_STRINGAREA)) {
                         addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 7, constraintDescription,

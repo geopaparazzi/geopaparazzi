@@ -247,6 +247,9 @@ public class OsmFormActivity extends Activity {
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
                         addedView = FormUtilities.addEditText(this, mainView, key, value, 0, 0, constraintDescription, readOnly);
+                    } else if (type.equals(TYPE_DYNAMICSTRING)) {
+                        addedView = FormUtilities.addDynamicEditText(this, mainView, key, value, 0, constraintDescription,
+                                readOnly);
                     } else if (type.equals(TYPE_DOUBLE)) {
                         addedView = FormUtilities.addEditText(this, mainView, key, value, 1, 0, constraintDescription, readOnly);
                     } else if (type.equals(TYPE_BOOLEAN)) {

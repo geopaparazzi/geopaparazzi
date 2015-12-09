@@ -102,10 +102,19 @@
                     }
                 ]
             },{
+                "formname": "multiple text",
+                "formitems": [
+                    {
+                        "key": "some text",
+                        "value": "text1; text2; text3",
+                        "type": "dynamicstring"
+                    }
+                ]
+            },{
                 "formname": "text example with key and label",
                 "formitems": [
                     {
-                        "key": "the key used to index",
+                        "key": "the_key_used_to_index",
                         "label": "the label used to describe",
                         "value": "",
                         "type": "string"

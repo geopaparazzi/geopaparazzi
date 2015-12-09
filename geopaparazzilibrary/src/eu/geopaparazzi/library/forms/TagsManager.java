@@ -139,7 +139,7 @@ public class TagsManager {
     /**
      * Performs the first data reading. Necessary for everything else.
      *
-     * @param context
+     * @param context the context to use.
      * @throws Exception
      */
     private void getFileTags(Context context) throws Exception {
@@ -269,10 +269,9 @@ public class TagsManager {
      */
     public static JSONArray getFormItems(JSONObject formObj) throws JSONException {
         if (formObj.has(TAG_FORMITEMS)) {
-            JSONArray formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
-            return formItemsArray;
+            return formObj.getJSONArray(TAG_FORMITEMS);
         }
-        return null;
+        return new JSONArray();
     }
 
     /**
@@ -286,8 +285,7 @@ public class TagsManager {
         if (formItem.has(TAG_VALUES)) {
             JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
             if (valuesObj.has(TAG_ITEMS)) {
-                JSONArray itemsArray = valuesObj.getJSONArray(TAG_ITEMS);
-                return itemsArray;
+                return valuesObj.getJSONArray(TAG_ITEMS);
             }
         }
         return null;

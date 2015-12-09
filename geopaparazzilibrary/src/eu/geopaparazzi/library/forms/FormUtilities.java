@@ -45,6 +45,7 @@ import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GDateView;
+import eu.geopaparazzi.library.forms.views.GDynamicEditTextView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
@@ -90,6 +91,11 @@ public class FormUtilities {
      * Type for a {@link EditText} containing generic text.
      */
     public static final String TYPE_STRING = "string";
+
+    /**
+     * Type for a dynamic (multiple) {@link EditText} containing generic text.
+     */
+    public static final String TYPE_DYNAMICSTRING = "dynamicstring";
 
     /**
      * Type for a {@link EditText} area containing generic text.
@@ -180,7 +186,7 @@ public class FormUtilities {
 
     /**
      * Type for barcode element.
-     * <p/>
+     * <p>
      * <b>Not in use yet.</b>
      */
     public static final String TYPE_BARCODE = "barcode";
@@ -311,6 +317,31 @@ public class FormUtilities {
     public static GView addEditText(Context context, LinearLayout mainView, String label, String value, int type, int lines,
                                     String constraintDescription, boolean readonly) {
         return new GEditTextView(context, null, mainView, label, value, type, lines, constraintDescription,
+                readonly);
+    }
+
+    /**
+     * Adds a dynamic {@link TextView} to the supplied mainView.
+     *
+     * @param context               the context.
+     * @param mainView              the main view to which to add the new widget to.
+     * @param label                 the label identifying the widget.
+     * @param value                 the value to put in the widget.
+     * @param type                  the text type:
+     *                              <ul>
+     *                              <li>0: text</li>
+     *                              <li>1: double number</li>
+     *                              <li>2: phone</li>
+     *                              <li>3: date</li>
+     *                              <li>4: integer number</li>
+     *                              </ul>
+     * @param constraintDescription constraint
+     * @param readonly              if <code>true</code>, it is disabled for editing.
+     * @return the added view.
+     */
+    public static GView addDynamicEditText(Context context, LinearLayout mainView, String label, String value, int type,
+                                           String constraintDescription, boolean readonly) {
+        return new GDynamicEditTextView(context, null, mainView, label, value, type, constraintDescription,
                 readonly);
     }
 
