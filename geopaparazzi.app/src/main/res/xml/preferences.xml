@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+   xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <ListPreference
+      android:entries="@array/gps_time_name"
+      android:entryValues="@array/gps_time_value"
+      android:key="pref_numberOfChoices"
+      android:title="number_of_choices"
+      android:summary="number_of_choices_description"
+      android:persistent="true"
+      android:defaultValue="4" />
+
+   <MultiSelectListPreference
+      android:entries="@array/array_colornames"
+      android:entryValues="@array/array_colornames"
+      android:key="pref_regionsToInclude"
+      android:title="world_regions"
+      android:summary="world_regions_description"
+      android:persistent="true"
+      android:defaultValue="@array/array_colornames" />
+
+</PreferenceScreen>

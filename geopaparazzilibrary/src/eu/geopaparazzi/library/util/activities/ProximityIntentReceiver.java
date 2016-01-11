@@ -28,19 +28,22 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         if (entering) {
             if (GPLog.LOG)
                 GPLog.addLogEntry(getClass().getSimpleName(), "entering proximity radius"); //$NON-NLS-1$
-            NotificationManager notificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-            Notification notification = createNotification();
-            notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert),
-                    context.getString(R.string.approaching_poi), pendingIntent);
-            notificationManager.notify(NOTIFICATION_ID, notification);
-
-            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.removeProximityAlert(pendingIntent);
-            context.unregisterReceiver(this);
+            // TODO upgrade to 6
+//            NotificationManager notificationManager = (NotificationManager) context
+//                    .getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+//
+//            Notification notification = createNotification();
+//            notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert),
+//                    context.getString(R.string.approaching_poi), pendingIntent);
+//            notificationManager.notify(NOTIFICATION_ID, notification);
+//
+//            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+//            locationManager.removeProximityAlert(pendingIntent);
+//            context.unregisterReceiver(this);
         } else {
             if (GPLog.LOG)
                 GPLog.addLogEntry(getClass().getSimpleName(), "exiting proximity radius"); //$NON-NLS-1$

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lineWidthDialogGridLayout"
+    android:columnCount="2"
+    android:orientation="vertical"
+    android:useDefaultMargins="true"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:id="@+id/widthImageView"
+        android:layout_gravity="fill_horizontal"
+        android:contentDescription="Set line width"
+        android:layout_column="0"
+        android:layout_row="0" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text=""
+        android:id="@+id/widthTextView"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:gravity="center_vertical" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/widthSeekBar"
+        android:layout_gravity="fill_horizontal"
+        android:max="50"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2" />
+</GridLayout>

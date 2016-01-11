@@ -214,16 +214,17 @@ public class SmsUtilities {
                                 sB.append("&GeoSMS");
                                 final String geoCoords = sB.toString();
 
-                                NotificationManager notifier = (NotificationManager) context
-                                        .getSystemService(Context.NOTIFICATION_SERVICE);
-                                int icon = R.drawable.current_position;
-                                Notification notification = new Notification(icon, "Incoming GeoSMS", System.currentTimeMillis());
-                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
-                                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
-                                notification.setLatestEventInfo(context, "GeoSMS",
-                                        "Select here to open the GeoSMS with a dedicated application", contentIntent);
-                                notification.flags |= Notification.FLAG_AUTO_CANCEL;
-                                notifier.notify(0x007, notification);
+                                // TODO upgrade to 6
+//                                NotificationManager notifier = (NotificationManager) context
+//                                        .getSystemService(Context.NOTIFICATION_SERVICE);
+//                                int icon = R.drawable.current_position;
+//                                Notification notification = new Notification(icon, "Incoming GeoSMS", System.currentTimeMillis());
+//                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
+//                                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
+//                                notification.setLatestEventInfo(context, "GeoSMS",
+//                                        "Select here to open the GeoSMS with a dedicated application", contentIntent);
+//                                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+//                                notifier.notify(0x007, notification);
 
                             } catch (Exception e) {
                                 // ignore the param, it was not a coordinate block

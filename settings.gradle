@@ -1,5 +1,1 @@
-include 'geopaparazzilibrary'
-include 'geopaparazzispatialitelibrary'
-include 'geopaparazzimapsforge'
-include 'geopaparazzimarkerslib'
-include 'geopaparazzi.app'
+include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzilibrary',  ':geopaparazzimapsforge'

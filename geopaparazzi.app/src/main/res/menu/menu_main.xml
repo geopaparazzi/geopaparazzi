@@ -1,0 +1,61 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".GeopaparazziActivity">
+
+    <item
+        android:id="@+id/action_tilesource"
+        android:icon="@drawable/actionbar_tilesource"
+        android:orderInCategory="50"
+        android:title="@string/mapsactivity_menu_tilesource"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_load"
+        android:icon="@drawable/actionbar_newproject"
+        android:orderInCategory="60"
+        android:title="@string/reset"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_new"
+        android:icon="@drawable/actionbar_load_project"
+        android:orderInCategory="70"
+        android:title="@string/load"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_gps"
+        android:icon="@drawable/actionbar_gps_off"
+        android:orderInCategory="80"
+        android:title="GPS"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_gpsstatus"
+        android:icon="@drawable/actionbar_gpsstatus"
+        android:orderInCategory="90"
+        android:title="@string/gps_status"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/actionbar_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/actionbar_about"
+        android:orderInCategory="110"
+        android:title="@string/about"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_exit"
+        android:icon="@drawable/actionbar_exit"
+        android:orderInCategory="120"
+        android:title="@string/exit"
+        app:showAsAction="never" />
+</menu>
