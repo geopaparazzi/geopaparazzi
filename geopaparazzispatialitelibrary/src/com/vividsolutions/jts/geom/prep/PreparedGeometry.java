@@ -44,7 +44,7 @@ import com.vividsolutions.jts.geom.*;
  * and delegate the remaining methods to the original {@link Geometry} operations.
  * An implementation may also only optimize certain situations,
  * and delegate others. 
- * See the implementing classes for documentation about which methods and situations
+ * See the implementing classes for documentation fragment_about which methods and situations
  * they optimize.
  * <p>
  * Subclasses are intended to be thread-safe, to allow <code>PreparedGeometry</code>

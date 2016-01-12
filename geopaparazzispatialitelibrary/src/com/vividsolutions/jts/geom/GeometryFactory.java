@@ -470,7 +470,7 @@ public class GeometryFactory
   public Geometry buildGeometry(Collection geomList) {
   	
   	/**
-  	 * Determine some facts about the geometries in the list
+  	 * Determine some facts fragment_about the geometries in the list
   	 */
     Class geomClass = null;
     boolean isHeterogeneous = false;

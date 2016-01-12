@@ -226,11 +226,11 @@ public class MapsDirManager {
         }
     }
     /**
-      * Collect information found about all raster tile supporting sources.
+      * Collect information found fragment_about all raster tile supporting sources.
       * 
       * <p>call from init((), where the maps-directory has been read
       * <ul>
-      *  <li>filter out information about collected maps</li>
+      *  <li>filter out information fragment_about collected maps</li>
       *  <li>store in a form needed be the application</li>
       *  <li>filter out portions not desired</li>
       * </ul>
@@ -612,7 +612,7 @@ public class MapsDirManager {
     }
 
     /**
-      * Collect Information about found Vector-Tables
+      * Collect Information fragment_about found Vector-Tables
       *
       * @return amount of tables found
       */

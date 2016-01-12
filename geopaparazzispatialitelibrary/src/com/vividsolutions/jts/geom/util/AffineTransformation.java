@@ -62,7 +62,7 @@ public class AffineTransformation
 {
   
   /**
-   * Creates a transformation for a reflection about the 
+   * Creates a transformation for a reflection fragment_about the
    * line (x0,y0) - (x1,y1).
    * 
    * @param x0 the x-ordinate of a point on the reflection line
@@ -79,7 +79,7 @@ public class AffineTransformation
   }
   
   /**
-   * Creates a transformation for a reflection about the 
+   * Creates a transformation for a reflection fragment_about the
    * line (0,0) - (x,y).
    * 
    * @param x the x-ordinate of a point on the reflection line
@@ -95,7 +95,7 @@ public class AffineTransformation
   
   /**
    * Creates a transformation for a rotation
-   * about the origin 
+   * fragment_about the origin
    * by an angle <i>theta</i>.
    * Positive angles correspond to a rotation 
    * in the counter-clockwise direction.
@@ -128,7 +128,7 @@ public class AffineTransformation
   
   /**
    * Creates a transformation for a rotation
-   * about the point (x,y) by an angle <i>theta</i>.
+   * fragment_about the point (x,y) by an angle <i>theta</i>.
    * Positive angles correspond to a rotation 
    * in the counter-clockwise direction.
    * 
@@ -144,7 +144,7 @@ public class AffineTransformation
   
   /**
    * Creates a transformation for a rotation 
-   * about the point (x,y) by an angle <i>theta</i>,
+   * fragment_about the point (x,y) by an angle <i>theta</i>,
    * specified by the sine and cosine of the angle.
    * This allows providing exact values for sin(theta) and cos(theta)
    * for the common case of rotations of multiples of quarter-circles. 
@@ -489,7 +489,7 @@ public class AffineTransformation
   
   /**
    * Sets this transformation to be a reflection 
-   * about the line defined by a line <tt>(x0,y0) - (x1,y1)</tt>.
+   * fragment_about the line defined by a line <tt>(x0,y0) - (x1,y1)</tt>.
    * 
    * @param x0 the X ordinate of one point on the reflection line
    * @param y0 the Y ordinate of one point on the reflection line
@@ -512,7 +512,7 @@ public class AffineTransformation
     double sin = dy / d;
     double cos = dx / d;
     rotate(-sin, cos);
-    // reflect about the x axis
+    // reflect fragment_about the x axis
     scale(1, -1);
     // rotate back
     rotate(sin, cos);
@@ -523,7 +523,7 @@ public class AffineTransformation
   
   /**
    * Sets this transformation to be a reflection 
-   * about the line defined by vector (x,y).
+   * fragment_about the line defined by vector (x,y).
    * The transformation for a reflection
    * is computed by:
    * <blockquote><pre>
@@ -563,7 +563,7 @@ public class AffineTransformation
     double sin = y / d;
     double cos = x / d;
     rotate(-sin, cos);
-    // reflect about the x-axis
+    // reflect fragment_about the x-axis
     scale(1, -1);
     // rotate back
     rotate(sin, cos);

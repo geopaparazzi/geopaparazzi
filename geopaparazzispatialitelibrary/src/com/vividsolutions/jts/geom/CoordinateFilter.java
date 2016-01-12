@@ -38,7 +38,7 @@ package com.vividsolutions.jts.geom;
 /**
  *  <code>Geometry</code> classes support the concept of applying a
  *  coordinate filter to every coordinate in the <code>Geometry</code>. A
- *  coordinate filter can either record information about each coordinate or
+ *  coordinate filter can either record information fragment_about each coordinate or
  *  change the coordinate in some way. Coordinate filters implement the
  *  interface <code>CoordinateFilter</code>. (<code>CoordinateFilter</code> is
  *  an example of the Gang-of-Four Visitor pattern). Coordinate filters can be

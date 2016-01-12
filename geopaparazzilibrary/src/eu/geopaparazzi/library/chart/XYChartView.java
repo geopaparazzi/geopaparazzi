@@ -1241,7 +1241,7 @@
 //    * Receives notification of touch on the panel. These are
 //    * translated and passed on to any registered {@link ChartTouchListener}s.
 //    *
-//    * @param event  Information about the touch event.
+//    * @param event  Information fragment_about the touch event.
 //    */
 //    public void touched( MotionEvent event ) {
 //

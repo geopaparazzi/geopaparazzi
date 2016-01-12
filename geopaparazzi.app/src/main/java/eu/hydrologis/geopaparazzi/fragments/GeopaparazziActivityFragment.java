@@ -18,8 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.SettingsActivity;
+import eu.hydrologis.geopaparazzi.activities.AboutActivity;
+import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
 import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
 
 public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
@@ -73,8 +75,37 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent preferencesIntent = new Intent(this.getActivity(), SettingsActivity.class);
-        startActivity(preferencesIntent);
+        switch (item.getItemId()) {
+            case R.id.action_tilesource: {
+
+            }
+            case R.id.action_new: {
+
+            }
+            case R.id.action_load: {
+
+            }
+            case R.id.action_gps: {
+
+            }
+            case R.id.action_gpsstatus: {
+
+            }
+            case R.id.action_settings: {
+                Intent preferencesIntent = new Intent(this.getActivity(), SettingsActivity.class);
+                startActivity(preferencesIntent);
+                return true;
+            }
+            case R.id.action_about: {
+                Intent intent = new Intent(getActivity(), AboutActivity.class);
+                intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
+                startActivity(intent);
+            }
+            case R.id.action_exit: {
+                getActivity().finish();
+                return true;
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -113,7 +144,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (v == gpslogButton) {
             gpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
         } else if (v == importButton) {
-            Intent providerIntent= new Intent(getActivity(), ProviderTestActivity.class);
+            Intent providerIntent = new Intent(getActivity(), ProviderTestActivity.class);
             startActivity(providerIntent);
         }
 

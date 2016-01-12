@@ -85,7 +85,7 @@ public class SimpleEdgeSetIntersector
 
   /**
    * Performs a brute-force comparison of every segment in each Edge.
-   * This has n^2 performance, and is about 100 times slower than using
+   * This has n^2 performance, and is fragment_about 100 times slower than using
    * monotone chains.
    */
   private void computeIntersects(Edge e0, Edge e1, SegmentIntersector si)

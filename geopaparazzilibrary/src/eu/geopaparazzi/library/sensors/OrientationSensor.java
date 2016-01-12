@@ -1,5 +1,23 @@
 /*
  * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +60,7 @@ public class OrientationSensor implements SensorEventListener {
     private Activity parentActivity;            // current activity for call to getWindowManager().getDefaultDisplay().getRotation()
 
     // raw inputs from Android sensors
-    private float m_Norm_Gravity;           // length of raw gravity vector received in onSensorChanged(...).  NB: should be about 10
+    private float m_Norm_Gravity;           // length of raw gravity vector received in onSensorChanged(...).  NB: should be fragment_about 10
     private float[] m_NormGravityVector;    // Normalised gravity vector, (i.e. length of this vector is 1), which points straight up into space
     private float m_Norm_MagField;          // length of raw magnetic field vector received in onSensorChanged(...).
     private float[] m_NormMagFieldValues;   // Normalised magnetic field vector, (i.e. length of this vector is 1)

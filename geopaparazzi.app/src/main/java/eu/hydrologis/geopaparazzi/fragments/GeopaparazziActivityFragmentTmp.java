@@ -37,7 +37,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.SettingsActivity;
+import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
 import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
 
 public class GeopaparazziActivityFragmentTmp extends Fragment implements View.OnLongClickListener, View.OnClickListener {

@@ -1,0 +1,5 @@
+NOTES;select * from notes order by _id desc
+IMAGES;select * from images order by _id desc
+BOOKMARKS;select * from bookmarks order by _id desc
+GPSLOGS;select * from gpslogs order by _id desc
+LOG;select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc

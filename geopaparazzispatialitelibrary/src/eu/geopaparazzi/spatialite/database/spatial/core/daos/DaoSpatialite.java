@@ -180,8 +180,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      * - no recovery attemts should be done when this returns 0
      * --- will abort attemts to recover if returns 0
      * --- this speeds up the loading by 50% in my case
-     * VECTOR_LAYERS_QUERY_MODE=3 : about 5 seconds [before about 10 seconds]
-     * VECTOR_LAYERS_QUERY_MODE=0 : about 2 seconds
+     * VECTOR_LAYERS_QUERY_MODE=3 : fragment_about 5 seconds [before fragment_about 10 seconds]
+     * VECTOR_LAYERS_QUERY_MODE=0 : fragment_about 2 seconds
      *
      * @param database       the db to use.
      * @param tableName      the table of the db to use.

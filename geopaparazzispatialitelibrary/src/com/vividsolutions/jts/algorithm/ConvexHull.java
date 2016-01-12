@@ -457,7 +457,7 @@ public class ConvexHull
 
     /**
      * Given two points p and q compare them with respect to their radial
-     * ordering about point o.  First checks radial ordering.
+     * ordering fragment_about point o.  First checks radial ordering.
      * If points are collinear, the comparison is based
      * on their distance to the origin.
      * <p>

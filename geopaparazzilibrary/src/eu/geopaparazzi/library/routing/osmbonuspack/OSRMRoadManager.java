@@ -1,6 +1,6 @@
 /*
  * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,14 +62,14 @@ public class OSRMRoadManager extends RoadManager {
 		MANEUVERS.put("8", 3); //Slight left
 		MANEUVERS.put("9", 24); //Arrived (at waypoint)
 		MANEUVERS.put("10", 24); //"Head" => used by OSRM as the start node. Considered here as a "waypoint". 
-		MANEUVERS.put("11-1", 27); //Round-about, 1st exit
+		MANEUVERS.put("11-1", 27); //Round-fragment_about, 1st exit
 		MANEUVERS.put("11-2", 28); //2nd exit, etc ...
 		MANEUVERS.put("11-3", 29);
 		MANEUVERS.put("11-4", 30);
 		MANEUVERS.put("11-5", 31);
 		MANEUVERS.put("11-6", 32);
 		MANEUVERS.put("11-7", 33);
-		MANEUVERS.put("11-8", 34); //Round-about, 8th exit
+		MANEUVERS.put("11-8", 34); //Round-fragment_about, 8th exit
 		MANEUVERS.put("15", 24); //Arrived
 	}
 	

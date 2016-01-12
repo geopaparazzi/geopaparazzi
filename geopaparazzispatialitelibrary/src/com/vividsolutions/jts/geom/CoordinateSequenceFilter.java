@@ -38,7 +38,7 @@ package com.vividsolutions.jts.geom;
 /**
  *  Interface for classes which provide operations that
  *  can be applied to the coordinates in a {@link CoordinateSequence}. 
- *  A CoordinateSequence filter can either record information about each coordinate or
+ *  A CoordinateSequence filter can either record information fragment_about each coordinate or
  *  change the coordinate in some way. CoordinateSequence filters can be
  *  used to implement such things as coordinate transformations, centroid and
  *  envelope computation, and many other functions.

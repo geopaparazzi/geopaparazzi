@@ -71,7 +71,7 @@ abstract class AbstractPreparedPolygonContains
 	 */
 	protected boolean requireSomePointInInterior = true; 
 	
-	// information about geometric situation
+	// information fragment_about geometric situation
 	private boolean hasSegmentIntersection = false;
   private boolean hasProperIntersection = false;
   private boolean hasNonProperIntersection = false;

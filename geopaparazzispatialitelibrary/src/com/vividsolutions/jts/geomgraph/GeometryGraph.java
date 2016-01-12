@@ -337,7 +337,7 @@ public class GeometryGraph
    * not tested for self-intersection, since they are assumed to be valid).
    * @param li the LineIntersector to use
    * @param computeRingSelfNodes if <false>, intersection checks are optimized to not test rings for self-intersection
-   * @return the SegmentIntersector used, containing information about the intersections found
+   * @return the SegmentIntersector used, containing information fragment_about the intersections found
    */
   public SegmentIntersector computeSelfNodes(LineIntersector li, boolean computeRingSelfNodes)
   {

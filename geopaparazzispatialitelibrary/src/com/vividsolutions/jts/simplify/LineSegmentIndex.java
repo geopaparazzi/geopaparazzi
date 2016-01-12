@@ -60,7 +60,7 @@ class LineSegmentIndex
 class LineSegmentVisitor
     implements ItemVisitor
 {
-// MD - only seems to make about a 10% difference in overall time.
+// MD - only seems to make fragment_about a 10% difference in overall time.
 
   private LineSegment querySeg;
   private ArrayList items = new ArrayList();

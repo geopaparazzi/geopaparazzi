@@ -40,13 +40,13 @@
     <string name="mapproperty">Properties for: </string>
     <string name="map_zoom">Zoom to the map</string>
     <string name="map_delete">Delete the map</string>
-    <string name="gps_preferences">Gps preferences</string>
+    <string name="gps_preferences">Gps settings</string>
     <string name="gps_preferences_summary">Set GPS preferences as logging distance or interval.</string>
     <string name="gps_logging_distance">Min gps logging distance</string>
     <string name="gps_logging_interval">Min gps logging interval</string>
     <string name="gps_use_android_level">Use at android level (saves battery, needs restart)</string>
-    <string name="gps_use_android_level_summary">If checked, the gps preferences are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
-    <string name="sms_preferences">Sms preferences</string>
+    <string name="gps_use_android_level_summary">If checked, the gps settings are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
+    <string name="sms_preferences">Sms settings</string>
     <string name="sms_preferences_summary">Set the panic number and enable the sms catcher.</string>
     <string name="sms_catcher">Enable sms catcher</string>
     <string name="databaseError">An error occurred while connecting to the database</string>
@@ -63,7 +63,7 @@
     <string name="audio_recording_stop">stop</string>
     <string name="panic">panic!</string>
     <string name="panic_number">Panic number</string>
-    <string name="panic_number_notset">No valid panic number seems to be available. Did you set it in the preferences?</string>
+    <string name="panic_number_notset">No valid panic number seems to be available. Did you enable it in the settings?</string>
     <string name="panic_upper">  PANIC!  </string>
     <string name="send_status_update">send position</string>
     <string name="help_needed">Help needed!</string>
@@ -72,7 +72,7 @@
     <string name="last_note_not_deleted">Couldn\'t delete last note</string>
     <string name="text_logging">logging</string>
     <string name="text_gpson">gps on</string>
-    <string name="debug">Debug preferences</string>
+    <string name="debug">Debug settings</string>
     <string name="enable_debug">Enable debug log</string>
     <string name="gpslogging_only">This function is available only when the gps is active and a signal is available.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
@@ -114,7 +114,7 @@
 
     <!-- added after 2.5.0 -->
     <string name="an_error_occurred_while_creating_the_chart_">An error occurred while creating the chart.</string>
-    <string name="osm_preferences">OpenStreetMap Preferences</string>
+    <string name="osm_preferences">OpenStreetMap settings</string>
     <string name="osm_do_it">Enable OSM tools</string>
     <string name="osm_user_label">Username</string>
     <string name="osm_password_label">Password</string>
@@ -135,13 +135,13 @@
     <string name="view_in_mixare">View in mixare</string>
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
     <string name="type_to_filter">type to filter</string>
-    <string name="geopapcloud_preferences">STAGE Sync Preferences</string>
-    <string name="geopapcloud_preferences_summary">Set server sync credentials and preferences for STAGE.</string>
+    <string name="geopapcloud_preferences">STAGE Sync settings</string>
+    <string name="geopapcloud_preferences_summary">Set server sync credentials and settings for STAGE.</string>
     <string name="geopapcloud_user_label">Username</string>
     <string name="geopapcloud_password_label">Password</string>
     <string name="geopapcloud_server_label">Server to connect to</string>
     <string name="exporting_data">Exporting data</string>
-    <string name="error_set_cloud_settings">The geopap-cloud preferences are not set properly. Please check your settings.</string>
+    <string name="error_set_cloud_settings">The STAGE sync parameters are not set properly. Please check your settings.</string>
     <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
     <string name="error_uploadig_project_to_cloud">An error occurred while uploading the project to the Geopap-cloud</string>
     <string name="project_succesfully_uploaded_to_cloud">The project has been successfully uploaded to the Geopap-cloud</string>
@@ -199,7 +199,7 @@
     <string name="labels">Labels</string>
     <string name="show_labels">show labels</string>
     <string name="halo">halo</string>
-    <string name="screen_preferences">Screen preferences</string>
+    <string name="screen_preferences">Screen settings</string>
     <string name="screen_preferences_summary">Set the screen preferences as the center cross or the screen density.</string>
     <string name="cross_properties_summary">Properties of the cross used to place notes.</string>
     <string name="cross_properties">Center Cross</string>
@@ -239,7 +239,7 @@
     <string name="service_name_propmt">Enter a name for the service. If left empty, the name will be taken from the service.</string>
     <string name="info">INFO</string>
     <string name="calculate_length">Calculate length...</string>
-    <string name="spatialite_preferences">Spatialite Preferences</string>
+    <string name="spatialite_preferences">Spatialite settings</string>
     <string name="spatialite_preferences_summary">Set advanced spatialite configurations.</string>
     <string name="spatialite_recovery_mode">Spatialite Recovery Mode</string>
     <string name="spatialite_recover_mode_tooltip">If on, on next startup an attempt will be made to correct faulty tables.</string>

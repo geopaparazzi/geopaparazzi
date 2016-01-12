@@ -505,7 +505,7 @@ public class LineSegment
    * If there are 0, null is returned. If there is 1 or more, 
    * exactly one of them is returned 
    * (chosen at the discretion of the algorithm).  
-   * If more information is required about the details of the intersection,
+   * If more information is required fragment_about the details of the intersection,
    * the {@link RobustLineIntersector} class should be used.
    *
    * @param line a line segment
@@ -529,7 +529,7 @@ public class LineSegment
    * between two lines.
    * If there is a unique intersection point, it is returned. 
    * Otherwise, <tt>null</tt> is returned.
-   * If more information is required about the details of the intersection,
+   * If more information is required fragment_about the details of the intersection,
    * the {@link RobustLineIntersector} class should be used.
    *
    * @param line a line segment defining an straight line with infinite extent

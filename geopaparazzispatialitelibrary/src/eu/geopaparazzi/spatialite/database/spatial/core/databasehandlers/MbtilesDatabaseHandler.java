@@ -608,7 +608,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     /**
       * House-keeping tasks for Database.
       * 
-      * <p>The ANALYZE command gathers statistics about tables and indices
+      * <p>The ANALYZE command gathers statistics fragment_about tables and indices
       * <br>The VACUUM command rebuilds the entire database.
       * <br>- A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
       * 

@@ -1087,7 +1087,7 @@ public class MBTilesDroidSpitter {
 
     /**
      * House-keeping tasks for Database
-     * The ANALYZE command gathers statistics about tables and indices
+     * The ANALYZE command gathers statistics fragment_about tables and indices
      * The VACUUM command rebuilds the entire database.
      * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
      *

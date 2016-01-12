@@ -39,7 +39,7 @@ import com.vividsolutions.jts.triangulate.quadedge.Vertex;
 /**
  * A vertex in a Constrained Delaunay Triangulation.
  * The vertex may or may not lie on a constraint.
- * If it does it may carry extra information about the original constraint.
+ * If it does it may carry extra information fragment_about the original constraint.
  * 
  * @author Martin Davis
  */
@@ -77,7 +77,7 @@ public class ConstraintVertex extends Vertex {
     /**
      * Sets the external constraint information
      * 
-     * @param constraint an object which carries information about the constraint this vertex lies on
+     * @param constraint an object which carries information fragment_about the constraint this vertex lies on
      */
     public void setConstraint(Object constraint) {
         isOnConstraint = true;

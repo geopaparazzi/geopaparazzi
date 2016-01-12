@@ -40,8 +40,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />
+        </activity>
+        <activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/about"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

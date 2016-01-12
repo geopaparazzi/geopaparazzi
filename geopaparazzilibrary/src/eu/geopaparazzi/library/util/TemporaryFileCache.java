@@ -1,6 +1,6 @@
 /*
  * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
