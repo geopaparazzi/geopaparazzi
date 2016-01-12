@@ -19,10 +19,13 @@ package eu.hydrologis.geopaparazzi.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.fragments.AboutFragment;
+import eu.hydrologis.geopaparazzi.R;
 
 /**
  * The about activity.
@@ -40,16 +43,15 @@ public class AboutActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(eu.hydrologis.geopaparazzi.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        AboutFragment aboutFragment = new AboutFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi");
+        aboutFragment.setArguments(bundle);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.fragmentAboutContainer, aboutFragment);
+        transaction.commit();
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        Fragment aboutFragment = getSupportFragmentManager().findFragmentById(
-                eu.geopaparazzi.library.R.id.about_fragment);
-
-        ((AboutFragment) aboutFragment).setData(savedInstanceState);
-    }
 }

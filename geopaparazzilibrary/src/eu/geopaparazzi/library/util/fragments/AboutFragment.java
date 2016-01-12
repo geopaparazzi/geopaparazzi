@@ -18,6 +18,8 @@
 
 package eu.geopaparazzi.library.util.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
@@ -41,20 +44,27 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class AboutFragment extends Fragment {
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(eu.geopaparazzi.library.R.layout.frag, container, false);
+        View v = inflater.inflate(R.layout.fragment_about, container, false);
 
         return v; // return the fragment's view for display
+
     }
 
-    public void setData(Bundle savedInstanceState) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle arguments = getArguments();
         String packageName = null;
-        if (savedInstanceState != null) {
-            packageName = savedInstanceState.getString(LibraryConstants.PREFS_KEY_TEXT);
+        if (arguments != null) {
+            packageName = arguments.getString(LibraryConstants.PREFS_KEY_TEXT);
         }
 
         try {
@@ -72,6 +82,8 @@ public class AboutFragment extends Fragment {
                 }
 
                 htmlText = htmlText.replaceFirst("VERSION", version);
+            } else {
+                htmlText = htmlText.replaceFirst("VERSION", "");
             }
 
             WebView aboutView = (WebView) view;

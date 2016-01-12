@@ -98,7 +98,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             }
             case R.id.action_about: {
                 Intent intent = new Intent(getActivity(), AboutActivity.class);
-                intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
                 startActivity(intent);
             }
             case R.id.action_exit: {
