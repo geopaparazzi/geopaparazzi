@@ -1,23 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-   xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orderingFromXml="true">
 
-   <ListPreference
-      android:entries="@array/gps_time_name"
-      android:entryValues="@array/gps_time_value"
-      android:key="pref_numberOfChoices"
-      android:title="number_of_choices"
-      android:summary="number_of_choices_description"
-      android:persistent="true"
-      android:defaultValue="4" />
+    <PreferenceScreen
+        android:order="1"
+        android:title="@string/gps_preferences"
+        android:summary="@string/gps_preferences_summary"
+        >
+        <EditTextPreference
+            android:defaultValue="1"
+            android:inputType="number"
+            android:key="PREFS_KEY_GPS_LOGGING_DISTANCE"
+            android:order="3"
+            android:title="@string/gps_logging_distance" />
 
-   <MultiSelectListPreference
-      android:entries="@array/array_colornames"
-      android:entryValues="@array/array_colornames"
-      android:key="pref_regionsToInclude"
-      android:title="world_regions"
-      android:summary="world_regions_description"
-      android:persistent="true"
-      android:defaultValue="@array/array_colornames" />
+        <ListPreference
+            android:defaultValue="3"
+            android:entries="@array/gps_time_name"
+            android:entryValues="@array/gps_time_value"
+            android:key="PREFS_KEY_GPS_LOGGING_INTERVAL"
+            android:order="4"
+            android:title="@string/gps_logging_interval" />
+
+        <CheckBoxPreference
+            android:key="enable_automatic_center_on_gps"
+            android:order="5"
+            android:title="@string/enable_automatic_center_on_gps" />
+        <CheckBoxPreference
+            android:key="PREFS_KEY_GPS_USE_NETWORK_POSITION"
+            android:order="6"
+            android:title="@string/gps_use_coarse" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="7"
+        android:title="@string/sms_preferences"
+        android:summary="@string/sms_preferences_summary">
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SMSCATCHER"
+            android:order="8"
+            android:title="@string/sms_catcher" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="panic_number"
+            android:order="10"
+            android:title="@string/panic_number" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="30"
+        android:title="@string/screen_preferences"
+        android:summary="@string/screen_preferences_summary">
+        <PreferenceScreen
+            android:order="60"
+            android:summary="@string/cross_properties_summary"
+            android:title="@string/cross_properties">
+            <ListPreference
+                android:entries="@array/array_colornames"
+                android:entryValues="@array/array_colornames"
+                android:key="PREFS_KEY_CROSS_COLOR"
+                android:order="61"
+                android:title="@string/color" />
+            <ListPreference
+                android:entries="@array/decimation_factor"
+                android:entryValues="@array/decimation_factor"
+                android:key="PREFS_KEY_CROSS_WIDTH"
+                android:order="62"
+                android:title="@string/width" />
+            <ListPreference
+                android:entries="@array/cross_size"
+                android:entryValues="@array/cross_size"
+                android:key="PREFS_KEY_CROSS_SIZE"
+                android:order="63"
+                android:title="@string/size" />
+        </PreferenceScreen>
+
+        <EditTextPreference
+            android:defaultValue="2.5"
+            android:inputType="numberDecimal"
+            android:key="mapsview_textsize_factor"
+            android:order="80"
+            android:title="@string/map_textsize_factor" />
+
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SCREEN_ON"
+            android:order="90"
+            android:summary="@string/keep_screen_on_summary"
+            android:title="@string/keep_screen_on" />
+        <CheckBoxPreference
+            android:key="PREFS_KEY_IMPERIAL"
+            android:order="91"
+            android:summary="@string/keep_use_imperial_sum"
+            android:title="@string/keep_use_imperial" />
+        <CheckBoxPreference
+            android:key="PREFS_KEY_RETINA"
+            android:order="92"
+            android:summary="@string/high_density_display_sum"
+            android:title="@string/high_density_display" />
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="40"
+        android:title="@string/spatialite_preferences"
+        android:summary="@string/spatialite_preferences_summary">
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"
+            android:order="41"
+            android:summary="@string/spatialite_recover_mode_tooltip"
+            android:title="@string/spatialite_recovery_mode" />
+    </PreferenceScreen>
+
+    <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference
+        android:defaultValue=""
+        android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
+        android:order="100"
+        android:summary="@string/use_custom_sdcard_summary"
+        android:title="@string/custom_sdcard_path" />
+
+    <eu.hydrologis.geopaparazzi.preferences.CustomMapsPathPreference
+        android:defaultValue=""
+        android:key="PREFS_KEY_CUSTOM_MAPSFOLDER"
+        android:order="101"
+        android:summary="@string/custommapfolder_summary"
+        android:title="@string/custommapfolder_title" />
+
+    <eu.hydrologis.geopaparazzi.preferences.ForceLocalePreference
+        android:defaultValue="en"
+        android:key="PREFS_KEY_FORCELOCALE"
+        android:order="102"
+        android:summary="@string/force_locale_summary"
+        android:title="@string/force_locale_title" />
+
+    <PreferenceScreen
+        android:order="210"
+        android:title="@string/geopapcloud_preferences"
+        android:summary="@string/geopapcloud_preferences_summary">
+        <EditTextPreference
+            android:key="geopapcloud_user_key"
+            android:order="212"
+            android:title="@string/geopapcloud_user_label" />
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="geopapcloud_pwd_key"
+            android:order="213"
+            android:title="@string/geopapcloud_password_label" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="geopapcloud_server_key"
+            android:order="214"
+            android:title="@string/geopapcloud_server_label" />
+    </PreferenceScreen>
+
+    <EditTextPreference
+        android:defaultValue=""
+        android:key="ROUTING_API_KEY"
+        android:order="220"
+        android:summary="@string/routing_pref_summary"
+        android:title="@string/routing_pref_title" />
 
 </PreferenceScreen>

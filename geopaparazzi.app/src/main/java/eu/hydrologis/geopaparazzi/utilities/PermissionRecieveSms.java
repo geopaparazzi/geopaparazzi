@@ -24,24 +24,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionFineLocation implements IChainedPermissionHelper {
+public class PermissionRecieveSms implements IChainedPermissionHelper {
 
-    public static int FINE_LOCATION_PERMISSION_REQUESTCODE = 2;
-
+    public static int RECIEVESMS_PERMISSION_REQUESTCODE = 4;
 
     @Override
     public String getDescription() {
-        return "Fine Location";
+        return "Recieve SMS";
     }
 
     @Override
     public boolean hasPermission(Context context) {
         if (context.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                Manifest.permission.RECEIVE_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
         }
@@ -52,21 +52,21 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (activity.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                Manifest.permission.RECEIVE_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
 
             if (activity.shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.RECEIVE_SMS)) {
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(activity);
-                builder.setMessage("Geopaparazzi needs to access the gps on your device to get the current location.");
+                builder.setMessage("Geopaparazzi needs to be able to recieve sms to enable certain functionalities.");
                 builder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 activity.requestPermissions(new String[]{
-                                                Manifest.permission.ACCESS_FINE_LOCATION},
-                                        FINE_LOCATION_PERMISSION_REQUESTCODE);
+                                                Manifest.permission.RECEIVE_SMS},
+                                        RECIEVESMS_PERMISSION_REQUESTCODE);
                             }
                         }
                 );
@@ -75,15 +75,15 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
             } else {
                 // request permission
                 activity.requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        FINE_LOCATION_PERMISSION_REQUESTCODE);
+                        new String[]{Manifest.permission.RECEIVE_SMS},
+                        RECIEVESMS_PERMISSION_REQUESTCODE);
             }
         }
     }
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == FINE_LOCATION_PERMISSION_REQUESTCODE &&
+        if (requestCode == RECIEVESMS_PERMISSION_REQUESTCODE &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED)
             return true;
         return false;
@@ -91,11 +91,7 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
 
     @Override
     public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionSendSms permissionSendSms = new PermissionSendSms();
-        if (!permissionSendSms.hasPermission(context)) {
-            return permissionSendSms;
-        } else {
-            return permissionSendSms.getNextWithoutPermission(context);
-        }
+        return null;
     }
+
 }

@@ -1,3 +1,21 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 // MainActivityFragment.java
 // Contains the Flag Quiz logic
 package eu.hydrologis.geopaparazzi.fragments;
@@ -22,7 +40,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.SettingsActivity;
 import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
 
-public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
+public class GeopaparazziActivityFragmentTmp extends Fragment implements View.OnLongClickListener, View.OnClickListener {
 
     private ImageButton notesButton;
     private ImageButton metadataButton;
@@ -31,13 +49,13 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private ImageButton gpslogButton;
     private ImageButton importButton;
 
+    // configures the GeopaparazziActivityFragment when its View is created
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_geopaparazzi, container, false);
 
-        // this fragment adds to the menu
         setHasOptionsMenu(true);
 
         return v; // return the fragment's view for display

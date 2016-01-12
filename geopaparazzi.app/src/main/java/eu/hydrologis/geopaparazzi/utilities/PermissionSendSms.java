@@ -28,20 +28,20 @@ import android.content.pm.PackageManager;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionFineLocation implements IChainedPermissionHelper {
+public class PermissionSendSms implements IChainedPermissionHelper {
 
-    public static int FINE_LOCATION_PERMISSION_REQUESTCODE = 2;
+    public static int SENDSMS_PERMISSION_REQUESTCODE = 3;
 
 
     @Override
     public String getDescription() {
-        return "Fine Location";
+        return "Send SMS";
     }
 
     @Override
     public boolean hasPermission(Context context) {
         if (context.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
         }
@@ -52,21 +52,21 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (activity.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
 
             if (activity.shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.SEND_SMS)) {
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(activity);
-                builder.setMessage("Geopaparazzi needs to access the gps on your device to get the current location.");
+                builder.setMessage("Geopaparazzi needs to be able to send sms to enable certain functionalities.");
                 builder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 activity.requestPermissions(new String[]{
-                                                Manifest.permission.ACCESS_FINE_LOCATION},
-                                        FINE_LOCATION_PERMISSION_REQUESTCODE);
+                                                Manifest.permission.SEND_SMS},
+                                        SENDSMS_PERMISSION_REQUESTCODE);
                             }
                         }
                 );
@@ -75,15 +75,15 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
             } else {
                 // request permission
                 activity.requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        FINE_LOCATION_PERMISSION_REQUESTCODE);
+                        new String[]{Manifest.permission.SEND_SMS},
+                        SENDSMS_PERMISSION_REQUESTCODE);
             }
         }
     }
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == FINE_LOCATION_PERMISSION_REQUESTCODE &&
+        if (requestCode == SENDSMS_PERMISSION_REQUESTCODE &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED)
             return true;
         return false;
@@ -91,11 +91,11 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
 
     @Override
     public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionSendSms permissionSendSms = new PermissionSendSms();
-        if (!permissionSendSms.hasPermission(context)) {
-            return permissionSendSms;
+        PermissionRecieveSms permissionRecieveSms = new PermissionRecieveSms();
+        if (!permissionRecieveSms.hasPermission(context)) {
+            return permissionRecieveSms;
         } else {
-            return permissionSendSms.getNextWithoutPermission(context);
+            return permissionRecieveSms.getNextWithoutPermission(context);
         }
     }
 }

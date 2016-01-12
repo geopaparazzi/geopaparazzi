@@ -3,6 +3,9 @@
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.hydrologis.geopaparazzi;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -56,7 +59,6 @@ public class GeopaparazziActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
-        PermissionWriteStorage pws = new PermissionWriteStorage();
         if (permissionHelper.hasGainedPermission(requestCode, grantResults)) {
             IChainedPermissionHelper nextWithoutPermission = permissionHelper.getNextWithoutPermission(this);
             permissionHelper = nextWithoutPermission;
@@ -67,7 +69,21 @@ public class GeopaparazziActivity extends AppCompatActivity {
             }
 
         } else {
-            finish();
+            AlertDialog.Builder builder =
+                    new AlertDialog.Builder(this);
+            builder.setMessage("Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription());
+            builder.setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }
+            );
+            // display the dialog
+            builder.create().show();
+
+
             Log.i("BLAH", "Exiting");
         }
     }
