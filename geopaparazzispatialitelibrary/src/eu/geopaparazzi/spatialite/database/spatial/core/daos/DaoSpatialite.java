@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.core.features.Feature;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;

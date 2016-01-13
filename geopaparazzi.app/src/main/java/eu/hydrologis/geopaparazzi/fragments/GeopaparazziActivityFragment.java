@@ -2,8 +2,10 @@
 // Contains the Flag Quiz logic
 package eu.hydrologis.geopaparazzi.fragments;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -23,6 +25,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.Date;
+
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -30,7 +37,10 @@ import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
@@ -49,6 +59,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private static boolean checkedGps = false;
     private GpsServiceStatus lastGpsServiceStatus;
+    private int[] lastGpsStatusExtras;
+    private GpsLoggingStatus lastGpsLoggingStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +100,13 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        GpsServiceUtilities.triggerBroadcast(getActivity());
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
@@ -106,7 +125,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             };
         }
         GpsServiceUtilities.registerForBroadcasts(getActivity(), gpsServiceBroadcastReceiver);
-        GpsServiceUtilities.triggerBroadcast(getActivity());
 
     }
 
@@ -140,7 +158,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
             }
             case R.id.action_gps: {
-
+                GpsInfoDialogFragment gpsInfoDialogFragment = new GpsInfoDialogFragment();
+                gpsInfoDialogFragment.show(getFragmentManager(), "gpsinfo dialog");
+                return true;
             }
             case R.id.action_gpsstatus: {
                 // open gps status app
@@ -164,6 +184,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onLongClick(View v) {
@@ -209,14 +230,14 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private void onGpsServiceUpdate(Intent intent) {
         lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
-        GpsLoggingStatus lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
-        double[] lastGpsPosition = GpsServiceUtilities.getPosition(intent);
-        float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
-        int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
-        long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
+        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
+        lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
+//        lastGpsPosition = GpsServiceUtilities.getPosition(intent);
+//        lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
+//        lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
 
 
-        boolean doLog = true;//GPLog.LOG_HEAVY;
+        boolean doLog = GPLog.LOG_HEAVY;
         if (doLog && lastGpsStatusExtras != null) {
             int satCount = lastGpsStatusExtras[1];
             int satForFixCount = lastGpsStatusExtras[2];
@@ -265,5 +286,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             }
         }
     }
+
 
 }

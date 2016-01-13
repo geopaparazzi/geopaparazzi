@@ -23,7 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.fragments.AboutFragment;
+import eu.geopaparazzi.library.core.fragments.AboutFragment;
 import eu.hydrologis.geopaparazzi.R;
 
 /**

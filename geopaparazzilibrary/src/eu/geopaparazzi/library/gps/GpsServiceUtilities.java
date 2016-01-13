@@ -34,6 +34,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import java.util.Date;
+
+import eu.geopaparazzi.library.sensors.OrientationSensor;
+import eu.geopaparazzi.library.util.TimeUtilities;
+
 /**
  * 
  * A service utils class.
@@ -205,4 +211,5 @@ public class GpsServiceUtilities {
         intent.putExtra(STOP_GPS_LOGGING, true);
         context.startService(intent);
     }
+
 }

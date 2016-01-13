@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.layers;
 
-import eu.geopaparazzi.library.core.features.ILayer;
+import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
