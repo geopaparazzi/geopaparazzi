@@ -59,6 +59,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // this fragment adds to the menu
         setHasOptionsMenu(true);
 
+        // start gps service
+        GpsServiceUtilities.startGpsService(getActivity());
+
         return v; // return the fragment's view for display
     }
 
@@ -213,38 +216,39 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
 
 
-        boolean doLog = GPLog.LOG_HEAVY;
+        boolean doLog = true;//GPLog.LOG_HEAVY;
         if (doLog && lastGpsStatusExtras != null) {
             int satCount = lastGpsStatusExtras[1];
             int satForFixCount = lastGpsStatusExtras[2];
             GPLog.addLogEntry(this, "satellites: " + satCount + " of which for fix: " + satForFixCount);
         }
 
-        if (lastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {// gpsManager.isEnabled()) {
-            if (doLog)
-                GPLog.addLogEntry(this, "GPS seems to be on");
-            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+        if (gpsMenuItem != null)
+            if (lastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {
                 if (doLog)
-                    GPLog.addLogEntry(this, "GPS seems to be also logging");
-                gpsMenuItem.setIcon(R.drawable.actionbar_gps_logging);
-            } else {
-                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    if (doLog) {
-                        GPLog.addLogEntry(this, "GPS has fix");
-                    }
-                    gpsMenuItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
+                    GPLog.addLogEntry(this, "GPS seems to be on");
+                if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                    if (doLog)
+                        GPLog.addLogEntry(this, "GPS seems to be also logging");
+                    gpsMenuItem.setIcon(R.drawable.actionbar_gps_logging);
                 } else {
-                    if (doLog) {
-                        GPLog.addLogEntry(this, "GPS doesn't have a fix");
+                    if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                        if (doLog) {
+                            GPLog.addLogEntry(this, "GPS has fix");
+                        }
+                        gpsMenuItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
+                    } else {
+                        if (doLog) {
+                            GPLog.addLogEntry(this, "GPS doesn't have a fix");
+                        }
+                        gpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
                     }
-                    gpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
                 }
+            } else {
+                if (doLog)
+                    GPLog.addLogEntry(this, "GPS seems to be off");
+                gpsMenuItem.setIcon(R.drawable.actionbar_gps_off);
             }
-        } else {
-            if (doLog)
-                GPLog.addLogEntry(this, "GPS seems to be off");
-            gpsMenuItem.setIcon(R.drawable.actionbar_gps_off);
-        }
     }
 
     private void checkFirstTimeGps(Context context) {

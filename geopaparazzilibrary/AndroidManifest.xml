@@ -6,9 +6,14 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="21" >
+        android:targetSdkVersion="23" >
     </uses-sdk>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!--
         <uses-permission android:name="android.permission.NFC" />
         <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -24,10 +29,6 @@
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
         <uses-permission android:name="android.permission.READ_CONTACTS" />
         <uses-permission android:name="android.permission.VIBRATE" />
-
-
-
-
     -->
 
     <uses-feature
@@ -94,13 +95,6 @@
         <activity android:name=".core.activities.GeocodeActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".core.activities.AboutActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.AboutActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

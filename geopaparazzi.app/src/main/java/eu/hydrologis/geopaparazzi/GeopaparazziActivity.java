@@ -49,9 +49,6 @@ public class GeopaparazziActivity extends AppCompatActivity {
         // set default values in the app's SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        // start gps service
-        GpsServiceUtilities.startGpsService(this);
-
     }
 
     @Override

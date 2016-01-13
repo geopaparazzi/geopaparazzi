@@ -17,10 +17,12 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
 import android.location.GpsStatus;
@@ -33,6 +35,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
 import eu.geopaparazzi.library.R;
@@ -195,6 +198,9 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
         if (locationManager == null) {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                throw new SecurityException();
+            }
             locationManager.addGpsStatusListener(this);
             isProviderEnabled = isGpsOn();
 
@@ -256,6 +262,9 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
 
         if (locationManager != null && isListeningForUpdates) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                throw new SecurityException();
+            }
             locationManager.removeUpdates(this);
             locationManager.removeGpsStatusListener(this);
             isListeningForUpdates = false;
@@ -278,6 +287,9 @@ public class GpsService extends Service implements LocationListener, Listener {
             float minDistance = 0.2f;
             long waitForSecs = WAITSECONDS;
 
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                throw new SecurityException();
+            }
             if (useNetworkPositions) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance, this);
             } else {
