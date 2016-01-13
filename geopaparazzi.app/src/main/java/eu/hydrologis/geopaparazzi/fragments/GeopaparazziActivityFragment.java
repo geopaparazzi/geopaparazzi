@@ -2,10 +2,14 @@
 // Contains the Flag Quiz logic
 package eu.hydrologis.geopaparazzi.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.res.Resources;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,10 +20,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
+import eu.geopaparazzi.library.gps.GpsServiceStatus;
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
@@ -33,6 +44,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private MenuItem gpsMenuItem;
     private ImageButton gpslogButton;
     private ImageButton importButton;
+    private OrientationSensor orientationSensor;
+    private BroadcastReceiver gpsServiceBroadcastReceiver;
+
+    private static boolean checkedGps = false;
+    private GpsServiceStatus lastGpsServiceStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +61,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         return v; // return the fragment's view for display
     }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -64,6 +81,39 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         importButton = (ImageButton) view.findViewById(R.id.dashboardButtonImport);
         importButton.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (orientationSensor == null) {
+            SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+            orientationSensor = new OrientationSensor(sensorManager, null);
+        }
+        orientationSensor.register(getActivity(), SensorManager.SENSOR_DELAY_NORMAL);
+
+        if (gpsServiceBroadcastReceiver == null) {
+            gpsServiceBroadcastReceiver = new BroadcastReceiver() {
+                public void onReceive(Context context, Intent intent) {
+                    onGpsServiceUpdate(intent);
+                    checkFirstTimeGps(context);
+                }
+            };
+        }
+        GpsServiceUtilities.registerForBroadcasts(getActivity(), gpsServiceBroadcastReceiver);
+        GpsServiceUtilities.triggerBroadcast(getActivity());
+
+    }
+
+    // remove SourceUrlsFragmentListener when Fragment detached
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        orientationSensor.unregister();
+        GpsServiceUtilities.unregisterFromBroadcasts(getActivity(), gpsServiceBroadcastReceiver);
     }
 
     @Override
@@ -152,4 +202,64 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         }
 
     }
+
+
+    private void onGpsServiceUpdate(Intent intent) {
+        lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        GpsLoggingStatus lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
+        double[] lastGpsPosition = GpsServiceUtilities.getPosition(intent);
+        float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
+        int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
+        long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
+
+
+        boolean doLog = GPLog.LOG_HEAVY;
+        if (doLog && lastGpsStatusExtras != null) {
+            int satCount = lastGpsStatusExtras[1];
+            int satForFixCount = lastGpsStatusExtras[2];
+            GPLog.addLogEntry(this, "satellites: " + satCount + " of which for fix: " + satForFixCount);
+        }
+
+        if (lastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {// gpsManager.isEnabled()) {
+            if (doLog)
+                GPLog.addLogEntry(this, "GPS seems to be on");
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                if (doLog)
+                    GPLog.addLogEntry(this, "GPS seems to be also logging");
+                gpsMenuItem.setIcon(R.drawable.actionbar_gps_logging);
+            } else {
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                    if (doLog) {
+                        GPLog.addLogEntry(this, "GPS has fix");
+                    }
+                    gpsMenuItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
+                } else {
+                    if (doLog) {
+                        GPLog.addLogEntry(this, "GPS doesn't have a fix");
+                    }
+                    gpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
+                }
+            }
+        } else {
+            if (doLog)
+                GPLog.addLogEntry(this, "GPS seems to be off");
+            gpsMenuItem.setIcon(R.drawable.actionbar_gps_off);
+        }
+    }
+
+    private void checkFirstTimeGps(Context context) {
+        if (!checkedGps) {
+            checkedGps = true;
+            if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+                String prompt = getResources().getString(R.string.prompt_gpsenable);
+                Utilities.yesNoMessageDialog(context, prompt, new Runnable() {
+                    public void run() {
+                        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(gpsOptionsIntent);
+                    }
+                }, null);
+            }
+        }
+    }
+
 }

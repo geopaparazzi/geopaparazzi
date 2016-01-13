@@ -14,13 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
 import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
 import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
 
 public class GeopaparazziActivity extends AppCompatActivity {
-    private boolean preferencesChanged = true; // did preferences change?
-
     private IChainedPermissionHelper permissionHelper = new PermissionWriteStorage();
 
     // configure the GeopaparazziActivity
@@ -50,10 +49,9 @@ public class GeopaparazziActivity extends AppCompatActivity {
         // set default values in the app's SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        // register listener for SharedPreferences changes
-        PreferenceManager.getDefaultSharedPreferences(this).
-                registerOnSharedPreferenceChangeListener(
-                        preferencesChangeListener);
+        // start gps service
+        GpsServiceUtilities.startGpsService(this);
+
     }
 
     @Override
@@ -92,26 +90,15 @@ public class GeopaparazziActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (preferencesChanged) {
-            // now that the default preferences have been set,
-            // initialize GeopaparazziActivityFragment and start the quiz
-            GeopaparazziActivityFragment quizFragment = (GeopaparazziActivityFragment)
-                    getSupportFragmentManager().findFragmentById(
-                            R.id.geopaparazziFragment);
-            preferencesChanged = false;
-        }
     }
 
-    // listener for changes to the app's SharedPreferences
-    private OnSharedPreferenceChangeListener preferencesChangeListener =
-            new OnSharedPreferenceChangeListener() {
-                // called when the user changes the app's preferences
-                @Override
-                public void onSharedPreferenceChanged(
-                        SharedPreferences sharedPreferences, String key) {
-                    preferencesChanged = true; // user changed app setting
-
-                }
-            };
+    @Override
+    public void finish() {
+        try {
+            GpsServiceUtilities.stopDatabaseLogging(this);
+            GpsServiceUtilities.stopGpsService(this);
+        } finally {
+            super.finish();
+        }
+    }
 }
