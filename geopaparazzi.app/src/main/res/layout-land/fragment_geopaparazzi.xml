@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonNotes"
             android:layout_column="0"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:src="@drawable/dashboard_notes"
@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonMetadata"
             android:layout_column="1"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:textColor="@color/main_text_color"
             android:layout_weight="1"
             android:layout_margin="10dp"
@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonGpslog"
             android:layout_column="2"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:src="@drawable/dashboard_gpslog"/>
@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonMapview"
             android:layout_column="0"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:src="@drawable/dashboard_mapview"/>
@@ -69,7 +69,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonImport"
             android:layout_column="1"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:src="@drawable/dashboard_import"/>
@@ -79,7 +79,7 @@
             android:layout_height="match_parent"
             android:id="@+id/dashboardButtonExport"
             android:layout_column="2"
-            style="@style/AppTheme.Button.Colored"
+            style="@style/GeopapTheme.Button.Colored"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:src="@drawable/dashboard_export"/>

@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.R;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;

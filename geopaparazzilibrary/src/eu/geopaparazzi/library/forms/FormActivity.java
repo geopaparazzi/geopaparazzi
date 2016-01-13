@@ -46,7 +46,7 @@ import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**

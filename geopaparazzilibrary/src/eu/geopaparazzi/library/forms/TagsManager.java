@@ -32,8 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMNAME;
@@ -53,7 +53,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
  * <p>The tags are looked for in the following places:</p>
  * <ul>
  * <li>a file named <b>tags.json</b> inside the application folder (Which
- * is retrieved via {@link eu.geopaparazzi.library.util.ResourcesManager#getApplicationSupporterDir()} </li>
+ * is retrieved via {@link ResourcesManager#getApplicationSupporterDir()} </li>
  * <li>or, if the above is missing, a file named <b>tags/tags.json</b> in
  * the asset folder of the project. In that case the file is copied over
  * to the file in the first point.</li>

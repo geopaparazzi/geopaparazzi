@@ -1,7 +1,7 @@
 <resources>
 
    <!-- Base application theme. -->
-   <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+   <style name="GeopapTheme" parent="Theme.AppCompat.Light.DarkActionBar">
    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
       <!-- Customize your theme here. -->
       <item name="colorPrimary">@color/main_decorations</item>
@@ -11,16 +11,16 @@
       <item name="android:colorBackground">@color/main_background</item>
       <item name="android:statusBarColor">?attr/colorPrimary</item>
    </style>
-   <style name="AppTheme.NoActionBar">
+   <style name="GeopapTheme.NoActionBar">
       <item name="windowActionBar">false</item>
       <item name="windowNoTitle">true</item>
    </style>
-   <style name="AppTheme.AppBarOverlay"
+   <style name="GeopapTheme.AppBarOverlay"
           parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-   <style name="AppTheme.PopupOverlay"
+   <style name="GeopapTheme.PopupOverlay"
           parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="AppTheme.Button.Colored" parent="Base.Widget.AppCompat.Button.Colored">
+    <style name="GeopapTheme.Button.Colored" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Inverse</item>
     </style>

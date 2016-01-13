@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
@@ -89,7 +90,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
             }
             case R.id.action_gpsstatus: {
-
+                // open gps status app
+                AppsUtilities.checkAndOpenGpsStatus(getActivity());
+                return true;
             }
             case R.id.action_settings: {
                 Intent preferencesIntent = new Intent(this.getActivity(), SettingsActivity.class);
@@ -99,6 +102,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             case R.id.action_about: {
                 Intent intent = new Intent(getActivity(), AboutActivity.class);
                 startActivity(intent);
+                return true;
             }
             case R.id.action_exit: {
                 getActivity().finish();

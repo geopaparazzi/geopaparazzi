@@ -26,7 +26,7 @@ import java.util.List;
 import jsqlite.Exception;
 import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;

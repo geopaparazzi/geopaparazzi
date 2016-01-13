@@ -76,8 +76,6 @@
     <string name="enable_debug">Enable debug log</string>
     <string name="gpslogging_only">This function is available only when the gps is active and a signal is available.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
-    <string name="installgpsstatus_title">Install GPS Status</string>
-    <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 
     <!-- added after 2.1.2 -->
     <string name="reset">Create new project</string>

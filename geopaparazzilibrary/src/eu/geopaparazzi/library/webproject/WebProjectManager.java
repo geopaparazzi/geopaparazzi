@@ -19,7 +19,6 @@ package eu.geopaparazzi.library.webproject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * Singleton to handle cloud up- and download.

@@ -15,30 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.features;
-
-import android.graphics.Canvas;
-import android.view.MotionEvent;
+package eu.geopaparazzi.library.core.activities;
 
 /**
- * A tool that can draw.
+ * The names to call activities.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface DrawingTool extends Tool {
-
+public interface ActivitiesNames {
     /**
-     * Called when the tool should draw.
      * 
-     * @param canvas the {@link Canvas} to draw on.
      */
-    public void onToolDraw( Canvas canvas );
-
-    /**
-     * Called on a touch event.
-     * 
-     * @param event the current triggered event.
-     * @return <code>true</code> if the event has been handled.
-     */
-    public boolean onToolTouchEvent( MotionEvent event );
+    public final String CAMERA_ACTIVITY = "eu.geopaparazzi.library.camera.CameraActivity"; //$NON-NLS-1$
 }

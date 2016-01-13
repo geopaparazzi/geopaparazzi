@@ -74,10 +74,8 @@ import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * The fragment detail view.

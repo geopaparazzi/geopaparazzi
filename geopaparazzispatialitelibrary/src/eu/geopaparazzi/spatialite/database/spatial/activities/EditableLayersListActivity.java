@@ -39,9 +39,9 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.features.EditManager;
+import eu.geopaparazzi.library.core.features.ILayer;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;

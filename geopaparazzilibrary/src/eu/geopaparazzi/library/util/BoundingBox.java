@@ -17,9 +17,9 @@
  */
 package eu.geopaparazzi.library.util;
 /**
- * @author Andrea Antonello (www.hydrologis.com)
- * 
  * A bounding box that keeps both world and screen space.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class BoundingBox {
     /**

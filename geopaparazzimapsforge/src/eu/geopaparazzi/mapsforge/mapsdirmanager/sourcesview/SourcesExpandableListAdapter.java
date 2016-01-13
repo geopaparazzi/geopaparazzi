@@ -33,10 +33,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.mapsforge.R;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * Expandable list for tile sources.

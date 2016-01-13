@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         -->
-        <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
+        <activity android:name=".core.activities.DirectoryBrowserActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
 
@@ -76,7 +76,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.geopaparazzi.library.util.activities.NoteActivity"
+            android:name=".core.activities.NoteActivity"
             android:configChanges="keyboardHidden|orientation" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
@@ -84,21 +84,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
+        <activity android:name=".core.activities.InsertCoordActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" >
+        <activity android:name=".core.activities.GeocodeActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.util.activities.AboutActivity" >
+        <activity android:name=".core.activities.AboutActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.AboutActivity" />
 

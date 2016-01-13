@@ -18,13 +18,12 @@
 package eu.hydrologis.geopaparazzi.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.fragments.AboutFragment;
+import eu.geopaparazzi.library.fragments.AboutFragment;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -33,8 +32,6 @@ import eu.hydrologis.geopaparazzi.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class AboutActivity extends AppCompatActivity {
-
-    private Bundle savedInstanceState;
 
     @SuppressWarnings("nls")
     public void onCreate(Bundle savedInstanceState) {

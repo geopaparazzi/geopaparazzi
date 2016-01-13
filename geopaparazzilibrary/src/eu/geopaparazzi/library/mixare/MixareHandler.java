@@ -27,7 +27,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PointF3D;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * Utilities for interaction with the Mixare project. 

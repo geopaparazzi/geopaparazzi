@@ -39,9 +39,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * A custom map view.

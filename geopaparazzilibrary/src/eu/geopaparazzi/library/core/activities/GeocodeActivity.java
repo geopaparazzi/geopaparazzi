@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.util.activities;
+package eu.geopaparazzi.library.core.activities;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -41,7 +40,6 @@ import java.util.List;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
 import eu.geopaparazzi.library.routing.osmbonuspack.GeoPoint;
 import eu.geopaparazzi.library.routing.osmbonuspack.GraphHopperRoadManager;
 import eu.geopaparazzi.library.routing.osmbonuspack.MapQuestRoadManager;

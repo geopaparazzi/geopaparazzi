@@ -92,5 +92,7 @@
     <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
     <string name="share_current_position">Share current position</string>
     <string name="share_current_center">Share current map center</string>
+    <string name="installgpsstatus_title">Install GPS Status</string>
+    <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 
 </resources>

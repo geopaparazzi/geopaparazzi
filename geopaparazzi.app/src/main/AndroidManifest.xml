@@ -27,12 +27,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/GeopapTheme">
         <activity
             android:name=".GeopaparazziActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/GeopapTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,7 +43,7 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".GeopaparazziActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GeopaparazziActivity" />
@@ -52,7 +52,7 @@
             android:name=".activities.AboutActivity"
             android:label="@string/about"
             android:parentActivityName=".GeopaparazziActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GeopaparazziActivity" />
@@ -61,7 +61,7 @@
             android:name=".providers.ProviderTestActivity"
             android:parentActivityName=".GeopaparazziActivity"
             android:label="Available Source Urls List"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GeopaparazziActivity" />

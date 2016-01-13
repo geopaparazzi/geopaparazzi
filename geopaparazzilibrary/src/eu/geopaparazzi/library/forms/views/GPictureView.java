@@ -50,7 +50,7 @@ import eu.geopaparazzi.library.forms.FragmentDetail;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * A custom pictures view.
