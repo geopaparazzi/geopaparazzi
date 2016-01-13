@@ -18,8 +18,6 @@
 
 package eu.geopaparazzi.library.util.fragments;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -39,7 +37,11 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
- * The fragment_about view.
+ * The about fragment view.
+ *
+ * <p>It picks an about.html file from the assets folder and replaces
+ * teh word "VERSION" with the actual version of the app passed in
+ * the arguments bundle of the fragment.</p>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
