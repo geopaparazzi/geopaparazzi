@@ -65,12 +65,12 @@ public class GpsInfoDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
-        View colorDialogView = getActivity().getLayoutInflater().inflate(
+        View gpsinfoDialogView = getActivity().getLayoutInflater().inflate(
                 R.layout.fragment_dialog_gpsinfo, null);
-        builder.setView(colorDialogView);
+        builder.setView(gpsinfoDialogView);
         builder.setTitle(R.string.gps_info_dialog_title);
 
-        gpsInfoTextview = (TextView) colorDialogView.findViewById(
+        gpsInfoTextview = (TextView) gpsinfoDialogView.findViewById(
                 R.id.gpsinfoTextview);
 
         builder.setPositiveButton(R.string.open_gps_settings,
