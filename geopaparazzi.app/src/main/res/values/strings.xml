@@ -319,6 +319,12 @@
     <string name="routing_pref_summary">To use MapQuest and Graphhopper routing services insert the proper ApiKey.</string>
     <string name="gps_info_dialog_title">Map/Gps Information</string>
     <string name="open_gps_settings">Open GPS settings</string>
+    <string name="dashboard_note_action_description">Add a text, picture or sketch note</string>
+    <string name="dashboard_metadata_action_description">View the project information</string>
+    <string name="dashboard_gpslog_action_description">Toggle gps logging</string>
+    <string name="dashboard_mapview_action_description">Open the map view</string>
+    <string name="dashboard_import_action_description">Open the import view</string>
+    <string name="dashboard_export_action_description">Open the export view</string>
 
 
 </resources>

@@ -43,18 +43,18 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private ImageButton mMetadataButton;
     private ImageButton mMapviewButton;
     private ImageButton mGpslogButton;
+    private ImageButton mExportButton;
+
     private ImageButton mImportButton;
 
     private MenuItem mGpsMenuItem;
-
     private OrientationSensor mOrientationSensor;
-    private BroadcastReceiver mGpsServiceBroadcastReceiver;
 
+    private BroadcastReceiver mGpsServiceBroadcastReceiver;
     private static boolean sCheckedGps = false;
     private GpsServiceStatus mLastGpsServiceStatus;
     private int[] mLastGpsStatusExtras;
     private GpsLoggingStatus mLastGpsLoggingStatus;
-    private GestureDetectorCompat mGestureDetector;
     private double[] lastGpsPosition;
 
     @Override
@@ -78,35 +78,28 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         super.onViewCreated(view, savedInstanceState);
 
         mNotesButton = (ImageButton) view.findViewById(R.id.dashboardButtonNotes);
+        mNotesButton.setOnClickListener(this);
         mNotesButton.setOnLongClickListener(this);
 
         mMetadataButton = (ImageButton) view.findViewById(R.id.dashboardButtonMetadata);
         mMetadataButton.setOnClickListener(this);
+        mMetadataButton.setOnLongClickListener(this);
 
         mMapviewButton = (ImageButton) view.findViewById(R.id.dashboardButtonMapview);
         mMapviewButton.setOnClickListener(this);
+        mMapviewButton.setOnLongClickListener(this);
 
         mGpslogButton = (ImageButton) view.findViewById(R.id.dashboardButtonGpslog);
         mGpslogButton.setOnClickListener(this);
+        mGpslogButton.setOnLongClickListener(this);
 
         mImportButton = (ImageButton) view.findViewById(R.id.dashboardButtonImport);
         mImportButton.setOnClickListener(this);
+        mImportButton.setOnLongClickListener(this);
 
-
-        mGestureDetector = new GestureDetectorCompat(getActivity(), new PanicGestureListener());
-        View.OnTouchListener touchListener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mGestureDetector.onTouchEvent(event);
-                return true;
-            }
-        };
-        view.setOnTouchListener(touchListener);
-        mNotesButton.setOnTouchListener(touchListener);
-        mMetadataButton.setOnTouchListener(touchListener);
-        mMapviewButton.setOnTouchListener(touchListener);
-        mGpslogButton.setOnTouchListener(touchListener);
-        mImportButton.setOnTouchListener(touchListener);
+        mExportButton = (ImageButton) view.findViewById(R.id.dashboardButtonExport);
+        mExportButton.setOnClickListener(this);
+        mExportButton.setOnLongClickListener(this);
 
     }
 
@@ -198,9 +191,17 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     @Override
     public boolean onLongClick(View v) {
-        String tooltip = "blah";
+        if (v instanceof ImageButton) {
+            ImageButton imageButton = (ImageButton) v;
+
+            String tooltip = imageButton.getContentDescription().toString();
+            Snackbar.make(v, tooltip, Snackbar.LENGTH_SHORT).show();
+            return true;
+        }
+
+
         if (v == mNotesButton) {
-            tooltip = "Available providers:";
+            String tooltip = "Available providers:";
             for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
                 ProviderInfo[] providers = pack.providers;
                 if (providers != null) {
@@ -210,11 +211,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                     }
                 }
             }
-
-
+            Snackbar.make(v, tooltip, Snackbar.LENGTH_SHORT).show();
         }
 
-        Snackbar.make(v, tooltip, Snackbar.LENGTH_LONG).show();
 
         return true;
     }
