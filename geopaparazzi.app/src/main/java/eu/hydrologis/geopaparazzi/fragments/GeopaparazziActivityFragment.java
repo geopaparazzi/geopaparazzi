@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -66,10 +67,12 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.activities.PanicActivity;
+import eu.hydrologis.geopaparazzi.activities.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
 import eu.hydrologis.geopaparazzi.core.ApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.database.TableDescriptions;
+import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 import eu.hydrologis.geopaparazzi.dialogs.ColorDialogFragment;
 import eu.hydrologis.geopaparazzi.dialogs.GpsInfoDialogFragment;
 import eu.hydrologis.geopaparazzi.dialogs.LineWidthDialogFragment;
@@ -115,6 +118,12 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // this fragment adds to the menu
         setHasOptionsMenu(true);
 
+        try {
+            initializeResourcesManager();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // start gps service
         GpsServiceUtilities.startGpsService(getActivity());
 
@@ -153,6 +162,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         panicFAB = (FloatingActionButton) view.findViewById(R.id.panicActionButton);
         panicFAB.setOnClickListener(this);
         enablePanic(false);
+
+
     }
 
 
@@ -276,9 +287,12 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     @Override
     public void onClick(View v) {
         if (v == mMetadataButton) {
-            LineWidthDialogFragment widthDialog =
-                    new LineWidthDialogFragment();
-            widthDialog.show(getFragmentManager(), "line width dialog");
+            try {
+                Intent projectMetadataIntent = new Intent(getActivity(), ProjectMetadataActivity.class);
+                startActivity(projectMetadataIntent);
+            } catch (Exception e) {
+                GPLog.error(this, null, e); //$NON-NLS-1$
+            }
         } else if (v == mMapviewButton) {
             ColorDialogFragment colorDialog = new ColorDialogFragment();
             colorDialog.show(getFragmentManager(), "color dialog");
@@ -450,14 +464,19 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             GeopaparazziApplication.getInstance().getDatabase();
 
             // Set the project name in the metadata, if not already available
-            HashMap<String, String> projectMetadata = DaoMetadata.getProjectMetadata();
-            String projectName = projectMetadata.get(TableDescriptions.MetadataTableFields.KEY_NAME.getFieldName());
-            if (projectName.length() == 0) {
-                File dbFile = resourcesManager.getDatabaseFile();
-                String dbName = FileUtilities.getNameWithoutExtention(dbFile);
-                DaoMetadata.setValue(TableDescriptions.MetadataTableFields.KEY_NAME.getFieldName(), dbName);
+            List<Metadata> projectMetadata = DaoMetadata.getProjectMetadata();
+            for (Metadata metadata : projectMetadata) {
+                if (metadata.key.equals(TableDescriptions.MetadataTableDefaultValues.KEY_NAME.getFieldName())) {
+                    String projectName = metadata.value;
+                    if (projectName.length() == 0) {
+                        File dbFile = resourcesManager.getDatabaseFile();
+                        String dbName = FileUtilities.getNameWithoutExtention(dbFile);
+                        DaoMetadata.setValue(metadata.key, dbName);
+                        break;
+                    }
+                }
             }
-
+            // TODO
 //            initMapsDirManager();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
@@ -466,11 +485,12 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
     private void checkLogButton() {
-        if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-            mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
-        } else {
-            mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
-        }
+        if (mGpslogButton != null)
+            if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
+            } else {
+                mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
+            }
     }
 
     private void handleGpsLogAction() {

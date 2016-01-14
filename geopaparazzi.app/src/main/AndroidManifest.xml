@@ -76,6 +76,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GeopaparazziActivity" />>
         </activity>
+        <activity
+            android:name=".activities.ProjectMetadataActivity"
+            android:label="Project Info"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />>
+        </activity>
 
         <provider
             android:name=".providers.SourceUrlsContentProvider"

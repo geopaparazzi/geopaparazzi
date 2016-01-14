@@ -53,43 +53,19 @@ public class TableDescriptions {
      */
     public static final String TABLE_GPSLOG_PROPERTIES = "gpslogsproperties";
 
-    public static enum MetadataTableFields {
+    public enum MetadataTableFields {
         /**
          * The field name for the keys.
          */
         COLUMN_KEY("key", String.class),
         /**
+         * The field name for the labels.
+         */
+        COLUMN_LABEL("label", String.class),
+        /**
          * The field name for the values.
          */
-        COLUMN_VALUE("value", String.class),
-        /**
-         * Project name/title key to use.
-         */
-        KEY_NAME("name", String.class),
-        /**
-         * Description key to use.
-         */
-        KEY_DESCRIPTION("description", String.class),
-        /**
-         * Notes key to use.
-         */
-        KEY_NOTES("notes", String.class),
-        /**
-        * Creation timestamp key to use.
-        */
-        KEY_CREATIONTS("creationts", Long.class),
-        /**
-        * Last available timestamp key to use.
-        */
-        KEY_LASTTS("lastts", Long.class),
-        /**
-         * The user that created the project key to use.
-         */
-        KEY_CREATIONUSER("creationuser", String.class),
-        /**
-         * The last user working on the project key to use.
-         */
-        KEY_LASTUSER("lastuser", String.class);
+        COLUMN_VALUE("value", String.class);
 
         private String fieldName;
         private Class fieldClass;
@@ -101,6 +77,59 @@ public class TableDescriptions {
 
         public String getFieldName() {
             return fieldName;
+        }
+
+        public Class getFieldClass() {
+            return fieldClass;
+        }
+    }
+
+    public enum MetadataTableDefaultValues {
+        /**
+         * Project name/title key to use.
+         */
+        KEY_NAME("name", "Project name", String.class),
+        /**
+         * Description key to use.
+         */
+        KEY_DESCRIPTION("description", "Project description", String.class),
+        /**
+         * Notes key to use.
+         */
+        KEY_NOTES("notes", "Notes", String.class),
+        /**
+         * Creation timestamp key to use.
+         */
+        KEY_CREATIONTS("creationts", "Creation timestamp", Long.class),
+        /**
+         * Last available timestamp key to use.
+         */
+        KEY_LASTTS("lastts", "Last available timestamp", Long.class),
+        /**
+         * The user that created the project key to use.
+         */
+        KEY_CREATIONUSER("creationuser", "Creation user", String.class),
+        /**
+         * The last user working on the project key to use.
+         */
+        KEY_LASTUSER("lastuser", "Last working user", String.class);
+
+        private String fieldLabel;
+        private String fieldName;
+        private Class fieldClass;
+
+        MetadataTableDefaultValues(String fieldName, String fieldLabel, Class fieldClass) {
+            this.fieldName = fieldName;
+            this.fieldLabel = fieldLabel;
+            this.fieldClass = fieldClass;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        public String getFieldLabel() {
+            return fieldLabel;
         }
 
         public Class getFieldClass() {

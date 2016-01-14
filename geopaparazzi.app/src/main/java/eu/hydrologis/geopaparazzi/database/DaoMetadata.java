@@ -23,13 +23,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
+import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.MetadataTableFields;
+import static eu.hydrologis.geopaparazzi.database.TableDescriptions.MetadataTableDefaultValues;
 import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_METADATA;
 
 /**
@@ -51,6 +56,7 @@ public class DaoMetadata {
         sB.append(TABLE_METADATA);
         sB.append(" (");
         sB.append(MetadataTableFields.COLUMN_KEY.getFieldName()).append(" TEXT NOT NULL, ");
+        sB.append(MetadataTableFields.COLUMN_LABEL.getFieldName()).append(" TEXT , ");
         sB.append(MetadataTableFields.COLUMN_VALUE.getFieldName()).append(" TEXT NOT NULL ");
         sB.append(");");
         String CREATE_TABLE_PROJECT = sB.toString();
@@ -101,37 +107,44 @@ public class DaoMetadata {
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_NAME.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_NAME.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_NAME.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), name);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_DESCRIPTION.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_DESCRIPTION.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_DESCRIPTION.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), description);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_NOTES.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_NOTES.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_NOTES.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), notes);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_CREATIONTS.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONTS.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONTS.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), String.valueOf(creationDate.getTime()));
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_LASTTS.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_LASTTS.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_LASTTS.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), EMPTY_VALUE);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_CREATIONUSER.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONUSER.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONUSER.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), creationUser);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
-            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableFields.KEY_LASTUSER.getFieldName());
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_LASTUSER.getFieldName());
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_LASTUSER.getFieldLabel());
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), EMPTY_VALUE);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
@@ -167,26 +180,55 @@ public class DaoMetadata {
      * @return the map of metadata.
      * @throws java.io.IOException if something goes wrong.
      */
-    public static HashMap<String, String> getProjectMetadata() throws IOException {
+    public static List<Metadata> getProjectMetadata() throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        HashMap<String, String> metadata = new HashMap<String, String>();
+        List<Metadata> metadataList = new ArrayList<>();
 
-        String asColumnsToReturn[] = { //
-                MetadataTableFields.COLUMN_KEY.getFieldName(), //
-                MetadataTableFields.COLUMN_VALUE.getFieldName()
-        };// ,
-        Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            String key = c.getString(0);
-            String value = c.getString(1);
+        try {
+            String asColumnsToReturn[] = { //
+                    MetadataTableFields.COLUMN_KEY.getFieldName(), //
+                    MetadataTableFields.COLUMN_LABEL.getFieldName(), //
+                    MetadataTableFields.COLUMN_VALUE.getFieldName()
+            };// ,
+            Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                String key = c.getString(0);
+                String label = c.getString(1);
+                String value = c.getString(2);
 
-            metadata.put(key, value);
+                Metadata m = new Metadata();
+                m.key = key;
+                m.label = label;
+                m.value = value;
+                metadataList.add(m);
 
-            c.moveToNext();
+                c.moveToNext();
+            }
+            c.close();
+        } catch (Exception e) {
+            // try the olde way
+            String asColumnsToReturn[] = { //
+                    MetadataTableFields.COLUMN_KEY.getFieldName(), //
+                    MetadataTableFields.COLUMN_VALUE.getFieldName()
+            };// ,
+            Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                String key = c.getString(0);
+                String value = c.getString(1);
+
+                Metadata m = new Metadata();
+                m.key = key;
+                m.label = key;
+                m.value = value;
+                metadataList.add(m);
+
+                c.moveToNext();
+            }
+            c.close();
         }
-        c.close();
-        return metadata;
+        return metadataList;
     }
 
 
