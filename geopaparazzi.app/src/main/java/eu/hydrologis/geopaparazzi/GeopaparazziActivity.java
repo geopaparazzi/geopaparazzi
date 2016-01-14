@@ -7,11 +7,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
+import eu.hydrologis.geopaparazzi.providers.SourceUrlsFragment;
 import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
 import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
 
@@ -46,6 +49,11 @@ public class GeopaparazziActivity extends AppCompatActivity {
         // set default values in the app's SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        GeopaparazziActivityFragment geopaparazziActivityFragment = new GeopaparazziActivityFragment();
+        FragmentTransaction transaction =
+                getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, geopaparazziActivityFragment);
+        transaction.commitAllowingStateLoss();
     }
 
     @Override
