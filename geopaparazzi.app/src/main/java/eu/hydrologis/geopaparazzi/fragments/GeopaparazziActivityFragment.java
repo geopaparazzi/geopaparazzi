@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
@@ -34,6 +35,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
+import eu.hydrologis.geopaparazzi.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
 import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
 
@@ -56,6 +58,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private int[] mLastGpsStatusExtras;
     private GpsLoggingStatus mLastGpsLoggingStatus;
     private double[] lastGpsPosition;
+    private FloatingActionButton panicFAB;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,7 +104,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mExportButton.setOnClickListener(this);
         mExportButton.setOnLongClickListener(this);
 
+        panicFAB = (FloatingActionButton) view.findViewById(R.id.panicActionButton);
+        panicFAB.setOnClickListener(this);
+        enablePanic(false);
     }
+
 
     @Override
     public void onResume() {
@@ -232,6 +239,17 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (v == mImportButton) {
             Intent providerIntent = new Intent(getActivity(), ProviderTestActivity.class);
             startActivity(providerIntent);
+        } else if (v == panicFAB) {
+            if (lastGpsPosition == null) {
+                return;
+            }
+
+            Intent panicIntent = new Intent(getActivity(), PanicActivity.class);
+            double lon = lastGpsPosition[0];
+            double lat = lastGpsPosition[1];
+            panicIntent.putExtra(LibraryConstants.LATITUDE, lat);
+            panicIntent.putExtra(LibraryConstants.LONGITUDE, lon);
+            startActivity(panicIntent);
         }
 
     }
@@ -261,23 +279,27 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                     if (doLog)
                         GPLog.addLogEntry(this, "GPS seems to be also logging");
                     mGpsMenuItem.setIcon(R.drawable.actionbar_gps_logging);
+                    enablePanic(true);
                 } else {
                     if (mLastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                         if (doLog) {
                             GPLog.addLogEntry(this, "GPS has fix");
                         }
                         mGpsMenuItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
+                        enablePanic(true);
                     } else {
                         if (doLog) {
                             GPLog.addLogEntry(this, "GPS doesn't have a fix");
                         }
                         mGpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
+                        enablePanic(false);
                     }
                 }
             } else {
                 if (doLog)
                     GPLog.addLogEntry(this, "GPS seems to be off");
                 mGpsMenuItem.setIcon(R.drawable.actionbar_gps_off);
+                enablePanic(false);
             }
     }
 
@@ -297,35 +319,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
 
-    private class PanicGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent event1, MotionEvent event2,
-                               float velocityX, float velocityY) {
-            if (lastGpsPosition == null) {
-                return true;
-            }
-
-            PanicDialogFragment panicDialogFragment = new PanicDialogFragment();
-            Bundle bundle = new Bundle();
-
-            double lon = lastGpsPosition[0];
-            double lat = lastGpsPosition[1];
-            bundle.putDouble(LibraryConstants.LATITUDE, lat);
-            bundle.putDouble(LibraryConstants.LONGITUDE, lon);
-
-            float deltaY = event1.getY() - event2.getY();
-            if (deltaY < 0) {
-                // open panic button view on down fling
-                bundle.putBoolean(PanicDialogFragment.KEY_ISPANIC, true);
-            } else {
-                // status update button view on down fling
-                bundle.putBoolean(PanicDialogFragment.KEY_ISPANIC, false);
-            }
-            panicDialogFragment.setArguments(bundle);
-            panicDialogFragment.show(getFragmentManager(), "panic dialog");
-            return true;
+    private void enablePanic(boolean enable) {
+        if (enable) {
+            panicFAB.show();
+        } else {
+            panicFAB.hide();
         }
     }
-
-
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Geopaparazzi - Digital field mapping on Android based devices
   ~ Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
   ~
@@ -16,19 +16,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <Button
-        android:id="@+id/statusupdatebutton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:background="@drawable/warning_button_drawable"
-        android:text="@string/send_status_update"
-        android:textColor="@color/main_background"
-        android:textSize="@dimen/statusupdate_button_text_size"
-        android:textStyle="bold" />
-</FrameLayout>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+       android:fillColor="@color/main_background"
+       android:pathData="m 9.8777008,6.4568254 v 5.3503986 h 2.4224632 q 1.344752,0 2.079121,-0.69622 0.734367,-0.696219 0.734367,-1.9837479 0,-1.2779918 -0.734367,-1.9742112 Q 13.644916,6.4568254 12.300164,6.4568254 Z M 7.9511759,4.8736417 h 4.3489881 q 2.39385,0 3.614617,1.0872467 1.230306,1.0777096 1.230306,3.1663677 0,2.1077329 -1.230306,3.1854419 -1.220767,1.07771 -3.614617,1.07771 H 9.8777008 v 5.722351 H 7.9511759 Z"/>
+</vector>

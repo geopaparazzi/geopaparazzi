@@ -65,7 +65,7 @@
     <string name="panic_number">Panic number</string>
     <string name="panic_number_notset">No valid panic number seems to be available. Did you enable it in the settings?</string>
     <string name="panic_upper">  PANIC!  </string>
-    <string name="send_status_update">send position</string>
+    <string name="send_status_update">or just send your position</string>
     <string name="help_needed">Help needed!</string>
     <string name="message_sent">Message sent</string>
     <string name="last_note_deleted">Deleted last note</string>
