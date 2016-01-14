@@ -3,9 +3,13 @@
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.hydrologis.geopaparazzi;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +17,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.hydrologis.geopaparazzi.core.ApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
-import eu.hydrologis.geopaparazzi.providers.SourceUrlsFragment;
 import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
 import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
 
-public class GeopaparazziActivity extends AppCompatActivity {
+/**
+ * Main activity.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
+public class GeopaparazziActivity extends AppCompatActivity implements ApplicationChangeListener {
     private IChainedPermissionHelper permissionHelper = new PermissionWriteStorage();
+    private GeopaparazziActivityFragment geopaparazziActivityFragment;
 
     // configure the GeopaparazziActivity
     @Override
@@ -49,7 +59,7 @@ public class GeopaparazziActivity extends AppCompatActivity {
         // set default values in the app's SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        GeopaparazziActivityFragment geopaparazziActivityFragment = new GeopaparazziActivityFragment();
+        geopaparazziActivityFragment = new GeopaparazziActivityFragment();
         FragmentTransaction transaction =
                 getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, geopaparazziActivityFragment);
@@ -102,6 +112,34 @@ public class GeopaparazziActivity extends AppCompatActivity {
         } finally {
             super.finish();
         }
+    }
+
+    @Override
+    public void onApplicationNeedsRestart() {
+
+        if (geopaparazziActivityFragment != null && geopaparazziActivityFragment.getGpsServiceBroadcastReceiver() != null) {
+            GpsServiceUtilities.stopDatabaseLogging(this);
+            GpsServiceUtilities.stopGpsService(this);
+            GpsServiceUtilities.unregisterFromBroadcasts(this, geopaparazziActivityFragment.getGpsServiceBroadcastReceiver());
+        }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= 11) {
+                    recreate();
+                } else {
+                    Intent intent = getIntent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    finish();
+                    overridePendingTransition(0, 0);
+
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                }
+            }
+        }, 10);
     }
 
 }

@@ -2,43 +2,88 @@
 // Contains the Flag Quiz logic
 package eu.hydrologis.geopaparazzi.fragments;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.HashMap;
+
+import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.AppsUtilities;
+import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
+import eu.hydrologis.geopaparazzi.core.ApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.database.DaoMetadata;
+import eu.hydrologis.geopaparazzi.database.TableDescriptions;
+import eu.hydrologis.geopaparazzi.dialogs.ColorDialogFragment;
+import eu.hydrologis.geopaparazzi.dialogs.GpsInfoDialogFragment;
+import eu.hydrologis.geopaparazzi.dialogs.LineWidthDialogFragment;
+import eu.hydrologis.geopaparazzi.dialogs.NewProjectDialogFragment;
 import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
+import eu.hydrologis.geopaparazzi.utilities.Constants;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
+
+/**
+ * The fragment of the main geopap view.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
 
     private ImageButton mNotesButton;
@@ -56,9 +101,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private static boolean sCheckedGps = false;
     private GpsServiceStatus mLastGpsServiceStatus;
     private int[] mLastGpsStatusExtras;
-    private GpsLoggingStatus mLastGpsLoggingStatus;
+    private GpsLoggingStatus mLastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private double[] lastGpsPosition;
     private FloatingActionButton panicFAB;
+    private ResourcesManager resourcesManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -163,7 +209,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
             }
             case R.id.action_new: {
-
+                NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
+                newProjectDialogFragment.show(getFragmentManager(), "new project dialog");
+                return true;
             }
             case R.id.action_load: {
 
@@ -235,7 +283,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             ColorDialogFragment colorDialog = new ColorDialogFragment();
             colorDialog.show(getFragmentManager(), "color dialog");
         } else if (v == mGpslogButton) {
-            mGpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
+            handleGpsLogAction();
         } else if (v == mImportButton) {
             Intent providerIntent = new Intent(getActivity(), ProviderTestActivity.class);
             startActivity(providerIntent);
@@ -253,7 +301,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         }
 
     }
-
 
     private void onGpsServiceUpdate(Intent intent) {
         mLastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
@@ -325,5 +372,157 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else {
             panicFAB.hide();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        /*
+         * avoid oncreate call when rotating device
+         * we don't want data to be reloaded
+         */
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void initializeResourcesManager() throws Exception {
+        ResourcesManager.resetManager();
+        resourcesManager = ResourcesManager.getInstance(getContext());
+
+        if (resourcesManager == null) {
+            Utilities.yesNoMessageDialog(getActivity(), getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
+                    new Runnable() {
+                        public void run() {
+                            ResourcesManager.setUseInternalMemory(true);
+                            try {
+                                resourcesManager = ResourcesManager.getInstance(getContext());
+                                initIfOk();
+                            } catch (Exception e) {
+                                GPLog.error(this, null, e); //$NON-NLS-1$
+                            }
+                        }
+                    }, new Runnable() {
+                        public void run() {
+                            getActivity().finish();
+                        }
+                    }
+            );
+        } else {
+            // create the default mapsforge data extraction db
+            File mapsDir = resourcesManager.getMapsDir();
+            File newDbFile = new File(mapsDir, MAPSFORGE_EXTRACTED_DB_NAME);
+            if (!newDbFile.exists()) {
+                AssetManager assetManager = getActivity().getAssets();
+                InputStream inputStream = assetManager.open(MAPSFORGE_EXTRACTED_DB_NAME);
+                FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
+            }
+            // initialize rest of resources
+            initIfOk();
+        }
+    }
+
+
+    private void initIfOk() {
+        if (resourcesManager == null) {
+            Utilities.messageDialog(getActivity(), R.string.sdcard_notexist, new Runnable() {
+                public void run() {
+                    getActivity().finish();
+                }
+            });
+            return;
+        }
+
+        /*
+         * check the logging system
+         */
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        GPLogPreferencesHandler.checkLog(preferences);
+        GPLogPreferencesHandler.checkLogHeavy(preferences);
+        GPLogPreferencesHandler.checkLogAbsurd(preferences);
+
+        checkLogButton();
+
+        // check for screen on
+        boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
+        if (keepScreenOn) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
+        try {
+            GeopaparazziApplication.getInstance().getDatabase();
+
+            // Set the project name in the metadata, if not already available
+            HashMap<String, String> projectMetadata = DaoMetadata.getProjectMetadata();
+            String projectName = projectMetadata.get(TableDescriptions.MetadataTableFields.KEY_NAME.getFieldName());
+            if (projectName.length() == 0) {
+                File dbFile = resourcesManager.getDatabaseFile();
+                String dbName = FileUtilities.getNameWithoutExtention(dbFile);
+                DaoMetadata.setValue(TableDescriptions.MetadataTableFields.KEY_NAME.getFieldName(), dbName);
+            }
+
+//            initMapsDirManager();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
+            Utilities.toast(getActivity(), R.string.databaseError, Toast.LENGTH_LONG);
+        }
+    }
+
+    private void checkLogButton() {
+        if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+            mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
+        } else {
+            mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
+        }
+    }
+
+    private void handleGpsLogAction() {
+        final GPApplication appContext = GeopaparazziApplication.getInstance();
+        if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+            Utilities.yesNoMessageDialog(getActivity(), getString(R.string.do_you_want_to_stop_logging),
+                    new Runnable() {
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    // stop logging
+                                    GpsServiceUtilities.stopDatabaseLogging(appContext);
+                                    mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
+                                    GpsServiceUtilities.triggerBroadcast(getActivity());
+                                }
+                            });
+                        }
+                    }, null
+            );
+
+        } else {
+            // start logging
+            if (mLastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
+
+                Utilities.inputMessageAndCheckboxDialog(getActivity(), getString(R.string.gps_log_name),
+                        defaultLogName, getString(R.string.continue_last_log), false, new TextAndBooleanRunnable() {
+                            public void run() {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        String newName = theTextToRunOn;
+                                        if (newName == null || newName.length() < 1) {
+                                            newName = defaultLogName;
+                                        }
+
+                                        mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
+                                        GpsServiceUtilities.startDatabaseLogging(appContext, newName, theBooleanToRunOn,
+                                                DefaultHelperClasses.GPSLOG_HELPER_CLASS);
+                                        GpsServiceUtilities.triggerBroadcast(getActivity());
+                                    }
+                                });
+                            }
+                        }
+                );
+
+            } else {
+                Utilities.messageDialog(getActivity(), R.string.gpslogging_only, null);
+            }
+        }
+    }
+
+    public BroadcastReceiver getGpsServiceBroadcastReceiver() {
+        return mGpsServiceBroadcastReceiver;
     }
 }

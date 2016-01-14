@@ -1,4 +1,4 @@
-package eu.hydrologis.geopaparazzi.fragments;
+package eu.hydrologis.geopaparazzi.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;

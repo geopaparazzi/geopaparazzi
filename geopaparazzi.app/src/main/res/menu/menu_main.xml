@@ -11,14 +11,14 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_load"
+        android:id="@+id/action_new"
         android:icon="@drawable/actionbar_newproject"
         android:orderInCategory="60"
         android:title="@string/reset"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_new"
+        android:id="@+id/action_load"
         android:icon="@drawable/actionbar_load_project"
         android:orderInCategory="70"
         android:title="@string/load"

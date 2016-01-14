@@ -16,17 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.utilities;
+package eu.hydrologis.geopaparazzi.core;
 
 /**
- * Various constants.
- *
- * @author Andrea Antonello (www.hydrologis.com)
+ * Created by hydrologis on 14/01/16.
  */
-public interface Constants {
-    public static final String GEOPAPARAZZI = "geopaparazzi";
+public interface ApplicationChangeListener {
 
-    public static final String PANICKEY = "panic_number";
-
-    public static final String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+    void onApplicationNeedsRestart();
 }
