@@ -11,7 +11,6 @@
 
         <TextView
             android:id="@+id/nameLabelTextView"
-            style="@style/ContactLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
@@ -20,7 +19,6 @@
 
         <TextView
             android:id="@+id/nameTextView"
-            style="@style/ContactTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
@@ -28,7 +26,6 @@
 
         <TextView
             android:id="@+id/urlLabelTextView"
-            style="@style/ContactLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
@@ -37,7 +34,6 @@
 
         <TextView
             android:id="@+id/urlTextView"
-            style="@style/ContactTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
