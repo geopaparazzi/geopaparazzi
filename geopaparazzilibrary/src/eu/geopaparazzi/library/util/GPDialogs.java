@@ -246,7 +246,11 @@ public class GPDialogs {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View view = activity.getLayoutInflater().inflate(
                 eu.geopaparazzi.library.R.layout.inputdialog, null);
-        builder.setView(view); // add GUI to dialog
+        builder.setView(view);
+
+        final TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(eu.geopaparazzi.library.R.id.dialogTextLayout);
+        textInputLayout.setHint(message);
+
         final EditText editText = (EditText) view.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         if (defaultText != null)
             editText.setText(defaultText);
@@ -254,7 +258,6 @@ public class GPDialogs {
         checkBox.setVisibility(View.GONE);
 
         try {
-            builder.setMessage(message);
             builder.setPositiveButton(activity.getString(android.R.string.ok),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -298,15 +301,18 @@ public class GPDialogs {
         View view = activity.getLayoutInflater().inflate(
                 eu.geopaparazzi.library.R.layout.inputdialog, null);
         builder.setView(view); // add GUI to dialog
+        final TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(eu.geopaparazzi.library.R.id.dialogTextLayout);
+        textInputLayout.setHint(message);
+
         final EditText editText = (EditText) view.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
         if (defaultText != null)
             editText.setText(defaultText);
+
         final CheckBox checkBox = (CheckBox) view.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
         checkBox.setText(checkBoxText);
         checkBox.setChecked(defaultCheckboxSelection);
 
         try {
-            builder.setMessage(message);
             builder.setPositiveButton(activity.getString(android.R.string.ok),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

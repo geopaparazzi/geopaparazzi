@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="25dp"
     android:gravity="center_vertical">
 
 
@@ -16,9 +17,9 @@
             android:id="@+id/dialogEdittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_margin="15dp"
@@ -37,7 +38,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:text="New CheckBox"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="New CheckBox" />
 
 </RelativeLayout>
