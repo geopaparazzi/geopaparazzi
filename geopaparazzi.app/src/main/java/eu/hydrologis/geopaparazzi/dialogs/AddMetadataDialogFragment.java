@@ -42,6 +42,8 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.core.ISimpleChangeListener;
+import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
@@ -49,11 +51,12 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class NewProjectDialogFragment extends DialogFragment {
-    private EditText projectEditText;
+public class AddMetadataDialogFragment extends DialogFragment implements TextWatcher {
     private AlertDialog alertDialog;
-    private TextView errorTextView;
-    private IApplicationChangeListener appChangeListener;
+    private ISimpleChangeListener simpleChangeListener;
+    private EditText metadataLabelEditText;
+    private EditText metadataKeyEditText;
+    private EditText metadataValueEditText;
 
     // create an AlertDialog and return it
     @Override
@@ -61,62 +64,35 @@ public class NewProjectDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         try {
-            final File sdcardDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
-            final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
-
-            final String newGeopaparazziProjectName = Constants.GEOPAPARAZZI
-                    + "_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
-
 
             View newProjectDialogView = getActivity().getLayoutInflater().inflate(
-                    R.layout.fragment_dialog_newproject, null);
+                    R.layout.fragment_dialog_addmetadata, null);
             builder.setView(newProjectDialogView); // add GUI to dialog
+            builder.setTitle("Add new metadata item");
 
-            errorTextView = (TextView) newProjectDialogView.findViewById(R.id.newProjectErrorView);
 
-            projectEditText = (EditText) newProjectDialogView.findViewById(R.id.newProjectEditText);
-            projectEditText.setText(newGeopaparazziProjectName);
-            projectEditText.addTextChangedListener(new TextWatcher() {
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // ignore
-                }
-
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // ignore
-                }
-
-                public void afterTextChanged(Editable s) {
-                    String newName = s.toString();
-                    if (!newName.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
-                        newName = newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
-                    }
-                    File newProjectFile = new File(sdcardDir, newName);
-                    if (newName.length() < 1) {
-                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                    } else if (newProjectFile.exists()) {
-                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                        errorTextView.setVisibility(View.VISIBLE);
-                        errorTextView.setText(projectExistingString);
-                        return;
-                    } else {
-                        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                    }
-                    errorTextView.setVisibility(View.GONE);
-                }
-            });
+            metadataKeyEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataKeyEditText);
+            metadataKeyEditText.addTextChangedListener(this);
+            metadataLabelEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataLabelEditText);
+            metadataLabelEditText.addTextChangedListener(this);
+            metadataValueEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataValueEditText);
+            metadataValueEditText.addTextChangedListener(this);
 
             builder.setPositiveButton(getString(android.R.string.ok),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             try {
-                                Editable value = projectEditText.getText();
-                                String newName = value.toString();
-                                GeopaparazziApplication.getInstance().closeDatabase();
-                                File newGeopaparazziFile = new File(sdcardDir.getAbsolutePath(), newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
-                                DatabaseUtilities.setNewDatabase(getContext(), GeopaparazziApplication.getInstance(), newGeopaparazziFile.getAbsolutePath());
+                                String key = metadataKeyEditText.getText().toString();
+                                String label = metadataLabelEditText.getText().toString();
+                                String value = metadataValueEditText.getText().toString();
 
-                                if (appChangeListener != null) {
-                                    appChangeListener.onApplicationNeedsRestart();
+                                if (key.trim().length() + label.trim().length() + value.trim().length() == 0) {
+                                    return;
+                                }
+
+                                DaoMetadata.insertNewItem(key, label, value);
+                                if (simpleChangeListener != null) {
+                                    simpleChangeListener.changOccurred();
                                 }
                             } catch (Exception e) {
                                 GPLog.error(this, e.getLocalizedMessage(), e);
@@ -145,8 +121,8 @@ public class NewProjectDialogFragment extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (activity instanceof IApplicationChangeListener) {
-            appChangeListener = (IApplicationChangeListener) activity;
+        if (activity instanceof ISimpleChangeListener) {
+            simpleChangeListener = (ISimpleChangeListener) activity;
         }
     }
 
@@ -154,6 +130,29 @@ public class NewProjectDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
 
-        appChangeListener = null;
+        simpleChangeListener = null;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+        String key = metadataKeyEditText.getText().toString().trim();
+        String label = metadataLabelEditText.getText().toString().trim();
+
+        if (key.length() == 0 || label.length() == 0) {
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        } else {
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+        }
     }
 }

@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 
@@ -43,6 +45,7 @@ import static eu.hydrologis.geopaparazzi.database.TableDescriptions.TABLE_METADA
 @SuppressWarnings("nls")
 public class DaoMetadata {
 
+    private static SimpleDateFormat datesFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL;
     public static final String EMPTY_VALUE = " - ";
 
     /**
@@ -127,7 +130,7 @@ public class DaoMetadata {
             values = new ContentValues();
             values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONTS.getFieldName());
             values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_CREATIONTS.getFieldLabel());
-            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), String.valueOf(creationDate.getTime()));
+            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), datesFormatter.format(creationDate));
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
             values = new ContentValues();
@@ -150,7 +153,61 @@ public class DaoMetadata {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            GPLog.error("DaoProject", e.getLocalizedMessage(), e);
+            GPLog.error("DaoMetadata", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    /**
+     * Insert a new metadata item.
+     *
+     * @param key   the key to use.
+     * @param label a readable label for the item. if null, the key is used.
+     * @param value a value of the item. It can be "" but not null.
+     * @throws IOException
+     */
+    public static void insertNewItem(String key, String label, String value) throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        sqliteDatabase.beginTransaction();
+        try {
+            if (label == null) label = key;
+            ContentValues values = new ContentValues();
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), key);
+            values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), label);
+            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), value);
+            sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            sqliteDatabase.endTransaction();
+            GPLog.error("DaoMetadata", e.getLocalizedMessage(), e);
+            // try the old way
+            oldInsertNewItem(key, value);
+        }
+    }
+
+    /**
+     * Old insert a new metadata item.
+     *
+     * @param key   the key to use.
+     * @param value a value of the item. It can be "" but not null.
+     * @throws IOException
+     * @deprecated only for backwards compatibility.
+     */
+    private static void oldInsertNewItem(String key, String value) throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        sqliteDatabase.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), key);
+            values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), value);
+            sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.error("DaoMetadata", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -207,27 +264,42 @@ public class DaoMetadata {
             }
             c.close();
         } catch (Exception e) {
-            // try the olde way
-            String asColumnsToReturn[] = { //
-                    MetadataTableFields.COLUMN_KEY.getFieldName(), //
-                    MetadataTableFields.COLUMN_VALUE.getFieldName()
-            };// ,
-            Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                String key = c.getString(0);
-                String value = c.getString(1);
-
-                Metadata m = new Metadata();
-                m.key = key;
-                m.label = key;
-                m.value = value;
-                metadataList.add(m);
-
-                c.moveToNext();
-            }
-            c.close();
+            // try the old way
+            return oldGetProjectMetadata();
         }
+        return metadataList;
+    }
+
+    /**
+     * Old get the metadata.
+     *
+     * @return the map of metadata.
+     * @throws java.io.IOException if something goes wrong.
+     * @deprecated only for backwards compatibility.
+     */
+    private static List<Metadata> oldGetProjectMetadata() throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        List<Metadata> metadataList = new ArrayList<>();
+
+        String asColumnsToReturn[] = { //
+                MetadataTableFields.COLUMN_KEY.getFieldName(), //
+                MetadataTableFields.COLUMN_VALUE.getFieldName()
+        };// ,
+        Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            String key = c.getString(0);
+            String value = c.getString(1);
+
+            Metadata m = new Metadata();
+            m.key = key;
+            m.label = key;
+            m.value = value;
+            metadataList.add(m);
+
+            c.moveToNext();
+        }
+        c.close();
         return metadataList;
     }
 

@@ -325,6 +325,7 @@
     <string name="dashboard_mapview_action_description">Open the map view</string>
     <string name="dashboard_import_action_description">Open the import view</string>
     <string name="dashboard_export_action_description">Open the export view</string>
+    <string name="add_new_metadata">Add new metadata entry</string>
 
 
 </resources>

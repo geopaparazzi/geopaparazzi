@@ -21,7 +21,7 @@ package eu.hydrologis.geopaparazzi.core;
 /**
  * Created by hydrologis on 14/01/16.
  */
-public interface ApplicationChangeListener {
+public interface IApplicationChangeListener {
 
     void onApplicationNeedsRestart();
 }

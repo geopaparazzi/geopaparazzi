@@ -3,7 +3,6 @@
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.hydrologis.geopaparazzi;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
-import eu.hydrologis.geopaparazzi.core.ApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
 import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
 import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
@@ -27,7 +26,7 @@ import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GeopaparazziActivity extends AppCompatActivity implements ApplicationChangeListener {
+public class GeopaparazziActivity extends AppCompatActivity implements IApplicationChangeListener {
     private IChainedPermissionHelper permissionHelper = new PermissionWriteStorage();
     private GeopaparazziActivityFragment geopaparazziActivityFragment;
 

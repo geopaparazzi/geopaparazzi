@@ -15,6 +15,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/lineWidthDialogGridLayout"
     android:layout_width="match_parent"
@@ -27,26 +28,48 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:useDefaultMargins="true">
 
-    <TextView
-        android:id="@+id/newProjectErrorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_gravity="fill_horizontal"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:visibility="gone" />
-
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/view"
+        android:id="@+id/metadataKeyEditTextLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_gravity="fill_horizontal"
-        android:hint="@string/enter_a_name_for_the_new_project">
+        android:hint="Insert a key">
 
         <EditText
-            android:id="@+id/newProjectEditText"
+            android:id="@+id/metadataKeyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/metadataLabelEditTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_gravity="fill_horizontal"
+        android:hint="Insert a label">
+
+        <EditText
+            android:id="@+id/metadataLabelEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/metadataValueEditTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_gravity="fill_horizontal"
+        android:hint="Insert a value">
+
+        <EditText
+            android:id="@+id/metadataValueEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true" />
