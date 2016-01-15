@@ -114,7 +114,7 @@ public class CameraActivity extends Activity {
                             finish();
                         }
                     };
-                    GPDialogs.messageDialog(this, getString(R.string.cantcreate_img_folder), runnable);
+                    GPDialogs.warningDialog(this, getString(R.string.cantcreate_img_folder), runnable);
                     return;
                 }
             }

@@ -422,7 +422,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private void initIfOk() {
         if (resourcesManager == null) {
-            GPDialogs.messageDialog(getActivity(), R.string.sdcard_notexist, new Runnable() {
+            GPDialogs.warningDialog(getActivity(), getString(R.string.sdcard_notexist), new Runnable() {
                 public void run() {
                     getActivity().finish();
                 }
@@ -523,7 +523,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 );
 
             } else {
-                GPDialogs.messageDialog(getActivity(), R.string.gpslogging_only, null);
+                GPDialogs.warningDialog(getActivity(), getString(R.string.gpslogging_only), null);
             }
         }
     }

@@ -163,7 +163,7 @@ public class LogAnalysisActivity extends ListActivity {
                     importDialog.dismiss();
                 }
                 if (response.startsWith("ERROR")) {
-                    GPDialogs.messageDialog(getApplicationContext(), response, new Runnable() {
+                    GPDialogs.warningDialog(getApplicationContext(), response, new Runnable() {
                         public void run() {
                             finish();
                         }

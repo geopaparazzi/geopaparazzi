@@ -46,64 +46,48 @@ import eu.geopaparazzi.library.database.GPLog;
 public class GPDialogs {
 
 
+    public static void infoDialog(final Context context, final String msg, final Runnable okRunnable) {
+        messageDialog(context, msg, android.R.drawable.ic_dialog_info, okRunnable);
+    }
+
     /**
      * Execute a message dialog in an {@link AsyncTask}.
      *
-     * @param context    the {@link Context} to use.
-     * @param msg        the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
+     * @param context      the {@link Context} to use.
+     * @param msg          the message to show.
+     * @param iconResource the icon resource to use or -1 fro default.
+     * @param okRunnable   optional {@link Runnable} to trigger after ok was pressed.
      */
-    public static void messageDialog(final Context context, final String msg, final Runnable okRunnable) {
+    public static void messageDialog(final Context context, final String msg, final int iconResource, final Runnable okRunnable) {
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
             }
 
             protected void onPostExecute(String response) {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(eu.geopaparazzi.library.R.layout.simpledialog);
-                TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
-                text.setText(msg);
                 try {
-                    Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                    dialogButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            if (okRunnable != null) {
-                                new Thread(okRunnable).start();
-                            }
-                        }
-                    });
-                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                    Window window = dialog.getWindow();
-                    lp.copyFrom(window.getAttributes());
-                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    window.setAttributes(lp);
-                    window.setBackgroundDrawableResource(android.R.color.transparent);
-                    dialog.show();
+                    int icon = iconResource;
+                    if (icon == -1) {
+                        icon = android.R.drawable.ic_dialog_info;
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder //
+                            .setMessage(msg)
+                            .setIcon(icon).setCancelable(true)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    if (okRunnable != null) {
+                                        new Thread(okRunnable).start();
+                                    }
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute -- " + msg, e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }.execute((String) null);
-    }
-
-    /**
-     * A custom dialog.
-     */
-    public class CustomDialog extends Dialog {
-        /**
-         * @param context the context to use.
-         * @param view    parent view.
-         */
-        public CustomDialog(Context context, View view) {
-            super(context);
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            setContentView(view);
-            Drawable drawable = context.getResources().getDrawable(eu.geopaparazzi.library.R.drawable.dialog_background);
-            getWindow().getDecorView().setBackgroundDrawable(drawable);
-        }
     }
 
     /**
@@ -206,18 +190,6 @@ public class GPDialogs {
     }
 
     /**
-     * Execute a message dialog in an {@link AsyncTask}.
-     *
-     * @param context    the {@link Context} to use.
-     * @param msgId      the id of the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
-     */
-    public static void messageDialog(final Context context, final int msgId, final Runnable okRunnable) {
-        String msg = context.getString(msgId);
-        messageDialog(context, msg, okRunnable);
-    }
-
-    /**
      * A warning dialog.
      * <p>
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
@@ -227,20 +199,7 @@ public class GPDialogs {
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void warningDialog(final Context context, final String msg, final Runnable okRunnable) {
-        messageDialog(context, msg, okRunnable);
-    }
-
-    /**
-     * A warning dialog.
-     * <p>
-     * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
-     *
-     * @param context    the context to use.
-     * @param msgId      msg id.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
-     */
-    public static void warningDialog(final Context context, final int msgId, final Runnable okRunnable) {
-        messageDialog(context, msgId, okRunnable);
+        messageDialog(context, msg,android.R.drawable.ic_dialog_alert , okRunnable);
     }
 
     /**

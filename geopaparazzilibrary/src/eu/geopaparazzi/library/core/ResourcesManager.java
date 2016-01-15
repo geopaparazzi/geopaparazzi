@@ -260,7 +260,7 @@ public class ResourcesManager implements Serializable {
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
-                GPDialogs.messageDialog(appContext, msgFormat, null);
+                GPDialogs.infoDialog(appContext, msgFormat, null);
                 mapsDir = sdcardDir;
             }
 
@@ -268,7 +268,7 @@ public class ResourcesManager implements Serializable {
         if (!tempDir.exists())
             if (!tempDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, tempDir.getAbsolutePath());
-                GPDialogs.messageDialog(appContext, msgFormat, null);
+                GPDialogs.infoDialog(appContext, msgFormat, null);
                 tempDir = sdcardDir;
             }
 

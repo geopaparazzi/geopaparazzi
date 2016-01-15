@@ -66,7 +66,7 @@ public class DatabaseListActivity extends ListActivity {
                 setListAdapter(data);
             }
         } catch (SQLException e) {
-            GPDialogs.messageDialog(this, "An error occurred while launching the query: " + e.getLocalizedMessage(),
+            GPDialogs.warningDialog(this, "An error occurred while launching the query: " + e.getLocalizedMessage(),
                     new Runnable() {
                         public void run() {
                             finish();

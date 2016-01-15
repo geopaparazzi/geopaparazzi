@@ -98,7 +98,7 @@ public class GeocodeActivity extends ListActivity {
         try {
             List<Address> addressList = new Geocoder(this).getFromLocationName(addressText.getText().toString(), MAX_ADDRESSES);
             if (addressList.size() == 0) {
-                GPDialogs.messageDialog(this, R.string.couldnt_find_geocache_results, null);
+                GPDialogs.infoDialog(this, getString(R.string.couldnt_find_geocache_results), null);
                 return;
             }
 
@@ -144,7 +144,7 @@ public class GeocodeActivity extends ListActivity {
             this.setResult(RESULT_OK, intent);
             finish();
         } else {
-            GPDialogs.messageDialog(this, noValidItemSelectedMsg, null);
+            GPDialogs.infoDialog(this, noValidItemSelectedMsg, null);
         }
     }
 
@@ -153,7 +153,7 @@ public class GeocodeActivity extends ListActivity {
             return true;
         }
 
-        GPDialogs.messageDialog(this, R.string.available_only_with_network, null);
+        GPDialogs.infoDialog(this, getString(R.string.available_only_with_network), null);
         return false;
     }
 
@@ -169,7 +169,7 @@ public class GeocodeActivity extends ListActivity {
 
         ListView mainListView = getListView();
         if (mainListView.getCheckedItemPosition() == ListView.INVALID_POSITION) {
-            GPDialogs.messageDialog(this, noValidItemSelectedMsg, null);
+            GPDialogs.infoDialog(this, noValidItemSelectedMsg, null);
             return;
         }
 
@@ -183,7 +183,7 @@ public class GeocodeActivity extends ListActivity {
                     MAPQUEST, //
                     GRAPHHOPPER //
             };
-        }else{
+        } else {
             items = new String[]{//
                     OSRM
             };

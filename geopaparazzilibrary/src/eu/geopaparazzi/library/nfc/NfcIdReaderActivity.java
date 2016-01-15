@@ -63,7 +63,7 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             if (!nfcAdapter.isEnabled()) {
-                GPDialogs.messageDialog(this, R.string.activate_nfc, new Runnable() {
+                GPDialogs.warningDialog(this, getString(R.string.activate_nfc), new Runnable() {
                     public void run() {
                         startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
                     }

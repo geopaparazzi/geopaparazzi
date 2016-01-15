@@ -104,7 +104,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 oldFragment.storeFormItems(false);
             } catch (Exception e) {
                 GPLog.error(this, null, e);
-                GPDialogs.messageDialog(activity, R.string.error_while_storing_form_data, null);
+                GPDialogs.warningDialog(activity,activity.getString(R.string.error_while_storing_form_data), null);
             }
             // FragmentActivity activity2 = oldFragment.getActivity();
             // int id2 = oldFragment.getId();

@@ -96,7 +96,7 @@ public class SmsUtilities {
             TelephonyManager telManager = (TelephonyManager) systemService;
             String networkOperator = telManager.getNetworkOperator();
             if (networkOperator.trim().length() == 0) {
-                GPDialogs.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
+                GPDialogs.warningDialog(context, "This functionality works only when connected to a GSM network.", null);
                 return;
             }
         }
@@ -114,7 +114,7 @@ public class SmsUtilities {
                 GPDialogs.toast(context, R.string.message_sent, Toast.LENGTH_LONG);
         } catch (Exception e) {
             GPLog.error(context, e.getLocalizedMessage(), e);
-            GPDialogs.messageDialog(context, "An error occurred while sending the SMS.", null);
+            GPDialogs.warningDialog(context, "An error occurred while sending the SMS.", null);
         }
     }
 
@@ -134,7 +134,7 @@ public class SmsUtilities {
             int phoneType = telManager.getPhoneType();
             if (phoneType == TelephonyManager.PHONE_TYPE_NONE) {
                 // no phone
-                GPDialogs.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
+                GPDialogs.warningDialog(context, "This functionality works only when connected to a GSM network.", null);
                 return;
             }
         }

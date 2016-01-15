@@ -173,7 +173,7 @@ public class FormActivity extends FragmentActivity {
             saveAction();
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            GPDialogs.messageDialog(this, e.getLocalizedMessage(), null);
+            GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
         }
     }
 
@@ -187,7 +187,7 @@ public class FormActivity extends FragmentActivity {
             shareAction();
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            GPDialogs.messageDialog(this, e.getLocalizedMessage(), null);
+            GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
         }
     }
 
@@ -197,7 +197,7 @@ public class FormActivity extends FragmentActivity {
      * @param view parent.
      */
     public void cancelClicked(View view) {
-        if(noteIsNew) {
+        if (noteIsNew) {
             Intent intent = getIntent();
             intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
             setResult(Activity.RESULT_CANCELED, intent);
@@ -294,7 +294,7 @@ public class FormActivity extends FragmentActivity {
                     String constraintDescription = constraints.getDescription();
                     String validfieldMsg = getString(R.string.form_field_check);
                     String msg = Utilities.format(validfieldMsg, key, formName, constraintDescription);
-                    GPDialogs.messageDialog(this, msg, null);
+                    GPDialogs.infoDialog(this, msg, null);
                     return;
                 }
             }

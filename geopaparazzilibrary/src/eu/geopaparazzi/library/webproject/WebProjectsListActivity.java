@@ -40,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -47,7 +48,7 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Web projects listing activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class WebProjectsListActivity extends ListActivity {
@@ -66,7 +67,7 @@ public class WebProjectsListActivity extends ListActivity {
     private ProgressDialog downloadProjectListDialog;
     private ProgressDialog cloudProgressDialog;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.webprojectlist);
 
@@ -80,13 +81,13 @@ public class WebProjectsListActivity extends ListActivity {
 
         downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
                 getString(R.string.downloading_projects_list_from_server));
-        new AsyncTask<String, Void, String>(){
+        new AsyncTask<String, Void, String>() {
 
-            protected String doInBackground( String... params ) {
+            protected String doInBackground(String... params) {
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 try {
                     projectList = WebProjectManager.INSTANCE.downloadProjectList(context, url, user, pwd);
-                    for( Webproject wp : projectList ) {
+                    for (Webproject wp : projectList) {
                         projectListToLoad.add(wp);
                     }
                     return ""; //$NON-NLS-1$
@@ -96,11 +97,11 @@ public class WebProjectsListActivity extends ListActivity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 GPDialogs.dismissProgressDialog(downloadProjectListDialog);
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 if (response.equals(ERROR)) {
-                    GPDialogs.messageDialog(context, R.string.error_projects_list, null);
+                    GPDialogs.warningDialog(context, getString(R.string.error_projects_list), null);
                 } else {
                     refreshList();
                 }
@@ -128,12 +129,12 @@ public class WebProjectsListActivity extends ListActivity {
         filterText.removeTextChangedListener(filterTextWatcher);
     }
 
-    private void filterList( String filterText ) {
+    private void filterList(String filterText) {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "filter projects list"); //$NON-NLS-1$
 
         projectListToLoad.clear();
-        for( Webproject project : projectList ) {
+        for (Webproject project : projectList) {
             if (project.matches(filterText)) {
                 projectListToLoad.add(project);
             }
@@ -145,9 +146,9 @@ public class WebProjectsListActivity extends ListActivity {
     private void refreshList() {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "refreshing projects list"); //$NON-NLS-1$
-        arrayAdapter = new ArrayAdapter<Webproject>(this, R.layout.webprojectsrow, projectListToLoad){
+        arrayAdapter = new ArrayAdapter<Webproject>(this, R.layout.webprojectsrow, projectListToLoad) {
             @Override
-            public View getView( int position, View cView, ViewGroup parent ) {
+            public View getView(int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.webprojectsrow, null);
 
@@ -166,8 +167,8 @@ public class WebProjectsListActivity extends ListActivity {
                 // sizeText.setText(kbSize + "Kb");
 
                 ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
-                imageText.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
+                imageText.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         downloadProject(webproject);
                     }
                 });
@@ -179,27 +180,27 @@ public class WebProjectsListActivity extends ListActivity {
         setListAdapter(arrayAdapter);
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher(){
+    private TextWatcher filterTextWatcher = new TextWatcher() {
 
-        public void afterTextChanged( Editable s ) {
+        public void afterTextChanged(Editable s) {
             // ignore
         }
 
-        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
 
-        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             // arrayAdapter.getFilter().filter(s);
             filterList(s.toString());
         }
     };
 
-    private void downloadProject( final Webproject webproject ) {
+    private void downloadProject(final Webproject webproject) {
         cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading_project),
                 getString(R.string.downloading_project_to_the_device), true, true);
-        new AsyncTask<String, Void, String>(){
-            protected String doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
                 try {
                     String returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user, pwd,
                             webproject);
@@ -211,11 +212,11 @@ public class WebProjectsListActivity extends ListActivity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 GPDialogs.dismissProgressDialog(cloudProgressDialog);
                 String okMsg = getString(R.string.project_successfully_downloaded);
                 if (response.equals(okMsg)) {
-                    GPDialogs.messageDialog(WebProjectsListActivity.this, okMsg, null);
+                    GPDialogs.infoDialog(WebProjectsListActivity.this, okMsg, null);
                 } else {
                     GPDialogs.warningDialog(WebProjectsListActivity.this, response, null);
                 }

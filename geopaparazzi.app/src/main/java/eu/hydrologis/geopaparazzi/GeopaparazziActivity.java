@@ -79,7 +79,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             }
 
         } else {
-            GPDialogs.messageDialog(this, "Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription(), new Runnable() {
+            GPDialogs.infoDialog(this, "Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription(), new Runnable() {
                 @Override
                 public void run() {
                     finish();

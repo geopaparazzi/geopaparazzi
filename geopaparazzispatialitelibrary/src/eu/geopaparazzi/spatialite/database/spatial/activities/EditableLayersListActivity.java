@@ -125,7 +125,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         }
 
         if (editableSpatialVectorTables.size() == 0) {
-            GPDialogs.messageDialog(this, "No editable layers found", new Runnable() {
+            GPDialogs.warningDialog(this, "No editable layers found", new Runnable() {
                 @Override
                 public void run() {
                     finish();
