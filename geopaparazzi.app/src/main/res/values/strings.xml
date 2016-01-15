@@ -326,6 +326,9 @@
     <string name="dashboard_import_action_description">Open the import view</string>
     <string name="dashboard_export_action_description">Open the export view</string>
     <string name="add_new_metadata">Add new metadata entry</string>
-
+    <string name="remove_selected_metadata">Remove the selected metadata entry</string>
+    <string name="metadata_insert_key">Insert a key</string>
+    <string name="metadata_insert_label">Insert a label</string>
+    <string name="metadata_insert_value">Insert a value</string>
 
 </resources>

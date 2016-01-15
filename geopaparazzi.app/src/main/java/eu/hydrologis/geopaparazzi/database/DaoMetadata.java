@@ -215,6 +215,28 @@ public class DaoMetadata {
     }
 
     /**
+     * Delete a metadata item.
+     *
+     * @param key the key to use.
+     * @throws IOException
+     */
+    public static void deleteItem(String key) throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        sqliteDatabase.beginTransaction();
+        try {
+            String where = MetadataTableFields.COLUMN_KEY.getFieldName() + "='" + key + "'";
+            sqliteDatabase.delete(TABLE_METADATA, where, null);
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.error("DaoMetadata", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    /**
      * Set a value of the metadata.
      *
      * @param key   the key to use (from {@link eu.hydrologis.geopaparazzi.database.TableDescriptions.MetadataTableFields}).

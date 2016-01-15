@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,8 @@ import eu.hydrologis.geopaparazzi.dialogs.AddMetadataDialogFragment;
 public class ProjectMetadataActivity extends AppCompatActivity implements ISimpleChangeListener {
 
     private List<Metadata> projectMetadata;
+    private FloatingActionButton saveButton;
+    private Metadata currentSelectedMetadata = null;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -62,6 +65,9 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+            saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
+            saveButton.hide();
 
             refreshDataView();
 
@@ -84,12 +90,12 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
 
         projectMetadata = DaoMetadata.getProjectMetadata();
         for (final Metadata metadata : projectMetadata) {
-            RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.activity_project_metadata_row, null, false);
+            final RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.activity_project_metadata_row, null, false);
             TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(R.id.metadataView);
             textInputLayout.setHint(metadata.label);
             textInputLayout.bringToFront();
 
-            EditText editText = (EditText) view.findViewById(R.id.metadataEditText);
+            final EditText editText = (EditText) view.findViewById(R.id.metadataEditText);
             container.addView(view);
             editText.setText(metadata.value);
             editText.addTextChangedListener(new TextWatcher() {
@@ -107,6 +113,18 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
                 public void onTextChanged(CharSequence s, int start,
                                           int before, int count) {
                     metadata.value = s.toString();
+
+                    if (saveButton != null)
+                        saveButton.show();
+                }
+            });
+
+            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        currentSelectedMetadata = metadata;
+                    }
                 }
             });
         }
@@ -125,6 +143,33 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             case R.id.action_add_metadata: {
                 AddMetadataDialogFragment addMetadataDialogFragment = new AddMetadataDialogFragment();
                 addMetadataDialogFragment.show(getSupportFragmentManager(), "add metadata item");
+                break;
+            }
+            case R.id.action_remove_metadata: {
+                if (currentSelectedMetadata != null) {
+                    Utilities.yesNoMessageDialog(this, "Are you sure you want to remove the entry: " + currentSelectedMetadata.label, new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                DaoMetadata.deleteItem(currentSelectedMetadata.key);
+                                currentSelectedMetadata = null;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            refreshDataView();
+                                        } catch (IOException e) {
+                                            GPLog.error(this, null, e);
+                                        }
+                                    }
+                                });
+                            } catch (IOException e) {
+                                GPLog.error(this, null, e);
+                            }
+                        }
+                    }, null);
+                }
+                break;
             }
         }
         return super.onOptionsItemSelected(item);

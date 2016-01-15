@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_gravity="fill_horizontal"
-        android:hint="Insert a key">
+        android:hint="@string/metadata_insert_key">
 
         <EditText
             android:id="@+id/metadataKeyEditText"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_gravity="fill_horizontal"
-        android:hint="Insert a label">
+        android:hint="@string/metadata_insert_label">
 
         <EditText
             android:id="@+id/metadataLabelEditText"
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_gravity="fill_horizontal"
-        android:hint="Insert a value">
+        android:hint="@string/metadata_insert_value">
 
         <EditText
             android:id="@+id/metadataValueEditText"

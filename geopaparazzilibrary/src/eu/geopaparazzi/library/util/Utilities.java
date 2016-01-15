@@ -40,6 +40,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -50,6 +51,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -326,38 +330,47 @@ public class Utilities {
 
             protected void onPostExecute(String response) {
                 try {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.setCancelable(false);
-                    TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
-                    text.setText(msg);
-                    Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                    yesButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            if (yesRunnable != null) {
-                                new Thread(yesRunnable).start();
-                            }
-                        }
-                    });
-                    Button noButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
-                    noButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            if (noRunnable != null) {
-                                new Thread(noRunnable).start();
-                            }
-                        }
-                    });
-                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                    Window window = dialog.getWindow();
-                    lp.copyFrom(window.getAttributes());
-                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    window.setAttributes(lp);
-                    window.setBackgroundDrawableResource(android.R.color.transparent);
-                    dialog.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    try {
+                        builder.setMessage(msg);
+                        builder.setPositiveButton(context.getString(android.R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        try {
+//                                             dialog.dismiss();
+                                            if (yesRunnable != null) {
+                                                new Thread(yesRunnable).start();
+                                            }
+                                        } catch (Exception e) {
+                                            GPLog.error(this, e.getLocalizedMessage(), e);
+                                            Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+                        );
+
+                        builder.setNegativeButton(context.getString(android.R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        try {
+//                                             dialog.dismiss();
+                                            if (noRunnable != null) {
+                                                new Thread(noRunnable).start();
+                                            }
+                                        } catch (Exception e) {
+                                            GPLog.error(this, e.getLocalizedMessage(), e);
+                                            Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+                        );
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in yesNoMessageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -379,7 +392,7 @@ public class Utilities {
 
     /**
      * A warning dialog.
-     * <p/>
+     * <p>
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
      * @param context    the context to use.
@@ -392,7 +405,7 @@ public class Utilities {
 
     /**
      * A warning dialog.
-     * <p/>
+     * <p>
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
      * @param context    the context to use.
