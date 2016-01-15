@@ -54,6 +54,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
+import eu.hydrologis.geopaparazzi.activities.AdvancedSettingsActivity;
 import eu.hydrologis.geopaparazzi.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.activities.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
@@ -226,6 +227,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             case R.id.action_settings: {
                 Intent preferencesIntent = new Intent(this.getActivity(), SettingsActivity.class);
                 startActivity(preferencesIntent);
+                return true;
+            }
+            case R.id.action_advanced_settings: {
+                Intent advancedSettingsIntent = new Intent(this.getActivity(), AdvancedSettingsActivity.class);
+                startActivity(advancedSettingsIntent);
                 return true;
             }
             case R.id.action_about: {

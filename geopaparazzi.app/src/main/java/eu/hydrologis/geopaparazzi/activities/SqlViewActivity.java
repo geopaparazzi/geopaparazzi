@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -41,18 +43,22 @@ import eu.hydrologis.geopaparazzi.R;
 
 /**
  * A view for db queries.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SqlViewActivity extends Activity {
+public class SqlViewActivity extends AppCompatActivity {
 
     private HashMap<String, Query> queriesMap;
     private Spinner sqlSpinner;
     private EditText customQueryText;
 
-    public void onCreate( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sqlview);
+
+        Toolbar toolbar = (Toolbar) findViewById(eu.hydrologis.geopaparazzi.R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sqlSpinner = (Spinner) findViewById(R.id.sqlQuerySpinner);
         try {
@@ -71,11 +77,11 @@ public class SqlViewActivity extends Activity {
 
     /**
      * Launch a query.
-     * 
+     *
      * @param view parent.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public void launchQuery( View view ) throws Exception {
+    public void launchQuery(View view) throws Exception {
         String sqlName = sqlSpinner.getSelectedItem().toString();
         Query query = queriesMap.get(sqlName);
 
@@ -86,11 +92,11 @@ public class SqlViewActivity extends Activity {
 
     /**
      * Launch custom query.
-     * 
+     *
      * @param view parent.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public void launchOwnQuery( View view ) throws Exception {
+    public void launchOwnQuery(View view) throws Exception {
         String customQuery = customQueryText.getText().toString();
 
         Intent dbViewIntent = new Intent(this, DatabaseListActivity.class);
@@ -105,13 +111,13 @@ public class SqlViewActivity extends Activity {
         InputStream inputStream = assetManager.open("queries_select.txt");
         String viewQueriesString = new Scanner(inputStream).useDelimiter("\\A").next();
         String[] queriesSplit = viewQueriesString.split("\n");
-        for( String queryLine : queriesSplit ) {
+        for (String queryLine : queriesSplit) {
             String[] lineSplit = queryLine.split(";");
             Query q = new Query();
             q.name = lineSplit[0].trim();
             String[] split = lineSplit[1].trim().split(",");
             String[] splitTrim = new String[split.length];
-            for( int i = 0; i < splitTrim.length; i++ ) {
+            for (int i = 0; i < splitTrim.length; i++) {
                 splitTrim[i] = split[i].trim();
             }
             q.query = lineSplit[1].trim();
@@ -120,7 +126,7 @@ public class SqlViewActivity extends Activity {
 
         Set<String> keySet = queriesMap.keySet();
         List<String> queries = new ArrayList<String>();
-        for( String query : keySet ) {
+        for (String query : keySet) {
             queries.add(query);
         }
         Collections.sort(queries);

@@ -32,12 +32,12 @@
             android:id="@+id/gpsToggleLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/errorToggleLayout"
             android:background="#FF0000"
             android:paddingBottom="7dp"
-            android:paddingTop="7dp" >
+            android:paddingTop="7dp"
+            android:layout_below="@+id/errorToggleLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <ToggleButton
                 android:id="@+id/gpsToggleButton"
@@ -51,12 +51,12 @@
             android:id="@+id/infoToggleLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/gpsToggleLayout"
             android:background="#FF0000"
             android:paddingBottom="7dp"
-            android:paddingTop="7dp" >
+            android:paddingTop="7dp"
+            android:layout_below="@+id/gpsToggleLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <ToggleButton
                 android:id="@+id/infoToggleButton"
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/infoToggleLayout"
+            android:layout_below="@+id/infoToggleLayout"
             android:background="#FF0000"
             android:paddingBottom="7dp"
             android:paddingTop="7dp" >
@@ -89,12 +89,12 @@
             android:id="@+id/anomalieToggleLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/checkToggleLayout"
             android:background="#FF0000"
             android:paddingBottom="7dp"
-            android:paddingTop="7dp" >
+            android:paddingTop="7dp"
+            android:layout_below="@+id/checkToggleLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <ToggleButton
                 android:id="@+id/anomalieToggleButton"
@@ -108,12 +108,12 @@
             android:id="@+id/memoryToggleLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/anomalieToggleLayout"
             android:background="#FF0000"
             android:paddingBottom="7dp"
-            android:paddingTop="7dp" >
+            android:paddingTop="7dp"
+            android:layout_below="@+id/anomalieToggleLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <ToggleButton
                 android:id="@+id/memoryToggleButton"
@@ -127,16 +127,19 @@
             android:id="@+id/refreshButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/errorToggleLayout"
+            android:layout_below="@+id/memoryToggleLayout"
             android:text="Refresh" />
-    </RelativeLayout>
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_background"
-        android:cacheColorHint="#00000000" />
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_background"
+            android:cacheColorHint="#00000000"
+            android:layout_alignTop="@+id/errorToggleLayout"
+            android:layout_toRightOf="@+id/errorToggleLayout"
+            android:layout_toEndOf="@+id/errorToggleLayout" />
+    </RelativeLayout>
 
     <TextView
         android:id="@android:id/empty"

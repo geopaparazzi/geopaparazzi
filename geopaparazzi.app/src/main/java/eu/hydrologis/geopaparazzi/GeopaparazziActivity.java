@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -102,6 +103,16 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         } finally {
             super.finish();
         }
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // force to exit through the exit button
+        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

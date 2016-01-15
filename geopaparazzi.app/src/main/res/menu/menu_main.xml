@@ -46,6 +46,13 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_advanced_settings"
+        android:icon="@drawable/actionbar_settings"
+        android:orderInCategory="105"
+        android:title="@string/action_advanced_settings"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about"
         android:icon="@drawable/actionbar_about"
         android:orderInCategory="110"

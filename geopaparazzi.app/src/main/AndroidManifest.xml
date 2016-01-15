@@ -86,6 +86,28 @@
                 android:value=".GeopaparazziActivity" />>
         </activity>
 
+        <activity
+            android:name=".activities.AdvancedSettingsActivity"
+            android:label="@string/action_advanced_settings"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.SqlViewActivity"
+            android:label="SQL View"
+            android:parentActivityName=".activities.AdvancedSettingsActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.AdvancedSettingsActivity" />
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.core.activities.LogAnalysisActivity" />
+
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

@@ -1,0 +1,129 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activities.AdvancedSettingsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/GeopapTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:background="@color/main_background"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/sqlButton"
+                style="@style/GPMediumButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:onClick="startSqlView"
+                android:text="@string/database_queries" />
+
+            <Button
+                android:id="@+id/analyzeLogButton"
+                style="@style/GPMediumButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/sqlButton"
+                android:onClick="analyzeLog"
+                android:text="Analyze log" />
+
+            <Button
+                android:id="@+id/resetStyleTablesButton"
+                style="@style/GPMediumButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/analyzeLogButton"
+                android:onClick="resetStyleTables"
+                android:text="@string/reset_style_tables" />
+
+            <CheckBox
+                android:id="@+id/demoCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/resetStyleTablesButton"
+                android:layout_margin="10dp"
+                android:text="@string/demo_mode"
+                android:textColor="@color/main_text_color" />
+
+            <TextView
+                android:id="@+id/logTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/demoCheckbox"
+                android:text="Logging"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <CheckBox
+                android:id="@+id/logCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/logTitleText"
+                android:layout_marginLeft="10dp"
+                android:text="log"
+                android:textColor="@color/main_text_color" />
+
+            <CheckBox
+                android:id="@+id/logHeavyCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/logCheckbox"
+                android:layout_alignBottom="@+id/logCheckbox"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/logCheckbox"
+                android:text="logH"
+                android:textColor="@color/main_text_color" />
+
+            <CheckBox
+                android:id="@+id/logAbsCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/logHeavyCheckbox"
+                android:layout_alignBottom="@+id/logHeavyCheckbox"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/logHeavyCheckbox"
+                android:text="logABS"
+                android:textColor="@color/main_text_color" />
+
+            <Button
+                android:id="@+id/clearLogButton"
+                style="@style/GPMediumButton"
+                android:layout_alignEnd="@+id/logAbsCheckbox"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignRight="@+id/logAbsCheckbox"
+                android:layout_below="@+id/logCheckbox"
+                android:onClick="clearLog"
+                android:padding="@dimen/button_indent"
+                android:text="Clear log" />
+
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Geopaparazzi</string>
     <string name="action_settings">Settings</string>
+    <string name="action_advanced_settings">Advanced</string>
     <string name="label_green">green</string>
     <string name="label_blue">blue</string>
     <string name="label_alpha">alpha</string>
