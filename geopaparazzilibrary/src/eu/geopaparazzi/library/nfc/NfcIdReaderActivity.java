@@ -31,6 +31,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.bluetooth.BluetoothManager;
 import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
 import eu.geopaparazzi.library.bluetooth.IBluetoothListener;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -62,7 +63,7 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             if (!nfcAdapter.isEnabled()) {
-                Utilities.messageDialog(this, R.string.activate_nfc, new Runnable(){
+                GPDialogs.messageDialog(this, R.string.activate_nfc, new Runnable() {
                     public void run() {
                         startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
                     }

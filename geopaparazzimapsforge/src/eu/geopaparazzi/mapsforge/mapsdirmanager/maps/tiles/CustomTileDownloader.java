@@ -42,6 +42,7 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 
@@ -736,7 +737,7 @@ public class CustomTileDownloader extends TileDownloader {
             zoomLevel = zoomLevel - ZOOM_LEVEL_DIFF;
         }
         if (type == TILESCHEMA.tms) {
-            int[] tmsTiles = Utilities.googleTile2TmsTile(tileX, tileY, zoomLevel);
+            int[] tmsTiles = MercatorUtils.googleTile2TmsTile(tileX, tileY, zoomLevel);
             tileX = tmsTiles[0];
             tileY = tmsTiles[1];
         }
@@ -747,7 +748,7 @@ public class CustomTileDownloader extends TileDownloader {
             return tmpTilePart;
         } else if (type == TILESCHEMA.wms) {
             // minx, miny, maxx, maxy
-            double[] tileBounds = Utilities.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
+            double[] tileBounds = MercatorUtils.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
             String tmpTilePart = tilePart.replaceFirst(XXX_STR, String.valueOf(tileBounds[0])); //$NON-NLS-1$
             tmpTilePart = tmpTilePart.replaceFirst(YYY_STR, String.valueOf(tileBounds[1])); //$NON-NLS-1$
             tmpTilePart = tmpTilePart.replaceFirst(XXX_STR, String.valueOf(tileBounds[2])); //$NON-NLS-1$

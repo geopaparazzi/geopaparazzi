@@ -45,6 +45,7 @@ import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -172,7 +173,7 @@ public class FormActivity extends FragmentActivity {
             saveAction();
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            Utilities.messageDialog(this, e.getLocalizedMessage(), null);
+            GPDialogs.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
 
@@ -186,7 +187,7 @@ public class FormActivity extends FragmentActivity {
             shareAction();
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            Utilities.messageDialog(this, e.getLocalizedMessage(), null);
+            GPDialogs.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
 
@@ -293,7 +294,7 @@ public class FormActivity extends FragmentActivity {
                     String constraintDescription = constraints.getDescription();
                     String validfieldMsg = getString(R.string.form_field_check);
                     String msg = Utilities.format(validfieldMsg, key, formName, constraintDescription);
-                    Utilities.messageDialog(this, msg, null);
+                    GPDialogs.messageDialog(this, msg, null);
                     return;
                 }
             }

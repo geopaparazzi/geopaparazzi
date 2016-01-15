@@ -39,6 +39,7 @@ import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -113,7 +114,7 @@ public class CameraActivity extends Activity {
                             finish();
                         }
                     };
-                    Utilities.messageDialog(this, getString(R.string.cantcreate_img_folder), runnable);
+                    GPDialogs.messageDialog(this, getString(R.string.cantcreate_img_folder), runnable);
                     return;
                 }
             }
@@ -138,7 +139,7 @@ public class CameraActivity extends Activity {
             startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            Utilities.errorDialog(this, e, new Runnable() {
+            GPDialogs.errorDialog(this, e, new Runnable() {
                 @Override
                 public void run() {
                     finish();
@@ -172,7 +173,7 @@ public class CameraActivity extends Activity {
                     imageFile.delete();
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
-                    Utilities.errorDialog(this, e, null);
+                    GPDialogs.errorDialog(this, e, null);
                 }
             } else {
                 intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);

@@ -42,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -96,10 +97,10 @@ public class WebProjectsListActivity extends ListActivity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                Utilities.dismissProgressDialog(downloadProjectListDialog);
+                GPDialogs.dismissProgressDialog(downloadProjectListDialog);
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 if (response.equals(ERROR)) {
-                    Utilities.messageDialog(context, R.string.error_projects_list, null);
+                    GPDialogs.messageDialog(context, R.string.error_projects_list, null);
                 } else {
                     refreshList();
                 }
@@ -117,8 +118,8 @@ public class WebProjectsListActivity extends ListActivity {
 
     @Override
     protected void onPause() {
-        Utilities.dismissProgressDialog(downloadProjectListDialog);
-        Utilities.dismissProgressDialog(cloudProgressDialog);
+        GPDialogs.dismissProgressDialog(downloadProjectListDialog);
+        GPDialogs.dismissProgressDialog(cloudProgressDialog);
         super.onPause();
     }
 
@@ -211,12 +212,12 @@ public class WebProjectsListActivity extends ListActivity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                Utilities.dismissProgressDialog(cloudProgressDialog);
+                GPDialogs.dismissProgressDialog(cloudProgressDialog);
                 String okMsg = getString(R.string.project_successfully_downloaded);
                 if (response.equals(okMsg)) {
-                    Utilities.messageDialog(WebProjectsListActivity.this, okMsg, null);
+                    GPDialogs.messageDialog(WebProjectsListActivity.this, okMsg, null);
                 } else {
-                    Utilities.warningDialog(WebProjectsListActivity.this, response, null);
+                    GPDialogs.warningDialog(WebProjectsListActivity.this, response, null);
                 }
 
             }

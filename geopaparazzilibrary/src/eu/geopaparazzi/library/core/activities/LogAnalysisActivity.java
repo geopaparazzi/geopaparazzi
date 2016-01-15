@@ -39,6 +39,7 @@ import android.widget.ToggleButton;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -162,7 +163,7 @@ public class LogAnalysisActivity extends ListActivity {
                     importDialog.dismiss();
                 }
                 if (response.startsWith("ERROR")) {
-                    Utilities.messageDialog(getApplicationContext(), response, new Runnable(){
+                    GPDialogs.messageDialog(getApplicationContext(), response, new Runnable() {
                         public void run() {
                             finish();
                         }

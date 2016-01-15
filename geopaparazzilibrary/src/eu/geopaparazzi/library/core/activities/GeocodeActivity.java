@@ -46,6 +46,7 @@ import eu.geopaparazzi.library.routing.osmbonuspack.MapQuestRoadManager;
 import eu.geopaparazzi.library.routing.osmbonuspack.OSRMRoadManager;
 import eu.geopaparazzi.library.routing.osmbonuspack.Road;
 import eu.geopaparazzi.library.routing.osmbonuspack.RoadManager;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -76,7 +77,7 @@ public class GeocodeActivity extends ListActivity {
 
     @Override
     protected void onPause() {
-        Utilities.dismissProgressDialog(orsProgressDialog);
+        GPDialogs.dismissProgressDialog(orsProgressDialog);
         super.onPause();
     }
 
@@ -97,7 +98,7 @@ public class GeocodeActivity extends ListActivity {
         try {
             List<Address> addressList = new Geocoder(this).getFromLocationName(addressText.getText().toString(), MAX_ADDRESSES);
             if (addressList.size() == 0) {
-                Utilities.messageDialog(this, R.string.couldnt_find_geocache_results, null);
+                GPDialogs.messageDialog(this, R.string.couldnt_find_geocache_results, null);
                 return;
             }
 
@@ -143,7 +144,7 @@ public class GeocodeActivity extends ListActivity {
             this.setResult(RESULT_OK, intent);
             finish();
         } else {
-            Utilities.messageDialog(this, noValidItemSelectedMsg, null);
+            GPDialogs.messageDialog(this, noValidItemSelectedMsg, null);
         }
     }
 
@@ -152,7 +153,7 @@ public class GeocodeActivity extends ListActivity {
             return true;
         }
 
-        Utilities.messageDialog(this, R.string.available_only_with_network, null);
+        GPDialogs.messageDialog(this, R.string.available_only_with_network, null);
         return false;
     }
 
@@ -168,7 +169,7 @@ public class GeocodeActivity extends ListActivity {
 
         ListView mainListView = getListView();
         if (mainListView.getCheckedItemPosition() == ListView.INVALID_POSITION) {
-            Utilities.messageDialog(this, noValidItemSelectedMsg, null);
+            GPDialogs.messageDialog(this, noValidItemSelectedMsg, null);
             return;
         }
 
@@ -255,12 +256,12 @@ public class GeocodeActivity extends ListActivity {
                                 }
 
                                 protected void onPostExecute(String errorMessage) {
-                                    Utilities.dismissProgressDialog(orsProgressDialog);
+                                    GPDialogs.dismissProgressDialog(orsProgressDialog);
                                     if (errorMessage == null) {
                                         GeocodeActivity.this.setResult(RESULT_OK, intent);
                                         finish();
                                     } else {
-                                        Utilities.warningDialog(GeocodeActivity.this, errorMessage, null);
+                                        GPDialogs.warningDialog(GeocodeActivity.this, errorMessage, null);
                                     }
                                 }
 

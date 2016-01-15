@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -62,7 +63,7 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     GPLog.error(this, e1.getLocalizedMessage(), e1);
-                    Utilities.toast(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG);
+                    GPDialogs.toast(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG);
                     return;
                 }
                 String latString = String.valueOf(latText.getText());
@@ -73,7 +74,7 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     GPLog.error(this, e1.getLocalizedMessage(), e1);
-                    Utilities.toast(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG);
+                    GPDialogs.toast(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG);
                     return;
                 }
 

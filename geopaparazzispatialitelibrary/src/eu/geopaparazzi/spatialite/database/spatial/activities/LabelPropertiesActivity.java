@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -56,7 +57,7 @@ public class LabelPropertiesActivity extends Activity {
             spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            Utilities.errorDialog(this, e, null);
+            GPDialogs.errorDialog(this, e, null);
             return;
         }
 

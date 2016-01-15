@@ -20,7 +20,6 @@ package eu.geopaparazzi.library.core;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
-import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +35,7 @@ import android.util.Log;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -260,7 +260,7 @@ public class ResourcesManager implements Serializable {
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
-                messageDialog(appContext, msgFormat, null);
+                GPDialogs.messageDialog(appContext, msgFormat, null);
                 mapsDir = sdcardDir;
             }
 
@@ -268,7 +268,7 @@ public class ResourcesManager implements Serializable {
         if (!tempDir.exists())
             if (!tempDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, tempDir.getAbsolutePath());
-                messageDialog(appContext, msgFormat, null);
+                GPDialogs.messageDialog(appContext, msgFormat, null);
                 tempDir = sdcardDir;
             }
 

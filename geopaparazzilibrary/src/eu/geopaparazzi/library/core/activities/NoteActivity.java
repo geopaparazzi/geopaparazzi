@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -100,7 +101,7 @@ public class NoteActivity extends Activity {
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                    Utilities.messageDialog(NoteActivity.this, R.string.notenonsaved, null);
+                    GPDialogs.messageDialog(NoteActivity.this, R.string.notenonsaved, null);
                 }
                 finish();
             }
@@ -109,7 +110,7 @@ public class NoteActivity extends Activity {
         Button cancelButton = (Button) findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Utilities.toast(NoteActivity.this, R.string.notecancel, Toast.LENGTH_LONG);
+                GPDialogs.toast(NoteActivity.this, R.string.notecancel, Toast.LENGTH_LONG);
                 finish();
             }
         });

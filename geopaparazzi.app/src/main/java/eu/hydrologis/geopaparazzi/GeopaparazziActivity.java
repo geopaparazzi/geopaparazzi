@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
 import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
@@ -78,22 +79,12 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             }
 
         } else {
-            AlertDialog.Builder builder =
-                    new AlertDialog.Builder(this);
-            builder.setMessage("Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription());
-            builder.setPositiveButton(android.R.string.ok,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }
-            );
-            // display the dialog
-            builder.create().show();
-
-
-            Log.i("BLAH", "Exiting");
+            GPDialogs.messageDialog(this, "Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription(), new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
         }
     }
 

@@ -46,6 +46,7 @@ import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -354,7 +355,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             sCheckedGps = true;
             if (mLastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
                 String prompt = getResources().getString(R.string.prompt_gpsenable);
-                Utilities.yesNoMessageDialog(context, prompt, new Runnable() {
+                GPDialogs.yesNoMessageDialog(context, prompt, new Runnable() {
                     public void run() {
                         Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(gpsOptionsIntent);
@@ -387,7 +388,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         resourcesManager = ResourcesManager.getInstance(getContext());
 
         if (resourcesManager == null) {
-            Utilities.yesNoMessageDialog(getActivity(), getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
                     new Runnable() {
                         public void run() {
                             ResourcesManager.setUseInternalMemory(true);
@@ -421,7 +422,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private void initIfOk() {
         if (resourcesManager == null) {
-            Utilities.messageDialog(getActivity(), R.string.sdcard_notexist, new Runnable() {
+            GPDialogs.messageDialog(getActivity(), R.string.sdcard_notexist, new Runnable() {
                 public void run() {
                     getActivity().finish();
                 }
@@ -465,7 +466,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 //            initMapsDirManager();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
-            Utilities.toast(getActivity(), R.string.databaseError, Toast.LENGTH_LONG);
+            GPDialogs.toast(getActivity(), R.string.databaseError, Toast.LENGTH_LONG);
         }
     }
 
@@ -481,7 +482,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private void handleGpsLogAction() {
         final GPApplication appContext = GeopaparazziApplication.getInstance();
         if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-            Utilities.yesNoMessageDialog(getActivity(), getString(R.string.do_you_want_to_stop_logging),
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.do_you_want_to_stop_logging),
                     new Runnable() {
                         public void run() {
                             getActivity().runOnUiThread(new Runnable() {
@@ -501,7 +502,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             if (mLastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                 final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
-                Utilities.inputMessageAndCheckboxDialog(getActivity(), getString(R.string.gps_log_name),
+                GPDialogs.inputMessageAndCheckboxDialog(getActivity(), getString(R.string.gps_log_name),
                         defaultLogName, getString(R.string.continue_last_log), false, new TextAndBooleanRunnable() {
                             public void run() {
                                 getActivity().runOnUiThread(new Runnable() {
@@ -522,7 +523,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 );
 
             } else {
-                Utilities.messageDialog(getActivity(), R.string.gpslogging_only, null);
+                GPDialogs.messageDialog(getActivity(), R.string.gpslogging_only, null);
             }
         }
     }

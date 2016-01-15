@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
@@ -676,8 +677,8 @@ public class MapsDirManager {
             bounds_zoom[1] = se_Point.getLatitude(); // South
             bounds_zoom[2] = se_Point.getLongitude(); // East
             bounds_zoom[4] = (double) mapView.getMapPosition().getZoomLevel();
-            bounds_zoom[5] = Utilities.longitudeToMeters(se_Point.getLongitude(), nw_Point.getLongitude());
-            bounds_zoom[6] = Utilities.latitudeToMeters(nw_Point.getLatitude(), se_Point.getLatitude());
+            bounds_zoom[5] = MercatorUtils.longitudeToMeters(se_Point.getLongitude(), nw_Point.getLongitude());
+            bounds_zoom[6] = MercatorUtils.latitudeToMeters(nw_Point.getLatitude(), se_Point.getLatitude());
             s_bounds_zoom = bounds_zoom[0] + "," + bounds_zoom[1] + "," + bounds_zoom[2] + "," + bounds_zoom[3] + ";"
                     + (int) bounds_zoom[4] + ";" + bounds_zoom[5] + "," + bounds_zoom[6];
         }

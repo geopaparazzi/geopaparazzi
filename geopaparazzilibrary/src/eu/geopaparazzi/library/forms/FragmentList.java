@@ -36,6 +36,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -103,7 +104,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 oldFragment.storeFormItems(false);
             } catch (Exception e) {
                 GPLog.error(this, null, e);
-                Utilities.messageDialog(activity, R.string.error_while_storing_form_data, null);
+                GPDialogs.messageDialog(activity, R.string.error_while_storing_form_data, null);
             }
             // FragmentActivity activity2 = oldFragment.getActivity();
             // int id2 = oldFragment.getId();

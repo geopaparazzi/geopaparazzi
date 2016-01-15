@@ -104,24 +104,5 @@
         <item>16</item>
         <item>17</item>
     </string-array>
-    <string-array name="array_colornames">
-        <item>black</item>
-        <item>blue</item>
-        <item>cyan</item>
-        <item>darkgray</item>
-        <item>gray</item>
-        <item>green</item>
-        <item>lightgray</item>
-        <item>magenta</item>
-        <item>red</item>
-        <item>white</item>
-        <item>yellow</item>
-        <item>purple</item>
-        <item>violet</item>
-        <item>turquoise</item>
-        <item>plum</item>
-        <item>tomato</item>
-        <item>salmon</item>
-    </string-array>
 
 </resources>

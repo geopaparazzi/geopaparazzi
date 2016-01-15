@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
+import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -112,7 +113,7 @@ public class GeopackageTileDownloader extends TileDownloader {
                 int zoomLevel = tile.zoomLevel;
                 int tileX = (int) tile.tileX;
                 int tileY = (int) tile.tileY;
-                double[] tileBounds = Utilities.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
+                double[] tileBounds = MercatorUtils.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
                 rasterBytes = SPL_Rasterlite.getRasterTileInBounds(spatialiteDatabase, rasterTable, tileBounds, tileSize);
             } else {
                 tileQuery = getTilePath(tile);

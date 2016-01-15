@@ -42,6 +42,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -124,7 +125,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         }
 
         if (editableSpatialVectorTables.size() == 0) {
-            Utilities.messageDialog(this, "No editable layers found", new Runnable() {
+            GPDialogs.messageDialog(this, "No editable layers found", new Runnable() {
                 @Override
                 public void run() {
                     finish();

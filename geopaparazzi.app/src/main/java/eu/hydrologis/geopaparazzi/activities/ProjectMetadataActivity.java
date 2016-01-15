@@ -37,6 +37,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.core.ISimpleChangeListener;
@@ -73,7 +74,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
 
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            Utilities.errorDialog(this, e, new Runnable() {
+            GPDialogs.errorDialog(this, e, new Runnable() {
                 @Override
                 public void run() {
                     finish();
@@ -147,7 +148,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             }
             case R.id.action_remove_metadata: {
                 if (currentSelectedMetadata != null) {
-                    Utilities.yesNoMessageDialog(this, "Are you sure you want to remove the entry: " + currentSelectedMetadata.label, new Runnable() {
+                    GPDialogs.yesNoMessageDialog(this, "Are you sure you want to remove the entry: " + currentSelectedMetadata.label, new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -184,7 +185,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             finish();
         } catch (IOException e) {
             GPLog.error(this, null, e);
-            Utilities.errorDialog(this, e, new Runnable() {
+            GPDialogs.errorDialog(this, e, new Runnable() {
                 @Override
                 public void run() {
                     finish();

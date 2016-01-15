@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -65,8 +66,8 @@ public class DatabaseListActivity extends ListActivity {
                 setListAdapter(data);
             }
         } catch (SQLException e) {
-            Utilities.messageDialog(this, "An error occurred while launching the query: " + e.getLocalizedMessage(),
-                    new Runnable(){
+            GPDialogs.messageDialog(this, "An error occurred while launching the query: " + e.getLocalizedMessage(),
+                    new Runnable() {
                         public void run() {
                             finish();
                         }
