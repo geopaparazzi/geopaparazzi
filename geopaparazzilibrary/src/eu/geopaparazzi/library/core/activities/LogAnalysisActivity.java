@@ -56,7 +56,6 @@ public class LogAnalysisActivity extends ListActivity {
     private static final int COLOR_MEMORY = Color.LTGRAY;
     private static final int COLOR_ANOMALY = Color.MAGENTA;
 
-    private Cursor cursor;
     private ToggleButton errorToggleButton;
     private ToggleButton gpsToggleButton;
     private ToggleButton infoToggleButton;
@@ -205,7 +204,7 @@ public class LogAnalysisActivity extends ListActivity {
         if (database != null && query != null) {
             messagesList.clear();
             checkSelections();
-            cursor = database.rawQuery(query, null);
+            Cursor cursor = database.rawQuery(query, null);
             cursor.moveToFirst();
             while( !cursor.isAfterLast() ) {
                 String logMessage = getLogMessage(cursor);
