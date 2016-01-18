@@ -331,5 +331,9 @@
     <string name="metadata_insert_key">Insert a key</string>
     <string name="metadata_insert_label">Insert a label</string>
     <string name="metadata_insert_value">Insert a value</string>
+    <string name="launch_custom_query">Launch custom query</string>
+    <string name="write_own_query">or write your own query</string>
+    <string name="sqlview">SQL View</string>
+    <string name="query_results">Query results</string>
 
 </resources>

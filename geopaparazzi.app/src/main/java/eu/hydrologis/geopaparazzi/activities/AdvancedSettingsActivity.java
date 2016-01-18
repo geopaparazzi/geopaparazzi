@@ -190,20 +190,4 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
         }
     }
 
-    private int backCount = 0;
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // force to exit through the exit button
-        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                backCount++;
-                if (backCount > 3) {
-                    backCount = 0;
-                } else {
-                    return true;
-                }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 }

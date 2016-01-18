@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -36,7 +35,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import eu.geopaparazzi.library.database.DatabaseListActivity;
+import eu.geopaparazzi.library.core.activities.DatabaseListActivity;
+import eu.geopaparazzi.library.core.fragments.DatabaseListFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.R;
@@ -99,13 +99,13 @@ public class SqlViewActivity extends AppCompatActivity {
     public void launchOwnQuery(View view) throws Exception {
         String customQuery = customQueryText.getText().toString();
 
-        Intent dbViewIntent = new Intent(this, DatabaseListActivity.class);
+        Intent dbViewIntent = new Intent(this, DatabaseListFragment.class);
         dbViewIntent.putExtra(LibraryConstants.PREFS_KEY_QUERY, customQuery);
         startActivity(dbViewIntent);
     }
 
     private List<String> createQueries() throws Exception {
-        queriesMap = new HashMap<String, Query>();
+        queriesMap = new HashMap<>();
 
         AssetManager assetManager = getAssets();
         InputStream inputStream = assetManager.open("queries_select.txt");

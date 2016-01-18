@@ -69,7 +69,7 @@
         </activity>
         <activity
             android:name=".activities.PanicActivity"
-            android:label="Panic!"
+            android:label="@string/panic"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -78,7 +78,7 @@
         </activity>
         <activity
             android:name=".activities.ProjectMetadataActivity"
-            android:label="Project Info"
+            android:label="@string/project_info"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -98,7 +98,7 @@
 
         <activity
             android:name=".activities.SqlViewActivity"
-            android:label="SQL View"
+            android:label="@string/sqlview"
             android:parentActivityName=".activities.AdvancedSettingsActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -106,6 +106,11 @@
                 android:value=".activities.AdvancedSettingsActivity" />
         </activity>
         <activity android:name="eu.geopaparazzi.library.core.activities.LogAnalysisActivity" />
+        <activity
+            android:name="eu.geopaparazzi.library.core.activities.DatabaseListActivity"
+            android:label="@string/query_results"
+            android:parentActivityName=".activities.SqlViewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar" />
 
 
         <provider

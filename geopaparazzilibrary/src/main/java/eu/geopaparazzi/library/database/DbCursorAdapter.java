@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.geopaparazzi.library.database;
 
 import android.content.Context;
@@ -32,7 +33,7 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-class DbCursorAdapter extends CursorAdapter {
+public class DbCursorAdapter extends CursorAdapter {
 
     public DbCursorAdapter( Context context, Cursor c ) {
         super(context, c, false);
@@ -55,7 +56,7 @@ class DbCursorAdapter extends CursorAdapter {
         } else {
             textView.setText(" - nv - ");
         }
-        textView.setTextColor(context.getResources().getColor(R.color.main_text_color));
+        textView.setTextColor(context.getColor(R.color.main_text_color));
         textView.setPadding(5, 5, 5, 5);
     }
 
