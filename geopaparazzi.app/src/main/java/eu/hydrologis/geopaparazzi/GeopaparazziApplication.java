@@ -36,7 +36,6 @@ import eu.hydrologis.geopaparazzi.database.DatabaseManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @ReportsCrashes(//
-formKey = "", //
 mailTo = "feedback@geopaparazzi.eu", //
 customReportContent = {//
 /*    */ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, //

@@ -1,1 +1,1 @@
-include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzilibrary',  ':geopaparazzimapsforge'
+include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary'

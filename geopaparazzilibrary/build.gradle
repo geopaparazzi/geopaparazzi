@@ -1,67 +1,40 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-    }
-}
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 apply plugin: 'com.android.library'
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:preference-v7:23.1.1'
-    //    compile "com.android.support:support-v4:23.1.1"
-    //    compile "com.android.support:appcompat-v7:23.1.1"
-    //    compile files('libs/android-support-v4.jar')
-    compile files('libs/androidplot-core-0.6.1.jar')
-    compile files('libs/httpclient-4.2.2.jar')
-    compile files('libs/httpcore-4.2.2.jar')
-    compile files('libs/httpmime-4.2.2.jar')
-    compile files('libs/acra-4.5.0.jar')
-}
-
-
 android {
-//    compileSdkVersion project.ext.myCompileSdkVersion
-//    buildToolsVersion project.ext.myBuildToolsVersion
-
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
-    useLibrary  'org.apache.http.legacy'
-    // TODO http://developer.android.com/about/versions/marshmallow/android-6.0-changes.html#behavior-apache-http-client
+    buildToolsVersion "23.0.2"
+    useLibrary 'org.apache.http.legacy'
 
-    sourceSets {
-        main {
-            manifest {
-                srcFile 'AndroidManifest.xml'
-            }
-            java {
-                srcDir 'src'
-            }
-            res {
-                srcDir 'res'
-            }
-            assets {
-                srcDir 'assets'
-            }
-            resources {
-                srcDir 'src'
-            }
-            aidl {
-                srcDir 'src'
-            }
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -78,4 +51,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:preference-v7:23.1.1'
+    compile 'ch.acra:acra:4.7.0'
+    compile 'com.androidplot:androidplot-core:0.6.1'
+    compile files('libs/httpclient-4.2.2.jar')
+    compile files('libs/httpcore-4.2.2.jar')
+    compile files('libs/httpmime-4.2.2.jar')
 }
