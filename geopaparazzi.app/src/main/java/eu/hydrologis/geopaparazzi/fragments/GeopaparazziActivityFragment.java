@@ -2,6 +2,7 @@
 // Contains the Flag Quiz logic
 package eu.hydrologis.geopaparazzi.fragments;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +31,15 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
@@ -60,7 +64,9 @@ import eu.hydrologis.geopaparazzi.activities.ImportActivity;
 import eu.hydrologis.geopaparazzi.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.activities.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
+import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
+import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.TableDescriptions;
 import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 import eu.hydrologis.geopaparazzi.dialogs.ColorDialogFragment;
@@ -78,6 +84,8 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
  */
 public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
 
+    private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
+
     private ImageButton mNotesButton;
     private ImageButton mMetadataButton;
     private ImageButton mMapviewButton;
@@ -88,6 +96,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private MenuItem mGpsMenuItem;
     private OrientationSensor mOrientationSensor;
+    private IApplicationChangeListener appChangeListener;
 
     private BroadcastReceiver mGpsServiceBroadcastReceiver;
     private static boolean sCheckedGps = false;
@@ -167,6 +176,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        if (context instanceof IApplicationChangeListener) {
+            appChangeListener = (IApplicationChangeListener) context;
+        }
+
         if (mOrientationSensor == null) {
             SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
             mOrientationSensor = new OrientationSensor(sensorManager, null);
@@ -189,9 +202,13 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     @Override
     public void onDetach() {
         super.onDetach();
-
+        appChangeListener = null;
         mOrientationSensor.unregister();
-        GpsServiceUtilities.unregisterFromBroadcasts(getActivity(), mGpsServiceBroadcastReceiver);
+        try {
+            GpsServiceUtilities.unregisterFromBroadcasts(getActivity(), mGpsServiceBroadcastReceiver);
+        } catch (Exception e) {
+            // TODO how do I check if it is already unregistered
+        }
     }
 
     @Override
@@ -214,7 +231,12 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 return true;
             }
             case R.id.action_load: {
-
+                Intent browseIntent = new Intent(getActivity(), DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getSdcardDir()
+                        .getAbsolutePath());
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
+                return true;
             }
             case R.id.action_gps: {
                 GpsInfoDialogFragment gpsInfoDialogFragment = new GpsInfoDialogFragment();
@@ -248,6 +270,49 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
+                if (resultCode == Activity.RESULT_OK) {
+                    String databasePathToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                    if (databasePathToLoad != null && new File(databasePathToLoad).exists()) {
+                        try {
+                            DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), databasePathToLoad);
+
+                            if (appChangeListener != null) {
+                                appChangeListener.onApplicationNeedsRestart();
+                            }
+                        } catch (IOException e) {
+                            GPLog.error(this, null, e);
+                            GPDialogs.warningDialog(getActivity(), "An error occurred while setting teh new project.", null);
+                        }
+                    }
+                }
+                break;
+            }
+//            case (RETURNCODE_NOTES): {
+//                if (resultCode == Activity.RESULT_OK) {
+//                    String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+//                    if (noteArray != null) {
+//                        try {
+//                            double lon = Double.parseDouble(noteArray[0]);
+//                            double lat = Double.parseDouble(noteArray[1]);
+//                            double elev = Double.parseDouble(noteArray[2]);
+//                            DaoNotes.addNote(lon, lat, elev, Long.parseLong(noteArray[3]), noteArray[4], "POI", null,
+//                                    null);
+//                        } catch (Exception e) {
+//                            GPLog.error(this, null, e); //$NON-NLS-1$
+//                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+//                        }
+//                    }
+//                }
+//                break;
+//            }
+        }
+    }
+
 
     @Override
     public boolean onLongClick(View v) {
