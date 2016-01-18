@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package eu.geopaparazzi.library.core.activities;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
@@ -44,11 +47,11 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A log list activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class LogAnalysisActivity extends ListActivity {
+public class LogAnalysisActivity extends ListActivity implements View.OnClickListener {
     private static final int COLOR_ERROR = Color.RED;
     private static final int COLOR_CHECK = Color.CYAN;
     private static final int COLOR_INFO = Color.GREEN;
@@ -74,7 +77,7 @@ public class LogAnalysisActivity extends ListActivity {
     private List<String> messagesList;
     private ProgressDialog importDialog;
 
-    public void onCreate( Bundle icicle ) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.log_list);
 
@@ -106,21 +109,29 @@ public class LogAnalysisActivity extends ListActivity {
 
         errorToggleButton = (ToggleButton) findViewById(R.id.errorToggleButton);
         errorToggleButton.setChecked(true);
+        errorToggleButton.setOnClickListener(this);
         gpsToggleButton = (ToggleButton) findViewById(R.id.gpsToggleButton);
         gpsToggleButton.setChecked(false);
+        gpsToggleButton.setOnClickListener(this);
         infoToggleButton = (ToggleButton) findViewById(R.id.infoToggleButton);
         infoToggleButton.setChecked(false);
+        infoToggleButton.setOnClickListener(this);
         checkToggleButton = (ToggleButton) findViewById(R.id.checkToggleButton);
         checkToggleButton.setChecked(false);
+        checkToggleButton.setOnClickListener(this);
         anomalyToggleButton = (ToggleButton) findViewById(R.id.anomalieToggleButton);
         anomalyToggleButton.setChecked(false);
+        anomalyToggleButton.setOnClickListener(this);
         memoryToggleButton = (ToggleButton) findViewById(R.id.memoryToggleButton);
         memoryToggleButton.setChecked(false);
+        memoryToggleButton.setOnClickListener(this);
 
-        Button refreshButton = (Button) findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener(){
+        setButtonColor(errorToggleButton);
 
-            public void onClick( View v ) {
+        FloatingActionButton refreshButton = (FloatingActionButton) findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
                 refreshListWithSpin();
             }
         });
@@ -145,9 +156,9 @@ public class LogAnalysisActivity extends ListActivity {
         importDialog.setIndeterminate(true);
         importDialog.show();
 
-        new AsyncTask<String, Void, String>(){
+        new AsyncTask<String, Void, String>() {
 
-            protected String doInBackground( String... params ) {
+            protected String doInBackground(String... params) {
                 try {
                     refreshList();
                     return "";
@@ -157,7 +168,7 @@ public class LogAnalysisActivity extends ListActivity {
                 }
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 if (importDialog != null && importDialog.isShowing()) {
                     importDialog.dismiss();
                 }
@@ -170,9 +181,9 @@ public class LogAnalysisActivity extends ListActivity {
                 } else {
                     try {
                         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.log_row,
-                                messagesList){
+                                messagesList) {
                             @Override
-                            public View getView( final int position, View cView, ViewGroup parent ) {
+                            public View getView(final int position, View cView, ViewGroup parent) {
                                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 final TextView textView = (TextView) inflater.inflate(R.layout.log_row, null);
                                 String message = messagesList.get(position);
@@ -191,6 +202,7 @@ public class LogAnalysisActivity extends ListActivity {
         }.execute((String) null);
 
     }
+
     private void checkSelections() {
         showError = errorToggleButton.isChecked();
         showSession = gpsToggleButton.isChecked();
@@ -206,7 +218,7 @@ public class LogAnalysisActivity extends ListActivity {
             checkSelections();
             Cursor cursor = database.rawQuery(query, null);
             cursor.moveToFirst();
-            while( !cursor.isAfterLast() ) {
+            while (!cursor.isAfterLast()) {
                 String logMessage = getLogMessage(cursor);
                 if (messageOk(logMessage)) {
                     messagesList.add(logMessage);
@@ -217,14 +229,14 @@ public class LogAnalysisActivity extends ListActivity {
         }
     }
 
-    private boolean messageOk( String logMessage ) {
+    private boolean messageOk(String logMessage) {
         boolean allFalse = //
-        !showError && //
-                !showSession && //
-                !showEvento && //
-                !showSendCleanup && //
-                !showAnomalie && //
-                !showMemory;
+                !showError && //
+                        !showSession && //
+                        !showEvento && //
+                        !showSendCleanup && //
+                        !showAnomalie && //
+                        !showMemory;
         String logMessageLC = logMessage.toLowerCase();
         if (isGps(logMessageLC)) {
             if (!allFalse && !showSession) {
@@ -258,7 +270,7 @@ public class LogAnalysisActivity extends ListActivity {
         return true;
     }
 
-    private static int getColor( String logMessage ) {
+    private static int getColor(String logMessage) {
         int color = Color.WHITE;
         String logMessageLC = logMessage.toLowerCase();
         if (isError(logMessageLC, logMessage)) {
@@ -277,39 +289,39 @@ public class LogAnalysisActivity extends ListActivity {
         return color;
     }
 
-    private static boolean isGps( String logMessageLC ) {
+    private static boolean isGps(String logMessageLC) {
         return logMessageLC.contains("gps");
     }
 
-    private static boolean isMemory( String logMessageLC ) {
+    private static boolean isMemory(String logMessageLC) {
         return logMessageLC.contains("memory pss") || //
                 logMessageLC.contains("mem@") //
-        ;
+                ;
     }
 
-    private static boolean isInfo( String logMessageLC ) {
+    private static boolean isInfo(String logMessageLC) {
         return logMessageLC.contains("daotrackoid: evento aggiunto") || //
                 logMessageLC.contains("daotrackoid: eventi made clean") || //
                 logMessageLC.contains("daotrackoid: closed evento");
     }
 
-    private static boolean isCheck( String logMessageLC ) {
+    private static boolean isCheck(String logMessageLC) {
         return logMessageLC.contains("customtiledownloader called with");
     }
 
-    private static boolean isError( String logMessageLC, String logMessage ) {
+    private static boolean isError(String logMessageLC, String logMessage) {
         return logMessageLC.contains("error") || //
                 logMessage.contains("Exception") || //
                 logMessageLC.contains("problem");
     }
 
-    private static boolean isAnomaly( String logMessageLC ) {
+    private static boolean isAnomaly(String logMessageLC) {
         return logMessageLC.contains("emergenza");
     }
 
-    private static String getLogMessage( Cursor cursor ) {
+    private static String getLogMessage(Cursor cursor) {
         StringBuilder sb = new StringBuilder();
-        for( int i = 0; i < cursor.getColumnCount(); i++ ) {
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
             String field = cursor.getColumnName(i);
             if (field.equals("_id")) {
                 continue;
@@ -322,5 +334,23 @@ public class LogAnalysisActivity extends ListActivity {
             text = sb.substring(1);
         }
         return text;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof ToggleButton) {
+            ToggleButton toggleButton = (ToggleButton) v;
+
+            setButtonColor(toggleButton);
+        }
+
+    }
+
+    private void setButtonColor(ToggleButton toggleButton) {
+        if (toggleButton.isChecked()) {
+            toggleButton.setBackground(getDrawable(R.drawable.button_background_drawable_selected));
+        } else {
+            toggleButton.setBackground(getDrawable(R.drawable.button_background_drawable));
+        }
     }
 }

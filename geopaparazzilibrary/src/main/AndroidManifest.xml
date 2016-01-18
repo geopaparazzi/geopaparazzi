@@ -49,7 +49,7 @@
         android:name="android.hardware.nfc"
         android:required="false" />
 
-    <application>
+    <application android:theme="@style/GeopapTheme">
         <activity
             android:name="eu.geopaparazzi.library.nfc.NfcIdReaderActivity"
             android:launchMode="singleTask">
