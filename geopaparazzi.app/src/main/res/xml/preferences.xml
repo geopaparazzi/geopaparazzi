@@ -134,17 +134,17 @@
         android:title="@string/geopapcloud_preferences"
         android:summary="@string/geopapcloud_preferences_summary">
         <EditTextPreference
-            android:key="geopapcloud_user_key"
+            android:key="stage_user_key"
             android:order="212"
             android:title="@string/geopapcloud_user_label" />
         <EditTextPreference
             android:inputType="textPassword"
-            android:key="geopapcloud_pwd_key"
+            android:key="stage_pwd_key"
             android:order="213"
             android:title="@string/geopapcloud_password_label" />
         <EditTextPreference
             android:defaultValue=""
-            android:key="geopapcloud_server_key"
+            android:key="stage_server_key"
             android:order="214"
             android:title="@string/geopapcloud_server_label" />
     </PreferenceScreen>

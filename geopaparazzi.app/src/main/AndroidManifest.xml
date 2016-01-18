@@ -9,19 +9,19 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
 
+    <!--  NORMAL PERMISSIONS     -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
     <!-- <uses-permission -->
     <!-- android:name="android.permission.ACCESS_MOCK_LOCATION" -->
     <!-- tools:ignore="MockLocation" /> -->
-    <!--
- NORMAL PERMISSIONS
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.NFC" />
-        <uses-permission android:name="android.permission.VIBRATE" />
-    -->
+
     <application
         android:name=".GeopaparazziApplication"
         android:allowBackup="true"
@@ -105,11 +105,48 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.AdvancedSettingsActivity" />
         </activity>
+
         <activity android:name="eu.geopaparazzi.library.core.activities.LogAnalysisActivity" />
+
         <activity
             android:name="eu.geopaparazzi.library.core.activities.DatabaseListActivity"
             android:label="@string/query_results"
             android:parentActivityName=".activities.SqlViewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar" />
+
+        <activity
+            android:name=".activities.ExportActivity"
+            android:label="@string/export_uc"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.ImportActivity"
+            android:label="@string/import_uc"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />
+        </activity>
+
+        <activity android:name=".activities.GpxImportActivity">
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.gpx.GPXIMPORT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.tantomapurls.TantoMapurlsActivity"
+            android:theme="@style/GeopapTheme.NoActionBar" />
+        <activity
+            android:name=".activities.tantomapurls.TantoMapurlsListActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
 

@@ -292,7 +292,7 @@
     <string name="import_uc">IMPORT</string>
     <string name="mapurls">Mapurls</string>
     <string name="gpx">GPX</string>
-    <string name="geopap_browser">Geopaparazzi Browser</string>
+    <string name="geopap_browser">S.T.A.G.E.</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="default_database">Default Database</string>
     <string name="kmz">KMZ</string>
@@ -335,5 +335,7 @@
     <string name="write_own_query">or write your own query</string>
     <string name="sqlview">SQL View</string>
     <string name="query_results">Query results</string>
+    <string name="no_images_in_project">No images present in the project.</string>
+    <string name="no_data_found_in_project_to_export">No data found in the project can be exported.</string>
 
 </resources>

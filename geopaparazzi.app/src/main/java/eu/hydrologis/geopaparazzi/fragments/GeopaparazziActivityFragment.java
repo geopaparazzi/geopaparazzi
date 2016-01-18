@@ -55,6 +55,8 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.activities.AdvancedSettingsActivity;
+import eu.hydrologis.geopaparazzi.activities.ExportActivity;
+import eu.hydrologis.geopaparazzi.activities.ImportActivity;
 import eu.hydrologis.geopaparazzi.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.activities.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
@@ -291,8 +293,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (v == mGpslogButton) {
             handleGpsLogAction();
         } else if (v == mImportButton) {
-            Intent providerIntent = new Intent(getActivity(), ProviderTestActivity.class);
-            startActivity(providerIntent);
+            Intent importIntent = new Intent(getActivity(), ImportActivity.class);
+            startActivity(importIntent);
+        } else if (v == mExportButton) {
+            Intent exportIntent = new Intent(getActivity(), ExportActivity.class);
+            startActivity(exportIntent);
         } else if (v == panicFAB) {
             if (lastGpsPosition == null) {
                 return;

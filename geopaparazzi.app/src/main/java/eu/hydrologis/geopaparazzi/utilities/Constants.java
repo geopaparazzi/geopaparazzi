@@ -29,4 +29,19 @@ public interface Constants {
     public static final String PANICKEY = "panic_number";
 
     public static final String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+
+    /*
+     * CLOUD
+     */
+    public static final String PREF_KEY_USER = "stage_user_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_PWD = "stage_pwd_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_SERVER = "stage_server_key";//$NON-NLS-1$
+
+
+    /*
+     * Intents
+     */
+
+    public final String GPXIMPORT_INTENT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
+
 }
