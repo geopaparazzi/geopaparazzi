@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi Project Βάση δεδομένων</string>
   <string name="notesvisibilityToggle">Εναλλαγή ορατότητας σημειώσεων.</string>
-  <string name="kmlsaved">Τα δεδομένα έχουν εξαχθεί επιτυχώς σε:</string>
-  <string name="kmlnonsaved">Ένα σφάλμα παρουσιάστηκε κατα την εξαγωγή των δεδομένων!</string>
+  <string name="datasaved">Τα δεδομένα έχουν εξαχθεί επιτυχώς σε:</string>
+  <string name="data_nonsaved">Ένα σφάλμα παρουσιάστηκε κατα την εξαγωγή των δεδομένων!</string>
   <string name="loggingoff">Διακοπή όλων των αισθητήρων.</string>
   <string name="nogps_data">Μη διαθέσιμα δεδομένα gps ακόμη!</string>
   <string name="about">Σχετικά</string>

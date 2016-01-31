@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi 프로젝트 데이터베이스</string>
   <string name="notesvisibilityToggle">메모 보이기를 전환합니다.</string>
-  <string name="kmlsaved">데이터를 성공적으로 내보냄:</string>
-  <string name="kmlnonsaved">데이터를 내보내는 중 오류가 발생했습니다!</string>
+  <string name="datasaved">데이터를 성공적으로 내보냄:</string>
+  <string name="data_nonsaved">데이터를 내보내는 중 오류가 발생했습니다!</string>
   <string name="loggingoff">모든 센서가 중단되었습니다.</string>
   <string name="nogps_data">GPS 데이터를 아직 사용할 수 없습니다!</string>
   <string name="about">정보</string>

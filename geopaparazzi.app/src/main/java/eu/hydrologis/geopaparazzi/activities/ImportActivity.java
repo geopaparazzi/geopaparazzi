@@ -203,10 +203,6 @@ public class ImportActivity extends AppCompatActivity {
                         if (file.exists()) {
                             GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
                             gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");
-//                            Intent intent = new Intent(ImportActivity.this, GpxImportActivity.class);
-//                            intent.putExtra(LibraryConstants.PREFS_KEY_PATH, file.getAbsolutePath());
-//                            startActivity(intent);
-//                            finish();
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(this, e, null);

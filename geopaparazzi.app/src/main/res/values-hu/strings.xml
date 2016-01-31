@@ -4,8 +4,8 @@
   <string name="no">nem</string>
   <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Jegyzetek megjelenítése</string>
-  <string name="kmlsaved">Sikeresen exportált adatok: </string>
-  <string name="kmlnonsaved">Hiba történt az adatok exportálása során!</string>
+  <string name="datasaved">Sikeresen exportált adatok: </string>
+  <string name="data_nonsaved">Hiba történt az adatok exportálása során!</string>
   <string name="loggingoff">Minden vevő leállt.</string>
   <string name="nogps_data">Nem érhető el gps pozíció!</string>
   <string name="about">Névjegy</string>

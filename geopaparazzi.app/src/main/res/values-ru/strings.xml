@@ -4,8 +4,8 @@
   <string name="no">нет</string>
   <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Сменить видимость заметок.</string>
-  <string name="kmlsaved">Данные экспортированы в </string>
-  <string name="kmlnonsaved">Ошибка при экспорте данных!</string>
+  <string name="datasaved">Данные экспортированы в </string>
+  <string name="data_nonsaved">Ошибка при экспорте данных!</string>
   <string name="loggingoff">Остановлены все сенсоры.</string>
   <string name="nogps_data">Не доступны GPS данные!</string>
   <string name="about">О программе</string>

@@ -5,8 +5,8 @@
   <string name="app_name">GeoPaparazzi</string>
   <string name="app_file_name">Geopaparazzi Projektitietokanta</string>
   <string name="notesvisibilityToggle">Näytä muistiinpanot.</string>
-  <string name="kmlsaved">Tiedot onnistuneesti viety:</string>
-  <string name="kmlnonsaved">Tapahtui virhe tietojen viennissä!</string>
+  <string name="datasaved">Tiedot onnistuneesti viety:</string>
+  <string name="data_nonsaved">Tapahtui virhe tietojen viennissä!</string>
   <string name="loggingoff">GPS- ja anturiseuranta lopetettu.</string>
   <string name="nogps_data">GPS-tietoa ei vielä saatavilla!</string>
   <string name="about">Info</string>

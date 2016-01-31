@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.activities;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -49,8 +48,6 @@ import java.util.TreeSet;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.gpx.GpxExport;
-import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -69,6 +66,7 @@ import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
 import eu.hydrologis.geopaparazzi.database.objects.Line;
 import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
+import eu.hydrologis.geopaparazzi.dialogs.GpxExportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
@@ -81,7 +79,6 @@ public class ExportActivity extends AppCompatActivity implements
 
     public static final String NODATA = "NODATA";
     private ProgressDialog kmlProgressDialog;
-    private ProgressDialog gpxProgressDialog;
     private ProgressDialog cloudProgressDialog;
     private NfcAdapter mNfcAdapter;
 
@@ -115,7 +112,8 @@ public class ExportActivity extends AppCompatActivity implements
         Button gpxExportButton = (Button) findViewById(R.id.gpxExportButton);
         gpxExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                exportGpx();
+                GpxExportDialogFragment gpxExportDialogFragment = GpxExportDialogFragment.newInstance(null);
+                gpxExportDialogFragment.show(getSupportFragmentManager(), "gpx export");
             }
         });
         Button bookmarksExportButton = (Button) findViewById(R.id.bookmarksExportButton);
@@ -178,7 +176,6 @@ public class ExportActivity extends AppCompatActivity implements
             mNfcAdapter.disableForegroundDispatch(this);
 
         GPDialogs.dismissProgressDialog(kmlProgressDialog);
-        GPDialogs.dismissProgressDialog(gpxProgressDialog);
         GPDialogs.dismissProgressDialog(cloudProgressDialog);
     }
 
@@ -299,10 +296,10 @@ public class ExportActivity extends AppCompatActivity implements
                     String msg = getString(R.string.no_data_found_in_project_to_export);
                     GPDialogs.warningDialog(ExportActivity.this, msg, null);
                 } else if (response.length() > 0) {
-                    String msg = getString(R.string.kmlsaved) + response;
+                    String msg = getString(R.string.datasaved) + response;
                     GPDialogs.infoDialog(ExportActivity.this, msg, null);
                 } else {
-                    String msg = getString(R.string.kmlnonsaved);
+                    String msg = getString(R.string.data_nonsaved);
                     GPDialogs.warningDialog(ExportActivity.this, msg, null);
                 }
 
@@ -310,66 +307,6 @@ public class ExportActivity extends AppCompatActivity implements
         }.execute((String) null);
     }
 
-    private void exportGpx() {
-        gpxProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
-                getString(R.string.exporting_data_to_gpx), true, true);
-        new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... params) {
-                try {
-                    List<GpxRepresenter> gpxRepresenterList = new ArrayList<>();
-                    boolean hasAtLeastOne = false;
-                    /*
-                     * add gps logs
-                     */
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
-                    Collection<Line> linesCollection = linesMap.values();
-                    for (Line line : linesCollection) {
-                        gpxRepresenterList.add(line);
-                        hasAtLeastOne = true;
-                    }
-                    /*
-                     * get notes
-                     */
-                    List<Note> notesList = DaoNotes.getNotesList(null, false);
-                    for (Note note : notesList) {
-                        gpxRepresenterList.add(note);
-                        hasAtLeastOne = true;
-                    }
-
-                    if (!hasAtLeastOne) {
-                        return NODATA;
-                    }
-
-                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
-                    File gpxOutputFile = new File(gpxExportDir, filename);
-                    GpxExport export = new GpxExport(null, gpxOutputFile);
-                    export.export(ExportActivity.this, gpxRepresenterList);
-
-                    return gpxOutputFile.getAbsolutePath();
-                } catch (Exception e) {
-                    GPLog.error(this, e.getLocalizedMessage(), e);
-                    return null;
-                }
-            }
-
-            protected void onPostExecute(String response) { // on UI thread!
-                GPDialogs.dismissProgressDialog(gpxProgressDialog);
-
-                if (response.equals(NODATA)) {
-                    String msg = getString(R.string.no_data_found_in_project_to_export);
-                    GPDialogs.warningDialog(ExportActivity.this, msg, null);
-                } else if (response.length() > 0) {
-                    String msg = getString(R.string.kmlsaved) + response;
-                    GPDialogs.infoDialog(ExportActivity.this, msg, null);
-                } else {
-                    String msg = getString(R.string.kmlnonsaved);
-                    GPDialogs.warningDialog(ExportActivity.this, msg, null);
-                }
-
-            }
-        }.execute((String) null);
-    }
 
     @SuppressWarnings("nls")
     private void exportBookmarks() {

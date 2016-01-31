@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Projektová databáze Geopaparazzi</string>
   <string name="notesvisibilityToggle">Zobrazit poznámky</string>
-  <string name="kmlsaved">Data úspěšně vyvedena do: </string>
-  <string name="kmlnonsaved">Při ukládání dat se vyskytla chyba!</string>
+  <string name="datasaved">Data úspěšně vyvedena do: </string>
+  <string name="data_nonsaved">Při ukládání dat se vyskytla chyba!</string>
   <string name="loggingoff">Všechna čidla zastavena.</string>
   <string name="nogps_data">Data GPS ještě nejsou dostupná!</string>
   <string name="about">O programu</string>

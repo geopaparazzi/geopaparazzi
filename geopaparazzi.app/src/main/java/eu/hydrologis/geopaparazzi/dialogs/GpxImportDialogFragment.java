@@ -21,12 +21,7 @@ package eu.hydrologis.geopaparazzi.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -35,26 +30,14 @@ import android.widget.ProgressBar;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsLoggingStatus;
-import eu.geopaparazzi.library.gps.GpsServiceStatus;
-import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
-import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 
@@ -96,12 +79,12 @@ public class GpxImportDialogFragment extends DialogFragment {
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
         View gpsinfoDialogView = getActivity().getLayoutInflater().inflate(
-                R.layout.fragment_dialog_gpximport, null);
+                R.layout.fragment_dialog_progressbar, null);
         builder.setView(gpsinfoDialogView);
         builder.setTitle(R.string.gpx_import_processing);
 
         progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
-                R.id.gpxProgressBar);
+                R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,
                 new DialogInterface.OnClickListener() {

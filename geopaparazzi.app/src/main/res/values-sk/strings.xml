@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi Project Database</string>
   <string name="notesvisibilityToggle">Prepnúť viditeľnosť poznámok.</string>
-  <string name="kmlsaved">Údaje úspešne exportované do:</string>
-  <string name="kmlnonsaved">Pri exporte údajov sa vyskytla chyba!</string>
+  <string name="datasaved">Údaje úspešne exportované do:</string>
+  <string name="data_nonsaved">Pri exporte údajov sa vyskytla chyba!</string>
   <string name="loggingoff">Všetky senzory zastavené.</string>
   <string name="nogps_data">Údaje GPS nedostupné!</string>
   <string name="about">O</string>

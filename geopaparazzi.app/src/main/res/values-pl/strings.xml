@@ -4,8 +4,8 @@
   <string name="no">nie</string>
   <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Przełącz widoczność notatek.</string>
-  <string name="kmlsaved">Dane zostały poprawnie wyeksportowane do:</string>
-  <string name="kmlnonsaved">Wystąpił błąd podczas eksportu danych!</string>
+  <string name="datasaved">Dane zostały poprawnie wyeksportowane do:</string>
+  <string name="data_nonsaved">Wystąpił błąd podczas eksportu danych!</string>
   <string name="loggingoff">Zatrzymano wszystkie sensory.</string>
   <string name="nogps_data">Brak jeszcze danych GPS!</string>
   <string name="about">O programie</string>

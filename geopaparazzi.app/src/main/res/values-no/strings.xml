@@ -3,8 +3,8 @@
   <string name="yes">ja</string>
   <string name="no">nei</string>
   <string name="notesvisibilityToggle">Synlighet notater, av/på.</string>
-  <string name="kmlsaved">Data ble eksportert til: </string>
-  <string name="kmlnonsaved">Det oppstod en feil under dataeksport!</string>
+  <string name="datasaved">Data ble eksportert til: </string>
+  <string name="data_nonsaved">Det oppstod en feil under dataeksport!</string>
   <string name="loggingoff">Stoppet alle sensorer.</string>
   <string name="nogps_data">Ingen gps data tilgjengelig ennå!</string>
   <string name="utctime">tid: </string>

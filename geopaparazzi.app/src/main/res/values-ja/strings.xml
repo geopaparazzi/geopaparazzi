@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazziプロジェクトデータベース</string>
   <string name="notesvisibilityToggle">ノートを表示する。</string>
-  <string name="kmlsaved">正常にエクスポートされました:</string>
-  <string name="kmlnonsaved">データのエクスポート中にエラーが発生しました ！</string>
+  <string name="datasaved">正常にエクスポートされました:</string>
+  <string name="data_nonsaved">データのエクスポート中にエラーが発生しました ！</string>
   <string name="loggingoff">すべてのセンサーが停止しました。</string>
   <string name="nogps_data">まだGPSデータを取得していません。</string>
   <string name="about">このアプリについて</string>

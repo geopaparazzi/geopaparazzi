@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Base de datos del proyecto Geopaparazzi</string>
   <string name="notesvisibilityToggle">Conmutar la visibilidad de las notas.</string>
-  <string name="kmlsaved">Datos correctamente exportados a:</string>
-  <string name="kmlnonsaved">¡Ha ocurrido un error durante la exportación de datos!</string>
+  <string name="datasaved">Datos correctamente exportados a:</string>
+  <string name="data_nonsaved">¡Ha ocurrido un error durante la exportación de datos!</string>
   <string name="loggingoff">Todos los sensores están parados.</string>
   <string name="nogps_data">¡Todavía no se dispone de datos gps!</string>
   <string name="about">Sobre</string>

@@ -5,8 +5,8 @@
   <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Baza podataka Geopaparazzi projekta</string>
   <string name="notesvisibilityToggle">Taster za vidljivost beleške.</string>
-  <string name="kmlsaved">Podaci su uspešno izvezeni u:</string>
-  <string name="kmlnonsaved">Pojavila se greška u toku izvoza podataka!</string>
+  <string name="datasaved">Podaci su uspešno izvezeni u:</string>
+  <string name="data_nonsaved">Pojavila se greška u toku izvoza podataka!</string>
   <string name="loggingoff">Svi senzori zaustavljeni</string>
   <string name="nogps_data">GPS podaci su još uvek nedostupni!</string>
   <string name="about">O programu</string>

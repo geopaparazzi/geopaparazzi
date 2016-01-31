@@ -12,8 +12,8 @@
     <string name="no">no</string>
     <string name="app_file_name">Geopaparazzi Project Database</string>
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
-    <string name="kmlsaved">Data successfully exported to: </string>
-    <string name="kmlnonsaved">An error occurred during the data export!</string>
+    <string name="datasaved">Data successfully exported to: </string>
+    <string name="data_nonsaved">An error occurred during the data export!</string>
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="nogps_data">No gps data available yet!</string>
     <string name="about">About</string>
