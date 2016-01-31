@@ -68,6 +68,7 @@ import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.dialogs.GpxExportDialogFragment;
 import eu.hydrologis.geopaparazzi.dialogs.KmzExportDialogFragment;
+import eu.hydrologis.geopaparazzi.dialogs.StageExportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
@@ -78,8 +79,6 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
 public class ExportActivity extends AppCompatActivity implements
         NfcAdapter.CreateBeamUrisCallback {
 
-    public static final String NODATA = "NODATA";
-    private ProgressDialog cloudProgressDialog;
     private NfcAdapter mNfcAdapter;
 
     // List of URIs to provide to Android Beam
@@ -141,8 +140,8 @@ public class ExportActivity extends AppCompatActivity implements
                     return;
                 }
 
-                exportToCloud(context, serverUrl, user, pwd);
-
+                StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
+                stageExportDialogFragment.show(getSupportFragmentManager(), "stage export");
             }
         });
 
@@ -175,38 +174,6 @@ public class ExportActivity extends AppCompatActivity implements
 
         if (mNfcAdapter != null)
             mNfcAdapter.disableForegroundDispatch(this);
-
-        GPDialogs.dismissProgressDialog(cloudProgressDialog);
-    }
-
-
-    private void exportToCloud(final ExportActivity context, final String serverUrl, final String user, final String pwd) {
-
-        cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
-                context.getString(R.string.exporting_data_to_the_cloud), true, true);
-        new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... params) {
-                try {
-                    String message = WebProjectManager.INSTANCE.uploadProject(context, serverUrl, user, pwd);
-                    return message;
-                } catch (Exception e) {
-                    GPLog.error(this, e.getLocalizedMessage(), e);
-                    return e.getLocalizedMessage();
-                }
-            }
-
-            protected void onPostExecute(String response) { // on UI thread!
-                GPDialogs.dismissProgressDialog(cloudProgressDialog);
-                // String msg;
-                // if (code == ReturnCodes.ERROR) {
-                // msg = getString(R.string.error_uploadig_project_to_cloud);
-                // } else {
-                // msg = getString(R.string.project_succesfully_uploaded_to_cloud);
-                // }
-
-                GPDialogs.infoDialog(ExportActivity.this, response, null);
-            }
-        }.execute((String) null);
 
     }
 

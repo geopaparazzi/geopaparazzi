@@ -55,7 +55,7 @@ import eu.hydrologis.geopaparazzi.database.objects.Note;
 
 
 /**
- * Dialog for gpx files export.
+ * Dialog for kmz files export.
  *
  * @author Andrea Antonello
  */
