@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.utilities;
+package eu.geopaparazzi.library.permissions;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,43 +28,45 @@ import android.content.pm.PackageManager;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionWriteStorage implements IChainedPermissionHelper {
+public class PermissionSendSms implements IChainedPermissionHelper {
 
-    public static int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE = 1;
+    public static int SENDSMS_PERMISSION_REQUESTCODE = 3;
+
 
     @Override
     public String getDescription() {
-        return "Write External Storage";
+        return "Send SMS";
     }
 
     @Override
     public boolean hasPermission(Context context) {
         if (context.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
         }
         return true;
     }
 
+
     @Override
     public void requestPermission(final Activity activity) {
         if (activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                Manifest.permission.SEND_SMS) !=
                 PackageManager.PERMISSION_GRANTED) {
 
             if (activity.shouldShowRequestPermissionRationale(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Manifest.permission.SEND_SMS)) {
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(activity);
-                builder.setMessage("Geopaparazzi needs to write data to your device. To do so it needs the related permission granted.");
+                builder.setMessage("Geopaparazzi needs to be able to send sms to enable certain functionalities.");
                 builder.setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 activity.requestPermissions(new String[]{
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
+                                                Manifest.permission.SEND_SMS},
+                                        SENDSMS_PERMISSION_REQUESTCODE);
                             }
                         }
                 );
@@ -73,15 +75,15 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
             } else {
                 // request permission
                 activity.requestPermissions(
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
+                        new String[]{Manifest.permission.SEND_SMS},
+                        SENDSMS_PERMISSION_REQUESTCODE);
             }
         }
     }
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE &&
+        if (requestCode == SENDSMS_PERMISSION_REQUESTCODE &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED)
             return true;
         return false;
@@ -89,12 +91,11 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
 
     @Override
     public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionFineLocation permissionFineLocation = new PermissionFineLocation();
-        if (!permissionFineLocation.hasPermission(context)) {
-            return permissionFineLocation;
+        PermissionRecieveSms permissionRecieveSms = new PermissionRecieveSms();
+        if (!permissionRecieveSms.hasPermission(context)) {
+            return permissionRecieveSms;
         } else {
-            return permissionFineLocation.getNextWithoutPermission(context);
+            return permissionRecieveSms.getNextWithoutPermission(context);
         }
     }
-
 }

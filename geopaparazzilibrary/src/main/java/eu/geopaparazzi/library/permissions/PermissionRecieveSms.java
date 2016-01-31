@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.utilities;
+package eu.geopaparazzi.library.permissions;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,7 +24,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
