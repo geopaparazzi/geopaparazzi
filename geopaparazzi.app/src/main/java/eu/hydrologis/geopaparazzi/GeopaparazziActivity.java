@@ -3,9 +3,9 @@
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.hydrologis.geopaparazzi;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,15 +13,17 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
-import eu.hydrologis.geopaparazzi.utilities.IChainedPermissionHelper;
-import eu.hydrologis.geopaparazzi.utilities.PermissionWriteStorage;
+import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
+import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
  * Main activity.
@@ -41,6 +43,8 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        checkIncomingProject();
+
 
         // PERMISSIONS START
         if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
@@ -53,6 +57,19 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         }
         // PERMISSIONS STOP
 
+    }
+
+    private void checkIncomingProject() {
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String path = data.getEncodedPath();
+            if (path.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(PREFS_KEY_DATABASE_TO_LOAD, path);
+                editor.apply();
+            }
+        }
     }
 
     private void init() {

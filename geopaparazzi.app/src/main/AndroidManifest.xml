@@ -39,6 +39,37 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+
+                <data android:mimeType="*/*" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.gpap" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<data-->
+                    <!--android:host="maps.google.com"-->
+                    <!--android:scheme="http" />-->
+
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<data-->
+                    <!--android:host="www.openstreetmap.org"-->
+                    <!--android:scheme="http" />-->
+
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
