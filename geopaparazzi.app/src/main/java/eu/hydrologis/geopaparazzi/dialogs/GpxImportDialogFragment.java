@@ -81,7 +81,7 @@ public class GpxImportDialogFragment extends DialogFragment {
         View gpsinfoDialogView = getActivity().getLayoutInflater().inflate(
                 R.layout.fragment_dialog_progressbar, null);
         builder.setView(gpsinfoDialogView);
-        builder.setTitle(R.string.gpx_import_processing);
+        builder.setMessage(R.string.gpx_import_processing);
 
         progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
                 R.id.progressBar);
@@ -182,9 +182,9 @@ public class GpxImportDialogFragment extends DialogFragment {
             protected void doUiPostWork(String response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.length() != 0) {
-                    alertDialog.setTitle(response);
+                    alertDialog.setMessage(response);
                 } else {
-                    alertDialog.setTitle(getString(R.string.gpx_file_imported));
+                    alertDialog.setMessage(getString(R.string.gpx_file_imported));
                     positiveButton.setEnabled(true);
                 }
             }

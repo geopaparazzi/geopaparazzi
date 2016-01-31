@@ -35,17 +35,22 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gpx.GpxExport;
-import eu.geopaparazzi.library.gpx.GpxRepresenter;
-import eu.geopaparazzi.library.util.FileTypes;
+import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
 import eu.hydrologis.geopaparazzi.database.objects.Line;
+import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
 
 
@@ -54,9 +59,9 @@ import eu.hydrologis.geopaparazzi.database.objects.Note;
  *
  * @author Andrea Antonello
  */
-public class GpxExportDialogFragment extends DialogFragment {
+public class KmzExportDialogFragment extends DialogFragment {
     public static final String NODATA = "NODATA";
-    public static final String GPX_PATH = "exportPath";
+    public static final String KMZ_PATH = "exportPath";
     public static final String INTERRUPTED = "INTERRUPTED";
     private ProgressBar progressBar;
     private String exportPath;
@@ -69,13 +74,13 @@ public class GpxExportDialogFragment extends DialogFragment {
     /**
      * Create a dialog instance.
      *
-     * @param exportPath an optional path to which to export the gpx to. If null, a default path is chosen.
+     * @param exportPath an optional path to which to export the kmz to. If null, a default path is chosen.
      * @return the instance.
      */
-    public static GpxExportDialogFragment newInstance(String exportPath) {
-        GpxExportDialogFragment f = new GpxExportDialogFragment();
+    public static KmzExportDialogFragment newInstance(String exportPath) {
+        KmzExportDialogFragment f = new KmzExportDialogFragment();
         Bundle args = new Bundle();
-        args.putString(GPX_PATH, exportPath);
+        args.putString(KMZ_PATH, exportPath);
         f.setArguments(args);
         return f;
     }
@@ -84,7 +89,7 @@ public class GpxExportDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        exportPath = getArguments().getString(GPX_PATH);
+        exportPath = getArguments().getString(KMZ_PATH);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class GpxExportDialogFragment extends DialogFragment {
         View gpsinfoDialogView = getActivity().getLayoutInflater().inflate(
                 R.layout.fragment_dialog_progressbar, null);
         builder.setView(gpsinfoDialogView);
-        builder.setMessage(R.string.exporting_data_to_gpx);
+        builder.setMessage(R.string.exporting_data_to_kmz);
 
         progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
                 R.id.progressBar);
@@ -124,17 +129,33 @@ public class GpxExportDialogFragment extends DialogFragment {
     private void startExport() {
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
+                File kmlOutputFile = null;
                 try {
-                    List<GpxRepresenter> gpxRepresenterList = new ArrayList<>();
+                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
                     boolean hasAtLeastOne = false;
                     /*
                      * add gps logs
                      */
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
-                    Collection<Line> linesCollection = linesMap.values();
-                    for (Line line : linesCollection) {
+                    List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs();
+                    HashMap<Long, LogMapItem> mapitemsMap = new HashMap<>();
+                    for (LogMapItem log : gpslogs) {
                         if (isInterrupted) break;
-                        gpxRepresenterList.add(line);
+                        mapitemsMap.put(log.getId(), log);
+                        hasAtLeastOne = true;
+                    }
+
+                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
+                    Collection<Map.Entry<Long, Line>> linesSet = linesMap.entrySet();
+                    for (Map.Entry<Long, Line> lineEntry : linesSet) {
+                        if (isInterrupted) break;
+                        Long id = lineEntry.getKey();
+                        Line line = lineEntry.getValue();
+                        LogMapItem mapItem = mapitemsMap.get(id);
+                        float width = mapItem.getWidth();
+                        String color = mapItem.getColor();
+                        line.setStyle(width, color);
+                        line.setName(mapItem.getName());
+                        kmlRepresenterList.add(line);
                         hasAtLeastOne = true;
                     }
                     /*
@@ -143,28 +164,51 @@ public class GpxExportDialogFragment extends DialogFragment {
                     List<Note> notesList = DaoNotes.getNotesList(null, false);
                     for (Note note : notesList) {
                         if (isInterrupted) break;
-                        gpxRepresenterList.add(note);
+                        kmlRepresenterList.add(note);
+                        hasAtLeastOne = true;
+                    }
+                    /*
+                     * add pictures
+                     */
+                    List<Image> imagesList = DaoImages.getImagesList(false, true);
+                    for (Image image : imagesList) {
+                        kmlRepresenterList.add(image);
+                        hasAtLeastOne = true;
+                    }
+
+                    /*
+                     * add bookmarks
+                     */
+                    List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
+                    for (Bookmark bookmark : bookmarksList) {
+                        if (isInterrupted) break;
+                        kmlRepresenterList.add(bookmark);
                         hasAtLeastOne = true;
                     }
 
                     if (!hasAtLeastOne) {
                         return NODATA;
                     }
-
                     if (isInterrupted) return INTERRUPTED;
-                    File gpxExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + "." + FileTypes.GPX.getExtension();
-                    File gpxOutputFile = new File(gpxExportDir, filename);
-                    if (exportPath != null) {
-                        gpxOutputFile = new File(exportPath);
-                    }
-                    GpxExport export = new GpxExport(null, gpxOutputFile);
-                    export.export(getActivity(), gpxRepresenterList);
 
-                    return gpxOutputFile.getAbsolutePath();
+                    File kmlExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
+                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
+                    kmlOutputFile = new File(kmlExportDir, filename);
+                    if (exportPath != null) {
+                        kmlOutputFile = new File(exportPath);
+                    }
+                    KmzExport export = new KmzExport(null, kmlOutputFile);
+                    export.export(getActivity(), kmlRepresenterList);
+
+                    return kmlOutputFile.getAbsolutePath();
                 } catch (Exception e) {
+                    // cleanup as it might be inconsistent
+                    if (kmlOutputFile != null && kmlOutputFile.exists()) {
+                        kmlOutputFile.delete();
+                    }
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    return null;
+                    e.printStackTrace();
+                    return ""; //$NON-NLS-1$
                 }
             }
 
@@ -179,7 +223,7 @@ public class GpxExportDialogFragment extends DialogFragment {
                     alertDialog.setMessage("Interrupted by user");
                     positiveButton.setEnabled(true);
                 } else if (response.length() > 0) {
-                    String msg = getString(R.string.datasaved) + response;
+                    String msg = getString(R.string.datasaved) + " " + response;
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else {

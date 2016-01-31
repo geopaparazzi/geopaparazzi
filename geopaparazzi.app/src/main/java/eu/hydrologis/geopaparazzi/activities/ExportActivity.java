@@ -67,6 +67,7 @@ import eu.hydrologis.geopaparazzi.database.objects.Line;
 import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.dialogs.GpxExportDialogFragment;
+import eu.hydrologis.geopaparazzi.dialogs.KmzExportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
@@ -78,7 +79,6 @@ public class ExportActivity extends AppCompatActivity implements
         NfcAdapter.CreateBeamUrisCallback {
 
     public static final String NODATA = "NODATA";
-    private ProgressDialog kmlProgressDialog;
     private ProgressDialog cloudProgressDialog;
     private NfcAdapter mNfcAdapter;
 
@@ -106,7 +106,8 @@ public class ExportActivity extends AppCompatActivity implements
         Button kmzExportButton = (Button) findViewById(R.id.kmzExportButton);
         kmzExportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                exportKmz();
+                KmzExportDialogFragment kmzExportDialogFragment = KmzExportDialogFragment.newInstance(null);
+                kmzExportDialogFragment.show(getSupportFragmentManager(), "kmz export");
             }
         });
         Button gpxExportButton = (Button) findViewById(R.id.gpxExportButton);
@@ -175,7 +176,6 @@ public class ExportActivity extends AppCompatActivity implements
         if (mNfcAdapter != null)
             mNfcAdapter.disableForegroundDispatch(this);
 
-        GPDialogs.dismissProgressDialog(kmlProgressDialog);
         GPDialogs.dismissProgressDialog(cloudProgressDialog);
     }
 
@@ -208,103 +208,6 @@ public class ExportActivity extends AppCompatActivity implements
             }
         }.execute((String) null);
 
-    }
-
-    private void exportKmz() {
-        kmlProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
-                getString(R.string.exporting_data_to_kmz), true, true);
-        new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... params) {
-                File kmlOutputFile = null;
-                try {
-                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
-                    boolean hasAtLeastOne = false;
-                    /*
-                     * add gps logs
-                     */
-                    List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs();
-                    HashMap<Long, LogMapItem> mapitemsMap = new HashMap<>();
-                    for (LogMapItem log : gpslogs) {
-                        mapitemsMap.put(log.getId(), log);
-                        hasAtLeastOne = true;
-                    }
-
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
-                    Collection<Entry<Long, Line>> linesSet = linesMap.entrySet();
-                    for (Entry<Long, Line> lineEntry : linesSet) {
-                        Long id = lineEntry.getKey();
-                        Line line = lineEntry.getValue();
-                        LogMapItem mapItem = mapitemsMap.get(id);
-                        float width = mapItem.getWidth();
-                        String color = mapItem.getColor();
-                        line.setStyle(width, color);
-                        line.setName(mapItem.getName());
-                        kmlRepresenterList.add(line);
-                        hasAtLeastOne = true;
-                    }
-                    /*
-                     * get notes
-                     */
-                    List<Note> notesList = DaoNotes.getNotesList(null, false);
-                    for (Note note : notesList) {
-                        kmlRepresenterList.add(note);
-                        hasAtLeastOne = true;
-                    }
-                    /*
-                     * add pictures
-                     */
-                    List<Image> imagesList = DaoImages.getImagesList(false, true);
-                    for (Image image : imagesList) {
-                        kmlRepresenterList.add(image);
-                        hasAtLeastOne = true;
-                    }
-
-                    /*
-                     * add bookmarks
-                     */
-                    List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
-                    for (Bookmark bookmark : bookmarksList) {
-                        kmlRepresenterList.add(bookmark);
-                        hasAtLeastOne = true;
-                    }
-
-                    if (!hasAtLeastOne) {
-                        return NODATA;
-                    }
-
-                    File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getSdcardDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
-                    kmlOutputFile = new File(kmlExportDir, filename);
-                    KmzExport export = new KmzExport(null, kmlOutputFile);
-                    export.export(ExportActivity.this, kmlRepresenterList);
-
-                    return kmlOutputFile.getAbsolutePath();
-                } catch (Exception e) {
-                    // cleanup as it might be inconsistent
-                    if (kmlOutputFile != null && kmlOutputFile.exists()) {
-                        kmlOutputFile.delete();
-                    }
-                    GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                    return ""; //$NON-NLS-1$
-                }
-            }
-
-            protected void onPostExecute(String response) { // on UI thread!
-                GPDialogs.dismissProgressDialog(kmlProgressDialog);
-                if (response.equals(NODATA)) {
-                    String msg = getString(R.string.no_data_found_in_project_to_export);
-                    GPDialogs.warningDialog(ExportActivity.this, msg, null);
-                } else if (response.length() > 0) {
-                    String msg = getString(R.string.datasaved) + response;
-                    GPDialogs.infoDialog(ExportActivity.this, msg, null);
-                } else {
-                    String msg = getString(R.string.data_nonsaved);
-                    GPDialogs.warningDialog(ExportActivity.this, msg, null);
-                }
-
-            }
-        }.execute((String) null);
     }
 
 
