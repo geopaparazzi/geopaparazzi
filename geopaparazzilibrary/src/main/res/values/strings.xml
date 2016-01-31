@@ -94,5 +94,7 @@
     <string name="share_current_center">Share current map center</string>
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
+    <string name="installamaze_title">Install Amaze File Manager</string>
+    <string name="installamaze_message">Geopaparazzi needs a file browser to get files from the system. We propose Amaze, which is open source. Do you want to install it?</string>
 
 </resources>

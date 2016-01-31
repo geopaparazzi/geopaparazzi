@@ -23,36 +23,43 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
+import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.tantomapurls.TantoMapurlsActivity;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
+import eu.hydrologis.geopaparazzi.dialogs.GpxImportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
@@ -61,6 +68,8 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ImportActivity extends AppCompatActivity {
+
+    public static final int PICKFILE_REQUEST_CODE = 666;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -171,13 +180,41 @@ public class ImportActivity extends AppCompatActivity {
     }
 
     private void importGpx() throws Exception {
-        Intent browseIntent = new Intent(ImportActivity.this, DirectoryBrowserActivity.class);
-        browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, ResourcesManager.getInstance(ImportActivity.this)
-                .getSdcardDir().getAbsolutePath());
-        browseIntent.putExtra(DirectoryBrowserActivity.INTENT_ID, Constants.GPXIMPORT_INTENT);
-        browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, ".gpx"); //$NON-NLS-1$
-        startActivity(browseIntent);
-        finish();
+        String title = getString(R.string.select_gpx_file);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPX.getExtension());
+        if (mimeType == null) mimeType = "text/" + FileTypes.GPX.getExtension();
+        Uri uri = Uri.parse(ResourcesManager.getInstance(this).getMapsDir().getAbsolutePath());
+        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case (PICKFILE_REQUEST_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String filePath = data.getDataString();
+                        if (!filePath.toLowerCase().endsWith(FileTypes.GPX.getExtension())) {
+                            GPDialogs.warningDialog(this, getString(R.string.no_gpx_selected), null);
+                            return;
+                        }
+                        File file = new File(new URL(filePath).toURI());
+                        if (file.exists()) {
+                            GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
+                            gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");
+//                            Intent intent = new Intent(ImportActivity.this, GpxImportActivity.class);
+//                            intent.putExtra(LibraryConstants.PREFS_KEY_PATH, file.getAbsolutePath());
+//                            startActivity(intent);
+//                            finish();
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(this, e, null);
+                    }
+                }
+                break;
+            }
+        }
     }
 
     private void importBookmarks() {

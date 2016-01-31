@@ -18,6 +18,7 @@
 
 package eu.geopaparazzi.library.util;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +39,8 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class AppsUtilities {
+    public static final String AMAZE_PACKAGE = "com.amaze.filemanager";
+    public static final String AMAZE_TITLE = "com.amaze.filemanager.extra.TITLE";
 
     /**
      * Opens the comapss app.
@@ -100,6 +103,101 @@ public class AppsUtilities {
                 }
             }).show();
         }
+    }
+
+    /**
+     * Start activity to pick a file.
+     * <p>
+     * <p>
+     * For mimetype and uri one could use:
+     * <pre>
+     *        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("gpx");
+     *        if (mimeType == null) mimeType = "text/gpx";
+     *        Uri uri = Uri.parse(ResourcesManager.getInstance(this).getMapsDir().getAbsolutePath());
+     *     </pre>
+     * </p>
+     *
+     * @param activity    the activity that will recieve the picked file.
+     * @param requestCode the requestcode to use on result.
+     * @param title       optional title.
+     * @param mimeType    the mimetype.
+     * @param uri         the uri of the start folder.
+     */
+    public static void pickFile(Activity activity, int requestCode, String title, String mimeType, Uri uri) {
+        // first try with amaze
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setPackage(AppsUtilities.AMAZE_PACKAGE);
+        if (title != null)
+            intent.putExtra(AppsUtilities.AMAZE_TITLE, title);
+        intent.setDataAndType(uri, mimeType);
+        try {
+            activity.startActivityForResult(intent, requestCode);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // try with generic
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setDataAndType(uri, mimeType);
+            Intent chooser = Intent.createChooser(intent, title);
+            try {
+                activity.startActivityForResult(chooser, requestCode);
+            } catch (android.content.ActivityNotFoundException ex2) {
+                // direct to install a file manager
+                AppsUtilities.checkAmazeExplorer(activity);
+            }
+        }
+    }
+
+    public static void checkAmazeExplorer(final Context context) {
+        boolean hasPackage = hasPackage(context, AMAZE_PACKAGE);
+
+        if (!hasPackage) {
+            new AlertDialog.Builder(context).setTitle(context.getString(R.string.installamaze_title))
+                    .setMessage(context.getString(R.string.installamaze_message)).setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // ignore
+                        }
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("market://search?q=" + AMAZE_PACKAGE));
+                    context.startActivity(intent);
+                }
+            }).show();
+        }
+    }
+
+    private static boolean hasPackage(Context context, String searchedPackageName) {
+        boolean hasPackage = false;
+        List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
+        try {
+            installedPackages = context.getPackageManager().getInstalledPackages(0);
+        } catch (Exception e) {
+            // ignore
+        }
+        if (installedPackages.size() == 0)
+            try {
+                installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+            } catch (Exception e) {
+                // ignore
+            }
+
+        if (installedPackages.size() > 0) {
+            // if a list is available, check if the status gps is installed
+            for (PackageInfo packageInfo : installedPackages) {
+                String packageName = packageInfo.packageName;
+                if (packageName.startsWith(searchedPackageName)) {
+                    hasPackage = true;
+                    break;
+                }
+            }
+        } else {
+            /*
+             * if no package list is available, for now try to fire it up anyways.
+             * This has been a problem for a user on droidx with android 2.2.1.
+             */
+            hasPackage = true;
+        }
+        return hasPackage;
     }
 
 }

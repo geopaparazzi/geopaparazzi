@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.util.Log;
@@ -199,7 +200,7 @@ public class GPDialogs {
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void warningDialog(final Context context, final String msg, final Runnable okRunnable) {
-        messageDialog(context, msg,android.R.drawable.ic_dialog_alert , okRunnable);
+        messageDialog(context, msg, android.R.drawable.ic_dialog_alert, okRunnable);
     }
 
     /**
@@ -232,6 +233,17 @@ public class GPDialogs {
         String msg = context.getString(msgId);
         toast(context, msg, length);
     }
+
+    /**
+     * Show a quick info in the current view.
+     *
+     * @param view the view to attach to.
+     * @param msg  the message to show.
+     */
+    public static void quickInfo(final View view, final String msg) {
+        Snackbar.make(view, msg, Snackbar.LENGTH_SHORT).show();
+    }
+
 
     /**
      * Execute a message dialog in an {@link AsyncTask}.

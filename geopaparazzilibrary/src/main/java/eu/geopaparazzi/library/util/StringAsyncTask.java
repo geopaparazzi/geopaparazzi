@@ -26,7 +26,7 @@ import android.view.Window;
  * An simple {@link AsyncTask} string based wrapper.
  * <p/>
  * <p>example usage:</p>
- * <code>
+ * <pre>
  * StringAsyncTask task = new StringAsyncTask(this) {
  * protected String doBackgroundWork() {
  * try {
@@ -40,7 +40,7 @@ import android.view.Window;
  * }
  * return "";
  * }
- * <p/>
+ *
  * protected void doUiPostWork(String response) {
  * dispose();
  * if (response.length() != 0) {
@@ -51,7 +51,7 @@ import android.view.Window;
  * };
  * task.startProgressDialog("TITLE", "Process...", false, progressCount);
  * task.execute();
- * </code>
+ * </pre>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */

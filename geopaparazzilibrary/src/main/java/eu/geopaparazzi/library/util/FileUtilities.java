@@ -41,7 +41,6 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class FileUtilities {
 
-
     /**
      * Copy a file.
      * 

@@ -165,14 +165,6 @@
                 android:value=".GeopaparazziActivity" />
         </activity>
 
-        <activity android:name=".activities.GpxImportActivity">
-            <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.gpx.GPXIMPORT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".activities.tantomapurls.TantoMapurlsActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
