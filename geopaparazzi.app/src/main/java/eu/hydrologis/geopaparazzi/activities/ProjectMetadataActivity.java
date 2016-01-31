@@ -31,13 +31,16 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.core.ISimpleChangeListener;
@@ -64,6 +67,9 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             String databaseName = ResourcesManager.getInstance(this).getDatabaseFile().getName();
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            TextView titleView = (TextView) findViewById(R.id.metadataTitle);
+            titleView.setText(databaseName);
 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -98,7 +104,20 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
 
             final EditText editText = (EditText) view.findViewById(R.id.metadataEditText);
             container.addView(view);
-            editText.setText(metadata.value);
+
+            if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){
+                String value = metadata.value;
+                try{
+                    Date date = new Date(Long.parseLong(value));
+                    value = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(date);
+                }catch (Exception e){
+                    // ignore
+                }
+                editText.setText(value);
+                editText.setKeyListener(null);
+            }else {
+                editText.setText(metadata.value);
+            }
             editText.addTextChangedListener(new TextWatcher() {
 
                 @Override
