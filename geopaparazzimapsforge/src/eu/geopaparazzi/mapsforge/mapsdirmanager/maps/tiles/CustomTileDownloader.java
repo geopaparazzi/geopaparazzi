@@ -858,7 +858,6 @@ public class CustomTileDownloader extends TileDownloader {
         return bitmapResized;
     }
 
-    // TODO mj10777: check if this is safe after final has been removed from TileDownloader
     public void cleanup() {
         if (mbtilesDatabase != null) {
             try {

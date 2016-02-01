@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 
 /**
  * A dialog that permits multiple selection.
@@ -55,7 +56,7 @@ public class MapTypesChoiceDialog {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
                 try {
-                    sourcesTreeListActivity.refreshData();
+                    sourcesTreeListActivity.refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }

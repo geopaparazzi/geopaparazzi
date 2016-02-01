@@ -187,9 +187,7 @@ public class BaseMapSourcesManager {
 
             List<AbstractSpatialTable> collectedTables = collectTables(file);
             if (collectedTables.size() > 0) foundBaseMap = true;
-            for (AbstractSpatialTable table : collectedTables) {
-                saveToBaseMap(table);
-            }
+            saveToBaseMap(collectedTables);
         } catch (java.lang.Exception e) {
             GPLog.error(this, null, e);
         }
@@ -208,41 +206,46 @@ public class BaseMapSourcesManager {
             /*
              * add MAPURL TABLES
              */
-        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance().getHandlerForFile(file);
-        if (customTileDatabaseHandler != null) {
-            List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
-            for (AbstractSpatialTable table : tables) {
-                collectedTables.add(table);
-            }
-        } else {
-            /*
-             * add MAP TABLES
-             */
-            MapDatabasesManager mapDatabasesManager = MapDatabasesManager.getInstance();
-            MapDatabaseHandler mapDatabaseHandler = mapDatabasesManager.getHandlerForFile(file);
-            if (mapDatabaseHandler != null) {
-                List<MapTable> tables = mapDatabaseHandler.getTables(false);
+        try (CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance().getHandlerForFile(file)) {
+            if (customTileDatabaseHandler != null) {
+                List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
                 for (AbstractSpatialTable table : tables) {
                     collectedTables.add(table);
                 }
             } else {
-                /*
-                 * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
-                 */
-                AbstractSpatialDatabaseHandler sdbHandler = SpatialDatabasesManager.getInstance().getRasterHandlerForFile(file);
-                List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
-                for (AbstractSpatialTable table : tables) {
-                    collectedTables.add(table);
+            /*
+             * add MAP TABLES
+             */
+                MapDatabasesManager mapDatabasesManager = MapDatabasesManager.getInstance();
+                try (MapDatabaseHandler mapDatabaseHandler = mapDatabasesManager.getHandlerForFile(file)) {
+                    if (mapDatabaseHandler != null) {
+                        List<MapTable> tables = mapDatabaseHandler.getTables(false);
+                        for (AbstractSpatialTable table : tables) {
+                            collectedTables.add(table);
+                        }
+                    } else {
+                        /*
+                         * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
+                         */
+                        try (AbstractSpatialDatabaseHandler sdbHandler = SpatialDatabasesManager.getInstance().getRasterHandlerForFile(file)) {
+                            List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
+                            for (AbstractSpatialTable table : tables) {
+                                collectedTables.add(table);
+                            }
+                        }
+                    }
                 }
             }
         }
         return collectedTables;
     }
 
-    private void saveToBaseMap(AbstractSpatialTable table) throws JSONException {
-        BaseMap newBaseMap = table2BaseMap(table);
-        mBaseMaps.add(newBaseMap);
-        mBaseMaps2TablesMap.put(newBaseMap, table);
+    private void saveToBaseMap(List<AbstractSpatialTable> tablesList) throws JSONException {
+        for (AbstractSpatialTable table : tablesList) {
+            BaseMap newBaseMap = table2BaseMap(table);
+            mBaseMaps.add(newBaseMap);
+            mBaseMaps2TablesMap.put(newBaseMap, table);
+        }
         saveBaseMapsToPreferences(mBaseMaps);
     }
 
@@ -294,7 +297,6 @@ public class BaseMapSourcesManager {
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, selectedTableTitle);
         editor.apply();
     }
-
 
 
 }

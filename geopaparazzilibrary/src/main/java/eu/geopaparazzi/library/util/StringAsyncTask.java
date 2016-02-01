@@ -58,6 +58,11 @@ import android.view.Window;
 public abstract class StringAsyncTask extends AsyncTask<String, Integer, String> {
     private Context context;
     private ProgressDialog progressDialog;
+    private String title;
+    private String message;
+    private boolean cancelable;
+    private Integer max;
+    private boolean doProgress = false;
 
     /**
      * @param context the context to use.
@@ -74,25 +79,36 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
      * @param cancelable if it is cancelable.
      * @param max        the max progress. If <code>null</code>, indeterminate is used.
      */
-    public void startProgressDialog(String title, String message, boolean cancelable, Integer max) {
-        progressDialog = new ProgressDialog(context);
-        if (title == null) {
-            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        } else {
-            progressDialog.setTitle(title);
+    public void setProgressDialog(String title, String message, boolean cancelable, Integer max) {
+        this.title = title;
+        this.message = message;
+        this.cancelable = cancelable;
+        this.max = max;
+        doProgress = true;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (doProgress) {
+            progressDialog = new ProgressDialog(context);
+            if (title == null) {
+                progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            } else {
+                progressDialog.setTitle(title);
+            }
+            progressDialog.setMessage(message);
+            progressDialog.setCancelable(cancelable);
+            if (max == null) {
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+            } else {
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setIndeterminate(false);
+                progressDialog.setProgress(0);
+                progressDialog.setMax(max);
+            }
+            progressDialog.show();
         }
-        progressDialog.setMessage(message);
-        progressDialog.setCancelable(cancelable);
-        if (max == null) {
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setIndeterminate(true);
-        } else {
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setProgress(0);
-            progressDialog.setMax(max);
-        }
-        progressDialog.show();
     }
 
     protected String doInBackground(String... params) {

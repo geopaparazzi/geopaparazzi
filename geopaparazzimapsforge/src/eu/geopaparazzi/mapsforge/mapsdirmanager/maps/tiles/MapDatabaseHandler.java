@@ -43,7 +43,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
+public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable{
     private List<MapTable> mapTableList;
     private FileOpenResult fileOpenResult;
     private MapDatabase mapDatabase = null;

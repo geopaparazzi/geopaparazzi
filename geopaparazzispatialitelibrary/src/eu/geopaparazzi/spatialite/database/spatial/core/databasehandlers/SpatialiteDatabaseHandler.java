@@ -96,25 +96,13 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
      */
     public SpatialiteDatabaseHandler(String dbPath) throws IOException {
         super(dbPath);
+        open();
+    }
+
+    @Override
+    public void open() {
         try {
-            try {
-                Context context = GPApplication.getInstance();
-                ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-                File mapsDir = resourcesManager.getMapsDir();
-                String mapsPath = mapsDir.getAbsolutePath();
-                if (databasePath.startsWith(mapsPath)) {
-                    // this should always be true
-                    String relativePath = databasePath.substring(mapsPath.length());
-                    StringBuilder sb = new StringBuilder();
-                    if (relativePath.startsWith(File.separator)) {
-                        relativePath = relativePath.substring(1);
-                    }
-                    sb.append(relativePath);
-                    uniqueDbName4DataProperties = sb.toString();
-                }
-            } catch (java.lang.Exception e) {
-                GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
-            }
+            uniqueDbName4DataProperties = databasePath;
             dbJava = new jsqlite.Database();
             try {
                 dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
@@ -153,12 +141,8 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 checkAndUpdatePropertiesUniqueNames();
             }
         } catch (Exception e) {
-            GPLog.error(this,  "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
+            GPLog.error(this, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
-    }
-
-    @Override
-    public void open() {
     }
 
     /**

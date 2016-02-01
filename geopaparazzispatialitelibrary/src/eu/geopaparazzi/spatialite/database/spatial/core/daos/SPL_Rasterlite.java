@@ -36,11 +36,15 @@ public class SPL_Rasterlite {
      * --- if this is empty, then the Driver has NOT been compiled for RasterLite2
      * '0.8;x86_64-linux-gnu'
      */
-    public static String Rasterlite2Version_CPU = "";
+    private static String Rasterlite2Version_CPU = "";
+
+    public static void setRasterlite2Version_CPU(String rasterlite2Version_CPU) {
+        Rasterlite2Version_CPU = rasterlite2Version_CPU;
+    }
 
     /*
-     * @return true, if there is rasterlite support.
-     */
+         * @return true, if there is rasterlite support.
+         */
     public static boolean hasRasterLiteSupport(){
         return !SPL_Rasterlite.Rasterlite2Version_CPU.equals("");
     }

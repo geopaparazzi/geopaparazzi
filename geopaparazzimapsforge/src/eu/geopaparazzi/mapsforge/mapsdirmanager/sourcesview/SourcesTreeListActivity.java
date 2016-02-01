@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,7 @@ import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
@@ -124,11 +126,32 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         // get the listview
         mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
-        try {
-            refreshData();
-        } catch (Exception e) {
-            GPLog.error(this, "Problem getting sources.", e); //$NON-NLS-1$
-        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        StringAsyncTask task = new StringAsyncTask(this) {
+            List<BaseMap> baseMaps;
+
+            protected String doBackgroundWork() {
+                baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
+                return "";
+            }
+
+            protected void doUiPostWork(String response) {
+                dispose();
+                try {
+                    refreshData(baseMaps);
+                } catch (Exception e) {
+                    GPLog.error(this, "Problem getting sources.", e);
+                }
+            }
+        };
+        task.setProgressDialog("", "Loading sources...", false, null);
+        task.execute();
     }
 
     @Override
@@ -157,11 +180,38 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         String filePath = data.getDataString();
-                        File file = new File(new URL(filePath).toURI());
+                        final File file = new File(new URL(filePath).toURI());
                         if (file.exists()) {
-                            // add basemap to list and in mPreferences
-                            BaseMapSourcesManager.getInstance().addBaseMapFromFile(file);
-                            refreshData();
+                            StringAsyncTask task = new StringAsyncTask(this) {
+                                public List<BaseMap> baseMaps;
+
+                                protected String doBackgroundWork() {
+                                    try {
+                                        // add basemap to list and in mPreferences
+                                        BaseMapSourcesManager.getInstance().addBaseMapFromFile(file);
+                                        baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
+                                    } catch (Exception e) {
+                                        GPLog.error(this, "Problem getting sources.", e);
+                                        return "ERROR: " + e.getLocalizedMessage();
+                                    }
+                                    return "";
+                                }
+
+                                protected void doUiPostWork(String response) {
+                                    dispose();
+                                    if (response.length() > 0) {
+                                        GPDialogs.warningDialog(SourcesTreeListActivity.this, response, null);
+                                    } else {
+                                        try {
+                                            refreshData(baseMaps);
+                                        } catch (Exception e) {
+                                            GPLog.error(this, null, e);
+                                        }
+                                    }
+                                }
+                            };
+                            task.setProgressDialog("", "Adding new source...", false, null);
+                            task.execute();
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(this, e, null);
@@ -188,7 +238,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void refreshData() throws Exception {
+    public void refreshData(List<BaseMap> baseMaps) throws Exception {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putBoolean(SHOW_MAPS, mCheckedValues[0]);
         editor.putBoolean(SHOW_MAPURLS, mCheckedValues[1]);
@@ -198,7 +248,6 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         editor.apply();
 
         newMap.clear();
-        List<BaseMap> baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
         for (BaseMap baseMap : baseMaps) {
             String key = baseMap.parentFolder;
             List<BaseMap> newValues = newMap.get(key);
@@ -293,7 +342,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             try {
-                                                refreshData();
+                                                refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
                                             } catch (Exception e) {
                                                 GPLog.error(this, null, e);
                                             }
@@ -333,7 +382,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mTextToFilter = s.toString();
             try {
-                refreshData();
+                refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
             } catch (Exception e) {
                 GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
             }

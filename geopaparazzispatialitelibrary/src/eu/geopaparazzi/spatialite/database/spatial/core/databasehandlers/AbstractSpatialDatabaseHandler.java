@@ -36,7 +36,7 @@ import jsqlite.Exception;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public abstract class AbstractSpatialDatabaseHandler {
+public abstract class AbstractSpatialDatabaseHandler implements AutoCloseable {
     /**
      * The database path. 
      */

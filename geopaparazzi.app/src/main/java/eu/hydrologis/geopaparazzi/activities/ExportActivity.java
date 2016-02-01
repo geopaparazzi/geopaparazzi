@@ -289,7 +289,7 @@ public class ExportActivity extends AppCompatActivity implements
                     }
                 }
             };
-            task.startProgressDialog(getString(R.string.export_uc), getString(R.string.export_img_processing), false, imagesList.size());
+            task.setProgressDialog(getString(R.string.export_uc), getString(R.string.export_img_processing), false, imagesList.size());
             task.execute();
 
 

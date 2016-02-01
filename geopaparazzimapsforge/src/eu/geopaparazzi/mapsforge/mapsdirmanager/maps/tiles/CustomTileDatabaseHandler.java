@@ -37,7 +37,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * adapted to work with custom tiles databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler {
+public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable{
     private List<CustomTileTable> customtileTableList = null;
 
     private CustomTileDownloader customTileDownloader = null;
