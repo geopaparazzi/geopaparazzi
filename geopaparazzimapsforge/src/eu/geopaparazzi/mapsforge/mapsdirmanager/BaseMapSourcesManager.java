@@ -108,8 +108,9 @@ public class BaseMapSourcesManager {
                         selectedTableTitle = baseMap.title;
                         selectedTileSourceType = baseMap.mapType;
 
-                        // TODO create map table
-
+                        // TODO check if we need the table itself also
+                        setTileSource(selectedTileSourceType, selectedTableName, selectedTableTitle);
+                        break;
                     }
                 }
             }
@@ -279,36 +280,6 @@ public class BaseMapSourcesManager {
         selectedTableTitle = baseMap.title;
 
         selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
-
-//        SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
-//        switch (selectedSpatialDataType) {
-//            case MAP: {
-//                MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(selectedTableName);
-//                if (selected_table != null) {
-//                    selectedBaseMapTable = selected_table;
-//                }
-//            }
-//            break;
-//            case MBTILES:
-//            case GPKG:
-//            case RASTERLITE2:
-//            case SQLITE: {
-//                SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(selectedTableName, selectedTableTitle);
-//                if (selected_table != null) {
-//                    selectedBaseMapTable = selected_table;
-//                }
-//            }
-//            break;
-//            case MAPURL: {
-//                CustomTileTable selected_table = CustomTileDatabasesManager.getInstance().getCustomTileTableByName(selectedTableName);
-//                if (selected_table != null) {
-//                    selectedBaseMapTable = selected_table;
-//                }
-//            }
-//            break;
-//            default:
-//                break;
-//        }
 
         setTileSource(selectedTileSourceType, selectedTableName, selectedTableTitle);
     }

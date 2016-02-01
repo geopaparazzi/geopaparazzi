@@ -233,8 +233,8 @@ public class SourcesTreeListActivity extends AppCompatActivity {
             if (doAdd)
                 newValues.add(baseMap);
 
-            if (newValues.size() > 0) {
-                newMap.put(key, newValues);
+            if (newValues.size() == 0) {
+                newMap.remove(key);
             }
 
         }
