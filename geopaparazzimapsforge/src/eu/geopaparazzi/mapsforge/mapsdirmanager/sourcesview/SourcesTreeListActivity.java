@@ -34,13 +34,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+
+import org.json.JSONException;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
@@ -57,26 +61,22 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesTreeListActivity extends AppCompatActivity implements OnClickListener {
+public class SourcesTreeListActivity extends AppCompatActivity {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_MAPS = "showMaps";
     public static final String SHOW_MAPURLS = "showMapurls";
     public static final String SHOW_MBTILES = "showMbtiles";
     public static final String SHOW_RASTER_LITE_2 = "showRasterLite2";
-    SourcesExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    private boolean showMaps = true;
-    private boolean showMapurls = true;
-    private boolean showMbtiles = true;
-    private boolean showRasterLite2 = true;
-    private EditText filterText;
-    private String textToFilter = "";
-    private SharedPreferences preferences;
-    private boolean[] checkedValues;
-    private boolean hasRL2;
-    private List<String> typeNames;
-    private List<BaseMap> baseMaps = new ArrayList<>();
+
+    private ExpandableListView mExpListView;
+    private EditText mFilterText;
+    private String mTextToFilter = "";
+    private SharedPreferences mPreferences;
+    private boolean[] mCheckedValues;
+    private boolean mHasRL2;
+    private List<String> mTypeNames;
+    private final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,40 +89,40 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        filterText = (EditText) findViewById(R.id.search_box);
-        filterText.addTextChangedListener(filterTextWatcher);
+        mFilterText = (EditText) findViewById(R.id.search_box);
+        mFilterText.addTextChangedListener(filterTextWatcher);
 
-        hasRL2 = SPL_Rasterlite.hasRasterLiteSupport();
+        mHasRL2 = SPL_Rasterlite.hasRasterLiteSupport();
 
-        showMaps = preferences.getBoolean(SHOW_MAPS, true);
-        showMapurls = preferences.getBoolean(SHOW_MAPURLS, true);
-        showMbtiles = preferences.getBoolean(SHOW_MBTILES, true);
-        showRasterLite2 = preferences.getBoolean(SHOW_RASTER_LITE_2, true);
+        boolean showMaps = mPreferences.getBoolean(SHOW_MAPS, true);
+        boolean showMapurls = mPreferences.getBoolean(SHOW_MAPURLS, true);
+        boolean showMbtiles = mPreferences.getBoolean(SHOW_MBTILES, true);
+        boolean showRasterLite2 = mPreferences.getBoolean(SHOW_RASTER_LITE_2, true);
 
         String mapTypeName = SpatialDataType.MAP.getTypeName();
         String mapurlTypeName = SpatialDataType.MAPURL.getTypeName();
         String mbtilesTypeName = SpatialDataType.MBTILES.getTypeName();
-        typeNames = new ArrayList<>();
-        typeNames.add(mapTypeName);
-        typeNames.add(mapurlTypeName);
-        typeNames.add(mbtilesTypeName);
-        if (hasRL2) {
+        mTypeNames = new ArrayList<>();
+        mTypeNames.add(mapTypeName);
+        mTypeNames.add(mapurlTypeName);
+        mTypeNames.add(mbtilesTypeName);
+        if (mHasRL2) {
             String rasterLiteTypeName = SpatialDataType.RASTERLITE2.getTypeName();
-            typeNames.add(rasterLiteTypeName);
+            mTypeNames.add(rasterLiteTypeName);
         } else {
             showRasterLite2 = false;
         }
-        checkedValues = new boolean[typeNames.size()];
-        checkedValues[0] = showMaps;
-        checkedValues[1] = showMapurls;
-        checkedValues[2] = showMbtiles;
-        if (hasRL2)
-            checkedValues[3] = showRasterLite2;
+        mCheckedValues = new boolean[mTypeNames.size()];
+        mCheckedValues[0] = showMaps;
+        mCheckedValues[1] = showMapurls;
+        mCheckedValues[2] = showMbtiles;
+        if (mHasRL2)
+            mCheckedValues[3] = showRasterLite2;
 
         // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
+        mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
         try {
             refreshData();
@@ -134,7 +134,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
     @Override
     protected void onStop() {
         super.onStop();
-        filterText.removeTextChangedListener(filterTextWatcher);
+        mFilterText.removeTextChangedListener(filterTextWatcher);
     }
 
     public void add(View view) {
@@ -159,7 +159,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
                         String filePath = data.getDataString();
                         File file = new File(new URL(filePath).toURI());
                         if (file.exists()) {
-                            // add basemap to list and in preferences
+                            // add basemap to list and in mPreferences
                             BaseMapSourcesManager.getInstance().addBaseMapFromFile(file);
                             refreshData();
                         }
@@ -183,23 +183,22 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.select_type_item) {
             MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
-            dialog.open(getString(R.string.select_type), SourcesTreeListActivity.this, typeNames, checkedValues);
+            dialog.open(getString(R.string.select_type), SourcesTreeListActivity.this, mTypeNames, mCheckedValues);
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void refreshData() throws Exception {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(SHOW_MAPS, checkedValues[0]);
-        editor.putBoolean(SHOW_MAPURLS, checkedValues[1]);
-        editor.putBoolean(SHOW_MBTILES, checkedValues[2]);
-        if (hasRL2)
-            editor.putBoolean(SHOW_RASTER_LITE_2, checkedValues[3]);
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(SHOW_MAPS, mCheckedValues[0]);
+        editor.putBoolean(SHOW_MAPURLS, mCheckedValues[1]);
+        editor.putBoolean(SHOW_MBTILES, mCheckedValues[2]);
+        if (mHasRL2)
+            editor.putBoolean(SHOW_RASTER_LITE_2, mCheckedValues[3]);
         editor.apply();
 
-
-        baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
-        final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
+        newMap.clear();
+        List<BaseMap> baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
         for (BaseMap baseMap : baseMaps) {
             String key = baseMap.parentFolder;
             List<BaseMap> newValues = newMap.get(key);
@@ -210,19 +209,19 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
 
             boolean doAdd = false;
             String mapType = baseMap.mapType;
-            if (checkedValues[0] && mapType.equals(SpatialDataType.MAP.getTypeName())) {
+            if (mCheckedValues[0] && mapType.equals(SpatialDataType.MAP.getTypeName())) {
                 doAdd = true;
-            } else if (checkedValues[1] && mapType.equals(SpatialDataType.MAPURL.getTypeName())) {
+            } else if (mCheckedValues[1] && mapType.equals(SpatialDataType.MAPURL.getTypeName())) {
                 doAdd = true;
-            } else if (checkedValues[2] && mapType.equals(SpatialDataType.MBTILES.getTypeName())) {
+            } else if (mCheckedValues[2] && mapType.equals(SpatialDataType.MBTILES.getTypeName())) {
                 doAdd = true;
-            } else if (hasRL2 && checkedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+            } else if (mHasRL2 && mCheckedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                 doAdd = true;
             }
 
-            if (textToFilter.length() > 0) {
+            if (mTextToFilter.length() > 0) {
                 // filter text
-                String filterString = textToFilter.toLowerCase();
+                String filterString = mTextToFilter.toLowerCase();
                 String valueString = baseMap.databasePath.toLowerCase();
                 if (!valueString.contains(filterString)) {
                     valueString = baseMap.title.toLowerCase();
@@ -240,12 +239,12 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
 
         }
 
-        listAdapter = new SourcesExpandableListAdapter(this, newMap);
-        expListView.setAdapter(listAdapter);
-        expListView.setClickable(true);
-        expListView.setFocusable(true);
-        expListView.setFocusableInTouchMode(true);
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        SourcesExpandableListAdapter listAdapter = new SourcesExpandableListAdapter(this, newMap);
+        mExpListView.setAdapter(listAdapter);
+        mExpListView.setClickable(true);
+        mExpListView.setFocusable(true);
+        mExpListView.setFocusableInTouchMode(true);
+        mExpListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 int index = 0;
                 BaseMap selectedBaseMap = null;
@@ -266,11 +265,60 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
                 return false;
             }
         });
+
+        mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // When clicked on child, function longClick is executed
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+
+                    int index = 0;
+                    for (String group : newMap.keySet()) {
+                        if (index == groupPosition) {
+                            List<BaseMap> baseMapList = newMap.get(group);
+                            final BaseMap baseMap = baseMapList.get(childPosition);
+
+                            GPDialogs.yesNoMessageDialog(SourcesTreeListActivity.this, String.format(getString(R.string.remove_from_list), baseMap.title), new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        BaseMapSourcesManager.getInstance().removeBaseMap(baseMap);
+                                    } catch (JSONException e) {
+                                        GPLog.error(this, null, e);
+                                    }
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                refreshData();
+                                            } catch (Exception e) {
+                                                GPLog.error(this, null, e);
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }, null);
+
+                            return true;
+                        }
+                        index++;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         int groupCount = listAdapter.getGroupCount();
         for (int i = 0; i < groupCount; i++) {
-            expListView.expandGroup(i);
+            mExpListView.expandGroup(i);
         }
     }
+
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
 
@@ -283,7 +331,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            textToFilter = s.toString();
+            mTextToFilter = s.toString();
             try {
                 refreshData();
             } catch (Exception e) {
@@ -292,9 +340,4 @@ public class SourcesTreeListActivity extends AppCompatActivity implements OnClic
         }
     };
 
-
-    @Override
-    public void onClick(View view) {
-
-    }
 }

@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -47,11 +46,9 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
-import jsqlite.*;
 import jsqlite.Exception;
 
 /**
@@ -71,7 +68,7 @@ public class BaseMapSourcesManager {
     private String selectedTableTitle = "";
     private AbstractSpatialTable selectedBaseMapTable = null;
 
-    private HashMap<BaseMap, AbstractSpatialTable> baseMaps2TablesMap = new HashMap<>();
+    private HashMap<BaseMap, AbstractSpatialTable> mBaseMaps2TablesMap = new HashMap<>();
 
     private File mMapnikFile;
 
@@ -161,15 +158,15 @@ public class BaseMapSourcesManager {
     private List<BaseMap> getBaseMapsFromPreferences() throws java.lang.Exception {
         String baseMapsJson = mPreferences.getString(BaseMap.BASEMAPS_PREF_KEY, "");
         List<BaseMap> baseMaps = BaseMap.fromJsonString(baseMapsJson);
-        baseMaps2TablesMap.clear();
+        mBaseMaps2TablesMap.clear();
 
         // TODO this is ugly right now, needs to be changed
         for (BaseMap baseMap : baseMaps) {
             List<AbstractSpatialTable> tables = collectTables(new File(baseMap.databasePath));
             for (AbstractSpatialTable table : tables) {
                 BaseMap tmpBaseMap = table2BaseMap(table);
-                if (!baseMaps2TablesMap.containsKey(tmpBaseMap))
-                    baseMaps2TablesMap.put(tmpBaseMap, table);
+                if (!mBaseMaps2TablesMap.containsKey(tmpBaseMap))
+                    mBaseMaps2TablesMap.put(tmpBaseMap, table);
             }
         }
         return baseMaps;
@@ -196,6 +193,12 @@ public class BaseMapSourcesManager {
             GPLog.error(this, null, e);
         }
         return foundBaseMap;
+    }
+
+    public void removeBaseMap(BaseMap baseMap) throws JSONException {
+        mBaseMaps.remove(baseMap);
+        mBaseMaps2TablesMap.remove(baseMap);
+        saveBaseMapsToPreferences(mBaseMaps);
     }
 
     @NonNull
@@ -238,7 +241,7 @@ public class BaseMapSourcesManager {
     private void saveToBaseMap(AbstractSpatialTable table) throws JSONException {
         BaseMap newBaseMap = table2BaseMap(table);
         mBaseMaps.add(newBaseMap);
-        baseMaps2TablesMap.put(newBaseMap, table);
+        mBaseMaps2TablesMap.put(newBaseMap, table);
         saveBaseMapsToPreferences(mBaseMaps);
     }
 
@@ -275,7 +278,7 @@ public class BaseMapSourcesManager {
         selectedTableName = baseMap.databasePath;
         selectedTableTitle = baseMap.title;
 
-        selectedBaseMapTable = baseMaps2TablesMap.get(baseMap);
+        selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
 
 //        SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
 //        switch (selectedSpatialDataType) {
@@ -320,6 +323,7 @@ public class BaseMapSourcesManager {
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, selectedTableTitle);
         editor.apply();
     }
+
 
 
 }

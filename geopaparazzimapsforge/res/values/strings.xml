@@ -26,4 +26,5 @@
  <string name="mapsdir_treeview_item_fields_options_button">Options</string>
     <string name="select_map_types">Select types</string>
  <string name="select_type">Select type</string>
+ <string name="remove_from_list">Remove %s from the list?</string>
 </resources>
