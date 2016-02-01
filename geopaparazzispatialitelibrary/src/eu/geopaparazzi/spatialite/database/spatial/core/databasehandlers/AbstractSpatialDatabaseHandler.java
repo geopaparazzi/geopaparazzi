@@ -122,7 +122,7 @@ public abstract class AbstractSpatialDatabaseHandler {
     /**
      * Open the database, with all default tasks
      */
-    public abstract void open();
+    public abstract void open() throws IOException;
 
     /**
       * Return the absolute path of the database.

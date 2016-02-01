@@ -57,6 +57,11 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
      */
     public MapDatabaseHandler( String dbPath ) throws IOException {
         super(dbPath);
+        open();
+    }
+
+    @Override
+    public void open() {
         try {
             mapDatabase = new MapDatabase();
             this.fileOpenResult = mapDatabase.openFile(databaseFile);
@@ -95,11 +100,6 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
         } catch (java.lang.Exception e) {
             GPLog.error(this, "MapDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
-    }
-
-    @Override
-    public void open() {
-        // TODO we should move opening here
     }
 
     /**

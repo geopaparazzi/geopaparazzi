@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import jsqlite.Exception;
+
 import android.content.Context;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -36,7 +39,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  * The map database manager.
  *
  * @author Andrea Antonello (www.hydrologis.com)
- *  adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
+ *         adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 public class MapDatabasesManager {
 
@@ -65,18 +68,39 @@ public class MapDatabasesManager {
     }
 
     /**
+     * Create a handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file didn't fit the .
+     */
+    public MapDatabaseHandler getHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            if (Utilities.isNameFromHiddenFile(name)) {
+                return null;
+            }
+            if (name.endsWith(SpatialDataType.MAP.getExtension())) {
+                MapDatabaseHandler map = new MapDatabaseHandler(file.getAbsolutePath());
+                if (!mapHandlers.contains(map)) mapHandlers.add(map);
+                return map;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Initialize the manager.
-     * 
+     *
      * @param context the contect to use.
      * @param mapsDir the folder to initialize on.
      * @return <code>true</code> if a nomedia folder was hit.
      * @throws IOException if something went wrong.
      */
-    public boolean init( Context context, File mapsDir ) throws IOException {
+    public boolean init(Context context, File mapsDir) throws IOException {
         File[] filesList = mapsDir.listFiles();
         List<MapDatabaseHandler> tmpMapHandlers = new ArrayList<MapDatabaseHandler>();
         boolean foundNomediaFile = false;
-        for( File currentFile : filesList ) {
+        for (File currentFile : filesList) {
             // nomedia logic: first check the files, if no
             // '.nomedia' found: then its directories
             if (currentFile.isFile()) { // mj10777: collect .map databases
@@ -103,7 +127,7 @@ public class MapDatabasesManager {
             mapHandlers.addAll(tmpMapHandlers);
         }
         tmpMapHandlers.clear();
-        for( File this_file : filesList ) {
+        for (File this_file : filesList) {
             if (this_file.isDirectory()) {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
@@ -130,17 +154,17 @@ public class MapDatabasesManager {
 
     /**
      * Get the available tables.
-     * 
+     *
      * @param forceRead force a re-reading of the resources.
      * @return the list of available tables.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public List<MapTable> getTables( boolean forceRead ) throws Exception {
+    public List<MapTable> getTables(boolean forceRead) throws Exception {
         List<MapTable> tables = new ArrayList<MapTable>();
-        for( MapDatabaseHandler mapHandler : mapHandlers ) {
+        for (MapDatabaseHandler mapHandler : mapHandlers) {
             try {
                 List<MapTable> mapTables = mapHandler.getTables(forceRead);
-                for( MapTable mapTable : mapTables ) {
+                for (MapTable mapTable : mapTables) {
                     tables.add(mapTable);
                     mapTablesMap.put(mapTable, mapHandler);
                 }
@@ -155,41 +179,42 @@ public class MapDatabasesManager {
 
     /**
      * Get the {@link MapDatabaseHandler} for a given {@link MapTable}.
-     * 
+     *
      * @param mapTable the table.
      * @return the handler.
      * @throws Exception if something went wrong.
      */
-    public MapDatabaseHandler getMapHandler( MapTable mapTable ) throws Exception {
+    public MapDatabaseHandler getMapHandler(MapTable mapTable) throws Exception {
         MapDatabaseHandler mapDatabaseHandler = mapTablesMap.get(mapTable);
         return mapDatabaseHandler;
     }
 
     /**
      * Get the {@link MapTable} for a given name.
-     * 
+     *
      * @param table the tablename.
      * @return the table object.
      * @throws Exception if something goes wrong.
      */
-    public MapTable getMapTableByName( String table ) throws Exception {
+    public MapTable getMapTableByName(String table) throws Exception {
         List<MapTable> mapTables = getTables(false);
-        for( MapTable mapTable : mapTables ) {
+        for (MapTable mapTable : mapTables) {
             if (mapTable.getDatabasePath().equals(table)) {
                 return mapTable;
             }
         }
         return null;
     }
+
     /**
      * Close  all Databases that may be open
-     * 
+     * <p/>
      * <p>mapforge 'MapDatabase' file will be closed with '.closeFile();' if active
-     * 
+     *
      * @throws Exception if something goes wrong.
      */
     public void closeDatabases() throws Exception {
-        for( MapDatabaseHandler mapHandler : mapHandlers ) {
+        for (MapDatabaseHandler mapHandler : mapHandlers) {
             mapHandler.close();
         }
     }

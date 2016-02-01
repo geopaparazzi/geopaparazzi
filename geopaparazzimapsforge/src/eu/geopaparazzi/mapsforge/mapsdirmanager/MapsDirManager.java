@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
@@ -453,16 +454,16 @@ public class MapsDirManager {
       * <p>call from Application or Map-Activity
       * 
       * @param context  the context to use.
-      * @param spatialTableData the table.
+      * @param baseMap the table.
      * @throws Exception 
       */
-    public void setSelectedSpatialTable( Context context, String[] spatialTableData ) throws Exception {
+    public void setSelectedBaseMap(Context context, BaseMap baseMap) throws Exception {
         // selectedNode = spatialTable;
         // selectedSpatialDataTypeCode = selectedNode.getType();
-        selectedTileSourceType = spatialTableData[1];
+        selectedTileSourceType = baseMap.mapType;
         selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
-        selectedTableName = spatialTableData[0];
-        selectedTableTitle = spatialTableData[2];
+        selectedTableName = baseMap.databasePath;
+        selectedTableTitle = baseMap.title;
 
         SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
         switch( selectedSpatialDataType ) {

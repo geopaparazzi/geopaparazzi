@@ -148,12 +148,12 @@ public class CustomTileDownloader extends TileDownloader {
      * Constructor.
      *
      * @param sourceFile the source file to use as tile source definition.
-     * @param parentPath the parent path.
      * @throws IOException if something goes wrong.
      */
-    public CustomTileDownloader(File sourceFile, String parentPath) throws IOException {
+    public CustomTileDownloader(File sourceFile) throws IOException {
         super();
 
+        String parentPath = sourceFile.getParentFile().getAbsolutePath();
         Context context = GPApplication.getInstance();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 

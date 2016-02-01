@@ -211,8 +211,6 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
                 }
             });
         }
-
-
     }
 
     @Override

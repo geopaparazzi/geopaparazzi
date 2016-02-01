@@ -84,12 +84,12 @@ public class DefaultMapurls {
      * Checks if the default mapurl source definition files exist. If not they are created.
      * 
      * @param context the context to use.
-     * @param mapsDir the maps folder file.
+     * @param folder the folder into which to write the mapurls.
      * @throws Exception if something goes wrong.
      */
-    public static void checkAllSourcesExistence( Context context, File mapsDir ) throws Exception {
+    public static void checkAllSourcesExistence( Context context, File folder ) throws Exception {
         for( Mapurls mapurl : Mapurls.values() ) {
-            File mapurlFile = new File(mapsDir, mapurl.toString() + MAPURL_EXTENSION);
+            File mapurlFile = new File(folder, mapurl.toString() + MAPURL_EXTENSION);
             if (!mapurlFile.exists()) {
                 InputStream inputStream = context.getResources().openRawResource(mapurl.getResourceId());
                 OutputStream outputStream = new FileOutputStream(mapurlFile);

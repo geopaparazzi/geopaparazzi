@@ -17,31 +17,38 @@
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.Switch;
-import android.widget.ToggleButton;
 
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.MultipleChoiceDialog;
+import eu.geopaparazzi.library.util.AppsUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.mapsforge.R;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
@@ -50,7 +57,8 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesTreeListActivity extends Activity implements OnClickListener {
+public class SourcesTreeListActivity extends AppCompatActivity implements OnClickListener {
+    public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_MAPS = "showMaps";
     public static final String SHOW_MAPURLS = "showMapurls";
@@ -58,7 +66,6 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     public static final String SHOW_RASTER_LITE_2 = "showRasterLite2";
     SourcesExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    private Button mapTypeToggleButton;
     private boolean showMaps = true;
     private boolean showMapurls = true;
     private boolean showMbtiles = true;
@@ -68,16 +75,21 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     private SharedPreferences preferences;
     private boolean[] checkedValues;
     private boolean hasRL2;
+    private List<String> typeNames;
+    private List<BaseMap> baseMaps = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sources_list);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
 
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
@@ -92,7 +104,7 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         String mapTypeName = SpatialDataType.MAP.getTypeName();
         String mapurlTypeName = SpatialDataType.MAPURL.getTypeName();
         String mbtilesTypeName = SpatialDataType.MBTILES.getTypeName();
-        final List<String> typeNames = new ArrayList<String>();
+        typeNames = new ArrayList<>();
         typeNames.add(mapTypeName);
         typeNames.add(mapurlTypeName);
         typeNames.add(mbtilesTypeName);
@@ -109,14 +121,6 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         if (hasRL2)
             checkedValues[3] = showRasterLite2;
 
-        mapTypeToggleButton = (Button) findViewById(R.id.toggleTypesButton);
-        mapTypeToggleButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
-                dialog.open(mapTypeToggleButton.getText().toString(), SourcesTreeListActivity.this, typeNames, checkedValues);
-            }
-        });
-
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
@@ -127,9 +131,61 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         }
     }
 
-    protected void onDestroy() {
-        super.onDestroy();
+    @Override
+    protected void onStop() {
+        super.onStop();
         filterText.removeTextChangedListener(filterTextWatcher);
+    }
+
+    public void add(View view) {
+        try {
+            String title = "Select basemap source to add";
+            String mimeType = "*/*";
+            Uri uri = Uri.parse(ResourcesManager.getInstance(this).getMapsDir().getAbsolutePath());
+            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            GPDialogs.errorDialog(this, e, null);
+        }
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case (PICKFILE_REQUEST_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String filePath = data.getDataString();
+                        File file = new File(new URL(filePath).toURI());
+                        if (file.exists()) {
+                            // add basemap to list and in preferences
+                            BaseMapSourcesManager.getInstance().addBaseMapFromFile(file);
+                            refreshData();
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(this, e, null);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sources, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.select_type_item) {
+            MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
+            dialog.open(getString(R.string.select_type), SourcesTreeListActivity.this, typeNames, checkedValues);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void refreshData() throws Exception {
@@ -141,39 +197,42 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
             editor.putBoolean(SHOW_RASTER_LITE_2, checkedValues[3]);
         editor.apply();
 
-        LinkedHashMap<String, List<String[]>> folder2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
-        final LinkedHashMap<String, List<String[]>> newMap = new LinkedHashMap<String, List<String[]>>();
-        for (Entry<String, List<String[]>> item : folder2TablesMap.entrySet()) {
-            String key = item.getKey();
-            ArrayList<String[]> newValues = new ArrayList<String[]>();
 
-            List<String[]> values = item.getValue();
-            for (String[] value : values) {
-                boolean doAdd = false;
-                if (checkedValues[0] && value[1].equals(SpatialDataType.MAP.getTypeName())) {
-                    doAdd = true;
-                } else if (checkedValues[1] && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
-                    doAdd = true;
-                } else if (checkedValues[2] && value[1].equals(SpatialDataType.MBTILES.getTypeName())) {
-                    doAdd = true;
-                } else if (hasRL2 && checkedValues[3] && value[1].equals(SpatialDataType.RASTERLITE2.getTypeName())) {
-                    doAdd = true;
-                }
+        baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
+        final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
+        for (BaseMap baseMap : baseMaps) {
+            String key = baseMap.parentFolder;
+            List<BaseMap> newValues = newMap.get(key);
+            if (newValues == null) {
+                newValues = new ArrayList<>();
+                newMap.put(key, newValues);
+            }
 
-                if (textToFilter.length() > 0) {
-                    // filter text
-                    String filterString = textToFilter.toLowerCase();
-                    String valueString = value[0].toLowerCase();
+            boolean doAdd = false;
+            String mapType = baseMap.mapType;
+            if (checkedValues[0] && mapType.equals(SpatialDataType.MAP.getTypeName())) {
+                doAdd = true;
+            } else if (checkedValues[1] && mapType.equals(SpatialDataType.MAPURL.getTypeName())) {
+                doAdd = true;
+            } else if (checkedValues[2] && mapType.equals(SpatialDataType.MBTILES.getTypeName())) {
+                doAdd = true;
+            } else if (hasRL2 && checkedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+                doAdd = true;
+            }
+
+            if (textToFilter.length() > 0) {
+                // filter text
+                String filterString = textToFilter.toLowerCase();
+                String valueString = baseMap.databasePath.toLowerCase();
+                if (!valueString.contains(filterString)) {
+                    valueString = baseMap.title.toLowerCase();
                     if (!valueString.contains(filterString)) {
-                        valueString = value[2].toLowerCase();
-                        if (!valueString.contains(filterString)) {
-                            doAdd = false;
-                        }
+                        doAdd = false;
                     }
                 }
-                if (doAdd)
-                    newValues.add(value);
             }
+            if (doAdd)
+                newValues.add(baseMap);
 
             if (newValues.size() > 0) {
                 newMap.put(key, newValues);
@@ -189,17 +248,17 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 int index = 0;
-                String[] spatialTableDate = null;
-                for (Entry<String, List<String[]>> entry : newMap.entrySet()) {
+                BaseMap selectedBaseMap = null;
+                for (Entry<String, List<BaseMap>> entry : newMap.entrySet()) {
                     if (groupPosition == index) {
-                        List<String[]> value = entry.getValue();
-                        spatialTableDate = value.get(childPosition);
+                        List<BaseMap> value = entry.getValue();
+                        selectedBaseMap = value.get(childPosition);
                         break;
                     }
                     index++;
                 }
                 try {
-                    MapsDirManager.getInstance().setSelectedSpatialTable(SourcesTreeListActivity.this, spatialTableDate);
+                    BaseMapSourcesManager.getInstance().setSelectedBaseMap(selectedBaseMap);
                 } catch (jsqlite.Exception e) {
                     GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
                 }

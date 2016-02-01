@@ -55,6 +55,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.activities.AboutActivity;
@@ -223,7 +224,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_tilesource: {
-
+                Intent preferencesIntent = new Intent(this.getActivity(), SourcesTreeListActivity.class);
+                startActivity(preferencesIntent);
+                return true;
             }
             case R.id.action_new: {
                 NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();

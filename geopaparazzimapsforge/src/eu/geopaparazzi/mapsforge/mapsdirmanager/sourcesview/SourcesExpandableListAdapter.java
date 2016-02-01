@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.mapsforge.R;
@@ -45,14 +46,14 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Activity activity;
     private List<String> folderList;
-    private List<List<String[]>> tablesList;
+    private List<List<BaseMap>> tablesList;
     private String mapsParentPath;
 
     /**
      * @param activity         activity to use.
      * @param folder2TablesMap the folder and table map.
      */
-    public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<String[]>> folder2TablesMap) {
+    public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<BaseMap>> folder2TablesMap) {
         this.activity = activity;
         try {
             File mapsDir = ResourcesManager.getInstance(activity).getMapsDir();
@@ -61,8 +62,8 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
             GPLog.error(this, null, e);
         }
         folderList = new ArrayList<String>();
-        tablesList = new ArrayList<List<String[]>>();
-        for (Entry<String, List<String[]>> entry : folder2TablesMap.entrySet()) {
+        tablesList = new ArrayList<>();
+        for (Entry<String, List<BaseMap>> entry : folder2TablesMap.entrySet()) {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
@@ -70,8 +71,8 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     public Object getChild(int groupPosition, int childPosititon) {
-        List<String[]> list = tablesList.get(groupPosition);
-        String[] spatialTable = list.get(childPosititon);
+        List<BaseMap> list = tablesList.get(groupPosition);
+        BaseMap spatialTable = list.get(childPosititon);
         return spatialTable;
     }
 
@@ -81,7 +82,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String[] spatialTableData = (String[]) getChild(groupPosition, childPosition);
+        final BaseMap baseMap = (BaseMap) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,16 +92,16 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         TextView tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
         tableNameView.setTypeface(null, Typeface.BOLD);
 
-        tableNameView.setText(spatialTableData[2]);
+        tableNameView.setText(baseMap.title);
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
-        tableTypeView.setText("[" + spatialTableData[1] + "]");
+        tableTypeView.setText("[" + baseMap.mapType + "]");
 
         return convertView;
     }
 
     public int getChildrenCount(int groupPosition) {
-        List<String[]> list = tablesList.get(groupPosition);
+        List<BaseMap> list = tablesList.get(groupPosition);
         return list.size();
     }
 

@@ -51,24 +51,24 @@
                 <data android:scheme="file" />
             </intent-filter>
             <!--<intent-filter>-->
-                <!--<data-->
-                    <!--android:host="maps.google.com"-->
-                    <!--android:scheme="http" />-->
+            <!--<data-->
+            <!--android:host="maps.google.com"-->
+            <!--android:scheme="http" />-->
 
-                <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<category android:name="android.intent.category.BROWSABLE" />-->
             <!--</intent-filter>-->
             <!--<intent-filter>-->
-                <!--<data-->
-                    <!--android:host="www.openstreetmap.org"-->
-                    <!--android:scheme="http" />-->
+            <!--<data-->
+            <!--android:host="www.openstreetmap.org"-->
+            <!--android:scheme="http" />-->
 
-                <!--<action android:name="android.intent.action.VIEW" />-->
+            <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--<category android:name="android.intent.category.BROWSABLE" />-->
             <!--</intent-filter>-->
         </activity>
         <activity
@@ -172,6 +172,15 @@
             android:name=".activities.tantomapurls.TantoMapurlsListActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
+        <activity
+            android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity"
+            android:label="Basemaps"
+            android:parentActivityName=".GeopaparazziActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GeopaparazziActivity" />
+        </activity>
 
         <provider
             android:name=".providers.SourceUrlsContentProvider"
