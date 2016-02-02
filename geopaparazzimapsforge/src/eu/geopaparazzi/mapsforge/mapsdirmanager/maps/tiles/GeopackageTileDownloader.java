@@ -53,11 +53,11 @@ public class GeopackageTileDownloader extends TileDownloader {
     private AbstractSpatialDatabaseHandler spatialDatabaseHandler;
     private Database spatialiteDatabase;
 
-    public GeopackageTileDownloader(SpatialRasterTable table) throws jsqlite.Exception {
+    public GeopackageTileDownloader(SpatialRasterTable table) throws Exception {
         super();
         rasterTable = table;
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-        spatialDatabaseHandler = sdManager.getRasterHandler(rasterTable);
+        spatialDatabaseHandler = sdManager.getRasterHandlerForFile(rasterTable.getDatabaseFile());
         String mapTypeString = rasterTable.getMapType();
         mapType = SpatialDataType.getType4Name(mapTypeString);
         if (mapType == SpatialDataType.RASTERLITE2) {

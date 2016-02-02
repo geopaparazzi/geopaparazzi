@@ -199,7 +199,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         if (locationManager == null) {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                throw new SecurityException();
+                return Service.START_FLAG_RETRY;
             }
             locationManager.addGpsStatusListener(this);
             isProviderEnabled = isGpsOn();

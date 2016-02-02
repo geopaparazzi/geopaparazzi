@@ -243,8 +243,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
-        // - 'checkCenterLocation' will change this value if out of range
         double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(mPeferences, true, true);
         // check for screen on
         boolean keepScreenOn = mPeferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
@@ -327,7 +325,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
 
-        saveCenterPref();
+        if (mapCenterLocation != null)
+            setNewCenterAtZoom(mapCenterLocation[0], mapCenterLocation[1], (int) mapCenterLocation[2]);
 
         setAllButtoonsEnablement(areButtonsVisible);
         EditingView editingView = (EditingView) findViewById(R.id.editingview);
@@ -991,7 +990,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (lonLatZoom != null && lonLatZoom.length == 3) {
             lon = lonLatZoom[0];
             lat = lonLatZoom[1];
-            zoom = (int) lonLatZoom[1];
+            zoom = (int) lonLatZoom[2];
         } else {
             MapViewPosition mapPosition = mMapView.getMapPosition();
             GeoPoint mapCenter = mapPosition.getMapCenter();
@@ -1180,6 +1179,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case R.id.zoomin:
                 int currentZoom = getZoom();
                 int newZoom = currentZoom + 1;
+                int maxZoom = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable().getMaxZoom();
+                if (newZoom > maxZoom) newZoom = maxZoom;
                 setZoom(newZoom);
                 invalidateMap();
                 Tool activeTool = EditManager.INSTANCE.getActiveTool();
@@ -1190,6 +1191,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case R.id.zoomout:
                 currentZoom = getZoom();
                 newZoom = currentZoom - 1;
+                int minZoom = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable().getMinZoom();
+                if (newZoom < minZoom) newZoom = minZoom;
                 setZoom(newZoom);
                 invalidateMap();
                 Tool activeTool1 = EditManager.INSTANCE.getActiveTool();
@@ -1279,7 +1282,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void toggleEditing() {
-        final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+        final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
             toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);

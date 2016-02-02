@@ -564,7 +564,11 @@ public class MapsDirManager {
                         bounds_north = selectedSpatialRasterTable.getMaxLatitude();
                         centerX = selectedSpatialRasterTable.getCenterX();
                         centerY = selectedSpatialRasterTable.getCenterY();
-                        selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
+                        try {
+                            selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
+                        } catch (java.lang.Exception e) {
+                            e.printStackTrace();
+                        }
                         clearTileCache(mapView);
                         mapView.setMapGenerator(selectedMapGenerator);
                     }

@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
@@ -334,7 +335,7 @@ public enum BaseMapSourcesManager {
 //                centerY = 0.0;
                 SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
                 switch (selectedSpatialDataType) {
-                    case MAP: {
+                    case MAP:
                         MapTable selectedMapTable = (MapTable) selectedSpatialTable;
 //                            minZoom = selectedMapTable.getMinZoom();
 //                            maxZoom = selectedMapTable.getMaxZoom();
@@ -355,13 +356,14 @@ public enum BaseMapSourcesManager {
                                 GPLog.error(this, "ERROR", e);
                             }
                         }
-                        selectedMapGenerator = mapView.getMapGenerator();
-                    }
-                    break;
+//                        selectedMapGenerator = mapView.getMapGenerator();
+//                        mapView.setMapGenerator(selectedMapGenerator);
+                        break;
                     case MBTILES:
                     case GPKG:
                     case RASTERLITE2:
                     case SQLITE: {
+                        // TODO check
                         SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
 //                            minZoom = selectedSpatialRasterTable.getMinZoom();
 //                            maxZoom = selectedSpatialRasterTable.getMaxZoom();
@@ -378,19 +380,20 @@ public enum BaseMapSourcesManager {
                     }
                     break;
                     case MAPURL: {
-                        CustomTileTable selectedCustomTilesTable = (CustomTileTable) selectedSpatialTable;
-                        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
-                                .getCustomTileDatabaseHandler(selectedCustomTilesTable);
-//                            minZoom = selectedCustomTilesTable.getMinZoom();
-//                            maxZoom = selectedCustomTilesTable.getMaxZoom();
-//                            defaultZoom = selectedCustomTilesTable.getDefaultZoom();
-//                            bounds_west = selectedCustomTilesTable.getMinLongitude();
-//                            bounds_east = selectedCustomTilesTable.getMaxLongitude();
-//                            bounds_south = selectedCustomTilesTable.getMinLatitude();
-//                            bounds_north = selectedCustomTilesTable.getMaxLatitude();
-//                            centerX = selectedCustomTilesTable.getCenterX();
-//                            centerY = selectedCustomTilesTable.getCenterY();
-                        selectedMapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
+                        selectedMapGenerator = new CustomTileDownloader(selectedSpatialTable.getDatabaseFile());
+//                        CustomTileTable selectedCustomTilesTable = (CustomTileTable) selectedSpatialTable;
+//                        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
+//                                .getHandlerForFile(selectedCustomTilesTable.getDatabaseFile());
+////                            minZoom = selectedCustomTilesTable.getMinZoom();
+////                            maxZoom = selectedCustomTilesTable.getMaxZoom();
+////                            defaultZoom = selectedCustomTilesTable.getDefaultZoom();
+////                            bounds_west = selectedCustomTilesTable.getMinLongitude();
+////                            bounds_east = selectedCustomTilesTable.getMaxLongitude();
+////                            bounds_south = selectedCustomTilesTable.getMinLatitude();
+////                            bounds_north = selectedCustomTilesTable.getMaxLatitude();
+////                            centerX = selectedCustomTilesTable.getCenterX();
+////                            centerY = selectedCustomTilesTable.getCenterY();
+//                        selectedMapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
                         try {
                             clearTileCache(mapView);
                             mapView.setMapGenerator(selectedMapGenerator);
@@ -406,7 +409,7 @@ public enum BaseMapSourcesManager {
                     default:
                         break;
                 }
-            } catch (jsqlite.Exception e) {
+            } catch (java.lang.Exception e) {
                 selectedMapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
                 mapView.setMapGenerator(selectedMapGenerator);
                 GPLog.error(this, "ERROR", e);
