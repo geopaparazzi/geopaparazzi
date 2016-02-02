@@ -24,7 +24,7 @@ import android.os.IBinder;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
- * A service to support the {@link MapsActivity}.
+ * A service to support the {@link MapviewActivity}.
  * <p/>
  * <p/>
  * use this to start and trigger a service</br>

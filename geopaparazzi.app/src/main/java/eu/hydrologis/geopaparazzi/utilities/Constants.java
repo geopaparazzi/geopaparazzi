@@ -24,24 +24,51 @@ package eu.hydrologis.geopaparazzi.utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface Constants {
-    public static final String GEOPAPARAZZI = "geopaparazzi";
+    String GEOPAPARAZZI = "geopaparazzi";
 
-    public static final String PANICKEY = "panic_number";
+    String PANICKEY = "panic_number";
 
-    public static final String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+    String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+
+    String PREFS_KEY_IMPERIAL = "PREFS_KEY_IMPERIAL";
+
+    String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
+
+    String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
+
+    String PREFS_KEY_RETINA = "PREFS_KEY_RETINA";
+
+    String PREFS_KEY_IMAGES_VISIBLE = "PREFS_KEY_IMAGES_VISIBLE";
+
+    String PREFS_KEY_NOTES_VISIBLE = "PREFS_KEY_NOTES_VISIBLE";
+
+    /*
+     * notes text properties
+     */
+    String PREFS_KEY_NOTES_TEXT_VISIBLE = "PREFS_KEY_NOTES_TEXT_VISIBLE";
+    String PREFS_KEY_NOTES_TEXT_DOHALO = "PREFS_KEY_NOTES_TEXT_DOHALO";
+    String PREFS_KEY_NOTES_TEXT_SIZE = "PREFS_KEY_NOTES_TEXT_SIZE";
 
     /*
      * CLOUD
      */
-    public static final String PREF_KEY_USER = "stage_user_key"; //$NON-NLS-1$
-    public static final String PREF_KEY_PWD = "stage_pwd_key"; //$NON-NLS-1$
-    public static final String PREF_KEY_SERVER = "stage_server_key";//$NON-NLS-1$
+    String PREF_KEY_USER = "stage_user_key"; //$NON-NLS-1$
+    String PREF_KEY_PWD = "stage_pwd_key"; //$NON-NLS-1$
+    String PREF_KEY_SERVER = "stage_server_key";//$NON-NLS-1$
 
 
     /*
-     * Intents
+     * cross properties
      */
+    String PREFS_KEY_CROSS_WIDTH = "PREFS_KEY_CROSS_WIDTH";
+    String PREFS_KEY_CROSS_COLOR = "PREFS_KEY_CROSS_COLOR";
+    String PREFS_KEY_CROSS_SIZE = "PREFS_KEY_CROSS_SIZE";
 
-    public final String GPXIMPORT_INTENT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
-
+    /*
+     * custom notes icon properties
+     */
+    String PREFS_KEY_NOTES_CHECK = "PREFS_KEY_NOTES_CHECK";
+    String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
+    String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
+    String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
 }

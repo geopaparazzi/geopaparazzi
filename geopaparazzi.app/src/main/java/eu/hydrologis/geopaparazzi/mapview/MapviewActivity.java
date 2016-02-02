@@ -38,7 +38,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -55,15 +54,12 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,10 +81,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -102,13 +99,15 @@ import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -122,25 +121,30 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
+import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.maps.mapsforge.ImportMapsforgeActivity;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.maptools.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
+import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
+import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener {
+public class MapviewActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -165,12 +169,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
-    private MapView mapView;
-    private SlidingDrawer osmSlidingDrawer;
-    private SharedPreferences preferences;
-    private boolean doOsm;
+    private MapView mMapView;
+    private SharedPreferences mPeferences;
 
-    private ArrayGeopaparazziOverlay dataOverlay;
+    private ArrayGeopaparazziOverlay mDataOverlay;
 
     private List<String> smsString;
     private Drawable notesDrawable;
@@ -201,7 +203,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.mapsview);
+        setContentView(R.layout.activity_mapview);
 
         mapsSupportBroadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
@@ -209,7 +211,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     boolean rereadMap = intent.getBooleanExtra(MapsSupportService.REREAD_MAP_REQUEST, false);
                     if (rereadMap) {
                         readData();
-                        mapView.invalidate();
+                        mMapView.invalidate();
                     }
                 } else if (intent.hasExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST)) {
                     boolean centerOnPosition = intent.getBooleanExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, false);
@@ -218,7 +220,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                         double lat = intent.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                         setNewCenter(lon, lat);
 //                        readData();
-//                        mapView.invalidate();
+//                        mMapView.invalidate();
                     }
                 }
             }
@@ -232,7 +234,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             }
         };
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPeferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // COORDINATE TEXT VIEW
         coordView = (TextView) findViewById(R.id.coordsText);
@@ -252,35 +254,35 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
         // - 'checkCenterLocation' will change this value if out of range
-        double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+        double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(mPeferences, true, true);
         // check for screen on
-        boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
+        boolean keepScreenOn = mPeferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-        boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, true);
+        boolean areButtonsVisible = mPeferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, true);
 
         /*
          * create main mapview
         */
-        mapView = new MapView(this);
-        mapView.setClickable(true);
-        mapView.setBuiltInZoomControls(false);
-        mapView.setOnTouchListener(this);
+        mMapView = new MapView(this);
+        mMapView.setClickable(true);
+        mMapView.setBuiltInZoomControls(false);
+        mMapView.setOnTouchListener(this);
 
         // TODO
-        // boolean persistent = preferences.getBoolean("cachePersistence", false);
-        // int capacity = Math.min(preferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
+        // boolean persistent = mPeferences.getBoolean("cachePersistence", false);
+        // int capacity = Math.min(mPeferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
         // FILE_SYSTEM_CACHE_SIZE_MAX);
-        // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
+        // TileCache fileSystemTileCache = this.mMapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
         MapsDirManager mapsDirManager = MapsDirManager.getInstance();
-        mapsDirManager.loadSelectedMap(mapView, mapCenterLocation);
+        mapsDirManager.loadSelectedMap(mMapView, mapCenterLocation);
 
-        MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
+        MapScaleBar mapScaleBar = this.mMapView.getMapScaleBar();
 
-        boolean doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
+        boolean doImperial = mPeferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
         mapScaleBar.setImperialUnits(doImperial);
         if (doImperial) {
             mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
@@ -292,17 +294,17 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         mapScaleBar.setScreenPosition(ScreenPosition.TOPLEFT);
 
         if (Debug.D) {
-            // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
-            // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
-            // boolean highlightWaterTiles = preferences.getBoolean("highlightWaterTiles", false);
+            // boolean drawTileFrames = mPeferences.getBoolean("drawTileFrames", false);
+            // boolean drawTileCoordinates = mPeferences.getBoolean("drawTileCoordinates", false);
+            // boolean highlightWaterTiles = mPeferences.getBoolean("highlightWaterTiles", false);
             DebugSettings debugSettings = new DebugSettings(true, true, false);
-            this.mapView.setDebugSettings(debugSettings);
+            this.mMapView.setDebugSettings(debugSettings);
         }
 
         setTextScale();
 
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
-        rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        rl.addView(mMapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
         Button zoomInButton = (Button) findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(this);
@@ -335,11 +337,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
 
-        try {
-            handleOsmSliderView();
-        } catch (Exception e) {
-            GPLog.error(this, null, e); //$NON-NLS-1$
-        }
         saveCenterPref();
 
         setAllButtoonsEnablement(areButtonsVisible);
@@ -350,7 +347,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         // if after rotation a toolgroup is there, enable ti with its icons
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup != null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
+            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
             activeToolGroup.initUI();
             setLeftButtoonsEnablement(true);
         }
@@ -360,16 +357,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     }
 
     private void setCenterCross() {
-        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
+        String crossColorStr = mPeferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
         int crossColor = ColorUtilities.toColor(crossColorStr);
-        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
+        String crossWidthStr = mPeferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
         int crossThickness = 3;
         try {
             crossThickness = (int) Double.parseDouble(crossWidthStr);
         } catch (NumberFormatException e) {
             // ignore and use default
         }
-        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "50"); //$NON-NLS-1$
+        String crossSizeStr = mPeferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "50"); //$NON-NLS-1$
         int crossLength = 20;
         try {
             crossLength = (int) Double.parseDouble(crossSizeStr);
@@ -390,7 +387,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     @Override
     protected void onPause() {
-        Utilities.dismissProgressDialog(syncProgressDialog);
+        GPDialogs.dismissProgressDialog(syncProgressDialog);
         super.onPause();
     }
 
@@ -398,11 +395,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     protected void onResume() {
 
         // notes type
-        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
+        boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         if (doCustom) {
-            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
-            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
+            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
+            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
             float opacity = Float.parseFloat(opacityStr) * 255 / 100;
 
@@ -419,13 +416,13 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             notesShapeDrawable.setIntrinsicWidth(noteSize);
             notesDrawable = notesShapeDrawable;
         } else {
-            notesDrawable = getResources().getDrawable(R.drawable.information);
+            notesDrawable = getDrawable(R.drawable.ic_place_24dp);
         }
 
-        dataOverlay = new ArrayGeopaparazziOverlay(this);
-        List<Overlay> overlays = mapView.getOverlays();
+        mDataOverlay = new ArrayGeopaparazziOverlay(this);
+        List<Overlay> overlays = mMapView.getOverlays();
         overlays.clear();
-        overlays.add(dataOverlay);
+        overlays.add(mDataOverlay);
 
         readData();
 
@@ -433,7 +430,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     }
 
     private void setTextScale() {
-        String textSizeFactorStr = preferences.getString(Constants.PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR, "1.0"); //$NON-NLS-1$
+        String textSizeFactorStr = mPeferences.getString(Constants.PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR, "1.0"); //$NON-NLS-1$
         float textSizeFactor = 1f;
         try {
             textSizeFactor = Float.parseFloat(textSizeFactorStr);
@@ -443,7 +440,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (textSizeFactor < 0.5f) {
             textSizeFactor = 1f;
         }
-        mapView.setTextScale(textSizeFactor);
+        mMapView.setTextScale(textSizeFactor);
     }
 
     @Override
@@ -458,11 +455,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (gpsServiceBroadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
 
-        if (dataOverlay != null)
-            dataOverlay.dispose();
+        if (mDataOverlay != null)
+            mDataOverlay.dispose();
 
-        if (mapView != null) {
-            MapGenerator mapGenerator = mapView.getMapGenerator();
+        if (mMapView != null) {
+            MapGenerator mapGenerator = mMapView.getMapGenerator();
             if (mapGenerator != null) {
                 mapGenerator.cleanup();
             }
@@ -473,41 +470,44 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     private void readData() {
         try {
-            dataOverlay.clearItems();
-            dataOverlay.clearWays();
+            mDataOverlay.clearItems();
+            mDataOverlay.clearWays();
 
             List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays();
-            dataOverlay.addWays(logOverlaysList);
+            mDataOverlay.addWays(logOverlaysList);
+
+            boolean imagesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, true);
+            boolean notesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, true);
 
             /* images */
-            if (DataManager.getInstance().areImagesVisible()) {
-                Drawable imageMarker = getResources().getDrawable(R.drawable.photo);
+            if (imagesVisible) {
+                Drawable imageMarker = getDrawable(R.drawable.ic_image_24dp);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
-                dataOverlay.addItems(imagesOverlaysList);
+                mDataOverlay.addItems(imagesOverlaysList);
             }
 
             /* gps notes */
-            if (DataManager.getInstance().areNotesVisible()) {
+            if (notesVisible) {
                 Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
-                dataOverlay.addItems(noteOverlaysList);
+                mDataOverlay.addItems(noteOverlaysList);
             }
 
             /* bookmarks */
-            Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
+            Drawable bookmarkMarker = getDrawable(R.drawable.ic_star_24dp);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
-            dataOverlay.addItems(bookmarksOverlays);
+            mDataOverlay.addItems(bookmarksOverlays);
 
             // read last known gps position
             if (lastGpsPosition != null) {
                 GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * LibraryConstants.E6),
                         (int) (lastGpsPosition[0] * LibraryConstants.E6));
-                dataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
-                dataOverlay.requestRedraw();
+                mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
+                mDataOverlay.requestRedraw();
             }
-            // dataOverlay.requestRedraw();
+            // mDataOverlay.requestRedraw();
         } catch (IOException e1) {
             GPLog.error(this, null, e1); //$NON-NLS-1$
         }
@@ -519,7 +519,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             GPLog.addLogEntry(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
 
         if (action == MotionEvent.ACTION_MOVE) {
-            MapViewPosition mapPosition = mapView.getMapPosition();
+            MapViewPosition mapPosition = mMapView.getMapPosition();
             GeoPoint mapCenter = mapPosition.getMapCenter();
             double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
             double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
@@ -545,7 +545,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     }
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            int zoom = mapView.getMapPosition().getZoomLevel();
+                            int zoom = mMapView.getMapPosition().getZoomLevel();
                             zoom = setCurrentZoom(zoom);
                             setGuiZoomText(zoom);
                             saveCenterPref();
@@ -557,155 +557,13 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         return false;
     }
 
-    private void handleOsmSliderView() throws Exception {
-        OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
-        String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
-
-        int visibility = View.VISIBLE;
-        if (categoriesNamesArray == null) {
-            categoriesNamesArray = new String[]{""}; //$NON-NLS-1$
-            visibility = View.GONE; // invisible
-        }
-        doOsm = visibility != View.GONE;
-        boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
-        doOsm = doOsm && doOsmPref;
-        if (!doOsm) {
-            visibility = View.GONE; // invisible
-        }
-
-        final String[] categoriesNamesArrayFinal = categoriesNamesArray;
-
-        // slidingdrawer
-        final int slidingId = R.id.osmslide;
-        osmSlidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        osmSlidingDrawer.setVisibility(visibility);
-
-        if (doOsm) {
-            GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
-
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArrayFinal) {
-                public View getView(final int position, View cView, ViewGroup parent) {
-
-                    final Button osmButton = new Button(MapsActivity.this);
-                    osmButton.setText(categoriesNamesArrayFinal[position]);
-                    osmButton.setBackgroundResource(R.drawable.osmcategory_button_drawable);
-                    osmButton.setOnClickListener(new Button.OnClickListener() {
-                        public void onClick(View v) {
-                            String categoryName = osmButton.getText().toString();
-                            Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
-                            osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
-                            startActivity(osmCategoryIntent);
-                        }
-                    });
-                    return osmButton;
-                }
-            };
-            buttonGridView.setAdapter(arrayAdapter);
-
-            Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
-            syncOsmButton.setOnClickListener(new Button.OnClickListener() {
-
-                public void onClick(View v) {
-
-                    if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
-                        Utilities.messageDialog(MapsActivity.this, R.string.available_only_with_network, null);
-                        return;
-                    }
-
-                    Utilities.inputMessageDialog(MapsActivity.this,
-                            getString(R.string.osm_insert_a_changeset_description), "", new TextRunnable() {
-                                public void run() {
-                                    sync(theTextToRunOn);
-                                }
-                            }
-                    );
-                }
-
-                private void sync(final String description) {
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
-                        }
-                    });
-
-                    while (syncProgressDialog == null) {
-                        try {
-                            Thread.sleep(20);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                    new AsyncTask<String, Void, String>() {
-                        private Exception e = null;
-
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-
-                        }
-
-                        protected String doInBackground(String... params) {
-                            String response = null;
-                            try {
-                                response = OsmUtilities.sendOsmNotes(MapsActivity.this, description);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                this.e = e;
-                            }
-                            return response;
-                        }
-
-                        protected void onPostExecute(String response) {
-                            Utilities.dismissProgressDialog(syncProgressDialog);
-                            if (e == null) {
-                                String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
-                                if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
-                                    String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, ""); //$NON-NLS-1$
-                                    if (leftOver.trim().length() > 0) {
-                                        String text = leftOver.substring(1);
-                                        text = text.replaceFirst("\\_", "/"); //$NON-NLS-1$//$NON-NLS-2$
-
-                                        msg = MessageFormat.format(
-                                                "Some of the features were uploaded, but not all of them ({0}).", text); //$NON-NLS-1$
-                                        Utilities.warningDialog(MapsActivity.this, msg, null);
-                                    } else {
-                                        Utilities.yesNoMessageDialog(MapsActivity.this, msg, new Runnable() {
-                                            public void run() {
-                                                try {
-                                                    DaoNotes.deleteOsmNotes();
-                                                } catch (IOException e) {
-                                                    GPLog.error(this, null, e);
-                                                }
-                                            }
-                                        }, null);
-                                    }
-                                } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_JSON)) {
-                                    msg = getString(R.string.error_json_osm);
-                                    Utilities.warningDialog(MapsActivity.this, msg, null);
-                                } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_OSM)) {
-                                    msg = getString(R.string.error_osm_server);
-                                    Utilities.warningDialog(MapsActivity.this, msg, null);
-                                }
-
-                            } else {
-                                String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
-                                Utilities.warningDialog(MapsActivity.this, msg + e.getLocalizedMessage(), null);
-                            }
-                        }
-                    }.execute((String) null);
-                }
-            });
-        }
-
-    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-            MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, MapsDirManager.ZOOMTYPE.DEFAULT);
+            MapsDirManager.getInstance().setMapViewCenter(mMapView, lastCenter, MapsDirManager.ZOOMTYPE.DEFAULT);
             int currentZoomLevel = getCurrentZoomLevel();
             setGuiZoomText(currentZoomLevel);
 
@@ -726,7 +584,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     /**
      * Set current Zoom level in gui and MapsDirManager.
-     * <p>
+     * <p/>
      * <p>checking is done to insure that the new Zoom is
      * inside the supported min/max Zoom-levels
      * <p>the present value will be retained if invalid
@@ -742,7 +600,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     /**
      * set MapView Center point [in MapsDirManager]
-     * <p>
+     * <p/>
      * - this should be the only function used to compleate this task
      * -- error logic has been build in use value incase the function was incorrectly called
      * <p>if (mapCenterLocation == null)
@@ -757,7 +615,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
      */
     public void setNewCenter(double lon, double lat) {
         double[] mapCenterLocation = new double[]{lon, lat, (double) getCurrentZoomLevel()};
-        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
+        MapsDirManager.getInstance().setMapViewCenter(mMapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
         saveCenterPref();
     }
 
@@ -771,7 +629,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     public void setNewCenterAtZoom(double lon, double lat, int zoom) {
         zoom = setCurrentZoom(zoom);
         double[] mapCenterLocation = new double[]{lon, lat, (double) zoom};
-        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
+        MapsDirManager.getInstance().setMapViewCenter(mMapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
         setGuiZoomText(zoom);
     }
 
@@ -785,25 +643,22 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_DATA, 2, R.string.base_maps).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
-                android.R.drawable.ic_menu_compass);
-        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect);//.setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_DATA, 2, R.string.base_maps);//.setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar);//.setIcon(R.drawable.ic_menu_scalebar);
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
+        boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
         if (centerOnGps) {
-            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.disable_center_on_gps).setIcon(
-                    android.R.drawable.ic_menu_mylocation);
+            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.disable_center_on_gps);//.setIcon(                    android.R.drawable.ic_menu_mylocation);
         } else {
-            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.enable_center_on_gps).setIcon(
-                    android.R.drawable.ic_menu_mylocation);
+            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.enable_center_on_gps);//.setIcon(                     android.R.drawable.ic_menu_mylocation);
         }
 
-        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 7, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
-        menu.add(Menu.NONE, MENU_GO_TO, 8, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 8, R.string.share_position).setIcon(android.R.drawable.ic_menu_send);
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 9, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 9, "Import mapsforge data").setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 7, R.string.center_on_map);//.setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, MENU_GO_TO, 8, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 8, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 9, R.string.view_in_mixare);//.setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 9, getString(R.string.menu_extract_mapsforge_data));//"Import mapsforge data");//.setIcon(R.drawable.icon_datasource);
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -822,12 +677,12 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
                 return true;
             case MENU_SCALE_ID:
-                MapScaleBar mapScaleBar = mapView.getMapScaleBar();
+                MapScaleBar mapScaleBar = mMapView.getMapScaleBar();
                 boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
                 mapScaleBar.setShowMapScaleBar(!showMapScaleBar);
                 return true;
             case MENU_COMPASS_ID:
-                ActionBar.openCompass(this);
+                AppsUtilities.checkAndOpenGpsStatus(this);
                 return true;
             case MENU_MIXARE_ID:
                 if (!MixareHandler.isMixareInstalled(this)) {
@@ -837,7 +692,27 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
                 try {
                     float[] nswe = getMapWorldBounds();
-                    MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+                    List<PointF3D> points = new ArrayList<PointF3D>();
+                    List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
+                    for (Bookmark bookmark : bookmarksList) {
+                        double lat = bookmark.getLat();
+                        double lon = bookmark.getLon();
+                        String title = bookmark.getName();
+
+                        PointF3D p = new PointF3D((float) lon, (float) lat, 0f, title);
+                        points.add(p);
+                    }
+                    List<Note> notesList = DaoNotes.getNotesList(new float[]{nswe[0], nswe[1], nswe[2], nswe[3]}, false);
+                    for (Note note : notesList) {
+                        double lat = note.getLat();
+                        double lon = note.getLon();
+                        double elevation = note.getAltim();
+                        String title = note.getName(); // note.getName() + " (" + note.getDescription() +
+
+                        PointF3D p = new PointF3D((float) lon, (float) lat, (float) elevation, title);
+                        points.add(p);
+                    }
+                    MixareHandler.runRegionOnMixare(this, points);
                     return true;
                 } catch (Exception e1) {
                     GPLog.error(this, null, e1); //$NON-NLS-1$
@@ -846,7 +721,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             case MENU_SHAREPOSITION_ID:
                 try {
                     if (!NetworkUtilities.isNetworkAvailable(this)) {
-                        Utilities.messageDialog(this, R.string.available_only_with_network, null);
+                        GPDialogs.infoDialog(this, getString(R.string.available_only_with_network), null);
                     } else {
                         // sendData();
                         ShareUtilities.sharePositionUrl(this);
@@ -869,13 +744,13 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 return goTo();
             }
             case MENU_CENTER_ON_MAP: {
-                MapsDirManager.getInstance().setMapViewCenter(mapView, null, MapsDirManager.ZOOMTYPE.DEFAULT);
+                MapsDirManager.getInstance().setMapViewCenter(mMapView, null, MapsDirManager.ZOOMTYPE.DEFAULT);
                 saveCenterPref();
                 return true;
             }
             case MENU_CENTER_ON_GPS: {
-                boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-                Editor edit = preferences.edit();
+                boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+                Editor edit = mPeferences.edit();
                 edit.putBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, !centerOnGps);
                 edit.commit();
                 return true;
@@ -884,113 +759,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
         return super.onContextItemSelected(item);
     }
-
-
-    // THIS IS CURRENTLY DISABLED
-    //
-    // /**
-    // * Start the Dialog to select a map
-    // *
-    // * <p>
-    // * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
-    // * - when first called this list will build a diretory/file list AND a map-type/Diretory/File
-    // list
-    // * - once created, this list will be retained during the Application
-    // * - the user can switch from a sorted list as Directory/File OR Map-Type/Diretory/File view
-    // * </p>
-    // * result will be sent to MapDirManager and saved there and stored to preferences
-    // * - when the MapView is created, this stroed value will be read and loaded
-    // */
-    // private void startMapsDirTreeViewList() {
-    // try {
-    // startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
-    // } catch (Exception e) {
-    // GPLog.androidLog(4,
-    // "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]",
-    // e);
-    // }
-    // }
-
-//    private void sendData() throws IOException {
-//        float[] nswe = getMapWorldBounds();
-//        List<SmsData> smsData = new ArrayList<SmsData>();
-//        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
-//        for (Bookmark bookmark : bookmarksList) {
-//            double lat = bookmark.getLat();
-//            double lon = bookmark.getLon();
-//            String title = bookmark.getName();
-//
-//            SmsData data = new SmsData();
-//            data.TYPE = SmsData.BOOKMARK;
-//            data.x = (float) lon;
-//            data.y = (float) lat;
-//            data.z = 16f;
-//            data.text = title;
-//            smsData.add(data);
-//        }
-//
-//        List<Note> notesList = DaoNotes.getNotesList(nswe, false);
-//        for (Note note : notesList) {
-//            double lat = note.getLat();
-//            double lon = note.getLon();
-//            double elevation = note.getAltim();
-//            String title = note.getName();
-//
-//            SmsData data = new SmsData();
-//            data.TYPE = SmsData.NOTE;
-//            data.x = (float) lon;
-//            data.y = (float) lat;
-//            data.z = (float) elevation;
-//            data.text = title;
-//            smsData.add(data);
-//        }
-//
-//        smsString = new ArrayList<String>();
-//        String schemaHost = SmsUtilities.SMSHOST + "/"; //$NON-NLS-1$
-//        StringBuilder sb = new StringBuilder(schemaHost);
-//        int limit = 160;
-//        for (SmsData data : smsData) {
-//            String smsDataString = data.toSmsDataString();
-//            String tmp = sb.toString() + ";" + smsDataString; //$NON-NLS-1$
-//            if (tmp.length() <= limit) {
-//                if (sb.length() > schemaHost.length())
-//                    sb.append(";"); //$NON-NLS-1$
-//            } else {
-//                smsString.add(sb.toString());
-//                sb = new StringBuilder(schemaHost);
-//            }
-//            sb.append(smsDataString);
-//        }
-//
-//        if (sb.length() > schemaHost.length()) {
-//            smsString.add(sb.toString());
-//        }
-//
-//        if (smsString.size() == 0) {
-//            Utilities.messageDialog(this, R.string.found_no_data_to_send, null);
-//        } else {
-//
-//            String message = smsString.size() + getString(R.string.insert_phone_to_send);
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            builder.setMessage(message).setCancelable(false)
-//                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            for (String smsMsg : smsString) {
-//                                SmsUtilities.sendSMSViaApp(MapsActivity.this, "", smsMsg); //$NON-NLS-1$
-//                            }
-//                        }
-//                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int id) {
-//                    // ignore
-//                }
-//            });
-//            AlertDialog alertDialog = builder.create();
-//            alertDialog.show();
-//
-//        }
-//
-//    }
 
     private boolean goTo() {
         String[] items = new String[]{getString(R.string.goto_coordinate), getString(R.string.geocoding)};
@@ -1003,10 +771,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
                         int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         if (selectedPosition == 0) {
-                            Intent intent = new Intent(MapsActivity.this, InsertCoordActivity.class);
+                            Intent intent = new Intent(MapviewActivity.this, InsertCoordActivity.class);
                             startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
                         } else {
-                            Intent intent = new Intent(MapsActivity.this, GeocodeActivity.class);
+                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
                             startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
                         }
 
@@ -1036,10 +804,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
      * @return the [n,s,w,e] in midrodegrees.
      */
     private float[] getMapWorldBoundsE6() {
-        Projection projection = mapView.getProjection();
+        Projection projection = mMapView.getProjection();
         int latitudeSpan = projection.getLatitudeSpan();
         int longitudeSpan = projection.getLongitudeSpan();
-        MapViewPosition mapPosition = mapView.getMapPosition();
+        MapViewPosition mapPosition = mMapView.getMapPosition();
         GeoPoint c = mapPosition.getMapCenter();
         float n = (c.latitudeE6 + latitudeSpan / 2);
         float s = (c.latitudeE6 - latitudeSpan / 2);
@@ -1054,37 +822,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-
-            // THIS IS CURRENTLY DISABLED
-            //
-            // case MAPSDIR_FILETREE: {
-            // if (resultCode == Activity.RESULT_OK) {
-            // // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
-            // // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
-            // // selected_classinfo will contain all information about the map
-            // // MapsDirManager will store this internaly and store the values to preferences
-            // // - if this is called from a non-Map-Activity:
-            // // -- the map_view parameter und the position parameter MUST be null
-            // // - if this is called from a Map-Activity:
-            // // -- the map_view parameter and the position parameter should be given
-            // // --- the position parameter is not given [null], it will use the position of the
-            // // map_view
-            // // -- if not null : selected_MapClassInfo() will call
-            // // MapsDirManager.load_Map(map_view,mapCenterLocation);
-            //
-            // if (MapsDirTreeViewList.selected_classinfo != null) {
-            // // MapsDirManager.load_Map(mapView,null);
-            // // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map["
-            // // +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
-            // MapsDirManager.getInstance().selectMapClassInfo(this,
-            // MapsDirTreeViewList.selected_classinfo, mapView, null);
-            // // mj10777: not sure what to do with these values ??
-            // minZoomLevel = MapsDirManager.getInstance().getMinZoom();
-            // maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
-            // }
-            // }
-            // }
-            // break;
             case (INSERTCOORD_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
 
@@ -1194,9 +931,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             int count = 1;
                             for (String sms : smsString) {
                                 sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                                SmsUtilities.sendSMS(MapsActivity.this, number, sms, false);
+                                SmsUtilities.sendSMS(MapviewActivity.this, number, sms, false);
                                 String msg = getString(R.string.sent_sms) + count++;
-                                Utilities.toast(this, msg, Toast.LENGTH_SHORT);
+                                GPDialogs.toast(this, msg, Toast.LENGTH_SHORT);
                             }
                         }
                     }
@@ -1220,7 +957,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             DaoNotes.updateForm(noteId, nameStr, jsonStr);
                         } catch (Exception e) {
                             GPLog.error(this, null, e);
-                            Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                            GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
                         }
                     }
                 }
@@ -1230,7 +967,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     }
 
     private void addBookmark() {
-        GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
+        GeoPoint mapCenter = mMapView.getMapPosition().getMapCenter();
         final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
         final float centerLon = mapCenter.longitudeE6 / LibraryConstants.E6;
 
@@ -1238,14 +975,14 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         final String proposedName = "bookmark " + newDate;
 
         String message = getString(R.string.mapsactivity_enter_bookmark_name);
-        Utilities.inputMessageDialog(this, message, proposedName, new TextRunnable() {
+        GPDialogs.inputMessageDialog(this, message, proposedName, new TextRunnable() {
             @Override
             public void run() {
                 try {
                     if (theTextToRunOn.length() < 1) {
                         theTextToRunOn = proposedName;
                     }
-                    int zoom = mapView.getMapPosition().getZoomLevel();
+                    int zoom = mMapView.getMapPosition().getZoomLevel();
                     float[] nswe = getMapWorldBounds();
                     DaoBookmarks.addBookmark(centerLon, centerLat, theTextToRunOn, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
                     readData();
@@ -1262,27 +999,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
      * Calls the mapview redraw.
      */
     public void invalidateMap() {
-        mapView.invalidateOnUiThread();
+        mMapView.invalidateOnUiThread();
     }
 
-    // public boolean onKeyDown( int keyCode, KeyEvent event ) {
-    // // force to exit through the exit button
-    // if (keyCode == KeyEvent.KEYCODE_BACK && sliderIsOpen) {
-    // slidingDrawer.animateClose();
-    // return true;
-    // } else if (keyCode == KeyEvent.KEYCODE_BACK && osmSliderIsOpen) {
-    // osmSlidingDrawer.animateClose();
-    // return true;
-    // }
-    // return super.onKeyDown(keyCode, event);
-    // }
 
     private boolean boundsContain(int latE6, int lonE6, int nE6, int sE6, int wE6, int eE6) {
         return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
     }
 
     private synchronized void saveCenterPref() {
-        MapViewPosition mapPosition = mapView.getMapPosition();
+        MapViewPosition mapPosition = mMapView.getMapPosition();
         GeoPoint mapCenter = mapPosition.getMapCenter();
         double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
         double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
@@ -1297,15 +1023,15 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             GPLog.addLogEntry(this, sb.toString());
         }
 
-        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, zoomLevel);
+        PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoomLevel);
 
         EditManager.INSTANCE.invalidateEditingView();
     }
 
     /**
-     * Set center coords and zoom ready for the {@link MapsActivity} to focus again.
-     * <p>
-     * <p>In {@link MapsActivity} the {@link MapsActivity#onWindowFocusChanged(boolean)}
+     * Set center coords and zoom ready for the {@link MapviewActivity} to focus again.
+     * <p/>
+     * <p>In {@link MapviewActivity} the {@link MapviewActivity#onWindowFocusChanged(boolean)}
      * will take care to zoom properly.
      *
      * @param centerX the lon coordinate. Can be <code>null</code>.
@@ -1313,7 +1039,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
      * @param zoom    the zoom. Can be <code>null</code>.
      */
     public void setCenterAndZoomForMapWindowFocus(Double centerX, Double centerY, Integer zoom) {
-        MapViewPosition mapPosition = mapView.getMapPosition();
+        MapViewPosition mapPosition = mMapView.getMapPosition();
         GeoPoint mapCenter = mapPosition.getMapCenter();
         int zoomLevel = mapPosition.getZoomLevel();
         float cx = 0f;
@@ -1331,7 +1057,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (zoom != null) {
             zoomLevel = zoom;
         }
-        PositionUtilities.putMapCenterInPreferences(preferences, cx, cy, zoomLevel);
+        PositionUtilities.putMapCenterInPreferences(mPeferences, cx, cy, zoomLevel);
     }
 
     private void updateBatteryCondition(int level) {
@@ -1352,15 +1078,15 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_red));
+            centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_red));
         } else {
             if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_blue));
+                centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_blue));
             } else {
                 if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_green));
+                    centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_green));
                 } else {
-                    centerOnGps.setBackgroundDrawable(resources.getDrawable(R.drawable.ic_center_gps_orange));
+                    centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_orange));
                 }
             }
         }
@@ -1374,7 +1100,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             accuracy = lastGpsPositionExtras[0];
         }
 
-        if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
+        if (this.mMapView.getWidth() <= 0 || this.mMapView.getWidth() <= 0) {
             return;
         }
         try {
@@ -1387,7 +1113,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             float[] nsweE6 = getMapWorldBoundsE6();
             int latE6 = (int) ((float) lat * LibraryConstants.E6);
             int lonE6 = (int) ((float) lon * LibraryConstants.E6);
-            boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+            boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
             int nE6 = (int) nsweE6[0];
             int sE6 = (int) nsweE6[1];
@@ -1397,11 +1123,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
             if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
                 GeoPoint point = new GeoPoint(latE6, lonE6);
-                dataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
-                dataOverlay.requestRedraw();
+                mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
+                mDataOverlay.requestRedraw();
             }
 
-            Projection p = mapView.getProjection();
+            Projection p = mMapView.getProjection();
             int paddingX = (int) (p.getLongitudeSpan() * 0.2);
             int paddingY = (int) (p.getLatitudeSpan() * 0.2);
             int newEE6 = eE6 - paddingX;
@@ -1430,21 +1156,21 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.toggleEditingButton:
-                Intent editableLayersIntent = new Intent(MapsActivity.this, EditableLayersListActivity.class);
+                Intent editableLayersIntent = new Intent(MapviewActivity.this, EditableLayersListActivity.class);
                 startActivity(editableLayersIntent);
                 return true;
             case R.id.addnotebytagbutton:
-                Intent intent = new Intent(MapsActivity.this, NotesListActivity.class);
+                Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
                 startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
             case R.id.addbookmarkbutton:
-                intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
+                intent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
                 startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
             case R.id.menu_map_btn:
-                boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
+                boolean areButtonsVisible = mPeferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
                 setAllButtoonsEnablement(!areButtonsVisible);
-                Editor edit = preferences.edit();
+                Editor edit = mPeferences.edit();
                 edit.putBoolean(ARE_BUTTONSVISIBLE_OPEN, !areButtonsVisible);
                 edit.commit();
                 return true;
@@ -1468,7 +1194,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 int newZoom = currentZoom + 1;
                 newZoom = setCurrentZoom(newZoom);
                 setGuiZoomText(newZoom);
-                mapView.getController().setZoom(newZoom);
+                mMapView.getController().setZoom(newZoom);
                 invalidateMap();
                 saveCenterPref();
                 Tool activeTool = EditManager.INSTANCE.getActiveTool();
@@ -1481,7 +1207,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 newZoom = currentZoom - 1;
                 newZoom = setCurrentZoom(newZoom);
                 setGuiZoomText(newZoom);
-                mapView.getController().setZoom(newZoom);
+                mMapView.getController().setZoom(newZoom);
                 invalidateMap();
                 saveCenterPref();
                 Tool activeTool1 = EditManager.INSTANCE.getActiveTool();
@@ -1497,16 +1223,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             case R.id.addnotebytagbutton:
                 // generate screenshot in background in order to not freeze
                 try {
-                    File tempDir = ResourcesManager.getInstance(MapsActivity.this).getTempDir();
+                    File tempDir = ResourcesManager.getInstance(MapviewActivity.this).getTempDir();
                     final File tmpImageFile = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
                     new Thread(new Runnable() {
                         public void run() {
                             try {
                                 Rect t = new Rect();
-                                mapView.getDrawingRect(t);
+                                mMapView.getDrawingRect(t);
                                 Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
                                 Canvas bufferedCanvas = new Canvas(bufferedBitmap);
-                                mapView.draw(bufferedCanvas);
+                                mMapView.draw(bufferedCanvas);
                                 FileOutputStream out = new FileOutputStream(tmpImageFile);
                                 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
                                 out.close();
@@ -1515,48 +1241,48 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                             }
                         }
                     }).start();
-                    Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
+                    Intent mapTagsIntent = new Intent(MapviewActivity.this, MapTagsActivity.class);
                     startActivity(mapTagsIntent);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
-                    Utilities.errorDialog(this, e, null);
+                    GPDialogs.errorDialog(this, e, null);
                 }
                 break;
             case R.id.addbookmarkbutton:
                 addBookmark();
                 break;
             case R.id.togglemeasuremodebutton:
-                isInNonClickableMode = !mapView.isClickable();
+                isInNonClickableMode = !mMapView.isClickable();
                 toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
                 toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
                 if (!isInNonClickableMode) {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-                    toggleLoginfoButton.setBackgroundResource(R.drawable.ic_loginfo_off);
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_on);
+                    toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
 
-                    TapMeasureTool measureTool = new TapMeasureTool(mapView);
+                    TapMeasureTool measureTool = new TapMeasureTool(mMapView);
                     EditManager.INSTANCE.setActiveTool(measureTool);
                 } else {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
 
                     EditManager.INSTANCE.setActiveTool(null);
                 }
                 break;
             case R.id.toggleloginfobutton:
-                isInNonClickableMode = !mapView.isClickable();
+                isInNonClickableMode = !mMapView.isClickable();
                 toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
                 toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
                 if (!isInNonClickableMode) {
-                    toggleLoginfoButton.setBackgroundResource(R.drawable.ic_loginfo_on);
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                    toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_on);
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
 
                     try {
-                        GpsLogInfoTool measureTool = new GpsLogInfoTool(mapView);
+                        GpsLogInfoTool measureTool = new GpsLogInfoTool(mMapView);
                         EditManager.INSTANCE.setActiveTool(measureTool);
                     } catch (IOException e) {
                         GPLog.error(this, null, e);
                     }
                 } else {
-                    toggleLoginfoButton.setBackgroundResource(R.drawable.ic_loginfo_off);
+                    toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
                     EditManager.INSTANCE.setActiveTool(null);
                 }
                 break;
@@ -1573,17 +1299,17 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
+            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
 
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer.isPolygon())
-                activeToolGroup = new PolygonMainEditingToolGroup(mapView);
+                activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
             else if (editLayer.isLine())
-                activeToolGroup = new LineMainEditingToolGroup(mapView);
+                activeToolGroup = new LineMainEditingToolGroup(mMapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_off);
+            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_off);
             EditManager.INSTANCE.setActiveTool(null);
             EditManager.INSTANCE.setActiveToolGroup(null);
             setLeftButtoonsEnablement(true);

@@ -182,6 +182,16 @@
                 android:value=".GeopaparazziActivity" />
         </activity>
 
+        <activity
+            android:name=".maptools.FeaturePagerActivity"
+            android:label="Features"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"
@@ -189,7 +199,7 @@
             android:exported="false" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
-        <!-- <service android:name="eu.hydrologis.geopaparazzi.maps.MapsSupportService" /> -->
+        <service android:name=".mapview.MapsSupportService" />
     </application>
 
 </manifest>

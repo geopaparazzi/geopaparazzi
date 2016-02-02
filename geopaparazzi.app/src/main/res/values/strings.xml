@@ -308,6 +308,7 @@
     <string name="name_new_teample_db">Enter name for new database</string>
     <string name="new_template_db_create">Database successfully created.</string>
     <string name="extract_mapsforge_data">Extracting mapsforge data...</string>
+    <string name="menu_extract_mapsforge_data">Extract mapsforge data</string>
     <string name="extract_mapsforge_only_when_loaded">This tool works only when a mapsforge map is loaded.</string>
     <string name="view">View</string>
     <string name="force_locale_title">Force locale</string>
@@ -340,5 +341,7 @@
     <string name="select_gpx_file">Select gpx file to import</string>
     <string name="no_gpx_selected">No GPX file has been selected.</string>
     <string name="gpx_file_imported">GPX file imported.</string>
+    <string name="table_name">Table name</string>
+    <string name="db_name">Db name</string>
 
 </resources>

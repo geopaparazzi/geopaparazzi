@@ -110,6 +110,8 @@ public class MixareHandler {
         return finalSb.toString();
     }
 
+
+
     private static String dataToString( int id, double lat, double lon, double elev, String title ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");

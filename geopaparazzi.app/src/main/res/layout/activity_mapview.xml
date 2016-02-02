@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/mapview_sides_space"
-                android:background="@drawable/buttoncirclezoomin"/>
+                android:background="@drawable/mapview_zoomin"/>
 
             <TextView
                 android:id="@+id/zoomlevel"
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
-                android:background="@drawable/buttoncirclezoomout"/>
+                android:background="@drawable/mapview_zoomout"/>
         </LinearLayout>
         <!-- the tools buttons -->
 
@@ -126,21 +126,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/mapview_sides_space"
-                android:background="@drawable/addnote"/>
+                android:background="@drawable/mapview_notes"/>
 
             <ImageButton
                 android:id="@+id/addbookmarkbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/mapview_sides_space"
-                android:background="@drawable/addbookmark"/>
+                android:background="@drawable/mapview_bookmarks"/>
 
             <ImageButton
                 android:id="@+id/toggleloginfobutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/mapview_sides_space"
-                android:background="@drawable/ic_loginfo_off"/>
+                android:background="@drawable/mapview_loginfo_off"/>
 
             <ImageButton
                 android:id="@+id/togglemeasuremodebutton"
@@ -149,7 +149,7 @@
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_sides_space"
                 android:layout_marginTop="@dimen/mapview_sides_space"
-                android:background="@drawable/measuremode"/>
+                android:background="@drawable/mapview_measuremode_off"/>
         </LinearLayout>
         <!-- the center on gps button -->
 
@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginRight="@dimen/mapview_bottom_space"
-                android:background="@drawable/battery"
+                android:background="@drawable/mapview_battery"
                 android:text="-"
                 android:textColor="@color/main_text_color_neutral"
                 android:textStyle="bold" />
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:padding="@dimen/mapview_sides_space"
-                android:background="@drawable/ic_center_gps_red" />
+                android:background="@drawable/mapview_center_gps_red" />
 
             <Button
                 android:id="@+id/toggleEditingButton"
@@ -184,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_bottom_space"
-                android:background="@drawable/ic_toggle_editing_off"/>
+                android:background="@drawable/mapview_toggle_editing_off"/>
         </LinearLayout>
     </FrameLayout>
 
@@ -195,7 +195,7 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="@dimen/mapview_sides_space"
         android:layout_marginTop="@dimen/mapview_bottom_space"
-        android:background="@drawable/menu">
+        android:background="@drawable/mapview_menu">
 
         <!-- android:alpha="0.5" -->
     </Button>
