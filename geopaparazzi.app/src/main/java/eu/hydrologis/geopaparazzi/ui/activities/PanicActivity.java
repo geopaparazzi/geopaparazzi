@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.activities;
+package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;

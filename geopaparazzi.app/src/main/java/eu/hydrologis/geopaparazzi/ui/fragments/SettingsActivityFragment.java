@@ -1,6 +1,6 @@
 // SettingsActivityFragment.java
 // Subclass of PreferenceFragment for managing app settings
-package eu.hydrologis.geopaparazzi.fragments;
+package eu.hydrologis.geopaparazzi.ui.fragments;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;

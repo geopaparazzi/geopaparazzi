@@ -1,6 +1,6 @@
 // MainActivityFragment.java
 // Contains the Flag Quiz logic
-package eu.hydrologis.geopaparazzi.fragments;
+package eu.hydrologis.geopaparazzi.ui.fragments;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -54,26 +54,23 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.activities.AboutActivity;
-import eu.hydrologis.geopaparazzi.activities.AdvancedSettingsActivity;
-import eu.hydrologis.geopaparazzi.activities.ExportActivity;
-import eu.hydrologis.geopaparazzi.activities.ImportActivity;
-import eu.hydrologis.geopaparazzi.activities.PanicActivity;
-import eu.hydrologis.geopaparazzi.activities.ProjectMetadataActivity;
-import eu.hydrologis.geopaparazzi.activities.SettingsActivity;
-import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.ui.activities.AboutActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.AdvancedSettingsActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.ExportActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.ImportActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.PanicActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.ProjectMetadataActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.SettingsActivity;
+import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.TableDescriptions;
 import eu.hydrologis.geopaparazzi.database.objects.Metadata;
-import eu.hydrologis.geopaparazzi.dialogs.ColorDialogFragment;
-import eu.hydrologis.geopaparazzi.dialogs.GpsInfoDialogFragment;
-import eu.hydrologis.geopaparazzi.dialogs.NewProjectDialogFragment;
-import eu.hydrologis.geopaparazzi.providers.ProviderTestActivity;
+import eu.hydrologis.geopaparazzi.ui.dialogs.ColorDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.GpsInfoDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.NewProjectDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;

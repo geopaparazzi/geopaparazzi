@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.activities.tantomapurls;
+package eu.hydrologis.geopaparazzi.ui.activities.tantomapurls;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -51,7 +51,6 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.TextRunnable;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 
 /**

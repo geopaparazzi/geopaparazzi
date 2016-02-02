@@ -23,6 +23,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +42,15 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -303,5 +308,127 @@ public class BaseMapSourcesManager {
         editor.apply();
     }
 
+
+    /**
+     * Load the currently selected BaseMap.
+     *
+     * <p>This method should be called from within the activity defining the
+     * {@link MapView}.
+     * <p/>
+     *
+     * @param mapView           Map-View to set.
+     * @param mapCenterLocation [point/zoom to check].
+     */
+    public void loadSelectedBaseMap(MapView mapView, double[] mapCenterLocation) {
+        AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
+        if (selectedSpatialTable != null) {
+            int selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
+            MapGenerator selectedMapGenerator = null;
+            try {
+//                minZoom = 0;
+//                maxZoom = 18;
+//                defaultZoom = 17;
+//                bounds_west = -180.0;
+//                bounds_south = -85.05113;
+//                bounds_east = 180.0;
+//                bounds_north = 85.05113;
+//                centerX = 0.0;
+//                centerY = 0.0;
+                SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
+                switch (selectedSpatialDataType) {
+                    case MAP: {
+                        MapTable selectedMapTable = (MapTable) selectedSpatialTable;
+//                            minZoom = selectedMapTable.getMinZoom();
+//                            maxZoom = selectedMapTable.getMaxZoom();
+//                            defaultZoom = selectedMapTable.getDefaultZoom();
+//                            bounds_west = selectedMapTable.getMinLongitude();
+//                            bounds_east = selectedMapTable.getMaxLongitude();
+//                            bounds_south = selectedMapTable.getMinLatitude();
+//                            bounds_north = selectedMapTable.getMaxLatitude();
+//                            centerX = selectedMapTable.getCenterX();
+//                            centerY = selectedMapTable.getCenterY();
+                        clearTileCache(mapView);
+                        mapView.setMapFile(selectedMapTable.getDatabaseFile());
+                        if (selectedMapTable.getXmlFile().exists()) {
+                            try {
+                                mapView.setRenderTheme(selectedMapTable.getXmlFile());
+                            } catch (java.lang.Exception e) {
+                                // ignore the theme
+                                GPLog.error(this, "ERROR", e);
+                            }
+                        }
+                        selectedMapGenerator = mapView.getMapGenerator();
+                    }
+                    break;
+                    case MBTILES:
+                    case GPKG:
+                    case RASTERLITE2:
+                    case SQLITE: {
+                        SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
+//                            minZoom = selectedSpatialRasterTable.getMinZoom();
+//                            maxZoom = selectedSpatialRasterTable.getMaxZoom();
+//                            defaultZoom = selectedSpatialRasterTable.getDefaultZoom();
+//                            bounds_west = selectedSpatialRasterTable.getMinLongitude();
+//                            bounds_east = selectedSpatialRasterTable.getMaxLongitude();
+//                            bounds_south = selectedSpatialRasterTable.getMinLatitude();
+//                            bounds_north = selectedSpatialRasterTable.getMaxLatitude();
+//                            centerX = selectedSpatialRasterTable.getCenterX();
+//                            centerY = selectedSpatialRasterTable.getCenterY();
+                        selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
+                        clearTileCache(mapView);
+                        mapView.setMapGenerator(selectedMapGenerator);
+                    }
+                    break;
+                    case MAPURL: {
+                        CustomTileTable selectedCustomTilesTable = (CustomTileTable) selectedSpatialTable;
+                        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
+                                .getCustomTileDatabaseHandler(selectedCustomTilesTable);
+//                            minZoom = selectedCustomTilesTable.getMinZoom();
+//                            maxZoom = selectedCustomTilesTable.getMaxZoom();
+//                            defaultZoom = selectedCustomTilesTable.getDefaultZoom();
+//                            bounds_west = selectedCustomTilesTable.getMinLongitude();
+//                            bounds_east = selectedCustomTilesTable.getMaxLongitude();
+//                            bounds_south = selectedCustomTilesTable.getMinLatitude();
+//                            bounds_north = selectedCustomTilesTable.getMaxLatitude();
+//                            centerX = selectedCustomTilesTable.getCenterX();
+//                            centerY = selectedCustomTilesTable.getCenterY();
+                        selectedMapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
+                        try {
+                            clearTileCache(mapView);
+                            mapView.setMapGenerator(selectedMapGenerator);
+                            if (GPLog.LOG_HEAVY)
+                                GPLog.addLogEntry(this, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
+                                        + "] selected_map[" + selectedTableName + "]");
+                        } catch (java.lang.NullPointerException e_mapurl) {
+                            GPLog.error(this, "MapsDirManager setMapGenerator[" + selectedTileSourceType + "] selected_map["
+                                    + selectedTableName + "]", e_mapurl);
+                        }
+                    }
+                    break;
+                    default:
+                        break;
+                }
+            } catch (jsqlite.Exception e) {
+                selectedMapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
+                mapView.setMapGenerator(selectedMapGenerator);
+                GPLog.error(this, "ERROR", e);
+            }
+        }
+    }
+
+    /**
+     * Clear MapView TileCache.
+     *
+     * @param mapView the {@link MapView}.
+     */
+    private static void clearTileCache(MapView mapView) {
+        if (mapView != null) {
+            mapView.getInMemoryTileCache().destroy();
+            if (mapView.getFileSystemTileCache().isPersistent()) {
+                mapView.getFileSystemTileCache().setPersistent(false);
+            }
+            mapView.getFileSystemTileCache().destroy();
+        }
+    }
 
 }

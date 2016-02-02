@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.activities;
+package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -41,12 +41,11 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.core.ISimpleChangeListener;
+import eu.hydrologis.geopaparazzi.utilities.ISimpleChangeListener;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
 import eu.hydrologis.geopaparazzi.database.objects.Metadata;
-import eu.hydrologis.geopaparazzi.dialogs.AddMetadataDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.AddMetadataDialogFragment;
 
 /**
  * Activity for viewing project metadata.

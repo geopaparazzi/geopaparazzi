@@ -16,12 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.core;
+package eu.hydrologis.geopaparazzi.utilities;
 
 /**
- * Created by hydrologis on 14/01/16.
+ * A simple interface that lets implement listening to app changes.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IApplicationChangeListener {
 
+    /**
+     * Called when the app needs to be restarted.
+     */
     void onApplicationNeedsRestart();
 }

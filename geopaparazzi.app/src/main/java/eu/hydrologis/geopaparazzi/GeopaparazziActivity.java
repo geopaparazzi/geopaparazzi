@@ -18,8 +18,8 @@ import android.view.KeyEvent;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
-import eu.hydrologis.geopaparazzi.fragments.GeopaparazziActivityFragment;
+import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
 

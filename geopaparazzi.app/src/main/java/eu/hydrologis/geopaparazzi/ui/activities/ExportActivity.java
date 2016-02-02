@@ -15,16 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.activities;
+package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,37 +36,26 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.kml.KmlRepresenter;
-import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
-import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
-import eu.hydrologis.geopaparazzi.database.objects.Line;
-import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
-import eu.hydrologis.geopaparazzi.database.objects.Note;
-import eu.hydrologis.geopaparazzi.dialogs.GpxExportDialogFragment;
-import eu.hydrologis.geopaparazzi.dialogs.KmzExportDialogFragment;
-import eu.hydrologis.geopaparazzi.dialogs.StageExportDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.GpxExportDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.KmzExportDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.StageExportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**

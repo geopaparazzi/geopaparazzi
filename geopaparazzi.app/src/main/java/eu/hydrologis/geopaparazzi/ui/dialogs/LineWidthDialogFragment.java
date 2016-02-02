@@ -1,6 +1,5 @@
-package eu.hydrologis.geopaparazzi.dialogs;
+package eu.hydrologis.geopaparazzi.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

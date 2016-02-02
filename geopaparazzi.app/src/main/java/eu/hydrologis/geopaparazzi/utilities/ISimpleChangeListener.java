@@ -16,12 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.core;
+package eu.hydrologis.geopaparazzi.utilities;
 
 /**
- * Created by hydrologis on 15/01/16.
+ * A simple interface to use to notify changes.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface ISimpleChangeListener {
 
+    /**
+     * Called when there is the need to notify that a generic change occurred.
+     */
     void changOccurred();
 }

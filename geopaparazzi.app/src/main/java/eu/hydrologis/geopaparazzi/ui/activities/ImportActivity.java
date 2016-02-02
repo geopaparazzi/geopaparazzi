@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.activities;
+package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,7 +31,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,13 +52,12 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.activities.tantomapurls.TantoMapurlsActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.tantomapurls.TantoMapurlsActivity;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
-import eu.hydrologis.geopaparazzi.dialogs.GpxImportDialogFragment;
+import eu.hydrologis.geopaparazzi.ui.dialogs.GpxImportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**

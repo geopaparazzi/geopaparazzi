@@ -72,7 +72,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".ui.activities.SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -81,7 +81,7 @@
                 android:value=".GeopaparazziActivity" />
         </activity>
         <activity
-            android:name=".activities.AboutActivity"
+            android:name=".ui.activities.AboutActivity"
             android:label="@string/about"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -99,7 +99,7 @@
                 android:value=".GeopaparazziActivity" />
         </activity>
         <activity
-            android:name=".activities.PanicActivity"
+            android:name=".ui.activities.PanicActivity"
             android:label="@string/panic"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -108,7 +108,7 @@
                 android:value=".GeopaparazziActivity" />>
         </activity>
         <activity
-            android:name=".activities.ProjectMetadataActivity"
+            android:name=".ui.activities.ProjectMetadataActivity"
             android:label="@string/project_info"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -118,7 +118,7 @@
         </activity>
 
         <activity
-            android:name=".activities.AdvancedSettingsActivity"
+            android:name=".ui.activities.AdvancedSettingsActivity"
             android:label="@string/action_advanced_settings"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -128,13 +128,13 @@
         </activity>
 
         <activity
-            android:name=".activities.SqlViewActivity"
+            android:name=".ui.activities.SqlViewActivity"
             android:label="@string/sqlview"
-            android:parentActivityName=".activities.AdvancedSettingsActivity"
+            android:parentActivityName=".ui.activities.AdvancedSettingsActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.AdvancedSettingsActivity" />
+                android:value=".ui.activities.AdvancedSettingsActivity" />
         </activity>
 
         <activity android:name="eu.geopaparazzi.library.core.activities.LogAnalysisActivity" />
@@ -142,11 +142,11 @@
         <activity
             android:name="eu.geopaparazzi.library.core.activities.DatabaseListActivity"
             android:label="@string/query_results"
-            android:parentActivityName=".activities.SqlViewActivity"
+            android:parentActivityName=".ui.activities.SqlViewActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.ExportActivity"
+            android:name=".ui.activities.ExportActivity"
             android:label="@string/export_uc"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -156,7 +156,7 @@
         </activity>
 
         <activity
-            android:name=".activities.ImportActivity"
+            android:name=".ui.activities.ImportActivity"
             android:label="@string/import_uc"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -166,10 +166,10 @@
         </activity>
 
         <activity
-            android:name=".activities.tantomapurls.TantoMapurlsActivity"
+            android:name=".ui.activities.tantomapurls.TantoMapurlsActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
         <activity
-            android:name=".activities.tantomapurls.TantoMapurlsListActivity"
+            android:name=".ui.activities.tantomapurls.TantoMapurlsListActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity

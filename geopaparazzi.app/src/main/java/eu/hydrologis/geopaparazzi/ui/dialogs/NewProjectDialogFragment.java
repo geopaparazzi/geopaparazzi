@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.dialogs;
+package eu.hydrologis.geopaparazzi.ui.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -41,7 +41,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
+import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**

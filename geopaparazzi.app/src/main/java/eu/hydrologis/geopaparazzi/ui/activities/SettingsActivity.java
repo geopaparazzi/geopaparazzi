@@ -1,6 +1,6 @@
 // SettingsActivity.java
 // Activity to display SettingsActivityFragment on a phone
-package eu.hydrologis.geopaparazzi.activities;
+package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

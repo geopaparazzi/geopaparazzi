@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.dialogs;
+package eu.hydrologis.geopaparazzi.ui.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,23 +28,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.Date;
-
-import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.core.IApplicationChangeListener;
-import eu.hydrologis.geopaparazzi.core.ISimpleChangeListener;
+import eu.hydrologis.geopaparazzi.utilities.ISimpleChangeListener;
 import eu.hydrologis.geopaparazzi.database.DaoMetadata;
-import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 /**
  * New project creation dialog.

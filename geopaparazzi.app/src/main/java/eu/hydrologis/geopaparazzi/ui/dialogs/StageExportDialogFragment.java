@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.hydrologis.geopaparazzi.dialogs;
+package eu.hydrologis.geopaparazzi.ui.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,31 +29,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.kml.KmlRepresenter;
-import eu.geopaparazzi.library.kml.KmzExport;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
-import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.database.DaoImages;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
-import eu.hydrologis.geopaparazzi.database.objects.Line;
-import eu.hydrologis.geopaparazzi.database.objects.LogMapItem;
-import eu.hydrologis.geopaparazzi.database.objects.Note;
 
 
 /**
