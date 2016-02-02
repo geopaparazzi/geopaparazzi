@@ -49,6 +49,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Abstrac
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 import jsqlite.Exception;
 
 /**
@@ -88,13 +89,17 @@ public class BaseMapSourcesManager {
             mMapnikFile = new File(applicationSupporterDir, DefaultMapurls.Mapurls.mapnik.toString() + DefaultMapurls.MAPURL_EXTENSION);
             DefaultMapurls.checkAllSourcesExistence(gpApplication, applicationSupporterDir);
 
-//            boolean doSpatialiteRecoveryMode = mPreferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE,
-//                    false);
-//            // doSpatialiteRecoveryMode=true;
-//            if (doSpatialiteRecoveryMode) {
-            // Turn on Spatialite Recovery Modus
-            SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
-//            }
+            boolean doSpatialiteRecoveryMode = mPreferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE,
+                    false);
+            // doSpatialiteRecoveryMode=true;
+            if (doSpatialiteRecoveryMode) {
+                // Turn on Spatialite Recovery Modus
+                SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
+                // and reset it in the preferences
+                Editor editor = mPreferences.edit();
+                editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
+                editor.apply();
+            }
             selectedTileSourceType = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
             selectedTableName = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
             selectedTableTitle = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, ""); //$NON-NLS-1$
@@ -173,7 +178,7 @@ public class BaseMapSourcesManager {
         return baseMaps;
     }
 
-    private void saveBaseMapsToPreferences(List<BaseMap> baseMaps) throws JSONException {
+    public void saveBaseMapsToPreferences(List<BaseMap> baseMaps) throws JSONException {
         String baseMapJson = BaseMap.toJsonString(baseMaps);
         Editor editor = mPreferences.edit();
         editor.putString(BaseMap.BASEMAPS_PREF_KEY, baseMapJson);

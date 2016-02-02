@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,10 +73,23 @@ public class BaseMap {
             map.databasePath = jsonObject.getString(DATABASE_PATH);
             map.mapType = jsonObject.getString(MAP_TYPE);
             map.title = jsonObject.getString(TITLE);
-            maps.add(map);
-        }
 
+            File databaseFile = new File(map.databasePath);
+            if (databaseFile.exists()) {
+                maps.add(map);
+            }
+        }
         return maps;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseMap{" +
+                "title='" + title + '\'' +
+                ", mapType='" + mapType + '\'' +
+                ", databasePath='" + databasePath + '\'' +
+                ", parentFolder='" + parentFolder + '\'' +
+                '}';
     }
 
     @Override

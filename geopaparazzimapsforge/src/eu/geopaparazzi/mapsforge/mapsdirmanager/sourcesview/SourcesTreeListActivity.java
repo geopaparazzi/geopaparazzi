@@ -76,7 +76,6 @@ public class SourcesTreeListActivity extends AppCompatActivity {
     private String mTextToFilter = "";
     private SharedPreferences mPreferences;
     private boolean[] mCheckedValues;
-    private boolean mHasRL2;
     private List<String> mTypeNames;
     private final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
 
@@ -96,8 +95,6 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         mFilterText = (EditText) findViewById(R.id.search_box);
         mFilterText.addTextChangedListener(filterTextWatcher);
 
-        mHasRL2 = SPL_Rasterlite.hasRasterLiteSupport();
-
         boolean showMaps = mPreferences.getBoolean(SHOW_MAPS, true);
         boolean showMapurls = mPreferences.getBoolean(SHOW_MAPURLS, true);
         boolean showMbtiles = mPreferences.getBoolean(SHOW_MBTILES, true);
@@ -106,22 +103,17 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         String mapTypeName = SpatialDataType.MAP.getTypeName();
         String mapurlTypeName = SpatialDataType.MAPURL.getTypeName();
         String mbtilesTypeName = SpatialDataType.MBTILES.getTypeName();
+        String rasterLiteTypeName = SpatialDataType.RASTERLITE2.getTypeName();
         mTypeNames = new ArrayList<>();
         mTypeNames.add(mapTypeName);
         mTypeNames.add(mapurlTypeName);
         mTypeNames.add(mbtilesTypeName);
-        if (mHasRL2) {
-            String rasterLiteTypeName = SpatialDataType.RASTERLITE2.getTypeName();
-            mTypeNames.add(rasterLiteTypeName);
-        } else {
-            showRasterLite2 = false;
-        }
+        mTypeNames.add(rasterLiteTypeName);
         mCheckedValues = new boolean[mTypeNames.size()];
         mCheckedValues[0] = showMaps;
         mCheckedValues[1] = showMapurls;
         mCheckedValues[2] = showMbtiles;
-        if (mHasRL2)
-            mCheckedValues[3] = showRasterLite2;
+        mCheckedValues[3] = showRasterLite2;
 
         // get the listview
         mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
@@ -243,9 +235,16 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         editor.putBoolean(SHOW_MAPS, mCheckedValues[0]);
         editor.putBoolean(SHOW_MAPURLS, mCheckedValues[1]);
         editor.putBoolean(SHOW_MBTILES, mCheckedValues[2]);
-        if (mHasRL2)
-            editor.putBoolean(SHOW_RASTER_LITE_2, mCheckedValues[3]);
+        editor.putBoolean(SHOW_RASTER_LITE_2, mCheckedValues[3]);
         editor.apply();
+
+        boolean log = GPLog.LOG;
+        if (log) {
+            GPLog.addLogEntry(this, "Available baseMaps:");
+            for (BaseMap basemap : baseMaps) {
+                GPLog.addLogEntry(this, basemap.toString());
+            }
+        }
 
         newMap.clear();
         for (BaseMap baseMap : baseMaps) {
@@ -264,8 +263,11 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                 doAdd = true;
             } else if (mCheckedValues[2] && mapType.equals(SpatialDataType.MBTILES.getTypeName())) {
                 doAdd = true;
-            } else if (mHasRL2 && mCheckedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+            } else if (mCheckedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                 doAdd = true;
+            }
+            if (log) {
+                GPLog.addLogEntry(this, "doAdd: " + doAdd + " baseMap: " + baseMap);
             }
 
             if (mTextToFilter.length() > 0) {
@@ -279,9 +281,12 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (doAdd)
+            if (doAdd) {
                 newValues.add(baseMap);
-
+                if (log) {
+                    GPLog.addLogEntry(this, "Added: " + baseMap.toString());
+                }
+            }
             if (newValues.size() == 0) {
                 newMap.remove(key);
             }
