@@ -129,7 +129,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
             List<BaseMap> baseMaps;
 
             protected String doBackgroundWork() {
-                baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
+                baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                 return "";
             }
 
@@ -180,8 +180,8 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                                 protected String doBackgroundWork() {
                                     try {
                                         // add basemap to list and in mPreferences
-                                        BaseMapSourcesManager.getInstance().addBaseMapFromFile(file);
-                                        baseMaps = BaseMapSourcesManager.getInstance().getBaseMaps();
+                                        BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(file);
+                                        baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);
                                         return "ERROR: " + e.getLocalizedMessage();
@@ -311,7 +311,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                     index++;
                 }
                 try {
-                    BaseMapSourcesManager.getInstance().setSelectedBaseMap(selectedBaseMap);
+                    BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(selectedBaseMap);
                 } catch (jsqlite.Exception e) {
                     GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
                 }
@@ -338,7 +338,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     try {
-                                        BaseMapSourcesManager.getInstance().removeBaseMap(baseMap);
+                                        BaseMapSourcesManager.INSTANCE.removeBaseMap(baseMap);
                                     } catch (JSONException e) {
                                         GPLog.error(this, null, e);
                                     }
@@ -347,7 +347,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             try {
-                                                refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
+                                                refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
                                             } catch (Exception e) {
                                                 GPLog.error(this, null, e);
                                             }
@@ -387,7 +387,7 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mTextToFilter = s.toString();
             try {
-                refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
+                refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
             } catch (Exception e) {
                 GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
             }

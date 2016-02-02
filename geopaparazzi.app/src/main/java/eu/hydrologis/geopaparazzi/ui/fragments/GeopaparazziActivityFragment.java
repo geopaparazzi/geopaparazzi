@@ -54,9 +54,11 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AdvancedSettingsActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.ExportActivity;
@@ -123,6 +125,14 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // start gps service
         GpsServiceUtilities.startGpsService(getActivity());
 
+
+        // start map reading in background
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BaseMapSourcesManager.INSTANCE.getBaseMaps();
+            }
+        }).start();
         return v; // return the fragment's view for display
     }
 
@@ -353,8 +363,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (v == mMapviewButton) {
-            ColorDialogFragment colorDialog = new ColorDialogFragment();
-            colorDialog.show(getFragmentManager(), "color dialog");
+            Intent importIntent = new Intent(getActivity(), MapviewActivity.class);
+            startActivity(importIntent);
         } else if (v == mGpslogButton) {
             handleGpsLogAction();
         } else if (v == mImportButton) {

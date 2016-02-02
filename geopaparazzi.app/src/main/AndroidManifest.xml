@@ -183,6 +183,10 @@
         </activity>
 
         <activity
+            android:name=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar" />
+
+        <activity
             android:name=".maptools.FeaturePagerActivity"
             android:label="Features"
             android:parentActivityName=".mapview.MapviewActivity"

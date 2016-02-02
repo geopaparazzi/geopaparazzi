@@ -56,7 +56,7 @@ public class MapTypesChoiceDialog {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
                 try {
-                    sourcesTreeListActivity.refreshData(BaseMapSourcesManager.getInstance().getBaseMaps());
+                    sourcesTreeListActivity.refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }

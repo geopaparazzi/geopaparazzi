@@ -42,6 +42,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -86,6 +87,7 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -105,38 +107,27 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.activities.GeocodeActivity;
-import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
-import eu.hydrologis.geopaparazzi.maps.mapsforge.ImportMapsforgeActivity;
-import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.maptools.MapTool;
-import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
-import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
-import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
-import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
-import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -194,7 +185,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
-    private Button centerOnGps;
+    private ImageButton centerOnGps;
     private Button batteryButton;
     private BroadcastReceiver mapsSupportBroadcastReceiver;
     private TextView coordView;
@@ -244,7 +235,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // CENTER CROSS
         setCenterCross();
 
-        Button menuButton = (Button) findViewById(R.id.menu_map_btn);
+        FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menu_map_button);
         menuButton.setOnClickListener(this);
         menuButton.setOnLongClickListener(this);
         registerForContextMenu(menuButton);
@@ -277,8 +268,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // TileCache fileSystemTileCache = this.mMapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        MapsDirManager mapsDirManager = MapsDirManager.getInstance();
-        mapsDirManager.loadSelectedMap(mMapView, mapCenterLocation);
+        BaseMapSourcesManager.INSTANCE.loadSelectedBaseMap(mMapView);
 
         MapScaleBar mapScaleBar = this.mMapView.getMapScaleBar();
 
@@ -306,17 +296,17 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(mMapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        Button zoomInButton = (Button) findViewById(R.id.zoomin);
+        ImageButton zoomInButton = (ImageButton) findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(this);
 
         zoomLevelText = (TextView) findViewById(R.id.zoomlevel);
 
-        Button zoomOutButton = (Button) findViewById(R.id.zoomout);
+        ImageButton zoomOutButton = (ImageButton) findViewById(R.id.zoomout);
         zoomOutButton.setOnClickListener(this);
 
         batteryButton = (Button) findViewById(R.id.battery);
 
-        centerOnGps = (Button) findViewById(R.id.center_on_gps_btn);
+        centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
 
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
@@ -333,7 +323,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final ImageButton toggleLogInfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
 
-        final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+        final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
 
@@ -546,9 +536,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     runOnUiThread(new Runnable() {
                         public void run() {
                             int zoom = mMapView.getMapPosition().getZoomLevel();
-                            zoom = setCurrentZoom(zoom);
-                            setGuiZoomText(zoom);
-                            saveCenterPref();
+                            setZoom(zoom);
                         }
                     });
                 }
@@ -563,35 +551,28 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (hasFocus) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-            MapsDirManager.getInstance().setMapViewCenter(mMapView, lastCenter, MapsDirManager.ZOOMTYPE.DEFAULT);
-            int currentZoomLevel = getCurrentZoomLevel();
-            setGuiZoomText(currentZoomLevel);
-
+            if (lastCenter != null)
+                setNewCenterAtZoom(lastCenter[0], lastCenter[1], (int) lastCenter[2]);
 //            readData(); // TODO make sure this is not needed (moved to onResume)
-            saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
     }
 
     /**
-     * Return current Zoom [from MapsDirManager].
+     * Return current Zoom.
      *
      * @return integer current zoom level.
      */
-    private static int getCurrentZoomLevel() {
-        return MapsDirManager.getInstance().getCurrentZoom();
+    private int getZoom() {
+        MapViewPosition mapPosition = mMapView.getMapPosition();
+        byte zoom = mapPosition.getZoomLevel();
+        return zoom;
     }
 
-    /**
-     * Set current Zoom level in gui and MapsDirManager.
-     * <p/>
-     * <p>checking is done to insure that the new Zoom is
-     * inside the supported min/max Zoom-levels
-     * <p>the present value will be retained if invalid
-     */
-    private static int setCurrentZoom(int newZoom) {
-        newZoom = MapsDirManager.getInstance().setCurrentZoom(newZoom);
-        return newZoom;
+    public void setZoom(int zoom) {
+        mMapView.getController().setZoom(zoom);
+        setGuiZoomText(zoom);
+        saveCenterPref();
     }
 
     private void setGuiZoomText(int newZoom) {
@@ -599,46 +580,31 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     /**
-     * set MapView Center point [in MapsDirManager]
-     * <p/>
-     * - this should be the only function used to compleate this task
-     * -- error logic has been build in use value incase the function was incorrectly called
-     * <p>if (mapCenterLocation == null)
-     * <p>- the default Center of the loaded map will be taken
-     * <p>-  if (i_default_zoom == 1)
-     * <p>-- the default Zoom of the loaded map will be taken
-     * <p>-  if (i_default_zoom == 2)
-     * <p>-- the getMinZoom() of the loaded map will be taken
-     *
-     * @param lon center lon
-     * @param lat center lat
+     * @return the center [lon, lat]
      */
+    public double[] getCenterLonLat() {
+        MapViewPosition mapPosition = mMapView.getMapPosition();
+        GeoPoint mapCenter = mapPosition.getMapCenter();
+        double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
+        double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+//        zoom = mapPosition.getZoomLevel();
+        return new double[]{lon, lat};
+    }
+
+    public void setNewCenterAtZoom(double lon, double lat, int zoom) {
+        GeoPoint geoPoint = new GeoPoint(lat, lon);
+        mMapView.getController().setZoom(zoom);
+        mMapView.getController().setCenter(geoPoint);
+        setGuiZoomText(zoom);
+        saveCenterPref(lon, lat, zoom);
+    }
+
     public void setNewCenter(double lon, double lat) {
-        double[] mapCenterLocation = new double[]{lon, lat, (double) getCurrentZoomLevel()};
-        MapsDirManager.getInstance().setMapViewCenter(mMapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
+        GeoPoint geoPoint = new GeoPoint(lat, lon);
+        mMapView.getController().setCenter(geoPoint);
         saveCenterPref();
     }
 
-    /**
-     * Set new center.
-     *
-     * @param lon  center lon
-     * @param lat  center lat
-     * @param zoom the zoom level to set.
-     */
-    public void setNewCenterAtZoom(double lon, double lat, int zoom) {
-        zoom = setCurrentZoom(zoom);
-        double[] mapCenterLocation = new double[]{lon, lat, (double) zoom};
-        MapsDirManager.getInstance().setMapViewCenter(mMapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
-        setGuiZoomText(zoom);
-    }
-
-    /**
-     * @return the center [lon, lat]
-     */
-    public static double[] getCenterLonLat() {
-        return MapsDirManager.getInstance().getMapCenter();
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -669,8 +635,9 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             // startMapsDirTreeViewList();
             // return true;
             case MENU_GPSDATA:
-                Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
-                startActivity(gpsDatalistIntent);
+                // FIXME
+//                Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
+//                startActivity(gpsDatalistIntent);
                 return true;
             case MENU_DATA:
                 Intent datalistIntent = new Intent(this, DataListActivity.class);
@@ -733,19 +700,23 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 }
             case MENU_LOADMAPSFORGE_VECTORS_ID: {
                 float[] mapWorldBounds = getMapWorldBounds();
-                int currentZoomLevel = getCurrentZoomLevel();
-                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
-                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
-                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
-                startActivity(mapsforgeIntent);
+                int currentZoomLevel = getZoom();
+                // FIXME
+//                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
+//                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
+//                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
+//                startActivity(mapsforgeIntent);
                 return true;
             }
             case MENU_GO_TO: {
                 return goTo();
             }
             case MENU_CENTER_ON_MAP: {
-                MapsDirManager.getInstance().setMapViewCenter(mMapView, null, MapsDirManager.ZOOMTYPE.DEFAULT);
-                saveCenterPref();
+                AbstractSpatialTable selectedBaseMapTable = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable();
+                double lon = selectedBaseMapTable.getCenterX();
+                double lat = selectedBaseMapTable.getCenterY();
+                int zoom = selectedBaseMapTable.getDefaultZoom();
+                setNewCenterAtZoom(lon, lat, zoom);
                 return true;
             }
             case MENU_CENTER_ON_GPS: {
@@ -769,14 +740,15 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
 
-                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                        if (selectedPosition == 0) {
-                            Intent intent = new Intent(MapviewActivity.this, InsertCoordActivity.class);
-                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-                        } else {
-                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
-                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-                        }
+                        // FIXME
+//                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+//                        if (selectedPosition == 0) {
+//                            Intent intent = new Intent(MapviewActivity.this, InsertCoordActivity.class);
+//                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+//                        } else {
+//                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
+//                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+//                        }
 
                     }
                 }).show();
@@ -1007,12 +979,26 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
     }
 
-    private synchronized void saveCenterPref() {
-        MapViewPosition mapPosition = mMapView.getMapPosition();
-        GeoPoint mapCenter = mapPosition.getMapCenter();
-        double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
-        double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
-        int zoomLevel = mapPosition.getZoomLevel();
+    /**
+     * Save the current mapview position to preferences.
+     *
+     * @param lonLatZoom optional position + zoom. If null, position is taken from the mapview.
+     */
+    private synchronized void saveCenterPref(double... lonLatZoom) {
+        double lon;
+        double lat;
+        int zoom;
+        if (lonLatZoom != null && lonLatZoom.length == 3) {
+            lon = lonLatZoom[0];
+            lat = lonLatZoom[1];
+            zoom = (int) lonLatZoom[1];
+        } else {
+            MapViewPosition mapPosition = mMapView.getMapPosition();
+            GeoPoint mapCenter = mapPosition.getMapCenter();
+            lon = mapCenter.longitudeE6 / LibraryConstants.E6;
+            lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+            zoom = mapPosition.getZoomLevel();
+        }
 
         if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
@@ -1023,7 +1009,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             GPLog.addLogEntry(this, sb.toString());
         }
 
-        PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoomLevel);
+        PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoom);
 
         EditManager.INSTANCE.invalidateEditingView();
     }
@@ -1160,19 +1146,21 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 startActivity(editableLayersIntent);
                 return true;
             case R.id.addnotebytagbutton:
-                Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
-                startActivityForResult(intent, ZOOM_RETURN_CODE);
+                // FIXME
+//                Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
+//                startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
             case R.id.addbookmarkbutton:
-                intent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
-                startActivityForResult(intent, ZOOM_RETURN_CODE);
+                // FIXME
+//                intent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
+//                startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
-            case R.id.menu_map_btn:
+            case R.id.menu_map_button:
                 boolean areButtonsVisible = mPeferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
                 setAllButtoonsEnablement(!areButtonsVisible);
                 Editor edit = mPeferences.edit();
                 edit.putBoolean(ARE_BUTTONSVISIBLE_OPEN, !areButtonsVisible);
-                edit.commit();
+                edit.apply();
                 return true;
             default:
                 break;
@@ -1185,31 +1173,25 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         ImageButton toggleMeasuremodeButton;
         ImageButton toggleLoginfoButton;
         switch (v.getId()) {
-            case R.id.menu_map_btn:
-                Button menuButton = (Button) findViewById(R.id.menu_map_btn);
+            case R.id.menu_map_button:
+                FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menu_map_button);
                 openContextMenu(menuButton);
                 break;
             case R.id.zoomin:
-                int currentZoom = getCurrentZoomLevel();
+                int currentZoom = getZoom();
                 int newZoom = currentZoom + 1;
-                newZoom = setCurrentZoom(newZoom);
-                setGuiZoomText(newZoom);
-                mMapView.getController().setZoom(newZoom);
+                setZoom(newZoom);
                 invalidateMap();
-                saveCenterPref();
                 Tool activeTool = EditManager.INSTANCE.getActiveTool();
                 if (activeTool instanceof MapTool) {
                     ((MapTool) activeTool).onViewChanged();
                 }
                 break;
             case R.id.zoomout:
-                currentZoom = getCurrentZoomLevel();
+                currentZoom = getZoom();
                 newZoom = currentZoom - 1;
-                newZoom = setCurrentZoom(newZoom);
-                setGuiZoomText(newZoom);
-                mMapView.getController().setZoom(newZoom);
+                setZoom(newZoom);
                 invalidateMap();
-                saveCenterPref();
                 Tool activeTool1 = EditManager.INSTANCE.getActiveTool();
                 if (activeTool1 instanceof MapTool) {
                     ((MapTool) activeTool1).onViewChanged();
@@ -1241,8 +1223,9 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                             }
                         }
                     }).start();
-                    Intent mapTagsIntent = new Intent(MapviewActivity.this, MapTagsActivity.class);
-                    startActivity(mapTagsIntent);
+                    // FIXME
+//                    Intent mapTagsIntent = new Intent(MapviewActivity.this, MapTagsActivity.class);
+//                    startActivity(mapTagsIntent);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                     GPDialogs.errorDialog(this, e, null);
@@ -1339,10 +1322,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
         ImageButton toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
         ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-        Button zoomInButton = (Button) findViewById(R.id.zoomin);
+        ImageButton zoomInButton = (ImageButton) findViewById(R.id.zoomin);
         TextView zoomLevelTextview = (TextView) findViewById(R.id.zoomlevel);
-        Button zoomOutButton = (Button) findViewById(R.id.zoomout);
-        Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+        ImageButton zoomOutButton = (ImageButton) findViewById(R.id.zoomout);
+        ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
 
         int visibility = View.VISIBLE;
         if (!enable) {

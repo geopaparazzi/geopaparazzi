@@ -64,7 +64,7 @@ public class PositionUtilities {
         editor.putFloat(PREFS_KEY_LON, longFloat);
         editor.putFloat(PREFS_KEY_LAT, latFloat);
         editor.putFloat(PREFS_KEY_ELEV, (float) elevation);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -120,7 +120,7 @@ public class PositionUtilities {
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
         editor.putFloat(PREFS_KEY_MAPCENTER_LAT, latFloat);
         editor.putFloat(PREFS_KEY_MAP_ZOOM, zoom);
-        editor.commit();
+        editor.apply();
     }
 
     /**

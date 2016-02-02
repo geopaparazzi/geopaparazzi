@@ -62,15 +62,14 @@ import jsqlite.Exception;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class BaseMapSourcesManager {
+public enum BaseMapSourcesManager {
+    INSTANCE;
 
     private SharedPreferences mPreferences;
     private List<BaseMap> mBaseMaps;
 
-    private static BaseMapSourcesManager baseMapSourcesManager = null;
-
     private String selectedTileSourceType = "";
-    private String selectedTableName = "";
+    private String selectedTableDatabasePath = "";
     private String selectedTableTitle = "";
     private AbstractSpatialTable selectedBaseMapTable = null;
 
@@ -80,7 +79,7 @@ public class BaseMapSourcesManager {
 
     private boolean mReReadBasemaps = true;
 
-    private BaseMapSourcesManager() {
+    BaseMapSourcesManager() {
 
         try {
             GPApplication gpApplication = GPApplication.getInstance();
@@ -106,20 +105,27 @@ public class BaseMapSourcesManager {
                 editor.apply();
             }
             selectedTileSourceType = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
-            selectedTableName = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+            selectedTableDatabasePath = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
             selectedTableTitle = mPreferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, ""); //$NON-NLS-1$
 
-            if (selectedTableName.length() == 0) {
+            List<BaseMap> baseMaps = getBaseMaps();
+            if (selectedTableDatabasePath.length() == 0 || !new File(selectedTableDatabasePath).exists()) {
                 // select mapnik by default
-                List<BaseMap> baseMaps = getBaseMaps();
                 for (BaseMap baseMap : baseMaps) {
                     if (baseMap.databasePath.equals(mMapnikFile.getAbsolutePath())) {
-                        selectedTableName = baseMap.databasePath;
+                        selectedTableDatabasePath = baseMap.databasePath;
                         selectedTableTitle = baseMap.title;
                         selectedTileSourceType = baseMap.mapType;
 
-                        // TODO check if we need the table itself also
-                        setTileSource(selectedTileSourceType, selectedTableName, selectedTableTitle);
+                        setTileSource(selectedTileSourceType, selectedTableDatabasePath, selectedTableTitle);
+                        selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
+                        break;
+                    }
+                }
+            } else {
+                for (BaseMap baseMap : baseMaps) {
+                    if (baseMap.databasePath.equals(selectedTableDatabasePath)) {
+                        selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
                         break;
                     }
                 }
@@ -129,13 +135,6 @@ public class BaseMapSourcesManager {
             GPLog.error(this, null, e);
         }
 
-    }
-
-    public static BaseMapSourcesManager getInstance() {
-        if (baseMapSourcesManager == null) {
-            baseMapSourcesManager = new BaseMapSourcesManager();
-        }
-        return baseMapSourcesManager;
     }
 
     /**
@@ -173,7 +172,7 @@ public class BaseMapSourcesManager {
 
         // TODO this is ugly right now, needs to be changed
         for (BaseMap baseMap : baseMaps) {
-            List<AbstractSpatialTable> tables = collectTables(new File(baseMap.databasePath));
+            List<AbstractSpatialTable> tables = collectTablesFromFile(new File(baseMap.databasePath));
             for (AbstractSpatialTable table : tables) {
                 BaseMap tmpBaseMap = table2BaseMap(table);
                 if (!mBaseMaps2TablesMap.containsKey(tmpBaseMap))
@@ -195,7 +194,7 @@ public class BaseMapSourcesManager {
         try {
             if (mBaseMaps == null) mBaseMaps = new ArrayList<>();
 
-            List<AbstractSpatialTable> collectedTables = collectTables(file);
+            List<AbstractSpatialTable> collectedTables = collectTablesFromFile(file);
             if (collectedTables.size() > 0) foundBaseMap = true;
             saveToBaseMap(collectedTables);
         } catch (java.lang.Exception e) {
@@ -211,7 +210,7 @@ public class BaseMapSourcesManager {
     }
 
     @NonNull
-    private List<AbstractSpatialTable> collectTables(File file) throws IOException, Exception {
+    private List<AbstractSpatialTable> collectTablesFromFile(File file) throws IOException, Exception {
         List<AbstractSpatialTable> collectedTables = new ArrayList<>();
             /*
              * add MAPURL TABLES
@@ -289,12 +288,12 @@ public class BaseMapSourcesManager {
      */
     public void setSelectedBaseMap(BaseMap baseMap) throws Exception {
         selectedTileSourceType = baseMap.mapType;
-        selectedTableName = baseMap.databasePath;
+        selectedTableDatabasePath = baseMap.databasePath;
         selectedTableTitle = baseMap.title;
 
         selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
 
-        setTileSource(selectedTileSourceType, selectedTableName, selectedTableTitle);
+        setTileSource(selectedTileSourceType, selectedTableDatabasePath, selectedTableTitle);
     }
 
     /**
@@ -311,15 +310,14 @@ public class BaseMapSourcesManager {
 
     /**
      * Load the currently selected BaseMap.
-     *
+     * <p/>
      * <p>This method should be called from within the activity defining the
      * {@link MapView}.
      * <p/>
      *
-     * @param mapView           Map-View to set.
-     * @param mapCenterLocation [point/zoom to check].
+     * @param mapView Map-View to set.
      */
-    public void loadSelectedBaseMap(MapView mapView, double[] mapCenterLocation) {
+    public void loadSelectedBaseMap(MapView mapView) {
         AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
         if (selectedSpatialTable != null) {
             int selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
@@ -398,10 +396,10 @@ public class BaseMapSourcesManager {
                             mapView.setMapGenerator(selectedMapGenerator);
                             if (GPLog.LOG_HEAVY)
                                 GPLog.addLogEntry(this, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
-                                        + "] selected_map[" + selectedTableName + "]");
+                                        + "] selected_map[" + selectedTableDatabasePath + "]");
                         } catch (java.lang.NullPointerException e_mapurl) {
                             GPLog.error(this, "MapsDirManager setMapGenerator[" + selectedTileSourceType + "] selected_map["
-                                    + selectedTableName + "]", e_mapurl);
+                                    + selectedTableDatabasePath + "]", e_mapurl);
                         }
                     }
                     break;
