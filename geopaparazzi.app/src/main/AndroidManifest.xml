@@ -216,6 +216,16 @@
                 android:value=".ui.activities.GpsDataListActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.activities.GpsLogPropertiesActivity"
+            android:label="Gps Log Properties"
+            android:parentActivityName=".ui.activities.GpsDataListActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.GpsDataListActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

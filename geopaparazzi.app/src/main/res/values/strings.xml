@@ -35,6 +35,7 @@
     <string name="mainmenu_preferences">Settings</string>
     <string name="mainmenu_merge">merge selected logs</string>
     <string name="gpslogproperty">Properties for: </string>
+    <string name="gpslog_name">Log name</string>
     <string name="gpslog_chart">Chart</string>
     <string name="gpslog_zoom">zoom to</string>
     <string name="gpslog_delete">Delete</string>
@@ -177,8 +178,8 @@
     <string name="distance">Distance: </string>
     <string name="imported_notes_and_bookmarks">Imported {0} notes and {1} bookmarks.</string>
     <string name="could_not_open_sms">Could not open the passed sms data URI.</string>
-    <string name="start_">Start: </string>
-    <string name="end_">End: </string>
+    <string name="start_">Start:</string>
+    <string name="end_">End:</string>
     <string name="map_textsize_factor">Map textsize factor</string>
     <string name="keep_screen_on">Keep the screen on</string>
     <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view</string>

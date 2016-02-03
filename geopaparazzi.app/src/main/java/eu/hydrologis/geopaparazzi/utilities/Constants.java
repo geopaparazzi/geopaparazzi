@@ -26,6 +26,8 @@ package eu.hydrologis.geopaparazzi.utilities;
 public interface Constants {
     String GEOPAPARAZZI = "geopaparazzi";
 
+    String ID = "ID";
+
     String PANICKEY = "panic_number";
 
     String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
@@ -41,6 +43,8 @@ public interface Constants {
     String PREFS_KEY_IMAGES_VISIBLE = "PREFS_KEY_IMAGES_VISIBLE";
 
     String PREFS_KEY_NOTES_VISIBLE = "PREFS_KEY_NOTES_VISIBLE";
+
+    String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
 
     /*
      * notes text properties

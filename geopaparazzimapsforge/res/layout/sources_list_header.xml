@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:src="@drawable/ic_folder_24dp"/>
+        android:src="@drawable/ic_folder_primary_24dp"/>
 
     <TextView
         android:id="@+id/sources_header_descriptiontext"

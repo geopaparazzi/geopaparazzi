@@ -18,10 +18,12 @@
 package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -41,7 +43,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -257,7 +258,8 @@ public class GpsDataListActivity extends AppCompatActivity implements
             class ViewHolder {
                 TextView nameView;
                 CheckBox visibleView;
-                LinearLayout colorView;
+                Button colorView;
+                Button propertiesButton;
             }
 
             @Override
@@ -268,11 +270,12 @@ public class GpsDataListActivity extends AppCompatActivity implements
                 View rowView = cView;
                 if (rowView == null) {
                     LayoutInflater inflater = GpsDataListActivity.this.getLayoutInflater();
-                    rowView = inflater.inflate(R.layout.activity_gpsdatalist_row, null, true);
+                    rowView = inflater.inflate(R.layout.activity_gpsdatalist_row, parent, false);
                     holder = new ViewHolder();
                     holder.nameView = (TextView) rowView.findViewById(R.id.filename);
                     holder.visibleView = (CheckBox) rowView.findViewById(R.id.visible);
-                    holder.colorView = (LinearLayout) rowView.findViewById(R.id.colorLayout);
+                    holder.colorView = (Button) rowView.findViewById(R.id.colorButton);
+                    holder.propertiesButton = (Button) rowView.findViewById(R.id.propertiesButton);
                     rowView.setTag(holder);
                 } else {
                     holder = (ViewHolder) rowView.getTag();
@@ -280,7 +283,14 @@ public class GpsDataListActivity extends AppCompatActivity implements
 
 
                 final MapItem item = gpslogItems[position];
-                holder.colorView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
+
+                Drawable background = holder.colorView.getBackground();
+                if (background instanceof GradientDrawable) {
+                    int color = ColorUtilities.toColor(item.getColor());
+                    GradientDrawable gd = (GradientDrawable) background;
+                    gd.setStroke(1, Color.BLACK);
+                    gd.setColor(color);
+                }
                 holder.nameView.setText(item.getName());
 
                 holder.visibleView.setChecked(item.isVisible());
@@ -290,13 +300,12 @@ public class GpsDataListActivity extends AppCompatActivity implements
                         item.setDirty(true);
                     }
                 });
-                holder.visibleView.setOnClickListener(new View.OnClickListener() {
+                holder.propertiesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO
-//                        Intent intent = new Intent(this, GpsDataPropertiesActivity.class);
-//                        intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
-//                        startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
+                        Intent intent = new Intent(GpsDataListActivity.this, GpsLogPropertiesActivity.class);
+                        intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
+                        startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
                     }
                 });
 

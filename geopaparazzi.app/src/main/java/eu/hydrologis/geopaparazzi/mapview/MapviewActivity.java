@@ -87,7 +87,6 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -406,7 +405,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             notesShapeDrawable.setIntrinsicWidth(noteSize);
             notesDrawable = notesShapeDrawable;
         } else {
-            notesDrawable = getDrawable(R.drawable.ic_place_24dp);
+            notesDrawable = getDrawable(R.drawable.ic_place_accent_24dp);
         }
 
         mDataOverlay = new ArrayGeopaparazziOverlay(this);
@@ -471,7 +470,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             /* images */
             if (imagesVisible) {
-                Drawable imageMarker = getDrawable(R.drawable.ic_image_24dp);
+                Drawable imageMarker = getDrawable(R.drawable.ic_image_accent_24dp);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 mDataOverlay.addItems(imagesOverlaysList);
@@ -485,7 +484,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
 
             /* bookmarks */
-            Drawable bookmarkMarker = getDrawable(R.drawable.ic_star_24dp);
+            Drawable bookmarkMarker = getDrawable(R.drawable.ic_star_accent_24dp);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);

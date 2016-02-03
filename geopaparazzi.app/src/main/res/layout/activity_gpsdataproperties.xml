@@ -1,0 +1,178 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.GpsLogPropertiesActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/GeopapTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/main_background"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <RelativeLayout
+                android:id="@+id/row_container"
+                android:layout_width="fill_parent"
+                android:layout_height="480dp"
+                android:background="@color/main_background"
+                android:padding="5dp">
+
+                <View
+                    android:id="@+id/strut"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_centerHorizontal="true" />
+
+                <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/gpslognameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="fill_horizontal"
+                    android:paddingBottom="15dp">
+
+                    <EditText
+                        android:id="@+id/gpslogname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:hint="@string/gpslog_name"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:text="" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <TextView
+                    android:id="@+id/starttime_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/gpslognameLayout"
+                    android:padding="5dp"
+                    android:text="@string/start_"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/main_text_color" />
+
+                <TextView
+                    android:id="@+id/endtime_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/starttime_label"
+                    android:padding="5dp"
+                    android:text="@string/end_"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/main_text_color" />
+
+                <TextView
+                    android:id="@+id/trackLength_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/endtime_label"
+                    android:padding="5dp"
+                    android:text="@string/track_length"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/main_text_color" />
+
+                <TableLayout
+                    android:id="@+id/optionsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_below="@+id/gpslog_refreshLogLength"
+                    android:orientation="vertical">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/gpslog_palette"
+                            android:layout_width="@dimen/min_touch_size"
+                            android:layout_height="@dimen/min_touch_size"
+                            android:layout_column="0"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_palette_primary_24dp" />
+
+                        <Button
+                            android:id="@+id/gpslog_zoom_start"
+                            android:layout_width="@dimen/min_touch_size"
+                            android:layout_height="@dimen/min_touch_size"
+                            android:layout_column="0"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_start_primary_24dp" />
+
+                        <Button
+                            android:id="@+id/gpslog_zoom_end"
+                            android:layout_width="@dimen/min_touch_size"
+                            android:layout_height="@dimen/min_touch_size"
+                            android:layout_column="0"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_stop_primary_24dp" />
+
+                        <Button
+                            android:id="@+id/gpslog_chart"
+                            android:layout_width="@dimen/min_touch_size"
+                            android:layout_height="@dimen/min_touch_size"
+                            android:layout_column="0"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_chart_primary_24dp" />
+
+                        <Button
+                            android:id="@+id/gpslog_delete"
+                            android:layout_width="@dimen/min_touch_size"
+                            android:layout_height="@dimen/min_touch_size"
+                            android:layout_column="0"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_delete_primary_24dp" />
+
+                    </TableRow>
+                </TableLayout>
+
+
+                <ImageButton
+                    android:id="@+id/gpslog_refreshLogLength"
+                    android:layout_width="@dimen/min_touch_size"
+                    android:layout_height="@dimen/min_touch_size"
+                    android:layout_alignBottom="@+id/trackLength_label"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/ic_refresh_24dp"
+                    android:padding="@dimen/button_indent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/main_text_color" />
+
+            </RelativeLayout>
+
+        </ScrollView>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
