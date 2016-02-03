@@ -33,6 +33,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +43,9 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 // class for the Select Line Width dialog
 public class ColorStrokeDialogFragment extends DialogFragment {
@@ -163,89 +167,66 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
 
             ColorUtilities[] availableColors = ColorUtilities.values();
-            View v1 = colorStrokeDialogView.findViewById(R.id.c1);
-            setViewProperties(v1, availableColors, 0);
-            View v2 = colorStrokeDialogView.findViewById(R.id.c2);
-            setViewProperties(v2, availableColors, 1);
-            View v3 = colorStrokeDialogView.findViewById(R.id.c3);
-            setViewProperties(v3, availableColors, 2);
-            View v4 = colorStrokeDialogView.findViewById(R.id.c4);
-            setViewProperties(v4, availableColors, 3);
-            View v5 = colorStrokeDialogView.findViewById(R.id.c5);
-            setViewProperties(v5, availableColors, 4);
-            View v6 = colorStrokeDialogView.findViewById(R.id.c6);
-            setViewProperties(v6, availableColors, 5);
-            View v7 = colorStrokeDialogView.findViewById(R.id.c7);
-            setViewProperties(v7, availableColors, 6);
+            GridLayout gridLayout = (GridLayout) colorStrokeDialogView.findViewById(R.id.availableColors);
 
+            int count = 0;
+            for (int col = 0; col < 7; col++) {
+                for (int row = 0; row < 3; row++) {
+                    if (count > 21) break;
+                    GridLayout.Spec colSpec = GridLayout.spec(col, GridLayout.BASELINE);
+                    GridLayout.Spec rowSpec = GridLayout.spec(row);
 
-//            int count = 0;
-//            for (int col = 0; col < 7; col++) {
-//                for (int row = 0; row < 3; row++) {
-//                    if (count > 21) break;
-//                    GridLayout.Spec colSpec = GridLayout.spec(col, GridLayout.BASELINE);
-//                    GridLayout.Spec rowSpec = GridLayout.spec(row);
-//
-//                    final LinearLayout linearLayout = new LinearLayout(getActivity());
+                    final Button button = new Button(getActivity());
+                    button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    button.setPadding(1, 1, 1, 1);
+
 //                    int minTouchSize = 5;//(int) getResources().getDimension(R.dimen.min_touch_size);
 //                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(minTouchSize,
 //                            minTouchSize);
-//                    layoutParams.setMargins(1, 1, 1, 1);
-//                    linearLayout.setLayoutParams(layoutParams);
-//                    linearLayout.setOrientation(LinearLayout.VERTICAL);
-//
-//                    String hex = availableColors[count].getHex();
-//                    int c = ColorUtilities.toColor(hex);
-//                    linearLayout.setBackgroundColor(c);
-//                    linearLayout.setOnTouchListener(new View.OnTouchListener() {
-//                        @Override
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            int color = Color.TRANSPARENT;
-//                            Drawable background = linearLayout.getBackground();
-//                            if (background instanceof ColorDrawable)
-//                                color = ((ColorDrawable) background).getColor();
-//
-//                            int red = Color.red(color);
-//                            int green = Color.green(color);
-//                            int blue = Color.blue(color);
-//                            int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
-//                            mColorView.setBackgroundColor(argb);
-//                            mRedSeekBar.setProgress(red);
-//                            mGreenSeekBar.setProgress(green);
-//                            mBlueSeekBar.setProgress(blue);
-//
-//                            if (handlingFillColor) {
-//                                mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-//                                        mBlueSeekBar.getProgress());
-//                                mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
-//                            } else {
-//                                mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-//                                        mBlueSeekBar.getProgress());
-//                                mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
-//                            }
-//
-//                            return true;
-//                        }
-//                    });
-//
-//                    gridLayout.addView(linearLayout, new GridLayout.LayoutParams(rowSpec, colSpec));
-//                    count++;
-//                }
-//            }
+//                    button.setLayoutParams(layoutParams);
+
+                    String hex = availableColors[count].getHex();
+                    int c = ColorUtilities.toColor(hex);
+                    button.setBackgroundColor(c);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int color = Color.TRANSPARENT;
+                            Drawable background = button.getBackground();
+                            if (background instanceof ColorDrawable)
+                                color = ((ColorDrawable) background).getColor();
+
+                            int red = Color.red(color);
+                            int green = Color.green(color);
+                            int blue = Color.blue(color);
+                            int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
+                            mColorView.setBackgroundColor(argb);
+                            mRedSeekBar.setProgress(red);
+                            mGreenSeekBar.setProgress(green);
+                            mBlueSeekBar.setProgress(blue);
+
+                            if (handlingFillColor) {
+                                mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+                                        mBlueSeekBar.getProgress());
+                                mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
+                            } else {
+                                mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+                                        mBlueSeekBar.getProgress());
+                                mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
+                            }
+                        }
+                    });
+
+                    gridLayout.addView(button, new GridLayout.LayoutParams(rowSpec, colSpec));
+                    count++;
+                }
+            }
         }
 
         // add Set Line Width Button
         builder.setPositiveButton("Set properties",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        int width = -1;
-                        int fill = -1;
-                        int stroke = -1;
-                        if (mWidthSeekBar != null)
-                            width = mWidthSeekBar.getProgress();
-                        // TODO set it to be used
-
-                        mCurrentColorStrokeObject.strokeWidth = width;
                         if (colorStrokePropertiesChangeListener != null) {
                             colorStrokePropertiesChangeListener.onPropertiesChanged(mCurrentColorStrokeObject);
                         }
@@ -262,41 +243,6 @@ public class ColorStrokeDialogFragment extends DialogFragment {
         return builder.create(); // return dialog
     }
 
-    private void setViewProperties(final View view, ColorUtilities[] availableColors, int count) {
-        String hex = availableColors[count].getHex();
-        int c = ColorUtilities.toColor(hex);
-        view.setBackgroundColor(c);
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int color = Color.TRANSPARENT;
-                Drawable background = view.getBackground();
-                if (background instanceof ColorDrawable)
-                    color = ((ColorDrawable) background).getColor();
-
-                int red = Color.red(color);
-                int green = Color.green(color);
-                int blue = Color.blue(color);
-                int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
-                mColorView.setBackgroundColor(argb);
-                mRedSeekBar.setProgress(red);
-                mGreenSeekBar.setProgress(green);
-                mBlueSeekBar.setProgress(blue);
-
-                if (handlingFillColor) {
-                    mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-                            mBlueSeekBar.getProgress());
-                    mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
-                } else {
-                    mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-                            mBlueSeekBar.getProgress());
-                    mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
-                }
-
-                return true;
-            }
-        });
-    }
 
     public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
