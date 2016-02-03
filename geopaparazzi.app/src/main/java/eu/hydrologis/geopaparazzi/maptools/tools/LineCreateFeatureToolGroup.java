@@ -58,7 +58,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;

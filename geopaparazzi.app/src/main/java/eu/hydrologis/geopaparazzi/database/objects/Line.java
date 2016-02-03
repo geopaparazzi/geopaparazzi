@@ -28,7 +28,7 @@ import java.util.List;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;

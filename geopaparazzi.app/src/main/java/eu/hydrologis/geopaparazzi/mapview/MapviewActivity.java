@@ -101,7 +101,7 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PointF3D;

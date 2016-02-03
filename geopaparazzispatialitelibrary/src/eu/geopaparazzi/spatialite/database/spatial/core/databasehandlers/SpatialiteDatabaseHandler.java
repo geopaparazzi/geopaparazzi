@@ -17,13 +17,11 @@
 */
 package eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers;
 
-import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;

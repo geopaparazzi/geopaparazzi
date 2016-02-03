@@ -96,5 +96,9 @@
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
     <string name="installamaze_title">Install Amaze File Manager</string>
     <string name="installamaze_message">Geopaparazzi needs a file browser to get files from the system. We propose Amaze, which is open source. Do you want to install it?</string>
+    <string name="label_alpha">alpha</string>
+    <string name="label_red">red</string>
+    <string name="label_green">green</string>
+    <string name="label_blue">blue</string>
 
 </resources>

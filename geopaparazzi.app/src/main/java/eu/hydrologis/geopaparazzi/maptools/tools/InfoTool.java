@@ -39,7 +39,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;

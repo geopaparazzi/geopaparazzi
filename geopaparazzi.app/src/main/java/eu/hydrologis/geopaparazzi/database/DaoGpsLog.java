@@ -46,7 +46,7 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.database.objects.GpsLogInfo;

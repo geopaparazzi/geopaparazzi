@@ -26,14 +26,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -41,6 +36,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.color.ColorStrokeObject;
+import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -55,7 +54,7 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GpsLogPropertiesActivity extends AppCompatActivity {
+public class GpsLogPropertiesActivity extends AppCompatActivity implements IColorStrokePropertiesChangeListener {
     private static List<String> colorList;
     private static List<String> widthsList;
     private LogMapItem item;
@@ -166,44 +165,64 @@ public class GpsLogPropertiesActivity extends AppCompatActivity {
                 }
             });
 
-            // line width
-            newWidth = item.getWidth();
-            ArrayAdapter<?> widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
-                    android.R.layout.simple_spinner_item);
-            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            widthView.setAdapter(widthSpinnerAdapter);
-            int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
-            widthView.setSelection(widthIndex);
-            widthView.setOnItemSelectedListener(new OnItemSelectedListener() {
-                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                    Object selectedItem = widthView.getSelectedItem();
-                    newWidth = Float.parseFloat(selectedItem.toString());
-                }
-
-                public void onNothingSelected(AdapterView<?> arg0) {
-                    // ignore
-                }
-            });
-
-            // color box
             newColor = item.getColor();
-            ArrayAdapter<?> colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
-                    android.R.layout.simple_spinner_item);
-            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            colorView.setAdapter(colorSpinnerAdapter);
-            int colorIndex = colorList.indexOf(item.getColor());
-            colorView.setSelection(colorIndex);
-            colorView.setOnItemSelectedListener(new OnItemSelectedListener() {
+            newWidth = item.getWidth();
+            final Button paletteButton = (Button) findViewById(R.id.gpslog_palette);
+            paletteButton.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    int color = ColorUtilities.toColor(newColor);
+                    ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
+                    colorStrokeObject.hasFill = false;
 
-                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                    Object selectedItem = colorView.getSelectedItem();
-                    newColor = selectedItem.toString();
-                }
+                    colorStrokeObject.hasStroke = true;
+                    colorStrokeObject.strokeColor = color;
+                    colorStrokeObject.strokeAlpha = 255;
 
-                public void onNothingSelected(AdapterView<?> arg0) {
-                    // ignore
+                    colorStrokeObject.hasStrokeWidth = true;
+                    colorStrokeObject.strokeWidth = (int) newWidth;
+
+                    ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                    colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");
                 }
             });
+
+            // line width
+//            ArrayAdapter<?> widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
+//                    android.R.layout.simple_spinner_item);
+//            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            widthView.setAdapter(widthSpinnerAdapter);
+//            int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
+//            widthView.setSelection(widthIndex);
+//            widthView.setOnItemSelectedListener(new OnItemSelectedListener() {
+//                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+//                    Object selectedItem = widthView.getSelectedItem();
+//                    newWidth = Float.parseFloat(selectedItem.toString());
+//                }
+//
+//                public void onNothingSelected(AdapterView<?> arg0) {
+//                    // ignore
+//                }
+//            });
+//
+//            // color box
+//
+//            ArrayAdapter<?> colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
+//                    android.R.layout.simple_spinner_item);
+//            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            colorView.setAdapter(colorSpinnerAdapter);
+//            int colorIndex = colorList.indexOf(item.getColor());
+//            colorView.setSelection(colorIndex);
+//            colorView.setOnItemSelectedListener(new OnItemSelectedListener() {
+//
+//                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+//                    Object selectedItem = colorView.getSelectedItem();
+//                    newColor = selectedItem.toString();
+//                }
+//
+//                public void onNothingSelected(AdapterView<?> arg0) {
+//                    // ignore
+//                }
+//            });
 
             final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
             chartButton.setOnClickListener(new Button.OnClickListener() {
@@ -289,4 +308,10 @@ public class GpsLogPropertiesActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
+        newColor = ColorUtilities.getHex(newColorStrokeObject.strokeColor);
+        newWidth = newColorStrokeObject.strokeWidth;
+        updateWithNewValues();
+    }
 }

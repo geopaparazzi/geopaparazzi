@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.util;
+package eu.geopaparazzi.library.color;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -55,25 +55,6 @@ public enum ColorUtilities {
     white("#FFFFFF"), //
     almost_black("#212121"), //
 
-    // OLD COLORS
-//    black("#000000"), //
-//    blue("#0000ff"), //
-//    cyan("#00ffff"), //
-//    darkgray("#444444"), //
-//    gray("#888888"), //
-//    green("#00ff00"), //
-//    lightgray("#cccccc"), //
-//    magenta("#ff00ff"), //
-//    red("#ff0000"), //
-//    white("#ffffff"), //
-//    yellow("#ffff00"), //
-//    purple("#800080"), //
-//    violet("#ee82ee"), //
-//    turquoise("#40e0d0"), //
-//    plum("#dda0dd"), //
-//    tomato("#ff6347"), //
-//    salmon("#fa8072"), //
-
     // PREVIEWCOLOR
     selection_stroke("#ffff00"), //
     selection_fill("#ff0000"), //
@@ -94,31 +75,43 @@ public enum ColorUtilities {
         return hex;
     }
 
+    public static String getHex(int color) {
+        String hexColor = String.format("#%06X", (0xFFFFFF & color));
+        return hexColor;
+    }
+
     /**
      * Returns the corresponding color int.
      *
-     * @param name the name of the color as supported in this class, or the hex value.
+     * @param nameOrHex the name of the color as supported in this class, or the hex value.
      * @return the int color.
      */
-    public static int toColor(String name) {
-        name = name.trim();
-        if (name.startsWith("#")) {
-            return Color.parseColor(name);
+    public static int toColor(String nameOrHex) {
+        nameOrHex = nameOrHex.trim();
+        if (nameOrHex.startsWith("#")) {
+            return Color.parseColor(nameOrHex);
         }
-        Integer color = colorMap.get(name);
+        Integer color = colorMap.get(nameOrHex);
         if (color == null) {
-            color = Color.parseColor(blue_grey.hex);
             ColorUtilities[] values = values();
             for (ColorUtilities colorUtil : values) {
-                if (colorUtil.name().equals(name.toLowerCase())) {
+                if (colorUtil.name().equalsIgnoreCase(nameOrHex)) {
                     color = Color.parseColor(colorUtil.hex);
-                    colorMap.put(name, color);
+                    colorMap.put(nameOrHex, color);
                     return color;
                 }
             }
         }
+        if (color == null) {
+            String hex = ColorUtilitiesCompat.getHex(nameOrHex);
+            if (hex != null) {
+                return toColor(hex);
+            }
+        }
+        color = Color.parseColor(blue_grey.hex);
         return color;
     }
+
 
     public static int getColor(ColorUtilities colorEnum) {
         String name = colorEnum.name();

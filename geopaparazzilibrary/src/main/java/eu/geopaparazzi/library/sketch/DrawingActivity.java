@@ -42,7 +42,7 @@ package eu.geopaparazzi.library.sketch;//package eu.geopaparazzi.library.sketch;
 //import eu.geopaparazzi.library.sketch.brush.Brush;
 //import eu.geopaparazzi.library.sketch.brush.PenBrush;
 //import eu.geopaparazzi.library.sketch.commands.DrawingPath;
-//import eu.geopaparazzi.library.util.ColorUtilities;
+//import eu.geopaparazzi.library.color.ColorUtilities;
 //import eu.geopaparazzi.library.util.FileUtilities;
 //import eu.geopaparazzi.library.util.LibraryConstants;
 //import eu.geopaparazzi.library.core.ResourcesManager;

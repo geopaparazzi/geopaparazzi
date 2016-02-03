@@ -15,16 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.core.activities;
+
+package eu.geopaparazzi.library.color;
 
 /**
- * The names to call activities.
- * 
+ * A simple interface to use to notify color and stroke changes.
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface ActivitiesNames {
+public interface IColorStrokePropertiesChangeListener {
+
     /**
-     * 
+     * Called when there is the need to notify that a change occurred.
      */
-    public final String CAMERA_ACTIVITY = "eu.geopaparazzi.library.camera.CameraActivity"; //$NON-NLS-1$
+    void onPropertiesChanged(ColorStrokeObject newColorStrokeObject);
 }

@@ -43,7 +43,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,7 +53,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.ColorUtilities;
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
