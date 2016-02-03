@@ -36,6 +36,7 @@ import org.mapsforge.core.model.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -91,8 +92,8 @@ public class SelectionTool extends MapTool {
         super(mapView);
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        int stroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
-        int fill = ColorUtilities.getColor(ColorUtilities.selection_fill);
+        int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
+        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
         selectRectPaintFill.setAntiAlias(true);
         selectRectPaintFill.setColor(fill);
         selectRectPaintFill.setAlpha(80);

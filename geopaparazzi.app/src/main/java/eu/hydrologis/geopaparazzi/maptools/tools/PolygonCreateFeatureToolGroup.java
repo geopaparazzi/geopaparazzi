@@ -50,6 +50,7 @@ import org.mapsforge.core.model.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -130,7 +131,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
-        int selectionStroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
+        int selectionStroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
         createdGeometryPaintFill.setAntiAlias(true);
         createdGeometryPaintFill.setColor(selectionStroke);
         createdGeometryPaintFill.setAlpha(180);

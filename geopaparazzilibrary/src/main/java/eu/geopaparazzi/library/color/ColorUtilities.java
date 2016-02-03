@@ -53,15 +53,7 @@ public enum ColorUtilities {
     grey("#616161"), //
     blue_grey("#455A64"), //
     white("#FFFFFF"), //
-    almost_black("#212121"), //
-
-    // PREVIEWCOLOR
-    selection_stroke("#ffff00"), //
-    selection_fill("#ff0000"), //
-    preview_stroke("#00bdbd"), //
-    preview_fill("#00ffff"), //
-    infoselection_stroke("#0000ff"), //
-    infoselection_fill("#0000ff") //
+    almost_black("#212121")//
     ; //
 
     private static HashMap<String, Integer> colorMap = new HashMap<String, Integer>();

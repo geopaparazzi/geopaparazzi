@@ -44,6 +44,7 @@ import org.mapsforge.android.maps.Projection;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -118,8 +119,8 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
 
-        int stroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
-        int fill = ColorUtilities.getColor(ColorUtilities.selection_fill);
+        int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
+        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
         selectedGeometryPaintFill.setAntiAlias(true);
         selectedGeometryPaintFill.setColor(fill);
         selectedGeometryPaintFill.setAlpha(180);
@@ -129,8 +130,8 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
         selectedGeometryPaintStroke.setColor(stroke);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
-        stroke = ColorUtilities.getColor(ColorUtilities.preview_stroke);
-        fill = ColorUtilities.getColor(ColorUtilities.preview_fill);
+        stroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
+        fill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
         selectedPreviewGeometryPaintFill.setAntiAlias(true);
         selectedPreviewGeometryPaintFill.setColor(fill);
         selectedPreviewGeometryPaintFill.setAlpha(180);

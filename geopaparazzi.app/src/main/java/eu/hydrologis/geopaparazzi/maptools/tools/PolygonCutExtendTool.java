@@ -42,6 +42,7 @@ import org.mapsforge.core.model.GeoPoint;
 
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -130,8 +131,8 @@ public class PolygonCutExtendTool extends MapTool {
         drawingPaintStroke.setColor(Color.RED);
         drawingPaintStroke.setStyle(Paint.Style.STROKE);
 
-        int previewStroke = ColorUtilities.getColor(ColorUtilities.preview_stroke);
-        int previewFill = ColorUtilities.getColor(ColorUtilities.preview_fill);
+        int previewStroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
+        int previewFill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
         selectedPreviewGeometryPaintFill.setAntiAlias(true);
         selectedPreviewGeometryPaintFill.setColor(previewFill);
         selectedPreviewGeometryPaintFill.setAlpha(180);

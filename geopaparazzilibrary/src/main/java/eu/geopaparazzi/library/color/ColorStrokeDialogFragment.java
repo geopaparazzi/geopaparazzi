@@ -22,19 +22,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -166,33 +174,38 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             mBlueSeekBar.setProgress(Color.blue(color));
 
 
-            ColorUtilities[] availableColors = ColorUtilities.values();
-            GridLayout gridLayout = (GridLayout) colorStrokeDialogView.findViewById(R.id.availableColors);
+            final ColorUtilities[] availableColors = ColorUtilities.values();
 
-            int count = 0;
-            for (int col = 0; col < 7; col++) {
-                for (int row = 0; row < 3; row++) {
-                    if (count > 21) break;
-                    GridLayout.Spec colSpec = GridLayout.spec(col, GridLayout.BASELINE);
-                    GridLayout.Spec rowSpec = GridLayout.spec(row);
+            GridView gridview = (GridView) colorStrokeDialogView.findViewById(R.id.availableColors);
+            ArrayAdapter<ColorUtilities> colorsAdapter = new ArrayAdapter<ColorUtilities>(getActivity(), android.R.layout.simple_list_item_1, availableColors) {
+                class ViewHolder {
+                    Button button;
+                }
 
-                    final Button button = new Button(getActivity());
-                    button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    button.setPadding(1, 1, 1, 1);
+                @Override
+                public View getView(final int position, View cView, ViewGroup parent) {
 
-//                    int minTouchSize = 5;//(int) getResources().getDimension(R.dimen.min_touch_size);
-//                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(minTouchSize,
-//                            minTouchSize);
-//                    button.setLayoutParams(layoutParams);
-
-                    String hex = availableColors[count].getHex();
-                    int c = ColorUtilities.toColor(hex);
-                    button.setBackgroundColor(c);
-                    button.setOnClickListener(new View.OnClickListener() {
+                    ViewHolder holder;
+                    // Recycle existing view if passed as parameter
+                    View rowView = cView;
+                    if (rowView == null) {
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+                        rowView = inflater.inflate(R.layout.fragment_dialog_color_stroke_row, parent, false);
+                        holder = new ViewHolder();
+                        holder.button = (Button) rowView.findViewById(R.id.button);
+                        rowView.setTag(holder);
+                    } else {
+                        holder = (ViewHolder) rowView.getTag();
+                    }
+                    String hex = availableColors[position].getHex();
+                    int color = ColorUtilities.toColor(hex);
+                    holder.button.setBackgroundColor(color);
+                    final Button b = holder.button;
+                    holder.button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             int color = Color.TRANSPARENT;
-                            Drawable background = button.getBackground();
+                            Drawable background = b.getBackground();
                             if (background instanceof ColorDrawable)
                                 color = ((ColorDrawable) background).getColor();
 
@@ -204,7 +217,6 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                             mRedSeekBar.setProgress(red);
                             mGreenSeekBar.setProgress(green);
                             mBlueSeekBar.setProgress(blue);
-
                             if (handlingFillColor) {
                                 mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
                                         mBlueSeekBar.getProgress());
@@ -217,10 +229,66 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                         }
                     });
 
-                    gridLayout.addView(button, new GridLayout.LayoutParams(rowSpec, colSpec));
-                    count++;
+                    return rowView;
                 }
-            }
+
+            };
+            gridview.setAdapter(colorsAdapter);
+
+//            GridLayout gridLayout = (GridLayout) colorStrokeDialogView.findViewById(R.id.availableColors);
+//
+//            int count = 0;
+//            for (int col = 0; col < 7; col++) {
+//                for (int row = 0; row < 3; row++) {
+//                    if (count > 21) break;
+//                    GridLayout.Spec colSpec = GridLayout.spec(col, GridLayout.BASELINE);
+//                    GridLayout.Spec rowSpec = GridLayout.spec(row);
+//
+//                    final Button button = new Button(getActivity());
+//                    button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//                    button.setPadding(1, 1, 1, 1);
+//
+////                    int minTouchSize = 5;//(int) getResources().getDimension(R.dimen.min_touch_size);
+////                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(minTouchSize,
+////                            minTouchSize);
+////                    button.setLayoutParams(layoutParams);
+//
+//                    String hex = availableColors[count].getHex();
+//                    int c = ColorUtilities.toColor(hex);
+//                    button.setBackgroundColor(c);
+//                    button.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            int color = Color.TRANSPARENT;
+//                            Drawable background = button.getBackground();
+//                            if (background instanceof ColorDrawable)
+//                                color = ((ColorDrawable) background).getColor();
+//
+//                            int red = Color.red(color);
+//                            int green = Color.green(color);
+//                            int blue = Color.blue(color);
+//                            int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
+//                            mColorView.setBackgroundColor(argb);
+//                            mRedSeekBar.setProgress(red);
+//                            mGreenSeekBar.setProgress(green);
+//                            mBlueSeekBar.setProgress(blue);
+//
+//                            if (handlingFillColor) {
+//                                mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+//                                        mBlueSeekBar.getProgress());
+//                                mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
+//                            } else {
+//                                mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+//                                        mBlueSeekBar.getProgress());
+//                                mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
+//                            }
+//                        }
+//                    });
+//
+//                    gridLayout.addView(button, new GridLayout.LayoutParams(rowSpec, colSpec));
+//                    count++;
+//                }
+//            }
         }
 
         // add Set Line Width Button

@@ -35,6 +35,7 @@ import org.mapsforge.core.model.GeoPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -97,8 +98,8 @@ public class InfoTool extends MapTool {
         this.parentGroup = parentGroup;
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        int stroke = ColorUtilities.getColor(ColorUtilities.infoselection_stroke);
-        int fill = ColorUtilities.getColor(ColorUtilities.infoselection_fill);
+        int stroke = ColorUtilities.toColor(ToolColors.infoselection_stroke.getHex());
+        int fill = ColorUtilities.toColor(ToolColors.infoselection_fill.getHex());
         infoRectPaintFill.setAntiAlias(true);
         infoRectPaintFill.setColor(fill);
         infoRectPaintFill.setAlpha(80);

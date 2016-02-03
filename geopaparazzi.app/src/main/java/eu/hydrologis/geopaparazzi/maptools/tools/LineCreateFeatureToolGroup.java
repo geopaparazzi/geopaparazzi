@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -141,7 +142,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
-        int selectionStroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
+        int selectionStroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
 
         createdGeometryPaintHaloStroke.setAntiAlias(true);
         createdGeometryPaintHaloStroke.setStrokeWidth(7f);

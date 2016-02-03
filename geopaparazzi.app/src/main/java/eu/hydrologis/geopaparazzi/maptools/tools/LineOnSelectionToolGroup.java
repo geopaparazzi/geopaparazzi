@@ -44,6 +44,7 @@ import org.mapsforge.android.maps.Projection;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -115,13 +116,13 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
 
-        int stroke = ColorUtilities.getColor(ColorUtilities.selection_stroke);
+        int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
         selectedGeometryPaintStroke.setAntiAlias(true);
         selectedGeometryPaintStroke.setStrokeWidth(5f);
         selectedGeometryPaintStroke.setColor(stroke);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
-        stroke = ColorUtilities.getColor(ColorUtilities.preview_stroke);
+        stroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
         selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
         selectedPreviewGeometryPaintStroke.setColor(stroke);
