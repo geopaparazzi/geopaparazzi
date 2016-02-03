@@ -128,6 +128,7 @@ import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.ui.activities.GpsDataListActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -634,9 +635,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             // startMapsDirTreeViewList();
             // return true;
             case MENU_GPSDATA:
-                // FIXME
-//                Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
-//                startActivity(gpsDatalistIntent);
+                Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
+                startActivity(gpsDatalistIntent);
                 return true;
             case MENU_DATA:
                 Intent datalistIntent = new Intent(this, DataListActivity.class);

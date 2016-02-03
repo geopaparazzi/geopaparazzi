@@ -324,28 +324,10 @@ public enum BaseMapSourcesManager {
             int selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
             MapGenerator selectedMapGenerator = null;
             try {
-//                minZoom = 0;
-//                maxZoom = 18;
-//                defaultZoom = 17;
-//                bounds_west = -180.0;
-//                bounds_south = -85.05113;
-//                bounds_east = 180.0;
-//                bounds_north = 85.05113;
-//                centerX = 0.0;
-//                centerY = 0.0;
                 SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
                 switch (selectedSpatialDataType) {
                     case MAP:
                         MapTable selectedMapTable = (MapTable) selectedSpatialTable;
-//                            minZoom = selectedMapTable.getMinZoom();
-//                            maxZoom = selectedMapTable.getMaxZoom();
-//                            defaultZoom = selectedMapTable.getDefaultZoom();
-//                            bounds_west = selectedMapTable.getMinLongitude();
-//                            bounds_east = selectedMapTable.getMaxLongitude();
-//                            bounds_south = selectedMapTable.getMinLatitude();
-//                            bounds_north = selectedMapTable.getMaxLatitude();
-//                            centerX = selectedMapTable.getCenterX();
-//                            centerY = selectedMapTable.getCenterY();
                         clearTileCache(mapView);
                         mapView.setMapFile(selectedMapTable.getDatabaseFile());
                         if (selectedMapTable.getXmlFile().exists()) {
@@ -356,8 +338,6 @@ public enum BaseMapSourcesManager {
                                 GPLog.error(this, "ERROR", e);
                             }
                         }
-//                        selectedMapGenerator = mapView.getMapGenerator();
-//                        mapView.setMapGenerator(selectedMapGenerator);
                         break;
                     case MBTILES:
                     case GPKG:
@@ -365,15 +345,6 @@ public enum BaseMapSourcesManager {
                     case SQLITE: {
                         // TODO check
                         SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
-//                            minZoom = selectedSpatialRasterTable.getMinZoom();
-//                            maxZoom = selectedSpatialRasterTable.getMaxZoom();
-//                            defaultZoom = selectedSpatialRasterTable.getDefaultZoom();
-//                            bounds_west = selectedSpatialRasterTable.getMinLongitude();
-//                            bounds_east = selectedSpatialRasterTable.getMaxLongitude();
-//                            bounds_south = selectedSpatialRasterTable.getMinLatitude();
-//                            bounds_north = selectedSpatialRasterTable.getMaxLatitude();
-//                            centerX = selectedSpatialRasterTable.getCenterX();
-//                            centerY = selectedSpatialRasterTable.getCenterY();
                         selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
                         clearTileCache(mapView);
                         mapView.setMapGenerator(selectedMapGenerator);
@@ -381,19 +352,6 @@ public enum BaseMapSourcesManager {
                     break;
                     case MAPURL: {
                         selectedMapGenerator = new CustomTileDownloader(selectedSpatialTable.getDatabaseFile());
-//                        CustomTileTable selectedCustomTilesTable = (CustomTileTable) selectedSpatialTable;
-//                        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
-//                                .getHandlerForFile(selectedCustomTilesTable.getDatabaseFile());
-////                            minZoom = selectedCustomTilesTable.getMinZoom();
-////                            maxZoom = selectedCustomTilesTable.getMaxZoom();
-////                            defaultZoom = selectedCustomTilesTable.getDefaultZoom();
-////                            bounds_west = selectedCustomTilesTable.getMinLongitude();
-////                            bounds_east = selectedCustomTilesTable.getMaxLongitude();
-////                            bounds_south = selectedCustomTilesTable.getMinLatitude();
-////                            bounds_north = selectedCustomTilesTable.getMaxLatitude();
-////                            centerX = selectedCustomTilesTable.getCenterX();
-////                            centerY = selectedCustomTilesTable.getCenterY();
-//                        selectedMapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
                         try {
                             clearTileCache(mapView);
                             mapView.setMapGenerator(selectedMapGenerator);

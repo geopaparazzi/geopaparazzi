@@ -343,5 +343,7 @@
     <string name="gpx_file_imported">GPX file imported.</string>
     <string name="table_name">Table name</string>
     <string name="db_name">Db name</string>
+    <string name="incoming_logs_added">"Incoming logs loaded: "</string>
+    <string name="logs_sent">Logs sent.</string>
 
 </resources>
