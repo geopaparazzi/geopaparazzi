@@ -74,6 +74,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
+import eu.hydrologis.geopaparazzi.database.objects.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 import jsqlite.Exception;
