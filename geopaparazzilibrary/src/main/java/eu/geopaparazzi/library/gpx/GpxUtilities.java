@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
@@ -125,7 +127,7 @@ public class GpxUtilities {
                 item.setName(name);
                 item.setWidth("2"); //$NON-NLS-1$
                 item.setVisible(false);
-                item.setColor("blue"); //$NON-NLS-1$
+                item.setColor(ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
                 item.setData(wayPoints);
                 gpxItems.add(item);
             }
@@ -150,7 +152,7 @@ public class GpxUtilities {
                     item.setName(name);
                     item.setWidth("2"); //$NON-NLS-1$
                     item.setVisible(false);
-                    item.setColor("green"); //$NON-NLS-1$
+                    item.setColor(ColorUtilities.GREEN.getHex()); //$NON-NLS-1$
                     item.setData(route);
                     gpxItems.add(item);
                 }

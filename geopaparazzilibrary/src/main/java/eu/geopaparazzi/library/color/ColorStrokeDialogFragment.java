@@ -265,12 +265,12 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 //                                color = ((ColorDrawable) background).getColor();
 //
 //                            int red = Color.red(color);
-//                            int green = Color.green(color);
+//                            int GREEN = Color.GREEN(color);
 //                            int blue = Color.blue(color);
-//                            int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
+//                            int argb = Color.argb(red, GREEN, blue, mAlphaSeekBar.getProgress());
 //                            mColorView.setBackgroundColor(argb);
 //                            mRedSeekBar.setProgress(red);
-//                            mGreenSeekBar.setProgress(green);
+//                            mGreenSeekBar.setProgress(GREEN);
 //                            mBlueSeekBar.setProgress(blue);
 //
 //                            if (handlingFillColor) {

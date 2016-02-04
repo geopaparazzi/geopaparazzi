@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
@@ -122,7 +123,7 @@ public class GpxImportDialogFragment extends DialogFragment {
                             item.setName(fileName);
                             item.setWidth("2"); //$NON-NLS-1$
                             item.setVisible(false);
-                            item.setColor("blue"); //$NON-NLS-1$
+                            item.setColor(ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
                             item.setData(wayPoints);
                             DaoGpsLog.importGpxToMap(item);
                         }
@@ -161,7 +162,7 @@ public class GpxImportDialogFragment extends DialogFragment {
                                 item.setName(name);
                                 item.setWidth("2"); //$NON-NLS-1$
                                 item.setVisible(false);
-                                item.setColor("green"); //$NON-NLS-1$
+                                item.setColor(ColorUtilities.GREEN.getHex()); //$NON-NLS-1$
                                 item.setData(route);
                                 DaoGpsLog.importGpxToMap(item);
                             }

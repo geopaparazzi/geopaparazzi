@@ -103,7 +103,6 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.color.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
@@ -388,9 +387,9 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // notes type
         boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         if (doCustom) {
-            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
+            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
             String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
+            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
             float opacity = Integer.parseInt(opacityStr);
 
@@ -808,7 +807,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                             DaoGpsLog logDumper = new DaoGpsLog();
                             SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
                             long now = new java.util.Date().getTime();
-                            long newLogId = logDumper.addGpsLog(now, now, 0, name, DEFAULT_LOG_WIDTH, "blue", true); //$NON-NLS-1$
+                            long newLogId = logDumper.addGpsLog(now, now, 0, name, DEFAULT_LOG_WIDTH, ColorUtilities.BLUE.getHex(), true); //$NON-NLS-1$
 
                             sqliteDatabase.beginTransaction();
                             try {

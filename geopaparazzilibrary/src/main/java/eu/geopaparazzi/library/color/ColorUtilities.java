@@ -36,24 +36,24 @@ public enum ColorUtilities {
     RED("#D32F2F"), //
     PINK("#C2185B"), //
     PURPLE("#7B1FA2"), //
-    deep_purple("#512da8"), //
-    indigo("#303f9f"), //
-    blue("#1976d2"), //
-    light_blue("#0288d1"), //
-    cyan("#0097a7"), //
-    teal("#00796b"), //
-    green("#00796b"), //
-    light_green("#689f38"), //
-    lime("#afb42b"), //
-    yellow("#fbc02d"), //
-    amber("#ffa000"), //
-    orange("#f57c00"), //
-    deep_orange("#e64a19"), //
-    brown("#5d4037"), //
-    grey("#616161"), //
-    blue_grey("#455a64"), //
-    white("#ffffff"), //
-    almost_black("#212121")//
+    DEEP_PURPLE("#512da8"), //
+    INDIGO("#303f9f"), //
+    BLUE("#1976d2"), //
+    LIGHT_BLUE("#0288d1"), //
+    CYAN("#0097a7"), //
+    TEAL("#00796b"), //
+    GREEN("#00796b"), //
+    LIGHT_GREEN("#689f38"), //
+    LIME("#afb42b"), //
+    YELLOW("#fbc02d"), //
+    AMBER("#ffa000"), //
+    ORANGE("#f57c00"), //
+    DEEP_ORANGE("#e64a19"), //
+    BROWN("#5d4037"), //
+    GREY("#616161"), //
+    BLUE_GREY("#455a64"), //
+    WHITE("#ffffff"), //
+    ALMOST_BLACK("#212121")//
     ; //
 
     private static HashMap<String, Integer> colorMap = new HashMap<String, Integer>();
@@ -100,7 +100,7 @@ public enum ColorUtilities {
                 return toColor(hex);
             }
         }
-        color = Color.parseColor(blue_grey.hex);
+        color = Color.parseColor(BLUE_GREY.hex);
         return color;
     }
 

@@ -1097,7 +1097,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 long date = System.currentTimeMillis();
 
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(date, date, 0, name, width, "blue", true);
+                long logId = helper.addGpsLog(date, date, 0, name, width, ColorUtilities.BLUE.getHex(), true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1145,7 +1145,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     endDate = System.currentTimeMillis();
                 }
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(startDate, endDate, 0, rName, DEFAULT_LOG_WIDTH, "green", true);
+                long logId = helper.addGpsLog(startDate, endDate, 0, rName, DEFAULT_LOG_WIDTH, ColorUtilities.GREEN.getHex(), true);
 
                 sqliteDatabase.beginTransaction();
                 try {

@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.ui.activities;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -111,7 +110,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements IColor
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
         String opacityStr = mPreferences.getString(PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
-        String colorStr = mPreferences.getString(PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
+        String colorStr = mPreferences.getString(PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
         int opacity = Integer.parseInt(opacityStr);
         int initColor = ColorUtilities.toColor(colorStr);
 
