@@ -250,6 +250,17 @@
                 android:value=".mapview.MapviewActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.activities.AddNotesActivity"
+            android:label="Add Notes"
+            android:theme="@style/GeopapTheme.NoActionBar">
+        <!--android:parentActivityName=".mapview.MapviewActivity"-->
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value=".mapview.MapviewActivity"-->
+                <!--/>-->
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

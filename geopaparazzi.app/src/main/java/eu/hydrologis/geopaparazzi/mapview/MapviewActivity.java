@@ -126,6 +126,7 @@ import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.GpsDataListActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.NotesListActivity;
@@ -1225,9 +1226,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                             }
                         }
                     }).start();
-                    // FIXME
-//                    Intent mapTagsIntent = new Intent(MapviewActivity.this, MapTagsActivity.class);
-//                    startActivity(mapTagsIntent);
+                    Intent mapTagsIntent = new Intent(MapviewActivity.this, AddNotesActivity.class);
+                    startActivity(mapTagsIntent);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                     GPDialogs.errorDialog(this, e, null);
