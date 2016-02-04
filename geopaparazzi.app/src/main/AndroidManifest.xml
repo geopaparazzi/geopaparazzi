@@ -226,6 +226,10 @@
                 android:value=".ui.activities.GpsDataListActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.activities.ProfileChartActivity"
+            android:theme="@style/GeopapTheme.NoActionBar" />
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

@@ -186,51 +186,12 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements IColo
                 }
             });
 
-            // line width
-//            ArrayAdapter<?> widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
-//                    android.R.layout.simple_spinner_item);
-//            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            widthView.setAdapter(widthSpinnerAdapter);
-//            int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
-//            widthView.setSelection(widthIndex);
-//            widthView.setOnItemSelectedListener(new OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                    Object selectedItem = widthView.getSelectedItem();
-//                    newWidth = Float.parseFloat(selectedItem.toString());
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> arg0) {
-//                    // ignore
-//                }
-//            });
-//
-//            // color box
-//
-//            ArrayAdapter<?> colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
-//                    android.R.layout.simple_spinner_item);
-//            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            colorView.setAdapter(colorSpinnerAdapter);
-//            int colorIndex = colorList.indexOf(item.getColor());
-//            colorView.setSelection(colorIndex);
-//            colorView.setOnItemSelectedListener(new OnItemSelectedListener() {
-//
-//                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                    Object selectedItem = colorView.getSelectedItem();
-//                    newColor = selectedItem.toString();
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> arg0) {
-//                    // ignore
-//                }
-//            });
-
             final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
             chartButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
-                    // TODO
-//                    Intent intent = new Intent(GpsDataPropertiesActivity.this, ProfileChartActivity.class);
-//                    intent.putExtra(Constants.ID, item.getId());
-//                    startActivity(intent);
+                    Intent intent = new Intent(GpsLogPropertiesActivity.this, ProfileChartActivity.class);
+                    intent.putExtra(Constants.ID, item.getId());
+                    startActivity(intent);
                 }
             });
             final Button zoomToStartButton = (Button) findViewById(R.id.gpslog_zoom_start);
