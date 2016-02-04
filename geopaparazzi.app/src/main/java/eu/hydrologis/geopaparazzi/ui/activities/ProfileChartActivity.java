@@ -363,7 +363,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 xyPlotElev.getCalculatedMaxY().floatValue());
 
 
-        infoTextView.setText("Active elevation diff: " + elevDifference + "m");
+        infoTextView.setText(getString(R.string.active_elevation_diff) + elevDifference + "m");
     }
 
     /**

@@ -346,5 +346,6 @@
     <string name="db_name">Db name</string>
     <string name="incoming_logs_added">"Incoming logs loaded: "</string>
     <string name="logs_sent">Logs sent.</string>
+    <string name="active_elevation_diff">"Active elevation diff: "</string>
 
 </resources>
