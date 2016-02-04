@@ -12,6 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +70,7 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AboutActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AdvancedSettingsActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.ExportActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.ImportActivity;
@@ -82,6 +86,7 @@ import eu.hydrologis.geopaparazzi.ui.dialogs.NewProjectDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
+import static eu.geopaparazzi.library.util.LibraryConstants.TMPPNGIMAGENAME;
 
 /**
  * The fragment of the main geopap view.
@@ -390,6 +395,14 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (v == mImportButton) {
             Intent importIntent = new Intent(getActivity(), ImportActivity.class);
             startActivity(importIntent);
+        } else if (v == mNotesButton) {
+            try {
+                Intent mapTagsIntent = new Intent(getActivity(), AddNotesActivity.class);
+                startActivity(mapTagsIntent);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                GPDialogs.errorDialog(getActivity(), e, null);
+            }
         } else if (v == mExportButton) {
             Intent exportIntent = new Intent(getActivity(), ExportActivity.class);
             startActivity(exportIntent);

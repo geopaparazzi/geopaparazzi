@@ -253,13 +253,16 @@
         <activity
             android:name=".ui.activities.AddNotesActivity"
             android:label="Add Notes"
+            android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
-        <!--android:parentActivityName=".mapview.MapviewActivity"-->
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".mapview.MapviewActivity"-->
-                <!--/>-->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
         </activity>
+
+        <activity
+            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:configChanges="orientation|screenSize" />
 
         <provider
             android:name=".providers.SourceUrlsContentProvider"
