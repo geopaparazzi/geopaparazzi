@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -52,6 +53,7 @@ import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
@@ -63,7 +65,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesTreeListActivity extends AppCompatActivity {
+public class SourcesTreeListActivity extends AppCompatActivity implements IActivityStarter{
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_MAPS = "showMaps";
@@ -394,4 +396,8 @@ public class SourcesTreeListActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

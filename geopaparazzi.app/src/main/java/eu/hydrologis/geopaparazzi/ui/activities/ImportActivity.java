@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,6 +50,7 @@ import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -65,7 +67,7 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportActivity extends AppCompatActivity {
+public class ImportActivity extends AppCompatActivity implements IActivityStarter{
 
     public static final int PICKFILE_REQUEST_CODE = 666;
 
@@ -299,4 +301,8 @@ public class ImportActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

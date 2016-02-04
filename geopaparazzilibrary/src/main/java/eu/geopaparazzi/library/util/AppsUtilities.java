@@ -26,12 +26,12 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * An utility to handle 3rd party apps.
@@ -117,13 +117,13 @@ public class AppsUtilities {
      *     </pre>
      * </p>
      *
-     * @param activity    the activity that will recieve the picked file.
-     * @param requestCode the requestcode to use on result.
-     * @param title       optional title.
-     * @param mimeType    the mimetype.
-     * @param uri         the uri of the start folder.
+     * @param activityStarter the activity that will recieve the picked file.
+     * @param requestCode     the requestcode to use on result.
+     * @param title           optional title.
+     * @param mimeType        the mimetype.
+     * @param uri             the uri of the start folder.
      */
-    public static void pickFile(Activity activity, int requestCode, String title, String mimeType, Uri uri) {
+    public static void pickFile(IActivityStarter activityStarter, int requestCode, String title, String mimeType, Uri uri) {
         // first try with amaze
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setPackage(AppsUtilities.AMAZE_PACKAGE);
@@ -131,22 +131,24 @@ public class AppsUtilities {
             intent.putExtra(AppsUtilities.AMAZE_TITLE, title);
         intent.setDataAndType(uri, mimeType);
         try {
-            activity.startActivityForResult(intent, requestCode);
+            activityStarter.startActivityForResult(intent, requestCode);
         } catch (android.content.ActivityNotFoundException ex) {
             // try with generic
             intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setDataAndType(uri, mimeType);
             Intent chooser = Intent.createChooser(intent, title);
             try {
-                activity.startActivityForResult(chooser, requestCode);
+                activityStarter.startActivityForResult(chooser, requestCode);
             } catch (android.content.ActivityNotFoundException ex2) {
                 // direct to install a file manager
-                AppsUtilities.checkAmazeExplorer(activity);
+                AppsUtilities.checkAmazeExplorer(activityStarter);
             }
         }
     }
 
-    public static void checkAmazeExplorer(final Context context) {
+
+    public static void checkAmazeExplorer(final IActivityStarter activityStarter) {
+        Context context = activityStarter.getContext();
         boolean hasPackage = hasPackage(context, AMAZE_PACKAGE);
 
         if (!hasPackage) {
@@ -160,7 +162,7 @@ public class AppsUtilities {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse("market://search?q=" + AMAZE_PACKAGE));
-                    context.startActivity(intent);
+                    activityStarter.startActivity(intent);
                 }
             }).show();
         }

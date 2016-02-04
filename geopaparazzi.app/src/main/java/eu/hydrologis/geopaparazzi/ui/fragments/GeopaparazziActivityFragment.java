@@ -13,6 +13,7 @@ import android.content.pm.ProviderInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -33,6 +35,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +54,10 @@ import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -81,7 +88,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener {
+public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivityStarter {
 
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
 
@@ -240,11 +247,15 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 return true;
             }
             case R.id.action_load: {
-                Intent browseIntent = new Intent(getActivity(), DirectoryBrowserActivity.class);
-                browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
-                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getSdcardDir()
-                        .getAbsolutePath());
-                startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
+                try {
+                    String title = getString(R.string.select_gpap_file);
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPAP.getExtension());
+                    if (mimeType == null) mimeType = "application/" + FileTypes.GPAP.getExtension();
+                    Uri uri = Uri.parse(ResourcesManager.getInstance(getActivity()).getMapsDir().getAbsolutePath());
+                    AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, mimeType, uri);
+                } catch (Exception e) {
+                    GPLog.error(this, null, e);
+                }
                 return true;
             }
             case R.id.action_gps: {
@@ -285,18 +296,28 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         switch (requestCode) {
             case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
                 if (resultCode == Activity.RESULT_OK) {
-                    String databasePathToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (databasePathToLoad != null && new File(databasePathToLoad).exists()) {
-                        try {
-                            DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), databasePathToLoad);
-
-                            if (appChangeListener != null) {
-                                appChangeListener.onApplicationNeedsRestart();
-                            }
-                        } catch (IOException e) {
-                            GPLog.error(this, null, e);
-                            GPDialogs.warningDialog(getActivity(), "An error occurred while setting teh new project.", null);
+                    try {
+                        String filePath = data.getDataString();
+                        if (filePath == null) return;
+                        if (!filePath.endsWith(FileTypes.GPAP.getExtension())) {
+                            GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.selected_file_is_no_geopap_project), null);
+                            return;
                         }
+                        File file = new File(new URL(filePath).toURI());
+                        if (file.exists()) {
+                            try {
+                                DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), file.getAbsolutePath());
+
+                                if (appChangeListener != null) {
+                                    appChangeListener.onApplicationNeedsRestart();
+                                }
+                            } catch (IOException e) {
+                                GPLog.error(this, null, e);
+                                GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.error_while_setting_project), null);
+                            }
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(getActivity(), e, null);
                     }
                 }
                 break;

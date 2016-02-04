@@ -340,6 +340,7 @@
     <string name="no_images_in_project">No images present in the project.</string>
     <string name="no_data_found_in_project_to_export">No data found in the project can be exported.</string>
     <string name="select_gpx_file">Select gpx file to import</string>
+    <string name="select_gpap_file">Select Geopaparazzi project</string>
     <string name="no_gpx_selected">No GPX file has been selected.</string>
     <string name="gpx_file_imported">GPX file imported.</string>
     <string name="table_name">Table name</string>
@@ -347,5 +348,7 @@
     <string name="incoming_logs_added">"Incoming logs loaded: "</string>
     <string name="logs_sent">Logs sent.</string>
     <string name="active_elevation_diff">"Active elevation diff: "</string>
+    <string name="selected_file_is_no_geopap_project">The selected file doesn\'t seem to be a valid Geopaparazzi database (*.gpap).</string>
+    <string name="error_while_setting_project">An error occurred while setting the new project.</string>
 
 </resources>
