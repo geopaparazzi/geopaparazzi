@@ -103,7 +103,7 @@
 
                 <Spinner
                     android:id="@+id/sizeSpinner"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/sizeLabel"
                     android:layout_marginLeft="5dp"
@@ -122,39 +122,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_alignTop="@+id/sizeSpinner"
                     android:layout_alignParentEnd="true" />
-
-                <!--<TextView-->
-                    <!--android:id="@+id/colorLabel"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/sizeSpinner"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:text="@string/color_label"-->
-                    <!--android:textColor="@color/main_text_color" />-->
-
-                <!--<Spinner-->
-                    <!--android:id="@+id/colorSpinner"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/colorLabel"-->
-                    <!--android:layout_margin="5dp" />-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/alphaLabel"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/colorSpinner"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:text="@string/opacity"-->
-                    <!--android:textColor="@color/main_text_color" />-->
-
-                <!--<Spinner-->
-                    <!--android:id="@+id/alphaSpinner"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_below="@+id/alphaLabel"-->
-                    <!--android:layout_margin="5dp" />-->
-                <!--sss -->
 
                 <TextView
                     android:id="@+id/labels_title"

@@ -230,6 +230,16 @@
             android:name=".ui.activities.ProfileChartActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
+        <activity
+            android:name=".ui.activities.BookmarksListActivity"
+            android:label="Bookmarks List"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

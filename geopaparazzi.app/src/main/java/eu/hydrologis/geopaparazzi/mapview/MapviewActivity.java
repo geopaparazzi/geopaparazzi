@@ -127,9 +127,11 @@ import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.GpsDataListActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.*;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
@@ -207,8 +209,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 } else if (intent.hasExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST)) {
                     boolean centerOnPosition = intent.getBooleanExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, false);
                     if (centerOnPosition) {
-                        double lon = intent.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double lat = intent.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = intent.getDoubleExtra(LONGITUDE, 0.0);
+                        double lat = intent.getDoubleExtra(LATITUDE, 0.0);
                         setNewCenter(lon, lat);
 //                        readData();
 //                        mMapView.invalidate();
@@ -387,7 +389,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         if (doCustom) {
             String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
-            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
             String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
             float opacity = Integer.parseInt(opacityStr);
@@ -491,8 +493,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             // read last known gps position
             if (lastGpsPosition != null) {
-                GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * LibraryConstants.E6),
-                        (int) (lastGpsPosition[0] * LibraryConstants.E6));
+                GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * E6),
+                        (int) (lastGpsPosition[0] * E6));
                 mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
                 mDataOverlay.requestRedraw();
             }
@@ -510,11 +512,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (action == MotionEvent.ACTION_MOVE) {
             MapViewPosition mapPosition = mMapView.getMapPosition();
             GeoPoint mapCenter = mapPosition.getMapCenter();
-            double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
-            double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+            double lon = mapCenter.longitudeE6 / E6;
+            double lat = mapCenter.latitudeE6 / E6;
             if (coordView != null) {
-                coordView.setText(lonString + " " + LibraryConstants.COORDINATE_FORMATTER.format(lon) //
-                        + "\n" + latString + " " + LibraryConstants.COORDINATE_FORMATTER.format(lat));
+                coordView.setText(lonString + " " + COORDINATE_FORMATTER.format(lon) //
+                        + "\n" + latString + " " + COORDINATE_FORMATTER.format(lat));
             }
         }
         if (action == MotionEvent.ACTION_UP) {
@@ -584,8 +586,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     public double[] getCenterLonLat() {
         MapViewPosition mapPosition = mMapView.getMapPosition();
         GeoPoint mapCenter = mapPosition.getMapCenter();
-        double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
-        double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+        double lon = mapCenter.longitudeE6 / E6;
+        double lat = mapCenter.latitudeE6 / E6;
 //        zoom = mapPosition.getZoomLevel();
         return new double[]{lon, lat};
     }
@@ -761,10 +763,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      */
     private float[] getMapWorldBounds() {
         float[] nswe = getMapWorldBoundsE6();
-        float n = nswe[0] / LibraryConstants.E6;
-        float s = nswe[1] / LibraryConstants.E6;
-        float w = nswe[2] / LibraryConstants.E6;
-        float e = nswe[3] / LibraryConstants.E6;
+        float n = nswe[0] / E6;
+        float s = nswe[1] / E6;
+        float w = nswe[2] / E6;
+        float e = nswe[3] / E6;
         return new float[]{n, s, w, e};
     }
 
@@ -795,11 +797,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case (INSERTCOORD_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
 
-                    float[] routePoints = data.getFloatArrayExtra(LibraryConstants.ROUTE);
+                    float[] routePoints = data.getFloatArrayExtra(ROUTE);
                     if (routePoints != null) {
                         // it is a routing request
                         try {
-                            String name = data.getStringExtra(LibraryConstants.NAME);
+                            String name = data.getStringExtra(NAME);
                             if (name == null) {
                                 name = "ROUTE_" + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
                             }
@@ -831,8 +833,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
                     } else {
                         // it is a single point geocoding request
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
+                        double lon = data.getDoubleExtra(LONGITUDE, 0d);
+                        double lat = data.getDoubleExtra(LATITUDE, 0d);
                         setCenterAndZoomForMapWindowFocus(lon, lat, null);
                     }
                 }
@@ -840,9 +842,9 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
             case (ZOOM_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
-                    int zoom = data.getIntExtra(LibraryConstants.ZOOMLEVEL, 1);
+                    double lon = data.getDoubleExtra(LONGITUDE, 0d);
+                    double lat = data.getDoubleExtra(LATITUDE, 0d);
+                    int zoom = data.getIntExtra(ZOOMLEVEL, 1);
                     setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
                 }
                 break;
@@ -858,8 +860,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case (DATAPROPERTIES_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, -9999d);
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, -9999d);
+                        double lon = data.getDoubleExtra(LONGITUDE, -9999d);
+                        double lat = data.getDoubleExtra(LATITUDE, -9999d);
                         if (lon < -9000d) {
                             // no coordinate passed
                             // re-read
@@ -912,7 +914,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
             case (FORMUPDATE_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-                    String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                    String[] formArray = data.getStringArrayExtra(PREFS_KEY_FORM);
                     if (formArray != null) {
                         try {
                             long noteId = Long.parseLong(formArray[0]);
@@ -938,8 +940,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
     private void addBookmark() {
         GeoPoint mapCenter = mMapView.getMapPosition().getMapCenter();
-        final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
-        final float centerLon = mapCenter.longitudeE6 / LibraryConstants.E6;
+        final float centerLat = mapCenter.latitudeE6 / E6;
+        final float centerLon = mapCenter.longitudeE6 / E6;
 
         final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
         final String proposedName = "bookmark " + newDate;
@@ -993,8 +995,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         } else {
             MapViewPosition mapPosition = mMapView.getMapPosition();
             GeoPoint mapCenter = mapPosition.getMapCenter();
-            lon = mapCenter.longitudeE6 / LibraryConstants.E6;
-            lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+            lon = mapCenter.longitudeE6 / E6;
+            lat = mapCenter.latitudeE6 / E6;
             zoom = mapPosition.getZoomLevel();
         }
 
@@ -1031,12 +1033,12 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (centerX != null) {
             cx = centerX.floatValue();
         } else {
-            cx = (float) (mapCenter.longitudeE6 / LibraryConstants.E6);
+            cx = (float) (mapCenter.longitudeE6 / E6);
         }
         if (centerY != null) {
             cy = centerY.floatValue();
         } else {
-            cy = (float) (mapCenter.latitudeE6 / LibraryConstants.E6);
+            cy = (float) (mapCenter.latitudeE6 / E6);
         }
         if (zoom != null) {
             zoomLevel = zoom;
@@ -1095,8 +1097,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             EditManager.INSTANCE.onGpsUpdate(lon, lat);
 
             float[] nsweE6 = getMapWorldBoundsE6();
-            int latE6 = (int) ((float) lat * LibraryConstants.E6);
-            int lonE6 = (int) ((float) lon * LibraryConstants.E6);
+            int latE6 = (int) ((float) lat * E6);
+            int lonE6 = (int) ((float) lon * E6);
             boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
             int nE6 = (int) nsweE6[0];
@@ -1149,9 +1151,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //                startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
             case R.id.addbookmarkbutton:
-                // FIXME
-//                intent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
-//                startActivityForResult(intent, ZOOM_RETURN_CODE);
+                Intent bookmarksListIntent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
+                startActivityForResult(bookmarksListIntent, ZOOM_RETURN_CODE);
                 break;
             case R.id.menu_map_button:
                 boolean areButtonsVisible = mPeferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
@@ -1208,7 +1209,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 // generate screenshot in background in order to not freeze
                 try {
                     File tempDir = ResourcesManager.getInstance(MapviewActivity.this).getTempDir();
-                    final File tmpImageFile = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
+                    final File tmpImageFile = new File(tempDir, TMPPNGIMAGENAME);
                     new Thread(new Runnable() {
                         public void run() {
                             try {
