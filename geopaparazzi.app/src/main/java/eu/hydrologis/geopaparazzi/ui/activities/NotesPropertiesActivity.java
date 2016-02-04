@@ -28,23 +28,33 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
+import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.color.ColorStrokeObject;
+import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
+
+import static eu.hydrologis.geopaparazzi.utilities.Constants.PREFS_KEY_NOTES_CUSTOMCOLOR;
+import static eu.hydrologis.geopaparazzi.utilities.Constants.PREFS_KEY_NOTES_OPACITY;
+import static eu.hydrologis.geopaparazzi.utilities.Constants.PREFS_KEY_NOTES_TEXT_VISIBLE;
 
 /**
  * Notes properties activity.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class NotesPropertiesActivity extends AppCompatActivity {
+public class NotesPropertiesActivity extends AppCompatActivity implements IColorStrokePropertiesChangeListener {
     private SharedPreferences mPreferences;
+    private ColorStrokeObject notesColorStrokeObject;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -100,26 +110,32 @@ public class NotesPropertiesActivity extends AppCompatActivity {
         String defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
-        int arrayColorId = R.array.array_colornames;
-        int colorSpinnerId = R.id.colorSpinner;
-        prefsKey = Constants.PREFS_KEY_NOTES_CUSTOMCOLOR;
-        defaultStr = "blue";
-        makeSpinner(arrayColorId, colorSpinnerId, prefsKey, defaultStr);
+        String opacityStr = mPreferences.getString(PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
+        String colorStr = mPreferences.getString(PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
+        int opacity = Integer.parseInt(opacityStr);
+        int initColor = ColorUtilities.toColor(colorStr);
 
-        int arrayOpacityId = R.array.array_alpha;
-        int opacitySpinnerId = R.id.alphaSpinner;
-        prefsKey = Constants.PREFS_KEY_NOTES_OPACITY;
-        defaultStr = "100";
-        makeSpinner(arrayOpacityId, opacitySpinnerId, prefsKey, defaultStr);
+        notesColorStrokeObject = new ColorStrokeObject();
+        notesColorStrokeObject.hasFill = true;
+        notesColorStrokeObject.fillColor = initColor;
+        notesColorStrokeObject.fillAlpha = opacity;
+
+        final Button paletteButton = (Button) findViewById(R.id.gpslog_palette);
+        paletteButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(notesColorStrokeObject);
+                colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");
+            }
+        });
 
         // show labels
         final CheckBox showLabelsCheckbox = (CheckBox) findViewById(R.id.checkShowLabels);
-        boolean showLabels = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, true);
+        boolean showLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         showLabelsCheckbox.setChecked(showLabels);
         showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor editor = mPreferences.edit();
-                editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, showLabelsCheckbox.isChecked());
+                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showLabelsCheckbox.isChecked());
                 editor.apply();
             }
         });
@@ -170,6 +186,16 @@ public class NotesPropertiesActivity extends AppCompatActivity {
                 // ignore
             }
         });
+    }
+
+    @Override
+    public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
+        notesColorStrokeObject.fillColor = newColorStrokeObject.fillColor;
+        notesColorStrokeObject.fillAlpha = newColorStrokeObject.fillAlpha;
+        Editor editor = mPreferences.edit();
+        editor.putString(PREFS_KEY_NOTES_OPACITY, newColorStrokeObject.fillAlpha + "");
+        editor.putString(PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.getHex(newColorStrokeObject.fillColor));
+        editor.apply();
     }
 
 }

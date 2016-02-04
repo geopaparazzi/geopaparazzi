@@ -33,26 +33,26 @@ import eu.geopaparazzi.library.R;
  */
 public enum ColorUtilities {
     // MATERIAL DESIGN COLORS
-    red("#D32F2F"), //
-    pink("#C2185B"), //
-    purple("#7B1FA2"), //
-    deep_purple("#512DA8"), //
-    indigo("#303F9F"), //
-    blue("#1976D2"), //
-    light_blue("#0288D1"), //
-    cyan("#0097A7"), //
-    teal("#00796B"), //
-    green("#00796B"), //
-    light_green("#689F38"), //
-    lime("#AFB42B"), //
-    yellow("#FBC02D"), //
-    amber("#FFA000"), //
-    orange("#F57C00"), //
-    deep_orange("#E64A19"), //
-    brown("#5D4037"), //
+    RED("#D32F2F"), //
+    PINK("#C2185B"), //
+    PURPLE("#7B1FA2"), //
+    deep_purple("#512da8"), //
+    indigo("#303f9f"), //
+    blue("#1976d2"), //
+    light_blue("#0288d1"), //
+    cyan("#0097a7"), //
+    teal("#00796b"), //
+    green("#00796b"), //
+    light_green("#689f38"), //
+    lime("#afb42b"), //
+    yellow("#fbc02d"), //
+    amber("#ffa000"), //
+    orange("#f57c00"), //
+    deep_orange("#e64a19"), //
+    brown("#5d4037"), //
     grey("#616161"), //
-    blue_grey("#455A64"), //
-    white("#FFFFFF"), //
+    blue_grey("#455a64"), //
+    white("#ffffff"), //
     almost_black("#212121")//
     ; //
 

@@ -390,7 +390,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
             String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
-            float opacity = Float.parseFloat(opacityStr) * 255 / 100;
+            float opacity = Integer.parseInt(opacityStr);
 
             OvalShape notesShape = new OvalShape();
             Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

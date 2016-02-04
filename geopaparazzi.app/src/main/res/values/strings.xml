@@ -192,6 +192,7 @@
     <string name="custom_sdcard_path">Custom sdcard path</string>
     <string name="opacity">opacity</string>
     <string name="size">Size</string>
+    <string name="size_color">Size and colors</string>
     <string name="notes_properties">Notes Properties</string>
     <string name="visibility">Visibility</string>
     <string name="custom_icon_properties">Custom icon properties</string>
