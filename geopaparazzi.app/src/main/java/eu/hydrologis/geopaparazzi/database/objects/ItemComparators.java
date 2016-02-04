@@ -17,34 +17,41 @@
  */
 package eu.hydrologis.geopaparazzi.database.objects;
 
+import android.graphics.PointF;
+
 import java.util.Comparator;
 
 import eu.geopaparazzi.library.database.ANote;
+import eu.geopaparazzi.library.util.PointF3D;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * {@link MapItem} comparators to sort them.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ItemComparators {
 
     /**
-     * Sorts {@link MapItem}s by name. 
+     * Sorts {@link MapItem}s by name.
      */
     public static class MapItemNameComparator implements Comparator<MapItem> {
         private boolean doInverse = false;
+
         /**
-         * 
+         *
          */
         public MapItemNameComparator() {
         }
+
         /**
          * @param doInverse invert comparator.
          */
-        public MapItemNameComparator( boolean doInverse ) {
+        public MapItemNameComparator(boolean doInverse) {
             this.doInverse = doInverse;
         }
-        public int compare( MapItem m1, MapItem m2 ) {
+
+        public int compare(MapItem m1, MapItem m2) {
             int compareTo = m1.getName().compareTo(m2.getName());
             if (compareTo == 0) {
                 return 0;
@@ -58,22 +65,25 @@ public class ItemComparators {
     }
 
     /**
-     * Sorts {@link MapItem}s by id, which is equivalent to time order. 
+     * Sorts {@link MapItem}s by id, which is equivalent to time order.
      */
     public static class MapItemIdComparator implements Comparator<MapItem> {
         private boolean doInverse = false;
+
         /**
-         * 
+         *
          */
         public MapItemIdComparator() {
         }
+
         /**
          * @param doInverse invert comparator.
          */
-        public MapItemIdComparator( boolean doInverse ) {
+        public MapItemIdComparator(boolean doInverse) {
             this.doInverse = doInverse;
         }
-        public int compare( MapItem m1, MapItem m2 ) {
+
+        public int compare(MapItem m1, MapItem m2) {
             long id1 = m1.getId();
             long id2 = m2.getId();
             if (id1 < id2) {
@@ -87,22 +97,25 @@ public class ItemComparators {
     }
 
     /**
-     * Sorts {@link Bookmark}s by text. 
+     * Sorts {@link Bookmark}s by text.
      */
     public static class BookmarksComparator implements Comparator<Bookmark> {
         private boolean doInverse = false;
+
         /**
-         * 
+         *
          */
         public BookmarksComparator() {
         }
+
         /**
          * @param doInverse invert comparator.
          */
-        public BookmarksComparator( boolean doInverse ) {
+        public BookmarksComparator(boolean doInverse) {
             this.doInverse = doInverse;
         }
-        public int compare( Bookmark m1, Bookmark m2 ) {
+
+        public int compare(Bookmark m1, Bookmark m2) {
             String id1 = m1.getName();
             String id2 = m2.getName();
 
@@ -120,22 +133,24 @@ public class ItemComparators {
 
     /**
      * Sort notes by id.
-     *
      */
     public static class NotesComparator implements Comparator<ANote> {
         private boolean doInverse = false;
+
         /**
-         * 
+         *
          */
         public NotesComparator() {
         }
+
         /**
          * @param doInverse invert comparator.
          */
-        public NotesComparator( boolean doInverse ) {
+        public NotesComparator(boolean doInverse) {
             this.doInverse = doInverse;
         }
-        public int compare( ANote m1, ANote m2 ) {
+
+        public int compare(ANote m1, ANote m2) {
             String id1 = m1.getName();
             String id2 = m2.getName();
 
@@ -144,6 +159,46 @@ public class ItemComparators {
             if (compareTo < 0) {
                 return doInverse ? 1 : -1;
             } else if (compareTo > 0) {
+                return doInverse ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public static class NotesDistanceFromPointComparator implements Comparator<ANote> {
+        private boolean doInverse = false;
+        private PointF3D p;
+
+        /**
+         *
+         */
+        public NotesDistanceFromPointComparator(double lon, double lat) {
+            p = new PointF3D((float) lon, (float) lat);
+        }
+
+        /**
+         * @param doInverse invert comparator.
+         */
+        public NotesDistanceFromPointComparator(double lon, double lat, boolean doInverse) {
+            p = new PointF3D((float) lon, (float) lat);
+            this.doInverse = doInverse;
+        }
+
+        public int compare(ANote m1, ANote m2) {
+            float lon1 = (float) m1.getLon();
+            float lat1 = (float) m1.getLat();
+            float lon2 = (float) m2.getLon();
+            float lat2 = (float) m2.getLat();
+
+            PointF3D p1 = new PointF3D(lon1, lat1);
+            PointF3D p2 = new PointF3D(lon2, lat2);
+            float d1 = p.distance2d(p1);
+            float d2 = p.distance2d(p2);
+
+            if (d1 < d2) {
+                return doInverse ? 1 : -1;
+            } else if (d1 > d2) {
                 return doInverse ? -1 : 1;
             } else {
                 return 0;

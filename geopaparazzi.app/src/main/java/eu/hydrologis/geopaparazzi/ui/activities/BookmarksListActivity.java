@@ -63,7 +63,6 @@ public class BookmarksListActivity extends AppCompatActivity {
     private Map<String, Bookmark> bookmarksMap = new HashMap<>();
     private Comparator<Bookmark> bookmarksSorter = new ItemComparators.BookmarksComparator(false);
     private ListView listView;
-    private ArrayAdapter<String> arrayAdapter;
     private EditText filterText;
 
     public void onCreate(Bundle icicle) {
@@ -150,7 +149,7 @@ public class BookmarksListActivity extends AppCompatActivity {
     }
 
     private void redoAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, R.layout.activity_bookmarkslist_row, bookmarksNames) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.activity_bookmarkslist_row, bookmarksNames) {
             @Override
             public View getView(int position, View cView, ViewGroup parent) {
                 final View rowView = getLayoutInflater().inflate(R.layout.activity_bookmarkslist_row, parent, false);

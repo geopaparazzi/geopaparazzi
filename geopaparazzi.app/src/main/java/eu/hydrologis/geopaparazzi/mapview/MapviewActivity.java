@@ -128,6 +128,7 @@ import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.GpsDataListActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.NotesListActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.*;
@@ -1145,9 +1146,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 startActivity(editableLayersIntent);
                 return true;
             case R.id.addnotebytagbutton:
-                // FIXME
-//                Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
-//                startActivityForResult(intent, ZOOM_RETURN_CODE);
+                Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
+                startActivityForResult(intent, ZOOM_RETURN_CODE);
                 break;
             case R.id.addbookmarkbutton:
                 Intent bookmarksListIntent = new Intent(MapviewActivity.this, BookmarksListActivity.class);

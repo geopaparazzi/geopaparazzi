@@ -268,7 +268,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
                 // Recycle existing view if passed as parameter
                 View rowView = cView;
                 if (rowView == null) {
-                    LayoutInflater inflater = GpsDataListActivity.this.getLayoutInflater();
+                    LayoutInflater inflater = getLayoutInflater();
                     rowView = inflater.inflate(R.layout.activity_gpsdatalist_row, parent, false);
                     holder = new ViewHolder();
                     holder.nameView = (TextView) rowView.findViewById(R.id.filename);

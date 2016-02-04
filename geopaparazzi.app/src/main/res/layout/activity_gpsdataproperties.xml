@@ -166,7 +166,7 @@
                     android:layout_height="@dimen/min_touch_size"
                     android:layout_alignBottom="@+id/trackLength_label"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/ic_refresh_24dp"
+                    android:background="@drawable/ic_refresh_primary_24dp"
                     android:padding="@dimen/button_indent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/main_text_color" />

@@ -351,5 +351,6 @@
     <string name="active_elevation_diff">"Active elevation diff: "</string>
     <string name="selected_file_is_no_geopap_project">The selected file doesn\'t seem to be a valid Geopaparazzi database (*.gpap).</string>
     <string name="error_while_setting_project">An error occurred while setting the new project.</string>
+    <string name="sort_notes">Sort Notes</string>
 
 </resources>
