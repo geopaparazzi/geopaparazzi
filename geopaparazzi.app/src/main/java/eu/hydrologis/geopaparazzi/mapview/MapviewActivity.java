@@ -109,9 +109,9 @@ import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -641,7 +641,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 startActivity(gpsDatalistIntent);
                 return true;
             case MENU_DATA:
-                Intent datalistIntent = new Intent(this, DataListActivity.class);
+                Intent datalistIntent = new Intent(this, SpatialiteDatabasesTreeListActivity.class);
                 startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
                 return true;
             case MENU_SCALE_ID:
@@ -860,19 +860,21 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //            }
             case (DATAPROPERTIES_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        double lon = data.getDoubleExtra(LONGITUDE, -9999d);
-                        double lat = data.getDoubleExtra(LATITUDE, -9999d);
-                        if (lon < -9000d) {
-                            // no coordinate passed
-                            // re-read
-                            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
-                        } else {
-                            setCenterAndZoomForMapWindowFocus(lon, lat, null);
-                        }
-                    } catch (jsqlite.Exception e) {
-                        GPLog.error(this, null, e); //$NON-NLS-1$
-                    }
+
+                    // TODO what is this for???
+//                    try {
+//                        double lon = data.getDoubleExtra(LONGITUDE, -9999d);
+//                        double lat = data.getDoubleExtra(LATITUDE, -9999d);
+//                        if (lon < -9000d) {
+//                            // no coordinate passed
+//                            // re-read
+//                            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
+//                        } else {
+//                            setCenterAndZoomForMapWindowFocus(lon, lat, null);
+//                        }
+//                    } catch (jsqlite.Exception e) {
+//                        GPLog.error(this, null, e); //$NON-NLS-1$
+//                    }
                 }
                 break;
             }

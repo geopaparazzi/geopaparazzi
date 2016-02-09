@@ -1,6 +1,6 @@
 /*
  * Geopaparazzi - Digital field mapping on Android based devices
- * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview;
+package eu.geopaparazzi.spatialite.database.spatial.activities.databasesview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,29 +32,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import eu.geopaparazzi.library.core.maps.BaseMap;
-import eu.geopaparazzi.mapsforge.R;
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
+import eu.geopaparazzi.spatialite.R;
 
 /**
  * Expandable list for tile sources.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
+public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Activity activity;
     private List<String> folderList;
-    private List<List<BaseMap>> tablesList;
+    private List<List<SpatialiteMap>> tablesList;
 
     /**
      * @param activity         activity to use.
      * @param folder2TablesMap the folder and table map.
      */
-    public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<BaseMap>> folder2TablesMap) {
+    public SpatialiteDatabasesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<SpatialiteMap>> folder2TablesMap) {
         this.activity = activity;
         folderList = new ArrayList<String>();
         tablesList = new ArrayList<>();
-        for (Entry<String, List<BaseMap>> entry : folder2TablesMap.entrySet()) {
+        for (Entry<String, List<SpatialiteMap>> entry : folder2TablesMap.entrySet()) {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
@@ -61,8 +62,8 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     public Object getChild(int groupPosition, int childPosititon) {
-        List<BaseMap> list = tablesList.get(groupPosition);
-        BaseMap spatialTable = list.get(childPosititon);
+        List<SpatialiteMap> list = tablesList.get(groupPosition);
+        SpatialiteMap spatialTable = list.get(childPosititon);
         return spatialTable;
     }
 
@@ -72,26 +73,25 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final BaseMap baseMap = (BaseMap) getChild(groupPosition, childPosition);
+        final SpatialiteMap table = (SpatialiteMap) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.sources_list_item, null);
+            convertView = infalInflater.inflate(R.layout.spatialitedatabases_list_item, null);
         }
 
+        CheckBox isVibileCheckbox = (CheckBox) convertView.findViewById(R.id.isVisibleCheckbox);
+        isVibileCheckbox.setChecked(table.isVisible);
         TextView tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
-        tableNameView.setTypeface(null, Typeface.BOLD);
-
-        tableNameView.setText(baseMap.title);
-
+        tableNameView.setText(table.title);
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
-        tableTypeView.setText("[" + baseMap.mapType + "]");
+        tableTypeView.setText("[" + table.tableType + " -> " + table.geometryType + "]");
 
         return convertView;
     }
 
     public int getChildrenCount(int groupPosition) {
-        List<BaseMap> list = tablesList.get(groupPosition);
+        List<SpatialiteMap> list = tablesList.get(groupPosition);
         return list.size();
     }
 
@@ -111,7 +111,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         String folder = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.sources_list_header, null);
+            convertView = infalInflater.inflate(R.layout.spatialitedatabases_list_header, null);
         }
 
         TextView folderName = (TextView) convertView.findViewById(R.id.sources_header_descriptiontext);

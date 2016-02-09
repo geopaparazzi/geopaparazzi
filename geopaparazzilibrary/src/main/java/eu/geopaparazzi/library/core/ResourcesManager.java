@@ -17,14 +17,6 @@
  */
 package eu.geopaparazzi.library.core;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -33,11 +25,18 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
  * Singleton that takes care of resources management.
@@ -48,8 +47,6 @@ import eu.geopaparazzi.library.util.Utilities;
  */
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
     private static final String PATH_TEMP = "temp"; //$NON-NLS-1$
 
@@ -70,11 +67,6 @@ public class ResourcesManager implements Serializable {
      * The database file for geopap.
      */
     private File databaseFile;
-
-    /**
-     * The basemaps folder.
-     */
-    private File mapsDir;
 
     /**
      * The temporary folder.
@@ -249,21 +241,6 @@ public class ResourcesManager implements Serializable {
         }
 
 
-        String mapsFolderPath = preferences.getString(PREFS_KEY_CUSTOM_MAPSFOLDER, "asdasdpoipoi");
-        mapsFolderPath = mapsFolderPath.trim();
-        File customMapsDir = new File(mapsFolderPath);
-        if (customMapsDir.exists()) {
-            mapsDir = customMapsDir;
-        } else {
-            mapsDir = new File(sdcardDir, PATH_MAPS);
-        }
-        if (!mapsDir.exists())
-            if (!mapsDir.mkdir()) {
-                String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
-                GPDialogs.infoDialog(appContext, msgFormat, null);
-                mapsDir = sdcardDir;
-            }
-
         tempDir = new File(applicationSupportFolder, PATH_TEMP);
         if (!tempDir.exists())
             if (!tempDir.mkdir()) {
@@ -274,7 +251,6 @@ public class ResourcesManager implements Serializable {
 
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE, sdcardDir.getAbsolutePath());
-        editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER, mapsDir.getAbsolutePath());
         editor.commit();
     }
 
@@ -306,15 +282,6 @@ public class ResourcesManager implements Serializable {
      */
     public File getDatabaseFile() {
         return databaseFile;
-    }
-
-    /**
-     * Get the default maps folder.
-     *
-     * @return the default maps folder.
-     */
-    public File getMapsDir() {
-        return mapsDir;
     }
 
     /**

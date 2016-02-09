@@ -158,7 +158,8 @@ public class MapsDirManager {
     public void init( Context context, File mapsDir ) throws java.lang.Exception {
         try {
             if (mapsDir == null || !mapsDir.exists()) {
-                mapsDir = ResourcesManager.getInstance(context).getMapsDir();
+                // TODO
+//                mapsDir = ResourcesManager.getInstance(context).getMapsDir();
             }
             this.mapsDir = mapsDir;
         } catch (Throwable t) {

@@ -149,8 +149,8 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
             public void run() {
 
                 try {
-                    File mapsDir = ResourcesManager.getInstance(ImportActivity.this).getMapsDir();
-                    File newDbFile = new File(mapsDir, theTextToRunOn);
+                    File sdcardDir = ResourcesManager.getInstance(ImportActivity.this).getSdcardDir();
+                    File newDbFile = new File(sdcardDir, theTextToRunOn);
 
                     AssetManager assetManager = ImportActivity.this.getAssets();
                     InputStream inputStream = assetManager.open(LibraryConstants.GEOPAPARAZZI_TEMPLATE_DB_NAME);
@@ -183,7 +183,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
         String title = getString(R.string.select_gpx_file);
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPX.getExtension());
         if (mimeType == null) mimeType = "text/" + FileTypes.GPX.getExtension();
-        Uri uri = Uri.parse(ResourcesManager.getInstance(this).getMapsDir().getAbsolutePath());
+        Uri uri = Uri.parse(ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
         AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
     }
 

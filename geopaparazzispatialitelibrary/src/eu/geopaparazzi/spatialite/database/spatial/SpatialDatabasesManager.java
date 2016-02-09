@@ -78,7 +78,7 @@ public class SpatialDatabasesManager {
     }
 
     /**
-     * Create a handler for the given file.
+     * Create a raster handler for the given file.
      *
      * @param file the file.
      * @return the handler or null if the file didn't fit the .
@@ -86,9 +86,6 @@ public class SpatialDatabasesManager {
     public AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
-            if (Utilities.isNameFromHiddenFile(name)) {
-                return null;
-            }
             for (SpatialDataType spatialiteType : SpatialDataType.values()) {
                 if (!spatialiteType.isSpatialiteBased()) {
                     continue;
@@ -101,6 +98,31 @@ public class SpatialDatabasesManager {
                     } else {
                         sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
                     }
+                    if (sdb.isValid()) {
+                        return sdb;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create a vector handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file didn't fit the .
+     */
+    public AbstractSpatialDatabaseHandler getVectorHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            for (SpatialDataType spatialiteType : SpatialDataType.values()) {
+                if (!spatialiteType.isSpatialiteBased()) {
+                    continue;
+                }
+                String extension = spatialiteType.getExtension();
+                if (name.endsWith(extension)) {
+                    AbstractSpatialDatabaseHandler sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
                     if (sdb.isValid()) {
                         return sdb;
                     }

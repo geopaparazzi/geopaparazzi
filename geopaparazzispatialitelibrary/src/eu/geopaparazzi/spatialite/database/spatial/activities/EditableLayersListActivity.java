@@ -43,7 +43,6 @@ import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
@@ -59,7 +58,7 @@ import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTable
  */
 public class EditableLayersListActivity extends ListActivity implements OnTouchListener {
 
-    private String mapsDirPath;
+    private String sdcardPath;
 
     private int index = 0;
 
@@ -76,10 +75,10 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
         LinearLayout toggleButtonsView = (LinearLayout) findViewById(R.id.sourceTypeToggleButtonsView);
         toggleButtonsView.setVisibility(View.GONE);
 
-        buttonSelectionColor = getResources().getColor(R.color.main_selection);
+        buttonSelectionColor = getColor(R.color.main_selection);
 
         try {
-            mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
+            sdcardPath = ResourcesManager.getInstance(this).getSdcardDir().getPath();
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
@@ -169,9 +168,9 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     editableButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             if (currentEditable != null) {
-                                currentEditable.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                                currentEditable.setBackground(getDrawable(R.drawable.ic_layer_visible));
                             }
-                            editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                            editableButton.setBackground(getDrawable(R.drawable.ic_layer_editable));
                             currentEditable = editableButton;
 
                             SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(position);
@@ -184,10 +183,10 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
                     if (spatialVectorTable != null && spatialVectorTable == item) {
-                        editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                        editableButton.setBackground(getDrawable(R.drawable.ic_layer_editable));
                         currentEditable = editableButton;
                     } else if (item.isTableEnabled() == 1) {
-                        editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                        editableButton.setBackground(getDrawable(R.drawable.ic_layer_visible));
                     } else {
                         editableButton.setEnabled(false);
                     }
@@ -199,17 +198,17 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
 
                     String dbName = item.getFileName();
 
-                    if (mapsDirPath != null && tableHandler != null) {
+                    if (sdcardPath != null && tableHandler != null) {
                         String databasePath = tableHandler.getFile().getAbsolutePath();
-                        if (databasePath.startsWith(mapsDirPath)) {
-                            dbName = databasePath.replaceFirst(mapsDirPath, "");
+                        if (databasePath.startsWith(sdcardPath)) {
+                            dbName = databasePath.replaceFirst(sdcardPath, "");
                             if (dbName.startsWith(File.separator)) {
                                 dbName = dbName.substring(1);
                             }
                         }
                     }
 
-                    descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + "\n" + "database: "
+                    descriptionView.setText(item.getGeomName() + ": " + item.getTableTypeDescription() + "\n" + "database: "
                             + dbName);
 
                 } catch (jsqlite.Exception e1) {

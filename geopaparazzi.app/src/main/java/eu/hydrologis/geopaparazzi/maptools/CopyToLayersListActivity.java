@@ -36,12 +36,10 @@ import android.widget.Toast;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -60,8 +58,6 @@ import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class CopyToLayersListActivity extends ListActivity implements OnTouchListener {
-
-    private String mapsDirPath;
 
     private SpatialVectorTable spatialVectorTable;
 
@@ -86,11 +82,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
             int fromTableGeomTypeInt = vectorTable.getGeomType();
             GeometryType fromTableGeometryType = GeometryType.forValue(fromTableGeomTypeInt);
 
-            mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
-
-
-            buttonSelectionColor = getResources().getColor(eu.geopaparazzi.spatialite.R.color.main_selection);
-
+            buttonSelectionColor = getColor(eu.geopaparazzi.spatialite.R.color.main_selection);
 
             final List<SpatialVectorTable> compatibleSpatialVectorTables = new ArrayList<SpatialVectorTable>();
             final List<String> compatibleSpatialVectorTablesNames = new ArrayList<String>();
@@ -179,24 +171,21 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                         editableButton.setEnabled(true);
                         editableButton.setBackground(getDrawable(eu.geopaparazzi.spatialite.R.drawable.ic_layer_visible));
 
-                        // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
-                        // mj10777: some tables may have more than one column, thus the column name will
-                        // also be shown item.getUniqueName()
                         nameView.setText(item.getTableName());
 
                         String dbName = item.getFileName();
 
-                        if (mapsDirPath != null && tableHandler != null) {
-                            String databasePath = tableHandler.getFile().getAbsolutePath();
-                            if (databasePath.startsWith(mapsDirPath)) {
-                                dbName = databasePath.replaceFirst(mapsDirPath, "");
-                                if (dbName.startsWith(File.separator)) {
-                                    dbName = dbName.substring(1);
-                                }
-                            }
-                        }
+//                        if (tableHandler != null) {
+//                            String databasePath = tableHandler.getFile().getAbsolutePath();
+//                            if (databasePath.startsWith(mapsDirPath)) {
+//                                dbName = databasePath.replaceFirst(mapsDirPath, "");
+//                                if (dbName.startsWith(File.separator)) {
+//                                    dbName = dbName.substring(1);
+//                                }
+//                            }
+//                        }
 
-                        descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + "\n" + "database: "
+                        descriptionView.setText(item.getGeomName() + ": " + item.getTableTypeDescription() + "\n" + "database: "
                                 + dbName);
 
                     } catch (jsqlite.Exception e1) {

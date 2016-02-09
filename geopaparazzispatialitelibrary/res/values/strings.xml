@@ -16,4 +16,8 @@
     <string name="toggle_visibility">toggle visibility</string>
     <string name="label_field">label field</string>
     <string name="label_size">label size</string>
+
+    <string name="select_table_types">Select types</string>
+    <string name="select_type">Select type</string>
+    <string name="remove_from_list">Remove %s from the list?</string>
 </resources>

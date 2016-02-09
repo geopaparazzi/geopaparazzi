@@ -221,12 +221,12 @@ public class TantoMapurlsListActivity extends ListActivity {
                         mapurlFileName = "tanto_" + tantoMapurl.title + ".mapurl";
                     }
 
-                    File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
-                    File mapurlFile = new File(mapsDir, mapurlFileName);
-                    if (!mapurlFile.getParentFile().exists()) {
-                        mapurlFile.getParentFile().mkdirs();
+                    File appSupporterDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getApplicationSupporterDir();
+                    File appsupporterFile = new File(appSupporterDir, mapurlFileName);
+                    if (!appsupporterFile.getParentFile().exists()) {
+                        appsupporterFile.getParentFile().mkdirs();
                     }
-                    File writtenFile = NetworkUtilities.sendGetRequest4File(url, mapurlFile, null, null, null);
+                    File writtenFile = NetworkUtilities.sendGetRequest4File(url, appsupporterFile, null, null, null);
 
                     Intent intent = getIntent();
                     intent.putExtra(TantoMapurlsActivity.KEY_DATA, true);

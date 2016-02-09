@@ -849,7 +849,6 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 Collections.sort(vectorTableList, orderComparator);
             }
         }
-        return;
     }
 
     /**

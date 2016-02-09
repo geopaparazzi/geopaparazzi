@@ -256,7 +256,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                     String title = getString(R.string.select_gpap_file);
                     String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPAP.getExtension());
                     if (mimeType == null) mimeType = "application/" + FileTypes.GPAP.getExtension();
-                    Uri uri = Uri.parse(ResourcesManager.getInstance(getActivity()).getMapsDir().getAbsolutePath());
+                    Uri uri = Uri.parse(ResourcesManager.getInstance(getActivity()).getSdcardDir().getAbsolutePath());
                     AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, mimeType, uri);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
@@ -526,8 +526,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             );
         } else {
             // create the default mapsforge data extraction db
-            File mapsDir = resourcesManager.getMapsDir();
-            File newDbFile = new File(mapsDir, MAPSFORGE_EXTRACTED_DB_NAME);
+            File applicationSupporterDir = resourcesManager.getApplicationSupporterDir();
+            File newDbFile = new File(applicationSupporterDir, MAPSFORGE_EXTRACTED_DB_NAME);
             if (!newDbFile.exists()) {
                 AssetManager assetManager = getActivity().getAssets();
                 InputStream inputStream = assetManager.open(MAPSFORGE_EXTRACTED_DB_NAME);

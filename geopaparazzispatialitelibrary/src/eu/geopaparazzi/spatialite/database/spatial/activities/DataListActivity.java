@@ -55,11 +55,12 @@ import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstan
  * Data listing activity.
  *
  * @author Andrea Antonello (www.hydrologis.com)
+ * @deprecated use folder based activity and then remove this
  */
 public class DataListActivity extends ListActivity implements View.OnClickListener {
 
     private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();
-    private String mapsDirPath;
+    private String sdcardPath;
 
     private EditText filterText;
     private String textToFilter = "";
@@ -83,15 +84,15 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
         toggleTablesButton = (Button) findViewById(R.id.toggleTablesButton);
         toggleTablesButton.setOnClickListener(this);
         toggleTablesButton.setText("Tables");
-        toggleTablesButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+        toggleTablesButton.setBackground(getDrawable(R.drawable.button_background_drawable_selected));
 
         toggleViewsButton = (Button) findViewById(R.id.toggleViewsButton);
         toggleViewsButton.setOnClickListener(this);
         toggleViewsButton.setText("Views");
-        toggleViewsButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+        toggleViewsButton.setBackground(getDrawable(R.drawable.button_background_drawable_selected));
 
         try {
-            mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
+            sdcardPath = ResourcesManager.getInstance(this).getSdcardDir().getPath();
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
@@ -143,7 +144,6 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
 
         ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row,
                 filteredTables) {
-            @SuppressWarnings("nls")
             @Override
             public View getView(final int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -254,17 +254,17 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
 
                 String dbName = item.getFileName();
 
-                if (mapsDirPath != null && tableHandler != null) {
+                if (sdcardPath != null && tableHandler != null) {
                     String databasePath = tableHandler.getFile().getAbsolutePath();
-                    if (databasePath.startsWith(mapsDirPath)) {
-                        dbName = databasePath.replaceFirst(mapsDirPath, "");
+                    if (databasePath.startsWith(sdcardPath)) {
+                        dbName = databasePath.replaceFirst(sdcardPath, "");
                         if (dbName.startsWith(File.separator)) {
                             dbName = dbName.substring(1);
                         }
                     }
                 }
 
-                descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + ", db: " + dbName);
+                descriptionView.setText(item.getGeomName() + ": " + item.getTableTypeDescription() + ", db: " + dbName);
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -331,18 +331,18 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
     public void onClick(View view) {
         if (view == toggleTablesButton) {
             if (!showTables) {
-                toggleTablesButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+                toggleTablesButton.setBackground(getDrawable(R.drawable.button_background_drawable_selected));
             } else {
-                toggleTablesButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
+                toggleTablesButton.setBackground(getDrawable(R.drawable.button_background_drawable));
             }
             showTables = !showTables;
         }
         if (view == toggleViewsButton) {
             if (!showViews) {
-                toggleViewsButton.setBackgroundDrawable(getResources().getDrawable(
+                toggleViewsButton.setBackground(getDrawable(
                         R.drawable.button_background_drawable_selected));
             } else {
-                toggleViewsButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
+                toggleViewsButton.setBackground(getDrawable(R.drawable.button_background_drawable));
             }
             showViews = !showViews;
         }

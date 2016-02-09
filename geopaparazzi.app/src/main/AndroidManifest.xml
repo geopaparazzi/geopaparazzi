@@ -264,6 +264,16 @@
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity
+            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity"
+            android:label="Spatialite Databases"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"
