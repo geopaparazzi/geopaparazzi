@@ -31,17 +31,15 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -124,35 +122,25 @@ public class GpsInfoDialogFragment extends DialogFragment {
         String satellitesString = context.getString(R.string.satellites);
         String gpsStatusString = context.getString(R.string.gps_status);
         String mapString = context.getString(R.string.map);
-        String mapsFolderString = context.getString(R.string.mapsfolder);
-        String nameString = context.getString(R.string.name_lc);
+        String pathString = context.getString(R.string.path_lc);
         String boundsString = context.getString(R.string.bounds);
         String indent = "  ";
 
         double azimuth = orientationSensor.getAzimuthDegrees();
         StringBuilder sb = new StringBuilder();
-        try {
-            File mapsDir = ResourcesManager.getInstance(context).getMapsDir();
 
-            if (mapsDir != null) {
-                sb.append(mapsFolderString).append(":\n");
-                sb.append(indent).append(mapsDir.getAbsolutePath()).append("\n\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        AbstractSpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
+        AbstractSpatialTable selectedMapTable = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable();
         if (selectedMapTable != null) {
-            String tableName = selectedMapTable.getTableName();
+            String path = selectedMapTable.getDatabasePath();
             float[] bounds = selectedMapTable.getTableBounds();
             String mapType = selectedMapTable.getMapType();
             sb.append(mapString).append(":\n");
-            sb.append(indent).append(nameString).append(": ").append(tableName).append(" (").append(mapType).append(")\n");
-            sb.append(indent).append(boundsString).append(":\n");
-            sb.append(indent).append(indent).append("s = ").append(bounds[1]).append("\n");
-            sb.append(indent).append(indent).append("n = ").append(bounds[0]).append("\n");
-            sb.append(indent).append(indent).append("w = ").append(bounds[3]).append("\n");
-            sb.append(indent).append(indent).append("e = ").append(bounds[2]).append("\n\n");
+            sb.append(pathString).append(": ").append(path).append("\n");
+            sb.append(boundsString).append(":\n");
+            sb.append(indent).append("s = ").append(bounds[1]).append("\n");
+            sb.append(indent).append("n = ").append(bounds[0]).append("\n");
+            sb.append(indent).append("w = ").append(bounds[3]).append("\n");
+            sb.append(indent).append("e = ").append(bounds[2]).append("\n\n");
         }
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             // sb.append(indent).append(nodataString).append("\n");

@@ -259,7 +259,6 @@
     <string name="creation_date">Creation date</string>
     <string name="creation_user">Project creation user</string>
     <string name="last_modification_user">Last project modification user</string>
-    <string name="mapsfolder">Maps folder</string>
     <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
     <string name="reset_string">reset</string>
     <string name="avaiable_layers">Available layers</string>
@@ -352,5 +351,6 @@
     <string name="selected_file_is_no_geopap_project">The selected file doesn\'t seem to be a valid Geopaparazzi database (*.gpap).</string>
     <string name="error_while_setting_project">An error occurred while setting the new project.</string>
     <string name="sort_notes">Sort Notes</string>
+    <string name="path_lc">path</string>
 
 </resources>
