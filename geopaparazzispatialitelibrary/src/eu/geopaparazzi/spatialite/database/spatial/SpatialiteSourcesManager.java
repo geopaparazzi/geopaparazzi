@@ -32,13 +32,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -57,6 +60,7 @@ public enum SpatialiteSourcesManager {
     private List<SpatialiteMap> mSpatialiteMaps;
 
     private HashMap<SpatialiteMap, SpatialVectorTable> mSpatialiteMaps2TablesMap = new HashMap<>();
+    private HashMap<SpatialiteMap, SpatialiteDatabaseHandler> mSpatialiteMaps2DbHandlersMap = new HashMap<>();
 
     private boolean mReReadBasemaps = true;
 
@@ -107,22 +111,36 @@ public enum SpatialiteSourcesManager {
      * @throws java.lang.Exception
      */
     private List<SpatialiteMap> getSpatialiteMapsFromPreferences() throws java.lang.Exception {
+        mSpatialiteMaps2TablesMap.clear();
+        clearHandlers();
+
         String baseMapsJson = mPreferences.getString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, "");
         List<SpatialiteMap> spatialiteMaps = SpatialiteMap.fromJsonString(baseMapsJson);
-        mSpatialiteMaps2TablesMap.clear();
 
-        // TODO this is ugly right now, needs to be changed
         for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-            List<SpatialVectorTable> tables = collectTablesFromFile(new File(spatialiteMap.databasePath));
-            for (SpatialVectorTable table : tables) {
-                SpatialiteMap tmpSpatialiteMap = table2BaseMap(table);
-                if (!mSpatialiteMaps2TablesMap.containsKey(tmpSpatialiteMap))
-                    mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
-            }
+            collectTablesFromFile(new File(spatialiteMap.databasePath));
         }
         return spatialiteMaps;
     }
 
+    private void clearHandlers() {
+        // close all databases
+        for (Map.Entry<SpatialiteMap, SpatialiteDatabaseHandler> entry : mSpatialiteMaps2DbHandlersMap.entrySet()) {
+            try {
+                entry.getValue().close();
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
+        mSpatialiteMaps2DbHandlersMap.clear();
+    }
+
+    /**
+     * Save the given list of SpatialiteMaps to the json preferences.
+     *
+     * @param spatialiteMaps
+     * @throws JSONException
+     */
     public void saveSpatialiteMapsToPreferences(List<SpatialiteMap> spatialiteMaps) throws JSONException {
         String spatialiteMapJson = SpatialiteMap.toJsonString(spatialiteMaps);
         Editor editor = mPreferences.edit();
@@ -130,62 +148,138 @@ public enum SpatialiteSourcesManager {
         editor.apply();
     }
 
+    /**
+     * Adds all SpatialiteMaps contained in the database in the given path.
+     * <p/>
+     * <p>SpatialiteMaps and database tables/handlers are added to the lists/maps of this manager.</p>
+     *
+     * @param file
+     * @return true, if at least one supported table was found.
+     */
     public boolean addSpatialiteMapFromFile(File file) {
         boolean foundSpatialiteMap = false;
         try {
-            if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
-
-            List<SpatialVectorTable> collectedTables = collectTablesFromFile(file);
-            if (collectedTables.size() > 0) foundSpatialiteMap = true;
-            saveToSpatialiteMap(collectedTables);
+            foundSpatialiteMap = collectTablesFromFile(file);
+            saveSpatialiteMapsToPreferences(mSpatialiteMaps);
         } catch (java.lang.Exception e) {
             GPLog.error(this, null, e);
         }
         return foundSpatialiteMap;
     }
 
-    public void removeSpatialiteMap(SpatialiteMap spatialiteMap) throws JSONException {
+    /**
+     * Remove a SpatialiteMap and save to preferences.
+     * <p/>
+     * <p>The SpatialiteMap related tables and handlers are also removed and the connection to
+     * the database is closed.</p>
+     *
+     * @param spatialiteMap
+     * @throws java.lang.Exception
+     */
+    public void removeSpatialiteMap(SpatialiteMap spatialiteMap) throws java.lang.Exception {
         mSpatialiteMaps.remove(spatialiteMap);
         mSpatialiteMaps2TablesMap.remove(spatialiteMap);
+        SpatialiteDatabaseHandler handler = mSpatialiteMaps2DbHandlersMap.remove(spatialiteMap);
+        if (handler != null) {
+            handler.close();
+        }
         saveSpatialiteMapsToPreferences(mSpatialiteMaps);
     }
 
-    public void removeSpatialiteMaps(List<SpatialiteMap> spatialiteMaps) throws JSONException {
+    /**
+     * Remove a list of SpatialiteMap and save to preferences.
+     * <p/>
+     * <p>The SpatialiteMap related tables and handlers are also removed and the connections to
+     * the databases are closed.</p>
+     *
+     * @param spatialiteMaps
+     * @throws java.lang.Exception
+     */
+    public void removeSpatialiteMaps(List<SpatialiteMap> spatialiteMaps) throws java.lang.Exception {
         mSpatialiteMaps.removeAll(spatialiteMaps);
         for (SpatialiteMap spatialiteMap : spatialiteMaps) {
             mSpatialiteMaps2TablesMap.remove(spatialiteMap);
+            SpatialiteDatabaseHandler handler = mSpatialiteMaps2DbHandlersMap.remove(spatialiteMap);
+            if (handler != null) {
+                handler.close();
+            }
         }
         saveSpatialiteMapsToPreferences(mSpatialiteMaps);
     }
 
+    /**
+     * Collects all the tables from the given file and adds them to the current list/maps of tables.
+     *
+     * @param file
+     * @return true is at leats one supported table was found.
+     * @throws Exception
+     */
     @NonNull
-    private List<SpatialVectorTable> collectTablesFromFile(File file) throws IOException, Exception {
-        List<SpatialVectorTable> collectedTables = new ArrayList<>();
+    private boolean collectTablesFromFile(File file) throws java.lang.Exception {
+        if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
         /*
          * SPATIALITE TABLES
          */
-        try (AbstractSpatialDatabaseHandler sdbHandler = SpatialDatabasesManager.getInstance().getVectorHandlerForFile(file)) {
+        boolean foundTables = false;
+        SpatialiteDatabaseHandler sdbHandler = getVectorHandlerForFile(file);
+        if (sdbHandler != null) {
             List<SpatialVectorTable> tables = sdbHandler.getSpatialVectorTables(false);
             for (SpatialVectorTable table : tables) {
-                collectedTables.add(table);
+                SpatialiteMap tmpSpatialiteMap = table2BaseMap(table);
+                if (!mSpatialiteMaps2TablesMap.containsKey(tmpSpatialiteMap)) {
+                    mSpatialiteMaps.add(tmpSpatialiteMap);
+                    mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
+                    mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
+                    foundTables = true;
+                }
             }
         }
-        return collectedTables;
+        return foundTables;
     }
 
-    private void saveToSpatialiteMap(List<SpatialVectorTable> tablesList) throws JSONException {
-        for (SpatialVectorTable table : tablesList) {
-            SpatialiteMap newSpatialiteMap = table2BaseMap(table);
-            mSpatialiteMaps.add(newSpatialiteMap);
-            mSpatialiteMaps2TablesMap.put(newSpatialiteMap, table);
+    /**
+     * Create a vector handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file is not supported.
+     */
+    public SpatialiteDatabaseHandler getVectorHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            for (SpatialDataType spatialiteType : SpatialDataType.values()) {
+                if (!spatialiteType.isSpatialiteBased()) {
+                    continue;
+                }
+                String extension = spatialiteType.getExtension();
+                if (name.endsWith(extension)) {
+                    SpatialiteDatabaseHandler sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
+                    if (sdb.isValid()) {
+                        return sdb;
+                    }
+                }
+            }
         }
-        saveSpatialiteMapsToPreferences(mSpatialiteMaps);
+        return null;
     }
+
+//    private void saveToSpatialiteMap(List<SpatialVectorTable> tablesList) throws JSONException {
+//        for (SpatialVectorTable table : tablesList) {
+//            SpatialiteMap newSpatialiteMap = table2BaseMap(table);
+//            mSpatialiteMaps.add(newSpatialiteMap);
+//            mSpatialiteMaps2TablesMap.put(newSpatialiteMap, table);
+//        }
+//        saveSpatialiteMapsToPreferences(mSpatialiteMaps);
+//    }
 
 
     public HashMap<SpatialiteMap, SpatialVectorTable> getSpatialiteMaps2TablesMap() {
         getSpatialiteMaps();
         return mSpatialiteMaps2TablesMap;
+    }
+
+    public HashMap<SpatialiteMap, SpatialiteDatabaseHandler> getSpatialiteMaps2DbHandlersMap() {
+        getSpatialiteMaps();
+        return mSpatialiteMaps2DbHandlersMap;
     }
 
     @NonNull

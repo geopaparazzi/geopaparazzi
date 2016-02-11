@@ -281,8 +281,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         mExpListView.setClickable(true);
         mExpListView.setFocusable(true);
         mExpListView.setFocusableInTouchMode(true);
-        mExpListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//        mExpListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 //                int index = 0;
 //                SpatialiteMap selectedSpatialiteMap = null;
 //                for (Entry<String, List<SpatialiteMap>> entry : newMap.entrySet()) {
@@ -299,9 +299,9 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 //                    GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
 //                }
 //                finish();
-                return false;
-            }
-        });
+//                return false;
+//            }
+//        });
 
         mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

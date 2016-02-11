@@ -192,7 +192,7 @@ public class NotesListActivity extends AppCompatActivity {
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select sort mode");
+            builder.setTitle(R.string.select_sort_mode);
             builder.setSingleChoiceItems(checkItems, currentComparatorIndex, dialogListener);
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override

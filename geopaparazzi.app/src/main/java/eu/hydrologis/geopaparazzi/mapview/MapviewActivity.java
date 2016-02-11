@@ -860,21 +860,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //            }
             case (DATAPROPERTIES_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-
-                    // TODO what is this for???
-//                    try {
-//                        double lon = data.getDoubleExtra(LONGITUDE, -9999d);
-//                        double lat = data.getDoubleExtra(LATITUDE, -9999d);
-//                        if (lon < -9000d) {
-//                            // no coordinate passed
-//                            // re-read
-//                            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
-//                        } else {
-//                            setCenterAndZoomForMapWindowFocus(lon, lat, null);
-//                        }
-//                    } catch (jsqlite.Exception e) {
-//                        GPLog.error(this, null, e); //$NON-NLS-1$
-//                    }
+                    double lon = data.getDoubleExtra(LONGITUDE, 0d);
+                    double lat = data.getDoubleExtra(LATITUDE, 0d);
+                    int zoom = data.getIntExtra(ZOOMLEVEL, 1);
+                    setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
                 }
                 break;
             }

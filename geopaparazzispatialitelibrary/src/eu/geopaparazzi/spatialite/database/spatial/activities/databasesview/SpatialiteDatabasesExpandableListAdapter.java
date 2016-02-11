@@ -19,15 +19,22 @@ package eu.geopaparazzi.spatialite.database.spatial.activities.databasesview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,19 +45,31 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.color.ColorStrokeObject;
+import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.R;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import jsqlite.*;
+import jsqlite.Exception;
 
 /**
  * Expandable list for tile sources.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableListAdapter {
+public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableListAdapter implements IColorStrokePropertiesChangeListener {
 
     private Activity activity;
     private List<String> folderList;
@@ -61,6 +80,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
     private List<SpatialiteMap> allSpatialiteMaps = new ArrayList<>();
 
     private volatile boolean ignoreSpinnerEvents = false;
+    private SpatialiteMap currentPropertiesEditedSpatialiteMap;
 
     /**
      * @param activity         activity to use.
@@ -114,6 +134,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         CheckBox isVibileCheckbox;
         TextView tableNameView;
         TextView tableTypeView;
+        Button moreButton;
         View view;
     }
 
@@ -194,7 +215,134 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         viewHolder.tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         viewHolder.tableTypeView.setText("[" + spatialiteMap.geometryType + "]");
 
+        viewHolder.moreButton = (Button) convertView.findViewById(R.id.moreButton);
+        final ViewHolder finalViewHolder = viewHolder;
+        viewHolder.moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMoreMenu(finalViewHolder.moreButton, spatialiteMap);
+            }
+        });
+
+
         return viewHolder.view;
+    }
+
+    private void openMoreMenu(Button button, final SpatialiteMap spatialiteMap) {
+
+        final String zoomToTitle = "Zoom to";
+        final String labellingTitle = "Labelling";
+        final String propertiesTitle = "Properties";
+        final String extrasTitle = "Extras";
+
+        PopupMenu popup = new PopupMenu(this.activity, button);
+        popup.getMenu().add(zoomToTitle);
+        popup.getMenu().add(labellingTitle);
+        popup.getMenu().add(propertiesTitle);
+        popup.getMenu().add(extrasTitle);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                String actionName = item.getTitle().toString();
+                try {
+                    if (actionName.equals(zoomToTitle)) {
+                        zoomTo(spatialiteMap);
+                    } else if (actionName.equals(labellingTitle)) {
+                        labelling(spatialiteMap);
+                    } else if (actionName.equals(propertiesTitle)) {
+                        properties(spatialiteMap);
+                    } else if (actionName.equals(extrasTitle)) {
+                        extras(spatialiteMap);
+                    }
+                } catch (Exception e) {
+                    GPLog.error(this, null, e);
+                }
+                return true;
+            }
+
+
+        });
+        popup.show();
+    }
+
+    private void extras(SpatialiteMap spatialiteMap) {
+
+    }
+
+    private void properties(SpatialiteMap spatialiteMap) {
+        currentPropertiesEditedSpatialiteMap = spatialiteMap;
+        SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(spatialiteMap);
+        Style style = spatialVectorTable.getStyle();
+        ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
+        boolean isPoint = spatialVectorTable.isPoint();
+        boolean isLine = spatialVectorTable.isLine();
+        boolean isPolygon = spatialVectorTable.isPolygon();
+        if (isPolygon || isPoint) {
+            colorStrokeObject.hasFill = true;
+            colorStrokeObject.fillColor = ColorUtilities.toColor(style.fillcolor);
+            colorStrokeObject.fillAlpha = (int) (style.fillalpha * 255);
+        }
+        if (isPolygon || isLine || isPoint) {
+            colorStrokeObject.hasStroke = true;
+            colorStrokeObject.strokeColor = ColorUtilities.toColor(style.strokecolor);
+            colorStrokeObject.strokeAlpha = (int) (style.strokealpha * 255);
+
+            colorStrokeObject.hasStrokeWidth = true;
+            colorStrokeObject.strokeWidth = (int) style.width;
+        }
+        // TODO add point shape and size
+        ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
+        colorStrokeDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Color Stroke Dialog");
+
+    }
+
+    @Override
+    public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
+        if (currentPropertiesEditedSpatialiteMap != null) {
+            SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(currentPropertiesEditedSpatialiteMap);
+            Style style = spatialVectorTable.getStyle();
+            boolean isPoint = spatialVectorTable.isPoint();
+            boolean isLine = spatialVectorTable.isLine();
+            boolean isPolygon = spatialVectorTable.isPolygon();
+            if (isPolygon || isPoint) {
+                style.fillcolor = ColorUtilities.getHex(newColorStrokeObject.fillColor);
+                style.fillalpha = newColorStrokeObject.fillAlpha / 255f;
+            }
+            if (isPolygon || isLine || isPoint) {
+                style.strokecolor = ColorUtilities.getHex(newColorStrokeObject.strokeColor);
+                style.strokealpha = newColorStrokeObject.strokeAlpha / 255f;
+                style.width = newColorStrokeObject.strokeWidth;
+            }
+
+            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);
+            try {
+                spatialiteDatabaseHandler.updateStyle(style);
+            } catch (jsqlite.Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
+
+    }
+
+    private void labelling(SpatialiteMap spatialiteMap) {
+    }
+
+    private void zoomTo(SpatialiteMap spatialiteMap) throws Exception {
+        HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+        SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(spatialiteMap);
+        HashMap<SpatialiteMap, SpatialVectorTable> spatialiteMaps2TablesMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
+        SpatialVectorTable spatialVectorTable = spatialiteMaps2TablesMap.get(spatialiteMap);
+        if (spatialiteDatabaseHandler != null) {
+            float[] tableBounds = spatialiteDatabaseHandler.getTableBounds(spatialVectorTable);
+            double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
+            double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
+            Intent intent = activity.getIntent();
+            intent.putExtra(LibraryConstants.LATITUDE, lat);
+            intent.putExtra(LibraryConstants.LONGITUDE, lon);
+            intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
+            activity.setResult(Activity.RESULT_OK, intent);
+            activity.finish();
+        }
     }
 
     public int getChildrenCount(int groupPosition) {
