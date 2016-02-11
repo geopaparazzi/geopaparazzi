@@ -38,6 +38,7 @@ public class SpatialiteMap {
     public static final String TABLE_TYPE = "tableType";
     public static final String GEOMETRY_TYPE = "geometryType";
     public static final String ISVISIBLE = "isVisible";
+    public static final String ORDER = "order";
     /**
      * The title of the map, in that case the table name.
      */
@@ -48,6 +49,7 @@ public class SpatialiteMap {
     public String geometryType;
     public String title;
     public boolean isVisible = true;
+    public double order = 0;
 
     public JSONObject toJson() throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -56,6 +58,7 @@ public class SpatialiteMap {
         jsonObject.put(GEOMETRY_TYPE, geometryType);
         jsonObject.put(TITLE, title);
         jsonObject.put(ISVISIBLE, isVisible);
+        jsonObject.put(ORDER, order);
         return jsonObject;
     }
 
@@ -80,6 +83,7 @@ public class SpatialiteMap {
             map.geometryType = jsonObject.getString(GEOMETRY_TYPE);
             map.title = jsonObject.getString(TITLE);
             map.isVisible = jsonObject.getBoolean(ISVISIBLE);
+            map.order = jsonObject.getDouble(ORDER);
 
             File databaseFile = new File(map.databasePath);
             if (databaseFile.exists()) {
@@ -97,6 +101,7 @@ public class SpatialiteMap {
                 ", geometryType='" + geometryType + '\'' +
                 ", databasePath='" + databasePath + '\'' +
                 ", isVisible='" + isVisible + '\'' +
+                ", order='" + order + '\'' +
                 '}';
     }
 
@@ -110,7 +115,6 @@ public class SpatialiteMap {
         if (!databasePath.equals(spatialiteMap.databasePath)) return false;
         if (!tableType.equals(spatialiteMap.tableType)) return false;
         if (!geometryType.equals(spatialiteMap.geometryType)) return false;
-        if (isVisible != spatialiteMap.isVisible) return false;
         return title.equals(spatialiteMap.title);
 
     }
@@ -121,7 +125,6 @@ public class SpatialiteMap {
         result = 31 * result + tableType.hashCode();
         result = 31 * result + geometryType.hashCode();
         result = 31 * result + title.hashCode();
-        result = 31 * result + String.valueOf(isVisible).hashCode();
         return result;
     }
 }

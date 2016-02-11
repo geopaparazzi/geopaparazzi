@@ -306,26 +306,22 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // When clicked on child, function longClick is executed
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-                    int childPosition = ExpandableListView.getPackedPositionChild(id);
 
                     int index = 0;
-                    for (String group : newMap.keySet()) {
+                    for (final String group : newMap.keySet()) {
                         if (index == groupPosition) {
-                            List<SpatialiteMap> spatialiteMapList = newMap.get(group);
-                            final SpatialiteMap spatialiteMap = spatialiteMapList.get(childPosition);
 
-                            GPDialogs.yesNoMessageDialog(SpatialiteDatabasesTreeListActivity.this, String.format(getString(R.string.remove_from_list), spatialiteMap.title), new Runnable() {
+                            GPDialogs.yesNoMessageDialog(SpatialiteDatabasesTreeListActivity.this, String.format(getString(R.string.remove_from_list), group), new Runnable() {
                                 @Override
                                 public void run() {
+                                    List<SpatialiteMap> spatialiteMapList = newMap.get(group);
                                     try {
-                                        SpatialiteSourcesManager.INSTANCE.removeSpatialiteMap(spatialiteMap);
-                                    } catch (JSONException e) {
+                                        SpatialiteSourcesManager.INSTANCE.removeSpatialiteMaps(spatialiteMapList);
+                                    } catch (Exception e) {
                                         GPLog.error(this, null, e);
                                     }
-
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -340,12 +336,54 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                 }
                             }, null);
 
+
                             return true;
                         }
                         index++;
                     }
                     return true;
                 }
+//                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+//                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+//                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+//
+//                    int index = 0;
+//                    for (String group : newMap.keySet()) {
+//                        if (index == groupPosition) {
+//                            List<SpatialiteMap> spatialiteMapList = newMap.get(group);
+//
+//
+//                            final SpatialiteMap spatialiteMap = spatialiteMapList.get(childPosition);
+//
+//                            GPDialogs.yesNoMessageDialog(SpatialiteDatabasesTreeListActivity.this, String.format(getString(R.string.remove_from_list), spatialiteMap.title), new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    try {
+//                                        SpatialiteSourcesManager.INSTANCE.removeSpatialiteMap(spatialiteMap);
+//                                    } catch (JSONException e) {
+//                                        GPLog.error(this, null, e);
+//                                    }
+//
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            try {
+//                                                refreshData(SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps());
+//                                            } catch (Exception e) {
+//                                                GPLog.error(this, null, e);
+//                                            }
+//                                        }
+//                                    });
+//
+//                                }
+//                            }, null);
+//
+//                            return true;
+//                        }
+//                        index++;
+//                    }
+//                    return true;
+//                }
                 return false;
             }
         });

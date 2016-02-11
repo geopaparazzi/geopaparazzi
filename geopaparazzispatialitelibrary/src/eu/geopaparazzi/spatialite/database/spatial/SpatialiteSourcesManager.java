@@ -28,6 +28,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public enum SpatialiteSourcesManager {
     private SharedPreferences mPreferences;
     private List<SpatialiteMap> mSpatialiteMaps;
 
-    private HashMap<SpatialiteMap, AbstractSpatialTable> mSpatialiteMaps2TablesMap = new HashMap<>();
+    private HashMap<SpatialiteMap, SpatialVectorTable> mSpatialiteMaps2TablesMap = new HashMap<>();
 
     private boolean mReReadBasemaps = true;
 
@@ -112,8 +113,8 @@ public enum SpatialiteSourcesManager {
 
         // TODO this is ugly right now, needs to be changed
         for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-            List<AbstractSpatialTable> tables = collectTablesFromFile(new File(spatialiteMap.databasePath));
-            for (AbstractSpatialTable table : tables) {
+            List<SpatialVectorTable> tables = collectTablesFromFile(new File(spatialiteMap.databasePath));
+            for (SpatialVectorTable table : tables) {
                 SpatialiteMap tmpSpatialiteMap = table2BaseMap(table);
                 if (!mSpatialiteMaps2TablesMap.containsKey(tmpSpatialiteMap))
                     mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
@@ -134,7 +135,7 @@ public enum SpatialiteSourcesManager {
         try {
             if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
 
-            List<AbstractSpatialTable> collectedTables = collectTablesFromFile(file);
+            List<SpatialVectorTable> collectedTables = collectTablesFromFile(file);
             if (collectedTables.size() > 0) foundSpatialiteMap = true;
             saveToSpatialiteMap(collectedTables);
         } catch (java.lang.Exception e) {
@@ -149,28 +150,42 @@ public enum SpatialiteSourcesManager {
         saveSpatialiteMapsToPreferences(mSpatialiteMaps);
     }
 
+    public void removeSpatialiteMaps(List<SpatialiteMap> spatialiteMaps) throws JSONException {
+        mSpatialiteMaps.removeAll(spatialiteMaps);
+        for (SpatialiteMap spatialiteMap : spatialiteMaps) {
+            mSpatialiteMaps2TablesMap.remove(spatialiteMap);
+        }
+        saveSpatialiteMapsToPreferences(mSpatialiteMaps);
+    }
+
     @NonNull
-    private List<AbstractSpatialTable> collectTablesFromFile(File file) throws IOException, Exception {
-        List<AbstractSpatialTable> collectedTables = new ArrayList<>();
+    private List<SpatialVectorTable> collectTablesFromFile(File file) throws IOException, Exception {
+        List<SpatialVectorTable> collectedTables = new ArrayList<>();
         /*
          * SPATIALITE TABLES
          */
         try (AbstractSpatialDatabaseHandler sdbHandler = SpatialDatabasesManager.getInstance().getVectorHandlerForFile(file)) {
             List<SpatialVectorTable> tables = sdbHandler.getSpatialVectorTables(false);
-            for (AbstractSpatialTable table : tables) {
+            for (SpatialVectorTable table : tables) {
                 collectedTables.add(table);
             }
         }
         return collectedTables;
     }
 
-    private void saveToSpatialiteMap(List<AbstractSpatialTable> tablesList) throws JSONException {
-        for (AbstractSpatialTable table : tablesList) {
+    private void saveToSpatialiteMap(List<SpatialVectorTable> tablesList) throws JSONException {
+        for (SpatialVectorTable table : tablesList) {
             SpatialiteMap newSpatialiteMap = table2BaseMap(table);
             mSpatialiteMaps.add(newSpatialiteMap);
             mSpatialiteMaps2TablesMap.put(newSpatialiteMap, table);
         }
         saveSpatialiteMapsToPreferences(mSpatialiteMaps);
+    }
+
+
+    public HashMap<SpatialiteMap, SpatialVectorTable> getSpatialiteMaps2TablesMap() {
+        getSpatialiteMaps();
+        return mSpatialiteMaps2TablesMap;
     }
 
     @NonNull

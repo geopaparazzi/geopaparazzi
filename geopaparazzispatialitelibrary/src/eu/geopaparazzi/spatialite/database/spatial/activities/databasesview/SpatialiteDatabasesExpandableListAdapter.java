@@ -20,20 +20,30 @@ package eu.geopaparazzi.spatialite.database.spatial.activities.databasesview;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
+import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.R;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * Expandable list for tile sources.
@@ -45,6 +55,12 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
     private Activity activity;
     private List<String> folderList;
     private List<List<SpatialiteMap>> tablesList;
+    private int count = 0;
+    private final String[] orderArray;
+    private final HashMap<SpatialiteMap, ViewHolder> spatialiteMaps2Viewholders = new HashMap<>();
+    private List<SpatialiteMap> allSpatialiteMaps = new ArrayList<>();
+
+    private volatile boolean ignoreSpinnerEvents = false;
 
     /**
      * @param activity         activity to use.
@@ -56,38 +72,129 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         tablesList = new ArrayList<>();
         for (Entry<String, List<SpatialiteMap>> entry : folder2TablesMap.entrySet()) {
             folderList.add(entry.getKey());
-            tablesList.add(entry.getValue());
+            List<SpatialiteMap> spatialiteMaps = entry.getValue();
+            tablesList.add(spatialiteMaps);
+            allSpatialiteMaps.addAll(spatialiteMaps);
         }
+        for (SpatialiteMap spatialiteMap : allSpatialiteMaps) {
+            count++;
+        }
+
+        orderArray = new String[count];
+        for (int i = 0; i < count; i++) {
+            orderArray[i] = String.valueOf(i);
+        }
+
+        orderSpatialiteMaps();
+
+    }
+
+    private void orderSpatialiteMaps() {
+
+        Collections.sort(allSpatialiteMaps, new SpatialiteMapOrderComparator());
+        for (int i = 0; i < allSpatialiteMaps.size(); i++) {
+            allSpatialiteMaps.get(i).order = i;
+        }
+
 
     }
 
     public Object getChild(int groupPosition, int childPosititon) {
         List<SpatialiteMap> list = tablesList.get(groupPosition);
-        SpatialiteMap spatialTable = list.get(childPosititon);
-        return spatialTable;
+        SpatialiteMap spatialiteMap = list.get(childPosititon);
+        return spatialiteMap;
     }
 
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
+    private static class ViewHolder {
+        Spinner orderSpinner;
+        CheckBox isVibileCheckbox;
+        TextView tableNameView;
+        TextView tableTypeView;
+        View view;
+    }
+
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final SpatialiteMap table = (SpatialiteMap) getChild(groupPosition, childPosition);
+        final SpatialiteMap spatialiteMap = (SpatialiteMap) getChild(groupPosition, childPosition);
+        ViewHolder viewHolder = spatialiteMaps2Viewholders.get(spatialiteMap);
 
-        if (convertView == null) {
+        if (viewHolder == null) {
+            viewHolder = new ViewHolder();
             LayoutInflater infalInflater = (LayoutInflater) this.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.spatialitedatabases_list_item, null);
+            viewHolder.view = infalInflater.inflate(R.layout.spatialitedatabases_list_item, null);
+            spatialiteMaps2Viewholders.put(spatialiteMap, viewHolder);
         }
 
-        CheckBox isVibileCheckbox = (CheckBox) convertView.findViewById(R.id.isVisibleCheckbox);
-        isVibileCheckbox.setChecked(table.isVisible);
-        TextView tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
-        tableNameView.setText(table.title);
-        TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
-        tableTypeView.setText("[" + table.tableType + " -> " + table.geometryType + "]");
+        convertView = viewHolder.view;
 
-        return convertView;
+        viewHolder.orderSpinner = (Spinner) convertView.findViewById(R.id.orderSpinner);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this.activity, android.R.layout.simple_spinner_item, orderArray);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        viewHolder.orderSpinner.setAdapter(spinnerArrayAdapter);
+        viewHolder.orderSpinner.setSelection((int) spatialiteMap.order);
+        final Spinner orderSpinner = viewHolder.orderSpinner;
+        viewHolder.orderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (ignoreSpinnerEvents) return;
+                String item = orderSpinner.getSelectedItem().toString();
+                double newOrder = count + 1;
+                try {
+                    newOrder = Double.parseDouble(item);
+                } catch (NumberFormatException e) {
+                    GPLog.error(this, null, e);
+                }
+
+                if (spatialiteMap.order == newOrder) {
+                    return;
+                } else if (spatialiteMap.order < newOrder) {
+                    newOrder = newOrder + 0.1;
+                } else {
+                    newOrder = newOrder - 0.1;
+                }
+                spatialiteMap.order = newOrder;
+
+                // reorder
+                orderSpatialiteMaps();
+
+                ignoreSpinnerEvents = true;
+                // fix combos
+                for (Entry<SpatialiteMap, ViewHolder> entry : spatialiteMaps2Viewholders.entrySet()) {
+                    int order = (int) entry.getKey().order;
+                    entry.getValue().orderSpinner.setSelection(order);
+                }
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        ignoreSpinnerEvents = false;
+                    }
+                }).start();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        viewHolder.isVibileCheckbox = (CheckBox) convertView.findViewById(R.id.isVisibleCheckbox);
+        viewHolder.isVibileCheckbox.setChecked(spatialiteMap.isVisible);
+        viewHolder.tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
+        viewHolder.tableNameView.setText(spatialiteMap.title);
+        viewHolder.tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
+        viewHolder.tableTypeView.setText("[" + spatialiteMap.geometryType + "]");
+
+        return viewHolder.view;
     }
 
     public int getChildrenCount(int groupPosition) {
