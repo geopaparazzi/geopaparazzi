@@ -23,7 +23,7 @@ import android.graphics.Color;
 import java.io.Serializable;
 
 /**
- * Class representing color and stroke for a shape.
+ * Class representing color and stroke and shape.
  *
  * @author Andrea Antonello
  */
@@ -40,6 +40,10 @@ public class ColorStrokeObject implements Serializable {
     public boolean hasStrokeWidth = false;
     public int strokeWidth = 8;
 
+    public boolean hasShape = false;
+    public int shapeSize = 50;
+    public String shapeWKT = "circle";
+
     public ColorStrokeObject duplicate() {
         ColorStrokeObject dup = new ColorStrokeObject();
         dup.hasFill = hasFill;
@@ -52,6 +56,11 @@ public class ColorStrokeObject implements Serializable {
 
         dup.hasStrokeWidth = hasStrokeWidth;
         dup.strokeWidth = strokeWidth;
+
+        dup.hasShape= hasShape;
+        dup.shapeSize= shapeSize;
+        dup.shapeWKT= shapeWKT;
+
         return dup;
     }
 

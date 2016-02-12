@@ -291,7 +291,11 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
             colorStrokeObject.hasStrokeWidth = true;
             colorStrokeObject.strokeWidth = (int) style.width;
         }
-        // TODO add point shape and size
+        if (isPoint) {
+            colorStrokeObject.hasShape = true;
+            colorStrokeObject.shapeWKT = style.shape;
+            colorStrokeObject.shapeSize = (int) style.size;
+        }
         ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
         colorStrokeDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Color Stroke Dialog");
 
@@ -312,6 +316,10 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
                 style.strokecolor = ColorUtilities.getHex(newColorStrokeObject.strokeColor);
                 style.strokealpha = newColorStrokeObject.strokeAlpha / 255f;
                 style.width = newColorStrokeObject.strokeWidth;
+            }
+            if (isPoint) {
+                style.shape = newColorStrokeObject.shapeWKT;
+                style.size = newColorStrokeObject.shapeSize;
             }
 
             HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();

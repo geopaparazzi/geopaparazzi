@@ -51,12 +51,14 @@ import org.mapsforge.core.model.GeoPoint;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
+import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
@@ -628,12 +630,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
         try {
             HashMap<SpatialiteMap, SpatialVectorTable> spatialiteMaps2TablesMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
             HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
-            for (Map.Entry<SpatialiteMap, SpatialiteDatabaseHandler> entry : spatialiteMaps2DbHandlersMap.entrySet()) {
+
+            List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+            Collections.sort(spatialiteMaps, new SpatialiteMapOrderComparator());
+            for (SpatialiteMap spatialiteMap : spatialiteMaps) {
                 if (stopDrawing()) {
                     // stop working
                     return;
                 }
-                SpatialiteMap spatialiteMap = entry.getKey();
                 if (!spatialiteMap.isVisible) {
                     continue;
                 }
@@ -641,8 +645,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 //                    // we do not draw outside of the zoom levels
 //                    continue;
 //                }
-                SpatialiteDatabaseHandler spatialDatabaseHandler = entry.getValue();
-
+                SpatialiteDatabaseHandler spatialDatabaseHandler = spatialiteMaps2DbHandlersMap.get(spatialiteMap);
                 SpatialVectorTable spatialTable = spatialiteMaps2TablesMap.get(spatialiteMap);
                 Style style = spatialTable.getStyle();
 

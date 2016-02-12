@@ -33,6 +33,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -41,6 +42,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
@@ -55,7 +57,6 @@ import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
  */
 public class ColorStrokeDialogFragment extends DialogFragment {
     private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
-    private final static String PREFS_KEY_COLORPROPERTIES_FLAGS = "PREFS_KEY_COLORPROPERTIES_FLAGS";
 
     private ImageView mWidthImageView;
     private ColorStrokeObject mCurrentColorStrokeObject;
@@ -69,6 +70,10 @@ public class ColorStrokeDialogFragment extends DialogFragment {
     private SeekBar mGreenSeekBar;
     private SeekBar mBlueSeekBar;
     private View mColorView;
+//    private ImageView mShapeSizeImageView;
+    private TextView mShapeSizeTextView;
+    private SeekBar mShapeSizeSeekBar;
+    private Spinner mShapeSpinner;
 
     /**
      * Create a dialog instance.
@@ -107,6 +112,47 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                         R.layout.fragment_dialog_color_stroke, null);
         builder.setView(colorStrokeDialogView); // add GUI to dialog
 
+        /*
+         * the shape size image
+         */
+        if (!mCurrentColorStrokeObject.hasShape) {
+            View shapeSizeView = colorStrokeDialogView.findViewById(R.id.shapeSizeDialogGridLayout);
+            shapeSizeView.setVisibility(View.GONE);
+        } else {
+//            mShapeSizeImageView = (ImageView) colorStrokeDialogView.findViewById(R.id.shapeSizeImageView);
+            mShapeSizeTextView = (TextView) colorStrokeDialogView.findViewById(R.id.shapeSizeTextView);
+            mShapeSizeSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.shapeSizeSeekBar);
+
+            mShapeSizeSeekBar.setOnSeekBarChangeListener(shapeSizeChanged);
+            mShapeSizeSeekBar.setProgress(mCurrentColorStrokeObject.shapeSize);
+            mShapeSizeTextView.setText(String.valueOf(mCurrentColorStrokeObject.shapeSize));
+
+
+            mShapeSpinner = (Spinner) colorStrokeDialogView.findViewById(R.id.shape_spinner);
+            int count = mShapeSpinner.getCount();
+            for (int i = 0; i < count; i++) {
+                if (mShapeSpinner.getItemAtPosition(i).equals(mCurrentColorStrokeObject.shapeWKT)) {
+                    mShapeSpinner.setSelection(i);
+                    break;
+                }
+            }
+            mShapeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                    Object selectedItem = mShapeSpinner.getSelectedItem();
+                    String shapeStr = selectedItem.toString();
+                    mCurrentColorStrokeObject.shapeWKT = shapeStr;
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    // ignore
+                }
+            });
+
+        }
+
+        /*
+         * the stroke width image
+         */
         if (!mCurrentColorStrokeObject.hasStrokeWidth) {
             View lineWidthView = colorStrokeDialogView.findViewById(R.id.lineWidthDialogGridLayout);
             lineWidthView.setVisibility(View.GONE);
@@ -130,6 +176,9 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             }
         });
 
+        /*
+         * The fill/stroke color picker part
+         */
         TextView title2 = (TextView) colorStrokeDialogView.findViewById(R.id.title2);
         if (!mCurrentColorStrokeObject.hasFill && !mCurrentColorStrokeObject.hasStroke) {
             View colorView = colorStrokeDialogView.findViewById(R.id.colorDialogGridLayout);
@@ -189,9 +238,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
                 @Override
                 public View getView(final int position, View cView, ViewGroup parent) {
-
                     ViewHolder holder;
-                    // Recycle existing view if passed as parameter
                     View rowView = cView;
                     if (rowView == null) {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -316,6 +363,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress,
                                               boolean fromUser) {
+                    if (progress == 0) progress = 1;
                     mCurrentColorStrokeObject.strokeWidth = progress;
 
                     int tmpColor = Color.BLACK;
@@ -332,6 +380,44 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                     canvas.drawLine(30, 50, 370, 50, p);
                     mWidthImageView.setImageBitmap(bitmap);
                     mWidthTextView.setText(String.valueOf(progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                } // required
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                } // required
+            };
+
+    private final OnSeekBarChangeListener shapeSizeChanged =
+            new OnSeekBarChangeListener() {
+
+//                int centerX = 200;
+//                int centerY = 50;
+//                final Bitmap bitmap = Bitmap.createBitmap(centerX * 2, centerY * 2, Bitmap.Config.ARGB_8888);
+//                final Canvas canvas = new Canvas(bitmap); // draws into bitmap
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress,
+                                              boolean fromUser) {
+                    if (progress == 0) progress = 1;
+                    mCurrentColorStrokeObject.shapeSize = progress;
+
+//                    Paint p = new Paint();
+//                    p.setColor(Color.BLACK);
+//                    p.setStrokeCap(Paint.Cap.ROUND);
+//                    p.setStrokeWidth(1);
+//
+//                    int delta = progress / 2;
+//                    if (delta == 0) delta = 1;
+//
+//                    // erase the bitmap and redraw the line
+//                    bitmap.eraseColor(getResources().getColor(android.R.color.transparent, getContext().getTheme()));
+//                    canvas.drawOval(centerX - delta, centerY + delta, centerX + delta, centerY - delta, p);
+//                    mShapeSizeImageView.setImageBitmap(bitmap);
+                    mShapeSizeTextView.setText(String.valueOf(progress));
                 }
 
                 @Override
