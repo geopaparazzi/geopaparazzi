@@ -44,7 +44,7 @@ import org.mapsforge.android.maps.Projection;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.color.ToolColors;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -52,7 +52,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;

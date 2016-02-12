@@ -16,17 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.color;
+package eu.geopaparazzi.library.style;
 
 /**
- * A simple interface to use to notify color and stroke changes.
+ * Color for tools.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface IColorStrokePropertiesChangeListener {
+public enum ToolColors {
+    selection_stroke("#ffff00"), //
+    selection_fill("#ff0000"), //
+    preview_stroke("#00bdbd"), //
+    preview_fill("#00ffff"), //
+    infoselection_stroke("#0000ff"), //
+    infoselection_fill("#0000ff") //
+    ; //
 
-    /**
-     * Called when there is the need to notify that a change occurred.
-     */
-    void onPropertiesChanged(ColorStrokeObject newColorStrokeObject);
+    private String hex;
+
+    ToolColors(String hex) {
+        this.hex = hex;
+    }
+
+    public String getHex() {
+        return hex;
+    }
 }

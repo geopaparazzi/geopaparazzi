@@ -36,10 +36,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
-import eu.geopaparazzi.library.color.ColorStrokeObject;
-import eu.geopaparazzi.library.color.ColorUtilities;
-import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
+import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;

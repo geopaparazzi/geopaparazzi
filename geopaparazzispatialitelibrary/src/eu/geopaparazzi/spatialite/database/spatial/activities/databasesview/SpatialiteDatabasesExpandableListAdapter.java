@@ -21,12 +21,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -46,23 +43,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
-import eu.geopaparazzi.library.color.ColorStrokeObject;
-import eu.geopaparazzi.library.color.ColorUtilities;
-import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
+import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
-import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.R;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.Style;
-import jsqlite.*;
 import jsqlite.Exception;
 
 /**
@@ -70,7 +64,7 @@ import jsqlite.Exception;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableListAdapter implements IColorStrokePropertiesChangeListener {
+public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Activity activity;
     private List<String> folderList;
@@ -296,7 +290,6 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
     }
 
-    @Override
     public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
         if (currentPropertiesEditedSpatialiteMap != null) {
             SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(currentPropertiesEditedSpatialiteMap);
@@ -326,6 +319,40 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
     }
 
     private void labelling(SpatialiteMap spatialiteMap) {
+        if (spatialiteMap != null) {
+            currentPropertiesEditedSpatialiteMap = spatialiteMap;
+            SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(spatialiteMap);
+
+            Style style = spatialVectorTable.getStyle();
+
+            LabelObject labelObject = new LabelObject();
+            labelObject.hasLabel = style.labelvisible == 1;
+            labelObject.labelFieldsList = spatialVectorTable.getTableFieldNamesList();
+            labelObject.label = style.labelfield;
+            labelObject.labelSize = (int) style.labelsize;
+
+            LabelDialogFragment labelDialogFragment = LabelDialogFragment.newInstance(labelObject);
+            labelDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Label Dialog");
+        }
+    }
+
+    public void onPropertiesChanged(LabelObject newLabelObject) {
+        if (currentPropertiesEditedSpatialiteMap != null) {
+            SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(currentPropertiesEditedSpatialiteMap);
+            Style style = spatialVectorTable.getStyle();
+
+            style.labelvisible = newLabelObject.hasLabel ? 1 : 0;
+            style.labelfield = newLabelObject.label;
+            style.labelsize = newLabelObject.labelSize;
+
+            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);
+            try {
+                spatialiteDatabaseHandler.updateStyle(style);
+            } catch (jsqlite.Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
     }
 
     private void zoomTo(SpatialiteMap spatialiteMap) throws Exception {

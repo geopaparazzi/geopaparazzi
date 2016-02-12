@@ -16,42 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.color;
+package eu.geopaparazzi.library.style;
 
 import android.graphics.Color;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Class representing color and stroke for a shape.
+ * Class representing a label of a feature.
  *
  * @author Andrea Antonello
  */
-public class ColorStrokeObject implements Serializable {
+public class LabelObject implements Serializable {
 
-    public boolean hasFill = false;
-    public int fillColor = Color.WHITE;
-    public int fillAlpha = 255;
+    public boolean hasLabel = false;
+    public int labelColor = Color.BLACK;
+    public int labelSize = 30;
+    public String label;
+    public List<String> labelFieldsList = new ArrayList<>();
 
-    public boolean hasStroke = false;
-    public int strokeColor = Color.BLACK;
-    public int strokeAlpha = 255;
-
-    public boolean hasStrokeWidth = false;
-    public int strokeWidth = 8;
-
-    public ColorStrokeObject duplicate() {
-        ColorStrokeObject dup = new ColorStrokeObject();
-        dup.hasFill = hasFill;
-        dup.fillColor = fillColor;
-        dup.fillAlpha = fillAlpha;
-
-        dup.hasStroke = hasStroke;
-        dup.strokeColor = strokeColor;
-        dup.strokeAlpha = strokeAlpha;
-
-        dup.hasStrokeWidth = hasStrokeWidth;
-        dup.strokeWidth = strokeWidth;
+    public LabelObject duplicate() {
+        LabelObject dup = new LabelObject();
+        dup.hasLabel = hasLabel;
+        dup.labelColor = labelColor;
+        dup.labelSize = labelSize;
+        dup.label = label;
+        dup.labelFieldsList = new ArrayList<>(labelFieldsList);
         return dup;
     }
 

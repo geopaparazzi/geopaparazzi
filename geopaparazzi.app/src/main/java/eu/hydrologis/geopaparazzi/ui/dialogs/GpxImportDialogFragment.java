@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;

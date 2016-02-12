@@ -23,7 +23,7 @@ import java.util.List;
 
 import android.content.Context;
 
-import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;

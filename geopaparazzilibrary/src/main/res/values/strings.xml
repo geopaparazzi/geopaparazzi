@@ -100,5 +100,9 @@
     <string name="label_red">red</string>
     <string name="label_green">green</string>
     <string name="label_blue">blue</string>
+    <string name="label_size">Label size</string>
+    <string name="toggle_label_visibility">Toggle label visibility</string>
+    <string name="label_field">Label field</string>
+    <string name="set_properties">Set properties</string>
 
 </resources>

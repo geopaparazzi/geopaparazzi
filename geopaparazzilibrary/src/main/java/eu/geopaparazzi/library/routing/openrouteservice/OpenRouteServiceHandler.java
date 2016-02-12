@@ -34,7 +34,7 @@ import org.xml.sax.InputSource;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import eu.geopaparazzi.library.color.ColorUtilities;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 

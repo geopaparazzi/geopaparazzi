@@ -36,8 +36,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
-import org.json.JSONException;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,6 +45,10 @@ import java.util.List;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
+import eu.geopaparazzi.library.style.ILabelPropertiesChangeListener;
+import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
@@ -60,7 +62,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter {
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, ILabelPropertiesChangeListener, IColorStrokePropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_TABLES = "showTables";
@@ -73,6 +75,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     private boolean[] mCheckedValues;
     private List<String> mTypeNames;
     private final LinkedHashMap<String, List<SpatialiteMap>> newMap = new LinkedHashMap<>();
+    private SpatialiteDatabasesExpandableListAdapter expandableListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,8 +279,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 
         }
 
-        SpatialiteDatabasesExpandableListAdapter listAdapter = new SpatialiteDatabasesExpandableListAdapter(this, newMap);
-        mExpListView.setAdapter(listAdapter);
+        expandableListAdapter = new SpatialiteDatabasesExpandableListAdapter(this, newMap);
+        mExpListView.setAdapter(expandableListAdapter);
         mExpListView.setClickable(true);
         mExpListView.setFocusable(true);
         mExpListView.setFocusableInTouchMode(true);
@@ -388,12 +391,21 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
             }
         });
 
-        int groupCount = listAdapter.getGroupCount();
+        int groupCount = expandableListAdapter.getGroupCount();
         for (int i = 0; i < groupCount; i++) {
             mExpListView.expandGroup(i);
         }
     }
 
+    public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
+        if (expandableListAdapter != null)
+            expandableListAdapter.onPropertiesChanged(newColorStrokeObject);
+    }
+
+    public void onPropertiesChanged(LabelObject newLabelObject) {
+        if (expandableListAdapter != null)
+            expandableListAdapter.onPropertiesChanged(newLabelObject);
+    }
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
 

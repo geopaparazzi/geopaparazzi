@@ -16,46 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.color;
+package eu.geopaparazzi.library.core.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-// class for the Select Line Width dialog
+/**
+ * Class to set color and stroke for shapes.
+ *
+ * @author Andrea Antonello
+ */
 public class ColorStrokeDialogFragment extends DialogFragment {
     private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
     private final static String PREFS_KEY_COLORPROPERTIES_FLAGS = "PREFS_KEY_COLORPROPERTIES_FLAGS";
@@ -235,64 +231,10 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             };
             gridview.setAdapter(colorsAdapter);
 
-//            GridLayout gridLayout = (GridLayout) colorStrokeDialogView.findViewById(R.id.availableColors);
-//
-//            int count = 0;
-//            for (int col = 0; col < 7; col++) {
-//                for (int row = 0; row < 3; row++) {
-//                    if (count > 21) break;
-//                    GridLayout.Spec colSpec = GridLayout.spec(col, GridLayout.BASELINE);
-//                    GridLayout.Spec rowSpec = GridLayout.spec(row);
-//
-//                    final Button button = new Button(getActivity());
-//                    button.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//                    button.setPadding(1, 1, 1, 1);
-//
-////                    int minTouchSize = 5;//(int) getResources().getDimension(R.dimen.min_touch_size);
-////                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(minTouchSize,
-////                            minTouchSize);
-////                    button.setLayoutParams(layoutParams);
-//
-//                    String hex = availableColors[count].getHex();
-//                    int c = ColorUtilities.toColor(hex);
-//                    button.setBackgroundColor(c);
-//                    button.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            int color = Color.TRANSPARENT;
-//                            Drawable background = button.getBackground();
-//                            if (background instanceof ColorDrawable)
-//                                color = ((ColorDrawable) background).getColor();
-//
-//                            int red = Color.red(color);
-//                            int GREEN = Color.GREEN(color);
-//                            int blue = Color.blue(color);
-//                            int argb = Color.argb(red, GREEN, blue, mAlphaSeekBar.getProgress());
-//                            mColorView.setBackgroundColor(argb);
-//                            mRedSeekBar.setProgress(red);
-//                            mGreenSeekBar.setProgress(GREEN);
-//                            mBlueSeekBar.setProgress(blue);
-//
-//                            if (handlingFillColor) {
-//                                mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-//                                        mBlueSeekBar.getProgress());
-//                                mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
-//                            } else {
-//                                mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-//                                        mBlueSeekBar.getProgress());
-//                                mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
-//                            }
-//                        }
-//                    });
-//
-//                    gridLayout.addView(button, new GridLayout.LayoutParams(rowSpec, colSpec));
-//                    count++;
-//                }
-//            }
         }
 
         // add Set Line Width Button
-        builder.setPositiveButton("Set properties",
+        builder.setPositiveButton(R.string.set_properties,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (colorStrokePropertiesChangeListener != null) {

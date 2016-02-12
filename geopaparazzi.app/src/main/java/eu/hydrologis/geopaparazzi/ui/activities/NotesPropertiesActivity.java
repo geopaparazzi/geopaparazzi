@@ -33,10 +33,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
-import eu.geopaparazzi.library.color.ColorStrokeDialogFragment;
-import eu.geopaparazzi.library.color.ColorStrokeObject;
-import eu.geopaparazzi.library.color.ColorUtilities;
-import eu.geopaparazzi.library.color.IColorStrokePropertiesChangeListener;
+import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;

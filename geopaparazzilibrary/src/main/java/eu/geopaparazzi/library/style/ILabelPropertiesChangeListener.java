@@ -16,38 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.color;
-
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.util.TypedValue;
-
-import java.util.HashMap;
-
-import eu.geopaparazzi.library.R;
+package eu.geopaparazzi.library.style;
 
 /**
- * Color for tools.
+ * A simple interface to use to notify label properties changes.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public enum ToolColors {
-    selection_stroke("#ffff00"), //
-    selection_fill("#ff0000"), //
-    preview_stroke("#00bdbd"), //
-    preview_fill("#00ffff"), //
-    infoselection_stroke("#0000ff"), //
-    infoselection_fill("#0000ff") //
-    ; //
+public interface ILabelPropertiesChangeListener {
 
-    private String hex;
-
-    ToolColors(String hex) {
-        this.hex = hex;
-    }
-
-    public String getHex() {
-        return hex;
-    }
+    /**
+     * Called when there is the need to notify that a change occurred.
+     */
+    void onPropertiesChanged(LabelObject newLabelObject);
 }
