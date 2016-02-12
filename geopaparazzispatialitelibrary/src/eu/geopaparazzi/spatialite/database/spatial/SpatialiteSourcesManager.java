@@ -94,7 +94,7 @@ public enum SpatialiteSourcesManager {
     public List<SpatialiteMap> getSpatialiteMaps() {
         try {
             if (mSpatialiteMaps == null || mReReadBasemaps) {
-                mSpatialiteMaps = getSpatialiteMapsFromPreferences();
+                getSpatialiteMapsFromPreferences();
                 mReReadBasemaps = false;
             }
             return mSpatialiteMaps;
@@ -107,20 +107,16 @@ public enum SpatialiteSourcesManager {
     /**
      * Reads the maps from preferences and extracts the tables necessary.
      *
-     * @return the list of available BaseMaps.
      * @throws java.lang.Exception
      */
-    private List<SpatialiteMap> getSpatialiteMapsFromPreferences() throws java.lang.Exception {
+    private void getSpatialiteMapsFromPreferences() throws java.lang.Exception {
         mSpatialiteMaps2TablesMap.clear();
         clearHandlers();
 
         String baseMapsJson = mPreferences.getString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, "");
         List<SpatialiteMap> spatialiteMaps = SpatialiteMap.fromJsonString(baseMapsJson);
 
-        for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-            collectTablesFromFile(new File(spatialiteMap.databasePath));
-        }
-        return spatialiteMaps;
+        connectSpatialiteMaps(spatialiteMaps);
     }
 
     private void clearHandlers() {
@@ -146,6 +142,18 @@ public enum SpatialiteSourcesManager {
         Editor editor = mPreferences.edit();
         editor.putString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, spatialiteMapJson);
         editor.apply();
+    }
+
+
+    /**
+     * Save the current maps in memory to preferences.
+     */
+    public void saveCurrentSpatialiteMapsToPreferences() {
+        try {
+            saveSpatialiteMapsToPreferences(getSpatialiteMaps());
+        } catch (JSONException e) {
+            GPLog.error(this, null, e);
+        }
     }
 
     /**
@@ -209,6 +217,8 @@ public enum SpatialiteSourcesManager {
 
     /**
      * Collects all the tables from the given file and adds them to the current list/maps of tables.
+     * <p>
+     * <p>This creates default SpatialiteMaps objects for each table.</p>
      *
      * @param file
      * @return true is at leats one supported table was found.
@@ -234,6 +244,56 @@ public enum SpatialiteSourcesManager {
                 }
             }
         }
+        return foundTables;
+    }
+
+    /**
+     * Collects tables and handlers for a list of SpatialiteMaps objects, that were
+     * not yet connected to their databases.
+     *
+     * @param spatialiteMaps the list of maps to create database links for.
+     * @return true if tables were found.
+     * @throws java.lang.Exception
+     */
+    private boolean connectSpatialiteMaps(List<SpatialiteMap> spatialiteMaps) throws java.lang.Exception {
+
+        HashMap<String, HashMap<String, SpatialiteMap>> db2Title2Maps = new HashMap<>();
+        for (SpatialiteMap spatialiteMap : spatialiteMaps) {
+            HashMap<String, SpatialiteMap> tmpMaps = db2Title2Maps.get(spatialiteMap.databasePath);
+            if (tmpMaps == null) {
+                tmpMaps = new HashMap<>();
+                db2Title2Maps.put(spatialiteMap.databasePath, tmpMaps);
+            }
+            tmpMaps.put(spatialiteMap.title, spatialiteMap);
+        }
+
+
+        if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
+        /*
+         * SPATIALITE TABLES
+         */
+        boolean foundTables = false;
+
+        for (Map.Entry<String, HashMap<String, SpatialiteMap>> entry : db2Title2Maps.entrySet()) {
+            SpatialiteDatabaseHandler sdbHandler = getVectorHandlerForFile(new File(entry.getKey()));
+            if (sdbHandler != null) {
+                HashMap<String, SpatialiteMap> maps = entry.getValue();
+
+                List<SpatialVectorTable> tables = sdbHandler.getSpatialVectorTables(false);
+                for (SpatialVectorTable table : tables) {
+                    String tableTitle = table.getTitle();
+                    SpatialiteMap spatialiteMap = maps.get(tableTitle);
+                    if (spatialiteMap != null && !mSpatialiteMaps2TablesMap.containsKey(spatialiteMap)) {
+                        mSpatialiteMaps.add(spatialiteMap);
+                        mSpatialiteMaps2TablesMap.put(spatialiteMap, table);
+                        mSpatialiteMaps2DbHandlersMap.put(spatialiteMap, sdbHandler);
+                        foundTables = true;
+                    }
+                }
+
+            }
+        }
+
         return foundTables;
     }
 

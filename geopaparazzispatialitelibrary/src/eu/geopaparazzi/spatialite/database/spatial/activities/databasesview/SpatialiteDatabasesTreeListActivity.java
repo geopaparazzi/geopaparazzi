@@ -36,6 +36,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -140,6 +142,9 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     protected void onStop() {
         super.onStop();
         mFilterText.removeTextChangedListener(filterTextWatcher);
+
+        // save changes to preferences also
+        SpatialiteSourcesManager.INSTANCE.saveCurrentSpatialiteMapsToPreferences();
     }
 
     public void add(View view) {

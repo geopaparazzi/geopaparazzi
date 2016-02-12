@@ -31,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -205,6 +206,12 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
         viewHolder.isVibileCheckbox = (CheckBox) convertView.findViewById(R.id.isVisibleCheckbox);
         viewHolder.isVibileCheckbox.setChecked(spatialiteMap.isVisible);
+        viewHolder.isVibileCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                spatialiteMap.isVisible = isChecked;
+            }
+        });
         viewHolder.tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
         viewHolder.tableNameView.setText(spatialiteMap.title);
         viewHolder.tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
@@ -260,7 +267,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
     }
 
     private void extras(SpatialiteMap spatialiteMap) {
-
+        // TODO dash - decimation - zoomlevel visibility
     }
 
     private void properties(SpatialiteMap spatialiteMap) {
