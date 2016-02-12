@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Geopaparazzi - Digital field mapping on Android based devices
   ~ Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
   ~
@@ -33,16 +32,36 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:src="@drawable/ic_database_primary_24dp"/>
+        android:src="@drawable/ic_database_primary_24dp" />
 
-    <TextView
-        android:id="@+id/sources_header_descriptiontext"
-        style="@style/GPTextViewStyle"
+    <LinearLayout
+        android:id="@+id/horizontalScrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/sources_header_image"
-        android:paddingLeft="5dp"
-        android:text="folderpath"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:orientation="vertical"
+        android:paddingLeft="5dp">
+
+
+        <TextView
+            android:id="@+id/sources_header_nametext"
+            style="@style/GPTextViewStyle"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Title"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/sources_header_pathtext"
+            style="@style/GPTextViewStyle"
+            android:layout_alignLeft="@+id/sources_header_nametext"
+            android:layout_below="@+id/sources_header_nametext"
+            android:text="Description"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
 
 </RelativeLayout>

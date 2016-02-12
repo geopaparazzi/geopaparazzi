@@ -36,6 +36,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_toEndOf="@+id/orderSpinner"
+        android:focusable="false"
         android:paddingLeft="5dp" />
 
     <HorizontalScrollView

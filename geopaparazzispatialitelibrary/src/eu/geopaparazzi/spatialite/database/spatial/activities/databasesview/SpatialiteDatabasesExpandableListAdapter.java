@@ -38,6 +38,7 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -369,9 +370,13 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
             convertView = infalInflater.inflate(R.layout.spatialitedatabases_list_header, null);
         }
 
-        TextView folderName = (TextView) convertView.findViewById(R.id.sources_header_descriptiontext);
-        folderName.setTypeface(null, Typeface.BOLD);
-        folderName.setText(folder);
+        File dbFile = new File(folder);
+
+        TextView dbName = (TextView) convertView.findViewById(R.id.sources_header_nametext);
+        dbName.setTypeface(null, Typeface.BOLD);
+        dbName.setText(dbFile.getName());
+        TextView folderName = (TextView) convertView.findViewById(R.id.sources_header_pathtext);
+        folderName.setText(dbFile.getParent());
 
         return convertView;
     }
