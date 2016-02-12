@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -120,7 +121,15 @@ public class ColorStrokeDialogFragment extends DialogFragment {
         }
 
         RadioButton fillRadioButton = (RadioButton) colorStrokeDialogView.findViewById(R.id.doFillRadioButton);
-        RadioButton strokeRadioButton = (RadioButton) colorStrokeDialogView.findViewById(R.id.doStrokeRadioButton);
+        fillRadioButton.setChecked(true);
+        RadioGroup radioGroup = (RadioGroup) colorStrokeDialogView.findViewById(R.id.radioDo);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                onRadioButtonClicked(checkedId);
+            }
+        });
+
         TextView title2 = (TextView) colorStrokeDialogView.findViewById(R.id.title2);
         if (!mCurrentColorStrokeObject.hasFill && !mCurrentColorStrokeObject.hasStroke) {
             View colorView = colorStrokeDialogView.findViewById(R.id.colorDialogGridLayout);
@@ -254,14 +263,11 @@ public class ColorStrokeDialogFragment extends DialogFragment {
     }
 
 
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
+    public void onRadioButtonClicked(int id) {
         // Check which radio button was clicked
-        if (view.getId() == R.id.doFillRadioButton && checked) {
+        if (id == R.id.doFillRadioButton) {
             handlingFillColor = true;
-        }
-        if (view.getId() == R.id.doStrokeRadioButton && checked) {
+        } else {
             handlingFillColor = false;
         }
 
