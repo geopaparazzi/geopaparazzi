@@ -37,10 +37,9 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -54,7 +53,7 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GpsLogPropertiesActivity extends AppCompatActivity implements IColorStrokePropertiesChangeListener {
+public class GpsLogPropertiesActivity extends AppCompatActivity implements ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
     private static List<String> colorList;
     private static List<String> widthsList;
     private LogMapItem item;

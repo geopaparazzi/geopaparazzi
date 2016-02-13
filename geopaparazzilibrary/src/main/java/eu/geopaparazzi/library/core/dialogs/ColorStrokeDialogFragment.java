@@ -48,7 +48,6 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
 
 /**
  * Class to set color and stroke for shapes.
@@ -56,6 +55,17 @@ import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
  * @author Andrea Antonello
  */
 public class ColorStrokeDialogFragment extends DialogFragment {
+    /**
+     * A simple interface to use to notify color and stroke changes.
+     */
+    public interface IColorStrokePropertiesChangeListener {
+
+        /**
+         * Called when there is the need to notify that a change occurred.
+         */
+        void onPropertiesChanged(ColorStrokeObject newColorStrokeObject);
+    }
+
     private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
 
     private ImageView mWidthImageView;

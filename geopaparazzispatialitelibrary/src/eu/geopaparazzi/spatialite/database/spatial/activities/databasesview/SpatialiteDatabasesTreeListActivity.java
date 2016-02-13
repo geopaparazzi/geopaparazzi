@@ -45,11 +45,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
-import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
-import eu.geopaparazzi.library.style.ILabelPropertiesChangeListener;
 import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -64,7 +64,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, ILabelPropertiesChangeListener, IColorStrokePropertiesChangeListener {
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_TABLES = "showTables";

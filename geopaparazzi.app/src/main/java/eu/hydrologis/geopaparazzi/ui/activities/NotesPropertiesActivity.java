@@ -36,7 +36,6 @@ import android.widget.Spinner;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -51,7 +50,7 @@ import static eu.hydrologis.geopaparazzi.utilities.Constants.PREFS_KEY_NOTES_TEX
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class NotesPropertiesActivity extends AppCompatActivity implements IColorStrokePropertiesChangeListener {
+public class NotesPropertiesActivity extends AppCompatActivity implements ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
     private SharedPreferences mPreferences;
     private ColorStrokeObject notesColorStrokeObject;
 

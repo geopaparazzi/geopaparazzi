@@ -22,24 +22,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.GridView;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -48,9 +37,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.IColorStrokePropertiesChangeListener;
-import eu.geopaparazzi.library.style.ILabelPropertiesChangeListener;
 import eu.geopaparazzi.library.style.LabelObject;
 
 
@@ -60,6 +46,17 @@ import eu.geopaparazzi.library.style.LabelObject;
  * @author Andrea Antonello
  */
 public class LabelDialogFragment extends DialogFragment {
+    /**
+     * A simple interface to use to notify label properties changes.
+     */
+    public interface ILabelPropertiesChangeListener {
+
+        /**
+         * Called when there is the need to notify that a change occurred.
+         */
+        void onPropertiesChanged(LabelObject newLabelObject);
+    }
+
     private final static String PREFS_KEY_LABELPROPERTIES = "PREFS_KEY_LABELPROPERTIES";
 
     private LabelObject mCurrentLabelObject;
