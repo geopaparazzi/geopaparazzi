@@ -87,6 +87,8 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.activities.GeocodeActivity;
+import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -630,11 +632,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // THIS IS CURRENTLY DISABLED
-            //
-            // case MENU_TILE_SOURCE_ID:
-            // startMapsDirTreeViewList();
-            // return true;
             case MENU_GPSDATA:
                 Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
                 startActivity(gpsDatalistIntent);
@@ -723,7 +720,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
                 Editor edit = mPeferences.edit();
                 edit.putBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, !centerOnGps);
-                edit.commit();
+                edit.apply();
                 return true;
             }
             default:
@@ -741,14 +738,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                         dialog.dismiss();
 
                         // FIXME
-//                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-//                        if (selectedPosition == 0) {
-//                            Intent intent = new Intent(MapviewActivity.this, InsertCoordActivity.class);
-//                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-//                        } else {
-//                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
-//                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-//                        }
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        if (selectedPosition == 0) {
+                            InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
+                            insertCoordinatesDialogFragment.show(getSFragmentManager(),  "Insert Coord");
+                        } else {
+                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
+                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+                        }
 
                     }
                 }).show();
