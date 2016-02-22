@@ -139,7 +139,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapviewActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener {
+public class MapviewActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -740,7 +740,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                         int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         if (selectedPosition == 0) {
                             InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
-                            insertCoordinatesDialogFragment.show(getSupportFragmentManager(),  "Insert Coord");
+                            insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
                         } else {
                             Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
                             startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
@@ -1343,4 +1343,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onCoordinateInserted(double lon, double lat) {
+        setNewCenter(lon, lat);
+    }
 }
