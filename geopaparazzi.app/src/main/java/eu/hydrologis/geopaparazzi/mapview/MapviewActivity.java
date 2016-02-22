@@ -105,6 +105,7 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
@@ -130,6 +131,7 @@ import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.GpsDataListActivity;
+import eu.hydrologis.geopaparazzi.ui.activities.ImportMapsforgeActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.NotesListActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
@@ -698,11 +700,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case MENU_LOADMAPSFORGE_VECTORS_ID: {
                 float[] mapWorldBounds = getMapWorldBounds();
                 int currentZoomLevel = getZoom();
-                // FIXME
-//                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
-//                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
-//                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
-//                startActivity(mapsforgeIntent);
+                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
+                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
+                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
+                startActivity(mapsforgeIntent);
                 return true;
             }
             case MENU_GO_TO: {

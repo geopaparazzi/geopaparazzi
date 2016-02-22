@@ -284,6 +284,16 @@
                 android:value=".mapview.MapviewActivity" />
         </activity>
 
+        <activity
+            android:name=".ui.activities.ImportMapsforgeActivity"
+            android:label="Extract Mapsforge Data"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"
