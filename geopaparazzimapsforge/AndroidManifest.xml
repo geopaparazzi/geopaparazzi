@@ -9,7 +9,7 @@
         android:targetSdkVersion="23" />
 
     <application >
-        <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
+        <activity android:name=".sourcesview.SourcesTreeListActivity" />
 
     </application>
 

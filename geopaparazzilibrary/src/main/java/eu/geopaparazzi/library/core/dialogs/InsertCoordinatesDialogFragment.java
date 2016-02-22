@@ -66,7 +66,8 @@ public class InsertCoordinatesDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         Bundle arguments = getArguments();
-        title = arguments.getString(TITLE, getString(R.string.askcoord));
+        if (arguments != null)
+            title = arguments.getString(TITLE, getString(R.string.askcoord));
     }
 
     @Override
@@ -76,7 +77,7 @@ public class InsertCoordinatesDialogFragment extends DialogFragment {
         try {
 
             View newProjectDialogView = getActivity().getLayoutInflater().inflate(
-                    R.layout.fragment_dialog_note, null);
+                    R.layout.fragment_dialog_insertcoordinate, null);
             builder.setView(newProjectDialogView); // add GUI to dialog
             builder.setTitle(title);
 

@@ -40,7 +40,7 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.MapsDirManager;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 

@@ -173,7 +173,7 @@
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity"
+            android:name="eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity"
             android:label="Basemaps"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">

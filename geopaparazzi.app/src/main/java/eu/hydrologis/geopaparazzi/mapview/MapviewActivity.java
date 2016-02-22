@@ -110,7 +110,7 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
@@ -737,11 +737,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
 
-                        // FIXME
                         int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         if (selectedPosition == 0) {
                             InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
-                            insertCoordinatesDialogFragment.show(getSFragmentManager(),  "Insert Coord");
+                            insertCoordinatesDialogFragment.show(getSupportFragmentManager(),  "Insert Coord");
                         } else {
                             Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
                             startActivityForResult(intent, INSERTCOORD_RETURN_CODE);

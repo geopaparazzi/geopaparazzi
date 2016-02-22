@@ -39,7 +39,7 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.BaseMapSourcesManager;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 
