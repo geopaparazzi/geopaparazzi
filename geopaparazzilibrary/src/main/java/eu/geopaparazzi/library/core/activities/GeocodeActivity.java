@@ -18,7 +18,6 @@
 package eu.geopaparazzi.library.core.activities;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +27,11 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -49,7 +52,6 @@ import eu.geopaparazzi.library.routing.osmbonuspack.RoadManager;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Activity that performs geocoding on a user entered location.
@@ -57,7 +59,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Adam Stroud &#60;<a href="mailto:adam.stroud@gmail.com">adam.stroud@gmail.com</a>&#62;
  * @author Andrea Antonello (www.hydrologis.com) - geopaparazzi adaptions/additions.
  */
-public class GeocodeActivity extends ListActivity {
+public class GeocodeActivity extends AppCompatActivity {
     private static final int MAX_ADDRESSES = 30;
     public static final String OSRM = "OSRM";
     public static final String MAPQUEST = "Mapquest";
@@ -65,14 +67,29 @@ public class GeocodeActivity extends ListActivity {
 
     private String noValidItemSelectedMsg = null;
     private ProgressDialog orsProgressDialog;
+    private ListView mListView;
+    private FloatingActionButton gotoButton;
+    private FloatingActionButton routeToButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.geocode);
+        setContentView(R.layout.activity_geocode);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         noValidItemSelectedMsg = getString(R.string.no_valid_destination_selected);
+
+        gotoButton = (FloatingActionButton) findViewById(R.id.gotoButton);
+        routeToButton = (FloatingActionButton) findViewById(R.id.routeToButton);
+        gotoButton.hide();
+        routeToButton.hide();
+
+        mListView = (ListView) findViewById(R.id.resultslist);
     }
 
     @Override
@@ -95,6 +112,7 @@ public class GeocodeActivity extends ListActivity {
         // {
         EditText addressText = (EditText) findViewById(R.id.enterLocationValue);
 
+
         try {
             List<Address> addressList = new Geocoder(this).getFromLocationName(addressText.getText().toString(), MAX_ADDRESSES);
             if (addressList.size() == 0) {
@@ -108,7 +126,15 @@ public class GeocodeActivity extends ListActivity {
                 addressWrapperList.add(new AddressWrapper(address));
             }
 
-            setListAdapter(new ArrayAdapter<AddressWrapper>(this, R.layout.geocode_row, addressWrapperList));
+            mListView.setAdapter(new ArrayAdapter<AddressWrapper>(this, R.layout.activity_geocode_row, addressWrapperList));
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    gotoButton.show();
+                    routeToButton.show();
+                }
+            });
+
         } catch (IOException e) {
             GPLog.error(this, "Could not geocode address", e); //$NON-NLS-1$
             new AlertDialog.Builder(this).setMessage(R.string.geocodeErrorMessage).setTitle(R.string.geocodeErrorTitle)
@@ -122,20 +148,20 @@ public class GeocodeActivity extends ListActivity {
         // }
     }
 
+
     /**
-     * Ok action.
+     * Go to action.
      *
      * @param view parent.
      */
-    public void onOkClick(View view) {
+    public void goTo(View view) {
         if (!checkNetwork()) {
             return;
         }
-        ListView listView = getListView();
 
         Intent intent = getIntent();
-        if (listView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
-            AddressWrapper addressWrapper = (AddressWrapper) listView.getItemAtPosition(listView.getCheckedItemPosition());
+        if (mListView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
+            AddressWrapper addressWrapper = (AddressWrapper) mListView.getItemAtPosition(mListView.getCheckedItemPosition());
 
             intent.putExtra(LibraryConstants.NAME, addressWrapper.toString());
             intent.putExtra(LibraryConstants.LATITUDE, addressWrapper.getAddress().getLatitude());
@@ -158,17 +184,16 @@ public class GeocodeActivity extends ListActivity {
     }
 
     /**
-     * Nav action.
+     * routeTo action.
      *
      * @param view parent.
      */
-    public void onNavClick(View view) {
+    public void routeTo(View view) {
         if (!checkNetwork()) {
             return;
         }
 
-        ListView mainListView = getListView();
-        if (mainListView.getCheckedItemPosition() == ListView.INVALID_POSITION) {
+        if (mListView.getCheckedItemPosition() == ListView.INVALID_POSITION) {
             GPDialogs.infoDialog(this, noValidItemSelectedMsg, null);
             return;
         }
@@ -213,10 +238,8 @@ public class GeocodeActivity extends ListActivity {
                                 break;
                         }
 
-                        ListView mainListView = getListView();
-
-                        if (mainListView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
-                            AddressWrapper addressWrapper = (AddressWrapper) mainListView.getItemAtPosition(mainListView
+                        if (mListView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
+                            AddressWrapper addressWrapper = (AddressWrapper) mListView.getItemAtPosition(mListView
                                     .getCheckedItemPosition());
                             final String featureName = addressWrapper.getAddress().getFeatureName();
                             final double latitude = addressWrapper.getAddress().getLatitude();
