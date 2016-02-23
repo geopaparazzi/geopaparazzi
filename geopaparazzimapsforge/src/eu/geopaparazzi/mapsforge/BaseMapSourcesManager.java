@@ -48,9 +48,10 @@ import eu.geopaparazzi.mapsforge.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.utils.DefaultMapurls;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
@@ -237,7 +238,7 @@ public enum BaseMapSourcesManager {
                         /*
                          * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
                          */
-                        try (AbstractSpatialDatabaseHandler sdbHandler = SpatialDatabasesManager.getInstance().getRasterHandlerForFile(file)) {
+                        try (AbstractSpatialDatabaseHandler sdbHandler = getRasterHandlerForFile(file)) {
                             List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
                             for (AbstractSpatialTable table : tables) {
                                 collectedTables.add(table);
@@ -248,6 +249,36 @@ public enum BaseMapSourcesManager {
             }
         }
         return collectedTables;
+    }
+
+    /**
+     * Create a raster handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file didn't fit the .
+     */
+    public AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            for (SpatialDataType spatialiteType : SpatialDataType.values()) {
+                if (!spatialiteType.isSpatialiteBased()) {
+                    continue;
+                }
+                String extension = spatialiteType.getExtension();
+                if (name.endsWith(extension)) {
+                    AbstractSpatialDatabaseHandler sdb = null;
+                    if (name.endsWith(SpatialDataType.MBTILES.getExtension())) {
+                        sdb = new MbtilesDatabaseHandler(file.getAbsolutePath(), null);
+                    } else {
+                        sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
+                    }
+                    if (sdb.isValid()) {
+                        return sdb;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private void saveToBaseMap(List<AbstractSpatialTable> tablesList) throws JSONException {

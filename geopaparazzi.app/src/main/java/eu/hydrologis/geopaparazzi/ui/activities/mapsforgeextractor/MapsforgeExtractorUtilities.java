@@ -25,15 +25,10 @@ import android.support.annotation.NonNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import jsqlite.Database;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;

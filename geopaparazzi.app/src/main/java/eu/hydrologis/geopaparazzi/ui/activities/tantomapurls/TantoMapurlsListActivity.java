@@ -19,12 +19,10 @@ package eu.hydrologis.geopaparazzi.ui.activities.tantomapurls;
 
 import android.app.Activity;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -50,7 +48,10 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextRunnable;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -66,8 +67,6 @@ public class TantoMapurlsListActivity extends ListActivity {
     private List<TantoMapurl> mapurlsList = new ArrayList<TantoMapurl>();
     private List<TantoMapurl> mapurlsToLoad = new ArrayList<TantoMapurl>();
 
-    private ProgressDialog downloadProgressDialog;
-
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_tantomapurl_list);
@@ -81,7 +80,7 @@ public class TantoMapurlsListActivity extends ListActivity {
         String layersJson = preferences.getString(layersJsonKey, "");
         Editor editor = preferences.edit();
         editor.remove(layersJsonKey);
-        editor.commit();
+        editor.apply();
         try {
             mapurlsList.clear();
             JSONArray baseArray = new JSONArray(layersJson);
@@ -113,12 +112,6 @@ public class TantoMapurlsListActivity extends ListActivity {
     protected void onResume() {
         super.onResume();
         refreshList();
-    }
-
-    @Override
-    protected void onPause() {
-        GPDialogs.dismissProgressDialog(downloadProgressDialog);
-        super.onPause();
     }
 
     protected void onDestroy() {
@@ -203,14 +196,10 @@ public class TantoMapurlsListActivity extends ListActivity {
     };
 
     private void downloadProject(final TantoMapurl tantoMapurl, final String fileName) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                downloadProgressDialog = ProgressDialog.show(TantoMapurlsListActivity.this, getString(R.string.downloading),
-                        getString(R.string.downloading_mapurl_to_the_device), true, true);
-            }
-        });
-        new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... params) {
+        StringAsyncTask task = new StringAsyncTask(this) {
+
+            @Override
+            protected String doBackgroundWork() {
                 try {
                     String url = TantoMapurlsActivity.BASEURL + tantoMapurl.id + "/download";
                     // String mapurlFileNameBkp = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
@@ -228,9 +217,7 @@ public class TantoMapurlsListActivity extends ListActivity {
                     }
                     File writtenFile = NetworkUtilities.sendGetRequest4File(url, appsupporterFile, null, null, null);
 
-                    Intent intent = getIntent();
-                    intent.putExtra(TantoMapurlsActivity.KEY_DATA, true);
-                    setResult(Activity.RESULT_OK, intent);
+                    BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(writtenFile);
 
                     return writtenFile.getName();
                 } catch (Exception e) {
@@ -239,16 +226,17 @@ public class TantoMapurlsListActivity extends ListActivity {
                 }
             }
 
-            protected void onPostExecute(String response) { // on UI thread!
-                GPDialogs.dismissProgressDialog(downloadProgressDialog);
+            @Override
+            protected void doUiPostWork(String response) {
                 if (response.startsWith("ERROR")) {
                     GPDialogs.warningDialog(TantoMapurlsListActivity.this, response, null);
                 } else {
                     String okMsg = getString(R.string.mapurl_successfully_downloaded) + " (" + response + ")";
                     GPDialogs.infoDialog(TantoMapurlsListActivity.this, okMsg, null);
                 }
-
             }
-        }.execute((String) null);
+        };
+        task.setProgressDialog(getString(R.string.downloading), getString(R.string.downloading_mapurl_to_the_device), false, null);
+        task.execute();
     }
 }

@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
@@ -29,13 +28,10 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,16 +43,12 @@ import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.R;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTableNameComparator;
+import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * Editable spatialtables listing and choosing activity.
@@ -134,7 +126,7 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
         Collections.sort(editableSpatialiteMaps, new Comparator<SpatialiteMap>() {
             @Override
             public int compare(SpatialiteMap lhs, SpatialiteMap rhs) {
-                return lhs.title.compareToIgnoreCase(rhs.title);
+                return lhs.tableName.compareToIgnoreCase(rhs.tableName);
             }
         });
 
@@ -199,7 +191,7 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
                         editableButton.setEnabled(false);
                     }
 
-                    nameView.setText(item.title);
+                    nameView.setText(item.tableName);
 
                     String dbName = item.databasePath;
 

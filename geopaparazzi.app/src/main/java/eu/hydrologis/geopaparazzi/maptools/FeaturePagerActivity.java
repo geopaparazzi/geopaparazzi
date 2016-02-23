@@ -34,7 +34,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -43,9 +42,8 @@ import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
@@ -106,7 +104,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
         if (isReadOnly) {
             MenuItem menuItem = menu.getItem(1);
             menuItem.setEnabled(false);
-         
+
 //            Button gotoButton = (Button) findViewById(R.id.gotoButton);
 //            gotoButton.setVisibility(View.GONE);
         }
@@ -159,24 +157,12 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     }
 
     private void saveData() throws Exception {
-        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
         for (Feature feature : featuresList) {
             if (feature.isDirty()) {
-                String tableName = feature.getUniqueTableName();
-
-                for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                    String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                    if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                                spatialVectorTable);
-                        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
-                            Database database = spatialiteDatabaseHandler.getDatabase();
-                            DaoSpatialite.updateFeatureAlphanumericAttributes(database, feature);
-                        }
-                    }
-                }
-
+                SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+                SpatialiteDatabaseHandler spatialiteDatabaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(table);
+                Database database = spatialiteDatabaseHandler.getDatabase();
+                DaoSpatialite.updateFeatureAlphanumericAttributes(database, feature);
             }
         }
     }
@@ -220,34 +206,11 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
 
     public void onPageSelected(int state) {
         selectedFeature = featuresList.get(state);
-        tableNameView.setText(selectedFeature.getTableName());
+        String tableName = selectedFeature.getTableName();
+        tableNameView.setText(tableName);
         int count = state + 1;
         featureCounterView.setText(count + "/" + featuresList.size());
-
-        try {
-            List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-            String tableName = selectedFeature.getUniqueTableName();
-
-            for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                    AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                            spatialVectorTable);
-                    if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                        SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
-                        String dbName = spatialiteDatabaseHandler.getName();
-                        dbNameView.setText(dbName);
-                        break;
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            dbNameView.setText("");
-        }
-
-
+        dbNameView.setText(selectedFeature.getDatabasePath());
     }
 
 }

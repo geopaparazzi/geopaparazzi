@@ -34,7 +34,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import org.mapsforge.android.maps.MapView;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -44,10 +44,8 @@ import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
@@ -180,8 +178,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             } else {
                 // check maps enablement
                 try {
-                    final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                    final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+                    final Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
                     boolean atLeastOneEnabled = false;
                     for (SpatialVectorTable spatialVectorTable : spatialTables) {
                         if (spatialVectorTable.getStyle().enabled == 1) {
@@ -197,7 +194,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
                         }
                         return;
                     }
-                } catch (jsqlite.Exception e) {
+                } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
 
@@ -238,38 +235,27 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null) {
                 // substitute the feature's geometry in the db
                 try {
-                    String tableName = cutExtendProcessedFeature.getUniqueTableName();
-                    List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
 
-                    for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-                        String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-                        if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                            AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
-                                    spatialVectorTable);
-                            if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-                                int tableGeomTypeCode = spatialVectorTable.getGeomType();
-                                GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
+                    SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(cutExtendProcessedFeature);
+                    int tableGeomTypeCode = spatialVectorTable.getGeomType();
+                    GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
 
-                                Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
+                    Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
 
-                                Context context = v.getContext();
-                                if (tableGeometryType.isGeometryCompatible(newGeom)) {
-                                    DaoSpatialite.updateFeatureGeometry(
-                                            cutExtendProcessedFeature.getId(),
-                                            newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
+                    Context context = v.getContext();
+                    if (tableGeometryType.isGeometryCompatible(newGeom)) {
+                        DaoSpatialite.updateFeatureGeometry(
+                                cutExtendProcessedFeature.getId(),
+                                newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
 
-                                    DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
-                                    // reset mapview
-                                    Intent intent = new Intent(context, MapsSupportService.class);
-                                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                                    context.startService(intent);
-                                } else {
-                                    GPDialogs.warningDialog(context, context.getString(R.string.geom_incompatible_with_layer), null);
-                                    return;
-                                }
-                                break;
-                            }
-                        }
+                        DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
+                        // reset mapview
+                        Intent intent = new Intent(context, MapsSupportService.class);
+                        intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
+                        context.startService(intent);
+                    } else {
+                        GPDialogs.warningDialog(context, context.getString(R.string.geom_incompatible_with_layer), null);
+                        return;
                     }
 
                     EditManager.INSTANCE.setActiveTool(null);

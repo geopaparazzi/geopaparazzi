@@ -28,7 +28,8 @@ import android.graphics.Color;
 
 import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
@@ -55,8 +56,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     public GeopackageTileDownloader(SpatialRasterTable table) throws Exception {
         super();
         rasterTable = table;
-        SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-        spatialDatabaseHandler = sdManager.getRasterHandlerForFile(rasterTable.getDatabaseFile());
+        spatialDatabaseHandler = BaseMapSourcesManager.INSTANCE.getRasterHandlerForFile(rasterTable.getDatabaseFile());
         String mapTypeString = rasterTable.getMapType();
         mapType = SpatialDataType.getType4Name(mapTypeString);
         if (mapType == SpatialDataType.RASTERLITE2) {

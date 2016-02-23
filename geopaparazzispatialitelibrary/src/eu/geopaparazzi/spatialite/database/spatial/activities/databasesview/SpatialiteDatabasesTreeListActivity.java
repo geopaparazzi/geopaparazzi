@@ -266,7 +266,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                 String filterString = mTextToFilter.toLowerCase();
                 String valueString = spatialiteMap.databasePath.toLowerCase();
                 if (!valueString.contains(filterString)) {
-                    valueString = spatialiteMap.title.toLowerCase();
+                    valueString = spatialiteMap.tableName.toLowerCase();
                     if (!valueString.contains(filterString)) {
                         doAdd = false;
                     }

@@ -40,7 +40,6 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.mapsforge.MapsDirManager;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -52,8 +51,6 @@ import eu.hydrologis.geopaparazzi.R;
 @SuppressWarnings("nls")
 public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
-    protected static final int CODE = 666;
-    protected static final String KEY_DATA = "ARE_MAPURLS_DIRTY";
     /**
      * The result key.
      */
@@ -65,7 +62,6 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
     private CheckBox useMapcenterCheckbox;
     private CheckBox useLimitCheckbox;
-    private boolean oneAdded = false;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -144,19 +140,9 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
         final String getUrl = BASEURL + relativeUrl;
 
-        final ProgressDialog importDialog = new ProgressDialog(this);
-        importDialog.setCancelable(true);
-        importDialog.setTitle(getString(R.string.downloading));
-        importDialog.setMessage(getString(R.string.requesting_available_services));
-        importDialog.setCancelable(false);
-        importDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        importDialog.setIndeterminate(true);
-        importDialog.show();
-
         StringAsyncTask task = new StringAsyncTask(this) {
             @Override
             protected void doUiPostWork(String response) {
-                GPDialogs.dismissProgressDialog(importDialog);
                 if (response.startsWith("ERROR")) {
                     GPDialogs.warningDialog(context, response, null);
                 } else {
@@ -168,7 +154,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
                     Intent mapurlsIntent = new Intent(context, TantoMapurlsListActivity.class);
                     mapurlsIntent.putExtra(RESULT_KEY, key);
-                    startActivityForResult(mapurlsIntent, CODE);
+                    startActivity(mapurlsIntent);
                 }
             }
 
@@ -184,43 +170,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                 return result;
             }
         };
+        task.setProgressDialog(getString(R.string.downloading), getString(R.string.requesting_available_services), false, null);
         task.execute();
     }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case CODE: {
-                if (resultCode == Activity.RESULT_OK) {
-                    if (!oneAdded) {
-                        oneAdded = data.getBooleanExtra(KEY_DATA, false);
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void finish() {
-        /*
-         * reload mapurls if necessary
-         */
-        if (oneAdded) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        MapsDirManager.reset();
-                        MapsDirManager.getInstance().init(GeopaparazziApplication.getInstance(), null);
-                    } catch (Exception e) {
-                        GPLog.error(this, null, e); //$NON-NLS-1$
-                    }
-
-                }
-            }).start();
-        }
-
-        TantoMapurlsActivity.super.finish();
-    }
-
 }

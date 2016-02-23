@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import java.util.Collection;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.activities.LogAnalysisActivity;
@@ -36,7 +37,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
@@ -173,8 +174,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
      */
     public void resetStyleTables(View view) {
         try {
-            SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();
-            List<AbstractSpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
+            Collection<SpatialiteDatabaseHandler> spatialDatabaseHandlers = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap().values();
             for (AbstractSpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers) {
                 if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
                     SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;

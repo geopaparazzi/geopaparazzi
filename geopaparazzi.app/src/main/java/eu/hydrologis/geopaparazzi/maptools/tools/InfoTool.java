@@ -33,6 +33,7 @@ import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import eu.geopaparazzi.library.style.ToolColors;
@@ -43,7 +44,8 @@ import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
@@ -81,7 +83,6 @@ public class InfoTool extends MapTool {
     private float bottom;
     private float top;
 
-    private ProgressDialog infoProgressDialog;
 
     private SliderDrawProjection sliderDrawProjection;
 
@@ -91,9 +92,9 @@ public class InfoTool extends MapTool {
      * Constructor.
      *
      * @param parentGroup the parent group.
-     * @param mapView the mapview reference.
+     * @param mapView     the mapview reference.
      */
-    public InfoTool( ToolGroup parentGroup, MapView mapView ) {
+    public InfoTool(ToolGroup parentGroup, MapView mapView) {
         super(mapView);
         this.parentGroup = parentGroup;
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
@@ -115,12 +116,12 @@ public class InfoTool extends MapTool {
             mapView.setClickable(false);
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         canvas.drawRect(rect, infoRectPaintFill);
         canvas.drawRect(rect, infoRectPaintStroke);
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
@@ -131,47 +132,47 @@ public class InfoTool extends MapTool {
         currentY = event.getY();
 
         int action = event.getAction();
-        switch( action ) {
-        case MotionEvent.ACTION_DOWN:
-            GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(startGeoPoint, startP);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(startGeoPoint, startP);
 
-            lastX = currentX;
-            lastY = currentY;
-            break;
-        case MotionEvent.ACTION_MOVE:
-            float dx = currentX - lastX;
-            float dy = currentY - lastY;
-            if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
-                return true;
-            }
-            GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(currentGeoPoint, tmpP);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                if (abs(dx) < 1 && abs(dy) < 1) {
+                    lastX = currentX;
+                    lastY = currentY;
+                    return true;
+                }
+                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(currentGeoPoint, tmpP);
 
-            left = Math.min(tmpP.x, startP.x);
-            right = Math.max(tmpP.x, startP.x);
-            bottom = Math.max(tmpP.y, startP.y);
-            top = Math.min(tmpP.y, startP.y);
-            rect.set((int) left, (int) top, (int) right, (int) bottom);
+                left = Math.min(tmpP.x, startP.x);
+                right = Math.max(tmpP.x, startP.x);
+                bottom = Math.max(tmpP.y, startP.y);
+                top = Math.min(tmpP.y, startP.y);
+                rect.set((int) left, (int) top, (int) right, (int) bottom);
 
-            EditManager.INSTANCE.invalidateEditingView();
-            break;
-        case MotionEvent.ACTION_UP:
+                EditManager.INSTANCE.invalidateEditingView();
+                break;
+            case MotionEvent.ACTION_UP:
 
-            float deltaY = abs(top - bottom);
-            float deltaX = abs(right - left);
-            if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
-                GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                float deltaY = abs(top - bottom);
+                float deltaX = abs(right - left);
+                if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
+                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
+                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
-            }
+                    infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                }
 
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
-            break;
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
+                break;
         }
 
         return true;
@@ -184,13 +185,12 @@ public class InfoTool extends MapTool {
         }
     }
 
-    private void infoDialog( final double n, final double w, final double s, final double e ) {
+    private void infoDialog(final double n, final double w, final double s, final double e) {
         try {
-            final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+            Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
             double[] boundsCoordinates = new double[]{w, s, e, n};
             final List<SpatialVectorTable> visibleTables = new ArrayList<SpatialVectorTable>();
-            for( SpatialVectorTable spatialTable : spatialTables ) {
+            for (SpatialVectorTable spatialTable : spatialTables) {
                 if (spatialTable.getStyle().enabled == 0) {
                     continue;
                 }
@@ -203,20 +203,12 @@ public class InfoTool extends MapTool {
             }
 
             final Context context = EditManager.INSTANCE.getEditingView().getContext();
-            infoProgressDialog = new ProgressDialog(context);
-            infoProgressDialog.setCancelable(true);
-            infoProgressDialog.setTitle(R.string.info_uppercase);
-            infoProgressDialog.setMessage(context.getString(R.string.extracting_info));
-            infoProgressDialog.setCancelable(true);
-            infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            infoProgressDialog.setProgress(0);
-            infoProgressDialog.setMax(visibleTables.size());
-            infoProgressDialog.show();
 
-            new AsyncTask<String, Integer, String>(){
+            StringAsyncTask task = new StringAsyncTask(context) {
                 private List<Feature> features = new ArrayList<Feature>();
 
-                protected String doInBackground( String... params ) {
+                @Override
+                protected String doBackgroundWork() {
                     try {
                         features.clear();
                         boolean oneEnabled = visibleTables.size() > 0;
@@ -232,7 +224,7 @@ public class InfoTool extends MapTool {
                                 west = e - 1;
                             }
 
-                            for( SpatialVectorTable spatialTable : visibleTables ) {
+                            for (SpatialVectorTable spatialTable : visibleTables) {
                                 String query = SpatialiteDatabaseHandler.getIntersectionQueryBBOX(
                                         LibraryConstants.SRID_WGS84_4326, spatialTable, north, south, east, west);
 
@@ -250,16 +242,10 @@ public class InfoTool extends MapTool {
                         GPLog.error(this, null, e); //$NON-NLS-1$
                         return "ERROR: " + e.getLocalizedMessage();
                     }
-
                 }
 
-                protected void onProgressUpdate( Integer... progress ) { // on UI thread!
-                    if (infoProgressDialog != null && infoProgressDialog.isShowing())
-                        infoProgressDialog.incrementProgressBy(progress[0]);
-                }
-
-                protected void onPostExecute( String response ) { // on UI thread!
-                    GPDialogs.dismissProgressDialog(infoProgressDialog);
+                @Override
+                protected void doUiPostWork(String response) {
                     if (response.startsWith("ERROR")) {
                         GPDialogs.warningDialog(context, response, null);
                     } else if (response.startsWith("CANCEL")) {
@@ -268,7 +254,7 @@ public class InfoTool extends MapTool {
                         if (features.size() > 0) {
                             Intent intent = new Intent(context, FeaturePagerActivity.class);
                             intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                                    (ArrayList< ? extends Parcelable>) features);
+                                    (ArrayList<? extends Parcelable>) features);
                             intent.putExtra(FeatureUtilities.KEY_READONLY, true);
                             context.startActivity(intent);
                         }
@@ -276,9 +262,11 @@ public class InfoTool extends MapTool {
                     parentGroup.onToolFinished(InfoTool.this);
                 }
 
-            }.execute((String) null);
+            };
+            task.setProgressDialog(context.getString(R.string.info_uppercase), context.getString(R.string.extracting_info), true, visibleTables.size());
+            task.execute();
 
-        } catch (Exception ex) {
+        } catch (java.lang.Exception ex) {
             GPLog.error(this, null, ex); //$NON-NLS-1$
         }
     }

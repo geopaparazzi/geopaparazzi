@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 
 import org.mapsforge.android.maps.MapView;
 
-import java.util.List;
+import java.util.Collection;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -38,7 +38,7 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -148,8 +148,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
             } else {
                 // check maps enablement
                 try {
-                    final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                    final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+                    final Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
                     boolean atLeastOneEnabled = false;
                     for (SpatialVectorTable spatialVectorTable : spatialTables) {
                         if (spatialVectorTable.getStyle().enabled == 1) {
@@ -165,7 +164,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
                         }
                         return;
                     }
-                } catch (jsqlite.Exception e) {
+                } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
 

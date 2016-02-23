@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -86,7 +87,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
 
             final List<SpatialVectorTable> compatibleSpatialVectorTables = new ArrayList<SpatialVectorTable>();
             final List<String> compatibleSpatialVectorTablesNames = new ArrayList<String>();
-            List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+            Collection<SpatialVectorTable> spatialVectorTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
             for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                 if (spatialVectorTable.isEditable()) {
                     int geomType = spatialVectorTable.getGeomType();
@@ -122,9 +123,6 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                         rowView = inflater.inflate(eu.geopaparazzi.spatialite.R.layout.editablelayers_row, null);
                     try {
                         final SpatialVectorTable item = compatibleSpatialVectorTables.get(position);
-                        AbstractSpatialDatabaseHandler tableHandler = null;
-                        tableHandler = SpatialDatabasesManager.getInstance().getVectorHandler(item);
-
                         TextView nameView = (TextView) rowView.findViewById(eu.geopaparazzi.spatialite.R.id.name);
                         TextView descriptionView = (TextView) rowView.findViewById(eu.geopaparazzi.spatialite.R.id.description);
 
@@ -188,7 +186,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                         descriptionView.setText(item.getGeomName() + ": " + item.getTableTypeDescription() + "\n" + "database: "
                                 + dbName);
 
-                    } catch (jsqlite.Exception e1) {
+                    } catch (Exception e1) {
                         GPLog.error(CopyToLayersListActivity.this, null, e1);
                     }
 

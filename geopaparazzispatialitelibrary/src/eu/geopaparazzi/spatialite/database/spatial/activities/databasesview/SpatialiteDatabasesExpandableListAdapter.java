@@ -213,7 +213,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
             }
         });
         viewHolder.tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
-        viewHolder.tableNameView.setText(spatialiteMap.title);
+        viewHolder.tableNameView.setText(spatialiteMap.tableName);
         viewHolder.tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         viewHolder.tableTypeView.setText("[" + spatialiteMap.geometryType + "]");
 
