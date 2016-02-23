@@ -56,17 +56,6 @@ public class CustomTileTable extends AbstractSpatialTable {
         }
     }
 
-    // /**
-    // * Retrieve CustomTileDownloader
-    // *
-    // * <p>created during CustomTileDatabasesManager
-    // *
-    // * @return customTileDownloader
-    // */
-    // public CustomTileDownloader getCustomTileDownloader() {
-    // return customTileDownloader;
-    // }
-
     /**
      * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']
      *

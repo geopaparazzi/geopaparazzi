@@ -254,7 +254,7 @@ public enum BaseMapSourcesManager {
      * @param file the file.
      * @return the handler or null if the file didn't fit the .
      */
-    public AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
+    public static AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
             for (SpatialDataType spatialiteType : SpatialDataType.values()) {
