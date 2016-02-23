@@ -37,7 +37,7 @@ public class Feature implements Parcelable {
     private String id;
 
     private String readableTableName;
-    private String uniqueTableName;
+    private String databasePath;
 
     private byte[] defaultGeometry;
 
@@ -54,12 +54,12 @@ public class Feature implements Parcelable {
      * Constructor.
      *
      * @param tableName       the table the feature belongs to.
-     * @param uniqueTableName the unique table name through which get the spatialtable.
+     * @param databasePath    the path to the containing db.
      * @param id              the unique id of the feature.
      */
-    public Feature(String tableName, String uniqueTableName, String id) {
+    public Feature(String tableName, String databasePath, String id) {
         this.readableTableName = tableName;
-        this.uniqueTableName = uniqueTableName;
+        this.databasePath = databasePath;
         this.id = id;
     }
 
@@ -67,13 +67,13 @@ public class Feature implements Parcelable {
      * Constructor for case with geometry.
      *
      * @param tableName       the table the feature belongs to.
-     * @param uniqueTableName the unique table name through which get the spatialtable.
+     * @param databasePath    the path to the containing db.
      * @param id              the unique id of the feature.
      * @param geometry        the default geometry.
      */
-    public Feature(String tableName, String uniqueTableName, String id, byte[] geometry) {
+    public Feature(String tableName, String databasePath, String id, byte[] geometry) {
         this.readableTableName = tableName;
-        this.uniqueTableName = uniqueTableName;
+        this.databasePath = databasePath;
         this.id = id;
         defaultGeometry = geometry;
     }
@@ -177,10 +177,10 @@ public class Feature implements Parcelable {
     }
 
     /**
-     * @return the unique table name.
+     * @return the path to the containing database.
      */
-    public String getUniqueTableName() {
-        return uniqueTableName;
+    public String getDatabasePath() {
+        return databasePath;
     }
 
     /**
@@ -213,7 +213,7 @@ public class Feature implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(readableTableName);
-        dest.writeString(uniqueTableName);
+        dest.writeString(databasePath);
         dest.writeList(attributeNames);
         dest.writeList(attributeValuesStrings);
         dest.writeList(attributeTypes);
@@ -228,8 +228,8 @@ public class Feature implements Parcelable {
         public Feature createFromParcel(Parcel in) {
             String id = in.readString();
             String tableName = in.readString();
-            String uniqueTableName = in.readString();
-            Feature feature = new Feature(tableName, uniqueTableName, id);
+            String databasePath = in.readString();
+            Feature feature = new Feature(tableName, databasePath, id);
             feature.attributeNames = in.readArrayList(String.class.getClassLoader());
             feature.attributeValuesStrings = in.readArrayList(String.class.getClassLoader());
             feature.attributeTypes = in.readArrayList(String.class.getClassLoader());
@@ -237,8 +237,7 @@ public class Feature implements Parcelable {
             double length = in.readDouble();
             feature.setOriginalArea(area);
             feature.setOriginalLength(length);
-            byte[] geomBytes = in.createByteArray();
-            feature.defaultGeometry = geomBytes;
+            feature.defaultGeometry = in.createByteArray();
             return feature;
         }
 

@@ -43,9 +43,8 @@ import java.util.List;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -88,7 +87,7 @@ public class FeatureUtilities {
 
     /**
      * Build the features given by a query.
-     * <p>
+     * <p/>
      * <b>Note that it is mandatory that the first item of the
      * query is the id of the feature, which can be used at any time
      * to update the feature in the db.
@@ -100,40 +99,36 @@ public class FeatureUtilities {
      */
     public static List<Feature> buildWithoutGeometry(String query, SpatialVectorTable spatialTable) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
-        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
-        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
-            Database database = spatialiteDbHandler.getDatabase();
+        SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
+        Database database = spatialiteDbHandler.getDatabase();
 
-            String tableName = spatialTable.getTableName();
-            String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
+        String tableName = spatialTable.getTableName();
+        String databasePath = spatialTable.getDatabasePath();
 
-            Stmt stmt = database.prepare(query);
-            try {
-                while (stmt.step()) {
-                    int column_count = stmt.column_count();
-                    // the first is the id, transparent to the user
-                    String id = stmt.column_string(0);
-                    Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id);
-                    for (int i = 1; i < column_count; i++) {
-                        String cName = stmt.column_name(i);
-                        String value = stmt.column_string(i);
-                        DataType type = spatialTable.getTableFieldType(cName);
-                        feature.addAttribute(cName, value, type.name());
-                    }
-                    featuresList.add(feature);
+        Stmt stmt = database.prepare(query);
+        try {
+            while (stmt.step()) {
+                int column_count = stmt.column_count();
+                // the first is the id, transparent to the user
+                String id = stmt.column_string(0);
+                Feature feature = new Feature(tableName, databasePath, id);
+                for (int i = 1; i < column_count; i++) {
+                    String cName = stmt.column_name(i);
+                    String value = stmt.column_string(i);
+                    DataType type = spatialTable.getTableFieldType(cName);
+                    feature.addAttribute(cName, value, type.name());
                 }
-            } finally {
-                stmt.close();
+                featuresList.add(feature);
             }
-
+        } finally {
+            stmt.close();
         }
         return featuresList;
     }
 
     /**
      * Build the features given by a query.
-     * <p>
+     * <p/>
      * <p><b>Note that this query needs to have at least 2 arguments, the first
      * being the ROWID and the last the geometry. Else if will fail.</b>
      *
@@ -144,42 +139,39 @@ public class FeatureUtilities {
      */
     public static List<Feature> buildFeatures(String query, SpatialVectorTable spatialTable) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
-        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
-        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
-            Database database = spatialiteDbHandler.getDatabase();
-            String tableName = spatialTable.getTableName();
-            String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
+        SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
+        Database database = spatialiteDbHandler.getDatabase();
+        String tableName = spatialTable.getTableName();
+        String databasePath = spatialTable.getDatabasePath();
 
-            Stmt stmt = database.prepare(query);
-            try {
-                while (stmt.step()) {
-                    int count = stmt.column_count();
-                    String id = stmt.column_string(0);
-                    byte[] geometryBytes = stmt.column_bytes(count - 1);
-                    Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);
-                    for (int i = 1; i < count - 1; i++) {
-                        String cName = stmt.column_name(i);
-                        String value = stmt.column_string(i);
-                        DataType type = spatialTable.getTableFieldType(cName);
-                        if (type == null) {
-                            GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type for column "
-                                    + cName);
-                            continue;
-                        }
-                        feature.addAttribute(cName, value, type.name());
+        Stmt stmt = database.prepare(query);
+        try {
+            while (stmt.step()) {
+                int count = stmt.column_count();
+                String id = stmt.column_string(0);
+                byte[] geometryBytes = stmt.column_bytes(count - 1);
+                Feature feature = new Feature(tableName, databasePath, id, geometryBytes);
+                for (int i = 1; i < count - 1; i++) {
+                    String cName = stmt.column_name(i);
+                    String value = stmt.column_string(i);
+                    DataType type = spatialTable.getTableFieldType(cName);
+                    if (type == null) {
+                        GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type for column "
+                                + cName);
+                        continue;
                     }
-                    featuresList.add(feature);
+                    feature.addAttribute(cName, value, type.name());
                 }
-            } finally {
-                stmt.close();
+                featuresList.add(feature);
             }
-            for (Feature feature : featuresList) {
-                String id = feature.getId();
-                double[] areaLength = DaoSpatialite.getAreaAndLengthById(id, spatialTable);
-                feature.setOriginalArea(areaLength[0]);
-                feature.setOriginalLength(areaLength[1]);
-            }
+        } finally {
+            stmt.close();
+        }
+        for (Feature feature : featuresList) {
+            String id = feature.getId();
+            double[] areaLength = DaoSpatialite.getAreaAndLengthById(id, spatialTable);
+            feature.setOriginalArea(areaLength[0]);
+            feature.setOriginalLength(areaLength[1]);
         }
 
         return featuresList;
@@ -301,7 +293,7 @@ public class FeatureUtilities {
 
     /**
      * Tries to split an invalid polygon in its {@link GeometryCollection}.
-     * <p>
+     * <p/>
      * <p>Based on JTSBuilder code.
      *
      * @param invalidPolygon the invalid polygon.
@@ -332,16 +324,8 @@ public class FeatureUtilities {
      * @throws Exception
      */
     public static SpatialVectorTable getTableFromFeature(Feature feature) throws Exception {
-        String tableName = feature.getUniqueTableName();
-        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-
-        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
-            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-            if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                return spatialVectorTable;
-            }
-        }
-        return null;
+        SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+        return table;
     }
 
     /**

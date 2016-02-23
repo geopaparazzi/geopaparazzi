@@ -353,5 +353,6 @@
     <string name="sort_notes">Sort Notes</string>
     <string name="path_lc">path</string>
     <string name="select_sort_mode">Select sort mode</string>
+    <string name="no_editable_layer_set">No editable layer found.</string>
 
 </resources>

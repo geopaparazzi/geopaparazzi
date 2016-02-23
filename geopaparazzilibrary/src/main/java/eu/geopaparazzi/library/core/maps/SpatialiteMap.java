@@ -39,15 +39,12 @@ public class SpatialiteMap {
     public static final String GEOMETRY_TYPE = "geometryType";
     public static final String ISVISIBLE = "isVisible";
     public static final String ORDER = "order";
-    /**
-     * The title of the map, in that case the table name.
-     */
-    public static final String TITLE = "title";
+    public static final String TABLENAME = "tableName";
 
     public String databasePath;
     public String tableType;
     public String geometryType;
-    public String title;
+    public String tableName;
     public boolean isVisible = true;
     public double order = 0;
 
@@ -56,7 +53,7 @@ public class SpatialiteMap {
         jsonObject.put(DATABASE_PATH, databasePath);
         jsonObject.put(TABLE_TYPE, tableType);
         jsonObject.put(GEOMETRY_TYPE, geometryType);
-        jsonObject.put(TITLE, title);
+        jsonObject.put(TABLENAME, tableName);
         jsonObject.put(ISVISIBLE, isVisible);
         jsonObject.put(ORDER, order);
         return jsonObject;
@@ -81,7 +78,7 @@ public class SpatialiteMap {
             map.databasePath = jsonObject.getString(DATABASE_PATH);
             map.tableType = jsonObject.getString(TABLE_TYPE);
             map.geometryType = jsonObject.getString(GEOMETRY_TYPE);
-            map.title = jsonObject.getString(TITLE);
+            map.tableName = jsonObject.getString(TABLENAME);
             map.isVisible = jsonObject.getBoolean(ISVISIBLE);
             map.order = jsonObject.getDouble(ORDER);
 
@@ -96,7 +93,7 @@ public class SpatialiteMap {
     @Override
     public String toString() {
         return "SpatialiteMap{" +
-                "title='" + title + '\'' +
+                "tableName='" + tableName + '\'' +
                 ", tableType='" + tableType + '\'' +
                 ", geometryType='" + geometryType + '\'' +
                 ", databasePath='" + databasePath + '\'' +
@@ -115,7 +112,7 @@ public class SpatialiteMap {
         if (!databasePath.equals(spatialiteMap.databasePath)) return false;
         if (!tableType.equals(spatialiteMap.tableType)) return false;
         if (!geometryType.equals(spatialiteMap.geometryType)) return false;
-        return title.equals(spatialiteMap.title);
+        return tableName.equals(spatialiteMap.tableName);
 
     }
 
@@ -124,7 +121,7 @@ public class SpatialiteMap {
         int result = databasePath.hashCode();
         result = 31 * result + tableType.hashCode();
         result = 31 * result + geometryType.hashCode();
-        result = 31 * result + title.hashCode();
+        result = 31 * result + tableName.hashCode();
         return result;
     }
 }

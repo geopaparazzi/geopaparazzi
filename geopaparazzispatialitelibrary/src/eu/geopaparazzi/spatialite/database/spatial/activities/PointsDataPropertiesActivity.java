@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.R;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 import jsqlite.Exception;
@@ -61,7 +61,7 @@ public class PointsDataPropertiesActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
         try {
-            spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
+            spatialTable = SpatialiteSourcesManager.INSTANCE.getVectorTableByName(tableName);
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }

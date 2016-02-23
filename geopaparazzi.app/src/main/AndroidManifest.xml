@@ -294,6 +294,16 @@
                 android:value=".mapview.MapviewActivity" />
         </activity>
 
+        <activity
+            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity"
+            android:label="Editable Layers"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

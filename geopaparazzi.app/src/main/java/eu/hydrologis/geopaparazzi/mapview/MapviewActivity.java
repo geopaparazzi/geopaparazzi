@@ -1271,9 +1271,13 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
+            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+            if (editLayer==null){
+                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
+                return;
+            }
             toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
 
-            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer.isPolygon())
                 activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
             else if (editLayer.isLine())

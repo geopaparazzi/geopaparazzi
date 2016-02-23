@@ -28,7 +28,6 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +36,8 @@ import java.util.Map;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
@@ -224,14 +223,13 @@ public enum SpatialiteSourcesManager {
      * @return true is at leats one supported table was found.
      * @throws Exception
      */
-    @NonNull
     private boolean collectTablesFromFile(File file) throws java.lang.Exception {
         if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
         /*
          * SPATIALITE TABLES
          */
         boolean foundTables = false;
-        SpatialiteDatabaseHandler sdbHandler = getVectorHandlerForFile(file);
+        SpatialiteDatabaseHandler sdbHandler = getDatabaseHandlerForFile(file);
         if (sdbHandler != null) {
             List<SpatialVectorTable> tables = sdbHandler.getSpatialVectorTables(false);
             for (SpatialVectorTable table : tables) {
@@ -268,7 +266,7 @@ public enum SpatialiteSourcesManager {
                 tmpMaps = new HashMap<>();
                 db2Title2Maps.put(spatialiteMap.databasePath, tmpMaps);
             }
-            tmpMaps.put(spatialiteMap.title, spatialiteMap);
+            tmpMaps.put(spatialiteMap.tableName, spatialiteMap);
         }
 
 
@@ -279,7 +277,7 @@ public enum SpatialiteSourcesManager {
         boolean foundTables = false;
 
         for (Map.Entry<String, HashMap<String, SpatialiteMap>> entry : db2Title2Maps.entrySet()) {
-            SpatialiteDatabaseHandler sdbHandler = getVectorHandlerForFile(new File(entry.getKey()));
+            SpatialiteDatabaseHandler sdbHandler = getDatabaseHandlerForFile(new File(entry.getKey()));
             if (sdbHandler != null) {
                 HashMap<String, SpatialiteMap> maps = entry.getValue();
 
@@ -302,12 +300,12 @@ public enum SpatialiteSourcesManager {
     }
 
     /**
-     * Create a vector handler for the given file.
+     * Create a vector handler for the given file by connecting to the database.
      *
      * @param file the file.
      * @return the handler or null if the file is not supported.
      */
-    public SpatialiteDatabaseHandler getVectorHandlerForFile(File file) throws IOException {
+    public SpatialiteDatabaseHandler getDatabaseHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
             for (SpatialDataType spatialiteType : SpatialDataType.values()) {
@@ -326,15 +324,31 @@ public enum SpatialiteSourcesManager {
         return null;
     }
 
-//    private void saveToSpatialiteMap(List<SpatialVectorTable> tablesList) throws JSONException {
-//        for (SpatialVectorTable table : tablesList) {
-//            SpatialiteMap newSpatialiteMap = table2BaseMap(table);
-//            mSpatialiteMaps.add(newSpatialiteMap);
-//            mSpatialiteMaps2TablesMap.put(newSpatialiteMap, table);
-//        }
-//        saveSpatialiteMapsToPreferences(mSpatialiteMaps);
-//    }
+    /**
+     * Get an existing db handler by its database path.
+     *
+     * @param databasePath the database path.
+     * @return the handler ot null.
+     */
+    public SpatialiteDatabaseHandler getExistingDatabaseHandlerByPath(String databasePath) {
+        for (SpatialiteMap spatialiteMap : mSpatialiteMaps) {
+            if (spatialiteMap.databasePath.equals(databasePath)) {
+                return mSpatialiteMaps2DbHandlersMap.get(spatialiteMap);
+            }
+        }
+        return null;
+    }
 
+    /**
+     * Get an existing db handler by a contained SpatialVectorTable.
+     *
+     * @param spatialVectorTable the table contained in the requested database.
+     * @return the handler ot null.
+     */
+    public SpatialiteDatabaseHandler getExistingDatabaseHandlerByTable(SpatialVectorTable spatialVectorTable) {
+        String databasePath = spatialVectorTable.getDatabasePath();
+        return getExistingDatabaseHandlerByPath(databasePath);
+    }
 
     public HashMap<SpatialiteMap, SpatialVectorTable> getSpatialiteMaps2TablesMap() {
         getSpatialiteMaps();
@@ -350,7 +364,7 @@ public enum SpatialiteSourcesManager {
     private SpatialiteMap table2BaseMap(AbstractSpatialTable table) {
         SpatialiteMap newSpatialiteMap = new SpatialiteMap();
         newSpatialiteMap.databasePath = table.getDatabasePath();
-        newSpatialiteMap.title = table.getTitle();
+        newSpatialiteMap.tableName = table.getTableName();
         if (table instanceof SpatialVectorTable) {
             try {
                 SpatialVectorTable vectorTable = (SpatialVectorTable) table;
@@ -362,5 +376,18 @@ public enum SpatialiteSourcesManager {
             }
         }
         return newSpatialiteMap;
+    }
+
+    public SpatialVectorTable getTableFromFeature(Feature feature) {
+        String tableName = feature.getTableName();
+        String databasePath = feature.getDatabasePath();
+
+        for (SpatialiteMap spatialiteMap : mSpatialiteMaps) {
+            if (spatialiteMap.databasePath.equals(databasePath) && spatialiteMap.tableName.equals(tableName)) {
+                return mSpatialiteMaps2TablesMap.get(spatialiteMap);
+            }
+        }
+
+        return null;
     }
 }

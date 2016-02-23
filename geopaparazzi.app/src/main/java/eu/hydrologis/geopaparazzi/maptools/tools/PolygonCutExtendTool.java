@@ -345,7 +345,7 @@ public class PolygonCutExtendTool extends MapTool {
      */
     public Feature[] getProcessedFeatures() {
         byte[] geomBytes = FeatureUtilities.WKBWRITER.write(previewGeometry);
-        Feature feature = new Feature(startFeature.getTableName(), startFeature.getUniqueTableName(), startFeature.getId(), geomBytes);
+        Feature feature = new Feature(startFeature.getTableName(), startFeature.getDatabasePath(), startFeature.getId(), geomBytes);
         return new Feature[]{feature, endFeature}; // new geom feature + feature to remove
     }
 

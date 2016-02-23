@@ -27,11 +27,10 @@ import java.util.Locale;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import jsqlite.Database;
 import jsqlite.Exception;
@@ -94,35 +93,6 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         }
         return fieldNamesToTypeMap;
     }
-
-    /**
-     * Retrieves the {@link Database} containing a given table by its unique table name.
-     *
-     * @param uniqueTableName the table name.
-     * @return the database the table is in.
-     * @throws Exception
-     */
-    public static Database getDatabaseFromUniqueTableName(String uniqueTableName) throws Exception {
-        SpatialVectorTable spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(uniqueTableName);
-        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
-        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
-            return spatialiteDbHandler.getDatabase();
-        }
-        return null;
-    }
-
-    /**
-     * Retrieve the SpatialVectorTable from a unique table name.
-     *
-     * @param uniqueTableName the table name.
-     * @return the table.
-     * @throws Exception
-     */
-    public static SpatialVectorTable getSpatialVectorTableFromUniqueTableName(String uniqueTableName) throws Exception {
-        return SpatialDatabasesManager.getInstance().getVectorTableByName(uniqueTableName);
-    }
-
 
     /**
      * Attemt to retrieve row-count and bounds for this geometry field.
@@ -225,8 +195,9 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
     public static void deleteFeatures(List<Feature> features) throws Exception {
         Feature firstFeature = features.get(0);
 
-        String uniqueTableName = firstFeature.getUniqueTableName();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String databasePath = firstFeature.getDatabasePath();
+        SpatialiteDatabaseHandler databaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByPath(databasePath);
+        Database database = databaseHandler.getDatabase();
         String tableName = firstFeature.getTableName();
 
         StringBuilder sbIn = new StringBuilder();
@@ -259,8 +230,9 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      */
     public static void addNewFeatureByGeometry(Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable)
             throws Exception {
-        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+
+        SpatialiteDatabaseHandler databaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialVectorTable);
+        Database database = databaseHandler.getDatabase();
         String tableName = spatialVectorTable.getTableName();
         String geometryFieldName = spatialVectorTable.getGeomName();
         String srid = spatialVectorTable.getSrid();
@@ -329,8 +301,6 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         sbIn.append(")");
         String insertQuery = sbIn.toString();
 
-//        System.out.println(insertQuery);
-
         database.exec(insertQuery, null);
     }
 
@@ -386,8 +356,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      */
     public static void updateFeatureGeometry(String id, Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable)
             throws Exception {
-        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        SpatialiteDatabaseHandler databaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialVectorTable);
+        Database database = databaseHandler.getDatabase();
         String tableName = spatialVectorTable.getTableName();
         String geometryFieldName = spatialVectorTable.getGeomName();
         String srid = spatialVectorTable.getSrid();
@@ -449,8 +419,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
      * @throws Exception if something goes wrong.
      */
     public static double[] getAreaAndLengthById(String id, SpatialVectorTable spatialVectorTable) throws Exception {
-        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        SpatialiteDatabaseHandler databaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialVectorTable);
+        Database database = databaseHandler.getDatabase();
         String tableName = spatialVectorTable.getTableName();
         String geomName = spatialVectorTable.getGeomName();
 
