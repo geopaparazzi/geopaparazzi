@@ -1,4 +1,4 @@
-package eu.geopaparazzi.mapsforge.maps.tiles;
+package eu.geopaparazzi.mapsforge.databasehandlers.core;
 
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;

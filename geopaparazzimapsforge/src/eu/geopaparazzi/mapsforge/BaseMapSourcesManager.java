@@ -38,15 +38,13 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.mapsforge.maps.CustomTileDatabasesManager;
-import eu.geopaparazzi.mapsforge.maps.MapDatabasesManager;
-import eu.geopaparazzi.mapsforge.maps.tiles.CustomTileDatabaseHandler;
-import eu.geopaparazzi.mapsforge.maps.tiles.CustomTileDownloader;
-import eu.geopaparazzi.mapsforge.maps.tiles.CustomTileTable;
-import eu.geopaparazzi.mapsforge.maps.tiles.GeopackageTileDownloader;
-import eu.geopaparazzi.mapsforge.maps.tiles.MapDatabaseHandler;
-import eu.geopaparazzi.mapsforge.maps.tiles.MapGeneratorInternal;
-import eu.geopaparazzi.mapsforge.maps.tiles.MapTable;
+import eu.geopaparazzi.mapsforge.databasehandlers.CustomTileDatabaseHandler;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileDownloader;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileTable;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.GeopackageTileDownloader;
+import eu.geopaparazzi.mapsforge.databasehandlers.MapDatabaseHandler;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.MapGeneratorInternal;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.MapTable;
 import eu.geopaparazzi.mapsforge.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
@@ -217,7 +215,7 @@ public enum BaseMapSourcesManager {
             /*
              * add MAPURL TABLES
              */
-        try (CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance().getHandlerForFile(file)) {
+        try (CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file)) {
             if (customTileDatabaseHandler != null) {
                 List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
                 for (AbstractSpatialTable table : tables) {
@@ -227,8 +225,7 @@ public enum BaseMapSourcesManager {
             /*
              * add MAP TABLES
              */
-                MapDatabasesManager mapDatabasesManager = MapDatabasesManager.getInstance();
-                try (MapDatabaseHandler mapDatabaseHandler = mapDatabasesManager.getHandlerForFile(file)) {
+                try (MapDatabaseHandler mapDatabaseHandler = MapDatabaseHandler.getHandlerForFile(file)) {
                     if (mapDatabaseHandler != null) {
                         List<MapTable> tables = mapDatabaseHandler.getTables(false);
                         for (AbstractSpatialTable table : tables) {

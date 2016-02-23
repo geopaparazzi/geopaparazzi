@@ -15,14 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.mapsforge.maps.tiles;
+package eu.geopaparazzi.mapsforge.databasehandlers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileDownloader;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
@@ -36,7 +41,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * adapted to work with custom tiles databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable{
+public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable {
     private List<CustomTileTable> customtileTableList = null;
 
     private CustomTileDownloader customTileDownloader = null;
@@ -47,9 +52,29 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
      * @param dbPath the path to the source to handle.
      * @throws IOException if something goes wrong.
      */
-    public CustomTileDatabaseHandler(String dbPath) throws IOException {
+    private CustomTileDatabaseHandler(String dbPath) throws IOException {
         super(dbPath);
         open();
+    }
+
+    /**
+     * Create a handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file didn't fit the .
+     */
+    public static CustomTileDatabaseHandler getHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            if (Utilities.isNameFromHiddenFile(name)) {
+                return null;
+            }
+            if (name.endsWith(SpatialDataType.MAPURL.getExtension())) {
+                CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(file.getAbsolutePath());
+                return map;
+            }
+        }
+        return null;
     }
 
     /**

@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.mapsforge.maps.tiles;
+package eu.geopaparazzi.mapsforge.databasehandlers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.MapTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import jsqlite.Exception;
 
 import org.mapsforge.core.model.GeoPoint;
@@ -38,12 +42,12 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
 
 /**
  * An utility class to handle a map database.
- *
+ * <p/>
  * author Andrea Antonello (www.hydrologis.com)
  * adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable{
+public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable {
     private List<MapTable> mapTableList;
     private FileOpenResult fileOpenResult;
     private MapDatabase mapDatabase = null;
@@ -51,14 +55,35 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
 
     /**
      * Constructor.
-     * 
+     *
      * @param dbPath the path to the database to handle.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public MapDatabaseHandler( String dbPath ) throws IOException {
+    private MapDatabaseHandler(String dbPath) throws IOException {
         super(dbPath);
         open();
     }
+
+    /**
+     * Create a handler for the given file.
+     *
+     * @param file the file.
+     * @return the handler or null if the file didn't fit the .
+     */
+    public static MapDatabaseHandler getHandlerForFile(File file) throws IOException {
+        if (file.exists() && file.isFile()) {
+            String name = file.getName();
+            if (Utilities.isNameFromHiddenFile(name)) {
+                return null;
+            }
+            if (name.endsWith(SpatialDataType.MAP.getExtension())) {
+                MapDatabaseHandler map = new MapDatabaseHandler(file.getAbsolutePath());
+                return map;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void open() {
@@ -104,14 +129,14 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
 
     /**
      * Get the available tables.
-     * 
+     * <p/>
      * <p>Currently this is a list with a single table.
-     * 
+     *
      * @param forceRead force a re-reading of the resources.
      * @return the list of available tables.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public List<MapTable> getTables( boolean forceRead ) throws Exception {
+    public List<MapTable> getTables(boolean forceRead) throws Exception {
         if (mapTableList == null || forceRead) {
             mapTableList = new ArrayList<MapTable>();
             double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
@@ -135,17 +160,17 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
     }
 
     @Override
-    public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
+    public List<SpatialVectorTable> getSpatialVectorTables(boolean forceRead) throws Exception {
         return Collections.emptyList();
     }
 
     @Override
-    public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
+    public List<SpatialRasterTable> getSpatialRasterTables(boolean forceRead) throws Exception {
         return Collections.emptyList();
     }
 
     @Override
-    public float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception {
+    public float[] getTableBounds(AbstractSpatialTable spatialTable) throws Exception {
         float w = (float) boundsWest;
         float s = (float) boundsSouth;
         float e = (float) boundsEast;
@@ -154,7 +179,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
     }
 
     @Override
-    public byte[] getRasterTile( String query ) {
+    public byte[] getRasterTile(String query) {
         throw new RuntimeException("should not be called.");
     }
 }

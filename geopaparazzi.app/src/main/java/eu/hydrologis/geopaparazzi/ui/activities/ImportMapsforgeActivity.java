@@ -47,7 +47,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.mapsforge.maps.tiles.MapTable;
+import eu.geopaparazzi.mapsforge.databasehandlers.core.MapTable;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
