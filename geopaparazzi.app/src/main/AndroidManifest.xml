@@ -304,6 +304,10 @@
                 android:value=".mapview.MapviewActivity" />
         </activity>
 
+
+        <activity android:name="eu.geopaparazzi.library.forms.FormActivity" />
+        <activity android:name="eu.geopaparazzi.library.forms.FormDetailActivity" />
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

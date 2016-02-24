@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.forms;
+package eu.geopaparazzi.library.core.dialogs;
 
 import java.text.DecimalFormat;
 
@@ -31,7 +31,7 @@ import android.widget.TextView;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormDatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private final int year;
     private final int month;
@@ -46,7 +46,7 @@ public class FormDatePickerFragment extends DialogFragment implements DatePicker
      * @param day the day as of Calendar.get(Calendar.DAY).
      * @param dateView the {@link TextView} to update.
      */
-    public FormDatePickerFragment( int year, int month, int day, TextView dateView ) {
+    public DatePickerDialogFragment(int year, int month, int day, TextView dateView) {
         this.year = year;
         this.month = month;
         this.day = day;

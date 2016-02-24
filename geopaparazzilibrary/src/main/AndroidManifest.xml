@@ -115,7 +115,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity">
+        <activity android:name=".forms.FormDetailActivity">
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" />
 

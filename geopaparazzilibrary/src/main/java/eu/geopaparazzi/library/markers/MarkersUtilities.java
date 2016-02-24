@@ -34,7 +34,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.forms.FragmentDetail;
+import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
@@ -205,7 +205,7 @@ public class MarkersUtilities {
      * @param requestCode    if > 0, then the activity is started for a result (in which case the
      *                       Context needs to be an activity..
      */
-    public static void launch(FragmentDetail fragmentDetail, File image, double[] gpsLocation, int requestCode) {
+    public static void launch(FormDetailFragment fragmentDetail, File image, double[] gpsLocation, int requestCode) {
         FragmentActivity activity = fragmentDetail.getActivity();
         if (MarkersUtilities.appInstalled(activity)) {
             Intent sketchIntent = prepareIntent(activity, image, gpsLocation);

@@ -17,38 +17,40 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_IS_RENDER_LABEL;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.view.View;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
-import android.view.View;
-
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
+import eu.geopaparazzi.library.forms.FragmentList.IFragmentListSupporter;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_IS_RENDER_LABEL;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
 /**
  * The form activity.
@@ -67,7 +69,8 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class FormActivity extends FragmentActivity {
+public class FormActivity extends AppCompatActivity implements IFragmentListSupporter {
+    private final int RETURNCODE_DETAILACTIVITY = 665;
 
     private double latitude = -9999.0;
     private double longitude = -9999.0;
@@ -81,14 +84,6 @@ public class FormActivity extends FragmentActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // make sure the orientation can't be changed once this activity started
-        int currentOrientation = getResources().getConfiguration().orientation;
-        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -115,52 +110,6 @@ public class FormActivity extends FragmentActivity {
         }
         setContentView(R.layout.form);
 
-    }
-
-    /**
-     * @return the list of titles.
-     */
-    public List<String> getFragmentTitles() {
-        return formNames4Section;
-    }
-
-    public long getNoteId() {
-        return noteId;
-    }
-
-    /**
-     * @return the section names.
-     */
-    public String getSectionName() {
-        return sectionName;
-    }
-
-    /**
-     * @return the section object.
-     */
-    public JSONObject getSectionObject() {
-        return sectionObject;
-    }
-
-    /**
-     * @param sectionObject teh object to set.
-     */
-    public void setSectionObject(JSONObject sectionObject) {
-        this.sectionObject = sectionObject;
-    }
-
-    /**
-     * @return the lat
-     */
-    public double getLatitude() {
-        return latitude;
-    }
-
-    /**
-     * @return the lon
-     */
-    public double getLongitude() {
-        return longitude;
     }
 
     /**
@@ -242,11 +191,9 @@ public class FormActivity extends FragmentActivity {
 
     private void saveAction() throws Exception {
         // if in landscape mode store last inserted info, since that fragment has not been stored
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            FragmentDetail detailFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
-            if (detailFragment != null) {
-                detailFragment.storeFormItems(false);
-            }
+        FormDetailFragment detailFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
+        if (detailFragment != null) {
+            detailFragment.storeFormItems(false);
         }
 
         // extract and check constraints
@@ -325,10 +272,72 @@ public class FormActivity extends FragmentActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button, in order to avoid losing info
         switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                return true;
+            case KeyEvent.KEYCODE_BACK: {
+                // SAVE DATA
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onListItemSelected(String selectedItemName) {
+        // depending on the mode, set the detail fragment or launch the detail activity
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FormDetailFragment detailFragment = (FormDetailFragment) fragmentManager.findFragmentById(R.id.detailFragment);
+        if (detailFragment != null) {
+            // we are in landscape mode
+            try {
+                detailFragment.storeFormItems(false);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                GPDialogs.warningDialog(this, getString(R.string.error_while_storing_form_data), null);
+            }
+            // FragmentActivity activity2 = oldFragment.getActivity();
+            // int id2 = oldFragment.getId();
+
+            FormInfoHolder formInfoHolder = new FormInfoHolder();
+            formInfoHolder.selectedFormName = selectedItemName;
+            formInfoHolder.sectionObjectString = sectionObject.toString();
+            formInfoHolder.noteId = noteId;
+            formInfoHolder.longitude = longitude;
+            formInfoHolder.latitude = latitude;
+            FormDetailFragment newFragment = FormDetailFragment.newInstance(formInfoHolder);
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(detailFragment);
+            transaction.add(R.id.detailFragment, newFragment);
+            transaction.commit();
+        } else {
+            // String sectionName = activity.getSectionName();
+            Intent intent = new Intent(getApplicationContext(), FormDetailActivity.class);
+            intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+            intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
+            intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
+            intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+            intent.putExtra(LibraryConstants.LATITUDE, latitude);
+            startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
+        }
+    }
+
+    @Override
+    public List<String> getListTitles() {
+        return formNames4Section;
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case (RETURNCODE_DETAILACTIVITY): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        sectionObjectString = data.getStringExtra(FormUtilities.ATTR_SECTIONOBJECTSTR);
+                        sectionObject = new JSONObject(sectionObjectString);
+                    } catch (JSONException e) {
+                        GPLog.error(this, null, e);
+                    }
+                }
+                break;
+            }
+        }
+    }
 }

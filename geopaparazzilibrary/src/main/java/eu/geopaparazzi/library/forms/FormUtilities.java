@@ -438,7 +438,7 @@ public class FormUtilities {
      * @param constraintDescription constraint
      * @return the added view.
      */
-    public static GView addPictureView(long noteId, FragmentDetail fragmentDetail, int requestCode, LinearLayout mainView, String label, String value,
+    public static GView addPictureView(long noteId, FormDetailFragment fragmentDetail, int requestCode, LinearLayout mainView, String label, String value,
                                        String constraintDescription) {
         return new GPictureView(noteId, fragmentDetail, null, requestCode, mainView, label, value, constraintDescription);
     }
@@ -455,7 +455,7 @@ public class FormUtilities {
      * @param constraintDescription constraint
      * @return the added view.
      */
-    public static GView addSketchView(long noteId, FragmentDetail fragmentDetail, int requestCode, LinearLayout mainView, String label, String value,
+    public static GView addSketchView(long noteId, FormDetailFragment fragmentDetail, int requestCode, LinearLayout mainView, String label, String value,
                                       String constraintDescription) {
         return new GSketchView(noteId, fragmentDetail, null, requestCode, mainView, label, value, constraintDescription);
     }

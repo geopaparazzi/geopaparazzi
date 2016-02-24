@@ -37,7 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.forms.FormDatePickerFragment;
+import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -123,7 +123,7 @@ public class GDateView extends View implements GView {
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                FormDatePickerFragment newFragment = new FormDatePickerFragment(year, month, day, button);
+                DatePickerDialogFragment newFragment = new DatePickerDialogFragment(year, month, day, button);
                 newFragment.show(fragment.getFragmentManager(), "datePicker");
             }
         });

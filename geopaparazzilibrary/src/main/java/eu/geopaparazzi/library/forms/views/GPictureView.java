@@ -47,7 +47,7 @@ import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.forms.FragmentDetail;
+import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -97,7 +97,7 @@ public class GPictureView extends View implements GView {
      * @param value                 in case of pictures, the value are the ids of the image, semicolonseparated.
      * @param constraintDescription constraints
      */
-    public GPictureView(final long noteId, final FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label, String value,
+    public GPictureView(final long noteId, final FormDetailFragment fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label, String value,
                         String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
 

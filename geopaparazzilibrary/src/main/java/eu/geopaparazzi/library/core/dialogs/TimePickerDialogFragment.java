@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.forms;
+package eu.geopaparazzi.library.core.dialogs;
 
 import java.text.DecimalFormat;
 
@@ -31,7 +31,7 @@ import android.widget.TimePicker;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormTimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private TextView timeView;
     private int hourOfDay;

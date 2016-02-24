@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -34,38 +35,46 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
- *
  */
 public class FragmentList extends android.support.v4.app.ListFragment {
-    private List<String> fragmentTitles;
     private String selectedItemName;
-    private FormActivity activity;
-    private final int RETURNCODE_DETAILACTIVITY = 665;
 
-    @Override
-    public void onCreate( Bundle savedInstanceState ) {
-        super.onCreate(savedInstanceState);
+    private IFragmentListSupporter mFragmentListSupporter;
 
-        activity = (FormActivity) getActivity();
-        fragmentTitles = activity.getFragmentTitles();
+    /**
+     * Intereface to keep track of the selected view.
+     */
+    public interface IFragmentListSupporter {
+        void onListItemSelected(String selectedItemName);
+
+        List<String> getListTitles();
     }
 
     @Override
-    public void onActivityCreated( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        List<String> fragmentTitles = mFragmentListSupporter.getListTitles();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_list_item,
                 fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
-        int color = getActivity().getResources().getColor(R.color.formcolor);
+        int color = getActivity().getColor(R.color.formcolor);
         int[] colors = {0, color, 0}; // red for the example
         ListView listView = getListView();
         listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
@@ -75,16 +84,24 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     }
 
     @Override
-    public void onAttach( Activity activity ) {
-        super.onAttach(activity);
-
+    public void onAttach(Context context) {
+        if (context instanceof IFragmentListSupporter) {
+            mFragmentListSupporter = (IFragmentListSupporter) context;
+        }
+        super.onAttach(context);
     }
 
     @Override
-    public void onListItemClick( ListView l, View v, int position, long id ) {
+    public void onDetach() {
+        mFragmentListSupporter = null;
+        super.onDetach();
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
         selectedItemName = (String) getListAdapter().getItem(position);
         int childCount = l.getChildCount();
-        for( int i = 0; i < childCount; i++ ) {
+        for (int i = 0; i < childCount; i++) {
             View childAt = l.getChildAt(i);
             if (childAt instanceof TextView) {
                 TextView textView = (TextView) childAt;
@@ -97,85 +114,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             // textView.setTextColor(v.getResources().getColor(R.color.formcolorselected));
         }
 
-        JSONObject sectionObject = activity.getSectionObject();
-        FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
-        if (oldFragment != null) {// && oldFragment.isInLayout()) {
-            try {
-                oldFragment.storeFormItems(false);
-            } catch (Exception e) {
-                GPLog.error(this, null, e);
-                GPDialogs.warningDialog(activity,activity.getString(R.string.error_while_storing_form_data), null);
-            }
-            // FragmentActivity activity2 = oldFragment.getActivity();
-            // int id2 = oldFragment.getId();
+        mFragmentListSupporter.onListItemSelected(selectedItemName);
 
-            FragmentDetail newFragment = new FragmentDetail();
-            newFragment.setForm(selectedItemName, sectionObject);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.remove(oldFragment);
-            transaction.add(R.id.detailFragment, newFragment);
-            // transaction.replace(R.id.detailFragment, newFragment);
-            // transaction.addToBackStack(null); // Ads FirstFragment to the back-stack
-            transaction.commit();
-        } else {
-            // String sectionName = activity.getSectionName();
-            Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
-            intent.putExtra(LibraryConstants.DATABASE_ID, getNoteId());
-            intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
-            intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
-            intent.putExtra(LibraryConstants.LONGITUDE, activity.getLongitude());
-            intent.putExtra(LibraryConstants.LATITUDE, activity.getLatitude());
-            startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
-        }
     }
-
-    /**
-     * @return the selected name.
-     */
-    public String getSelectedItemName() {
-        return selectedItemName;
-    }
-
-    /**
-     * @return the json object.
-     */
-    public JSONObject getSectionObject() {
-        return activity.getSectionObject();
-    }
-
-    /**
-     * @return the latitude.
-     */
-    public double getLatitude() {
-        return activity.getLatitude();
-    }
-
-    public long getNoteId(){
-        return activity.getNoteId();
-    }
-
-    /**
-     * @return the longitude.
-     */
-    public double getLongitude() {
-        return activity.getLongitude();
-    }
-
-    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch( requestCode ) {
-        case (RETURNCODE_DETAILACTIVITY): {
-            if (resultCode == Activity.RESULT_OK) {
-                String sectionStringObject = data.getStringExtra(FormUtilities.ATTR_SECTIONOBJECTSTR);
-                try {
-                    activity.setSectionObject(new JSONObject(sectionStringObject));
-                } catch (JSONException e) {
-                    GPLog.error(this, null, e);
-                }
-            }
-            break;
-        }
-        }
-    }
-
 }

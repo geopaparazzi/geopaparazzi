@@ -37,7 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.forms.FormTimePickerFragment;
+import eu.geopaparazzi.library.core.dialogs.TimePickerDialogFragment;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -123,7 +123,7 @@ public class GTimeView extends View implements GView {
                 int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                FormTimePickerFragment newFragment = new FormTimePickerFragment();
+                TimePickerDialogFragment newFragment = new TimePickerDialogFragment();
                 newFragment.setAttributes(hourOfDay, minute, true, button);
                 newFragment.show(fragment.getFragmentManager(), "timePicker");
             }

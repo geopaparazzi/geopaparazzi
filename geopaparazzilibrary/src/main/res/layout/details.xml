@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/form_scroll"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/formbgcolor"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content">
 
-    <ScrollView
-        android:id="@+id/form_scroll"
+    <LinearLayout
+        android:id="@+id/form_linear"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/form_linear"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+</ScrollView>

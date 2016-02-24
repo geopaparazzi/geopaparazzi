@@ -34,11 +34,10 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * The about fragment view.
- *
+ * <p/>
  * <p>It picks an about.html file from the assets folder and replaces
  * teh word "VERSION" with the actual version of the app passed in
  * the arguments bundle of the fragment.</p>
@@ -47,28 +46,45 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  */
 public class AboutFragment extends Fragment {
 
+    public static final String ARG_PACKAGE = "ARG_PACKAGE";
+    private String packageName;
+
+    /**
+     * Create a dialog instance.
+     *
+     * @param packageName the package to use for the version.
+     * @return the instance.
+     */
+    public static AboutFragment newInstance(String packageName) {
+        AboutFragment f = new AboutFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PACKAGE, packageName);
+        f.setArguments(bundle);
+        return f;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle arguments = getArguments();
+        if (arguments != null)
+            packageName = arguments.getString(ARG_PACKAGE);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(R.layout.fragment_about, container, false);
-
-        return v; // return the fragment's view for display
+        return inflater.inflate(R.layout.fragment_about, container, false);
 
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Bundle arguments = getArguments();
-        String packageName = null;
-        if (arguments != null) {
-            packageName = arguments.getString(LibraryConstants.PREFS_KEY_TEXT);
-        }
-
         try {
             AssetManager assetManager = getActivity().getAssets();
             InputStream inputStream = assetManager.open("about.html");

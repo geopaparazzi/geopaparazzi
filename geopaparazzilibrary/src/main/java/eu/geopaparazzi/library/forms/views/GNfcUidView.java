@@ -31,7 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.forms.FragmentDetail;
+import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.nfc.NfcIdReaderActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -44,7 +44,7 @@ public class GNfcUidView extends View implements GView {
 
     private String _value;
     private EditText uidText;
-    private FragmentDetail fragmentDetail;
+    private FormDetailFragment fragmentDetail;
 
     /**
      * @param context   the context to use.
@@ -88,7 +88,7 @@ public class GNfcUidView extends View implements GView {
      * @param value value
      * @param constraintDescription constraints
      */
-    public GNfcUidView( FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
+    public GNfcUidView( FormDetailFragment fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
             String label, String value, String constraintDescription ) {
         super(fragmentDetail.getActivity(), attrs);
         this.fragmentDetail = fragmentDetail;

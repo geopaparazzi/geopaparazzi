@@ -41,10 +41,7 @@ public class AboutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        AboutFragment aboutFragment = new AboutFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi");
-        aboutFragment.setArguments(bundle);
+        AboutFragment aboutFragment = AboutFragment.newInstance("eu.hydrologis.geopaparazzi");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.fragmentAboutContainer, aboutFragment);
         transaction.commit();
