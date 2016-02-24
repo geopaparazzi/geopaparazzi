@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.forms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -36,11 +37,12 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.fragments.DatabaseListFragment;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.forms.FragmentList.IFragmentListSupporter;
+import eu.geopaparazzi.library.forms.FormListFragment.IFragmentListSupporter;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
@@ -84,6 +86,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_form);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -108,8 +111,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
-        setContentView(R.layout.form);
-
     }
 
     /**
@@ -191,9 +192,11 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     private void saveAction() throws Exception {
         // if in landscape mode store last inserted info, since that fragment has not been stored
-        FormDetailFragment detailFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
-        if (detailFragment != null) {
-            detailFragment.storeFormItems(false);
+        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
+        if (detailFragment instanceof FormDetailFragment) {
+            FormDetailFragment fdFragment = (FormDetailFragment) detailFragment;
+            fdFragment.storeFormItems(false);
+            sectionObject = fdFragment.getSectionObject();
         }
 
         // extract and check constraints
@@ -273,7 +276,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         // force to exit through the exit button, in order to avoid losing info
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK: {
-                // SAVE DATA
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -282,40 +285,25 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     @Override
     public void onListItemSelected(String selectedItemName) {
         // depending on the mode, set the detail fragment or launch the detail activity
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FormDetailFragment detailFragment = (FormDetailFragment) fragmentManager.findFragmentById(R.id.detailFragment);
-        if (detailFragment != null) {
-            // we are in landscape mode
-            try {
-                detailFragment.storeFormItems(false);
-            } catch (Exception e) {
-                GPLog.error(this, null, e);
-                GPDialogs.warningDialog(this, getString(R.string.error_while_storing_form_data), null);
-            }
-            // FragmentActivity activity2 = oldFragment.getActivity();
-            // int id2 = oldFragment.getId();
 
-            FormInfoHolder formInfoHolder = new FormInfoHolder();
-            formInfoHolder.selectedFormName = selectedItemName;
-            formInfoHolder.sectionObjectString = sectionObject.toString();
-            formInfoHolder.noteId = noteId;
-            formInfoHolder.longitude = longitude;
-            formInfoHolder.latitude = latitude;
-            FormDetailFragment newFragment = FormDetailFragment.newInstance(formInfoHolder);
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.remove(detailFragment);
-            transaction.add(R.id.detailFragment, newFragment);
+        View fragmentContainer = findViewById(R.id.detailFragmentContainer);
+        FormInfoHolder formInfoHolder = new FormInfoHolder();
+        formInfoHolder.selectedFormName = selectedItemName;
+        formInfoHolder.sectionObjectString = sectionObject.toString();
+        formInfoHolder.noteId = noteId;
+        formInfoHolder.longitude = longitude;
+        formInfoHolder.latitude = latitude;
+        if (fragmentContainer != null) {
+            FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
             transaction.commit();
         } else {
-            // String sectionName = activity.getSectionName();
             Intent intent = new Intent(getApplicationContext(), FormDetailActivity.class);
-            intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
-            intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
-            intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
-            intent.putExtra(LibraryConstants.LONGITUDE, longitude);
-            intent.putExtra(LibraryConstants.LATITUDE, latitude);
+            intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
             startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
         }
+
     }
 
     @Override
@@ -328,7 +316,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case (RETURNCODE_DETAILACTIVITY): {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
                     try {
                         sectionObjectString = data.getStringExtra(FormUtilities.ATTR_SECTIONOBJECTSTR);
                         sectionObject = new JSONObject(sectionObjectString);

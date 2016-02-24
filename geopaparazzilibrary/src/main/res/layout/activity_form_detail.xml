@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
-    <fragment
-        android:id="@+id/detailFragment"
+    android:orientation="vertical">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/detailFragmentContainer"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:name="eu.geopaparazzi.library.forms.FormDetailFragment" />
+        android:layout_height="fill_parent" />
+
 </LinearLayout>

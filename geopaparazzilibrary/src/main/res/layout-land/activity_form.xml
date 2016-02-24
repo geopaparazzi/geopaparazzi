@@ -4,7 +4,8 @@
     android:layout_height="fill_parent"
     android:layout_margin="3dip"
     android:background="@color/formbgcolor"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/saveButton"
             android:layout_alignParentTop="true"
-            class="eu.geopaparazzi.library.forms.FragmentList" >
+            class="eu.geopaparazzi.library.forms.FormListFragment" >
         </fragment>
 
         <Button
@@ -54,14 +55,10 @@
             android:onClick="shareClicked" />
     </RelativeLayout>
 
-    <fragment
-        android:id="@+id/detailFragment"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/detailFragmentContainer"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_weight=".70"
-        class="eu.geopaparazzi.library.forms.FormDetailFragment" >
-
-        <!-- Preview: layout=@layout/details -->
-    </fragment>
+        android:layout_weight=".70"/>
 
 </LinearLayout>

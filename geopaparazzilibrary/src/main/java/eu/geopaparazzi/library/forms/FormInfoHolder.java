@@ -26,6 +26,8 @@ import java.io.Serializable;
  * @author Andrea Antonello
  */
 public class FormInfoHolder implements Serializable {
+    public static final String BUNDLE_KEY_INFOHOLDER = "BUNDLE_KEY_INFOHOLDER";
+
     String selectedFormName;
     String sectionObjectString;
     long noteId;

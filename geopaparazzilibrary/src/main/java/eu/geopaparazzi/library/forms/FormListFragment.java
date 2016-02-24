@@ -18,34 +18,24 @@
 
 package eu.geopaparazzi.library.forms;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.forms.views.GView;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FragmentList extends android.support.v4.app.ListFragment {
+public class FormListFragment extends android.support.v4.app.ListFragment {
     private String selectedItemName;
 
     private IFragmentListSupporter mFragmentListSupporter;

@@ -19,13 +19,16 @@ package eu.geopaparazzi.library.forms;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * Fragment detail view activity.
@@ -38,12 +41,30 @@ public class FormDetailActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.details_activity_layout);
+        setContentView(R.layout.activity_form_detail);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            FormInfoHolder formInfoHolder = (FormInfoHolder) extras.getSerializable(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+
+            FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
+            transaction.commit();
+        } else {
+            GPDialogs.warningDialog(this, "No FormInfoHolder supplied.", new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+        }
+
     }
 
     @Override
-    protected void onPause() {
-        FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
+    public void onBackPressed() {
+        FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
         if (currentFragment != null) {
             try {
                 currentFragment.storeFormItems(false);
@@ -53,9 +74,13 @@ public class FormDetailActivity extends FragmentActivity {
             JSONObject returnSectionObject = currentFragment.getSectionObject();
             Intent intent = getIntent();
             intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, returnSectionObject.toString());
-            setResult(Activity.RESULT_OK, intent);
+            if(getParent() != null)
+                getParent().setResult(AppCompatActivity.RESULT_OK, intent);
+            else
+                setResult(AppCompatActivity.RESULT_OK, intent);
         }
 
-        super.onPause();
+        super.onBackPressed();
     }
+
 }

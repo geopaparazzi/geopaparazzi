@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,11 +151,11 @@ public class FormDetailFragment extends Fragment {
                 return null;
             }
 
-            view = inflater.inflate(R.layout.details, container, false);
+            view = inflater.inflate(R.layout.fragment_form_detail, container, false);
             LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
 
             if (selectedFormName != null) {
-                FragmentActivity activity = getActivity();
+                Activity activity = getActivity();
                 JSONObject formObject = TagsManager.getForm4Name(selectedFormName, sectionObject);
 
                 key2WidgetMap.clear();
