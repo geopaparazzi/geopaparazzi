@@ -208,10 +208,6 @@ public class FormUtilities {
     /**
      *
      */
-    public static final String ATTR_SECTIONOBJECTSTR = "sectionobjectstr";
-    /**
-     *
-     */
     public static final String ATTR_FORMS = "forms";
     /**
      *

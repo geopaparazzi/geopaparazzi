@@ -36,12 +36,11 @@ import eu.geopaparazzi.library.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FormListFragment extends android.support.v4.app.ListFragment {
-    private String selectedItemName;
 
     private IFragmentListSupporter mFragmentListSupporter;
 
     /**
-     * Intereface to keep track of the selected view.
+     * Interface to keep track of the selected view.
      */
     public interface IFragmentListSupporter {
         void onListItemSelected(String selectedItemName);
@@ -89,7 +88,7 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        selectedItemName = (String) getListAdapter().getItem(position);
+        String selectedItemName = (String) getListAdapter().getItem(position);
         int childCount = l.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childAt = l.getChildAt(i);

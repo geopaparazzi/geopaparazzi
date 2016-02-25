@@ -99,14 +99,8 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_featurepager, menu);
-
-        if (isReadOnly) {
-            MenuItem menuItem = menu.getItem(1);
-            menuItem.setEnabled(false);
-
-//            Button gotoButton = (Button) findViewById(R.id.gotoButton);
-//            gotoButton.setVisibility(View.GONE);
+        if (!isReadOnly) {
+            getMenuInflater().inflate(R.menu.menu_featurepager, menu);
         }
 
         return super.onCreateOptionsMenu(menu);

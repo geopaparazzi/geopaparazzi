@@ -86,10 +86,6 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 public class FormDetailFragment extends Fragment {
     public static final String ARGS_FORMINFO = "args_forminfo";
 
-    public interface IFormInfoHolder {
-        FormInfoHolder getFormInfoHolder();
-    }
-
     private HashMap<String, GView> key2WidgetMap = new HashMap<>();
     private SparseArray<GView> requestCodes2WidgetMap = new SparseArray<>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<>();
@@ -118,21 +114,6 @@ public class FormDetailFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        if (context instanceof IFormInfoHolder) {
-            IFormInfoHolder formInfoHolder = (IFormInfoHolder) context;
-            mFormInfoHolder = formInfoHolder.getFormInfoHolder();
-        }
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-
-        super.onDetach();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = null;
         try {
@@ -141,7 +122,7 @@ public class FormDetailFragment extends Fragment {
             double longitude;
             double latitude;
             if (mFormInfoHolder != null) {
-                selectedFormName = mFormInfoHolder.selectedFormName;
+                selectedFormName = mFormInfoHolder.formName;
                 sectionObject = new JSONObject(mFormInfoHolder.sectionObjectString);
                 noteId = mFormInfoHolder.noteId;
                 longitude = mFormInfoHolder.longitude;
@@ -343,10 +324,11 @@ public class FormDetailFragment extends Fragment {
     }
 
     /**
-     * @return the section object.
+     * @return the updated form info.
      */
-    public JSONObject getSectionObject() {
-        return sectionObject;
+    public FormInfoHolder getFormInfoHolder() {
+        mFormInfoHolder.sectionObjectString = sectionObject.toString();
+        return mFormInfoHolder;
     }
 
 

@@ -28,9 +28,12 @@ import java.io.Serializable;
 public class FormInfoHolder implements Serializable {
     public static final String BUNDLE_KEY_INFOHOLDER = "BUNDLE_KEY_INFOHOLDER";
 
-    String selectedFormName;
-    String sectionObjectString;
-    long noteId;
-    double longitude;
-    double latitude;
+    public String sectionName;
+    public String formName;
+    public String sectionObjectString;
+    public long noteId;
+    public double longitude;
+    public double latitude;
+    public double elevation;
+    public boolean objectExists;
 }

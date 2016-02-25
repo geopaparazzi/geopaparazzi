@@ -52,6 +52,7 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -176,12 +177,15 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
 
                                 // launch form activity
                                 Intent formIntent = new Intent(AddNotesActivity.this, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.DATABASE_ID, noteId);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, sectionName);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
-                                formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
+                                FormInfoHolder formInfoHolder = new FormInfoHolder();
+                                formInfoHolder.sectionName = sectionName;
+                                formInfoHolder.formName = null;
+                                formInfoHolder.noteId = noteId;
+                                formInfoHolder.longitude = longitude;
+                                formInfoHolder.latitude = latitude;
+                                formInfoHolder.elevation = elevation;
+                                formInfoHolder.objectExists = false;
+                                formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } catch (Exception e) {
                                 GPLog.error(this, null, e);

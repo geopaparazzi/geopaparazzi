@@ -20,24 +20,25 @@ package eu.geopaparazzi.library.forms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.core.fragments.DatabaseListFragment;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -77,40 +78,161 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     private double latitude = -9999.0;
     private double longitude = -9999.0;
     private double elevation = -9999.0;
-    private String sectionName;
+    private String mSectionName;
+    private String mFormName;
     private JSONObject sectionObject;
     private List<String> formNames4Section = new ArrayList<String>();
-    private String sectionObjectString;
     private long noteId = -1;
     private boolean noteIsNew = false;
+    private FloatingActionButton saveButton;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
+        saveButton.hide();
+
+        View container = findViewById(R.id.detailFragmentContainer);
+
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            sectionName = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
-            sectionObjectString = extras.getString(LibraryConstants.PREFS_KEY_FORM_JSON);
-            latitude = extras.getDouble(LibraryConstants.LATITUDE);
-            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
-            elevation = extras.getDouble(LibraryConstants.ELEVATION);
-            noteId = extras.getLong(LibraryConstants.DATABASE_ID);
-            noteIsNew = !extras.getBoolean(LibraryConstants.OBJECT_EXISTS);
+        if (savedInstanceState != null) {
+            // state has been restored
+            readBundle(savedInstanceState);
+            FormInfoHolder formInfoHolder = new FormInfoHolder();
+            formInfoHolder.sectionName = mSectionName;
+            formInfoHolder.formName = mFormName;
+            formInfoHolder.noteId = noteId;
+            formInfoHolder.longitude = longitude;
+            formInfoHolder.latitude = latitude;
+            formInfoHolder.sectionObjectString = sectionObject.toString();
+
+
+            if (container != null) {
+                // landscape mode
+                FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.detailFragmentContainer, formDetailFragment);
+                transaction.commit();
+            } else {
+                Intent intent = new Intent(this, FormDetailActivity.class);
+                intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
+                startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
+            }
+        } else if (extras != null) {
+            readBundle(extras);
+            try {
+                if (container != null && formNames4Section.size() > 0) {
+                    FormInfoHolder formInfoHolder = new FormInfoHolder();
+                    if (formInfoHolder.formName == null)
+                        formInfoHolder.formName = formNames4Section.get(0);
+                    formInfoHolder.noteId = noteId;
+                    formInfoHolder.longitude = longitude;
+                    formInfoHolder.latitude = latitude;
+                    formInfoHolder.sectionObjectString = sectionObject.toString();
+                    FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.add(R.id.detailFragmentContainer, formDetailFragment);
+                    transaction.commit();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void readBundle(Bundle bundle) {
+        if (bundle != null) {
+            Serializable formInfoHolder = bundle.getSerializable(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+            if (formInfoHolder instanceof FormInfoHolder) {
+                FormInfoHolder formInfo = (FormInfoHolder) formInfoHolder;
+
+                extractVariablesFromForminfo(formInfo);
+            }
         }
 
+
+    }
+
+    private void extractVariablesFromForminfo(FormInfoHolder formInfo) {
+        mSectionName = formInfo.sectionName;
+        mFormName = formInfo.formName;
+        latitude = formInfo.latitude;
+        longitude = formInfo.longitude;
+        elevation = formInfo.elevation;
+        noteId = formInfo.noteId;
+        noteIsNew = !formInfo.objectExists;
+
         try {
-            if (sectionObjectString == null) {
-                sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
+            if (formInfo.sectionObjectString == null) {
+                sectionObject = TagsManager.getInstance(this).getSectionByName(mSectionName);
                 // copy the section object, which will be kept around along the activity
-                sectionObjectString = sectionObject.toString();
+                formInfo.sectionObjectString = sectionObject.toString();
             }
 
-            sectionObject = new JSONObject(sectionObjectString);
+            sectionObject = new JSONObject(formInfo.sectionObjectString);
             formNames4Section = TagsManager.getFormNames4Section(sectionObject);
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        try {
+            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
+            if (detailFragment instanceof FormDetailFragment) {
+                FormDetailFragment fdFragment = (FormDetailFragment) detailFragment;
+                fdFragment.storeFormItems(false);
+
+                FormInfoHolder formInfo = fdFragment.getFormInfoHolder();
+                sectionObject = new JSONObject(formInfo.sectionObjectString);
+
+                // also remove the fragment
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.remove(fdFragment);
+                transaction.commit();
+            }
+
+            FormInfoHolder formInfoHolder = new FormInfoHolder();
+            formInfoHolder.sectionName = mSectionName;
+            formInfoHolder.formName = mFormName;
+            formInfoHolder.sectionObjectString = sectionObject.toString();
+            formInfoHolder.noteId = noteId;
+            formInfoHolder.longitude = longitude;
+            formInfoHolder.latitude = latitude;
+            formInfoHolder.elevation = elevation;
+            formInfoHolder.objectExists = !noteIsNew;
+
+            outState.putSerializable(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_form, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+            try {
+                shareAction();
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -127,32 +249,15 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         }
     }
 
-    /**
-     * Share action.
-     *
-     * @param view parent.
-     */
-    public void shareClicked(View view) {
-        try {
-            shareAction();
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
-        }
-    }
 
-    /**
-     * Cancel action.
-     *
-     * @param view parent.
-     */
-    public void cancelClicked(View view) {
+    @Override
+    public void onBackPressed() {
         if (noteIsNew) {
             Intent intent = getIntent();
             intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
             setResult(Activity.RESULT_CANCELED, intent);
         }
-        finish();
+        super.onBackPressed();
     }
 
     private void shareAction() throws Exception {
@@ -196,7 +301,8 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         if (detailFragment instanceof FormDetailFragment) {
             FormDetailFragment fdFragment = (FormDetailFragment) detailFragment;
             fdFragment.storeFormItems(false);
-            sectionObject = fdFragment.getSectionObject();
+            FormInfoHolder formInfo = fdFragment.getFormInfoHolder();
+            sectionObject = new JSONObject(formInfo.sectionObjectString);
         }
 
         // extract and check constraints
@@ -255,7 +361,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         long timestamp = System.currentTimeMillis();
 
         if (renderingLabel == null) {
-            renderingLabel = sectionName;
+            renderingLabel = mSectionName;
         }
         String[] formDataArray = {//
                 String.valueOf(noteId), //
@@ -272,33 +378,36 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         finish();
     }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // force to exit through the exit button, in order to avoid losing info
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK: {
-                return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
     @Override
     public void onListItemSelected(String selectedItemName) {
+        saveButton.show();
+
         // depending on the mode, set the detail fragment or launch the detail activity
 
-        View fragmentContainer = findViewById(R.id.detailFragmentContainer);
+        FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
         FormInfoHolder formInfoHolder = new FormInfoHolder();
-        formInfoHolder.selectedFormName = selectedItemName;
-        formInfoHolder.sectionObjectString = sectionObject.toString();
+        formInfoHolder.sectionName = mSectionName;
+        mFormName = selectedItemName;
+        formInfoHolder.formName = mFormName;
         formInfoHolder.noteId = noteId;
         formInfoHolder.longitude = longitude;
         formInfoHolder.latitude = latitude;
-        if (fragmentContainer != null) {
+        if (currentFragment != null) {
+            try {
+                currentFragment.storeFormItems(false);
+                FormInfoHolder formInfo = currentFragment.getFormInfoHolder();
+                formInfoHolder.sectionObjectString = formInfo.sectionObjectString;
+                sectionObject = new JSONObject(formInfo.sectionObjectString);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
+
             FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
             transaction.commit();
         } else {
+            formInfoHolder.sectionObjectString = sectionObject.toString();
             Intent intent = new Intent(getApplicationContext(), FormDetailActivity.class);
             intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
             startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
@@ -317,12 +426,8 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         switch (requestCode) {
             case (RETURNCODE_DETAILACTIVITY): {
                 if (resultCode == AppCompatActivity.RESULT_OK) {
-                    try {
-                        sectionObjectString = data.getStringExtra(FormUtilities.ATTR_SECTIONOBJECTSTR);
-                        sectionObject = new JSONObject(sectionObjectString);
-                    } catch (JSONException e) {
-                        GPLog.error(this, null, e);
-                    }
+                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+                    extractVariablesFromForminfo(formInfoHolder);
                 }
                 break;
             }

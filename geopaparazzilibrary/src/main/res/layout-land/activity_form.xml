@@ -1,64 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_margin="3dip"
-    android:background="@color/formbgcolor"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".core.activities.GeocodeActivity">
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="20dip"
-        android:layout_weight=".30" >
+    <LinearLayout
+        android:id="@+id/gpsdatalistLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <fragment
-            android:id="@+id/listFragment"
-            android:layout_width="wrap_content"
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/saveButton"
-            android:layout_alignParentTop="true"
-            class="eu.geopaparazzi.library.forms.FormListFragment" >
-        </fragment>
+            android:theme="@style/GeopapTheme.AppBarOverlay">
 
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="10dp"
-            android:background="@android:drawable/ic_menu_add"
-            android:onClick="saveClicked" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
 
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/saveButton"
-            android:layout_alignBottom="@+id/saveButton"
-            android:layout_margin="10dp"
-            android:layout_toRightOf="@+id/saveButton"
-            android:background="@android:drawable/ic_menu_close_clear_cancel"
-            android:onClick="cancelClicked" />
+        </android.support.design.widget.AppBarLayout>
 
-        <Button
-            android:id="@+id/shareButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/cancelButton"
-            android:layout_alignBottom="@+id/cancelButton"
-            android:layout_margin="10dp"
-            android:layout_toRightOf="@+id/cancelButton"
-            android:background="@android:drawable/ic_menu_share"
-            android:onClick="shareClicked" />
-    </RelativeLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="3dip"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/detailFragmentContainer"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight=".70"/>
+            <fragment
+                android:id="@+id/listFragment"
+                class="eu.geopaparazzi.library.forms.FormListFragment"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight=".30" />
 
-</LinearLayout>
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/detailFragmentContainer"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight=".70" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:onClick="saveClicked"
+        android:src="@drawable/ic_save_24dp" />
+</android.support.design.widget.CoordinatorLayout>

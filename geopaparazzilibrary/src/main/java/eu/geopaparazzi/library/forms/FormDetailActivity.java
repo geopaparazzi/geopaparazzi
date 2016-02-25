@@ -35,7 +35,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormDetailActivity extends FragmentActivity {
+public class FormDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class FormDetailActivity extends FragmentActivity {
 
             FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
+            transaction.add(R.id.detailFragmentContainer, formDetailFragment);
             transaction.commit();
         } else {
             GPDialogs.warningDialog(this, "No FormInfoHolder supplied.", new Runnable() {
@@ -71,9 +71,9 @@ public class FormDetailActivity extends FragmentActivity {
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }
-            JSONObject returnSectionObject = currentFragment.getSectionObject();
+            FormInfoHolder formInfo = currentFragment.getFormInfoHolder();
             Intent intent = getIntent();
-            intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, returnSectionObject.toString());
+            intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfo);
             if(getParent() != null)
                 getParent().setResult(AppCompatActivity.RESULT_OK, intent);
             else
