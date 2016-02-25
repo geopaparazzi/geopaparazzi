@@ -87,7 +87,7 @@ import jsqlite.Exception;
 /**
  * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
  * access the backing data structure of deriving subclasses.
- * <p>
+ * <p/>
  * The overlay may be used to show additional ways such as calculated routes. Closed polygons, for example buildings or
  * areas, are also supported. A way node sequence is considered as a closed polygon if the first and the last way node
  * are equal.
@@ -116,10 +116,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint defaultWayPaintOutline;
     private Path wayPath;
 
-    private Drawable itemDefaultMarker;
     private Point itemPosition;
-    private final List<Integer> visibleItems = new ArrayList<Integer>();
-    private final List<Integer> visibleItemsRedraw = new ArrayList<Integer>();
+    private final List<Integer> visibleItems = new ArrayList<>();
+    private final List<Integer> visibleItemsRedraw = new ArrayList<>();
 
     /*
      * gps stuff
@@ -137,8 +136,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsOutline;
     private Paint gpsFill;
 
-    private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
-    private static final int inset = 5;
+    private List<GeoPoint> currentGpsLog = new ArrayList<>();
     private Paint textPaint;
     private Paint textHaloPaint;
     private boolean isNotesTextVisible;
@@ -178,7 +176,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         defaultWayPaintOutline.setStyle(Paint.Style.STROKE);
         defaultWayPaintOutline.setColor(Color.BLACK);
 
-        gpsMarker = context.getResources().getDrawable(R.drawable.current_position);
+        gpsMarker = context.getDrawable(R.drawable.current_position);
         gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsFill.setStyle(Paint.Style.FILL);
         gpsFill.setColor(Color.BLUE);
@@ -459,17 +457,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
             this.itemPosition.y = overlayItem.cachedMapPosition.y - drawPosition.y;
 
             // get the correct marker for the item
-            Drawable marker = overlayItem.getMarker();
-            Drawable itemMarker;
-            if (marker == null) {
-                if (this.itemDefaultMarker == null) {
-                    // no marker to draw the item
-                    continue;
-                }
-                itemMarker = this.itemDefaultMarker;
-            } else {
-                itemMarker = marker;
-            }
+            Drawable itemMarker = overlayItem.getMarker();
+            if (itemMarker == null) continue;
 
             // get the position of the marker
             Rect markerBounds = itemMarker.copyBounds();
@@ -508,7 +497,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         // swap the two visible item lists
         synchronized (visibleItems) {
-            List<Integer> visibleItemsTemp = new ArrayList<Integer>(visibleItems);
+            List<Integer> visibleItemsTemp = new ArrayList<>(visibleItems);
             visibleItems.clear();
             visibleItems.addAll(visibleItemsRedraw);
             visibleItemsRedraw.addAll(visibleItemsTemp);
@@ -964,17 +953,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
 
                 // select the correct marker for the item and get the position
-                Rect checkMarkerBounds;
                 Drawable marker = checkOverlayItem.getMarker();
-                if (marker == null) {
-                    if (this.itemDefaultMarker == null) {
-                        // no marker to draw the item
-                        continue;
-                    }
-                    checkMarkerBounds = this.itemDefaultMarker.getBounds();
-                } else {
-                    checkMarkerBounds = marker.getBounds();
-                }
+                if (marker == null) return false;
+                Rect checkMarkerBounds = marker.getBounds();
 
                 // calculate the bounding box of the marker
                 int checkLeft = checkItemPoint.x + checkMarkerBounds.left;
@@ -1008,7 +989,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Handles a long press event.
-     * <p>
+     * <p/>
      * The default implementation of this method does nothing and returns false.
      *
      * @param index the index of the item that has been long pressed.
@@ -1020,7 +1001,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Handles a tap event.
-     * <p>
+     * <p/>
      * The default implementation of this method does nothing and returns false.
      *
      * @param index the index of the item that has been tapped.
@@ -1054,7 +1035,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         List<Note> notesInWorldBounds = DaoNotes.getNotesList(new float[]{n, s, w, e}, false);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
-                            String description = note.getDescription();
+//                            String description = note.getDescription();
                             String name = note.getName();
                             String form = note.getForm();
                             if (form != null && form.length() > 0) {
