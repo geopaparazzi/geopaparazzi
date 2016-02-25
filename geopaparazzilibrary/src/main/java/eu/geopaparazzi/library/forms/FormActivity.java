@@ -363,17 +363,21 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         if (renderingLabel == null) {
             renderingLabel = mSectionName;
         }
-        String[] formDataArray = {//
-                String.valueOf(noteId), //
-                String.valueOf(longitude), //
-                String.valueOf(latitude), //
-                String.valueOf(elevation), //
-                String.valueOf(timestamp), //
-                renderingLabel, //
-                "POI", //
-                sectionObjectString};
+
+        FormInfoHolder formInfoHolder = new FormInfoHolder();
+        formInfoHolder.sectionName = mSectionName;
+        formInfoHolder.formName = mFormName;
+        formInfoHolder.noteId = noteId;
+        formInfoHolder.longitude = longitude;
+        formInfoHolder.latitude = latitude;
+        formInfoHolder.elevation = elevation;
+        formInfoHolder.sectionObjectString = sectionObjectString;
+
+        formInfoHolder.lastTimestamp = timestamp;
+        formInfoHolder.renderingLabel = renderingLabel;
+
         Intent intent = getIntent();
-        intent.putExtra(LibraryConstants.PREFS_KEY_FORM, formDataArray);
+        intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

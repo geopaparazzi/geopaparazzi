@@ -61,6 +61,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
@@ -470,14 +471,19 @@ public class NotesListActivity extends AppCompatActivity {
                 String form = note.getForm();
                 if (form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
                     double altim = note.getAltim();
+
                     Intent formIntent = new Intent(this, FormActivity.class);
-                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                    formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, currentNote.getName());
-                    formIntent.putExtra(LibraryConstants.LATITUDE, lat);
-                    formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
-                    formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                    formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
-                    formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+                    FormInfoHolder formInfoHolder = new FormInfoHolder();
+                    formInfoHolder.sectionName = currentNote.getName();
+                    formInfoHolder.formName = null;
+                    formInfoHolder.noteId = note.getId();
+                    formInfoHolder.longitude = lon;
+                    formInfoHolder.latitude = lat;
+                    formInfoHolder.elevation = altim;
+                    formInfoHolder.sectionObjectString = form;
+                    formInfoHolder.objectExists = true;
+                    formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
+
                     this.startActivityForResult(formIntent, MapviewActivity.FORMUPDATE_RETURN_CODE);
                 }
             }

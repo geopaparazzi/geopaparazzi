@@ -36,4 +36,9 @@ public class FormInfoHolder implements Serializable {
     public double latitude;
     public double elevation;
     public boolean objectExists;
+
+    // ADDED INFO FOR RENDERING AND UPDATE
+    public String renderingLabel;
+    public long lastTimestamp;
+    public String category = "POI";
 }

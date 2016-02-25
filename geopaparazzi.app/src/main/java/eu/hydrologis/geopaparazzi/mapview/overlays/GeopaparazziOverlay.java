@@ -61,6 +61,7 @@ import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsService;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -1058,14 +1059,19 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             String form = note.getForm();
                             if (form != null && form.length() > 0) {
                                 double altim = note.getAltim();
+
                                 Intent formIntent = new Intent(context, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                                formIntent.putExtra(LibraryConstants.DATABASE_ID, note.getId());
-                                formIntent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+                                FormInfoHolder formInfoHolder = new FormInfoHolder();
+                                formInfoHolder.sectionName = name;
+                                formInfoHolder.formName = null;
+                                formInfoHolder.noteId = note.getId();
+                                formInfoHolder.longitude = lon;
+                                formInfoHolder.latitude = lat;
+                                formInfoHolder.elevation = altim;
+                                formInfoHolder.sectionObjectString = form;
+                                formInfoHolder.objectExists = true;
+                                formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
+
                                 mapActivity.startActivityForResult(formIntent, MapviewActivity.FORMUPDATE_RETURN_CODE);
                                 doInfo = false;
                             }
