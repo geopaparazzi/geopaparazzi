@@ -84,7 +84,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     private List<String> formNames4Section = new ArrayList<String>();
     private long noteId = -1;
     private boolean noteIsNew = false;
-    private FloatingActionButton saveButton;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +91,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
-        saveButton.hide();
 
         View container = findViewById(R.id.detailFragmentContainer);
 
@@ -111,17 +107,10 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
             formInfoHolder.sectionObjectString = sectionObject.toString();
 
 
-            if (container != null) {
-                // landscape mode
-                FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.detailFragmentContainer, formDetailFragment);
-                transaction.commit();
-            } else {
-                Intent intent = new Intent(this, FormDetailActivity.class);
-                intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
-                startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
-            }
+            FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.detailFragmentContainer, formDetailFragment);
+            transaction.commit();
         } else if (extras != null) {
             readBundle(extras);
             try {
@@ -231,24 +220,16 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                 GPLog.error(this, null, e);
                 GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
             }
+        } else if (id == R.id.action_save) {
+            try {
+                saveAction();
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+                GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * Save action.
-     *
-     * @param view parent.
-     */
-    public void saveClicked(View view) {
-        try {
-            saveAction();
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
-        }
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -384,8 +365,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     @Override
     public void onListItemSelected(String selectedItemName) {
-        saveButton.show();
-
         // depending on the mode, set the detail fragment or launch the detail activity
 
         FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
@@ -396,26 +375,19 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         formInfoHolder.noteId = noteId;
         formInfoHolder.longitude = longitude;
         formInfoHolder.latitude = latitude;
-        if (currentFragment != null) {
-            try {
-                currentFragment.storeFormItems(false);
-                FormInfoHolder formInfo = currentFragment.getFormInfoHolder();
-                formInfoHolder.sectionObjectString = formInfo.sectionObjectString;
-                sectionObject = new JSONObject(formInfo.sectionObjectString);
-            } catch (Exception e) {
-                GPLog.error(this, null, e);
-            }
-
-            FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
-            transaction.commit();
-        } else {
-            formInfoHolder.sectionObjectString = sectionObject.toString();
-            Intent intent = new Intent(getApplicationContext(), FormDetailActivity.class);
-            intent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
-            startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
+        try {
+            currentFragment.storeFormItems(false);
+            FormInfoHolder formInfo = currentFragment.getFormInfoHolder();
+            formInfoHolder.sectionObjectString = formInfo.sectionObjectString;
+            sectionObject = new JSONObject(formInfo.sectionObjectString);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
         }
+
+        FormDetailFragment formDetailFragment = FormDetailFragment.newInstance(formInfoHolder);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.detailFragmentContainer, formDetailFragment);
+        transaction.commit();
 
     }
 

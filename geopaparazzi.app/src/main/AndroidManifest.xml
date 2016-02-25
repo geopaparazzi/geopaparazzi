@@ -314,16 +314,6 @@
                 android:value=".ui.activities.AddNotesActivity" />
         </activity>
 
-        <activity
-            android:name="eu.geopaparazzi.library.forms.FormDetailActivity"
-            android:label="Form Data"
-            android:parentActivityName="eu.geopaparazzi.library.forms.FormActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.library.forms.FormActivity" />
-        </activity>
-
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

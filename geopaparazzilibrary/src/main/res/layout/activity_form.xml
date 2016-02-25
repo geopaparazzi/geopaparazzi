@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".core.activities.GeocodeActivity">
+    tools:context=".forms.FormActivity">
 
     <LinearLayout
         android:id="@+id/gpsdatalistLayout"
@@ -29,26 +29,45 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_margin="3dip"
             android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <fragment
-                android:id="@+id/listFragment"
-                class="eu.geopaparazzi.library.forms.FormListFragment"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight=".50"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="6dp"
+                card_view:cardUseCompatPadding="true">
+
+                <fragment
+                    android:id="@+id/listFragment"
+                    class="eu.geopaparazzi.library.forms.FormListFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dip"/>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight=".50"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="6dp"
+                card_view:cardUseCompatPadding="true">
+
+                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/detailFragmentContainer"
+                    android:layout_width="match_parent"
+                    android:padding="3dip"
+                    android:layout_height="match_parent" />
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
-
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:onClick="saveClicked"
-        android:src="@drawable/ic_save_24dp" />
 </android.support.design.widget.CoordinatorLayout>
