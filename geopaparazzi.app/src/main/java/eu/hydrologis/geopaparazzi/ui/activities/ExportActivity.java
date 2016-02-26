@@ -268,7 +268,7 @@ public class ExportActivity extends AppCompatActivity implements
                 }
 
                 protected void doUiPostWork(String response) {
-                    dispose();
+                    if (response == null) response = "";
                     if (response.length() != 0) {
                         GPDialogs.warningDialog(ExportActivity.this, response, null);
                     } else {

@@ -6,5 +6,6 @@
     android:text="asdasdad asdas"
     android:minHeight="@dimen/min_touch_size"
     android:gravity="center_vertical"
+    android:textStyle="bold"
     android:paddingLeft="5dp"
     android:paddingStart="5dp" />

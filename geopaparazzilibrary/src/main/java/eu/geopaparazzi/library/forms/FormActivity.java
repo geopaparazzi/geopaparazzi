@@ -92,8 +92,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        View container = findViewById(R.id.detailFragmentContainer);
-
         Bundle extras = getIntent().getExtras();
         if (savedInstanceState != null) {
             // state has been restored
@@ -114,7 +112,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         } else if (extras != null) {
             readBundle(extras);
             try {
-                if (container != null && formNames4Section.size() > 0) {
+                if (formNames4Section.size() > 0) {
                     FormInfoHolder formInfoHolder = new FormInfoHolder();
                     if (formInfoHolder.formName == null)
                         formInfoHolder.formName = formNames4Section.get(0);
@@ -128,7 +126,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                     transaction.commit();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                GPLog.error(this, null, e);
             }
         }
     }
@@ -395,7 +393,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     public List<String> getListTitles() {
         return formNames4Section;
     }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

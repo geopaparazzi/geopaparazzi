@@ -20,8 +20,10 @@ package eu.geopaparazzi.library.forms;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,6 +33,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.style.ColorUtilities;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -60,7 +63,7 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
 
         List<String> fragmentTitles = mFragmentListSupporter.getListTitles();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_list_item,
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1,
                 fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
         int color = getActivity().getColor(R.color.formcolor);
@@ -69,7 +72,16 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
         listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(2);
 
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setFocusableInTouchMode(true);
+        StateListDrawable selector = new StateListDrawable();
+        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(getContext().getColor(R.color.main_selection)));
+        listView.setSelector(selector);
+
         setListAdapter(adapter);
+
+        if (fragmentTitles.size() > 0)
+            listView.setItemChecked(0, true);
     }
 
     @Override
@@ -89,21 +101,24 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         String selectedItemName = (String) getListAdapter().getItem(position);
-        int childCount = l.getChildCount();
+//        makeSelectedBold(l, v);
+
+        mFragmentListSupporter.onListItemSelected(selectedItemName);
+
+    }
+
+    private void makeSelectedBold(ListView listView, View selectedView) {
+        int childCount = listView.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View childAt = l.getChildAt(i);
+            View childAt = listView.getChildAt(i);
             if (childAt instanceof TextView) {
                 TextView textView = (TextView) childAt;
                 textView.setTypeface(null, Typeface.NORMAL);
             }
         }
-        if (v instanceof TextView) {
-            TextView textView = (TextView) v;
+        if (selectedView instanceof TextView) {
+            TextView textView = (TextView) selectedView;
             textView.setTypeface(null, Typeface.BOLD_ITALIC);
-            // textView.setTextColor(v.getResources().getColor(R.color.formcolorselected));
         }
-
-        mFragmentListSupporter.onListItemSelected(selectedItemName);
-
     }
 }
