@@ -619,17 +619,16 @@ public class NotesListActivity extends AppCompatActivity {
         switch (requestCode) {
             case (MapviewActivity.FORMUPDATE_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-                    String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-                    if (formArray != null) {
+                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+                    if (formInfoHolder != null) {
                         try {
-                            String textStr = formArray[5];
-                            String jsonStr = formArray[7];
+                            long noteId = formInfoHolder.noteId;
+                            String nameStr = formInfoHolder.renderingLabel;
+                            String jsonStr = formInfoHolder.sectionObjectString;
 
-                            long noteId = Long.parseLong(formArray[0]);
-                            DaoNotes.updateForm(noteId, textStr, jsonStr);
-
+                            DaoNotes.updateForm(noteId, nameStr, jsonStr);
                         } catch (Exception e) {
-                            GPLog.error(this, null, e); //$NON-NLS-1$
+                            GPLog.error(this, null, e);
                             GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
                         }
                     }

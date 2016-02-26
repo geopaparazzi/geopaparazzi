@@ -95,6 +95,7 @@ import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -902,17 +903,12 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
             case (FORMUPDATE_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
-                    String[] formArray = data.getStringArrayExtra(PREFS_KEY_FORM);
-                    if (formArray != null) {
+                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+                    if (formInfoHolder != null) {
                         try {
-                            long noteId = Long.parseLong(formArray[0]);
-                            //                        double lon = Double.parseDouble(formArray[1]);
-                            //                        double lat = Double.parseDouble(formArray[2]);
-                            //                        double elev = Double.parseDouble(formArray[3]);
-                            //                        String dateStr = formArray[4];
-                            String nameStr = formArray[5];
-                            //                        String catStr = formArray[6];
-                            String jsonStr = formArray[7];
+                            long noteId = formInfoHolder.noteId;
+                            String nameStr = formInfoHolder.renderingLabel;
+                            String jsonStr = formInfoHolder.sectionObjectString;
 
                             DaoNotes.updateForm(noteId, nameStr, jsonStr);
                         } catch (Exception e) {

@@ -67,7 +67,7 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
                 fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
         int color = getActivity().getColor(R.color.formcolor);
-        int[] colors = {0, color, 0}; // red for the example
+        int[] colors = {0, color, 0};
         ListView listView = getListView();
         listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(2);
@@ -101,24 +101,6 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         String selectedItemName = (String) getListAdapter().getItem(position);
-//        makeSelectedBold(l, v);
-
         mFragmentListSupporter.onListItemSelected(selectedItemName);
-
-    }
-
-    private void makeSelectedBold(ListView listView, View selectedView) {
-        int childCount = listView.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View childAt = listView.getChildAt(i);
-            if (childAt instanceof TextView) {
-                TextView textView = (TextView) childAt;
-                textView.setTypeface(null, Typeface.NORMAL);
-            }
-        }
-        if (selectedView instanceof TextView) {
-            TextView textView = (TextView) selectedView;
-            textView.setTypeface(null, Typeface.BOLD_ITALIC);
-        }
     }
 }
