@@ -15,9 +15,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 
+import java.io.IOException;
+
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.SimplePosition;
+import eu.geopaparazzi.library.util.UrlUtilities;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
+import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
@@ -49,6 +57,8 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         // PERMISSIONS START
         if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
             init();
+
+            checkIncomingUrl();
         } else {
             if (permissionHelper.hasPermission(this)) {
                 permissionHelper = permissionHelper.getNextWithoutPermission(this);
@@ -57,6 +67,18 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         }
         // PERMISSIONS STOP
 
+    }
+
+    private void init() {
+
+        // set default values in the app's SharedPreferences
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+        geopaparazziActivityFragment = new GeopaparazziActivityFragment();
+        FragmentTransaction transaction =
+                getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, geopaparazziActivityFragment);
+        transaction.commitAllowingStateLoss();
     }
 
     private void checkIncomingProject() {
@@ -72,16 +94,37 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         }
     }
 
-    private void init() {
+    private void checkIncomingUrl() {
+        Uri data = getIntent().getData();
+        if (data != null) {
+            final String path = data.toString();
+            // try osm
+            final SimplePosition simplePosition = UrlUtilities.getLatLonTextFromOsmUrl(path);
+            if (simplePosition.latitude != null) {
+                GPDialogs.yesNoMessageDialog(this, "Do you want to import the link data as a bookmark and visualize it?", new Runnable() {
+                    @Override
+                    public void run() {
+                        GeopaparazziActivity activity = GeopaparazziActivity.this;
+                        try {
+                            DaoBookmarks.addBookmark(simplePosition.longitude, simplePosition.latitude, simplePosition.text, simplePosition.zoomLevel, -1, -1, -1, -1);
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                            PositionUtilities.putMapCenterInPreferences(preferences, simplePosition.longitude, simplePosition.latitude, 16);
+                            Intent mapIntent = new Intent(activity, MapviewActivity.class);
+                            startActivity(mapIntent);
+                        } catch (IOException e) {
+                            GPLog.error(this, "Error parsing URI: " + path, e); //$NON-NLS-1$
+                            GPDialogs
+                                    .warningDialog(
+                                            activity,
+                                            "Unable to parse the url: " + path,
+                                            null);
+                        }
+                    }
+                }, null);
 
-        // set default values in the app's SharedPreferences
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+            }
 
-        geopaparazziActivityFragment = new GeopaparazziActivityFragment();
-        FragmentTransaction transaction =
-                getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, geopaparazziActivityFragment);
-        transaction.commitAllowingStateLoss();
+        }
     }
 
     @Override

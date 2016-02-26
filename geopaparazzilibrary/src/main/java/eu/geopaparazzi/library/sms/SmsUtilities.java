@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.UrlUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -71,7 +72,7 @@ public class SmsUtilities {
         }
         StringBuilder sB = new StringBuilder();
         if (gpsLocation != null) {
-            String osmUrl = Utilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, true);
+            String osmUrl = UrlUtilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, true);
             sB.append(osmUrl);
             if (messageText != null)
                 sB.append(" ").append(messageText);

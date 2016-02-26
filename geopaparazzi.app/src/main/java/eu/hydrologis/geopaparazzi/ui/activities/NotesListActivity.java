@@ -69,6 +69,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.library.util.UrlUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -388,7 +389,7 @@ public class NotesListActivity extends AppCompatActivity {
     private void shareNote(ANote currentNote) {
         float lat = (float) currentNote.getLat();
         float lon = (float) currentNote.getLon();
-        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+        String osmUrl = UrlUtilities.osmUrlFromLatLong(lat, lon, true, false);
         if (currentNote instanceof Note) {
             Note note = (Note) currentNote;
             if (note.getForm() == null || note.getForm().length() == 0) {

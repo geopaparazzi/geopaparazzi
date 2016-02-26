@@ -27,6 +27,7 @@ import android.preference.PreferenceManager;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.UrlUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -65,7 +66,7 @@ public class ShareUtilities {
             gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
             title = context.getString(R.string.share_current_center);
         }
-        String url = Utilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, false);
+        String url = UrlUtilities.osmUrlFromLatLong((float) gpsLocation[1], (float) gpsLocation[0], true, false);
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

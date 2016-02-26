@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.UrlUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_IS_RENDER_LABEL;
@@ -243,7 +244,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         String form = sectionObject.toString();
         float lat = (float) latitude;
         float lon = (float) longitude;
-        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+        String osmUrl = UrlUtilities.osmUrlFromLatLong(lat, lon, true, false);
 
         IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
         File tempDir = ResourcesManager.getInstance(this).getTempDir();

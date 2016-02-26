@@ -49,8 +49,8 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
-import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -62,6 +62,9 @@ import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoMetadata;
+import eu.hydrologis.geopaparazzi.database.TableDescriptions;
+import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AboutActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
@@ -71,13 +74,10 @@ import eu.hydrologis.geopaparazzi.ui.activities.ImportActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.PanicActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.ProjectMetadataActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.SettingsActivity;
-import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
-import eu.hydrologis.geopaparazzi.database.DaoMetadata;
-import eu.hydrologis.geopaparazzi.database.TableDescriptions;
-import eu.hydrologis.geopaparazzi.database.objects.Metadata;
 import eu.hydrologis.geopaparazzi.ui.dialogs.GpsInfoDialogFragment;
 import eu.hydrologis.geopaparazzi.ui.dialogs.NewProjectDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
+import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -107,9 +107,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private GpsServiceStatus mLastGpsServiceStatus;
     private int[] mLastGpsStatusExtras;
     private GpsLoggingStatus mLastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
-    private double[] lastGpsPosition;
-    private FloatingActionButton panicFAB;
-    private ResourcesManager resourcesManager;
+    private double[] mLastGpsPosition;
+    private FloatingActionButton mPanicFAB;
+    private ResourcesManager mResourcesManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -169,8 +169,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mExportButton.setOnClickListener(this);
         mExportButton.setOnLongClickListener(this);
 
-        panicFAB = (FloatingActionButton) view.findViewById(R.id.panicActionButton);
-        panicFAB.setOnClickListener(this);
+        mPanicFAB = (FloatingActionButton) view.findViewById(R.id.panicActionButton);
+        mPanicFAB.setOnClickListener(this);
         enablePanic(false);
 
 
@@ -399,14 +399,14 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (v == mExportButton) {
             Intent exportIntent = new Intent(getActivity(), ExportActivity.class);
             startActivity(exportIntent);
-        } else if (v == panicFAB) {
-            if (lastGpsPosition == null) {
+        } else if (v == mPanicFAB) {
+            if (mLastGpsPosition == null) {
                 return;
             }
 
             Intent panicIntent = new Intent(getActivity(), PanicActivity.class);
-            double lon = lastGpsPosition[0];
-            double lat = lastGpsPosition[1];
+            double lon = mLastGpsPosition[0];
+            double lat = mLastGpsPosition[1];
             panicIntent.putExtra(LibraryConstants.LATITUDE, lat);
             panicIntent.putExtra(LibraryConstants.LONGITUDE, lon);
             startActivity(panicIntent);
@@ -418,7 +418,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mLastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         mLastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         mLastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
-        lastGpsPosition = GpsServiceUtilities.getPosition(intent);
+        mLastGpsPosition = GpsServiceUtilities.getPosition(intent);
 //        lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
 //        lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
 
@@ -480,9 +480,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private void enablePanic(boolean enable) {
         if (enable) {
-            panicFAB.show();
+            mPanicFAB.show();
         } else {
-            panicFAB.hide();
+            mPanicFAB.hide();
         }
     }
 
@@ -497,15 +497,15 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private void initializeResourcesManager() throws Exception {
         ResourcesManager.resetManager();
-        resourcesManager = ResourcesManager.getInstance(getContext());
+        mResourcesManager = ResourcesManager.getInstance(getContext());
 
-        if (resourcesManager == null) {
+        if (mResourcesManager == null) {
             GPDialogs.yesNoMessageDialog(getActivity(), getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
                     new Runnable() {
                         public void run() {
                             ResourcesManager.setUseInternalMemory(true);
                             try {
-                                resourcesManager = ResourcesManager.getInstance(getContext());
+                                mResourcesManager = ResourcesManager.getInstance(getContext());
                                 initIfOk();
                             } catch (Exception e) {
                                 GPLog.error(this, null, e); //$NON-NLS-1$
@@ -519,7 +519,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             );
         } else {
             // create the default mapsforge data extraction db
-            File applicationSupporterDir = resourcesManager.getApplicationSupporterDir();
+            File applicationSupporterDir = mResourcesManager.getApplicationSupporterDir();
             File newDbFile = new File(applicationSupporterDir, MAPSFORGE_EXTRACTED_DB_NAME);
             if (!newDbFile.exists()) {
                 AssetManager assetManager = getActivity().getAssets();
@@ -533,7 +533,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
 
     private void initIfOk() {
-        if (resourcesManager == null) {
+        if (mResourcesManager == null) {
             GPDialogs.warningDialog(getActivity(), getString(R.string.sdcard_notexist), new Runnable() {
                 public void run() {
                     getActivity().finish();
@@ -567,7 +567,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 if (metadata.key.equals(TableDescriptions.MetadataTableDefaultValues.KEY_NAME.getFieldName())) {
                     String projectName = metadata.value;
                     if (projectName.length() == 0) {
-                        File dbFile = resourcesManager.getDatabaseFile();
+                        File dbFile = mResourcesManager.getDatabaseFile();
                         String dbName = FileUtilities.getNameWithoutExtention(dbFile);
                         DaoMetadata.setValue(metadata.key, dbName);
                         break;
