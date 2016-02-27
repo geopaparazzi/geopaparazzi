@@ -59,6 +59,7 @@ public class Road  implements Parcelable {
 	
 	public static final int STATUS_INVALID=-1;
 	public static final int STATUS_OK=0;
+	public static final int STATUS_HTTP_OK=200;
 	public static final int STATUS_TECHNICAL_ISSUE=2;
 	
 	private void init(){

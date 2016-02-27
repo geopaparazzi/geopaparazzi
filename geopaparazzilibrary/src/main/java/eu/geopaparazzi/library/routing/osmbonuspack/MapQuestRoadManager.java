@@ -18,17 +18,22 @@
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
 
+import android.content.Context;
 import android.util.Log;
 
+import org.apache.http.HttpStatus;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import eu.geopaparazzi.library.R;
 
 /** class to get a route between a start and a destination point, going through a list of waypoints. 
  * 
@@ -93,12 +98,17 @@ public class MapQuestRoadManager extends RoadManager {
 	 * @param waypoints list of GeoPoints. Must have at least 2 entries, start and end points. 
 	 * @return the road
 	 */
-	@Override public Road getRoad(ArrayList<GeoPoint> waypoints) {
+	@Override public Road getRoad(Context context, ArrayList<GeoPoint> waypoints) throws IOException {
 		String url = getUrl(waypoints);
 		Log.d(BonusPackHelper.LOG_TAG, "MapQuestRoadManager.getRoute:"+url);
 		Road road = null;
 		HttpConnection connection = new HttpConnection();
-		connection.doGet(url);
+		int status = connection.doGet(url);
+		if (status != HttpStatus.SC_OK) {
+			if (status == HttpStatus.SC_UNAUTHORIZED || status == HttpStatus.SC_FORBIDDEN) {
+				throw new IOException(context.getString(R.string.unauthorized_api_key));
+			}
+		}
 		InputStream stream = connection.getStream();
 		if (stream != null)
 			road = getRoadXML(stream, waypoints);

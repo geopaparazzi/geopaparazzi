@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.routing.osmbonuspack;
 
 import android.content.Context;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +36,7 @@ public abstract class RoadManager {
 
     protected String mOptions;
 
-    public abstract Road getRoad(ArrayList<GeoPoint> waypoints);
+    public abstract Road getRoad(Context context, ArrayList<GeoPoint> waypoints)  throws IOException;
 
     public RoadManager() {
         mOptions = "";

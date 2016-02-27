@@ -258,7 +258,12 @@ public class GeocodeActivity extends AppCompatActivity {
                                         ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
                                         waypoints.add(new GeoPoint(lonLatZoom[1], lonLatZoom[0]));
                                         waypoints.add(new GeoPoint(latitude, longitude));
-                                        Road road = roadManager.getRoad(waypoints);
+                                        Road road = null;
+                                        try {
+                                            road = roadManager.getRoad(GeocodeActivity.this, waypoints);
+                                        } catch (IOException e) {
+                                            return e.getMessage();
+                                        }
                                         String distance = " (" + ((int) (road.mLength * 10)) / 10.0 + "km )";
                                         ArrayList<GeoPoint> routeNodes = road.mRouteHigh;
                                         float[] routePoints = new float[routeNodes.size() * 2];

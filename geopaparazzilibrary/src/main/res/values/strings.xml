@@ -105,5 +105,6 @@
     <string name="toggle_label_visibility">Toggle label visibility</string>
     <string name="label_field">Label field</string>
     <string name="set_properties">Set properties</string>
+    <string name="unauthorized_api_key">Unauthorized access. Check you API-key.</string>
 
 </resources>

@@ -18,6 +18,7 @@
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.xml.sax.Attributes;
@@ -77,7 +78,7 @@ public class GoogleRoadManager extends RoadManager {
      * @return the road
      */
     @Override
-    public Road getRoad(ArrayList<GeoPoint> waypoints) {
+    public Road getRoad(Context context, ArrayList<GeoPoint> waypoints) {
         String url = getUrl(waypoints);
         Log.d(BonusPackHelper.LOG_TAG, "GoogleRoadManager.getRoad:" + url);
         Road road = null;
