@@ -52,11 +52,6 @@ import eu.geopaparazzi.library.util.Utilities;
 public class SmsUtilities {
 
     /**
-     *
-     */
-    public static String SMSHOST = "gp.eu";
-
-    /**
      * Create a text containing the OSM link to the current position.
      *
      * @param context     the {@link Context} to use.
@@ -171,76 +166,6 @@ public class SmsUtilities {
         }
     }
 
-    /**
-     * Parses a GeoSMS body and tries to extract the coordinates to show them.
-     *
-     * @param context the {@link Context} to use.
-     * @param smsBody the body of the sms.
-     */
-    public static void openGeoSms(final Context context, String smsBody) {
-        /*
-         * a geosms is supposed to be at least in the form:
-         * 
-         * http://url?params...?XYZASD=lat,lon?params...?GeoSMS
-         */
-        String[] split = smsBody.toLowerCase().split("\\?");
-        for (String string : split) {
-            if (string.startsWith("http") || string.startsWith("www")) {
-                continue;
-            }
-            if (string.contains("=") && string.contains(",")) {
-                String[] coordsParams = string.split("=");
-                if (coordsParams.length == 2) {
-                    String possibleCoordinates = coordsParams[1];
-                    if (possibleCoordinates.contains("&")) {
-                        int indexOfAmper = possibleCoordinates.indexOf('&');
-                        possibleCoordinates = possibleCoordinates.substring(0, indexOfAmper);
-                    }
-                    if (possibleCoordinates.contains(",")) {
-                        String[] coordsSplit = possibleCoordinates.split(",");
-                        if (coordsSplit.length == 2) {
-                            String latStr = coordsSplit[0].trim();
-                            String lonStr = coordsSplit[1].trim();
-                            try {
-                                // double lat = Double.parseDouble(latStr);
-                                // double lon = Double.parseDouble(lonStr);
-                                StringBuilder sB = new StringBuilder();
-                                // sb.append("geo:");
-                                // sb.append(lat);
-                                // sb.append(",");
-                                // sb.append(lon);
-                                sB.append("http://maps.google.com/maps?q=");
-                                sB.append(latStr);
-                                sB.append(",");
-                                sB.append(lonStr);
-                                sB.append("&GeoSMS");
-                                final String geoCoords = sB.toString();
-
-                                // TODO upgrade to 6
-//                                NotificationManager notifier = (NotificationManager) context
-//                                        .getSystemService(Context.NOTIFICATION_SERVICE);
-//                                int icon = R.drawable.current_position;
-//                                Notification notification = new Notification(icon, "Incoming GeoSMS", System.currentTimeMillis());
-//                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
-//                                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
-//                                notification.setLatestEventInfo(context, "GeoSMS",
-//                                        "Select here to open the GeoSMS with a dedicated application", contentIntent);
-//                                notification.flags |= Notification.FLAG_AUTO_CANCEL;
-//                                notifier.notify(0x007, notification);
-
-                            } catch (Exception e) {
-                                // ignore the param, it was not a coordinate block
-                                GPLog.error("SmsUtilities", null, e);
-                            }
-
-                        }
-                    }
-                }
-            }
-
-        }
-
-    }
 
     /**
      * Converts an sms data content to the data.
