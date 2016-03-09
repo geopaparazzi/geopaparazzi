@@ -36,6 +36,7 @@ import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +70,9 @@ public class GpsLogInfoTool extends MapTool {
     private final String altimString;
 
     private final Rect rect = new Rect();
+
+    private DecimalFormat coordFormatter = new DecimalFormat("0.000000");
+    private DecimalFormat elevFormatter = new DecimalFormat("0.0");
 
 
     private STRtree gpsLogInfoTree;
@@ -160,9 +164,9 @@ public class GpsLogInfoTool extends MapTool {
         Coordinate pointXYZ = logInfo.pointXYZ;
         if (pointXYZ == null)
             pointXYZ = new Coordinate(-999, -999);
-        String lon = lonString + pointXYZ.x;
-        String lat = latString + pointXYZ.y;
-        String altim = altimString + pointXYZ.z;
+        String lon = lonString +  coordFormatter.format(pointXYZ.x);
+        String lat = latString + coordFormatter.format(pointXYZ.y);
+        String altim = altimString + elevFormatter.format(pointXYZ.z);
 
         String[] texts = {name, time, lon, lat, altim};
 

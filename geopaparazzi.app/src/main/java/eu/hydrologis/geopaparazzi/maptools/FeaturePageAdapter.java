@@ -48,7 +48,7 @@ public class FeaturePageAdapter extends PagerAdapter {
     private List<Feature> featuresList;
     private boolean isReadOnly;
 
-    private DecimalFormat areaLengthFormatter = new DecimalFormat("#.00");
+    private DecimalFormat areaLengthFormatter = new DecimalFormat("0.00");
 
     /**
      * Constructor.
