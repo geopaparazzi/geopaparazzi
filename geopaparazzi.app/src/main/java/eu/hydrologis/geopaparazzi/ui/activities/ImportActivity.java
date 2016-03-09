@@ -259,7 +259,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
             try {
                 // try to load it
                 List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
-                TreeSet<String> bookmarksNames = new TreeSet<String>();
+                TreeSet<String> bookmarksNames = new TreeSet<>();
                 for (Bookmark bookmark : allBookmarks) {
                     String tmpName = bookmark.getName();
                     bookmarksNames.add(tmpName.trim());
@@ -305,4 +305,5 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
     public Context getContext() {
         return this;
     }
+
 }

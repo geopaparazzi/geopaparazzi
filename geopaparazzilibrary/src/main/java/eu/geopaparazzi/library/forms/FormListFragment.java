@@ -34,6 +34,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -66,7 +67,7 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1,
                 fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
-        int color = getActivity().getColor(R.color.formcolor);
+        int color = Compat.getColor(getActivity(), R.color.formcolor);
         int[] colors = {0, color, 0};
         ListView listView = getListView();
         listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
@@ -75,7 +76,7 @@ public class FormListFragment extends android.support.v4.app.ListFragment {
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setFocusableInTouchMode(true);
         StateListDrawable selector = new StateListDrawable();
-        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(getContext().getColor(R.color.main_selection)));
+        selector.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(Compat.getColor(getContext(), R.color.main_selection)));
         listView.setSelector(selector);
 
         setListAdapter(adapter);

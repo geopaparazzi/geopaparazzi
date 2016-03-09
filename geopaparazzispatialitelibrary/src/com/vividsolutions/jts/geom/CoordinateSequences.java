@@ -32,8 +32,6 @@
  */
 package com.vividsolutions.jts.geom;
 
-import java.util.*;
-
 /**
  * Utility functions for manipulating {@link CoordinateSequence}s
  *

@@ -579,7 +579,7 @@ public class MapDatabase {
 	}
 
 	private List<PointOfInterest> processPOIs(int numberOfPois) {
-		List<PointOfInterest> pois = new ArrayList<PointOfInterest>();
+		List<PointOfInterest> pois = new ArrayList<>();
 		Tag[] poiTags = this.mapFileHeader.getMapFileInfo().poiTags;
 
 		for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
@@ -607,7 +607,7 @@ public class MapDatabase {
 			// bit 5-8 represent the number of tag IDs
 			byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
-			List<Tag> tags = new ArrayList<Tag>();
+			List<Tag> tags = new ArrayList<>();
 
 			// get the tag IDs (VBE-U)
 			for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
@@ -693,7 +693,7 @@ public class MapDatabase {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays) {
-		List<Way> ways = new ArrayList<Way>();
+		List<Way> ways = new ArrayList<>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
@@ -739,7 +739,7 @@ public class MapDatabase {
 			// bit 5-8 represent the number of tag IDs
 			byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
-			List<Tag> tags = new ArrayList<Tag>();
+			List<Tag> tags = new ArrayList<>();
 
 			for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
 				int tagId = this.readBuffer.readUnsignedInt();

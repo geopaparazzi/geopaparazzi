@@ -105,6 +105,7 @@ import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PointF3D;
@@ -137,7 +138,6 @@ import eu.hydrologis.geopaparazzi.ui.activities.NotesListActivity;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.*;
-import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -412,7 +412,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             notesShapeDrawable.setIntrinsicWidth(noteSize);
             notesDrawable = notesShapeDrawable;
         } else {
-            notesDrawable = getDrawable(R.drawable.ic_place_accent_24dp);
+            notesDrawable = Compat.getDrawable(this, R.drawable.ic_place_accent_24dp);
         }
 
         mDataOverlay = new ArrayGeopaparazziOverlay(this);
@@ -477,7 +477,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             /* images */
             if (imagesVisible) {
-                Drawable imageMarker = getDrawable(R.drawable.ic_image_accent_24dp);
+                Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_image_accent_24dp);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 mDataOverlay.addItems(imagesOverlaysList);
@@ -491,7 +491,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
 
             /* bookmarks */
-            Drawable bookmarkMarker = getDrawable(R.drawable.ic_star_accent_24dp);
+            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_star_accent_24dp);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);
@@ -659,7 +659,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
                 try {
                     float[] nswe = getMapWorldBounds();
-                    List<PointF3D> points = new ArrayList<PointF3D>();
+                    List<PointF3D> points = new ArrayList<>();
                     List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
                     for (Bookmark bookmark : bookmarksList) {
                         double lat = bookmark.getLat();
@@ -1048,15 +1048,15 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_red));
+            centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_red));
         } else {
             if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_blue));
+                centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_blue));
             } else {
                 if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_green));
+                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_green));
                 } else {
-                    centerOnGps.setBackground(getDrawable(R.drawable.mapview_center_gps_orange));
+                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_orange));
                 }
             }
         }

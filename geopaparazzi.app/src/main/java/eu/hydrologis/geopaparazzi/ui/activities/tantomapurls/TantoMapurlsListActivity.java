@@ -17,10 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.ui.activities.tantomapurls;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -51,7 +49,6 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -64,8 +61,8 @@ public class TantoMapurlsListActivity extends ListActivity {
     private ArrayAdapter<TantoMapurl> arrayAdapter;
     private EditText filterText;
 
-    private List<TantoMapurl> mapurlsList = new ArrayList<TantoMapurl>();
-    private List<TantoMapurl> mapurlsToLoad = new ArrayList<TantoMapurl>();
+    private List<TantoMapurl> mapurlsList = new ArrayList<>();
+    private List<TantoMapurl> mapurlsToLoad = new ArrayList<>();
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

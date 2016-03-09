@@ -36,10 +36,6 @@ package com.vividsolutions.jts.triangulate.quadedge;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
-
 /**
  * Utilities for working with {@link QuadEdge}s.
  * 

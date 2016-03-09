@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -39,42 +40,52 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
 
     @Override
     public boolean hasPermission(Context context) {
-        if (context.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            return false;
+        if (canAskPermission) {
+            if (context.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
         }
         return true;
     }
 
     @Override
     public void requestPermission(final Activity activity) {
-        if (activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-
-            if (activity.shouldShowRequestPermissionRationale(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(activity);
-                builder.setMessage("Geopaparazzi needs to write data to your device. To do so it needs the related permission granted.");
-                builder.setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                activity.requestPermissions(new String[]{
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
-                            }
+        if (canAskPermission) {
+            if (activity.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                    PackageManager.PERMISSION_GRANTED) {
+    
+                if (canAskPermission) {
+                    if (activity.shouldShowRequestPermissionRationale(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        AlertDialog.Builder builder =
+                                new AlertDialog.Builder(activity);
+                        builder.setMessage("Geopaparazzi needs to write data to your device. To do so it needs the related permission granted.");
+                        builder.setPositiveButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (canAskPermission) {
+                                            activity.requestPermissions(new String[]{
+                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                                    WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
+                                        }
+                                    }
+                                }
+                        );
+                        // display the dialog
+                        builder.create().show();
+                    } else {
+                        // request permission
+                        if (canAskPermission) {
+                            activity.requestPermissions(
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
                         }
-                );
-                // display the dialog
-                builder.create().show();
-            } else {
-                // request permission
-                activity.requestPermissions(
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
+                    }
+                }
             }
         }
     }

@@ -34,7 +34,7 @@ public class JobQueue {
 	 */
 	public JobQueue(MapView mapView) {
 		this.mapView = mapView;
-		this.priorityQueue = new PriorityQueue<MapGeneratorJob>(INITIAL_CAPACITY);
+		this.priorityQueue = new PriorityQueue<>(INITIAL_CAPACITY);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class JobQueue {
 	 * Schedules all jobs in this queue.
 	 */
 	private void schedule() {
-		PriorityQueue<MapGeneratorJob> tempJobQueue = new PriorityQueue<MapGeneratorJob>(INITIAL_CAPACITY);
+		PriorityQueue<MapGeneratorJob> tempJobQueue = new PriorityQueue<>(INITIAL_CAPACITY);
 
 		while (!this.priorityQueue.isEmpty()) {
 			MapGeneratorJob mapGeneratorJob = this.priorityQueue.poll();

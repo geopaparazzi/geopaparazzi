@@ -35,9 +35,6 @@ package com.vividsolutions.jts.triangulate.quadedge;
 
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Triangle;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
-import com.vividsolutions.jts.io.WKTWriter;
 import com.vividsolutions.jts.algorithm.*;
 
 /**

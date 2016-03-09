@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A custom {@link EditText} view.
@@ -78,14 +79,13 @@ public class GEditTextView extends View implements GView {
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
         textLayout.setOrientation(LinearLayout.VERTICAL);
-        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
         parentView.addView(textLayout);
 
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
 
         textLayout.addView(textView);
 

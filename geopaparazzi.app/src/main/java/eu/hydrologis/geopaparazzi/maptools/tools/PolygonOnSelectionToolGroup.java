@@ -53,6 +53,7 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity;
@@ -64,7 +65,7 @@ import eu.hydrologis.geopaparazzi.mapview.overlays.SliderDrawProjection;
 
 /**
  * The group of tools active when a selection has been done.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
@@ -72,7 +73,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
     private final MapView mapView;
 
     private int buttonSelectionColor;
-    private List<Feature> selectedFeatures = new ArrayList<Feature>();
+    private List<Feature> selectedFeatures = new ArrayList<>();
     private ImageButton deleteFeatureButton;
     private SliderDrawProjection editingViewProjection;
 
@@ -106,8 +107,8 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
     /**
      * Constructor.
-     * 
-     * @param mapView the map view.
+     *
+     * @param mapView          the map view.
      * @param selectedFeatures the set of selected features.
      */
     public PolygonOnSelectionToolGroup(MapView mapView, List<Feature> selectedFeatures) {
@@ -116,7 +117,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
-        buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
+        buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 
 
         int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
@@ -165,7 +166,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(context.getDrawable(R.drawable.editing_delete_feature));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_feature));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
@@ -174,7 +175,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             copyFeatureButton = new ImageButton(context);
             copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            copyFeatureButton.setBackground(context.getDrawable(R.drawable.editing_copy_geoms));
+            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_copy_geoms));
             copyFeatureButton.setPadding(0, padding, 0, padding);
             copyFeatureButton.setOnTouchListener(this);
             copyFeatureButton.setOnClickListener(this);
@@ -183,7 +184,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            editAttributesButton.setBackground(context.getDrawable(R.drawable.editing_view_attributes));
+            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.editing_view_attributes));
             editAttributesButton.setPadding(0, padding, 0, padding);
             editAttributesButton.setOnTouchListener(this);
             editAttributesButton.setOnClickListener(this);
@@ -191,7 +192,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(context.getDrawable(R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -199,7 +200,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(context.getDrawable(R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -215,13 +216,13 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
         parent = null;
     }
 
-    public void onClick( View v ) {
+    public void onClick(View v) {
         if (v == editAttributesButton) {
             if (selectedFeatures.size() > 0) {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, FeaturePagerActivity.class);
                 intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        (ArrayList< ? extends Parcelable>) selectedFeatures);
+                        (ArrayList<? extends Parcelable>) selectedFeatures);
                 intent.putExtra(FeatureUtilities.KEY_READONLY, false);
                 context.startActivity(intent);
             }
@@ -235,11 +236,11 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             }
         } else if (v == copyFeatureButton) {
             if (selectedFeatures.size() > 0) {
-                List<Feature> copySelectedFeatures = new ArrayList<Feature>(selectedFeatures);
+                List<Feature> copySelectedFeatures = new ArrayList<>(selectedFeatures);
                 Context context = v.getContext();
                 Intent intent = new Intent(context, CopyToLayersListActivity.class);
                 intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        (ArrayList< ? extends Parcelable>) copySelectedFeatures);
+                        (ArrayList<? extends Parcelable>) copySelectedFeatures);
                 context.startActivity(intent);
 
                 selectedFeatures.clear();
@@ -295,28 +296,28 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
         }
     }
 
-    public boolean onTouch( View v, MotionEvent event ) {
-        switch( event.getAction() ) {
-        case MotionEvent.ACTION_DOWN: {
-            v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
-            v.invalidate();
-            break;
-        }
-        case MotionEvent.ACTION_UP: {
-            v.getBackground().clearColorFilter();
-            v.invalidate();
-            break;
-        }
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
+                v.invalidate();
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                v.getBackground().clearColorFilter();
+                v.invalidate();
+                break;
+            }
         }
         return false;
     }
 
-    public void onToolFinished( Tool tool ) {
+    public void onToolFinished(Tool tool) {
         // nothing
     }
 
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         try {
             if (selectedFeatures.size() > 0) {
                 Projection projection = editingViewProjection;
@@ -341,9 +342,9 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
                 // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
 
                 // draw features
-                for( Feature feature : selectedFeatures ) {
+                for (Feature feature : selectedFeatures) {
                     byte[] defaultGeometry = feature.getDefaultGeometry();
-                    if(defaultGeometry!=null) {
+                    if (defaultGeometry != null) {
                         try {
                             Geometry geometry = wkbReader.read(defaultGeometry);
                             FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
@@ -358,17 +359,17 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
         }
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         return false;
     }
 
-    public void onGpsUpdate( double lon, double lat ) {
+    public void onGpsUpdate(double lon, double lat) {
         // ignore
     }
 
     /**
      * Forces a feature selection.
-     *
+     * <p/>
      * <p>Previous selections are cleared and a redrawing is triggered.
      *
      * @param features the new features to select.

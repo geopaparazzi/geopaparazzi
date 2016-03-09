@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.routing.osmbonuspack;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,10 +53,10 @@ public class GraphHopperRoadManager extends RoadManager {
     /**
      * mapping from GraphHopper directions to MapQuest maneuver IDs:
      */
-    static final HashMap<Integer, Integer> MANEUVERS;
+    static final SparseIntArray MANEUVERS;
 
     static {
-        MANEUVERS = new HashMap<Integer, Integer>();
+        MANEUVERS = new SparseIntArray();
         MANEUVERS.put(0, 1); //Continue
         MANEUVERS.put(1, 6); //Slight right
         MANEUVERS.put(2, 7); //Right
@@ -162,11 +164,8 @@ public class GraphHopperRoadManager extends RoadManager {
     }
 
     protected int getManeuverCode(int direction) {
-        Integer code = MANEUVERS.get(direction);
-        if (code != null)
-            return code;
-        else
-            return 0;
+        int code = MANEUVERS.get(direction);
+        return code;
     }
 
 }

@@ -29,7 +29,6 @@ import android.graphics.Color;
 import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;

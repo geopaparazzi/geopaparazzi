@@ -172,7 +172,7 @@ public enum WebProjectManager {
      * @throws Exception if something goes wrong.
      */
     public static List<Webproject> json2WebprojectsList(String json) throws Exception {
-        List<Webproject> wpList = new ArrayList<Webproject>();
+        List<Webproject> wpList = new ArrayList<>();
 
         JSONObject jsonObject = new JSONObject(json);
         JSONArray projectsArray = jsonObject.getJSONArray("projects");

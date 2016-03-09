@@ -71,7 +71,7 @@ class DependencyCache {
 		 */
 		void addSymbol(Dependency<DependencySymbol> toAdd) {
 			if (this.symbols == null) {
-				this.symbols = new ArrayList<Dependency<DependencySymbol>>();
+				this.symbols = new ArrayList<>();
 			}
 			this.symbols.add(toAdd);
 		}
@@ -82,7 +82,7 @@ class DependencyCache {
 		 */
 		void addText(Dependency<DependencyText> toAdd) {
 			if (this.labels == null) {
-				this.labels = new ArrayList<Dependency<DependencyText>>();
+				this.labels = new ArrayList<>();
 			}
 			this.labels.add(toAdd);
 		}
@@ -105,7 +105,7 @@ class DependencyCache {
 		 */
 		DependencySymbol(Bitmap symbol, Tile tile) {
 			this.symbol = symbol;
-			this.tiles = new LinkedList<Tile>();
+			this.tiles = new LinkedList<>();
 			this.tiles.add(tile);
 		}
 
@@ -148,7 +148,7 @@ class DependencyCache {
 			this.paintFront = paintFront;
 			this.paintBack = paintBack;
 			this.text = text;
-			this.tiles = new LinkedList<Tile>();
+			this.tiles = new LinkedList<>();
 			this.tiles.add(tile);
 			this.boundary = boundary;
 		}
@@ -175,7 +175,7 @@ class DependencyCache {
 	 * Constructor for this class, that creates a hashtable for the dependencies.
 	 */
 	DependencyCache() {
-		this.dependencyTable = new Hashtable<Tile, DependencyOnTile>(60);
+		this.dependencyTable = new Hashtable<>(60);
 	}
 
 	private void addLabelsFromDependencyOnTile(List<PointTextContainer> labels) {
@@ -233,10 +233,10 @@ class DependencyCache {
 				toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 						this.currentTile);
 
-				this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x,
+				this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x,
 						label.y)));
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x, label.y
+				linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x, label.y
 						+ Tile.TILE_SIZE)));
 
 				toAdd.addTile(up);
@@ -244,7 +244,7 @@ class DependencyCache {
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x + Tile.TILE_SIZE, label.y + Tile.TILE_SIZE)));
 
 					toAdd.addTile(leftup);
@@ -253,7 +253,7 @@ class DependencyCache {
 				if ((label.x + label.boundary.width() > Tile.TILE_SIZE) && (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x - Tile.TILE_SIZE, label.y + Tile.TILE_SIZE)));
 
 					toAdd.addTile(rightup);
@@ -269,12 +269,12 @@ class DependencyCache {
 					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 							this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x, label.y)));
 
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x, label.y
+				linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x, label.y
 						- Tile.TILE_SIZE)));
 
 				toAdd.addTile(down);
@@ -282,7 +282,7 @@ class DependencyCache {
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x + Tile.TILE_SIZE, label.y - Tile.TILE_SIZE)));
 
 					toAdd.addTile(leftdown);
@@ -292,7 +292,7 @@ class DependencyCache {
 
 					linkedDep = this.dependencyTable.get(rightdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x - Tile.TILE_SIZE, label.y - Tile.TILE_SIZE)));
 
 					toAdd.addTile(rightdown);
@@ -307,11 +307,11 @@ class DependencyCache {
 					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 							this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x, label.y)));
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x + Tile.TILE_SIZE,
+				linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x + Tile.TILE_SIZE,
 						label.y)));
 
 				toAdd.addTile(left);
@@ -324,11 +324,11 @@ class DependencyCache {
 					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 							this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x, label.y)));
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x - Tile.TILE_SIZE,
+				linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x - Tile.TILE_SIZE,
 						label.y)));
 
 				toAdd.addTile(right);
@@ -344,10 +344,10 @@ class DependencyCache {
 					toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 							this.currentTile);
 
-					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x, label.y)));
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x, label.y
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x, label.y
 							+ Tile.TILE_SIZE)));
 
 					toAdd.addTile(up);
@@ -355,7 +355,7 @@ class DependencyCache {
 					if ((label.symbol.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 						linkedDep = this.dependencyTable.get(leftup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x
+						linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x
 								+ Tile.TILE_SIZE, label.y + Tile.TILE_SIZE)));
 
 						toAdd.addTile(leftup);
@@ -365,7 +365,7 @@ class DependencyCache {
 							&& (!this.dependencyTable.get(rightup).drawn)) {
 						linkedDep = this.dependencyTable.get(rightup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x
+						linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x
 								- Tile.TILE_SIZE, label.y + Tile.TILE_SIZE)));
 
 						toAdd.addTile(rightup);
@@ -381,11 +381,11 @@ class DependencyCache {
 						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 								this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+						this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 								label.x, label.y)));
 					}
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x, label.y
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x, label.y
 							+ Tile.TILE_SIZE)));
 
 					toAdd.addTile(up);
@@ -393,7 +393,7 @@ class DependencyCache {
 					if ((label.symbol.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 						linkedDep = this.dependencyTable.get(leftdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x
+						linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x
 								+ Tile.TILE_SIZE, label.y - Tile.TILE_SIZE)));
 
 						toAdd.addTile(leftdown);
@@ -404,7 +404,7 @@ class DependencyCache {
 
 						linkedDep = this.dependencyTable.get(rightdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(label.x
+						linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(label.x
 								- Tile.TILE_SIZE, label.y - Tile.TILE_SIZE)));
 
 						toAdd.addTile(rightdown);
@@ -418,11 +418,11 @@ class DependencyCache {
 						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 								this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+						this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 								label.x, label.y)));
 					}
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x - Tile.TILE_SIZE, label.y)));
 
 					toAdd.addTile(left);
@@ -436,11 +436,11 @@ class DependencyCache {
 						toAdd = new DependencyText(label.paintFront, label.paintBack, label.text, label.boundary,
 								this.currentTile);
 
-						this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+						this.currentDependencyOnTile.addText(new Dependency<>(toAdd, new ImmutablePoint(
 								label.x, label.y)));
 					}
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new ImmutablePoint(
+					linkedDep.addText(new Dependency<>(toAdd, new ImmutablePoint(
 							label.x + Tile.TILE_SIZE, label.y)));
 
 					toAdd.addTile(right);
@@ -500,17 +500,17 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(up);
 
 				addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-				this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(
+				this.currentDependencyOnTile.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(
 						symbol.x, symbol.y)));
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x, symbol.y
+				linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x, symbol.y
 						+ Tile.TILE_SIZE)));
 				addSmb.addTile(up);
 
 				if ((symbol.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+					linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 							+ Tile.TILE_SIZE, symbol.y + Tile.TILE_SIZE)));
 					addSmb.addTile(leftup);
 				}
@@ -519,7 +519,7 @@ class DependencyCache {
 						&& (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+					linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 							- Tile.TILE_SIZE, symbol.y + Tile.TILE_SIZE)));
 					addSmb.addTile(rightup);
 				}
@@ -532,18 +532,18 @@ class DependencyCache {
 
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(
+					this.currentDependencyOnTile.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(
 							symbol.x, symbol.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x, symbol.y
+				linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x, symbol.y
 						- Tile.TILE_SIZE)));
 				addSmb.addTile(down);
 
 				if ((symbol.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+					linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 							+ Tile.TILE_SIZE, symbol.y - Tile.TILE_SIZE)));
 					addSmb.addTile(leftdown);
 				}
@@ -553,7 +553,7 @@ class DependencyCache {
 
 					linkedDep = this.dependencyTable.get(rightdown);
 
-					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+					linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 							- Tile.TILE_SIZE, symbol.y - Tile.TILE_SIZE)));
 					addSmb.addTile(rightdown);
 				}
@@ -565,11 +565,11 @@ class DependencyCache {
 
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(
+					this.currentDependencyOnTile.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(
 							symbol.x, symbol.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+				linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 						+ Tile.TILE_SIZE, symbol.y)));
 				addSmb.addTile(left);
 			}
@@ -579,11 +579,11 @@ class DependencyCache {
 				linkedDep = this.dependencyTable.get(right);
 				if (addSmb == null) {
 					addSmb = new DependencySymbol(symbol.symbol, this.currentTile);
-					this.currentDependencyOnTile.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(
+					this.currentDependencyOnTile.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(
 							symbol.x, symbol.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new ImmutablePoint(symbol.x
+				linkedDep.addSymbol(new Dependency<>(addSmb, new ImmutablePoint(symbol.x
 						- Tile.TILE_SIZE, symbol.y)));
 				addSmb.addTile(right);
 			}

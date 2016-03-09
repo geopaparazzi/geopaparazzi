@@ -36,7 +36,7 @@ public class InMemoryTileCache implements TileCache {
 	private static final float LOAD_FACTOR = 0.6f;
 
 	private static List<Bitmap> createBitmapPool(int poolSize) {
-		List<Bitmap> bitmaps = new ArrayList<Bitmap>();
+		List<Bitmap> bitmaps = new ArrayList<>();
 
 		for (int i = 0; i < poolSize; ++i) {
 			Bitmap bitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.RGB_565);

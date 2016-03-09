@@ -1,10 +1,5 @@
 package com.vividsolutions.jts.shape.random;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.vividsolutions.jts.algorithm.locate.IndexedPointInAreaLocator;
-import com.vividsolutions.jts.algorithm.locate.PointOnGeometryLocator;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.math.MathUtil;
 import com.vividsolutions.jts.shape.GeometricShapeBuilder;

@@ -39,7 +39,6 @@ import com.vividsolutions.jts.util.*;
 import com.vividsolutions.jts.geomgraph.Label;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.IntersectionMatrix;
-import com.vividsolutions.jts.util.Assert;
 
 /**
  * A GraphComponent is the parent class for the objects'

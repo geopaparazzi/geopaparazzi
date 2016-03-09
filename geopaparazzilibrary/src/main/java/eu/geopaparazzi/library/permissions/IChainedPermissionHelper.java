@@ -19,6 +19,7 @@ package eu.geopaparazzi.library.permissions;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 
 /**
  * An interface to handle chained permissions.
@@ -26,6 +27,7 @@ import android.content.Context;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IChainedPermissionHelper {
+    boolean canAskPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     /**
      * Get a description of this permission helper.

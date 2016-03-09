@@ -50,7 +50,7 @@ public class GPLogPreferencesHandler {
         GPLog.LOG = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG, doLog);
-        edit.commit();
+        edit.apply();
     }
 
     /**
@@ -61,7 +61,7 @@ public class GPLogPreferencesHandler {
         GPLog.LOG_HEAVY = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_HEAVY, doLog);
-        edit.commit();
+        edit.apply();
     }
 
     /**
@@ -72,7 +72,7 @@ public class GPLogPreferencesHandler {
         GPLog.LOG_ABSURD = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_ABSURD, doLog);
-        edit.commit();
+        edit.apply();
     }
 
     /**

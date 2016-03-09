@@ -38,6 +38,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -93,7 +94,7 @@ public class GDateView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
         textLayout.addView(textView);
 
         button = new Button(context);

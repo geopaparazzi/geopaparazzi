@@ -375,7 +375,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      */
     public static List<LogMapItem> getGpslogs() throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<LogMapItem> logsList = new ArrayList<LogMapItem>();
+        List<LogMapItem> logsList = new ArrayList<>();
 
         StringBuilder sB = new StringBuilder();
         sB.append("select l.");
@@ -448,7 +448,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      */
     public static List<OverlayWay> getGpslogOverlays() throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayWay> logsList = new ArrayList<OverlayWay>();
+        List<OverlayWay> logsList = new ArrayList<>();
 
         StringBuilder sB = new StringBuilder();
         sB.append("select l.");
@@ -550,7 +550,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             }
 
             c.moveToFirst();
-            List<GeoPoint> line = new ArrayList<GeoPoint>();
+            List<GeoPoint> line = new ArrayList<>();
             while (!c.isAfterLast()) {
                 double lon = c.getDouble(0);
                 double lat = c.getDouble(1);
@@ -813,7 +813,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      */
     public static LinkedHashMap<Long, Line> getLinesMap() throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
+        LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<>();
 
         String asColumnsToReturn[] = {//
                 GpsLogsDataTableFields.COLUMN_LOGID.getFieldName(),//
@@ -1185,19 +1185,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     public static boolean existsColumnInTable(SQLiteDatabase sqliteDatabase, String inTable, String columnToCheck)
             throws IOException {
-        try {
-            // query 1 row
-            Cursor mCursor = sqliteDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
-
+        // query 1 row
+        try (Cursor mCursor = sqliteDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null)) {
             // getColumnIndex gives us the index (0 to ...) of the column - otherwise we get a -1
-            if (mCursor.getColumnIndex(columnToCheck) != -1)
-                return true;
-            else
-                return false;
-
+            return mCursor.getColumnIndex(columnToCheck) != -1;
         } catch (Exception e) {
             // something went wrong. Missing the database? The table?
-            Log.d("... - existsColumnInTable",
+            Log.d("existsColumnInTable",
                     "When checking whether a column exists in the table, an error occurred: " + e.getMessage());
             return false;
         }
@@ -1207,12 +1201,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public long getLastLogId() throws Exception {
         SQLiteDatabase database = getDatabase();
         String query = "select max(" + GpsLogsTableFields.COLUMN_ID.getFieldName() + ") from " + TableDescriptions.TABLE_GPSLOGS;
-        Cursor mCursor = database.rawQuery(query, null);
-        mCursor.moveToFirst();
-        if (!mCursor.isAfterLast()) {
-            long id = mCursor.getLong(0);
-            return id;
-        }
+       try( Cursor mCursor = database.rawQuery(query, null)) {
+           mCursor.moveToFirst();
+           if (!mCursor.isAfterLast()) {
+               long id = mCursor.getLong(0);
+               return id;
+           }
+       }
         throw new Exception();
     }
 

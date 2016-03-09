@@ -39,7 +39,6 @@ package com.vividsolutions.jts.geomgraph.index;
  * @version 1.7
  */
 import java.util.*;
-import com.vividsolutions.jts.geomgraph.*;
 
 /**
  * An EdgeSetIntersector computes all the intersections between the

@@ -22,7 +22,6 @@ import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
@@ -57,7 +56,7 @@ public abstract class MapActivity extends AppCompatActivity {
 	/**
 	 * Internal list which contains references to all running MapView objects.
 	 */
-	private final List<MapView> mapViews = new ArrayList<MapView>(2);
+	private final List<MapView> mapViews = new ArrayList<>(2);
 
 	private void destroyMapViews() {
 		while (!this.mapViews.isEmpty()) {
@@ -123,7 +122,7 @@ public abstract class MapActivity extends AppCompatActivity {
 			editor.putString(KEY_MAP_FILE, mapView.getMapFile().getAbsolutePath());
 		}
 
-		editor.commit();
+		editor.apply();
 	}
 
 	@Override

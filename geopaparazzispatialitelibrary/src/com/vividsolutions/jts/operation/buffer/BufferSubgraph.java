@@ -40,9 +40,7 @@ package com.vividsolutions.jts.operation.buffer;
 
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.util.*;
 //import debug.*;
 
 /**

@@ -65,7 +65,7 @@ public class ForceLocalePreference extends DialogPreference {
         localesSpinner.setPadding(15, 5, 15, 5);
 
         final String[] localesArray = context.getResources().getStringArray(R.array.locales);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, localesArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, localesArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         localesSpinner.setAdapter(adapter);
         final String currentLocale = LocaleUtils.getCurrentLocale(context);

@@ -151,10 +151,10 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
                 protected String doBackgroundWork() {
                     Database database = null;
                     try {
-                        TreeSet<String> pointsSet = new TreeSet<String>();
-                        TreeSet<String> waysSet = new TreeSet<String>();
-                        HashMap<String, String> fieldsMap = new HashMap<String, String>();
-                        List<String> fieldNames = new ArrayList<String>();
+                        TreeSet<String> pointsSet = new TreeSet<>();
+                        TreeSet<String> waysSet = new TreeSet<>();
+                        HashMap<String, String> fieldsMap = new HashMap<>();
+                        List<String> fieldNames = new ArrayList<>();
                         StringBuilder fieldsStringBuilder = new StringBuilder();
                         for (int j = 1; j <= 20; j++) {
                             String name = "field" + j;
@@ -240,14 +240,14 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
                                     if (i == 0 && (doWays || doContours || doWater)) {
                                         List<Way> ways = mapReadResult.ways;
 
-                                        List<String> fieldNamesTmp = new ArrayList<String>();
+                                        List<String> fieldNamesTmp = new ArrayList<>();
                                         fieldNamesTmp.addAll(fieldNames);
 
                                         for (Way way : ways) {
 
                                             List<Tag> tags = way.tags;
 
-                                            HashMap<String, String> fieldValueMap = new HashMap<String, String>();
+                                            HashMap<String, String> fieldValueMap = new HashMap<>();
 
                                             boolean isRoad = false;
                                             boolean isWater = false;

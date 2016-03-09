@@ -17,14 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 
@@ -188,8 +186,8 @@ public class InfoTool extends MapTool {
     private void infoDialog(final double n, final double w, final double s, final double e) {
         try {
             Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
-            double[] boundsCoordinates = new double[]{w, s, e, n};
-            final List<SpatialVectorTable> visibleTables = new ArrayList<SpatialVectorTable>();
+//            double[] boundsCoordinates = new double[]{w, s, e, n};
+            final List<SpatialVectorTable> visibleTables = new ArrayList<>();
             for (SpatialVectorTable spatialTable : spatialTables) {
                 if (spatialTable.getStyle().enabled == 0) {
                     continue;
@@ -205,7 +203,7 @@ public class InfoTool extends MapTool {
             final Context context = EditManager.INSTANCE.getEditingView().getContext();
 
             StringAsyncTask task = new StringAsyncTask(context) {
-                private List<Feature> features = new ArrayList<Feature>();
+                private List<Feature> features = new ArrayList<>();
 
                 @Override
                 protected String doBackgroundWork() {

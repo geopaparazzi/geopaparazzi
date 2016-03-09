@@ -3,7 +3,6 @@ package com.vividsolutions.jts.simplify;
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.util.*;
-import com.vividsolutions.jts.util.Debug;
 
 /**
  * Simplifies a geometry and ensures that

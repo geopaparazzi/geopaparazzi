@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A custom map view.
@@ -94,7 +95,7 @@ public class GMapView extends View implements GView {
             textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             textView.setPadding(2, 2, 2, 2);
             textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-            textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+            textView.setTextColor(Compat.getColor(context, R.color.formcolor));
             mainLayout.addView(textView);
 
             final long imageId = Long.parseLong(value.trim());
@@ -108,7 +109,7 @@ public class GMapView extends View implements GView {
             imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
             imageView.setPadding(5, 5, 5, 5);
             imageView.setImageBitmap(thumbnail);
-            imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
+            imageView.setBackground(Compat.getDrawable(context, R.drawable.border_black_1px));
             imageView.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
                     // the old way

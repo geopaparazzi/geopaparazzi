@@ -41,9 +41,9 @@ public class Feature implements Parcelable {
 
     private byte[] defaultGeometry;
 
-    private List<String> attributeNames = new ArrayList<String>();
-    private List<String> attributeValuesStrings = new ArrayList<String>();
-    private List<String> attributeTypes = new ArrayList<String>();
+    private List<String> attributeNames = new ArrayList<>();
+    private List<String> attributeValuesStrings = new ArrayList<>();
+    private List<String> attributeTypes = new ArrayList<>();
 
     private double originalArea = -1;
     private double originalLength = -1;

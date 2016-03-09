@@ -35,7 +35,6 @@ package com.vividsolutions.jts.triangulate;
 
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.triangulate.quadedge.Vertex;
 
 /**
  * An interface for factories which create a {@link ConstraintVertex}

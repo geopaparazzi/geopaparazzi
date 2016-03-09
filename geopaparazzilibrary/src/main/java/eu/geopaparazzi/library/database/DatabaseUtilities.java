@@ -27,7 +27,6 @@ import java.io.IOException;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Database helper methods.

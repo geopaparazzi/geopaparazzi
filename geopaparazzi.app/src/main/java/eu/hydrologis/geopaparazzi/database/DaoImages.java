@@ -356,7 +356,7 @@ public class DaoImages implements IImagesDbHelper {
      */
     public static List<Image> getImagesList(boolean onlyDirty, boolean onlyStandalone) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<Image> images = new ArrayList<Image>();
+        List<Image> images = new ArrayList<>();
         String asColumnsToReturn[] = { //
                 ImageTableFields.COLUMN_ID.getFieldName(),//
                 ImageTableFields.COLUMN_LON.getFieldName(),//
@@ -587,7 +587,7 @@ public class DaoImages implements IImagesDbHelper {
      */
     public static List<OverlayItem> getImagesOverlayList(Drawable marker, boolean onlyStandalone) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayItem> images = new ArrayList<OverlayItem>();
+        List<OverlayItem> images = new ArrayList<>();
         String asColumnsToReturn[] = {//
                 ImageTableFields.COLUMN_LON.getFieldName(),//
                 ImageTableFields.COLUMN_LAT.getFieldName(), //

@@ -124,7 +124,7 @@ public class DirectoryBrowserActivity extends ListActivity {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString(preferencesKey, absolutePath);
-                        editor.commit();
+                        editor.apply();
                     }
 
                     handleIntent(absolutePath);

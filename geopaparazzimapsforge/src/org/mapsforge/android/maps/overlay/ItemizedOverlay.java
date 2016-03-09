@@ -82,8 +82,8 @@ public abstract class ItemizedOverlay<Item extends OverlayItem> extends Overlay 
 		super();
 		this.defaultMarker = defaultMarker;
 		this.itemPosition = new Point();
-		this.visibleItems = new ArrayList<Integer>(INITIAL_CAPACITY);
-		this.visibleItemsRedraw = new ArrayList<Integer>(INITIAL_CAPACITY);
+		this.visibleItems = new ArrayList<>(INITIAL_CAPACITY);
+		this.visibleItemsRedraw = new ArrayList<>(INITIAL_CAPACITY);
 	}
 
 	/**

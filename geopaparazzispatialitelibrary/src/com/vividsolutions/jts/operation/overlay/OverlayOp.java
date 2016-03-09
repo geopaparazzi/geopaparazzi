@@ -40,7 +40,6 @@ import com.vividsolutions.jts.util.*;
 import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.operation.GeometryGraphOperation;
-import com.vividsolutions.jts.noding.*;
 
 /**
  * Computes the overlay of two {@link Geometry}s.  The overlay

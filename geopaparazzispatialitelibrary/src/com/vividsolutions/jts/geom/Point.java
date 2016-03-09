@@ -35,7 +35,6 @@
 package com.vividsolutions.jts.geom;
 
 import com.vividsolutions.jts.util.Assert;
-import com.vividsolutions.jts.operation.valid.*;
 
 /**
  * Represents a single point.

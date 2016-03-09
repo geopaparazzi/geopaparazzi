@@ -108,7 +108,7 @@ public class MapScaleBar {
 		this.mapView = mapView;
 		this.mapScaleBitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_4444);
 		this.mapScaleCanvas = new Canvas(this.mapScaleBitmap);
-		this.textFields = new HashMap<TextField, String>();
+		this.textFields = new HashMap<>();
 		setDefaultTexts();
 		configurePaints();
 	}

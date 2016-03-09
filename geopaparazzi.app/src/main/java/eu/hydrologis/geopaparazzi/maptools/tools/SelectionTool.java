@@ -194,7 +194,7 @@ public class SelectionTool extends MapTool {
 
         // TODO fix this asynctask
         new AsyncTask<String, Integer, String>() {
-            private List<Feature> features = new ArrayList<Feature>();
+            private List<Feature> features = new ArrayList<>();
 
             protected String doInBackground(String... params) {
                 try {

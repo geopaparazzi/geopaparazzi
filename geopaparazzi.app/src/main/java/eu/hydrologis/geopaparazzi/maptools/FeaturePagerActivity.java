@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -175,10 +176,10 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
             ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
             if (activeToolGroup instanceof PolygonOnSelectionToolGroup) {
                 PolygonOnSelectionToolGroup toolGroup = (PolygonOnSelectionToolGroup) activeToolGroup;
-                toolGroup.setSelectedFeatures(Arrays.asList(selectedFeature));
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
             } else if (activeToolGroup instanceof LineOnSelectionToolGroup) {
                 LineOnSelectionToolGroup toolGroup = (LineOnSelectionToolGroup) activeToolGroup;
-                toolGroup.setSelectedFeatures(Arrays.asList(selectedFeature));
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
             }
 
             finish();

@@ -9,7 +9,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryComponentFilter;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.index.strtree.STRtree;
 
 public class FacetSequenceTreeBuilder {

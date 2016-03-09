@@ -56,7 +56,7 @@ public enum ColorUtilities {
     ALMOST_BLACK("#212121")//
     ; //
 
-    private static HashMap<String, Integer> colorMap = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> colorMap = new HashMap<>();
     private String hex;
 
     ColorUtilities(String hex) {

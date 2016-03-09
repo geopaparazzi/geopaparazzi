@@ -78,7 +78,7 @@ public class MarkersUtilities {
             return true;
         }
         if (!hasApp) {
-            List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
+            List<PackageInfo> installedPackages = new ArrayList<>();
             { // try to get the installed packages list. Seems to have troubles over different
                 // versions, so trying them all
                 try {

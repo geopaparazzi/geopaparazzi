@@ -39,7 +39,7 @@ public class ArrayWayOverlay extends WayOverlay<OverlayWay> {
 	 */
 	public ArrayWayOverlay(Paint defaultPaintFill, Paint defaultPaintOutline) {
 		super(defaultPaintFill, defaultPaintOutline);
-		this.overlayWays = new ArrayList<OverlayWay>(INITIAL_CAPACITY);
+		this.overlayWays = new ArrayList<>(INITIAL_CAPACITY);
 	}
 
 	/**

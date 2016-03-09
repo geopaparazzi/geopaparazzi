@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -116,7 +117,7 @@ public class GPictureView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(activity,R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
@@ -197,7 +198,7 @@ public class GPictureView extends View implements GView {
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
-                imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
+                imageView.setBackground(Compat.getDrawable(context, R.drawable.border_black_1px));
                 imageView.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         /*

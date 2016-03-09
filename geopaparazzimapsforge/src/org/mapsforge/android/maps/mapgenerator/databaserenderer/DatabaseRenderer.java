@@ -17,6 +17,7 @@ package org.mapsforge.android.maps.mapgenerator.databaserenderer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,11 +63,7 @@ public class DatabaseRenderer implements MapGenerator, RenderCallback {
 	private static RenderTheme getRenderTheme(JobTheme jobTheme) {
 		try {
 			return RenderThemeHandler.getRenderTheme(jobTheme);
-		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (IOException e) {
+		} catch (ParserConfigurationException | IOException | SAXException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		}
 		return null;
@@ -109,12 +106,12 @@ public class DatabaseRenderer implements MapGenerator, RenderCallback {
 		this.canvasRasterer = new CanvasRasterer();
 		this.labelPlacement = new LabelPlacement();
 
-		this.ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
-		this.wayNames = new ArrayList<WayTextContainer>(64);
-		this.nodes = new ArrayList<PointTextContainer>(64);
-		this.areaLabels = new ArrayList<PointTextContainer>(64);
-		this.waySymbols = new ArrayList<SymbolContainer>(64);
-		this.pointSymbols = new ArrayList<SymbolContainer>(64);
+		this.ways = new ArrayList<>(LAYERS);
+		this.wayNames = new ArrayList<>(64);
+		this.nodes = new ArrayList<>(64);
+		this.areaLabels = new ArrayList<>(64);
+		this.waySymbols = new ArrayList<>(64);
+		this.pointSymbols = new ArrayList<>(64);
 
 		PAINT_WATER_TILE_HIGHTLIGHT.setStyle(Paint.Style.FILL);
 		PAINT_WATER_TILE_HIGHTLIGHT.setColor(Color.CYAN);
@@ -301,7 +298,7 @@ public class DatabaseRenderer implements MapGenerator, RenderCallback {
 		this.ways.clear();
 
 		for (byte i = LAYERS - 1; i >= 0; --i) {
-			List<List<ShapePaintContainer>> innerWayList = new ArrayList<List<ShapePaintContainer>>(levels);
+			List<List<ShapePaintContainer>> innerWayList = new ArrayList<>(levels);
 			for (int j = levels - 1; j >= 0; --j) {
 				innerWayList.add(new ArrayList<ShapePaintContainer>(0));
 			}
@@ -338,7 +335,7 @@ public class DatabaseRenderer implements MapGenerator, RenderCallback {
 		this.drawingLayers = this.ways.get(0);
 		this.coordinates = WATER_TILE_COORDINATES;
 		this.shapeContainer = new WayContainer(this.coordinates);
-		this.renderTheme.matchClosedWay(this, Arrays.asList(TAG_NATURAL_WATER), this.currentTile.zoomLevel);
+		this.renderTheme.matchClosedWay(this, Collections.singletonList(TAG_NATURAL_WATER), this.currentTile.zoomLevel);
 	}
 
 	private void renderWay(Way way) {

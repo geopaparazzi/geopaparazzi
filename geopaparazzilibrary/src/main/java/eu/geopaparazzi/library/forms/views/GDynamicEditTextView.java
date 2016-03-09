@@ -34,6 +34,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.util.Compat;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
@@ -88,14 +89,13 @@ public class GDynamicEditTextView extends View implements GView {
         layoutParams.setMargins(10, 10, 10, 10);
         mainLayout.setLayoutParams(layoutParams);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
-        // mainLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
         parentView.addView(mainLayout);
 
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
 
         mainLayout.addView(textView);
 
@@ -112,7 +112,7 @@ public class GDynamicEditTextView extends View implements GView {
         addTextButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         addTextButton.setPadding(5, 5, 5, 5);
 //        addTextButton.setText("+");
-        addTextButton.setBackground(context.getResources().getDrawable(android.R.drawable.ic_menu_add));
+        addTextButton.setBackground(Compat.getDrawable(context, android.R.drawable.ic_menu_add));
         mainLayout.addView(addTextButton);
 
         addTextButton.setOnClickListener(new OnClickListener() {

@@ -38,7 +38,6 @@ import java.util.*;
 import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.noding.*;
-import com.vividsolutions.jts.geom.util.*;
 
 /**
  * A base class containing the logic for computes the <tt>contains</tt>

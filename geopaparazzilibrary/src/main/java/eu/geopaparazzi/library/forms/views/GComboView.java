@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A custom {@link Spinner} view.
@@ -81,7 +82,7 @@ public class GComboView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
         textLayout.addView(textView);
 
         spinner = new Spinner(context);

@@ -39,7 +39,6 @@ import java.io.PrintStream;
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.util.Assert;
 import com.vividsolutions.jts.algorithm.BoundaryNodeRule;
 
 /**

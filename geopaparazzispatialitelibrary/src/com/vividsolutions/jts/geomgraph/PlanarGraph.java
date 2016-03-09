@@ -37,7 +37,7 @@ package com.vividsolutions.jts.geomgraph;
  */
 import java.io.PrintStream;
 import java.util.*;
-import com.vividsolutions.jts.util.*;
+
 import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geom.*;
 

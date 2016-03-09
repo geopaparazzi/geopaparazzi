@@ -46,7 +46,7 @@ public class MapsforgeExtractedFormHelper {
     private String firstValue = null;
     private String labelValue = null;
 
-    private LinkedHashMap<String, String> valuesMap = new LinkedHashMap<String, String>();
+    private LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
 
     public void addTag(String key, String value) {
         if (firstKey == null) {

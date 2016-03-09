@@ -51,7 +51,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
      */
     public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<BaseMap>> folder2TablesMap) {
         this.activity = activity;
-        folderList = new ArrayList<String>();
+        folderList = new ArrayList<>();
         tablesList = new ArrayList<>();
         for (Entry<String, List<BaseMap>> entry : folder2TablesMap.entrySet()) {
             folderList.add(entry.getKey());

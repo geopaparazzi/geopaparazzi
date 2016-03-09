@@ -66,10 +66,10 @@ public class Road  implements Parcelable {
 		mStatus = STATUS_INVALID;
 		mLength = 0.0;
 		mDuration = 0.0;
-		mNodes = new ArrayList<RoadNode>();
-		mRouteHigh = new ArrayList<GeoPoint>();
+		mNodes = new ArrayList<>();
+		mRouteHigh = new ArrayList<>();
 		mRouteLow = null;
-		mLegs = new ArrayList<RoadLeg>();
+		mLegs = new ArrayList<>();
 		mBoundingBox = null;
 	}
 	
@@ -167,7 +167,7 @@ public class Road  implements Parcelable {
 	 * But OSRM legs are not precise, as there is no node "dedicated" to waypoints. 
 	 */
 	public void buildLegs(ArrayList<GeoPoint> waypoints){
-		mLegs = new ArrayList<RoadLeg>();
+		mLegs = new ArrayList<>();
 		int firstNodeIndex = 0;
 		//For all intermediate waypoints, search the node closest to the waypoint
 		int w = waypoints.size();

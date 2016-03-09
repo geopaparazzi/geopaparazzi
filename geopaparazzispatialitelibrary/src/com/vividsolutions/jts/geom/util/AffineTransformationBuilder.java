@@ -2,7 +2,6 @@ package com.vividsolutions.jts.geom.util;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.math.Matrix;
-import com.vividsolutions.jts.algorithm.*;
 
 /**
  * Builds an {@link AffineTransformation} defined by a set of control vectors. 

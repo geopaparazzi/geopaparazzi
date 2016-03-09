@@ -35,6 +35,7 @@ import org.mapsforge.android.maps.MapView;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -42,6 +43,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -82,7 +84,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         this.mapView = mapView;
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
-        selectionColor = parent.getContext().getResources().getColor(R.color.main_selection);
+        selectionColor = Compat.getColor(parent.getContext(), R.color.main_selection);
     }
 
     public void activate() {
@@ -100,7 +102,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (editLayer != null) {
             cutButton = new ImageButton(context);
             cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            cutButton.setBackground(context.getDrawable(R.drawable.editing_cut));
+            cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut));
             cutButton.setPadding(0, padding, 0, padding);
             cutButton.setOnClickListener(this);
             cutButton.setOnTouchListener(this);
@@ -108,7 +110,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
             extendButton = new ImageButton(context);
             extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            extendButton.setBackground(context.getDrawable(R.drawable.editing_extend));
+            extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend));
             extendButton.setPadding(0, padding, 0, padding);
             extendButton.setOnClickListener(this);
             extendButton.setOnTouchListener(this);
@@ -117,7 +119,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackground(context.getDrawable(R.drawable.editing_create_polygon));
+            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_create_polygon));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -126,7 +128,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             selectEditableButton = new ImageButton(context);
             selectEditableButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            selectEditableButton.setBackground(context.getDrawable(R.drawable.editing_select_editable));
+            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_editable));
             selectEditableButton.setPadding(0, padding, 0, padding);
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
@@ -135,7 +137,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(context.getDrawable(R.drawable.editing_select_all));
+        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
@@ -144,7 +146,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (editLayer != null) {
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(context.getDrawable(R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -153,7 +155,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(context.getDrawable(R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -248,7 +250,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
                                 cutExtendProcessedFeature.getId(),
                                 newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
 
-                        DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
+                        DaoSpatialite.deleteFeatures(Collections.singletonList(cutExtendFeatureToRemove));
                         // reset mapview
                         Intent intent = new Intent(context, MapsSupportService.class);
                         intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
@@ -284,31 +286,31 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         Tool currentTool = EditManager.INSTANCE.getActiveTool();
         if (selectEditableButton != null) {
             if (currentTool != null && activeToolButton == selectEditableButton) {
-                selectEditableButton.setBackground(context.getDrawable(
+                selectEditableButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_select_editable_active));
             } else {
-                selectEditableButton.setBackground(context.getDrawable(
+                selectEditableButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_select_editable));
             }
         }
         if (selectAllButton != null)
             if (currentTool != null && activeToolButton == selectAllButton) {
                 selectAllButton
-                        .setBackground(context.getDrawable(R.drawable.editing_select_all_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.editing_select_all_active));
             } else {
-                selectAllButton.setBackground(context.getDrawable(R.drawable.editing_select_all));
+                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
             }
         if (cutButton != null)
             if (currentTool != null && activeToolButton == cutButton) {
-                cutButton.setBackground(context.getDrawable(R.drawable.editing_cut_active));
+                cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut_active));
             } else {
-                cutButton.setBackground(context.getDrawable(R.drawable.editing_cut));
+                cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut));
             }
         if (extendButton != null)
             if (currentTool != null && activeToolButton == extendButton) {
-                extendButton.setBackground(context.getDrawable(R.drawable.editing_extend_active));
+                extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend_active));
             } else {
-                extendButton.setBackground(context.getDrawable(R.drawable.editing_extend));
+                extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend));
             }
 
     }

@@ -83,8 +83,8 @@ public class RenderTheme {
 		this.mapBackground = mapBackground;
 		this.baseStrokeWidth = baseStrokeWidth;
 		this.baseTextSize = baseTextSize;
-		this.rulesList = new ArrayList<Rule>();
-		this.matchingCache = new LRUCache<MatchingCacheKey, List<RenderInstruction>>(MATCHING_CACHE_SIZE);
+		this.rulesList = new ArrayList<>();
+		this.matchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class RenderTheme {
 		}
 
 		// cache miss
-		matchingList = new ArrayList<RenderInstruction>();
+		matchingList = new ArrayList<>();
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
 			this.rulesList.get(i).matchWay(renderCallback, tags, zoomLevel, closed, matchingList);
 		}

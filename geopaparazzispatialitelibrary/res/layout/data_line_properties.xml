@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
     android:orientation="vertical"
     android:padding="5dp" >
 
@@ -156,7 +155,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="@android:string/yes"
+            android:text="@android:string/ok"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
 

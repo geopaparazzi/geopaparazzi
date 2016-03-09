@@ -104,11 +104,11 @@ public final class RenderThemeHandler extends DefaultHandler {
 	}
 
 	private Rule currentRule;
-	private final Stack<Element> elementStack = new Stack<Element>();
+	private final Stack<Element> elementStack = new Stack<>();
 	private int level;
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
-	private final Stack<Rule> ruleStack = new Stack<Rule>();
+	private final Stack<Rule> ruleStack = new Stack<>();
 
 	private RenderThemeHandler(String relativePathPrefix) {
 		super();
@@ -207,9 +207,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 			else {
 				throw new SAXException("unknown element: " + localName);
 			}
-		} catch (IllegalArgumentException e) {
-			throw new SAXException(null, e);
-		} catch (IOException e) {
+		} catch (IllegalArgumentException | IOException e) {
 			throw new SAXException(null, e);
 		}
 	}

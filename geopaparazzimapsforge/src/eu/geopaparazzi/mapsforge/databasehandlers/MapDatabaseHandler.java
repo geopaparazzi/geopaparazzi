@@ -138,7 +138,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
      */
     public List<MapTable> getTables(boolean forceRead) throws Exception {
         if (mapTableList == null || forceRead) {
-            mapTableList = new ArrayList<MapTable>();
+            mapTableList = new ArrayList<>();
             double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
             MapTable table = new MapTable(databasePath, tableName, LibraryConstants.SRID_MERCATOR_3857, minZoom, maxZoom,
                     centerX, centerY, "?,?,?", d_bounds);

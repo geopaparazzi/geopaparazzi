@@ -55,7 +55,7 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
     private Context context;
     private String customPath = ""; //$NON-NLS-1$
     private Spinner guessedPathsSpinner;
-    private List<String> sdcardsList = new ArrayList<String>();
+    private List<String> sdcardsList = new ArrayList<>();
 
     /**
      * @param ctxt  the context to use.
@@ -93,7 +93,7 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
 
 
     private TreeSet<String> toSet(String paths) {
-        TreeSet<String> set = new TreeSet<String>();
+        TreeSet<String> set = new TreeSet<>();
         String[] pathSplit = paths.split(";");
         for (String path : pathSplit) {
             File file = new File(path.trim());
@@ -128,12 +128,12 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
         String prefString = toString(pathSet);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(USER_SDCARD_PATHS, prefString);
-        editor.commit();
+        editor.apply();
 
         sdcardsList.clear();
         sdcardsList.addAll(pathSet);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, sdcardsList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, sdcardsList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         guessedPathsSpinner.setAdapter(adapter);
         if (customPath != null) {

@@ -378,7 +378,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
     }
 
     private void mergeSelected() throws IOException {
-        final List<LogMapItem> selected = new ArrayList<LogMapItem>();
+        final List<LogMapItem> selected = new ArrayList<>();
         for (LogMapItem mapItem : gpslogItems) {
             if (mapItem.isVisible()) {
                 selected.add(mapItem);

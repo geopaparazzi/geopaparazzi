@@ -19,7 +19,6 @@
 package eu.geopaparazzi.library.database;
 
 import java.io.IOException;
-import java.sql.Date;
 
 import android.database.sqlite.SQLiteDatabase;
 

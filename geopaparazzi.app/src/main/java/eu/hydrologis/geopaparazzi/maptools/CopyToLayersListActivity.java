@@ -43,11 +43,11 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTableNameComparator;
@@ -83,10 +83,10 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
             int fromTableGeomTypeInt = vectorTable.getGeomType();
             GeometryType fromTableGeometryType = GeometryType.forValue(fromTableGeomTypeInt);
 
-            buttonSelectionColor = getColor(eu.geopaparazzi.spatialite.R.color.main_selection);
+            buttonSelectionColor = Compat.getColor(this, eu.geopaparazzi.spatialite.R.color.main_selection);
 
-            final List<SpatialVectorTable> compatibleSpatialVectorTables = new ArrayList<SpatialVectorTable>();
-            final List<String> compatibleSpatialVectorTablesNames = new ArrayList<String>();
+            final List<SpatialVectorTable> compatibleSpatialVectorTables = new ArrayList<>();
+            final List<String> compatibleSpatialVectorTablesNames = new ArrayList<>();
             Collection<SpatialVectorTable> spatialVectorTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
             for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                 if (spatialVectorTable.isEditable()) {
@@ -167,7 +167,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                         });
                         editableButton.setOnTouchListener(CopyToLayersListActivity.this);
                         editableButton.setEnabled(true);
-                        editableButton.setBackground(getDrawable(eu.geopaparazzi.spatialite.R.drawable.ic_layer_visible));
+                        editableButton.setBackground(Compat.getDrawable(getContext(), eu.geopaparazzi.spatialite.R.drawable.ic_layer_visible));
 
                         nameView.setText(item.getTableName());
 

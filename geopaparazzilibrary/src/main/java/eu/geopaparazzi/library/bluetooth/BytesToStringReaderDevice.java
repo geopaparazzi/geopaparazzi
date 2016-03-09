@@ -59,7 +59,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     private boolean ready = false;
     private boolean enabled;
 
-    private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
+    private List<IBluetoothListener> bluetoothListeners = new ArrayList<>();
 
     private final int length;
 

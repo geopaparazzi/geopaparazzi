@@ -52,7 +52,7 @@ class IndexCache {
 	 */
 	IndexCache(RandomAccessFile randomAccessFile, int capacity) {
 		this.randomAccessFile = randomAccessFile;
-		this.map = new LRUCache<IndexCacheEntryKey, byte[]>(capacity);
+		this.map = new LRUCache<>(capacity);
 	}
 
 	/**

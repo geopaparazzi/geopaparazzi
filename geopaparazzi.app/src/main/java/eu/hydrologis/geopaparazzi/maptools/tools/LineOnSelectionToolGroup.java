@@ -53,6 +53,7 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
@@ -71,7 +72,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
     private final MapView mapView;
 
     private int buttonSelectionColor;
-    private List<Feature> selectedFeatures = new ArrayList<Feature>();
+    private List<Feature> selectedFeatures = new ArrayList<>();
     private ImageButton deleteFeatureButton;
     private SliderDrawProjection editingViewProjection;
 
@@ -113,7 +114,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
-        buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
+        buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 
 
         int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
@@ -151,7 +152,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(context.getDrawable(R.drawable.editing_delete_line_feature));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_line_feature));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
@@ -169,7 +170,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
             continueLineFeatureButton = new ImageButton(context);
             continueLineFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            continueLineFeatureButton.setBackground(context.getDrawable(R.drawable.editing_continue_line));
+            continueLineFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_continue_line));
             continueLineFeatureButton.setPadding(0, padding, 0, padding);
             continueLineFeatureButton.setOnClickListener(this);
             continueLineFeatureButton.setOnTouchListener(this);
@@ -178,7 +179,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            editAttributesButton.setBackground(context.getDrawable(R.drawable.editing_view_attributes));
+            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.editing_view_attributes));
             editAttributesButton.setPadding(0, padding, 0, padding);
             editAttributesButton.setOnTouchListener(this);
             editAttributesButton.setOnClickListener(this);
@@ -186,7 +187,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(context.getDrawable(R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -194,7 +195,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(context.getDrawable(R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);

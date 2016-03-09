@@ -49,7 +49,7 @@ public class ArrayItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	 */
 	public ArrayItemizedOverlay(Drawable defaultMarker, boolean alignMarker) {
 		super(defaultMarker != null && alignMarker ? ItemizedOverlay.boundCenterBottom(defaultMarker) : defaultMarker);
-		this.overlayItems = new ArrayList<OverlayItem>(INITIAL_CAPACITY);
+		this.overlayItems = new ArrayList<>(INITIAL_CAPACITY);
 	}
 
 	/**

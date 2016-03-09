@@ -32,7 +32,7 @@ class MultiKeyMatcher implements AttributeMatcher {
 			return true;
 		}
 
-		List<Tag> tags = new ArrayList<Tag>(this.keys.size());
+		List<Tag> tags = new ArrayList<>(this.keys.size());
 		for (int i = 0, n = this.keys.size(); i < n; ++i) {
 			tags.add(new Tag(this.keys.get(i), null));
 		}

@@ -55,7 +55,7 @@ public class LocaleUtils {
         SharedPreferences prefs = context.getSharedPreferences("CommonPrefs", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(langPref, lang);
-        editor.commit();
+        editor.apply();
     }
 
 

@@ -33,6 +33,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.nfc.NfcIdReaderActivity;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
@@ -111,7 +112,7 @@ public class GNfcUidView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(activity.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(activity, R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
@@ -125,7 +126,7 @@ public class GNfcUidView extends View implements GView {
         uidText.setPadding(2, 2, 2, 2);
         uidText.setEnabled(false);
         uidText.setText(value);
-        uidText.setTextColor(activity.getResources().getColor(R.color.main_text_color_neutral));
+        uidText.setTextColor(Compat.getColor(activity, R.color.main_text_color_neutral));
         uidText.setKeyListener(null);
         textLayout.addView(uidText);
 

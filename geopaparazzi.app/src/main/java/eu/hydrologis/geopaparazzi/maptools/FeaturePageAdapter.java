@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.DataType;
 
 /**
@@ -81,8 +82,8 @@ public class FeaturePageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         final Feature feature = featuresList.get(position);
 
-        int bgColor = context.getColor(eu.geopaparazzi.library.R.color.formbgcolor);
-        int textColor = context.getColor(eu.geopaparazzi.library.R.color.formcolor);
+        int bgColor = Compat.getColor(context, eu.geopaparazzi.library.R.color.formbgcolor);
+        int textColor = Compat.getColor(context, eu.geopaparazzi.library.R.color.formcolor);
 
         ScrollView scrollView = new ScrollView(context);
         ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.MATCH_PARENT,

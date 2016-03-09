@@ -54,7 +54,7 @@ public class CustomMapsPathPreference extends DialogPreference implements View.O
     private Context context;
     private String customPath = ""; //$NON-NLS-1$
     private Spinner guessedPathsSpinner;
-    private List<String> mapsFoldersList = new ArrayList<String>();
+    private List<String> mapsFoldersList = new ArrayList<>();
 
     /**
      * @param ctxt  the context to use.
@@ -92,7 +92,7 @@ public class CustomMapsPathPreference extends DialogPreference implements View.O
 
 
     private TreeSet<String> toSet(String paths) {
-        TreeSet<String> set = new TreeSet<String>();
+        TreeSet<String> set = new TreeSet<>();
         String[] pathSplit = paths.split(";");
         for (String path : pathSplit) {
             File file = new File(path.trim());
@@ -127,12 +127,12 @@ public class CustomMapsPathPreference extends DialogPreference implements View.O
         String prefString = toString(pathSet);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(USER_MAPS_PATHS, prefString);
-        editor.commit();
+        editor.apply();
 
         mapsFoldersList.clear();
         mapsFoldersList.addAll(pathSet);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, mapsFoldersList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mapsFoldersList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         guessedPathsSpinner.setAdapter(adapter);
         if (customPath != null) {

@@ -32,7 +32,7 @@ class MultiValueMatcher implements AttributeMatcher {
 			return true;
 		}
 
-		List<Tag> tags = new ArrayList<Tag>(this.values.size());
+		List<Tag> tags = new ArrayList<>(this.values.size());
 		for (int i = 0, n = this.values.size(); i < n; ++i) {
 			tags.add(new Tag(null, this.values.get(i)));
 		}

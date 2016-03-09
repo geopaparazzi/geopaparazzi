@@ -251,7 +251,7 @@ public class ResourcesManager implements Serializable {
 
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE, sdcardDir.getAbsolutePath());
-        editor.commit();
+        editor.apply();
     }
 
     /**

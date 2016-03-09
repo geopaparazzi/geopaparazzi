@@ -17,13 +17,10 @@
  */
 package eu.hydrologis.geopaparazzi.database.objects;
 
-import android.graphics.PointF;
-
 import java.util.Comparator;
 
 import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.util.PointF3D;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * {@link MapItem} comparators to sort them.

@@ -66,6 +66,7 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsService;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -176,7 +177,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         defaultWayPaintOutline.setStyle(Paint.Style.STROKE);
         defaultWayPaintOutline.setColor(Color.BLACK);
 
-        gpsMarker = context.getDrawable(R.drawable.current_position);
+        gpsMarker = Compat.getDrawable(context, R.drawable.current_position);
         gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsFill.setStyle(Paint.Style.FILL);
         gpsFill.setColor(Color.BLUE);

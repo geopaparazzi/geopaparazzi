@@ -70,7 +70,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.UrlUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
@@ -87,8 +86,8 @@ import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 public class NotesListActivity extends AppCompatActivity {
     public static final String CURRENT_NOTES_COMPARATOR_INDEX = "CURRENT_NOTES_COMPARATOR_INDEX";
     private String SHARE_NOTE_WITH = "";
-    private List<ANote> allNotesList = new ArrayList<ANote>();
-    private List<ANote> visibleNotesList = new ArrayList<ANote>();
+    private List<ANote> allNotesList = new ArrayList<>();
+    private List<ANote> visibleNotesList = new ArrayList<>();
 //    private Comparator<ANote> notesSorter = new ItemComparators.NotesComparator(false);
 
     private ArrayAdapter<ANote> arrayAdapter;

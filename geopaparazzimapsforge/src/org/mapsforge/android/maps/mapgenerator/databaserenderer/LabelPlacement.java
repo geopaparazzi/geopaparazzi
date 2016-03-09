@@ -210,16 +210,16 @@ class LabelPlacement {
 	 */
 	private List<PointTextContainer> processFourPointGreedy(List<PointTextContainer> labels,
 			List<SymbolContainer> symbols, List<PointTextContainer> areaLabels) {
-		List<PointTextContainer> resolutionSet = new ArrayList<PointTextContainer>();
+		List<PointTextContainer> resolutionSet = new ArrayList<>();
 
 		// Array for the generated reference positions around the points of interests
 		ReferencePosition[] refPos = new ReferencePosition[(labels.size()) * 4];
 
 		// lists that sorts the reference points after the minimum top edge y position
-		PriorityQueue<ReferencePosition> priorUp = new PriorityQueue<ReferencePosition>(labels.size() * 4 * 2
+		PriorityQueue<ReferencePosition> priorUp = new PriorityQueue<>(labels.size() * 4 * 2
 				+ labels.size() / 10 * 2, ReferencePositionYComparator.INSTANCE);
 		// lists that sorts the reference points after the minimum bottom edge y position
-		PriorityQueue<ReferencePosition> priorDown = new PriorityQueue<ReferencePosition>(labels.size() * 4 * 2
+		PriorityQueue<ReferencePosition> priorDown = new PriorityQueue<>(labels.size() * 4 * 2
 				+ labels.size() / 10 * 2, ReferencePositionHeightComparator.INSTANCE);
 
 		PointTextContainer tmp;
@@ -290,7 +290,7 @@ class LabelPlacement {
 			priorDown.remove(refPos[this.referencePosition.nodeNumber * 4 + 2]);
 			priorDown.remove(refPos[this.referencePosition.nodeNumber * 4 + 3]);
 
-			LinkedList<ReferencePosition> linkedRef = new LinkedList<ReferencePosition>();
+			LinkedList<ReferencePosition> linkedRef = new LinkedList<>();
 
 			while (priorDown.size() != 0) {
 				if (priorDown.peek().x < this.referencePosition.x + this.referencePosition.width) {
@@ -332,15 +332,15 @@ class LabelPlacement {
 	 */
 	private List<PointTextContainer> processTwoPointGreedy(List<PointTextContainer> labels,
 			List<SymbolContainer> symbols, List<PointTextContainer> areaLabels) {
-		List<PointTextContainer> resolutionSet = new ArrayList<PointTextContainer>();
+		List<PointTextContainer> resolutionSet = new ArrayList<>();
 		// Array for the generated reference positions around the points of interests
 		ReferencePosition[] refPos = new ReferencePosition[labels.size() * 2];
 
 		// lists that sorts the reference points after the minimum right edge x position
-		PriorityQueue<ReferencePosition> priorRight = new PriorityQueue<ReferencePosition>(labels.size() * 2
+		PriorityQueue<ReferencePosition> priorRight = new PriorityQueue<>(labels.size() * 2
 				+ labels.size() / 10 * 2, ReferencePositionWidthComparator.INSTANCE);
 		// lists that sorts the reference points after the minimum left edge x position
-		PriorityQueue<ReferencePosition> priorLeft = new PriorityQueue<ReferencePosition>(labels.size() * 2
+		PriorityQueue<ReferencePosition> priorLeft = new PriorityQueue<>(labels.size() * 2
 				+ labels.size() / 10 * 2, ReferencePositionXComparator.INSTANCE);
 
 		// creates the reference positions
@@ -394,7 +394,7 @@ class LabelPlacement {
 			priorLeft.remove(refPos[this.referencePosition.nodeNumber * 2 + 1]);
 
 			// find overlapping labels and deletes the reference points and delete them
-			LinkedList<ReferencePosition> linkedRef = new LinkedList<ReferencePosition>();
+			LinkedList<ReferencePosition> linkedRef = new LinkedList<>();
 
 			while (priorLeft.size() != 0) {
 				if (priorLeft.peek().x < this.referencePosition.x + this.referencePosition.width) {

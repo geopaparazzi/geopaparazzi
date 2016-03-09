@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * Class to set color and stroke for shapes.
@@ -80,7 +82,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
     private SeekBar mGreenSeekBar;
     private SeekBar mBlueSeekBar;
     private View mColorView;
-//    private ImageView mShapeSizeImageView;
+    //    private ImageView mShapeSizeImageView;
     private TextView mShapeSizeTextView;
     private SeekBar mShapeSizeSeekBar;
     private Spinner mShapeSpinner;
@@ -386,7 +388,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                     p.setStrokeWidth(progress);
 
                     // erase the bitmap and redraw the line
-                    bitmap.eraseColor(getResources().getColor(android.R.color.transparent, getContext().getTheme()));
+                    bitmap.eraseColor(Compat.getColor(getContext(), android.R.color.transparent));
                     canvas.drawLine(30, 50, 370, 50, p);
                     mWidthImageView.setImageBitmap(bitmap);
                     mWidthTextView.setText(String.valueOf(progress));
@@ -424,7 +426,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 //                    if (delta == 0) delta = 1;
 //
 //                    // erase the bitmap and redraw the line
-//                    bitmap.eraseColor(getResources().getColor(android.R.color.transparent, getContext().getTheme()));
+//                    bitmap.eraseColor(Compat.getColor(getContext(),android.R.color.transparent, getContext().getTheme()));
 //                    canvas.drawOval(centerX - delta, centerY + delta, centerX + delta, centerY - delta, p);
 //                    mShapeSizeImageView.setImageBitmap(bitmap);
                     mShapeSizeTextView.setText(String.valueOf(progress));

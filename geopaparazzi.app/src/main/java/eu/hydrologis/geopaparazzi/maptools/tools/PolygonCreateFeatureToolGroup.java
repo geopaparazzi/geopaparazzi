@@ -58,6 +58,7 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -86,7 +87,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
 
     private int buttonSelectionColor;
 
-    private List<Coordinate> coordinatesList = new ArrayList<Coordinate>();
+    private List<Coordinate> coordinatesList = new ArrayList<>();
     private ImageButton addVertexButton;
     private SliderDrawProjection editingViewProjection;
 
@@ -129,7 +130,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
-        buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
+        buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 
         int selectionStroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
         createdGeometryPaintFill.setAntiAlias(true);
@@ -167,7 +168,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
         if (editLayer != null) {
             gpsStreamButton = new ImageButton(context);
             gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            gpsStreamButton.setBackground(context.getDrawable(R.drawable.editing_gps_stream));
+            gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
             gpsStreamButton.setPadding(0, padding, 0, padding);
             gpsStreamButton.setOnTouchListener(this);
             gpsStreamButton.setOnLongClickListener(this);
@@ -176,7 +177,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
 
             addVertexButton = new ImageButton(context);
             addVertexButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            addVertexButton.setBackground(context.getDrawable(R.drawable.editing_add_vertex));
+            addVertexButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex));
             addVertexButton.setPadding(0, padding, 0, padding);
             addVertexButton.setOnTouchListener(this);
             addVertexButton.setOnClickListener(this);
@@ -185,7 +186,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
             addVertexByTapButton = new ImageButton(context);
             addVertexByTapButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            addVertexByTapButton.setBackground(context.getDrawable(R.drawable.editing_add_vertex_tap));
+            addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap));
             addVertexByTapButton.setPadding(0, padding, 0, padding);
             addVertexByTapButton.setOnTouchListener(this);
             addVertexByTapButton.setOnClickListener(this);
@@ -193,7 +194,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(context.getDrawable(R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -201,7 +202,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(context.getDrawable(R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -252,7 +253,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
             gpsStreamActive = false;
         } else if (v == commitButton) {
             if (coordinatesList.size() > 2) {
-                List<Geometry> geomsList = new ArrayList<Geometry>();
+                List<Geometry> geomsList = new ArrayList<>();
                 Polygon polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
                 if (polygonGeometry.isValid()) {
                     geomsList.add(polygonGeometry);
@@ -354,17 +355,17 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
         if (gpsStreamButton != null)
             if (gpsStreamActive) {
                 gpsStreamButton
-                        .setBackground(context.getDrawable(R.drawable.editing_gps_stream_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream_active));
             } else {
-                gpsStreamButton.setBackground(context.getDrawable(R.drawable.editing_gps_stream));
+                gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
                 gpsStreamButton.getBackground().clearColorFilter();
             }
         if (addVertexByTapButton != null)
             if (addVertexByTapActive) {
-                addVertexByTapButton.setBackground(context.getDrawable(
+                addVertexByTapButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_add_vertex_tap_active));
             } else {
-                addVertexByTapButton.setBackground(context.getDrawable(
+                addVertexByTapButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_add_vertex_tap));
             }
 

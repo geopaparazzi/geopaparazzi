@@ -35,7 +35,6 @@ package com.vividsolutions.jts.geom.prep;
 import java.util.Iterator;
 import java.util.List;
 
-import com.vividsolutions.jts.algorithm.locate.*;
 import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.util.ComponentCoordinateExtracter;

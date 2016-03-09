@@ -23,8 +23,8 @@ class MapReadResultBuilder {
 	final List<Way> ways;
 
 	MapReadResultBuilder() {
-		this.pointOfInterests = new ArrayList<PointOfInterest>();
-		this.ways = new ArrayList<Way>();
+		this.pointOfInterests = new ArrayList<>();
+		this.ways = new ArrayList<>();
 	}
 
 	void add(PoiWayBundle poiWayBundle) {

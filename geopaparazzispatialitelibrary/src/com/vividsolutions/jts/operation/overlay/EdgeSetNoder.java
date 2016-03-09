@@ -38,7 +38,6 @@ import java.util.*;
 import com.vividsolutions.jts.algorithm.LineIntersector;
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.geomgraph.index.*;
-import com.vividsolutions.jts.util.*;
 
 /**
  * Nodes a set of edges.

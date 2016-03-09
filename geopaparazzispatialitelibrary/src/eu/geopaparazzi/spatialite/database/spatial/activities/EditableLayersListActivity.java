@@ -43,6 +43,7 @@ import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -73,7 +74,7 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
 
         ListView mListView = (ListView) findViewById(R.id.editablelayerslist);
 
-        buttonSelectionColor = getColor(R.color.main_selection);
+        buttonSelectionColor = Compat.getColor(this, R.color.main_selection);
 
         final List<SpatialiteMap> editableSpatialiteMaps = new ArrayList<>();
         final HashMap<SpatialiteMap, SpatialVectorTable> spatialVectorTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
@@ -167,9 +168,9 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
                     editableButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             if (currentEditable != null) {
-                                currentEditable.setBackground(getDrawable(R.drawable.ic_layer_visible));
+                                currentEditable.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                             }
-                            editableButton.setBackground(getDrawable(R.drawable.ic_layer_editable));
+                            editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                             currentEditable = editableButton;
 
                             SpatialiteMap spatialiteMap = editableSpatialiteMaps.get(position);
@@ -183,10 +184,10 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
                     editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
                     if (spatialiteMap != null && spatialiteMap == item) {
-                        editableButton.setBackground(getDrawable(R.drawable.ic_layer_editable));
+                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                         currentEditable = editableButton;
                     } else if (item.isVisible) {
-                        editableButton.setBackground(getDrawable(R.drawable.ic_layer_visible));
+                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                     } else {
                         editableButton.setEnabled(false);
                     }

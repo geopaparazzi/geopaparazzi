@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A cursor adapter generic to given field names.
@@ -56,7 +57,7 @@ public class DbCursorAdapter extends CursorAdapter {
         } else {
             textView.setText(" - nv - ");
         }
-        textView.setTextColor(context.getColor(R.color.main_text_color));
+        textView.setTextColor(Compat.getColor(context, R.color.main_text_color));
         textView.setPadding(5, 5, 5, 5);
     }
 

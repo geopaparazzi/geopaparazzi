@@ -170,13 +170,13 @@ public class ExportActivity extends AppCompatActivity implements
 
         try {
             List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
-            TreeSet<String> bookmarksNames = new TreeSet<String>();
+            TreeSet<String> bookmarksNames = new TreeSet<>();
             for (Bookmark bookmark : allBookmarks) {
                 String tmpName = bookmark.getName();
                 bookmarksNames.add(tmpName.trim());
             }
 
-            List<String> namesToNOTAdd = new ArrayList<String>();
+            List<String> namesToNOTAdd = new ArrayList<>();
             ResourcesManager resourcesManager = ResourcesManager.getInstance(this);
             File sdcardDir = resourcesManager.getSdcardDir();
             File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$

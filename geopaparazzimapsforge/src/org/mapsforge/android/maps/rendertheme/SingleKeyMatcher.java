@@ -15,6 +15,7 @@
 package org.mapsforge.android.maps.rendertheme;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.mapsforge.core.model.Tag;
@@ -28,7 +29,7 @@ class SingleKeyMatcher implements AttributeMatcher {
 
 	@Override
 	public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-		return attributeMatcher == this || attributeMatcher.matches(Arrays.asList(new Tag(this.key, null)));
+		return attributeMatcher == this || attributeMatcher.matches(Collections.singletonList(new Tag(this.key, null)));
 	}
 
 	@Override

@@ -31,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,7 +128,7 @@ public class BookmarksListActivity extends AppCompatActivity {
 
             bookmarksMap.clear();
             filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
-            List<String> namesList = new ArrayList<String>();
+            List<String> namesList = new ArrayList<>();
             for (Bookmark bookmark : bookmarksList) {
                 String name = bookmark.getName();
                 String nameLower = name.toLowerCase();

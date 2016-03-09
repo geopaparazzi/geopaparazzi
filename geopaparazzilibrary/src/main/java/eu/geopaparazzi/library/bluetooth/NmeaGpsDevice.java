@@ -81,7 +81,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
     private boolean ready = false;
     private boolean enabled;
 
-    private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
+    private List<IBluetoothListener> bluetoothListeners = new ArrayList<>();
 
     /* (non-Javadoc)
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth_tmp.BluetoothEnablementHandler)
@@ -197,9 +197,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
                 out.write(buffer);
                 out.flush();
             }
-        } catch (IOException e) {
-            error("Exception during write", e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             error("Exception during write", e);
         }
     }

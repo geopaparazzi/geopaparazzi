@@ -23,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.util.Log;
 
 /**
  * Overlay is the abstract base class for all types of overlays. It handles the lifecycle of the overlay thread and

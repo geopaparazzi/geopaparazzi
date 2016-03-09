@@ -42,6 +42,7 @@ import android.widget.ToggleButton;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -348,9 +349,9 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
     private void setButtonColor(ToggleButton toggleButton) {
         if (toggleButton.isChecked()) {
-            toggleButton.setBackground(getDrawable(R.drawable.button_background_drawable_selected));
+            toggleButton.setBackground(Compat.getDrawable(this, R.drawable.button_background_drawable_selected));
         } else {
-            toggleButton.setBackground(getDrawable(R.drawable.button_background_drawable));
+            toggleButton.setBackground(Compat.getDrawable(this, R.drawable.button_background_drawable));
         }
     }
 }

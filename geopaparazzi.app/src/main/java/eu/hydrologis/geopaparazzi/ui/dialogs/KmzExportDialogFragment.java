@@ -131,7 +131,7 @@ public class KmzExportDialogFragment extends DialogFragment {
             protected String doInBackground(String... params) {
                 File kmlOutputFile = null;
                 try {
-                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
+                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<>();
                     boolean hasAtLeastOne = false;
                     /*
                      * add gps logs

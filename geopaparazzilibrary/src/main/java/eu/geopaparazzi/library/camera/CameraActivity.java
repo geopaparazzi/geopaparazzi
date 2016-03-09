@@ -43,7 +43,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * The taking pictures activity.
@@ -208,7 +207,7 @@ public class CameraActivity extends Activity {
             final String[] imageArguments = {Integer.toString(lastImageMediastoreId)};
             Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
                     imageOrderBy);
-            List<File> cameraTakenMediaFiles = new ArrayList<File>();
+            List<File> cameraTakenMediaFiles = new ArrayList<>();
             if (imageCursor.getCount() > 0) {
                 while (imageCursor.moveToNext()) {
                     // int id =

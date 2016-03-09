@@ -43,8 +43,8 @@ public class ArrayGeopaparazziOverlay extends GeopaparazziOverlay {
      */
     public ArrayGeopaparazziOverlay( Context context ) {
         super(context);
-        this.overlayWays = new ArrayList<OverlayWay>(INITIAL_CAPACITY);
-        this.overlayItems = new ArrayList<OverlayItem>(INITIAL_CAPACITY);
+        this.overlayWays = new ArrayList<>(INITIAL_CAPACITY);
+        this.overlayItems = new ArrayList<>(INITIAL_CAPACITY);
     }
 
     /**

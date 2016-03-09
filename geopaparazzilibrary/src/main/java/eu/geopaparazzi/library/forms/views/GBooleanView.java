@@ -28,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A custom boolean view.
@@ -80,7 +81,7 @@ public class GBooleanView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
 
         textLayout.addView(textView);
 

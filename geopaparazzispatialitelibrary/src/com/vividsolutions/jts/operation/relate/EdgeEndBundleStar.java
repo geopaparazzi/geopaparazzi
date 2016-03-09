@@ -35,12 +35,9 @@
  */
 package com.vividsolutions.jts.operation.relate;
 
-import java.io.PrintStream;
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.util.*;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.util.Assert;
 
 /**
  * An ordered list of {@link EdgeEndBundle}s around a {@link RelateNode}.

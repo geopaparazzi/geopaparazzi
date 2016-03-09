@@ -28,8 +28,8 @@ import java.util.ArrayList;
 public class SerializableLogs implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<LogMapItem> logs = new ArrayList<LogMapItem>();
-    private ArrayList<Line> logDatas = new ArrayList<Line>();
+    private ArrayList<LogMapItem> logs = new ArrayList<>();
+    private ArrayList<Line> logDatas = new ArrayList<>();
     private int size = 0;
 
     public void addLog(LogMapItem log, Line logData) {

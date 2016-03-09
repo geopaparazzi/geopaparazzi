@@ -179,7 +179,7 @@ public class DaoBookmarks {
         // Logger.i("DAOBOOKMARKS", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
-        List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+        List<Bookmark> bookmarks = new ArrayList<>();
         c.moveToFirst();
         while( !c.isAfterLast() ) {
             long id = c.getLong(0);
@@ -207,7 +207,7 @@ public class DaoBookmarks {
         // Logger.i("DAOBOOKMARKS", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
-        List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+        List<Bookmark> bookmarks = new ArrayList<>();
         c.moveToFirst();
         while( !c.isAfterLast() ) {
             long id = c.getLong(0);
@@ -240,7 +240,7 @@ public class DaoBookmarks {
         Cursor c = null;
         try {
             c = sqliteDatabase.rawQuery(query, null);
-            List<OverlayItem> bookmarks = new ArrayList<OverlayItem>();
+            List<OverlayItem> bookmarks = new ArrayList<>();
             c.moveToFirst();
             while( !c.isAfterLast() ) {
                 double lon = c.getDouble(0);

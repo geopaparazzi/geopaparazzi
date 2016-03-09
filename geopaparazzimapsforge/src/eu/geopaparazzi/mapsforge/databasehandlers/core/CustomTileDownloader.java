@@ -153,7 +153,7 @@ public class CustomTileDownloader extends TileDownloader {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         this.name = sourceFile.getName().substring(0, sourceFile.getName().lastIndexOf("."));
-        List<String> fileLines = new ArrayList<String>();
+        List<String> fileLines = new ArrayList<>();
         try {
             fileLines = FileUtilities.readfileToList(sourceFile);
         } catch (IOException e) {
@@ -165,9 +165,9 @@ public class CustomTileDownloader extends TileDownloader {
         double[] center = {0.0, 0.0};
         double[] request_bounds = new double[]{0.0, 0.0, 0.0, 0.0};
         mbtilesFilePath = "";
-        mapurlMetadata = new LinkedHashMap<String, String>();
-        mbtilesMetadataMap = new LinkedHashMap<String, String>();
-        mbtilesRequestUrl = new LinkedHashMap<String, String>();
+        mapurlMetadata = new LinkedHashMap<>();
+        mbtilesMetadataMap = new LinkedHashMap<>();
+        mbtilesRequestUrl = new LinkedHashMap<>();
         if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
             sb.append("CustomTileDownloader called with:\n");

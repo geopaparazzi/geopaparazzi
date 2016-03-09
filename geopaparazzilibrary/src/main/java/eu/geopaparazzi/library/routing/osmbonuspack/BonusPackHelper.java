@@ -206,7 +206,7 @@ public class BonusPackHelper {
      */
     public static HashMap<String, String> parseStringMapResource(Context ctx, int stringArrayResourceId) {
         String[] stringArray = ctx.getResources().getStringArray(stringArrayResourceId);
-        HashMap<String, String> map = new HashMap<String, String>(stringArray.length);
+        HashMap<String, String> map = new HashMap<>(stringArray.length);
         for (String entry : stringArray) {
             String[] splitResult = entry.split("\\|", 2);
             map.put(splitResult[0], splitResult[1]);

@@ -139,7 +139,7 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
-        images = new ArrayList<String>();
+        images = new ArrayList<>();
         String name = Utilities.makeXmlSafe(this.simpleText);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");

@@ -20,6 +20,7 @@
     package="eu.geopaparazzi.library">
 
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -64,69 +65,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
-        <!-- CameraActivity
-         <activity
-            android:name="eu.geopaparazzi.library.camera.CameraActivity"
-            android:configChanges="orientation|screenSize"  >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        -->
-        <activity android:name=".core.activities.DirectoryBrowserActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".core.activities.NoteActivity"
-            android:configChanges="keyboardHidden|orientation">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".core.activities.InsertCoordActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".core.activities.GeocodeActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="eu.geopaparazzi.library.forms.FormActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".forms.FormDetailActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".webproject.WebProjectsListActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

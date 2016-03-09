@@ -302,7 +302,7 @@ public class DaoNotes {
             query = query + " AND " + NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
-        List<Note> notes = new ArrayList<Note>();
+        List<Note> notes = new ArrayList<>();
         c.moveToFirst();
         while (!c.isAfterLast()) {
             long id = c.getLong(0);
@@ -384,7 +384,7 @@ public class DaoNotes {
      */
     public static List<OverlayItem> getNoteOverlaysList(Drawable marker) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayItem> notesList = new ArrayList<OverlayItem>();
+        List<OverlayItem> notesList = new ArrayList<>();
         String asColumnsToReturn[] = { //
                 NotesTableFields.COLUMN_LON.getFieldName(), //
                 NotesTableFields.COLUMN_LAT.getFieldName(), //

@@ -34,3 +34,5 @@ build/
 # android-studio stuff
 .idea/
 *.iml
+
+ant.properties

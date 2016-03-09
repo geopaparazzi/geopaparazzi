@@ -28,8 +28,8 @@ import org.mapsforge.core.model.Tag;
 import org.xml.sax.Attributes;
 
 abstract class Rule {
-	private static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
-	private static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
+	private static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<>();
+	private static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<>();
 	private static final Pattern SPLIT_PATTERN = Pattern.compile("\\|");
 	private static final String STRING_NEGATION = "~";
 	private static final String STRING_WILDCARD = "*";
@@ -39,8 +39,8 @@ abstract class Rule {
 			byte zoomMin, byte zoomMax) {
 		ElementMatcher elementMatcher = getElementMatcher(element);
 		ClosedMatcher closedMatcher = getClosedMatcher(closed);
-		List<String> keyList = new ArrayList<String>(Arrays.asList(SPLIT_PATTERN.split(keys)));
-		List<String> valueList = new ArrayList<String>(Arrays.asList(SPLIT_PATTERN.split(values)));
+		List<String> keyList = new ArrayList<>(Arrays.asList(SPLIT_PATTERN.split(keys)));
+		List<String> valueList = new ArrayList<>(Arrays.asList(SPLIT_PATTERN.split(values)));
 
 		elementMatcher = RuleOptimizer.optimize(elementMatcher, ruleStack);
 		closedMatcher = RuleOptimizer.optimize(closedMatcher, ruleStack);
@@ -183,8 +183,8 @@ abstract class Rule {
 		this.zoomMin = zoomMin;
 		this.zoomMax = zoomMax;
 
-		this.renderInstructions = new ArrayList<RenderInstruction>(4);
-		this.subRules = new ArrayList<Rule>(4);
+		this.renderInstructions = new ArrayList<>(4);
+		this.subRules = new ArrayList<>(4);
 	}
 
 	void addRenderingInstruction(RenderInstruction renderInstruction) {

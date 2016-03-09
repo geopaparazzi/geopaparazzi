@@ -50,7 +50,7 @@ public enum BluetoothManager {
     /**
      * Registered {@link IBluetoothStatusChangeListener status change listeners}.
      */
-    private Set<IBluetoothStatusChangeListener> _statusChangeListeners = new HashSet<IBluetoothStatusChangeListener>();
+    private Set<IBluetoothStatusChangeListener> _statusChangeListeners = new HashSet<>();
 
     private BroadcastReceiver _bluetoothState;
 

@@ -46,7 +46,7 @@ public enum ColorUtilitiesCompat {
     ; //
 
     private String hex;
-    private static HashMap<String, Integer> colorMap = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> colorMap = new HashMap<>();
 
     ColorUtilitiesCompat(String hex) {
         this.hex = hex;

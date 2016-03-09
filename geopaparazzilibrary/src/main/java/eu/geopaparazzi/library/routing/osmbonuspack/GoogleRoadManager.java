@@ -108,11 +108,7 @@ public class GoogleRoadManager extends RoadManager {
         try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
             parser.parse(is, handler);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
         return handler.mRoad;

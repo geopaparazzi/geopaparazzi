@@ -40,10 +40,8 @@ package com.vividsolutions.jts.operation.relate;
  */
 
 import com.vividsolutions.jts.algorithm.BoundaryNodeRule;
-import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.operation.GeometryGraphOperation;
-import java.util.*;
 
 /**
  * Implements the SFS <tt>relate()</tt> generalized spatial predicate on two {@link Geometry}s.

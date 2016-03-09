@@ -19,22 +19,17 @@
 package eu.hydrologis.geopaparazzi.ui.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PointF;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidplot.ui.AnchorPosition;
 import com.androidplot.ui.DynamicTableModel;
@@ -56,11 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.objects.Line;
@@ -93,7 +87,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profilechart);
 
-        int backgroundColor = getColor(R.color.main_background);
+        int backgroundColor = Compat.getColor(this, R.color.main_background);
 
         // colors
         int rgbSpeedLine = Color.rgb(0, 200, 0);
@@ -381,9 +375,9 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         double summedDistance = 0.0;
         long previousTime = 0;
 
-        List<Double> xList1 = new ArrayList<Double>(lonArray.size());
-        List<Double> yList1 = new ArrayList<Double>(lonArray.size());
-        List<Double> yList2 = new ArrayList<Double>(lonArray.size());
+        List<Double> xList1 = new ArrayList<>(lonArray.size());
+        List<Double> yList1 = new ArrayList<>(lonArray.size());
+        List<Double> yList2 = new ArrayList<>(lonArray.size());
         elevDifference = 0;
         for (int i = 0; i < lonArray.size(); i++) {
             double elev = elevArray.get(i);

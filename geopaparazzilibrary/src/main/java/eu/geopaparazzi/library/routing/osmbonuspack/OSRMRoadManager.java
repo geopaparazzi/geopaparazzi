@@ -54,7 +54,7 @@ public class OSRMRoadManager extends RoadManager {
     static final HashMap<String, Integer> MANEUVERS;
 
     static {
-        MANEUVERS = new HashMap<String, Integer>();
+        MANEUVERS = new HashMap<>();
         MANEUVERS.put("0", 0); //No instruction
         MANEUVERS.put("1", 1); //Continue
         MANEUVERS.put("2", 6); //Slight right
@@ -85,10 +85,10 @@ public class OSRMRoadManager extends RoadManager {
     static final HashMap<String, Object> DIRECTIONS;
 
     static {
-        DIRECTIONS = new HashMap<String, Object>();
+        DIRECTIONS = new HashMap<>();
         HashMap<String, String> directions;
 
-        directions = new HashMap<String, String>();
+        directions = new HashMap<>();
         DIRECTIONS.put("en", directions);
         directions.put("0", "Unknown instruction< on %s>");
         directions.put("1", "Continue< on %s>");
@@ -112,7 +112,7 @@ public class OSRMRoadManager extends RoadManager {
         directions.put("11-9", "Enter roundabout and leave at nineth exit< on %s>");
         directions.put("15", "You have reached your destination");
 
-        directions = new HashMap<String, String>();
+        directions = new HashMap<>();
         DIRECTIONS.put("fr", directions);
         directions.put("0", "Instruction inconnue< sur %s>");
         directions.put("1", "Continuez< sur %s>");
@@ -136,7 +136,7 @@ public class OSRMRoadManager extends RoadManager {
         directions.put("11-9", "Au rond-point, prenez la neuvième sortie< sur %s>");
         directions.put("15", "Vous êtes arrivé");
 
-        directions = new HashMap<String, String>();
+        directions = new HashMap<>();
         DIRECTIONS.put("pl", directions);
         directions.put("0", "Nieznana instrukcja<w %s>");
         directions.put("1", "Kontynuuj jazdę<na %s>");
@@ -160,7 +160,7 @@ public class OSRMRoadManager extends RoadManager {
         directions.put("11-9", "Wjedź na rondo i opuść je dziewiątym zjazdem<w %s>");
         directions.put("15", "Dotarłeś do celu podróży");
 
-        directions = new HashMap<String, String>();
+        directions = new HashMap<>();
         DIRECTIONS.put("de", directions);
         directions.put("0", "Unbekannte Instruktion< auf %s>");
         directions.put("1", "Bleiben Sie< auf %s>");

@@ -84,7 +84,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
         this.lonList = new DynamicDoubleArray();
         this.latList = new DynamicDoubleArray();
         this.altimList = new DynamicDoubleArray();
-        this.dateList = new ArrayList<String>();
+        this.dateList = new ArrayList<>();
     }
 
     /**

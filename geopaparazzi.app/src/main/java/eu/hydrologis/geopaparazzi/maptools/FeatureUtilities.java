@@ -98,7 +98,7 @@ public class FeatureUtilities {
      * @throws Exception is something goes wrong.
      */
     public static List<Feature> buildWithoutGeometry(String query, SpatialVectorTable spatialTable) throws Exception {
-        List<Feature> featuresList = new ArrayList<Feature>();
+        List<Feature> featuresList = new ArrayList<>();
         SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
         Database database = spatialiteDbHandler.getDatabase();
 
@@ -138,7 +138,7 @@ public class FeatureUtilities {
      * @throws Exception is something goes wrong.
      */
     public static List<Feature> buildFeatures(String query, SpatialVectorTable spatialTable) throws Exception {
-        List<Feature> featuresList = new ArrayList<Feature>();
+        List<Feature> featuresList = new ArrayList<>();
         SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
         Database database = spatialiteDbHandler.getDatabase();
         String tableName = spatialTable.getTableName();

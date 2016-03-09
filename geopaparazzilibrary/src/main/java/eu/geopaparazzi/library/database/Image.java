@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.database;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -168,6 +169,6 @@ public class Image extends ANote implements KmlRepresenter {
     }
 
     public List<String> getImageIds() {
-        return Arrays.asList(id + "");
+        return Collections.singletonList(id + "");
     }
 }

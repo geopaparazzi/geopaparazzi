@@ -39,7 +39,7 @@ public class ArrayCircleOverlay extends CircleOverlay<OverlayCircle> {
 	 */
 	public ArrayCircleOverlay(Paint defaultPaintFill, Paint defaultPaintOutline) {
 		super(defaultPaintFill, defaultPaintOutline);
-		this.overlayCircles = new ArrayList<OverlayCircle>(INITIAL_CAPACITY);
+		this.overlayCircles = new ArrayList<>(INITIAL_CAPACITY);
 	}
 
 	/**

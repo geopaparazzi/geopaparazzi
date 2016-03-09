@@ -30,7 +30,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import java.util.Collection;
-import java.util.List;
 
 import eu.geopaparazzi.library.core.activities.LogAnalysisActivity;
 import eu.geopaparazzi.library.database.GPLog;

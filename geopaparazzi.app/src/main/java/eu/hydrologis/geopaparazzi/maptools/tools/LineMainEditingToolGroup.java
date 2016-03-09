@@ -37,6 +37,7 @@ import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -68,7 +69,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
         this.mapView = mapView;
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
-        selectionColor = parent.getContext().getColor(R.color.main_selection);
+        selectionColor = Compat.getColor(parent.getContext(), R.color.main_selection);
     }
 
     public void activate() {
@@ -87,7 +88,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackground(context.getDrawable(R.drawable.editing_create_line));
+            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_create_line));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -96,7 +97,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
             selectEditableButton = new ImageButton(context);
             selectEditableButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            selectEditableButton.setBackground(context.getDrawable(R.drawable.editing_select_editable));
+            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_editable));
             selectEditableButton.setPadding(0, padding, 0, padding);
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
@@ -105,7 +106,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(context.getDrawable(R.drawable.editing_select_all));
+        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
@@ -114,7 +115,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
         if (editLayer != null) {
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(context.getDrawable(R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -123,7 +124,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(context.getDrawable(R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -201,19 +202,19 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
         Tool currentTool = EditManager.INSTANCE.getActiveTool();
         if (selectEditableButton != null) {
             if (currentTool != null && activeToolButton == selectEditableButton) {
-                selectEditableButton.setBackground(context.getDrawable(
+                selectEditableButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_select_editable_active));
             } else {
-                selectEditableButton.setBackground(context.getDrawable(
+                selectEditableButton.setBackground(Compat.getDrawable(context,
                         R.drawable.editing_select_editable));
             }
         }
         if (selectAllButton != null)
             if (currentTool != null && activeToolButton == selectAllButton) {
                 selectAllButton
-                        .setBackground(context.getDrawable(R.drawable.editing_select_all_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.editing_select_all_active));
             } else {
-                selectAllButton.setBackground(context.getDrawable(R.drawable.editing_select_all));
+                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
             }
     }
 

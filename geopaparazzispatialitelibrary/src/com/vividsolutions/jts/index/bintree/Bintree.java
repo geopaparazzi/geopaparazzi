@@ -38,8 +38,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 /**
  * An <code>BinTree</code> (or "Binary Interval Tree")
  * is a 1-dimensional version of a quadtree.

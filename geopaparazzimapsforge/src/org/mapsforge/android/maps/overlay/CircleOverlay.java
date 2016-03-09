@@ -61,8 +61,8 @@ public abstract class CircleOverlay<Circle extends OverlayCircle> extends Overla
 		this.defaultPaintOutline = defaultPaintOutline;
 		this.hasDefaultPaint = defaultPaintFill != null || defaultPaintOutline != null;
 		this.circlePosition = new Point();
-		this.visibleCircles = new ArrayList<Integer>(INITIAL_CAPACITY);
-		this.visibleCirclesRedraw = new ArrayList<Integer>(INITIAL_CAPACITY);
+		this.visibleCircles = new ArrayList<>(INITIAL_CAPACITY);
+		this.visibleCirclesRedraw = new ArrayList<>(INITIAL_CAPACITY);
 		this.path = new Path();
 	}
 

@@ -24,11 +24,9 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,7 +42,6 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Web projects listing activity.
@@ -57,8 +54,8 @@ public class WebProjectsListActivity extends ListActivity {
     private ArrayAdapter<Webproject> arrayAdapter;
     private EditText filterText;
 
-    private List<Webproject> projectList = new ArrayList<Webproject>();
-    private List<Webproject> projectListToLoad = new ArrayList<Webproject>();
+    private List<Webproject> projectList = new ArrayList<>();
+    private List<Webproject> projectListToLoad = new ArrayList<>();
 
     private String user;
     private String pwd;

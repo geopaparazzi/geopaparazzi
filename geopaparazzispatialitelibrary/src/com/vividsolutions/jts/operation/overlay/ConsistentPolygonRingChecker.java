@@ -2,11 +2,7 @@ package com.vividsolutions.jts.operation.overlay;
 
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.util.*;
-import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.geomgraph.index.SegmentIntersector;
-import com.vividsolutions.jts.operation.GeometryGraphOperation;
 
 /**
  * Tests whether the polygon rings in a {@link GeometryGraph}

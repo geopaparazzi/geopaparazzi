@@ -57,6 +57,7 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -143,13 +144,13 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             e1.printStackTrace();
         }
 
-        final int buttonTextColor = getColor(R.color.main_text_color);
+        final int buttonTextColor = Compat.getColor(this, R.color.main_text_color);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tagNamesArray) {
             public View getView(final int position, View cView, ViewGroup parent) {
 
                 Button tagButton = new Button(AddNotesActivity.this);
 
-                Drawable buttonDrawable = getDrawable(R.drawable.button_background_drawable);
+                Drawable buttonDrawable = Compat.getDrawable(AddNotesActivity.this, R.drawable.button_background_drawable);
                 SpannableString spanString = new SpannableString(tagNamesArray[position]);
                 spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
                 // tagButton.setText(tagNamesArray[position]);
