@@ -12,7 +12,7 @@ android {
     buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "eu.hydrologis.geopaparazzi"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 73
         versionName "5.0.0"

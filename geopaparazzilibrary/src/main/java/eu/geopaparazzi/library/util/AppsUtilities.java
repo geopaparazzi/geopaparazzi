@@ -133,15 +133,24 @@ public class AppsUtilities {
         try {
             activityStarter.startActivityForResult(intent, requestCode);
         } catch (android.content.ActivityNotFoundException ex) {
-            // try with generic
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            // try with es explorer
+            intent = new Intent("com.estrongs.action.PICK_FILE ");
+            if (title != null)
+                intent.putExtra("com.estrongs.intent.extra.TITLE", title);
             intent.setDataAndType(uri, mimeType);
-            Intent chooser = Intent.createChooser(intent, title);
             try {
-                activityStarter.startActivityForResult(chooser, requestCode);
+                activityStarter.startActivityForResult(intent, requestCode);
             } catch (android.content.ActivityNotFoundException ex2) {
-                // direct to install a file manager
-                AppsUtilities.checkAmazeExplorer(activityStarter);
+                // try with generic
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setDataAndType(uri, mimeType);
+                Intent chooser = Intent.createChooser(intent, title);
+                try {
+                    activityStarter.startActivityForResult(chooser, requestCode);
+                } catch (android.content.ActivityNotFoundException ex3) {
+                    // direct to install a file manager
+                    AppsUtilities.checkAmazeExplorer(activityStarter);
+                }
             }
         }
     }

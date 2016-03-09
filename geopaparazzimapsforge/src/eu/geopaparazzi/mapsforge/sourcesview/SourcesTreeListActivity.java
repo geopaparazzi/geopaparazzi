@@ -61,7 +61,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesTreeListActivity extends AppCompatActivity implements IActivityStarter{
+public class SourcesTreeListActivity extends AppCompatActivity implements IActivityStarter {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_MAPS = "showMaps";
@@ -170,16 +170,27 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         String filePath = data.getDataString();
-                        final File file = new File(new URL(filePath).toURI());
+                        File file;
+                        if (filePath.startsWith("file:")) {
+                            file = new File(new URL(filePath).toURI());
+                        } else {
+                            GPDialogs.warningDialog(this, "The map should be selected as local file. If you are not sure what that means install the 'Amaze file manager' and try again.", null);
+                            return;
+                        }
+
                         if (file.exists()) {
+                            final File finalFile = file;
                             StringAsyncTask task = new StringAsyncTask(this) {
                                 public List<BaseMap> baseMaps;
 
                                 protected String doBackgroundWork() {
                                     try {
                                         // add basemap to list and in mPreferences
-                                        BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(file);
-                                        baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
+                                        if (BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(finalFile)) {
+                                            baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
+                                        } else {
+                                            GPDialogs.warningDialog(SourcesTreeListActivity.this, "The selected file is not supported as basemap: " + finalFile, null);
+                                        }
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);
                                         return "ERROR: " + e.getLocalizedMessage();

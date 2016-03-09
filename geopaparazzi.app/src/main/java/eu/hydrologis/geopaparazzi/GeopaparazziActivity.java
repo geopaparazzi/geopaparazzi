@@ -54,18 +54,24 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         checkIncomingProject();
 
 
-        // PERMISSIONS START
-        if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            // PERMISSIONS START
+            if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
+                init();
+
+                checkIncomingUrl();
+            } else {
+                if (permissionHelper.hasPermission(this)) {
+                    permissionHelper = permissionHelper.getNextWithoutPermission(this);
+                }
+                permissionHelper.requestPermission(this);
+            }
+            // PERMISSIONS STOP
+        } else {
             init();
 
             checkIncomingUrl();
-        } else {
-            if (permissionHelper.hasPermission(this)) {
-                permissionHelper = permissionHelper.getNextWithoutPermission(this);
-            }
-            permissionHelper.requestPermission(this);
         }
-        // PERMISSIONS STOP
 
     }
 

@@ -10,15 +10,12 @@ apply plugin: 'com.android.library'
 
 dependencies {
     compile project(':geopaparazzispatialitelibrary')
-    compile files('libs/mapsforge-map-0.3.1-SNAPSHOT-jar-with-dependencies.jar')
 }
 android {
 //        compileSdkVersion project.ext.myCompileSdkVersion
 //        buildToolsVersion project.ext.myBuildToolsVersion
-
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
-
     sourceSets {
         main {
             manifest {
@@ -44,5 +41,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    defaultConfig {
+        minSdkVersion 19
+    }
+    productFlavors {
     }
 }
