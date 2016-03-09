@@ -181,8 +181,9 @@
     <string name="start_">Start:</string>
     <string name="end_">End:</string>
     <string name="map_textsize_factor">Map textsize factor</string>
+    <string name="map_textsize_factor_summary">Textsize factor for mapsforge map files.</string>
     <string name="keep_screen_on">Keep the screen on</string>
-    <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view</string>
+    <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view.</string>
     <string name="the_secret_view">The Secret View</string>
     <string name="database_queries">Database Queries</string>
     <string name="demo_mode">Demo mode</string>
