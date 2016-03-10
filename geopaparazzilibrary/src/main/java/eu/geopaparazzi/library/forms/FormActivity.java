@@ -74,7 +74,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
  */
 @SuppressWarnings("nls")
 public class FormActivity extends AppCompatActivity implements IFragmentListSupporter {
-    private final int RETURNCODE_DETAILACTIVITY = 665;
+//    private final int RETURNCODE_DETAILACTIVITY = 665;
 
     private double latitude = -9999.0;
     private double longitude = -9999.0;
@@ -85,6 +85,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     private List<String> formNames4Section = new ArrayList<String>();
     private long noteId = -1;
     private boolean noteIsNew = false;
+    private Result result;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +130,17 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
+        if (currentFragment != null && result != null) {
+            currentFragment.onActivityResult(result.requestCode, result.resultCode, result.data);
+            result = null;
         }
     }
 
@@ -397,14 +409,30 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (RETURNCODE_DETAILACTIVITY): {
-                if (resultCode == AppCompatActivity.RESULT_OK) {
-                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
-                    extractVariablesFromForminfo(formInfoHolder);
-                }
-                break;
-            }
-        }
+
+//        result = new Result();
+//        result.requestCode = requestCode;
+//        result.resultCode = resultCode;
+//        result.data = data;
+//
+//        FormDetailFragment currentFragment = (FormDetailFragment) getSupportFragmentManager().findFragmentById(R.id.detailFragmentContainer);
+//        if (currentFragment != null)
+//            currentFragment.onActivityResult(requestCode, resultCode, data);
+
+//        switch (requestCode) {
+//            case (RETURNCODE_DETAILACTIVITY): {
+//                if (resultCode == AppCompatActivity.RESULT_OK) {
+//                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+//                    extractVariablesFromForminfo(formInfoHolder);
+//                }
+//                break;
+//            }
+//        }
+    }
+
+    private static class Result {
+        int requestCode;
+        int resultCode;
+        Intent data;
     }
 }
