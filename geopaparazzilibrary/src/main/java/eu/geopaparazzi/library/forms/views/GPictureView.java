@@ -117,7 +117,7 @@ public class GPictureView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(Compat.getColor(activity,R.color.formcolor));
+        textView.setTextColor(Compat.getColor(activity, R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
@@ -195,7 +195,9 @@ public class GPictureView extends View implements GView {
                 Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
                 ImageView imageView = new ImageView(context);
-                imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150,150);
+                lp.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(lp);
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
                 imageView.setBackground(Compat.getDrawable(context, R.drawable.border_black_1px));

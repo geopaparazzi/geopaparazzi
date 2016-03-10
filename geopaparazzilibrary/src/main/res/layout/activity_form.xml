@@ -60,11 +60,13 @@
                 card_view:cardElevation="6dp"
                 card_view:cardUseCompatPadding="true">
 
-                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/detailFragmentContainer"
+                <fragment
+                    android:id="@+id/detailFragment"
+                    class="eu.geopaparazzi.library.forms.FormDetailFragment"
                     android:layout_width="match_parent"
-                    android:padding="3dip"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:padding="3dip"/>
+
             </android.support.v7.widget.CardView>
 
         </LinearLayout>

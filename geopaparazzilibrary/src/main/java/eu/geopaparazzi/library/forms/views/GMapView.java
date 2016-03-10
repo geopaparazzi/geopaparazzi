@@ -106,7 +106,9 @@ public class GMapView extends View implements GView {
             Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
             ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150,150);
+            lp.setMargins(10, 10, 10, 10);
+            imageView.setLayoutParams(lp);
             imageView.setPadding(5, 5, 5, 5);
             imageView.setImageBitmap(thumbnail);
             imageView.setBackground(Compat.getDrawable(context, R.drawable.border_black_1px));

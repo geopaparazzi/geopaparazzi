@@ -309,6 +309,9 @@
                 android:value=".ui.activities.AddNotesActivity" />
         </activity>
 
+        <activity android:name="com.google.android.apps.markers.MarkersActivity" />
+
+
         <provider
             android:name=".providers.SourceUrlsContentProvider"
             android:authorities="eu.geopaparazzi.provider.sourceurls"

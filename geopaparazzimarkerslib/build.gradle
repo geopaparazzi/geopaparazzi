@@ -1,0 +1,49 @@
+buildscript {
+        repositories {
+                mavenCentral()
+        }
+        dependencies {
+            classpath 'com.android.tools.build:gradle:1.5.0'
+        }
+}
+
+apply plugin: 'com.android.library'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files('libs/markers.jar')
+}
+
+
+android {
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
+
+        sourceSets {
+                main {
+                        manifest {
+                                srcFile 'AndroidManifest.xml'
+                        }
+                        java {
+                                srcDir 'src'
+                        }
+                        res {
+                                srcDir 'res'
+                        }
+                        assets {
+                                srcDir 'assets'
+                        }
+                        resources {
+                                srcDir 'src'
+                        }
+                        aidl {
+                                srcDir 'src'
+                        }
+                }
+        }
+}
+
+

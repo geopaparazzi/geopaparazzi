@@ -18,10 +18,8 @@
 package eu.geopaparazzi.library.forms;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +81,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormDetailFragment extends Fragment {
+public class FormDetailFragment extends android.support.v4.app.Fragment {
     public static final String ARGS_FORMINFO = "args_forminfo";
 
     private HashMap<String, GView> key2WidgetMap = new HashMap<>();
@@ -93,6 +91,7 @@ public class FormDetailFragment extends Fragment {
     private String selectedFormName;
     private JSONObject sectionObject;
     private FormInfoHolder mFormInfoHolder;
+    private LinearLayout mainView;
 
     public static FormDetailFragment newInstance(FormInfoHolder formInfoHolder) {
         FormDetailFragment f = new FormDetailFragment();
@@ -118,181 +117,189 @@ public class FormDetailFragment extends Fragment {
         View view = null;
         try {
 
-            long noteId = -1;
-            double longitude;
-            double latitude;
-            if (mFormInfoHolder != null) {
-                selectedFormName = mFormInfoHolder.formName;
-                sectionObject = new JSONObject(mFormInfoHolder.sectionObjectString);
-                noteId = mFormInfoHolder.noteId;
-                longitude = mFormInfoHolder.longitude;
-                latitude = mFormInfoHolder.latitude;
-            } else {
-                GPDialogs.warningDialog(getActivity(), "An error occurred: no forminfo holder passed to FragmentDetail.", null);
-                return null;
-            }
-
             view = inflater.inflate(R.layout.fragment_form_detail, container, false);
-            LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
+            mainView = (LinearLayout) view.findViewById(R.id.form_linear);
 
-            if (selectedFormName != null) {
-                Activity activity = getActivity();
-                JSONObject formObject = TagsManager.getForm4Name(selectedFormName, sectionObject);
-
-                key2WidgetMap.clear();
-                requestCodes2WidgetMap.clear();
-                int requestCode = 666;
-                keyList.clear();
-                key2ConstraintsMap.clear();
-
-                JSONArray formItemsArray = TagsManager.getFormItems(formObject);
-
-                int length = formItemsArray.length();
-                for (int i = 0; i < length; i++) {
-                    JSONObject jsonObject = formItemsArray.getJSONObject(i);
-
-                    String key = "-"; //$NON-NLS-1$
-                    if (jsonObject.has(TAG_KEY))
-                        key = jsonObject.getString(TAG_KEY).trim();
-
-                    String label = key;
-                    if (jsonObject.has(TAG_LABEL))
-                        label = jsonObject.getString(TAG_LABEL).trim();
-
-                    String value = ""; //$NON-NLS-1$
-                    if (jsonObject.has(TAG_VALUE)) {
-                        value = jsonObject.getString(TAG_VALUE).trim();
-                    }
-                    String type = FormUtilities.TYPE_STRING;
-                    if (jsonObject.has(TAG_TYPE)) {
-                        type = jsonObject.getString(TAG_TYPE).trim();
-                    }
-
-                    boolean readonly = false;
-                    if (jsonObject.has(TAG_READONLY)) {
-                        String readonlyStr = jsonObject.getString(TAG_READONLY).trim();
-                        readonly = Boolean.parseBoolean(readonlyStr);
-                    }
-
-                    Constraints constraints = new Constraints();
-                    FormUtilities.handleConstraints(jsonObject, constraints);
-                    key2ConstraintsMap.put(key, constraints);
-                    String constraintDescription = constraints.getDescription();
-
-                    GView addedView = null;
-                    switch (type) {
-                        case TYPE_STRING:
-                            addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 0, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_DYNAMICSTRING:
-                            addedView = FormUtilities.addDynamicEditText(activity, mainView, label, value, 0, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_STRINGAREA:
-                            addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 7, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_DOUBLE:
-                            addedView = FormUtilities.addEditText(activity, mainView, label, value, 1, 0, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_INTEGER:
-                            addedView = FormUtilities.addEditText(activity, mainView, label, value, 4, 0, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_DATE:
-                            addedView = FormUtilities.addDateView(FormDetailFragment.this, mainView, label, value, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_TIME:
-                            addedView = FormUtilities.addTimeView(FormDetailFragment.this, mainView, label, value, constraintDescription,
-                                    readonly);
-                            break;
-                        case TYPE_LABEL: {
-                            String size = "20"; //$NON-NLS-1$
-
-                            if (jsonObject.has(TAG_SIZE))
-                                size = jsonObject.getString(TAG_SIZE);
-                            String url = null;
-                            if (jsonObject.has(TAG_URL))
-                                url = jsonObject.getString(TAG_URL);
-                            addedView = FormUtilities.addTextView(activity, mainView, value, size, false, url);
-                            break;
-                        }
-                        case TYPE_LABELWITHLINE: {
-                            String size = "20"; //$NON-NLS-1$
-
-                            if (jsonObject.has(TAG_SIZE))
-                                size = jsonObject.getString(TAG_SIZE);
-                            String url = null;
-                            if (jsonObject.has(TAG_URL))
-                                url = jsonObject.getString(TAG_URL);
-                            addedView = FormUtilities.addTextView(activity, mainView, value, size, true, url);
-                            break;
-                        }
-                        case TYPE_BOOLEAN:
-                            addedView = FormUtilities.addBooleanView(activity, mainView, label, value, constraintDescription, readonly);
-                            break;
-                        case TYPE_STRINGCOMBO: {
-                            JSONArray comboItems = TagsManager.getComboItems(jsonObject);
-                            String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-                            addedView = FormUtilities.addComboView(activity, mainView, label, value, itemsArray, constraintDescription);
-                            break;
-                        }
-                        case TYPE_CONNECTEDSTRINGCOMBO:
-                            LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
-                            addedView = FormUtilities.addConnectedComboView(activity, mainView, label, value, valuesMap,
-                                    constraintDescription);
-                            break;
-                        case TYPE_STRINGMULTIPLECHOICE: {
-                            JSONArray comboItems = TagsManager.getComboItems(jsonObject);
-                            String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-                            addedView = FormUtilities.addMultiSelectionView(activity, mainView, label, value, itemsArray,
-                                    constraintDescription);
-                            break;
-                        }
-                        case TYPE_PICTURES:
-                            addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, label, value, constraintDescription);
-                            break;
-                        case TYPE_SKETCH:
-                            addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, label, value, constraintDescription);
-                            break;
-                        case TYPE_MAP:
-                            if (value.length() <= 0) {
-                                // need to read image
-                                File tempDir = ResourcesManager.getInstance(activity).getTempDir();
-                                File tmpImage = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
-                                if (tmpImage.exists()) {
-                                    byte[][] imageAndThumbnailFromPath = ImageUtilities.getImageAndThumbnailFromPath(tmpImage.getAbsolutePath(), 1);
-                                    Date date = new Date();
-                                    String mapImageName = ImageUtilities.getMapImageName(date);
-
-                                    IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
-                                    long imageId = imageHelper.addImage(longitude, latitude, -1.0, -1.0, date.getTime(), mapImageName, imageAndThumbnailFromPath[0], imageAndThumbnailFromPath[1], noteId);
-                                    value = "" + imageId;
-                                }
-                            }
-                            addedView = FormUtilities.addMapView(activity, mainView, label, value, constraintDescription);
-                            break;
-                        case TYPE_NFCUID:
-                            addedView = new GNfcUidView(this, null, requestCode, mainView, label, value, constraintDescription);
-                            break;
-                        default:
-                            GPLog.addLogEntry(this, null, null, "Type non implemented yet: " + type);
-                            break;
-                    }
-                    key2WidgetMap.put(key, addedView);
-                    keyList.add(key);
-                    requestCodes2WidgetMap.put(requestCode, addedView);
-                    requestCode++;
-                }
-
-            }
+            refreshView(mFormInfoHolder);
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
         return view;
+    }
+
+    public void refreshView(FormInfoHolder formInfoHolder) throws Exception {
+        if (mainView == null) return;
+
+        mFormInfoHolder = formInfoHolder;
+        long noteId = -1;
+        double longitude;
+        double latitude;
+        if (mFormInfoHolder != null) {
+            selectedFormName = mFormInfoHolder.formName;
+            sectionObject = new JSONObject(mFormInfoHolder.sectionObjectString);
+            noteId = mFormInfoHolder.noteId;
+            longitude = mFormInfoHolder.longitude;
+            latitude = mFormInfoHolder.latitude;
+        } else {
+            return;
+        }
+
+        mainView.removeAllViews();
+
+        if (selectedFormName != null) {
+            Activity activity = getActivity();
+            JSONObject formObject = TagsManager.getForm4Name(selectedFormName, sectionObject);
+
+            key2WidgetMap.clear();
+            requestCodes2WidgetMap.clear();
+            int requestCode = 666;
+            keyList.clear();
+            key2ConstraintsMap.clear();
+
+            JSONArray formItemsArray = TagsManager.getFormItems(formObject);
+
+            int length = formItemsArray.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonObject = formItemsArray.getJSONObject(i);
+
+                String key = "-"; //$NON-NLS-1$
+                if (jsonObject.has(TAG_KEY))
+                    key = jsonObject.getString(TAG_KEY).trim();
+
+                String label = key;
+                if (jsonObject.has(TAG_LABEL))
+                    label = jsonObject.getString(TAG_LABEL).trim();
+
+                String value = ""; //$NON-NLS-1$
+                if (jsonObject.has(TAG_VALUE)) {
+                    value = jsonObject.getString(TAG_VALUE).trim();
+                }
+                String type = FormUtilities.TYPE_STRING;
+                if (jsonObject.has(TAG_TYPE)) {
+                    type = jsonObject.getString(TAG_TYPE).trim();
+                }
+
+                boolean readonly = false;
+                if (jsonObject.has(TAG_READONLY)) {
+                    String readonlyStr = jsonObject.getString(TAG_READONLY).trim();
+                    readonly = Boolean.parseBoolean(readonlyStr);
+                }
+
+                Constraints constraints = new Constraints();
+                FormUtilities.handleConstraints(jsonObject, constraints);
+                key2ConstraintsMap.put(key, constraints);
+                String constraintDescription = constraints.getDescription();
+
+                GView addedView = null;
+                switch (type) {
+                    case TYPE_STRING:
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 0, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_DYNAMICSTRING:
+                        addedView = FormUtilities.addDynamicEditText(activity, mainView, label, value, 0, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_STRINGAREA:
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 0, 7, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_DOUBLE:
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 1, 0, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_INTEGER:
+                        addedView = FormUtilities.addEditText(activity, mainView, label, value, 4, 0, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_DATE:
+                        addedView = FormUtilities.addDateView(FormDetailFragment.this, mainView, label, value, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_TIME:
+                        addedView = FormUtilities.addTimeView(FormDetailFragment.this, mainView, label, value, constraintDescription,
+                                readonly);
+                        break;
+                    case TYPE_LABEL: {
+                        String size = "20"; //$NON-NLS-1$
+
+                        if (jsonObject.has(TAG_SIZE))
+                            size = jsonObject.getString(TAG_SIZE);
+                        String url = null;
+                        if (jsonObject.has(TAG_URL))
+                            url = jsonObject.getString(TAG_URL);
+                        addedView = FormUtilities.addTextView(activity, mainView, value, size, false, url);
+                        break;
+                    }
+                    case TYPE_LABELWITHLINE: {
+                        String size = "20"; //$NON-NLS-1$
+
+                        if (jsonObject.has(TAG_SIZE))
+                            size = jsonObject.getString(TAG_SIZE);
+                        String url = null;
+                        if (jsonObject.has(TAG_URL))
+                            url = jsonObject.getString(TAG_URL);
+                        addedView = FormUtilities.addTextView(activity, mainView, value, size, true, url);
+                        break;
+                    }
+                    case TYPE_BOOLEAN:
+                        addedView = FormUtilities.addBooleanView(activity, mainView, label, value, constraintDescription, readonly);
+                        break;
+                    case TYPE_STRINGCOMBO: {
+                        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                        addedView = FormUtilities.addComboView(activity, mainView, label, value, itemsArray, constraintDescription);
+                        break;
+                    }
+                    case TYPE_CONNECTEDSTRINGCOMBO:
+                        LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
+                        addedView = FormUtilities.addConnectedComboView(activity, mainView, label, value, valuesMap,
+                                constraintDescription);
+                        break;
+                    case TYPE_STRINGMULTIPLECHOICE: {
+                        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                        addedView = FormUtilities.addMultiSelectionView(activity, mainView, label, value, itemsArray,
+                                constraintDescription);
+                        break;
+                    }
+                    case TYPE_PICTURES:
+                        addedView = FormUtilities.addPictureView(noteId, this, requestCode, mainView, label, value, constraintDescription);
+                        break;
+                    case TYPE_SKETCH:
+                        addedView = FormUtilities.addSketchView(noteId, this, requestCode, mainView, label, value, constraintDescription);
+                        break;
+                    case TYPE_MAP:
+                        if (value.length() <= 0) {
+                            // need to read image
+                            File tempDir = ResourcesManager.getInstance(activity).getTempDir();
+                            File tmpImage = new File(tempDir, LibraryConstants.TMPPNGIMAGENAME);
+                            if (tmpImage.exists()) {
+                                byte[][] imageAndThumbnailFromPath = ImageUtilities.getImageAndThumbnailFromPath(tmpImage.getAbsolutePath(), 1);
+                                Date date = new Date();
+                                String mapImageName = ImageUtilities.getMapImageName(date);
+
+                                IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+                                long imageId = imageHelper.addImage(longitude, latitude, -1.0, -1.0, date.getTime(), mapImageName, imageAndThumbnailFromPath[0], imageAndThumbnailFromPath[1], noteId);
+                                value = "" + imageId;
+                            }
+                        }
+                        addedView = FormUtilities.addMapView(activity, mainView, label, value, constraintDescription);
+                        break;
+                    case TYPE_NFCUID:
+                        addedView = new GNfcUidView(this, null, requestCode, mainView, label, value, constraintDescription);
+                        break;
+                    default:
+                        GPLog.addLogEntry(this, null, null, "Type non implemented yet: " + type);
+                        break;
+                }
+                key2WidgetMap.put(key, addedView);
+                keyList.add(key);
+                requestCodes2WidgetMap.put(requestCode, addedView);
+                requestCode++;
+            }
+
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
