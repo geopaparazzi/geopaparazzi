@@ -42,8 +42,17 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 18
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
     productFlavors {
+    }
+    lintOptions {
+        abortOnError false
     }
 }
