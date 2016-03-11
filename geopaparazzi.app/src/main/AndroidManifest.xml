@@ -169,7 +169,7 @@
 
         <activity
             android:name="eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity"
-            android:label="Basemaps"
+            android:label="@string/basemaps"
             android:parentActivityName=".GeopaparazziActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -183,7 +183,7 @@
 
         <activity
             android:name=".maptools.FeaturePagerActivity"
-            android:label="Features"
+            android:label="@string/features"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -193,7 +193,7 @@
 
         <activity
             android:name=".ui.activities.GpsDataListActivity"
-            android:label="Gps Data"
+            android:label="@string/gps_data"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -203,7 +203,7 @@
 
         <activity
             android:name=".ui.activities.NotesPropertiesActivity"
-            android:label="Notes Properties"
+            android:label="@string/notes_properties_label"
             android:parentActivityName=".ui.activities.GpsDataListActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -213,7 +213,7 @@
 
         <activity
             android:name=".ui.activities.GpsLogPropertiesActivity"
-            android:label="Gps Log Properties"
+            android:label="@string/gps_log_properties_label"
             android:parentActivityName=".ui.activities.GpsDataListActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -227,7 +227,7 @@
 
         <activity
             android:name=".ui.activities.BookmarksListActivity"
-            android:label="Bookmarks List"
+            android:label="@string/bookmarks_list_label"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -237,7 +237,7 @@
 
         <activity
             android:name=".ui.activities.NotesListActivity"
-            android:label="Notes List"
+            android:label="@string/notes_list_label"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -247,7 +247,7 @@
 
         <activity
             android:name=".ui.activities.AddNotesActivity"
-            android:label="Add Notes"
+            android:label="@string/add_notes_label"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -261,7 +261,7 @@
 
         <activity
             android:name="eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity"
-            android:label="Spatialite Databases"
+            android:label="@string/spatialite_databases"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -271,7 +271,7 @@
 
         <activity
             android:name="eu.geopaparazzi.library.core.activities.GeocodeActivity"
-            android:label="Geocoding"
+            android:label="@string/geocoding_label"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -281,7 +281,7 @@
 
         <activity
             android:name=".ui.activities.ImportMapsforgeActivity"
-            android:label="Extract Mapsforge Data"
+            android:label="@string/extract_mapsforge_label"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -291,7 +291,7 @@
 
         <activity
             android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity"
-            android:label="Editable Layers"
+            android:label="@string/editable_layers"
             android:parentActivityName=".mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -301,7 +301,7 @@
 
         <activity
             android:name="eu.geopaparazzi.library.forms.FormActivity"
-            android:label="Form Data"
+            android:label="@string/form_data"
             android:parentActivityName=".ui.activities.AddNotesActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data

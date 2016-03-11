@@ -355,5 +355,18 @@
     <string name="path_lc">path</string>
     <string name="select_sort_mode">Select sort mode</string>
     <string name="no_editable_layer_set">No editable layer found.</string>
+    <string name="basemaps">Basemaps</string>
+    <string name="features">Features</string>
+    <string name="gps_data">Gps Data</string>
+    <string name="notes_properties_label">Notes Properties</string>
+    <string name="gps_log_properties_label">Gps Log Properties</string>
+    <string name="bookmarks_list_label">Bookmarks List</string>
+    <string name="notes_list_label">Notes List</string>
+    <string name="add_notes_label">Add Notes</string>
+    <string name="spatialite_databases">Spatialite Databases</string>
+    <string name="geocoding_label">Geocoding</string>
+    <string name="extract_mapsforge_label">Extract Mapsforge Data</string>
+    <string name="editable_layers">Editable Layers</string>
+    <string name="form_data">Form Data</string>
 
 </resources>
