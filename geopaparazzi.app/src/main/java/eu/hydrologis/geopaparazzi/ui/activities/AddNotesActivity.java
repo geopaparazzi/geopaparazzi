@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
@@ -57,10 +58,12 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -240,20 +243,20 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             intent.putExtra(LibraryConstants.ELEVATION, elevation);
 
             AddNotesActivity.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
+        } else if (item.getItemId() == R.id.action_simplesketch) {
+            try {
+                checkPositionCoordinates();
+                java.util.Date currentDate = new java.util.Date();
+                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
+                File tempFolder = ResourcesManager.getInstance(AddNotesActivity.this).getTempDir();
+                File newImageFile = new File(tempFolder, "SKETCH_" + currentDatestring + ".png");
+
+                double[] gpsLocation = new double[]{longitude, latitude, elevation};
+                MarkersUtilities.launchForResult(AddNotesActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+            } catch (Exception e) {
+                GPLog.error(AddNotesActivity.this, null, e);
+            }
         }
-        // TODO check if sketch makes it back
-//        try {
-//            checkPositionCoordinates();
-//            java.util.Date currentDate = new java.util.Date();
-//            String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-//            File tempFolder = ResourcesManager.getInstance(AddNotesActivity.this).getTempDir();
-//            File newImageFile = new File(tempFolder, "SKETCH_" + currentDatestring + ".png");
-//
-//            double[] gpsLocation = new double[]{longitude, latitude, elevation};
-//            MarkersUtilities.launchForResult(AddNotesActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
-//        } catch (Exception e) {
-//            GPLog.error(AddNotesActivity.this, null, e);
-//        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -25,13 +25,20 @@
         android:id="@+id/action_simplenote"
         android:icon="@drawable/ic_note_24dp"
         android:orderInCategory="10"
-        android:title="Simple Note"
+        android:title="@string/menu_simple_note"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_simplepicture"
         android:icon="@drawable/ic_image_24dp"
         android:orderInCategory="20"
-        android:title="Simple Picture"
+        android:title="@string/menu_simple_picture"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_simplesketch"
+        android:icon="@drawable/ic_sketch_24dp"
+        android:orderInCategory="20"
+        android:title="@string/menu_simple_sketch"
         app:showAsAction="ifRoom" />
 </menu>
