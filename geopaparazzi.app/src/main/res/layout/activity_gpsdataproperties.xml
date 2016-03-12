@@ -99,14 +99,14 @@
 
                 <TableLayout
                     android:id="@+id/optionsLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:layout_below="@+id/gpslog_refreshLogLength"
                     android:orientation="vertical">
 
                     <TableRow
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1">
