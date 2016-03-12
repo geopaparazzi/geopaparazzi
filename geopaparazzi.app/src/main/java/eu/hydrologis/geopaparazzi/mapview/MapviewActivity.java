@@ -129,6 +129,7 @@ import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
+import eu.hydrologis.geopaparazzi.maptools.tools.ViewingConeTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
@@ -327,6 +328,9 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         final ImageButton toggleLogInfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
+
+        final ImageButton toggleviewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
+        toggleviewingconeButton.setOnClickListener(this);
 
         final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
@@ -1154,6 +1158,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         boolean isInNonClickableMode;
         ImageButton toggleMeasuremodeButton;
         ImageButton toggleLoginfoButton;
+        ImageButton toggleViewingconeButton;
         switch (v.getId()) {
             case R.id.menu_map_button:
                 FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menu_map_button);
@@ -1223,9 +1228,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 isInNonClickableMode = !mMapView.isClickable();
                 toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
                 toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
+                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
                 if (!isInNonClickableMode) {
                     toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_on);
                     toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                     TapMeasureTool measureTool = new TapMeasureTool(mMapView);
                     EditManager.INSTANCE.setActiveTool(measureTool);
@@ -1239,18 +1246,44 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 isInNonClickableMode = !mMapView.isClickable();
                 toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
                 toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
                 if (!isInNonClickableMode) {
                     toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_on);
                     toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
+                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                     try {
                         GpsLogInfoTool measureTool = new GpsLogInfoTool(mMapView);
                         EditManager.INSTANCE.setActiveTool(measureTool);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         GPLog.error(this, null, e);
                     }
                 } else {
                     toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                    EditManager.INSTANCE.setActiveTool(null);
+                }
+                break;
+            case R.id.toggleviewingconebutton:
+                if (lastGpsPosition != null) {
+                    setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
+                }
+                isInNonClickableMode = !mMapView.isClickable();
+                toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
+                toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
+                if (!isInNonClickableMode) {
+                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_on);
+                    toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
+
+                    try {
+                        ViewingConeTool viewingConeTool = new ViewingConeTool(mMapView, this);
+                        EditManager.INSTANCE.setActiveTool(viewingConeTool);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                    }
+                } else {
+                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
                     EditManager.INSTANCE.setActiveTool(null);
                 }
                 break;
@@ -1268,7 +1301,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-            if (editLayer==null){
+            if (editLayer == null) {
                 GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
                 return;
             }

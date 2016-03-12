@@ -52,16 +52,11 @@ import static java.lang.Math.round;
  */
 public class ViewingConeTool extends MapTool implements SensorEventListener {
     private final Paint conePaint = new Paint();
-    private final OrientationSensor orientationSensor;
+    private OrientationSensor orientationSensor;
     private Path conePath = new Path();
 
-    private float lastX = -1;
-    private float lastY = -1;
-
-    private final Point tmpP = new Point();
-
-    private final Rect rect = new Rect();
-    private final SensorManager sensorManager;
+    private SensorManager sensorManager;
+    private Activity activity;
 
 
     /**
@@ -71,13 +66,8 @@ public class ViewingConeTool extends MapTool implements SensorEventListener {
      */
     public ViewingConeTool(MapView mapView, Activity activity) {
         super(mapView);
+        this.activity = activity;
 
-        sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-        orientationSensor = new OrientationSensor(sensorManager, null);
-        orientationSensor.register(activity, SensorManager.SENSOR_DELAY_NORMAL);
-
-        Sensor sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
@@ -92,60 +82,93 @@ public class ViewingConeTool extends MapTool implements SensorEventListener {
     public void activate() {
         if (mapView != null)
             mapView.setClickable(false);
+
+        sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+        orientationSensor = new OrientationSensor(sensorManager, null);
+        orientationSensor.register(activity, SensorManager.SENSOR_DELAY_NORMAL);
+
+        Sensor sensorGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        sensorManager.registerListener(this, sensorGravity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public void onToolDraw(Canvas canvas) {
 
-        double delta = 10;
+        double delta = 5;
         double azimuth = orientationSensor.getAzimuthDegrees();
 
         int cWidth = canvas.getWidth();
         int cHeight = canvas.getHeight();
+        int halfX = cWidth / 2;
         int halfY = cHeight / 2;
-        conePath.moveTo(cWidth / 2, halfY);
+        conePath.reset();
+        conePath.moveTo(halfX, halfY);
+
 
         double az1 = azimuth - delta;
+        if (az1 < 0) az1 = 360 + az1;
+        double az2 = azimuth + delta;
+        if (az2 > 360) az2 = az2 - 360;
 
-        double x1;
-        double y1;
-        if (az1 > 0 && az1 <= 90) {
-            x1 = halfY * Math.atan(Math.toRadians(az1));
-            y1 = 0;
-        } else if (az1 > 90 && az1 <= 180) {
-            az1 = az1-90;
+//        GPLog.addLogEntry(this, "1: " + halfX + "/" + halfY);
+//        GPLog.addLogEntry(this, "ang: " + az1 + "/" + az2);
 
-            x1 = halfY * Math.atan(Math.toRadians(az1));
-            y1 = 0;
-        }
+        moveToXYByAngle(cWidth, cHeight, halfX, halfY, az1);
+        moveToXYByAngle(cWidth, cHeight, halfX, halfY, az2);
+        conePath.lineTo(halfX, halfY);
 
-        // RectF retfF = new RectF();
-        // conePath.computeBounds(retfF, true);
-        // GPLog.androidLog(-1, "DRAWINFOLINE: " + retfF);
         canvas.drawPath(conePath, conePaint);
-//        int upper = 70;
-//        int delta = 5;
-//        measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
-//        int textWidth = rect.width();
-//        int textHeight = rect.height();
-//        int x = cWidth / 2 - textWidth / 2;
-//        canvas.drawText(distanceString, x, upper, measureTextPaint);
-//        textBuilder.setLength(0);
-//        if (doImperial) {
-//            double distanceInFeet = MercatorUtils.toFeet(measuredDistance);
-//            textBuilder.append(String.valueOf((int) distanceInFeet));
-//            textBuilder.append(" ft"); //$NON-NLS-1$
-//        } else {
-//            textBuilder.append(String.valueOf((int) measuredDistance));
-//            textBuilder.append(" m"); //$NON-NLS-1$
-//        }
-//        String distanceText = textBuilder.toString();
-//        measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
-//        textWidth = rect.width();
-//        x = cWidth / 2 - textWidth / 2;
-//        canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
-//        if (GPLog.LOG_HEAVY)
-//            GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
+    }
 
+    private void moveToXYByAngle(int cWidth, int cHeight, int halfX, int halfY, double az) {
+        float x = 0;
+        float y = 0;
+        if (az > 0 && az < 90) {
+            x = halfX + (float) (halfY * Math.tan(Math.toRadians(az)));
+            y = 0;
+            if (x > cWidth) {
+                y = halfY * (x - halfX) / x;
+                x = cWidth;
+            }
+        } else if (az > 90 && az < 180) {
+            az = az - 90;
+            x = halfX + (float) (halfY / Math.tan(Math.toRadians(az)));
+            y = cHeight;
+
+            if (x > cWidth) {
+                y = cHeight - halfY * (x - halfX) / x;
+                x = cWidth;
+            }
+        } else if (az > 180 && az < 270) {
+            az = az - 180;
+            x = halfX - (float) (halfY * Math.tan(Math.toRadians(az)));
+            y = cHeight;
+            if (x < 0) {
+                y = cHeight - halfY * (-x) / (-x + halfX);
+                x = 0;
+            }
+        } else if (az > 270 && az < 360) {
+            az = az - 270;
+            x = halfX - (float) (halfY / Math.tan(Math.toRadians(az)));
+            y = 0;
+            if (x < 0) {
+                y = halfY * (-x) / (-x + halfX);
+                x = 0;
+            }
+        } else if (az == 90) {
+            x = cWidth;
+            y = halfY;
+        } else if (az == 180) {
+            x = halfX;
+            y = cHeight;
+        } else if (az == 270) {
+            x = 0;
+            y = halfY;
+        } else if (az == 0) {
+            x = halfX;
+            y = 0;
+        }
+        conePath.lineTo(x, y);
+//        GPLog.addLogEntry(this, "2: " + x + "/" + y);
     }
 
     public boolean onToolTouchEvent(MotionEvent event) {
@@ -162,6 +185,7 @@ public class ViewingConeTool extends MapTool implements SensorEventListener {
             mapView = null;
         }
         conePath = null;
+        activity = null;
     }
 
     @Override
