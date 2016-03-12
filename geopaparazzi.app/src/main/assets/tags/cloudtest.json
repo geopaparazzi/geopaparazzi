@@ -1,0 +1,39 @@
+[
+    {
+        "status": "1",
+        "error": {
+            "errcode": "0",
+            "errortype": "http... sys...",
+            "errmsg": "",
+            "errdata": []
+        }
+    },
+    {
+        "projects": [
+            {
+                "id": "1",
+                "title": "progetto 1",
+                "date": "2012-02-12 00:00",
+                "author": "Andrea",
+                "name": "geopaparazzi_2011_01",
+                "size": "12384"
+            },
+            {
+                "id": "2",
+                "title": "progetto val di qua",
+                "date": "2012-01-12 00:00",
+                "author": "Giovanni",
+                "name": "geopaparazzi_testgio",
+                "size": "3456"
+            },
+            {
+                "id": "4",
+                "title": "progetto val di la",
+                "date": "2012-03-12 00:00",
+                "author": "Giovanni",
+                "name": "geopaparazzi",
+                "size": "8764"
+            }
+        ]
+    }
+]

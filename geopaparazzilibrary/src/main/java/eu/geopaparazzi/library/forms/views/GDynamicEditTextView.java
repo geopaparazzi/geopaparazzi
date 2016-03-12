@@ -108,11 +108,12 @@ public class GDynamicEditTextView extends View implements GView {
             addSingleEditText(context, mainLayout, singleValue.trim(), readonly, type);
         }
 
+        float minTouch = context.getResources().getDimension(R.dimen.min_touch_size);
         addTextButton = new Button(context);
-        addTextButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addTextButton.setLayoutParams(new LinearLayout.LayoutParams((int) minTouch, (int) minTouch));
         addTextButton.setPadding(5, 5, 5, 5);
 //        addTextButton.setText("+");
-        addTextButton.setBackground(Compat.getDrawable(context, android.R.drawable.ic_menu_add));
+        addTextButton.setBackground(Compat.getDrawable(context, R.drawable.ic_add_primary_24dp));
         mainLayout.addView(addTextButton);
 
         addTextButton.setOnClickListener(new OnClickListener() {
