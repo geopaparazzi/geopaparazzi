@@ -402,9 +402,9 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
 
                 double timeSeconds = (time - previousTime) / 1000.0;
-                double speed = Math.sqrt(diff * diff + distance * distance) / timeSeconds;
+                double speedKmH = 3.6 * Math.sqrt(diff * diff + distance * distance) / timeSeconds;
 
-                yList2.add(speed);
+                yList2.add(speedKmH);
             } else {
                 yList2.add(0.0);
             }
@@ -422,7 +422,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
         // Setup the Series
         seriesElev = new SimpleXYSeries(xList1, yList1, "Elev [m]");
-        seriesSpeed = new SimpleXYSeries(xList1, yList2, "Speed [m/s]");
+        seriesSpeed = new SimpleXYSeries(xList1, yList2, "Speed [km/h]");
     }
 
     // Definition of the touch states
