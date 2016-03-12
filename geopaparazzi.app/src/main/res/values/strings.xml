@@ -371,5 +371,6 @@
     <string name="menu_simple_note">Simple Note</string>
     <string name="menu_simple_picture">Simple Picture</string>
     <string name="menu_simple_sketch">Simple Sketch</string>
+    <string name="warning_viewcone_gps">This tool works only if a GPS position is available.</string>
 
 </resources>

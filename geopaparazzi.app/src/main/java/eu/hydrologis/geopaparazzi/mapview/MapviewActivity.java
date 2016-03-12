@@ -1266,25 +1266,28 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             case R.id.toggleviewingconebutton:
                 if (lastGpsPosition != null) {
                     setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
-                }
-                isInNonClickableMode = !mMapView.isClickable();
-                toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
-                toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
-                if (!isInNonClickableMode) {
-                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_on);
-                    toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
 
-                    try {
-                        ViewingConeTool viewingConeTool = new ViewingConeTool(mMapView, this);
-                        EditManager.INSTANCE.setActiveTool(viewingConeTool);
-                    } catch (Exception e) {
-                        GPLog.error(this, null, e);
+                    isInNonClickableMode = !mMapView.isClickable();
+                    toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
+                    toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+                    toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
+                    if (!isInNonClickableMode) {
+                        toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_on);
+                        toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                        toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
+
+                        try {
+                            ViewingConeTool viewingConeTool = new ViewingConeTool(mMapView, this);
+                            EditManager.INSTANCE.setActiveTool(viewingConeTool);
+                        } catch (Exception e) {
+                            GPLog.error(this, null, e);
+                        }
+                    } else {
+                        toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
+                        EditManager.INSTANCE.setActiveTool(null);
                     }
-                } else {
-                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-                    EditManager.INSTANCE.setActiveTool(null);
+                }else{
+                    GPDialogs.warningDialog(this,getString(R.string.warning_viewcone_gps) ,null);
                 }
                 break;
             case R.id.toggleEditingButton:
