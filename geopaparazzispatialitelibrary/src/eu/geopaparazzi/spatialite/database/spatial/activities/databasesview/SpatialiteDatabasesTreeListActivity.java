@@ -178,7 +178,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                         if (SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file)) {
                                             spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
                                         } else {
-                                            return getString(R.string.selected_file_no_vector_data);
+                                            return getString(R.string.selected_file_no_vector_data) + file.getAbsolutePath();
                                         }
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);
