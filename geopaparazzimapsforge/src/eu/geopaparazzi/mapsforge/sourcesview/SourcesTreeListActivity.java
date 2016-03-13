@@ -189,7 +189,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                         if (BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(finalFile)) {
                                             baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                                         } else {
-                                            GPDialogs.warningDialog(SourcesTreeListActivity.this, "The selected file is not supported as basemap: " + finalFile, null);
+                                            return getString(R.string.selected_file_no_basemap) + finalFile;
                                         }
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);
@@ -211,7 +211,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                     }
                                 }
                             };
-                            task.setProgressDialog("", "Adding new source...", false, null);
+                            task.setProgressDialog("", getString(R.string.adding_new_source), false, null);
                             task.execute();
                         }
                     } catch (Exception e) {

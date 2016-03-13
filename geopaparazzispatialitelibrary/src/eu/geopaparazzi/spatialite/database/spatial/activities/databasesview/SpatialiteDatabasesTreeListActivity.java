@@ -236,7 +236,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 
         boolean log = GPLog.LOG;
         if (log) {
-            GPLog.addLogEntry(this, "Available baseMaps:");
+            GPLog.addLogEntry(this, "Available spatialitemaps:");
             for (SpatialiteMap tmpSpatialiteMap : spatialiteMaps) {
                 GPLog.addLogEntry(this, tmpSpatialiteMap.toString());
             }
@@ -261,7 +261,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                 doAdd = true;
             }
             if (log) {
-                GPLog.addLogEntry(this, "doAdd: " + doAdd + " baseMap: " + spatialiteMap);
+                GPLog.addLogEntry(this, "doAdd: " + doAdd + " spatialiteMap: " + spatialiteMap);
             }
 
             if (mTextToFilter.length() > 0) {
