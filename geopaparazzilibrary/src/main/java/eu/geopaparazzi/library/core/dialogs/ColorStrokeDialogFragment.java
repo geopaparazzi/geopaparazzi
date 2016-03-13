@@ -203,11 +203,11 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             handlingFillColor = mCurrentColorStrokeObject.hasFill;
             String title = "";
             if (mCurrentColorStrokeObject.hasFill && mCurrentColorStrokeObject.hasStroke) {
-                title = "Fill and Stroke color";
+                title = getActivity().getString(R.string.fill_and_stroke_color_title);
             } else if (mCurrentColorStrokeObject.hasFill) {
-                title = "Fill color";
+                title = getActivity().getString(R.string.fill_color_title);
             } else {
-                title = "Stroke color";
+                title = getActivity().getString(R.string.stroke_color_title);
             }
             title2.setText(title);
 

@@ -175,8 +175,11 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                 protected String doBackgroundWork() {
                                     try {
                                         // add basemap to list and in mPreferences
-                                        SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file);
-                                        spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+                                        if (SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file)) {
+                                            spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+                                        } else {
+                                            return getString(R.string.selected_file_no_vector_data);
+                                        }
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);
                                         return "ERROR: " + e.getLocalizedMessage();
@@ -197,7 +200,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                     }
                                 }
                             };
-                            task.setProgressDialog("", "Adding new source...", false, null);
+                            task.setProgressDialog("", getString(R.string.adding_new_source), false, null);
                             task.execute();
                         }
                     } catch (Exception e) {

@@ -70,11 +70,6 @@
     <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
     <string name="activate_nfc">Please activate NFC and press Back to return to the application!</string>
     <string name="unable_to_read_tag_id">Unable to read tag id</string>
-    <string name="stroke_color">Stroke color        </string>
-    <string name="width">Stroke width</string>
-    <string name="alpha">Stroke alpha</string>
-    <string name="fill_color">Fill color</string>
-    <string name="fill_alpha">Fill alpha</string>
     <string name="point_shape_">Point shape     </string>
     <string name="point_size">Point size</string>
     <string name="decimation">Decimation</string>
@@ -106,5 +101,13 @@
     <string name="label_field">Label field</string>
     <string name="set_properties">Set properties</string>
     <string name="unauthorized_api_key">Unauthorized access. Check you API-key.</string>
+
+    <string name="fill_and_stroke_color_title">Fill and Stroke color</string>
+    <string name="fill_color_title">Fill color</string>
+    <string name="fill_alpha_title">Fill alpha</string>
+    <string name="stroke_color_title">Stroke color</string>
+    <string name="stroke_width_title">Stroke width</string>
+    <string name="stroke_alpha_title">Stroke alpha</string>
+
 
 </resources>

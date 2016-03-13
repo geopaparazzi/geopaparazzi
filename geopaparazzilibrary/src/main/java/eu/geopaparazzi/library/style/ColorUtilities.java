@@ -100,7 +100,8 @@ public enum ColorUtilities {
                 return toColor(hex);
             }
         }
-        color = Color.parseColor(BLUE_GREY.hex);
+        if (color == null)
+            color = Color.parseColor(BLUE_GREY.hex);
         return color;
     }
 
