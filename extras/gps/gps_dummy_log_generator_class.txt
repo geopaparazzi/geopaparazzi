@@ -1,0 +1,32 @@
+/*
+ * the following java code snipped extracts points from a shapefile
+ * and prints them out as needed by the geopaparazzi gps mock generator.
+ */
+        String in = "/home/hydrologis/development/geopaparazzi-git/extras/gps/gps_bolzano_lines.shp";
+        //        String out = "/home/hydrologis/development/geopaparazzi-git/extras/gps/gps_bolzano_points.shp";
+
+        SimpleFeatureCollection fc = getVector(in);
+        SimpleFeature feature = fc.features().next();
+        Geometry geometry = (Geometry) feature.getDefaultGeometry();
+
+        List<Coordinate> coordinates = GeometryUtilities.getCoordinatesAtInterval((LineString) geometry.getGeometryN(0), 0.0003, false, -1, -1);
+
+        Random r = new Random(2);
+        long startTime = 1372168418086l;
+        double startElev = 90.0;
+        double startSpeed = 8.0;
+        double startAccuracy = 12.0;
+        for (Coordinate coordinate : coordinates) {
+            startTime = startTime + 1000;
+            double elev = startElev + (r.nextDouble() - 1) * 5;
+            double speed = startSpeed + (r.nextDouble() - 1) * 2;
+            double accuracy = startAccuracy + (r.nextDouble() - 1) * 5;
+
+            System.out.println("sb.append(\"" + startTime + "," + coordinate.x + "," + coordinate.y + "," + elev + "," + speed + "," + (int) accuracy + "\\n\");");
+        }
+
+        //
+        //        MultiPoint multiPoint = gf.createMultiPoint(coordinates.toArray(new Coordinate[0]));
+        //        SimpleFeatureCollection outFC = FeatureUtilities.featureCollectionFromGeometry(DefaultGeographicCRS.WGS84, multiPoint);
+        //
+        //        dumpVector(outFC, out);
