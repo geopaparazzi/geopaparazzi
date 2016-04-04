@@ -430,6 +430,22 @@ public class NetworkUtilities {
     }
 
     /**
+     * Checks is the mobile network is connected.
+     *
+     * @param context the {@link Context}.
+     * @return true if the mobile network is connected.
+     */
+    public static boolean isConnectionMobile(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return false;
+        }
+        NetworkInfo networkInfo = connectivity.getNetworkInfo(ConnectivityManager.TYPE_MOBILE); // for wifi ConnectivityManager.TYPE_WIFI
+        boolean isMobileConn = networkInfo.isConnected();
+        return isMobileConn;
+    }
+
+    /**
      * Send a GET request.
      *
      * @param urlStr            the url.
