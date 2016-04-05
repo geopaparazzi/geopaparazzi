@@ -1,7 +1,19 @@
 /*
- * Copyright (C) 2011 United States Government as represented by the Administrator of the
- * National Aeronautics and Space Administration.
- * All Rights Reserved.
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package gov.nasa.worldwind.ogc;
@@ -65,7 +77,7 @@ abstract public class OGCCapabilities extends AbstractXMLEventParser {
 	 * @param namespaceURI
 	 *            the default namespace URI.
 	 * @param docSource
-	 *            the XML source. May be a filename, file, stream or other type allowed by {@link WWXML#openEventReader(Object)}.
+	 *            the XML source. May be a filename, file, stream or other type allowed by WWXML#openEventReader(Object)
 	 * @throws IllegalArgumentException
 	 *             if the document source is null.
 	 */
@@ -121,7 +133,7 @@ abstract public class OGCCapabilities extends AbstractXMLEventParser {
 	 * @param args
 	 *            optional arguments to pass to parsers of sub-elements.
 	 * @return <code>this</code> if parsing is successful, otherwise null.
-	 * @throws XMLStreamException
+	 * @throws XMLParserException
 	 *             if an exception occurs while attempting to read the event stream.
 	 */
 	public OGCCapabilities parse(Object... args) throws XMLParserException {

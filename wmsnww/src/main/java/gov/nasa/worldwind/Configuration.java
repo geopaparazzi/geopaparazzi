@@ -36,8 +36,8 @@ import java.util.*;
  * When the Configuration class is first instantiated it reads the XML document <code>config/worldwind.xml</code> and
  * registers all the information there. The information can subsequently be retrieved via the class' various
  * <code>getValue</code> methods. Many World Wind start-up objects query this information to determine the classes to
- * create. For example, the first World Wind object created by an application is typically a {@link
- * gov.nasa.worldwind.WorldWindowGLSurfaceView}. During construction that class causes World Wind's internal classes to
+ * create. For example, the first World Wind object created by an application is typically a
+ * gov.nasa.worldwind.WorldWindowGLSurfaceView During construction that class causes World Wind's internal classes to
  * be constructed, using the names of those classes drawn from the Configuration singleton, this class.
  * <p/>
  * The default World Wind configuration document is <code>config/worldwind.xml</code>. This can be changed by setting
@@ -137,7 +137,7 @@ public class Configuration // Singleton
     }
 
     protected void loadConfigDoc(String configLocation)
-    {
+    { 
         if (!WWUtil.isEmpty(configLocation))
         {
             Document doc = WWXML.openDocument(configLocation);

@@ -17,22 +17,20 @@
  */
 package gov.nasa.worldwind;
 
-import gov.nasa.worldwind.Factory;
-import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.avlist.AVList;
 import gov.nasa.worldwind.avlist.AVListImpl;
-import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
 import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 import gov.nasa.worldwind.ogc.wms.WMSLayerStyle;
 import gov.nasa.worldwind.util.WWUtil;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -61,6 +59,7 @@ import android.widget.Toast;
  */
 public class AddWMSDialog extends DialogFragment {
     private static final String TAG = "AddWMSDialog";
+    public static final String WMSURL_KEY = "WMSURL_KEY";
     private Thread downloadThread;
     LayerInfoAdapter mListViewAdapter = null;
     private ListView mListView;
@@ -68,20 +67,38 @@ public class AddWMSDialog extends DialogFragment {
     private OnAddWMSLayersListener mListener;
 
     public interface OnAddWMSLayersListener {
-        public void onAddWMSLayers(List<Layer> layersToAdd);
+        public void onAddWMSLayers(List<LayerInfo> layersToAdd);
     }
+
+
+    /**
+     * Create a dialog instance with the necessary wms url.
+     *
+     * @param wmsurl the wms url to use.
+     * @return the instance.
+     */
+    public static AddWMSDialog newInstance(String wmsurl) {
+        AddWMSDialog f = new AddWMSDialog();
+        Bundle args = new Bundle();
+        args.putString(WMSURL_KEY, wmsurl);
+        f.setArguments(args);
+        return f;
+    }
+
+    // ------------LAYER INFO UTILS
+    protected final TreeSet<LayerInfo> layerInfos = new TreeSet<LayerInfo>(new Comparator<LayerInfo>() {
+        public int compare(LayerInfo infoA, LayerInfo infoB) {
+            String nameA = infoA.getName();
+            String nameB = infoB.getName();
+            return nameA.compareTo(nameB);
+        }
+    });
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
 
-        String defaultWMSURL = WorldWindowActivity.DEFAULT_WMS_URL;
-
-        if (null != arguments) {
-            defaultWMSURL = arguments.getString("WMSURL");
-            if (null == defaultWMSURL || defaultWMSURL.trim().isEmpty())
-                defaultWMSURL = WorldWindowActivity.DEFAULT_WMS_URL;
-        }
+        String defaultWMSURL = arguments.getString(WMSURL_KEY);
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -136,17 +153,13 @@ public class AddWMSDialog extends DialogFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ArrayList<Layer> retval = new ArrayList<Layer>();
+                ArrayList<LayerInfo> retval = new ArrayList<LayerInfo>();
                 LayerInfo[] infos = mListViewAdapter.getLayerInfos();
                 for (LayerInfo info : infos) {
                     if (info.selected) {
-                        Layer layer = createLayer(info.caps, info.params);
-                        if (null != layer) {
-                            retval.add(layer);
-                        }
+                        retval.add(info);
                     }
                 }
-                Toast.makeText(getActivity(), "Created layers that will be added to worldWind: " + retval.size(), Toast.LENGTH_LONG).show();
                 if (null != mListener) {
                     mListener.onAddWMSLayers(retval);
                 }
@@ -208,34 +221,6 @@ public class AddWMSDialog extends DialogFragment {
         Log.i(TAG, "Updated listview");
     }
 
-    private Layer createLayer(WMSCapabilities caps, AVListImpl params) {
-        AVList configParams = params.copy(); // Copy to insulate changes from the caller.
-
-        // Some wms servers are slow, so increase the timeouts and limits used by world wind's retrievers.
-        configParams.setValue(AVKey.URL_CONNECT_TIMEOUT, 30000);
-        configParams.setValue(AVKey.URL_READ_TIMEOUT, 30000);
-        configParams.setValue(AVKey.RETRIEVAL_QUEUE_STALE_REQUEST_LIMIT, 60000);
-
-        try {
-            String factoryKey = AVKey.LAYER_FACTORY;
-            Factory factory = (Factory) WorldWind.createConfigurationComponent(factoryKey);
-            return (Layer) factory.createFromConfigSource(caps, params);
-        } catch (Exception e) {
-            Log.e(TAG, "Exception creating layer WMS: " + e.getMessage());
-            // Ignore the exception, and just return null.
-        }
-
-        return null;
-    }
-
-    // ------------LAYER INFO UTILS
-    protected final TreeSet<LayerInfo> layerInfos = new TreeSet<LayerInfo>(new Comparator<LayerInfo>() {
-        public int compare(LayerInfo infoA, LayerInfo infoB) {
-            String nameA = infoA.getName();
-            String nameB = infoB.getName();
-            return nameA.compareTo(nameB);
-        }
-    });
 
     protected LayerInfo createLayerInfo(WMSCapabilities caps, WMSLayerCapabilities layerCaps, WMSLayerStyle style) {
         // Create the layer info specified by the layer's capabilities entry and
