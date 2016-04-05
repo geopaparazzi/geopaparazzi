@@ -1,1 +1,1 @@
-include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib'
+include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib', ':wmsnww'

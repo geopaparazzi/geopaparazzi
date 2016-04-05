@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_add_wms_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="@drawable/view_divider"
+    android:dividerPadding="2dp"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:showDividers="middle|beginning"
+    tools:context=".dialogs.WMSListDialog" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/get_capabilities_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_get_capabilities"         
+            android:layout_centerVertical="true">
+            <requestFocus />            </Button>
+        
+        <EditText
+            android:id="@+id/wms_url_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/get_capabilities_btn"
+            android:layout_alignBaseline="@id/get_capabilities_btn"
+            android:inputType="textUri"
+            android:lines="1" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/wms_list_title"
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:layout_height="wrap_content"
+        android:text="@string/label_wms_dialog_list_title" 
+        android:textAllCaps="true"
+        />
+
+    <ListView
+        android:id="@+id/wms_layerslistview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/holo_orange_dark"
+        android:dividerHeight="1dp"
+        android:fastScrollEnabled="true" >
+
+    </ListView>
+
+</LinearLayout>
