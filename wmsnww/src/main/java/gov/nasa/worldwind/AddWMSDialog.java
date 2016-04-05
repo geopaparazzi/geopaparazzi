@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -52,7 +52,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * @author Nicola Dorigatti
@@ -64,10 +63,12 @@ public class AddWMSDialog extends DialogFragment {
     LayerInfoAdapter mListViewAdapter = null;
     private ListView mListView;
 
-    private OnAddWMSLayersListener mListener;
+    private OnWMSLayersAddedListener wmsLayersAddedListener;
+    private String baseUrl;
+    private String forcedWmsVersion;
 
-    public interface OnAddWMSLayersListener {
-        public void onAddWMSLayers(List<LayerInfo> layersToAdd);
+    public interface OnWMSLayersAddedListener {
+        void onWMSLayersAdded(String baseUrl, String forcedWmsVersion, List<LayerInfo> layersToAdd);
     }
 
 
@@ -79,9 +80,11 @@ public class AddWMSDialog extends DialogFragment {
      */
     public static AddWMSDialog newInstance(String wmsurl) {
         AddWMSDialog f = new AddWMSDialog();
-        Bundle args = new Bundle();
-        args.putString(WMSURL_KEY, wmsurl);
-        f.setArguments(args);
+        if (wmsurl != null) {
+            Bundle args = new Bundle();
+            args.putString(WMSURL_KEY, wmsurl);
+            f.setArguments(args);
+        }
         return f;
     }
 
@@ -98,7 +101,9 @@ public class AddWMSDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
 
-        String defaultWMSURL = arguments.getString(WMSURL_KEY);
+        String defaultWMSURL = "";
+        if (arguments != null)
+            defaultWMSURL = arguments.getString(WMSURL_KEY);
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -160,8 +165,8 @@ public class AddWMSDialog extends DialogFragment {
                         retval.add(info);
                     }
                 }
-                if (null != mListener) {
-                    mListener.onAddWMSLayers(retval);
+                if (null != wmsLayersAddedListener) {
+                    wmsLayersAddedListener.onWMSLayersAdded(baseUrl, forcedWmsVersion, retval);
                 }
             }
         });
@@ -179,8 +184,8 @@ public class AddWMSDialog extends DialogFragment {
         this.getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
-    public void setOnAddWMSLayersListener(OnAddWMSLayersListener listener) {
-        mListener = listener;
+    public void setOnAddWMSLayersListener(OnWMSLayersAddedListener listener) {
+        wmsLayersAddedListener = listener;
     }
 
     private void downloadCapabilities(String wmsURL) {
@@ -206,6 +211,19 @@ public class AddWMSDialog extends DialogFragment {
                         layerInfos.add(layerInfo);
                     }
                 }
+            }
+
+            String[] urlSplit = wmsURL.split("\\?");
+            if (urlSplit.length == 2) {
+                baseUrl = urlSplit[0];
+                String[] paramsSplit = urlSplit[1].split("&");
+                for (String param : paramsSplit) {
+                    if (param.toLowerCase().startsWith("version=")) {
+                        forcedWmsVersion = param.split("=")[1];
+                        break;
+                    }
+                }
+
             }
 
         } catch (Throwable t) {
@@ -273,20 +291,36 @@ public class AddWMSDialog extends DialogFragment {
         return sb.toString();
     }
 
-    protected static class LayerInfo {
-        protected WMSCapabilities caps;
-        protected AVListImpl params = new AVListImpl();
-        protected boolean selected = false;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
-        protected String getTitle() {
+        if (activity instanceof OnWMSLayersAddedListener) {
+            wmsLayersAddedListener = (OnWMSLayersAddedListener) activity;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        wmsLayersAddedListener = null;
+    }
+
+    public static class LayerInfo {
+        public WMSCapabilities caps;
+        public AVListImpl params = new AVListImpl();
+        public boolean selected = false;
+
+        public String getTitle() {
             return params.getStringValue(AVKey.DISPLAY_NAME);
         }
 
-        protected String getName() {
+        public String getName() {
             return params.getStringValue(AVKey.LAYER_NAMES);
         }
 
-        protected String getAbstract() {
+        public String getAbstract() {
             return params.getStringValue(AVKey.LAYER_ABSTRACT);
         }
     }

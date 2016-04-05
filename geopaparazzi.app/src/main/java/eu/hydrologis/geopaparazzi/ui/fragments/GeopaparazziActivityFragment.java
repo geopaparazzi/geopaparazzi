@@ -574,8 +574,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                     }
                 }
             }
-            // TODO
-//            initMapsDirManager();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
             GPDialogs.toast(getActivity(), R.string.databaseError, Toast.LENGTH_LONG);

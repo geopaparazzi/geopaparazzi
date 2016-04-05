@@ -87,6 +87,7 @@ dependencies {
     compile project(':geopaparazzispatialitelibrary')
     compile project(':geopaparazzimapsforge')
     compile project(':geopaparazzimarkerslib')
+    compile project(':wmsnww')
 }
 
 task copyNativeLibs(type: Copy) {

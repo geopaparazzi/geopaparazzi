@@ -55,19 +55,24 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.ui.activities.tantomapurls.TantoMapurlsActivity;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
 import eu.hydrologis.geopaparazzi.ui.dialogs.GpxImportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
+import gov.nasa.worldwind.AddWMSDialog;
+import gov.nasa.worldwind.ogc.OGCBoundingBox;
+import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
+import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 
 /**
  * Activity for export tasks.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportActivity extends AppCompatActivity implements IActivityStarter{
+public class ImportActivity extends AppCompatActivity implements IActivityStarter, AddWMSDialog.OnWMSLayersAddedListener {
 
     public static final int PICKFILE_REQUEST_CODE = 666;
 
@@ -137,6 +142,14 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
         defaultDatabaseImportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 importTemplateDatabase();
+            }
+        });
+
+        Button wmsImportButton = (Button) findViewById(R.id.wmsImportButton);
+        wmsImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                AddWMSDialog addWMSDialog = AddWMSDialog.newInstance(null);
+                addWMSDialog.show(getSupportFragmentManager(), "wms import");
             }
         });
     }
@@ -306,4 +319,86 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
         return this;
     }
 
+    @Override
+    public void onWMSLayersAdded(String baseurl, String forcedWmsVersion, List<AddWMSDialog.LayerInfo> layersToAdd) {
+        for (AddWMSDialog.LayerInfo li : layersToAdd) {
+            String layerName = li.getName();
+
+            StringBuilder sb = new StringBuilder();
+            String wmsversion = "1.1.1";
+
+            if (forcedWmsVersion != null) {
+                wmsversion = forcedWmsVersion;
+            } else if (li.caps.getVersion() != null) {
+                wmsversion = li.caps.getVersion();
+            }
+            WMSCapabilityInformation capabilityInformation = li.caps.getCapabilityInformation();
+//            for (String imageFormat : capabilityInformation.getImageFormats()) {
+//                if (imageFormat.toLowerCase().endsWith("png") || imageFormat.toLowerCase().endsWith("jpeg"))
+//                    sb.append("format=").append(imageFormat).append("\n");
+//                break;
+//            }
+
+
+            List<WMSLayerCapabilities> layerCapabilities = capabilityInformation.getLayerCapabilities();
+
+//            url=http://213.215.135.196/reflector/open/service?REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1&LAYERS=rv1&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
+//            mbtiles=defaulttiles/_realvista_ortofot_italy.mbtiles
+//            description=
+
+            sb.append("url=" + baseurl + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
+                    + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256\n");
+            sb.append("minzoom=1\n");
+            sb.append("maxzoom=22\n");
+            sb.append("defaultzoom=17\n");
+            sb.append("format=png\n");
+            sb.append("type=wms\n");
+            sb.append("description=").append(layerName).append("\n");
+
+
+            for (WMSLayerCapabilities layerCapability : layerCapabilities) {
+                String srs = null;
+                for (String srsString : layerCapability.getCRS()) {
+                    if (srsString.endsWith("4326")) {
+                        srs = srsString;
+                        break;
+                    }
+                }
+
+                if (srs == null) {
+                    // TODO
+                    return;
+                }
+
+                for (OGCBoundingBox bbox : layerCapability.getBoundingBoxes()) {
+                    String crs = bbox.getCRS();
+                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
+                        double centerX = bbox.getMinx() + (bbox.getMaxx() - bbox.getMinx()) / 2.0;
+                        double centerY = bbox.getMiny() + (bbox.getMaxy() - bbox.getMiny()) / 2.0;
+                        sb.append("center=").append(centerX).append(" ").append(centerY).append("\n");
+                    }
+                }
+
+            }
+
+            try {
+                File applicationSupporterDir = ResourcesManager.getInstance(this).getApplicationSupporterDir();
+                File newMapurl = new File(applicationSupporterDir, layerName + ".mapurl");
+
+                sb.append("mbtiles=defaulttiles/_" + newMapurl.getName() + ".mbtiles\n");
+
+                String mapurlText = sb.toString();
+                FileUtilities.writefile(mapurlText, newMapurl);
+
+                BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(newMapurl);
+                Button wmsImportButton = (Button) findViewById(R.id.wmsImportButton);
+                GPDialogs.quickInfo(wmsImportButton, "WMS mapurl file successfully added to the tile sources: " + newMapurl.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            break;
+        }
+
+    }
 }

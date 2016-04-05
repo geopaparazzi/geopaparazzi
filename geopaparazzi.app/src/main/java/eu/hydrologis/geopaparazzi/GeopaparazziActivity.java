@@ -30,6 +30,7 @@ import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
+import gov.nasa.worldwind.AddWMSDialog;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -53,7 +54,6 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
 
         checkIncomingProject();
 
-
         if (Build.VERSION.SDK_INT >= 23) {
             // PERMISSIONS START
             if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
@@ -71,6 +71,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             init();
 
             checkIncomingUrl();
+            checkIncomingWms();
         }
 
     }
@@ -96,6 +97,16 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(PREFS_KEY_DATABASE_TO_LOAD, path);
                 editor.apply();
+            }
+        }
+    }
+
+    private void checkIncomingWms() {
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String path = data.getEncodedPath();
+            if (path.toLowerCase().contains("getcapabilities")) {
+                AddWMSDialog.newInstance(path);
             }
         }
     }

@@ -137,7 +137,7 @@ public class Configuration // Singleton
     }
 
     protected void loadConfigDoc(String configLocation)
-    { 
+    {
         if (!WWUtil.isEmpty(configLocation))
         {
             Document doc = WWXML.openDocument(configLocation);

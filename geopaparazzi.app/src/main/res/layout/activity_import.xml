@@ -85,6 +85,12 @@
                     android:layout_width="match_parent"
                     android:text="@string/mapurls" />
 
+                <Button
+                    android:id="@+id/wmsImportButton"
+                    style="@style/GPMediumButton"
+                    android:layout_width="match_parent"
+                    android:text="WMS" />
+
             </LinearLayout>
         </ScrollView>
 
