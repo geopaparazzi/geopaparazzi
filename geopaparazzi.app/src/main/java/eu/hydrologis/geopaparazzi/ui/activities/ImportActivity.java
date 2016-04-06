@@ -333,34 +333,46 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 wmsversion = li.caps.getVersion();
             }
             WMSCapabilityInformation capabilityInformation = li.caps.getCapabilityInformation();
-//            for (String imageFormat : capabilityInformation.getImageFormats()) {
-//                if (imageFormat.toLowerCase().endsWith("png") || imageFormat.toLowerCase().endsWith("jpeg"))
-//                    sb.append("format=").append(imageFormat).append("\n");
-//                break;
-//            }
+            //            for (String imageFormat : capabilityInformation.getImageFormats()) {
+            //                if (imageFormat.toLowerCase().endsWith("png") || imageFormat.toLowerCase().endsWith("jpeg"))
+            //                    sb.append("format=").append(imageFormat).append("\n");
+            //                break;
+            //            }
 
 
             List<WMSLayerCapabilities> layerCapabilities = capabilityInformation.getLayerCapabilities();
 
-//            url=http://213.215.135.196/reflector/open/service?REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1&LAYERS=rv1&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
-//            mbtiles=defaulttiles/_realvista_ortofot_italy.mbtiles
-//            description=
-
-            sb.append("url=" + baseurl + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
-                    + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256\n");
-            sb.append("minzoom=1\n");
-            sb.append("maxzoom=22\n");
-            sb.append("defaultzoom=17\n");
-            sb.append("format=png\n");
-            sb.append("type=wms\n");
-            sb.append("description=").append(layerName).append("\n");
-
 
             for (WMSLayerCapabilities layerCapability : layerCapabilities) {
                 String srs = null;
-                for (String srsString : layerCapability.getCRS()) {
-                    if (srsString.endsWith("4326")) {
-                        srs = srsString;
+                for (String crs : layerCapability.getCRS()) {
+                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
+                        srs = crs;
+
+                        boolean doLonLat = false;
+                        if (crs.equals("CRS:84")) {
+                            doLonLat = true;
+                        } else if (crs.equals("EPSG:4326") && !wmsversion.equals("1.3.0")) {
+                            doLonLat = true;
+                        }
+
+                        String bboxStr;
+                        if (doLonLat) {
+                            bboxStr = "XXX,YYY,XXX,YYY";
+                        } else {
+                            bboxStr = "YYY,XXX,YYY,XXX";
+                        }
+                        sb.append("url=" + baseurl + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
+                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //
+                                + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");
+                        sb.append("minzoom=1\n");
+                        sb.append("maxzoom=22\n");
+                        sb.append("defaultzoom=17\n");
+                        sb.append("format=png\n");
+                        sb.append("type=wms\n");
+                        sb.append("description=").append(layerName).append("\n");
+
+
                         break;
                     }
                 }
@@ -375,7 +387,10 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                     if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
                         double centerX = bbox.getMinx() + (bbox.getMaxx() - bbox.getMinx()) / 2.0;
                         double centerY = bbox.getMiny() + (bbox.getMaxy() - bbox.getMiny()) / 2.0;
-                        sb.append("center=").append(centerX).append(" ").append(centerY).append("\n");
+                        sb.append("center=");
+                        sb.append(centerX).append(" ").append(centerY);
+                        sb.append("\n");
+
                     }
                 }
 
