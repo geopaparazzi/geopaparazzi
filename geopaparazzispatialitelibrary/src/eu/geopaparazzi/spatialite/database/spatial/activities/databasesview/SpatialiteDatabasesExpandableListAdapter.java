@@ -268,6 +268,8 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
     private void extras(SpatialiteMap spatialiteMap) {
         // TODO dash - decimation - zoomlevel visibility
+        Stroke
+
     }
 
     private void properties(SpatialiteMap spatialiteMap) {
