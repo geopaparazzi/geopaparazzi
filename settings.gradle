@@ -1,1 +1,3 @@
-include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib', ':wmsnww'
+include ':geopaparazzi.app', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib'
+include ':wms_nww'
+project(':wms_nww').projectDir=new File('../wms_nww/')
