@@ -630,13 +630,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (!spatialiteMap.isVisible) {
                     continue;
                 }
-//                if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
-//                    // we do not draw outside of the zoom levels
-//                    continue;
-//                }
                 SpatialiteDatabaseHandler spatialDatabaseHandler = spatialiteMaps2DbHandlersMap.get(spatialiteMap);
                 SpatialVectorTable spatialTable = spatialiteMaps2TablesMap.get(spatialiteMap);
                 Style style = spatialTable.getStyle();
+                if (drawZoomLevel < style.minZoom || drawZoomLevel > style.maxZoom) {
+                    // we do not draw outside of the zoom levels
+                    continue;
+                }
 
                 GeometryIterator geometryIterator = null;
                 try {

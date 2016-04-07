@@ -18,7 +18,9 @@
 package eu.geopaparazzi.spatialite.database.spatial.activities.databasesview;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -45,9 +47,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.library.core.activities.GeocodeActivity;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.ZoomlevelDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
 import eu.geopaparazzi.library.database.GPLog;
@@ -269,16 +274,37 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         popup.show();
     }
 
-    private void extras(SpatialiteMap spatialiteMap) {
-        // TODO dash - decimation - zoomlevel visibility
-        currentPropertiesEditedSpatialiteMap = spatialiteMap;
-        SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(spatialiteMap);
-        Style style = spatialVectorTable.getStyle();
+    private void extras(final SpatialiteMap spatialiteMap) {
 
-        float[] dash = Style.dashFromString(style.dashPattern);
-        float[] dashPart = Style.getDashOnly(dash);
-        StrokeDashDialogFragment strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(dashPart, Style.getDashShift(dash));
-        strokeDashDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Stroke Dash Dialog");
+        String[] items = new String[]{"Stroke Dash", "Zoomlevel visibility"};//, "Decimation"};
+
+        new AlertDialog.Builder(activity).setSingleChoiceItems(items, 0, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+
+                        currentPropertiesEditedSpatialiteMap = spatialiteMap;
+                        SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(spatialiteMap);
+                        Style style = spatialVectorTable.getStyle();
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        if (selectedPosition == 0) {
+
+                            float[] dash = Style.dashFromString(style.dashPattern);
+                            float[] dashPart = Style.getDashOnly(dash);
+                            StrokeDashDialogFragment strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(dashPart, Style.getDashShift(dash));
+                            strokeDashDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Stroke Dash Dialog");
+                        } else if (selectedPosition == 1) {
+                            int[] minMaxZoomlevel = {style.minZoom, style.maxZoom};
+                            ZoomlevelDialogFragment zoomlevelDialogFragment = ZoomlevelDialogFragment.newInstance(minMaxZoomlevel);
+                            zoomlevelDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Zoomlevel Dialog");
+                        } else if (selectedPosition == 2) {
+                            // TODO  decimation
+                        }
+
+                    }
+                }).show();
+
 
     }
 
@@ -371,6 +397,24 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
             style.labelvisible = newLabelObject.hasLabel ? 1 : 0;
             style.labelfield = newLabelObject.label;
             style.labelsize = newLabelObject.labelSize;
+
+            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);
+            try {
+                spatialiteDatabaseHandler.updateStyle(style);
+            } catch (jsqlite.Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
+    }
+
+    public void onPropertiesChanged(int minZoomlevel, int maxZoomlevel) {
+        if (currentPropertiesEditedSpatialiteMap != null) {
+            SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(currentPropertiesEditedSpatialiteMap);
+            Style style = spatialVectorTable.getStyle();
+
+            style.minZoom = minZoomlevel;
+            style.maxZoom = maxZoomlevel;
 
             HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
             SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);

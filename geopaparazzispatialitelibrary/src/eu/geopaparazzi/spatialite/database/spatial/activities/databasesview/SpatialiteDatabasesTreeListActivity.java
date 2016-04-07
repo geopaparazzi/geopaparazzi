@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.ZoomlevelDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
@@ -65,7 +66,9 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener, StrokeDashDialogFragment.IDashStrokePropertiesChangeListener {
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter,
+        LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener,
+        StrokeDashDialogFragment.IDashStrokePropertiesChangeListener, ZoomlevelDialogFragment.IZoomlevelPropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_TABLES = "showTables";
@@ -420,6 +423,12 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     public void onDashChanged(float[] dash, float shift) {
         if (expandableListAdapter != null)
             expandableListAdapter.onDashChanged(dash, shift);
+    }
+
+    @Override
+    public void onPropertiesChanged(int minZoomlevel, int maxZoomlevel) {
+        if (expandableListAdapter != null)
+            expandableListAdapter.onPropertiesChanged(minZoomlevel, maxZoomlevel);
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
