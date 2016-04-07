@@ -24,6 +24,7 @@ import android.graphics.Paint.Join;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.daos.GeopaparazziDatabas
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -280,23 +281,10 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
         paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);
 
-        String dashPattern = style.dashPattern;
-        if (dashPattern.trim().length() > 0) {
-            String[] split = dashPattern.split(",");
-            if (split.length > 1) {
-                float[] dash = new float[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    try {
-                        float tmpDash = Float.parseFloat(split[i].trim());
-                        dash[i] = tmpDash;
-                    } catch (NumberFormatException e) {
-                        // ignore and set default
-                        dash = new float[]{20f, 10f};
-                        break;
-                    }
-                }
-                paint.setPathEffect(new DashPathEffect(dash, 0));
-            }
+        float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+        if (shiftAndDash != null) {
+            float[] dash = Style.getDashOnly(shiftAndDash);
+            paint.setPathEffect(new DashPathEffect(dash, Style.getDashShift(shiftAndDash)));
         }
 
         return paint;

@@ -74,7 +74,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Spatial
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;

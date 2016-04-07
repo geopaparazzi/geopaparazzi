@@ -17,9 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.tables;
 
-import android.content.Context;
-
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,15 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import eu.geopaparazzi.library.GPApplication;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.DataType;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
-import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
 
 import static eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities.UNIQUENAME_SEPARATOR;
 

@@ -34,12 +34,65 @@
             android:layout_marginBottom="20dip"
             android:text="Dash intervals" />
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/final_dash_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginTop="0dip"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginBottom="30dip"
+            android:hint="Dash pattern"
+            android:labelFor="@+id/unitText">
+
+            <EditText
+                android:id="@+id/finalDashText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/final_dashshift_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/final_dash_view"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginTop="0dip"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginBottom="30dip"
+            android:hint="Dash shift"
+            android:labelFor="@+id/unitText">
+
+            <EditText
+                android:id="@+id/finalDashShiftText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text=""
+                android:inputType="number" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/title2"
+            style="@style/GPTitleTextViewStyle"
+            android:layout_below="@+id/final_dashshift_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dip"
+            android:text="Simple dash pattern tool" />
+
         <Switch
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/title1"
+            android:layout_below="@+id/title2"
             android:paddingBottom="10dip"
             android:paddingLeft="30dip"
             android:paddingRight="30dip"
@@ -175,30 +228,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="5" />
+                android:text="5"
+                android:inputType="number" />
 
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/final_dash_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/dash_unit_view"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginTop="0dip"
-            android:layout_marginLeft="30dip"
-            android:layout_marginRight="30dip"
-            android:hint="Used dash pattern"
-            android:labelFor="@+id/unitText">
 
-            <EditText
-                android:id="@+id/finalDashText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:text="" />
-
-        </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
 
 </ScrollView>

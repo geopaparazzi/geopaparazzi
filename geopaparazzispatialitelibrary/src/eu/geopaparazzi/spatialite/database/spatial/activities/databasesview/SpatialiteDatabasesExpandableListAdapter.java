@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,18 +47,20 @@ import java.util.Map.Entry;
 
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.LabelObject;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
 import jsqlite.Exception;
 
 /**
@@ -268,7 +271,14 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
     private void extras(SpatialiteMap spatialiteMap) {
         // TODO dash - decimation - zoomlevel visibility
-        Stroke
+        currentPropertiesEditedSpatialiteMap = spatialiteMap;
+        SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(spatialiteMap);
+        Style style = spatialVectorTable.getStyle();
+
+        float[] dash = Style.dashFromString(style.dashPattern);
+        float[] dashPart = Style.getDashOnly(dash);
+        StrokeDashDialogFragment strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(dashPart, Style.getDashShift(dash));
+        strokeDashDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Stroke Dash Dialog");
 
     }
 
@@ -361,6 +371,24 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
             style.labelvisible = newLabelObject.hasLabel ? 1 : 0;
             style.labelfield = newLabelObject.label;
             style.labelsize = newLabelObject.labelSize;
+
+            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);
+            try {
+                spatialiteDatabaseHandler.updateStyle(style);
+            } catch (jsqlite.Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
+    }
+
+
+    public void onDashChanged(float[] dash, float shift) {
+        if (currentPropertiesEditedSpatialiteMap != null) {
+            SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().get(currentPropertiesEditedSpatialiteMap);
+            Style style = spatialVectorTable.getStyle();
+
+            style.dashPattern = Style.dashToString(dash, shift);
 
             HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
             SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(currentPropertiesEditedSpatialiteMap);

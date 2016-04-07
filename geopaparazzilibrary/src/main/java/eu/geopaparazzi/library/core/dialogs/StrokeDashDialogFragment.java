@@ -25,15 +25,19 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.style.Style;
 
 /**
  * Class to set the dashing of a stroke.
@@ -45,6 +49,7 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
 
     private EditText unitText;
     private EditText finalDashText;
+    private EditText finalShiftText;
 
     /**
      * A simple interface to use to notify color and stroke changes.
@@ -54,12 +59,14 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
         /**
          * Called when there is the need to notify that a change occurred.
          */
-        void onDashChanged(float[] dash);
+        void onDashChanged(float[] dash, float shift);
     }
 
     private final static String PREFS_KEY_STROKEDASH = "PREFS_KEY_STROKEDASH";
+    private final static String PREFS_KEY_STROKEDASHSHIFT = "PREFS_KEY_STROKEDASHSHIFT";
 
     private float[] mCurrentDash;
+    private float mDashShift = 0;
 
     private IDashStrokePropertiesChangeListener iDashStrokePropertiesChangeListener;
     private Switch[] dashSwitches = new Switch[6];
@@ -71,11 +78,14 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
      * @param dash the current dash to show.
      * @return the instance.
      */
-    public static StrokeDashDialogFragment newInstance(float[] dash) {
+    public static StrokeDashDialogFragment newInstance(float[] dash, float shift) {
         StrokeDashDialogFragment f = new StrokeDashDialogFragment();
-        Bundle args = new Bundle();
-        args.putFloatArray(PREFS_KEY_STROKEDASH, dash);
-        f.setArguments(args);
+        if (dash != null) {
+            Bundle args = new Bundle();
+            args.putFloatArray(PREFS_KEY_STROKEDASH, dash);
+            args.putFloat(PREFS_KEY_STROKEDASHSHIFT, shift);
+            f.setArguments(args);
+        }
         return f;
     }
 
@@ -90,6 +100,7 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
             if (mInitialDash != null) {
                 mCurrentDash = mInitialDash;
             }
+            mDashShift = arguments.getFloat(PREFS_KEY_STROKEDASHSHIFT);
         }
     }
 
@@ -124,18 +135,18 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
 
         unitText = (EditText) dashStrokeDialogView.findViewById(R.id.unitText);
         finalDashText = (EditText) dashStrokeDialogView.findViewById(R.id.finalDashText);
+        finalShiftText = (EditText) dashStrokeDialogView.findViewById(R.id.finalDashShiftText);
         if (mCurrentDash != null) {
-            String dashStr = Arrays.toString(mCurrentDash);
+            String dashStr = Style.dashToString(mCurrentDash, null);
             finalDashText.setText(dashStr);
+            finalShiftText.setText(mDashShift + "");
         }
 
-        paintDash(5);
-
-        builder.setPositiveButton(R.string.set_properties,
+        builder.setPositiveButton(R.string.set_dash,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (iDashStrokePropertiesChangeListener != null) {
-                            iDashStrokePropertiesChangeListener.onDashChanged(mCurrentDash);
+                            iDashStrokePropertiesChangeListener.onDashChanged(mCurrentDash, mDashShift);
                         }
                     }
                 }
@@ -151,18 +162,52 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
     }
 
     private void paintDash(int unit) {
-        mCurrentDash = new float[dashSwitches.length];
+        // first check if one is checked
+        boolean firstChecked = dashSwitches[0].isChecked();
+        if (firstChecked) {
+            mDashShift = 0;
+        } else {
+            mDashShift = unit;
+        }
+
+        boolean oneChecked = false;
+        for (Switch dashSwitch : dashSwitches) {
+            if (dashSwitch.isChecked()) {
+                oneChecked = true;
+                break;
+            }
+        }
+
+        List<Float> dashList = new ArrayList<>(dashSwitches.length);
+        float count = 1;
+        int length = dashSwitches.length - 1;
+        for (int i = 0; i < length; i++) {
+            if (dashSwitches[i].isChecked() && dashSwitches[i + 1].isChecked()) {
+                count++;
+            } else if (!dashSwitches[i].isChecked() && !dashSwitches[i + 1].isChecked()) {
+                count++;
+            } else {
+                dashList.add(count * unit);
+                count = 1;
+            }
+        }
+        dashList.add(count * unit);
+
+        mCurrentDash = new float[dashList.size()];
+        for (int i = 0; i < dashList.size(); i++) {
+            mCurrentDash[i] = dashList.get(i);
+        }
+
         for (int i = 0; i < dashSwitches.length; i++) {
             if (dashSwitches[i].isChecked()) {
                 dashImages[i].setBackgroundColor(Color.BLACK);
-                mCurrentDash[i] = unit;
             } else {
                 dashImages[i].setBackgroundColor(Color.WHITE);
-                mCurrentDash[i] = 0;
             }
         }
-        String dashStr = Arrays.toString(mCurrentDash);
+        String dashStr = Style.dashToString(mCurrentDash, null);
         finalDashText.setText(dashStr);
+        finalShiftText.setText("" + mDashShift);
     }
 
     @Override
@@ -193,5 +238,4 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
         }
         paintDash(unit);
     }
-
 }

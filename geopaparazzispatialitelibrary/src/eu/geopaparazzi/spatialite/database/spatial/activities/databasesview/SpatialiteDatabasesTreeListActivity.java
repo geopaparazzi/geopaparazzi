@@ -47,6 +47,7 @@ import java.util.List;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
+import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
@@ -64,7 +65,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter, LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener, StrokeDashDialogFragment.IDashStrokePropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
 
     public static final String SHOW_TABLES = "showTables";
@@ -415,6 +416,12 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
             expandableListAdapter.onPropertiesChanged(newLabelObject);
     }
 
+    @Override
+    public void onDashChanged(float[] dash, float shift) {
+        if (expandableListAdapter != null)
+            expandableListAdapter.onDashChanged(dash, shift);
+    }
+
     private TextWatcher filterTextWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
@@ -439,4 +446,6 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     public Context getContext() {
         return this;
     }
+
+
 }
