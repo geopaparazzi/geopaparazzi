@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -148,6 +149,11 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
         Button wmsImportButton = (Button) findViewById(R.id.wmsImportButton);
         wmsImportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
+                final ImportActivity context = ImportActivity.this;
+                if (!NetworkUtilities.isNetworkAvailable(context)) {
+                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
+                    return;
+                }
                 AddWMSDialog addWMSDialog = AddWMSDialog.newInstance(null);
                 addWMSDialog.show(getSupportFragmentManager(), "wms import");
             }
@@ -345,7 +351,11 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
             for (WMSLayerCapabilities layerCapability : layerCapabilities) {
                 String srs = null;
-                for (String crs : layerCapability.getCRS()) {
+                Set<String> crsList = layerCapability.getCRS();
+                if (crsList.size() == 0) {
+                    crsList = layerCapability.getSRS();
+                }
+                for (String crs : crsList) {
                     if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
                         srs = crs;
 
