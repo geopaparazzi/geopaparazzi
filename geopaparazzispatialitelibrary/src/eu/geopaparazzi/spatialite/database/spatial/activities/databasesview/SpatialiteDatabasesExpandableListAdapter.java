@@ -291,8 +291,13 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
                         if (selectedPosition == 0) {
 
                             float[] dash = Style.dashFromString(style.dashPattern);
-                            float[] dashPart = Style.getDashOnly(dash);
-                            StrokeDashDialogFragment strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(dashPart, Style.getDashShift(dash));
+                            StrokeDashDialogFragment strokeDashDialogFragment;
+                            if (dash != null && dash.length > 2) {
+                                float[] dashPart = Style.getDashOnly(dash);
+                                strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(dashPart, Style.getDashShift(dash));
+                            } else {
+                                strokeDashDialogFragment = StrokeDashDialogFragment.newInstance(null, 0);
+                            }
                             strokeDashDialogFragment.show(((AppCompatActivity) activity).getSupportFragmentManager(), "Stroke Dash Dialog");
                         } else if (selectedPosition == 1) {
                             int[] minMaxZoomlevel = {style.minZoom, style.maxZoom};

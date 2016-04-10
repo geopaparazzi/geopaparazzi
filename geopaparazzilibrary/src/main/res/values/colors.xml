@@ -46,4 +46,6 @@
     <!-- others colors -->
     <color name="tanto_blue">#27547e</color>
 
+    <color name="transparent_white">#BFFFFFFF</color>
+
 </resources>

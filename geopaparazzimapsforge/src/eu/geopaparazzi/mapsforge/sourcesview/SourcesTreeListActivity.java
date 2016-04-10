@@ -125,7 +125,6 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
             RelativeLayout mainView = (RelativeLayout) findViewById(R.id.sources_list_mainview);
             int color = ColorUtilities.toColor(ProfilesHandler.INSTANCE.getActiveProfile().color);
             mainView.setBackgroundColor(color);
-//            mExpListView.setBackgroundColor(color);
 
             FloatingActionButton addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
             addSourceButton.hide();
@@ -343,52 +342,53 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
             }
         });
 
-        mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // When clicked on child, function longClick is executed
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+        if (ProfilesHandler.INSTANCE.getActiveProfile() == null)
+            mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    // When clicked on child, function longClick is executed
+                    if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                        int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                        int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-                    int index = 0;
-                    for (String group : newMap.keySet()) {
-                        if (index == groupPosition) {
-                            List<BaseMap> baseMapList = newMap.get(group);
-                            final BaseMap baseMap = baseMapList.get(childPosition);
+                        int index = 0;
+                        for (String group : newMap.keySet()) {
+                            if (index == groupPosition) {
+                                List<BaseMap> baseMapList = newMap.get(group);
+                                final BaseMap baseMap = baseMapList.get(childPosition);
 
-                            GPDialogs.yesNoMessageDialog(SourcesTreeListActivity.this, String.format(getString(R.string.remove_from_list), baseMap.title), new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        BaseMapSourcesManager.INSTANCE.removeBaseMap(baseMap);
-                                    } catch (JSONException e) {
-                                        GPLog.error(this, null, e);
-                                    }
-
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
-                                            } catch (Exception e) {
-                                                GPLog.error(this, null, e);
-                                            }
+                                GPDialogs.yesNoMessageDialog(SourcesTreeListActivity.this, String.format(getString(R.string.remove_from_list), baseMap.title), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            BaseMapSourcesManager.INSTANCE.removeBaseMap(baseMap);
+                                        } catch (JSONException e) {
+                                            GPLog.error(this, null, e);
                                         }
-                                    });
 
-                                }
-                            }, null);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
+                                                } catch (Exception e) {
+                                                    GPLog.error(this, null, e);
+                                                }
+                                            }
+                                        });
 
-                            return true;
+                                    }
+                                }, null);
+
+                                return true;
+                            }
+                            index++;
                         }
-                        index++;
+                        return true;
                     }
-                    return true;
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
         int groupCount = listAdapter.getGroupCount();
         for (int i = 0; i < groupCount; i++) {

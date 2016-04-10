@@ -3,6 +3,8 @@
     android:id="@+id/sessions_header_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/transparent_white"
+    android:cacheColorHint="@color/transparent_white"
     android:padding="10dip">
 
     <ImageView

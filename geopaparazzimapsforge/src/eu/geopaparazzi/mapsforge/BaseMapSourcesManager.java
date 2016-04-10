@@ -340,7 +340,12 @@ public enum BaseMapSourcesManager {
      */
     public AbstractSpatialTable getSelectedBaseMapTable() {
         if (selectedBaseMapTable == null) {
-            selectedBaseMapTable = mBaseMaps2TablesMap.values().iterator().next();
+            BaseMap baseMap = mBaseMaps2TablesMap.keySet().iterator().next();
+            try {
+                setSelectedBaseMap(baseMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return selectedBaseMapTable;
     }

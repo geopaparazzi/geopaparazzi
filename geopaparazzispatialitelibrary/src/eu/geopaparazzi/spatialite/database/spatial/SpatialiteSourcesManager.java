@@ -34,9 +34,11 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -103,6 +105,13 @@ public enum SpatialiteSourcesManager {
         return Collections.emptyList();
     }
 
+
+    public void forceSpatialitemapsreRead() {
+        mSpatialiteMaps = null;
+        mReReadBasemaps = true;
+    }
+
+
     /**
      * Reads the maps from preferences and extracts the tables necessary.
      *
@@ -112,8 +121,22 @@ public enum SpatialiteSourcesManager {
         mSpatialiteMaps2TablesMap.clear();
         clearHandlers();
 
-        String baseMapsJson = mPreferences.getString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, "");
-        List<SpatialiteMap> spatialiteMaps = SpatialiteMap.fromJsonString(baseMapsJson);
+        List<SpatialiteMap> spatialiteMaps;
+        if (ProfilesHandler.INSTANCE.getActiveProfile() == null) {
+            String baseMapsJson = mPreferences.getString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, "");
+            spatialiteMaps = SpatialiteMap.fromJsonString(baseMapsJson);
+        } else {
+            if (mSpatialiteMaps != null)
+                mSpatialiteMaps.clear();
+            List<String> dbPaths = ProfilesHandler.INSTANCE.getActiveProfile().spatialiteList;
+            for (String path : dbPaths) {
+                File file = new File(path);
+                if (file.exists()) collectTablesFromFile(file);
+            }
+            spatialiteMaps = new ArrayList<>();
+            if (mSpatialiteMaps != null)
+                spatialiteMaps.addAll(mSpatialiteMaps);
+        }
 
         connectSpatialiteMaps(spatialiteMaps);
     }
@@ -137,6 +160,10 @@ public enum SpatialiteSourcesManager {
      * @throws JSONException
      */
     public void saveSpatialiteMapsToPreferences(List<SpatialiteMap> spatialiteMaps) throws JSONException {
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            // in the case of profiles, the datasets config is readonly
+            return;
+        }
         String spatialiteMapJson = SpatialiteMap.toJsonString(spatialiteMaps);
         Editor editor = mPreferences.edit();
         editor.putString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, spatialiteMapJson);

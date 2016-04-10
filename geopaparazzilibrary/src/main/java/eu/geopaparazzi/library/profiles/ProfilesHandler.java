@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.types.ESpatialDataType;
 
@@ -288,5 +289,10 @@ public enum ProfilesHandler {
         }
 
         return baseMaps;
+    }
+
+    public List<SpatialiteMap> getSpatialiteMaps() {
+
+        return null;
     }
 }

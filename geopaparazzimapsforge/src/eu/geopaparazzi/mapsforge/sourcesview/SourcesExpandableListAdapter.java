@@ -43,7 +43,6 @@ import eu.geopaparazzi.mapsforge.R;
  */
 public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private boolean hasProfile = false;
     private Activity activity;
     private List<String> folderList;
     private List<List<BaseMap>> tablesList;
@@ -60,8 +59,6 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
-
-        hasProfile = ProfilesHandler.INSTANCE.getActiveProfile() != null;
 
     }
 
@@ -91,11 +88,6 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         tableTypeView.setText("[" + baseMap.mapType + "]");
-
-        if (hasProfile) {
-            tableNameView.setTextColor(Color.BLACK);
-            tableTypeView.setTextColor(Color.BLACK);
-        }
 
         return convertView;
     }
@@ -127,10 +119,6 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         TextView folderName = (TextView) convertView.findViewById(R.id.sources_header_descriptiontext);
         folderName.setTypeface(null, Typeface.BOLD);
         folderName.setText(folder);
-
-        if (hasProfile) {
-            folderName.setTextColor(Color.BLACK);
-        }
         return convertView;
     }
 

@@ -62,8 +62,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:background="#66FFFFFF"
-        android:cacheColorHint="#66FFFFFF"
+        android:background="@color/transparent_white"
+        android:cacheColorHint="@color/transparent_white"
         android:onClick="add"
         android:src="@drawable/ic_add_24dp" />
 </android.support.design.widget.CoordinatorLayout>

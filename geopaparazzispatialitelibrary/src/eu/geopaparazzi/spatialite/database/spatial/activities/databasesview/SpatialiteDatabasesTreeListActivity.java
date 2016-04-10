@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -35,6 +36,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 
@@ -51,7 +53,9 @@ import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.ZoomlevelDialogFragment;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -114,7 +118,14 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         // get the listview
         mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            RelativeLayout mainView = (RelativeLayout) findViewById(R.id.sources_list_mainview);
+            int color = ColorUtilities.toColor(ProfilesHandler.INSTANCE.getActiveProfile().color);
+            mainView.setBackgroundColor(color);
 
+            FloatingActionButton addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
+            addSourceButton.hide();
+        }
     }
 
     @Override
@@ -318,46 +329,47 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 //            }
 //        });
 
-        mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+        if (ProfilesHandler.INSTANCE.getActiveProfile() == null)
+            mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                        int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 
-                    int index = 0;
-                    for (final String group : newMap.keySet()) {
-                        if (index == groupPosition) {
+                        int index = 0;
+                        for (final String group : newMap.keySet()) {
+                            if (index == groupPosition) {
 
-                            GPDialogs.yesNoMessageDialog(SpatialiteDatabasesTreeListActivity.this, String.format(getString(R.string.remove_from_list), group), new Runnable() {
-                                @Override
-                                public void run() {
-                                    List<SpatialiteMap> spatialiteMapList = newMap.get(group);
-                                    try {
-                                        SpatialiteSourcesManager.INSTANCE.removeSpatialiteMaps(spatialiteMapList);
-                                    } catch (Exception e) {
-                                        GPLog.error(this, null, e);
-                                    }
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                refreshData(SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps());
-                                            } catch (Exception e) {
-                                                GPLog.error(this, null, e);
-                                            }
+                                GPDialogs.yesNoMessageDialog(SpatialiteDatabasesTreeListActivity.this, String.format(getString(R.string.remove_from_list), group), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        List<SpatialiteMap> spatialiteMapList = newMap.get(group);
+                                        try {
+                                            SpatialiteSourcesManager.INSTANCE.removeSpatialiteMaps(spatialiteMapList);
+                                        } catch (Exception e) {
+                                            GPLog.error(this, null, e);
                                         }
-                                    });
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    refreshData(SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps());
+                                                } catch (Exception e) {
+                                                    GPLog.error(this, null, e);
+                                                }
+                                            }
+                                        });
 
-                                }
-                            }, null);
+                                    }
+                                }, null);
 
 
-                            return true;
+                                return true;
+                            }
+                            index++;
                         }
-                        index++;
+                        return true;
                     }
-                    return true;
-                }
 //                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 //                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 //                    int childPosition = ExpandableListView.getPackedPositionChild(id);
@@ -399,9 +411,9 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 //                    }
 //                    return true;
 //                }
-                return false;
-            }
-        });
+                    return false;
+                }
+            });
 
         int groupCount = expandableListAdapter.getGroupCount();
         for (int i = 0; i < groupCount; i++) {
