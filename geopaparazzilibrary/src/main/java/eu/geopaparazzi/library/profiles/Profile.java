@@ -36,6 +36,7 @@ public class Profile implements Parcelable {
     public boolean active = false;
     public String color = "#FFFFFF";
     public String tagsPath = "";
+    public String projectPath = "";
     public List<String> basemapsList = new ArrayList<>();
     public List<String> spatialiteList = new ArrayList<>();
 
@@ -70,6 +71,7 @@ public class Profile implements Parcelable {
         dest.writeBooleanArray(new boolean[]{active});
         dest.writeString(color);
         dest.writeString(tagsPath);
+        dest.writeString(projectPath);
         dest.writeList(basemapsList);
         dest.writeList(spatialiteList);
     }
@@ -90,6 +92,7 @@ public class Profile implements Parcelable {
 
             profile.color = in.readString();
             profile.tagsPath = in.readString();
+            profile.projectPath = in.readString();
             profile.basemapsList = in.readArrayList(String.class.getClassLoader());
             profile.spatialiteList = in.readArrayList(String.class.getClassLoader());
 

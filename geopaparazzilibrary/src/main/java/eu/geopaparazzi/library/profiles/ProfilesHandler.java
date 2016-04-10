@@ -53,6 +53,7 @@ public enum ProfilesHandler {
     public static final String COLOR = "color";
     public static final String ACTIVE = "active";
     public static final String TAGS_PATH = "tagsPath";
+    public static final String PROJECT_PATH = "projectPath";
     public static final String BASEMAPS = "basemaps";
     public static final String PATH = "path";
     public static final String SPATIALITE = "spatialitedbs";
@@ -85,7 +86,6 @@ public enum ProfilesHandler {
      * Save the list of profiles to preferences.
      *
      * @param preferences the preferences object.
-     * @return the list of Profile objects.
      * @throws JSONException
      */
     public void saveProfilesToPreferences(SharedPreferences preferences, List<Profile> profilesList) throws JSONException {
@@ -145,6 +145,9 @@ public enum ProfilesHandler {
         }
         if (profileObject.has(TAGS_PATH)) {
             profile.tagsPath = profileObject.getString(TAGS_PATH);
+        }
+        if (profileObject.has(PROJECT_PATH)) {
+            profile.projectPath = profileObject.getString(PROJECT_PATH);
         }
         if (profileObject.has(BASEMAPS)) {
             JSONArray basemapsArray = profileObject.getJSONArray(BASEMAPS);
@@ -210,6 +213,7 @@ public enum ProfilesHandler {
         profileObject.put(COLOR, profile.color);
         profileObject.put(ACTIVE, profile.active);
         profileObject.put(TAGS_PATH, profile.tagsPath);
+        profileObject.put(PROJECT_PATH, profile.projectPath);
 
         if (profile.basemapsList.size() > 0) {
             JSONArray basemapsArray = new JSONArray();
@@ -291,8 +295,4 @@ public enum ProfilesHandler {
         return baseMaps;
     }
 
-    public List<SpatialiteMap> getSpatialiteMaps() {
-
-        return null;
-    }
 }
