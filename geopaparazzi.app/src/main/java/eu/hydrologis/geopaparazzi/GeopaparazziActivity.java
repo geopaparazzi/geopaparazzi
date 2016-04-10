@@ -15,10 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -30,7 +34,6 @@ import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 import eu.hydrologis.geopaparazzi.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
-import gov.nasa.worldwind.AddWMSDialog;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -60,6 +63,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
                 init();
 
                 checkIncomingUrl();
+                checkAvailableProfiles();
             } else {
                 if (permissionHelper.hasPermission(this)) {
                     permissionHelper = permissionHelper.getNextWithoutPermission(this);
@@ -71,7 +75,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             init();
 
             checkIncomingUrl();
-            checkIncomingWms();
+            checkAvailableProfiles();
         }
 
     }
@@ -101,13 +105,14 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         }
     }
 
-    private void checkIncomingWms() {
-        Uri data = getIntent().getData();
-        if (data != null) {
-            String path = data.getEncodedPath();
-            if (path.toLowerCase().contains("getcapabilities")) {
-                AddWMSDialog.newInstance(path);
+    private void checkAvailableProfiles() {
+        try {
+            Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile(getContentResolver());
+            if (activeProfile != null) {
+                System.out.println(activeProfile);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

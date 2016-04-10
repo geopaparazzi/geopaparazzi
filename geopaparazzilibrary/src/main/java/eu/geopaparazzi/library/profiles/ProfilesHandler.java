@@ -100,48 +100,61 @@ public enum ProfilesHandler {
         JSONArray profilesArray = root.getJSONArray(PROFILES);
         for (int i = 0; i < profilesArray.length(); i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-            Profile profile = new Profile();
-            if (profileObject.has(NAME)) {
-                profile.name = profileObject.getString(NAME);
-            }
-            if (profileObject.has(DESCRIPTION)) {
-                profile.description = profileObject.getString(DESCRIPTION);
-            }
-            if (profileObject.has(CREATIONDATE)) {
-                profile.creationdate = profileObject.getString(CREATIONDATE);
-            }
-            if (profileObject.has(COLOR)) {
-                profile.color = profileObject.getString(COLOR);
-            }
-            if (profileObject.has(ACTIVE)) {
-                profile.active = profileObject.getBoolean(ACTIVE);
-            }
-            if (profileObject.has(TAGS_PATH)) {
-                profile.tagsPath = profileObject.getString(TAGS_PATH);
-            }
-            if (profileObject.has(BASEMAPS)) {
-                JSONArray basemapsArray = profileObject.getJSONArray(BASEMAPS);
-                for (int j = 0; j < basemapsArray.length(); j++) {
-                    JSONObject baseMapObject = basemapsArray.getJSONObject(j);
-                    if (baseMapObject.has(PATH)) {
-                        String path = baseMapObject.getString(PATH);
-                        profile.basemapsList.add(path);
-                    }
-                }
-            }
-            if (profileObject.has(SPATIALITE)) {
-                JSONArray spatialiteDbsArray = profileObject.getJSONArray(SPATIALITE);
-                for (int j = 0; j < spatialiteDbsArray.length(); j++) {
-                    JSONObject spatialiteDbsObject = spatialiteDbsArray.getJSONObject(j);
-                    if (spatialiteDbsObject.has(PATH)) {
-                        String path = spatialiteDbsObject.getString(PATH);
-                        profile.spatialiteList.add(path);
-                    }
-                }
-            }
+            Profile profile = getProfileFromJson(profileObject);
             profilesList.add(profile);
         }
         return profilesList;
+    }
+
+    /**
+     * Extract a profile from a json object.
+     *
+     * @param profileObject the json object.
+     * @return the profile.
+     * @throws JSONException
+     */
+    public Profile getProfileFromJson(JSONObject profileObject) throws JSONException {
+        Profile profile = new Profile();
+        if (profileObject.has(NAME)) {
+            profile.name = profileObject.getString(NAME);
+        }
+        if (profileObject.has(DESCRIPTION)) {
+            profile.description = profileObject.getString(DESCRIPTION);
+        }
+        if (profileObject.has(CREATIONDATE)) {
+            profile.creationdate = profileObject.getString(CREATIONDATE);
+        }
+        if (profileObject.has(COLOR)) {
+            profile.color = profileObject.getString(COLOR);
+        }
+        if (profileObject.has(ACTIVE)) {
+            profile.active = profileObject.getBoolean(ACTIVE);
+        }
+        if (profileObject.has(TAGS_PATH)) {
+            profile.tagsPath = profileObject.getString(TAGS_PATH);
+        }
+        if (profileObject.has(BASEMAPS)) {
+            JSONArray basemapsArray = profileObject.getJSONArray(BASEMAPS);
+            for (int j = 0; j < basemapsArray.length(); j++) {
+                JSONObject baseMapObject = basemapsArray.getJSONObject(j);
+                if (baseMapObject.has(PATH)) {
+                    String path = baseMapObject.getString(PATH);
+                    profile.basemapsList.add(path);
+                }
+            }
+        }
+        if (profileObject.has(SPATIALITE)) {
+            JSONArray spatialiteDbsArray = profileObject.getJSONArray(SPATIALITE);
+            for (int j = 0; j < spatialiteDbsArray.length(); j++) {
+                JSONObject spatialiteDbsObject = spatialiteDbsArray.getJSONObject(j);
+                if (spatialiteDbsObject.has(PATH)) {
+                    String path = spatialiteDbsObject.getString(PATH);
+                    profile.spatialiteList.add(path);
+                }
+            }
+        }
+
+        return profile;
     }
 
 
@@ -169,6 +182,13 @@ public enum ProfilesHandler {
 
     }
 
+    /**
+     * Converts a profile object to a json object.
+     *
+     * @param profile the profile.
+     * @return the json obj.
+     * @throws JSONException
+     */
     public JSONObject getJsonFromProfile(Profile profile) throws JSONException {
         JSONObject profileObject = new JSONObject();
         profileObject.put(NAME, profile.name);
@@ -201,25 +221,36 @@ public enum ProfilesHandler {
     }
 
 
-    public Profile getActiveProfile(ContentResolver contentResolver) {
-
+    /**
+     * Get the active profile from a contentresolver.
+     *
+     * @param contentResolver the resolver to use.
+     * @return the active profile or null.
+     * @throws JSONException
+     */
+    public Profile getActiveProfile(ContentResolver contentResolver) throws JSONException {
         String[] projection = CONTENT_PROVIDER_FIELDS;
         Cursor cursor = contentResolver.query(CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 String name = cursor.getString(0);
                 boolean active = cursor.getInt(1) != 0;
-                if (active) {
+                if (name != null && active) {
                     String json = cursor.getString(2);
-                    ProfilesHandler.INSTANCE.
+                    JSONObject profileObject = new JSONObject(json);
+                    Profile activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
+                    if (activeProfile != null) return activeProfile;
                 }
             } while (cursor.moveToNext());
+            cursor.close();
         }
 
         return null;
     }
+
+
 }
