@@ -24,7 +24,6 @@ import android.graphics.Paint.Join;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ import java.util.Map;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -260,7 +259,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
 
     /**
      * Get the stroke {@link Paint} for a given style.
-     * <p/>
+     *
      * <p>Paints are cached and reused.</p>
      *
      * @param style the {@link Style} to use.
@@ -281,10 +280,15 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
         paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);
 
-        float[] shiftAndDash = Style.dashFromString(style.dashPattern);
-        if (shiftAndDash != null) {
-            float[] dash = Style.getDashOnly(shiftAndDash);
-            paint.setPathEffect(new DashPathEffect(dash, Style.getDashShift(shiftAndDash)));
+        try {
+            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+            if (shiftAndDash != null) {
+                float[] dash = Style.getDashOnly(shiftAndDash);
+                if (dash.length > 1)
+                    paint.setPathEffect(new DashPathEffect(dash, Style.getDashShift(shiftAndDash)));
+            }
+        } catch (java.lang.Exception e) {
+            GPLog.error(this, "Error on dash creation: " + style.dashPattern, e);
         }
 
         return paint;
@@ -696,7 +700,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                         }
                         checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                        if (layerType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+                        if (layerType.equals(ESpatialDataType.RASTERLITE2.getTypeName())) {
                             // s_ROWID_PK == title [Berlin Straube Postgrenzen] - needed
                             // s_view_read_only == abstract [1890 - 1:17777] - needed
                             // s_geometry_type == pixel_type [RGB] - not needed

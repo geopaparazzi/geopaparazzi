@@ -19,6 +19,7 @@ package eu.geopaparazzi.mapsforge.sourcesview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.mapsforge.R;
 
 /**
@@ -41,6 +43,7 @@ import eu.geopaparazzi.mapsforge.R;
  */
 public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
+    private boolean hasProfile = false;
     private Activity activity;
     private List<String> folderList;
     private List<List<BaseMap>> tablesList;
@@ -57,6 +60,8 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
+
+        hasProfile = ProfilesHandler.INSTANCE.getActiveProfile() != null;
 
     }
 
@@ -86,6 +91,11 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         tableTypeView.setText("[" + baseMap.mapType + "]");
+
+        if (hasProfile) {
+            tableNameView.setTextColor(Color.BLACK);
+            tableTypeView.setTextColor(Color.BLACK);
+        }
 
         return convertView;
     }
@@ -118,6 +128,9 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         folderName.setTypeface(null, Typeface.BOLD);
         folderName.setText(folder);
 
+        if (hasProfile) {
+            folderName.setTextColor(Color.BLACK);
+        }
         return convertView;
     }
 

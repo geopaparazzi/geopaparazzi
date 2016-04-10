@@ -28,6 +28,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.SimplePosition;
 import eu.geopaparazzi.library.util.UrlUtilities;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
@@ -107,10 +108,8 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
 
     private void checkAvailableProfiles() {
         try {
-            Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile(getContentResolver());
-            if (activeProfile != null) {
-                System.out.println(activeProfile);
-            }
+            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
         } catch (JSONException e) {
             e.printStackTrace();
         }

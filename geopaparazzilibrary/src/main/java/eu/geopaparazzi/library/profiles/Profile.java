@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class providing a wrapper for profile infos.
+ *
  * @author Andrea Antonello
  */
 public class Profile implements Parcelable {

@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -248,7 +248,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         for (String field : spatialVectorTable.getTableFieldNamesList()) {
             boolean ignore = SpatialiteUtilities.doIgnoreField(field);
             if (!ignore) {
-                DataType tableFieldType = spatialVectorTable.getTableFieldType(field);
+                EDataType tableFieldType = spatialVectorTable.getTableFieldType(field);
                 if (tableFieldType != null) {
                     nonGeomFieldsNames = nonGeomFieldsNames + "," + field;
                     nonGeomFieldsValues = nonGeomFieldsValues + "," + tableFieldType.getDefaultValueForSql();
@@ -328,8 +328,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             String type = attributeTypes.get(i);
             boolean ignore = SpatialiteUtilities.doIgnoreField(fieldName);
             if (!ignore) {
-                DataType dataType = DataType.getType4Name(type);
-                if (dataType == DataType.TEXT) {
+                EDataType dataType = EDataType.getType4Name(type);
+                if (dataType == EDataType.TEXT) {
                     sb.append(" , ").append(fieldName).append("='").append(value).append("'");
                 } else {
                     sb.append(" , ").append(fieldName).append("=").append(value);

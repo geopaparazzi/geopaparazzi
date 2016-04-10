@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.util;
+package eu.geopaparazzi.library.util.types;
 
 /**
  * Common Data Types.
@@ -23,7 +23,7 @@ package eu.geopaparazzi.library.util;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum DataType {
+public enum EDataType {
     /** * */
     TEXT(0, String.class, "''"), //
     /** * */
@@ -43,7 +43,7 @@ public enum DataType {
     private Class<?> clazz;
     private String defaultValueForSql;
 
-    private DataType(int code, Class<?> clazz, String defaultValueForSql) {
+    private EDataType(int code, Class<?> clazz, String defaultValueForSql) {
         this.code = code;
         this.clazz = clazz;
         this.defaultValueForSql = defaultValueForSql;
@@ -74,11 +74,11 @@ public enum DataType {
      * Get the type from the code.
      *
      * @param code the code.
-     * @return the {@link DataType}.
+     * @return the {@link EDataType}.
      */
-    public static DataType getType4Code(int code) {
-        DataType[] values = values();
-        for (DataType dataType : values) {
+    public static EDataType getType4Code(int code) {
+        EDataType[] values = values();
+        for (EDataType dataType : values) {
             if (dataType.getCode() == code) {
                 return dataType;
             }
@@ -90,11 +90,11 @@ public enum DataType {
      * Get the type from the name.
      *
      * @param name the name.
-     * @return the {@link DataType}.
+     * @return the {@link EDataType}.
      */
-    public static DataType getType4Name(String name) {
-        DataType[] values = values();
-        for (DataType dataType : values) {
+    public static EDataType getType4Name(String name) {
+        EDataType[] values = values();
+        for (EDataType dataType : values) {
             if (dataType.name().equals(name)) {
                 return dataType;
             }
@@ -118,9 +118,9 @@ public enum DataType {
      * </pre>
      *
      * @param sqliteCode the code.
-     * @return the {@link DataType}.
+     * @return the {@link EDataType}.
      */
-    public static DataType getType4SqliteCode(int sqliteCode) {
+    public static EDataType getType4SqliteCode(int sqliteCode) {
 
         switch (sqliteCode) {
             case 1:

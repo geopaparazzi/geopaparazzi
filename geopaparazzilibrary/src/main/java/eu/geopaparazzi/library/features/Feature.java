@@ -25,7 +25,7 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.library.util.types.EDataType;
 
 /**
  * A spatial feature container.
@@ -90,7 +90,7 @@ public class Feature implements Parcelable {
      *
      * @param name  name of the field.
      * @param value value of the field as string.
-     * @param type  type of the field as of {@link DataType#name()}.
+     * @param type  type of the field as of {@link EDataType#name()}.
      */
     public synchronized void addAttribute(String name, String value, String type) {
         if (attributeNames.contains(name)) {

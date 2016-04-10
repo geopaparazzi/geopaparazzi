@@ -42,7 +42,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
@@ -115,7 +115,7 @@ public class FeatureUtilities {
                 for (int i = 1; i < column_count; i++) {
                     String cName = stmt.column_name(i);
                     String value = stmt.column_string(i);
-                    DataType type = spatialTable.getTableFieldType(cName);
+                    EDataType type = spatialTable.getTableFieldType(cName);
                     feature.addAttribute(cName, value, type.name());
                 }
                 featuresList.add(feature);
@@ -154,7 +154,7 @@ public class FeatureUtilities {
                 for (int i = 1; i < count - 1; i++) {
                     String cName = stmt.column_name(i);
                     String value = stmt.column_string(i);
-                    DataType type = spatialTable.getTableFieldType(cName);
+                    EDataType type = spatialTable.getTableFieldType(cName);
                     if (type == null) {
                         GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type for column "
                                 + cName);

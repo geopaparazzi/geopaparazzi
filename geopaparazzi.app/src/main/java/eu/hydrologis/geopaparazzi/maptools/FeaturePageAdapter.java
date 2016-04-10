@@ -36,7 +36,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.library.util.types.EDataType;
 
 /**
  * Page adapter for features.
@@ -110,7 +110,7 @@ public class FeaturePageAdapter extends PagerAdapter {
             final String name = attributeNames.get(i);
             String value = attributeValues.get(i);
             String typeString = attributeTypes.get(i);
-            DataType type = DataType.getType4Name(typeString);
+            EDataType type = EDataType.getType4Name(typeString);
 
             TextView textView = new TextView(context);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));

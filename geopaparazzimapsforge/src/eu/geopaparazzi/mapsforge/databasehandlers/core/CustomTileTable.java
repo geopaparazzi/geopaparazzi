@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.mapsforge.databasehandlers.core;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 /**
  * A cutom tiles producer table.
  *
@@ -45,7 +45,7 @@ public class CustomTileTable extends AbstractSpatialTable {
      */
     public CustomTileTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, ESpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         // todo: change this
         if (tileQuery != null) {

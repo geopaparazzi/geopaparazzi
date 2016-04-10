@@ -3,7 +3,6 @@
     android:id="@+id/evento_header_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/main_background"
     android:padding="5dip">
 
     <TextView

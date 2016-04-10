@@ -29,10 +29,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
+
 /**
+ * Profile handling related stuff.
+ *
  * @author Andrea Antonello
  */
 public enum ProfilesHandler {
@@ -55,6 +62,11 @@ public enum ProfilesHandler {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PROFILE = "profile";
     public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PROFILE).build();
+
+    /**
+     * The active profile.
+     */
+    private Profile activeProfile;
 
     /**
      * Get the list of stored profiles from the preferences.
@@ -222,13 +234,22 @@ public enum ProfilesHandler {
 
 
     /**
+     * Getter for the active profile.
+     *
+     * @return the active profile or null if there is none.
+     */
+    public Profile getActiveProfile() {
+        return activeProfile;
+    }
+
+    /**
      * Get the active profile from a contentresolver.
      *
      * @param contentResolver the resolver to use.
-     * @return the active profile or null.
      * @throws JSONException
      */
-    public Profile getActiveProfile(ContentResolver contentResolver) throws JSONException {
+    public void checkActiveProfile(ContentResolver contentResolver) throws JSONException {
+        activeProfile = null;
         String[] projection = CONTENT_PROVIDER_FIELDS;
         Cursor cursor = contentResolver.query(CONTENT_URI,
                 projection,
@@ -242,15 +263,30 @@ public enum ProfilesHandler {
                 if (name != null && active) {
                     String json = cursor.getString(2);
                     JSONObject profileObject = new JSONObject(json);
-                    Profile activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
-                    if (activeProfile != null) return activeProfile;
+                    activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
                 }
             } while (cursor.moveToNext());
             cursor.close();
         }
-
-        return null;
     }
 
 
+    public List<BaseMap> getBaseMaps() {
+        List<BaseMap> baseMaps = new ArrayList<>();
+        if (activeProfile != null) {
+            for (String baseMapPath : activeProfile.basemapsList) {
+                BaseMap map = new BaseMap();
+                File databaseFile = new File(baseMapPath);
+                if (databaseFile.exists()) {
+                    map.parentFolder = databaseFile.getParentFile().getAbsolutePath();
+                    map.databasePath = databaseFile.getAbsolutePath();
+                    map.title = FileUtilities.getNameWithoutExtention(databaseFile);
+                    map.mapType = ESpatialDataType.getTypeName4FileName(databaseFile.getName());
+                    baseMaps.add(map);
+                }
+            }
+        }
+
+        return baseMaps;
+    }
 }

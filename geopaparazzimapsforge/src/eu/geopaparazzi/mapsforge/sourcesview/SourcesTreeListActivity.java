@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -42,19 +43,22 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 
 /**
  * Activity for tile source visualisation.
@@ -90,6 +94,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+
         mFilterText = (EditText) findViewById(R.id.search_box);
         mFilterText.addTextChangedListener(filterTextWatcher);
 
@@ -98,10 +103,10 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         boolean showMbtiles = mPreferences.getBoolean(SHOW_MBTILES, true);
         boolean showRasterLite2 = mPreferences.getBoolean(SHOW_RASTER_LITE_2, true);
 
-        String mapTypeName = SpatialDataType.MAP.getTypeName();
-        String mapurlTypeName = SpatialDataType.MAPURL.getTypeName();
-        String mbtilesTypeName = SpatialDataType.MBTILES.getTypeName();
-        String rasterLiteTypeName = SpatialDataType.RASTERLITE2.getTypeName();
+        String mapTypeName = ESpatialDataType.MAP.getTypeName();
+        String mapurlTypeName = ESpatialDataType.MAPURL.getTypeName();
+        String mbtilesTypeName = ESpatialDataType.MBTILES.getTypeName();
+        String rasterLiteTypeName = ESpatialDataType.RASTERLITE2.getTypeName();
         mTypeNames = new ArrayList<>();
         mTypeNames.add(mapTypeName);
         mTypeNames.add(mapurlTypeName);
@@ -116,6 +121,15 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         // get the listview
         mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            RelativeLayout mainView = (RelativeLayout) findViewById(R.id.sources_list_mainview);
+            int color = ColorUtilities.toColor(ProfilesHandler.INSTANCE.getActiveProfile().color);
+            mainView.setBackgroundColor(color);
+//            mExpListView.setBackgroundColor(color);
+
+            FloatingActionButton addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
+            addSourceButton.hide();
+        }
 
     }
 
@@ -266,13 +280,13 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
             boolean doAdd = false;
             String mapType = baseMap.mapType;
-            if (mCheckedValues[0] && mapType.equals(SpatialDataType.MAP.getTypeName())) {
+            if (mCheckedValues[0] && mapType.equals(ESpatialDataType.MAP.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[1] && mapType.equals(SpatialDataType.MAPURL.getTypeName())) {
+            } else if (mCheckedValues[1] && mapType.equals(ESpatialDataType.MAPURL.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[2] && mapType.equals(SpatialDataType.MBTILES.getTypeName())) {
+            } else if (mCheckedValues[2] && mapType.equals(ESpatialDataType.MBTILES.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[3] && mapType.equals(SpatialDataType.RASTERLITE2.getTypeName())) {
+            } else if (mCheckedValues[3] && mapType.equals(ESpatialDataType.RASTERLITE2.getTypeName())) {
                 doAdd = true;
             }
             if (log) {

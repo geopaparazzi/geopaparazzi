@@ -37,6 +37,7 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.mapsforge.databasehandlers.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileDownloader;
@@ -50,7 +51,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -159,6 +160,11 @@ public enum BaseMapSourcesManager {
         return Collections.emptyList();
     }
 
+    public void forceBasemapsreRead() {
+        mBaseMaps = null;
+        mReReadBasemaps = true;
+    }
+
     /**
      * Reads the maps from preferences and extracts the tables necessary.
      *
@@ -166,9 +172,15 @@ public enum BaseMapSourcesManager {
      * @throws java.lang.Exception
      */
     private List<BaseMap> getBaseMapsFromPreferences() throws java.lang.Exception {
-        String baseMapsJson = mPreferences.getString(BaseMap.BASEMAPS_PREF_KEY, "");
-        List<BaseMap> baseMaps = BaseMap.fromJsonString(baseMapsJson);
         mBaseMaps2TablesMap.clear();
+
+        List<BaseMap> baseMaps;
+        if (ProfilesHandler.INSTANCE.getActiveProfile() == null) {
+            String baseMapsJson = mPreferences.getString(BaseMap.BASEMAPS_PREF_KEY, "");
+            baseMaps = BaseMap.fromJsonString(baseMapsJson);
+        } else {
+            baseMaps = ProfilesHandler.INSTANCE.getBaseMaps();
+        }
 
         // TODO this is ugly right now, needs to be changed
         for (BaseMap baseMap : baseMaps) {
@@ -183,6 +195,10 @@ public enum BaseMapSourcesManager {
     }
 
     public void saveBaseMapsToPreferences(List<BaseMap> baseMaps) throws JSONException {
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            // if profiles are active, the dataset configs are readonly
+            return;
+        }
         String baseMapJson = BaseMap.toJsonString(baseMaps);
         Editor editor = mPreferences.edit();
         editor.putString(BaseMap.BASEMAPS_PREF_KEY, baseMapJson);
@@ -215,36 +231,53 @@ public enum BaseMapSourcesManager {
             /*
              * add MAPURL TABLES
              */
-        try (CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file)) {
-            if (customTileDatabaseHandler != null) {
+        CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file);
+        if (customTileDatabaseHandler != null) {
+            try {
                 List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
                 for (AbstractSpatialTable table : tables) {
                     collectedTables.add(table);
                 }
-            } else {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            customTileDatabaseHandler.close();
+        } else {
             /*
              * add MAP TABLES
              */
-                try (MapDatabaseHandler mapDatabaseHandler = MapDatabaseHandler.getHandlerForFile(file)) {
-                    if (mapDatabaseHandler != null) {
-                        List<MapTable> tables = mapDatabaseHandler.getTables(false);
-                        for (AbstractSpatialTable table : tables) {
-                            collectedTables.add(table);
-                        }
-                    } else {
+            MapDatabaseHandler mapDatabaseHandler = MapDatabaseHandler.getHandlerForFile(file);
+            if (mapDatabaseHandler != null) {
+                try {
+                    List<MapTable> tables = mapDatabaseHandler.getTables(false);
+                    for (AbstractSpatialTable table : tables) {
+                        collectedTables.add(table);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mapDatabaseHandler.close();
+            } else {
                         /*
                          * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
                          */
-                        try (AbstractSpatialDatabaseHandler sdbHandler = getRasterHandlerForFile(file)) {
-                            List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
-                            for (AbstractSpatialTable table : tables) {
-                                collectedTables.add(table);
-                            }
+                AbstractSpatialDatabaseHandler sdbHandler = getRasterHandlerForFile(file);
+                if (sdbHandler != null) {
+                    try {
+                        List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
+                        for (AbstractSpatialTable table : tables) {
+                            collectedTables.add(table);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                    sdbHandler.close();
                 }
+
             }
+
         }
+
         return collectedTables;
     }
 
@@ -257,14 +290,14 @@ public enum BaseMapSourcesManager {
     public static AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
-            for (SpatialDataType spatialiteType : SpatialDataType.values()) {
+            for (ESpatialDataType spatialiteType : ESpatialDataType.values()) {
                 if (!spatialiteType.isSpatialiteBased()) {
                     continue;
                 }
                 String extension = spatialiteType.getExtension();
                 if (name.endsWith(extension)) {
                     AbstractSpatialDatabaseHandler sdb = null;
-                    if (name.endsWith(SpatialDataType.MBTILES.getExtension())) {
+                    if (name.endsWith(ESpatialDataType.MBTILES.getExtension())) {
                         sdb = new MbtilesDatabaseHandler(file.getAbsolutePath(), null);
                     } else {
                         sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
@@ -306,6 +339,9 @@ public enum BaseMapSourcesManager {
      * @return the current selected map table.
      */
     public AbstractSpatialTable getSelectedBaseMapTable() {
+        if (selectedBaseMapTable == null) {
+            selectedBaseMapTable = mBaseMaps2TablesMap.values().iterator().next();
+        }
         return selectedBaseMapTable;
     }
 
@@ -349,10 +385,10 @@ public enum BaseMapSourcesManager {
     public void loadSelectedBaseMap(MapView mapView) {
         AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
         if (selectedSpatialTable != null) {
-            int selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
+            int selectedSpatialDataTypeCode = ESpatialDataType.getCode4Name(selectedTileSourceType);
             MapGenerator selectedMapGenerator = null;
             try {
-                SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
+                ESpatialDataType selectedSpatialDataType = ESpatialDataType.getType4Code(selectedSpatialDataTypeCode);
                 switch (selectedSpatialDataType) {
                     case MAP:
                         MapTable selectedMapTable = (MapTable) selectedSpatialTable;

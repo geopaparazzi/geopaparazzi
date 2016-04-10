@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.spatialite.database.spatial.core.enums;
+package eu.geopaparazzi.library.util.types;
 
 /**
  * Spatial data types with extensions and codes.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum SpatialDataType {
+public enum ESpatialDataType {
     /**
      * Mbtiles based database.
      */
@@ -37,7 +37,7 @@ public enum SpatialDataType {
      */
     SQLITE("SQLite", ".sqlite", 2, true, "SQLi"),
     /**
-     * A geopackage database. 
+     * A geopackage database.
      */
     GPKG("Gpkg", ".gpkg", 3, true, "Gpkg"),
     /**
@@ -49,7 +49,7 @@ public enum SpatialDataType {
      */
     MAPURL("Mapurl", ".mapurl", 5, false, "Mapurl"),
     /**
-     * A Rasterlite2 Image in a spatialite 4.2.0 database. 
+     * A Rasterlite2 Image in a spatialite 4.2.0 database.
      * - avoids .db being read 2x
      * - real spatialite .atlas files can also be read
      */
@@ -64,11 +64,11 @@ public enum SpatialDataType {
     private String shortName;
 
     /**
-     * @param name a name for the db type. 
+     * @param name      a name for the db type.
      * @param extension the extension used by the db type.
-     * @param code a code for the db type.
+     * @param code      a code for the db type.
      */
-    private SpatialDataType( String name, String extension, int code, boolean isSpatialiteBased, String shortName ) {
+    private ESpatialDataType(String name, String extension, int code, boolean isSpatialiteBased, String shortName) {
         this.name = name;
         this.extension = extension;
         this.code = code;
@@ -78,12 +78,12 @@ public enum SpatialDataType {
 
     /**
      * Get the type for a given code.
-     * 
+     *
      * @param code the code.
      * @return the data type.
      */
-    public static SpatialDataType getType4Code( int code ) {
-        for( SpatialDataType type : values() ) {
+    public static ESpatialDataType getType4Code(int code) {
+        for (ESpatialDataType type : values()) {
             if (type.getCode() == code) {
                 return type;
             }
@@ -93,12 +93,12 @@ public enum SpatialDataType {
 
     /**
      * Get the type for a given name.
-     * 
+     *
      * @param name the name.
      * @return the data type.
      */
-    public static SpatialDataType getType4Name( String name ) {
-        for( SpatialDataType type : values() ) {
+    public static ESpatialDataType getType4Name(String name) {
+        for (ESpatialDataType type : values()) {
             if (type.getTypeName().equals(name)) {
                 return type;
             }
@@ -108,12 +108,12 @@ public enum SpatialDataType {
 
     /**
      * Get the code for a given name.
-     * 
+     *
      * @param name the name.
      * @return the code.
      */
-    public static int getCode4Name( String name ) {
-        for( SpatialDataType type : values() ) {
+    public static int getCode4Name(String name) {
+        for (ESpatialDataType type : values()) {
             if (type.getTypeName().equals(name)) {
                 return type.getCode();
             }
@@ -126,6 +126,18 @@ public enum SpatialDataType {
      */
     public String getTypeName() {
         return name;
+    }
+
+    /**
+     * @return the db type's name.
+     */
+    public static String getTypeName4FileName(String fileName) {
+        for (ESpatialDataType type : values()) {
+            if (fileName.toLowerCase().endsWith(type.getExtension())) {
+                return type.getTypeName();
+            }
+        }
+        return "unknown";
     }
 
     /**
@@ -143,7 +155,7 @@ public enum SpatialDataType {
     }
 
     /**
-     * @return <code>true</code> if the type is spatialite based. 
+     * @return <code>true</code> if the type is spatialite based.
      */
     public boolean isSpatialiteBased() {
         return isSpatialiteBased;

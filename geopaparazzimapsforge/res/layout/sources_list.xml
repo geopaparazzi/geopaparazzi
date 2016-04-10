@@ -28,6 +28,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/sources_list_mainview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -35,8 +36,8 @@
                 android:id="@+id/search_box_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_gravity="fill_horizontal">
+                android:layout_gravity="fill_horizontal"
+                android:layout_margin="8dp">
 
                 <EditText
                     android:id="@+id/search_box"
@@ -61,6 +62,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:background="#66FFFFFF"
+        android:cacheColorHint="#66FFFFFF"
         android:onClick="add"
         android:src="@drawable/ic_add_24dp" />
 </android.support.design.widget.CoordinatorLayout>

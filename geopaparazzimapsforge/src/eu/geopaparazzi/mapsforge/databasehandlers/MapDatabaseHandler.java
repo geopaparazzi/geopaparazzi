@@ -26,7 +26,7 @@ import java.util.List;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.databasehandlers.core.MapTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import jsqlite.Exception;
 
 import org.mapsforge.core.model.GeoPoint;
@@ -76,7 +76,7 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
             if (Utilities.isNameFromHiddenFile(name)) {
                 return null;
             }
-            if (name.endsWith(SpatialDataType.MAP.getExtension())) {
+            if (name.endsWith(ESpatialDataType.MAP.getExtension())) {
                 MapDatabaseHandler map = new MapDatabaseHandler(file.getAbsolutePath());
                 return map;
             }

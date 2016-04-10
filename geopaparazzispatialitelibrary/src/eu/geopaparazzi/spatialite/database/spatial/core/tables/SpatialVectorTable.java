@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.library.style.Style;
 
@@ -90,7 +90,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      */
     public SpatialVectorTable(String databasePath, String tableName, String geometryColumn, int geomType, String srid,
                               double[] center, double[] bounds, String tableTypeDescription) {
-        super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+        super(databasePath, tableName, ESpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;
@@ -176,25 +176,25 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * Get the data type for a given field name.
      *
      * @param fieldName the field name.
-     * @return the {@link DataType} or <code>null</code>.
+     * @return the {@link EDataType} or <code>null</code>.
      */
-    public DataType getTableFieldType(String fieldName) {
+    public EDataType getTableFieldType(String fieldName) {
         String type = fieldName2TypeMap.get(fieldName);
         // 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
         if (type != null) {
             type = type.toUpperCase(Locale.US);
             if (type.contains("TEXT")) {
-                return DataType.TEXT;
+                return EDataType.TEXT;
             } else if (type.contains("DOUBLE")) {
-                return DataType.DOUBLE;
+                return EDataType.DOUBLE;
             } else if (type.contains("INTEGER")) {
-                return DataType.INTEGER;
+                return EDataType.INTEGER;
             } else if (type.contains("REAL")) {
-                return DataType.DOUBLE;
+                return EDataType.DOUBLE;
             } else if (type.contains("DATE")) {
-                return DataType.DATE;
+                return EDataType.DATE;
             } else if (type.contains("BLOB")) {
-                return DataType.BLOB;
+                return EDataType.BLOB;
             }
         }
         return null;

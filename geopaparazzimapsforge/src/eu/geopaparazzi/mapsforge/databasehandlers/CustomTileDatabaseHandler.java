@@ -27,7 +27,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileDownloader;
 import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
@@ -69,7 +69,7 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
             if (Utilities.isNameFromHiddenFile(name)) {
                 return null;
             }
-            if (name.endsWith(SpatialDataType.MAPURL.getExtension())) {
+            if (name.endsWith(ESpatialDataType.MAPURL.getExtension())) {
                 CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(file.getAbsolutePath());
                 return map;
             }

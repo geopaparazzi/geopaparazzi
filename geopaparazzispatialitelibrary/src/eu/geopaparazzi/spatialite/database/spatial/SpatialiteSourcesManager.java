@@ -40,7 +40,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -308,7 +308,7 @@ public enum SpatialiteSourcesManager {
     public SpatialiteDatabaseHandler getDatabaseHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
-            for (SpatialDataType spatialiteType : SpatialDataType.values()) {
+            for (ESpatialDataType spatialiteType : ESpatialDataType.values()) {
                 if (!spatialiteType.isSpatialiteBased()) {
                     continue;
                 }
