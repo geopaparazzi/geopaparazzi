@@ -147,9 +147,11 @@ public class TagsManager {
         File tagsFile = null;
         if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
             Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-            tagsFile = new File(activeProfile.tagsPath);
-            if (!tagsFile.exists())
-                tagsFile = null;
+            if (activeProfile.tagsPath!=null) {
+                tagsFile = new File(activeProfile.tagsPath);
+                if (!tagsFile.exists())
+                    tagsFile = null;
+            }
         }
 
         if (tagsFile == null) {

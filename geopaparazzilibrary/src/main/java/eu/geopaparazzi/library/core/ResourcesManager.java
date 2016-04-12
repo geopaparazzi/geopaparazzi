@@ -31,6 +31,7 @@ import java.io.Serializable;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
@@ -93,7 +94,7 @@ public class ResourcesManager implements Serializable {
 
     /**
      * The getter for the {@link ResourcesManager} singleton.
-     * <p/>
+     * <p>
      * <p>This is a singleton but might require to be recreated
      * in every moment of the application. This is due to the fact
      * that when the application looses focus (for example because of
@@ -232,7 +233,15 @@ public class ResourcesManager implements Serializable {
         /*
          * get the database file
          */
-        String databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
+        String databasePath = null;
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            String projectPath = ProfilesHandler.INSTANCE.getActiveProfile().projectPath;
+            if (projectPath != null && new File(projectPath).exists()) {
+                databasePath = projectPath;
+            }
+        }
+        if (databasePath == null)
+            databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
         databaseFile = new File(databasePath);
         if (databaseFile.getParentFile() == null || !databaseFile.getParentFile().exists()) {
             // fallback on the default
@@ -274,7 +283,7 @@ public class ResourcesManager implements Serializable {
 
     /**
      * Get the file to a default database location for the app.
-     * <p/>
+     * <p>
      * <p>This path is generated with default values and can be
      * exploited. It doesn't assure that in the location there really is a db.
      *

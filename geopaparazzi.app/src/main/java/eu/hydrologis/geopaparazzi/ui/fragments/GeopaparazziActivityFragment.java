@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
@@ -229,6 +230,12 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         inflater.inflate(R.menu.menu_main, menu);
 
         mGpsMenuItem = menu.getItem(3);
+
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            // hide new project and open project
+            menu.getItem(1).setVisible(false);
+            menu.getItem(2).setVisible(false);
+        }
     }
 
     @Override
