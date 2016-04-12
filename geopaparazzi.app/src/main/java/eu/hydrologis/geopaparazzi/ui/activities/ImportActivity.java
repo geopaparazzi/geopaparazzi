@@ -369,7 +369,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                         } else {
                             bboxStr = "YYY,XXX,YYY,XXX";
                         }
-                        sb.append("url=" + baseurl + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
+                        sb.append("url=" + baseurl.trim() + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
                                 + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //
                                 + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");
                         sb.append("minzoom=1\n");
