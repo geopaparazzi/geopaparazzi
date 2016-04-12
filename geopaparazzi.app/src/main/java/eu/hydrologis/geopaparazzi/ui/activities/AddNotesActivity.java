@@ -59,6 +59,8 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -100,6 +102,19 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            try {
+                View mainAddNotesLayout = findViewById(R.id.mainaddnoteslayout);
+                int color = ColorUtilities.toColor(ProfilesHandler.INSTANCE.getActiveProfile().color);
+                if (mainAddNotesLayout != null) {
+                    mainAddNotesLayout.setBackgroundColor(color);
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+
         togglePositionTypeButtonGps = (Switch) findViewById(R.id.togglePositionTypeGps);
         togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -110,8 +125,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         });
 
         double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-        mapCenterLatitude = mapCenter[1];
-        mapCenterLongitude = mapCenter[0];
+        if (mapCenter != null) {
+            mapCenterLatitude = mapCenter[1];
+            mapCenterLongitude = mapCenter[0];
+        }
         mapCenterElevation = 0.0;
 
         broadcastReceiver = new BroadcastReceiver() {

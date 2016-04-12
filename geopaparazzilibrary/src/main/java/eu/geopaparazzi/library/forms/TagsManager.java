@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 
@@ -58,10 +60,10 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
  * the asset folder of the project. In that case the file is copied over
  * to the file in the first point.</li>
  * </ul>
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * The tags file is subdivided as follows:
- * <p/>
+ * <p>
  * [{
  * "sectionname": "scheda_sisma",
  * "sectiondescription": "this produces a button names scheda_sisma",
@@ -91,7 +93,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
  * ....
  * ]
  * },{
- * <p/>
+ * <p>
  * }
  * ]
  * }]
@@ -127,13 +129,9 @@ public class TagsManager {
 
     /**
      * Reset the tags manager, forcing a new reread of the tags.
-     *
-     * @param context the context to use.
-     * @throws Exception if something goes wrong.
      */
-    public static void reset(Context context) throws Exception {
+    public static void reset() {
         tagsManager = null;
-        getInstance(context);
     }
 
     /**
@@ -146,13 +144,23 @@ public class TagsManager {
         if (sectionsMap == null) {
             sectionsMap = new LinkedHashMap<String, JSONObject>();
         }
-        File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
-        File tagsFile = new File(applicationDir, TAGSFILENAME);
-        if (!tagsFile.exists() || Debug.doOverwriteTags) {
-            AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("tags/tags.json");
+        File tagsFile = null;
+        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
+            Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+            tagsFile = new File(activeProfile.tagsPath);
+            if (!tagsFile.exists())
+                tagsFile = null;
+        }
 
-            FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
+        if (tagsFile == null) {
+            File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
+            tagsFile = new File(applicationDir, TAGSFILENAME);
+            if (!tagsFile.exists() || Debug.doOverwriteTags) {
+                AssetManager assetManager = context.getAssets();
+                InputStream inputStream = assetManager.open("tags/tags.json");
+
+                FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
+            }
         }
 
         if (tagsFile.exists()) {
@@ -257,7 +265,7 @@ public class TagsManager {
 
     /**
      * Utility method to get the formitems of a form object.
-     * <p/>
+     * <p>
      * <p>Note that the entering json object has to be one
      * object of the main array, not THE main array itself,
      * i.e. a choice was already done.

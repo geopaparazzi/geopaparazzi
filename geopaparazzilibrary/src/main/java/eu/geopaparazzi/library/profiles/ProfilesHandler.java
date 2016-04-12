@@ -54,6 +54,7 @@ public enum ProfilesHandler {
     public static final String ACTIVE = "active";
     public static final String TAGS_PATH = "tagsPath";
     public static final String PROJECT_PATH = "projectPath";
+    public static final String SDCARD_PATH = "sdcardPath";
     public static final String BASEMAPS = "basemaps";
     public static final String PATH = "path";
     public static final String SPATIALITE = "spatialitedbs";
@@ -149,6 +150,9 @@ public enum ProfilesHandler {
         if (profileObject.has(PROJECT_PATH)) {
             profile.projectPath = profileObject.getString(PROJECT_PATH);
         }
+        if (profileObject.has(SDCARD_PATH)) {
+            profile.sdcardPath = profileObject.getString(SDCARD_PATH);
+        }
         if (profileObject.has(BASEMAPS)) {
             JSONArray basemapsArray = profileObject.getJSONArray(BASEMAPS);
             for (int j = 0; j < basemapsArray.length(); j++) {
@@ -214,6 +218,7 @@ public enum ProfilesHandler {
         profileObject.put(ACTIVE, profile.active);
         profileObject.put(TAGS_PATH, profile.tagsPath);
         profileObject.put(PROJECT_PATH, profile.projectPath);
+        profileObject.put(SDCARD_PATH, profile.sdcardPath);
 
         if (profile.basemapsList.size() > 0) {
             JSONArray basemapsArray = new JSONArray();

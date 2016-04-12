@@ -20,6 +20,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
@@ -56,6 +57,8 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         setContentView(R.layout.activity_geopaparazzi);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        TagsManager.reset();
 
         checkIncomingProject();
 

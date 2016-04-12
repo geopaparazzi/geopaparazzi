@@ -37,6 +37,7 @@ public class Profile implements Parcelable {
     public String color = "#FFFFFF";
     public String tagsPath = "";
     public String projectPath = "";
+    public String sdcardPath = "";
     public List<String> basemapsList = new ArrayList<>();
     public List<String> spatialiteList = new ArrayList<>();
 
@@ -72,6 +73,7 @@ public class Profile implements Parcelable {
         dest.writeString(color);
         dest.writeString(tagsPath);
         dest.writeString(projectPath);
+        dest.writeString(sdcardPath);
         dest.writeList(basemapsList);
         dest.writeList(spatialiteList);
     }
@@ -93,6 +95,7 @@ public class Profile implements Parcelable {
             profile.color = in.readString();
             profile.tagsPath = in.readString();
             profile.projectPath = in.readString();
+            profile.sdcardPath = in.readString();
             profile.basemapsList = in.readArrayList(String.class.getClassLoader());
             profile.spatialiteList = in.readArrayList(String.class.getClassLoader());
 
@@ -103,4 +106,47 @@ public class Profile implements Parcelable {
             return new Profile[size];
         }
     };
+
+    /**
+     * Corrects the sdcard in all paths if necessary.
+     *
+     * @param newSdcard the current sdcard
+     */
+    public void correctPaths(String newSdcard) {
+        boolean hasChanged = false;
+        if (projectPath.startsWith(sdcardPath)) {
+            projectPath = projectPath.replace(sdcardPath, newSdcard);
+            hasChanged = true;
+        }
+        if (tagsPath.startsWith(sdcardPath)) {
+            tagsPath = tagsPath.replace(sdcardPath, newSdcard);
+            hasChanged = true;
+        }
+
+        List<String> newBasemapsList = new ArrayList<>();
+        for (int i = 0; i < basemapsList.size(); i++) {
+            String basemap = basemapsList.get(i);
+            if (basemap.startsWith(sdcardPath)) {
+                basemap = basemap.replace(sdcardPath, newSdcard);
+                newBasemapsList.add(basemap);
+                hasChanged = true;
+            }
+        }
+        basemapsList.clear();
+        basemapsList.addAll(newBasemapsList);
+
+        List<String> newSpatialitedbList = new ArrayList<>();
+        for (String spatialitedb : spatialiteList) {
+            if (spatialitedb.startsWith(sdcardPath)) {
+                spatialitedb = spatialitedb.replace(sdcardPath, newSdcard);
+                newSpatialitedbList.add(spatialitedb);
+                hasChanged = true;
+            }
+        }
+        spatialiteList.clear();
+        spatialiteList.addAll(newSpatialitedbList);
+        if (hasChanged) {
+            sdcardPath = newSdcard;
+        }
+    }
 }

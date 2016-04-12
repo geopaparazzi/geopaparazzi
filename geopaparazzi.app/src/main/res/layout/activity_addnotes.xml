@@ -27,7 +27,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/mainosmtagslayout"
+            android:id="@+id/mainaddnoteslayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
