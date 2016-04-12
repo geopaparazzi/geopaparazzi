@@ -55,6 +55,7 @@ import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
@@ -166,9 +167,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     public void add(View view) {
         try {
             String title = "Select basemap source to add";
-            String mimeType = "*/*";
-            Uri uri = Uri.parse(ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
-            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
+            String[] supportedExtensions = {"mapurl", "map", "sqlite", "mbtiles"};
+            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);
@@ -182,15 +182,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
             case (PICKFILE_REQUEST_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        String filePath = data.getDataString();
-                        File file;
-                        if (filePath.startsWith("file:")) {
-                            file = new File(new URL(filePath).toURI());
-                        } else {
-                            GPDialogs.warningDialog(this, "The map should be selected as local file. If you are not sure what that means install the 'Amaze file manager' and try again.", null);
-                            return;
-                        }
-
+                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                        File  file = new File(filePath);
                         if (file.exists()) {
                             final File finalFile = file;
                             StringAsyncTask task = new StringAsyncTask(this) {

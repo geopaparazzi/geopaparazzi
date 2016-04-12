@@ -29,4 +29,10 @@ public interface IApplicationChangeListener {
      * Called when the app needs to be restarted.
      */
     void onApplicationNeedsRestart();
+
+
+    /**
+     * Called when the app is closed by the user.
+     */
+    void onAppIsShuttingDown();
 }

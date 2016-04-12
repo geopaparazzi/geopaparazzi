@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 
 /**
  * An utility to handle 3rd party apps.
@@ -123,7 +124,7 @@ public class AppsUtilities {
      * @param mimeType        the mimetype.
      * @param uri             the uri of the start folder.
      */
-    public static void pickFile(IActivityStarter activityStarter, int requestCode, String title, String mimeType, Uri uri) {
+    public static void pickFileByExternalBrowser(IActivityStarter activityStarter, int requestCode, String title, String mimeType, Uri uri) {
         // first try with amaze
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setPackage(AppsUtilities.AMAZE_PACKAGE);
@@ -153,6 +154,13 @@ public class AppsUtilities {
                 }
             }
         }
+    }
+
+    public static void pickFile(IActivityStarter activityStarter, int requestCode, String title, String[] filterExtensions, String startPath) {
+        Intent browseIntent = new Intent(activityStarter.getContext(), DirectoryBrowserActivity.class);
+        browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, filterExtensions);
+        browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, startPath);
+        activityStarter.startActivityForResult(browseIntent, requestCode);
     }
 
 

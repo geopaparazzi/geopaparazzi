@@ -58,8 +58,6 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        TagsManager.reset();
-
         checkIncomingProject();
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -182,15 +180,6 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
         super.onStart();
     }
 
-    @Override
-    public void finish() {
-        try {
-            GpsServiceUtilities.stopDatabaseLogging(this);
-            GpsServiceUtilities.stopGpsService(this);
-        } finally {
-            super.finish();
-        }
-    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button
@@ -228,6 +217,15 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
                 }
             }
         }, 10);
+    }
+
+    @Override
+    public void onAppIsShuttingDown() {
+        GpsServiceUtilities.stopDatabaseLogging(this);
+        GpsServiceUtilities.stopGpsService(this);
+
+        TagsManager.reset();
+        GeopaparazziApplication.reset();
     }
 
 }

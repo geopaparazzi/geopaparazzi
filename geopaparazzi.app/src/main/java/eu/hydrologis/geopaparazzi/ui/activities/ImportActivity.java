@@ -200,10 +200,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
     private void importGpx() throws Exception {
         String title = getString(R.string.select_gpx_file);
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPX.getExtension());
-        if (mimeType == null) mimeType = "text/" + FileTypes.GPX.getExtension();
-        Uri uri = Uri.parse(ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
-        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
+        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, new String[]{FileTypes.GPX.getExtension()}, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
     }
 
 
@@ -213,12 +210,12 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
             case (PICKFILE_REQUEST_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        String filePath = data.getDataString();
+                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         if (!filePath.toLowerCase().endsWith(FileTypes.GPX.getExtension())) {
                             GPDialogs.warningDialog(this, getString(R.string.no_gpx_selected), null);
                             return;
                         }
-                        File file = new File(new URL(filePath).toURI());
+                        File file = new File(filePath);
                         if (file.exists()) {
                             GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
                             gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");

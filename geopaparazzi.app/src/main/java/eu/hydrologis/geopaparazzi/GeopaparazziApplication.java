@@ -46,7 +46,7 @@ resToastText = R.string.crash_toast_text, //
 logcatArguments = {"-t", "400", "-v", "time", "GPLOG:I", "*:S"})
 public class GeopaparazziApplication extends GPApplication {
 
-    private SQLiteDatabase database;
+    private static SQLiteDatabase database;
 
     @Override
     public void onCreate() {
@@ -69,7 +69,11 @@ public class GeopaparazziApplication extends GPApplication {
     public void closeDatabase() {
         if (database != null && database.isOpen()) {
             database.close();
-            database = null;
         }
+        database = null;
+    }
+
+    public static void reset(){
+        database = null;
     }
 }

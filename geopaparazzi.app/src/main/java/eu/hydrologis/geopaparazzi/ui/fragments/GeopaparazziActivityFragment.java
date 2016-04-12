@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
+import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.style.ColorUtilities;
@@ -120,6 +121,18 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         // this fragment adds to the menu
         setHasOptionsMenu(true);
+
+
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.projectPath != null && new File(activeProfile.projectPath).exists()) {
+                View dashboardView = v.findViewById(R.id.dashboardLayout);
+                String color = activeProfile.color;
+                if (color != null) {
+                    dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
+                }
+            }
+        }
 
         try {
             initializeResourcesManager();
@@ -231,10 +244,13 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         mGpsMenuItem = menu.getItem(3);
 
-        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
-            // hide new project and open project
-            menu.getItem(1).setVisible(false);
-            menu.getItem(2).setVisible(false);
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.projectPath != null && new File(activeProfile.projectPath).exists()) {
+                // hide new project and open project
+                menu.getItem(1).setVisible(false);
+                menu.getItem(2).setVisible(false);
+            }
         }
     }
 
@@ -254,10 +270,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             case R.id.action_load: {
                 try {
                     String title = getString(R.string.select_gpap_file);
-                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileTypes.GPAP.getExtension());
-                    if (mimeType == null) mimeType = "application/" + FileTypes.GPAP.getExtension();
-                    Uri uri = Uri.parse(ResourcesManager.getInstance(getActivity()).getSdcardDir().getAbsolutePath());
-                    AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, mimeType, uri);
+                    AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, new String[]{FileTypes.GPAP.getExtension()}, ResourcesManager.getInstance(getActivity()).getSdcardDir().getAbsolutePath());
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
@@ -289,6 +302,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 return true;
             }
             case R.id.action_exit: {
+
+                appChangeListener.onAppIsShuttingDown();
                 getActivity().finish();
                 return true;
             }
@@ -302,13 +317,13 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        String filePath = data.getDataString();
+                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         if (filePath == null) return;
                         if (!filePath.endsWith(FileTypes.GPAP.getExtension())) {
                             GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.selected_file_is_no_geopap_project), null);
                             return;
                         }
-                        File file = new File(new URL(filePath).toURI());
+                        File file = new File(filePath);
                         if (file.exists()) {
                             try {
                                 DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), file.getAbsolutePath());

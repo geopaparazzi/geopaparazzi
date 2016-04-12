@@ -60,6 +60,7 @@ import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -165,9 +166,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     public void add(View view) {
         try {
             String title = "Select spatialite database to add";
-            String mimeType = "*/*";
-            Uri uri = Uri.parse(ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
-            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, mimeType, uri);
+            String[] supportedExtensions = {"sqlite"};
+            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);
@@ -181,8 +181,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
             case (PICKFILE_REQUEST_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        String filePath = data.getDataString();
-                        final File file = new File(new URL(filePath).toURI());
+                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                        final File file = new File(filePath);
                         if (file.exists()) {
                             StringAsyncTask task = new StringAsyncTask(this) {
                                 public List<SpatialiteMap> spatialiteMaps;
