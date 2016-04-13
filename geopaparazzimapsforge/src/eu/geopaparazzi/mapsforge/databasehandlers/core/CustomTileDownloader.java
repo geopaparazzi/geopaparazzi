@@ -57,7 +57,7 @@ public class CustomTileDownloader extends TileDownloader {
     private static final String GEOPAPARAZZI_STR = "Geopaparazzi";
     private static final String USER_AGENT_STR = "User-Agent";
     private static final String HTTP_STR = "http";
-    private static final String HTTP_PROTOCOL_STR = "http://";
+    private static final String HTTPS_STR = "https";
     //private static final String FILE_PROTOCOL_STR = "file:";
     private static final String REQUEST_PROTOCOL_STR = "request_protocol";
     private static final String REQUEST_Y_TYPE_STR = "request_y_type";
@@ -112,27 +112,16 @@ public class CustomTileDownloader extends TileDownloader {
     private final double boundsEast; // wsg84
     private final double boundsNorth; // wsg84
     private final double boundsSouth; // wsg84
-    private String mbtilesFilePath; // mbtiles specific
-    private File mbtilesFile = null; // mbtiles specific
     private String name; // mbtiles specific
     private String description; // mbtiles specific
     private String format; // mbtiles specific
-    private String tileRowType = "tms"; // mbtiles specific
     private int i_force_unique = 0;
     private MbtilesDatabaseHandler mbtilesDatabase = null;
-    private HashMap<String, String> mapurlMetadata = null; // list for future editing
-    private HashMap<String, String> mbtilesMetadataMap = null; // list for mbtiles support
-    private HashMap<String, String> mbtilesRequestUrl = null; // list for mbtiles request support
     private int i_tile_server = 0; // if no 'SSS' is found, server logic will not be called
-    private String requestType = "";
-    private String requestUrl = "";
-    private String requestBounds = "";
-    private String requestedZoomLevels = "";
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart = "";
     private boolean isFile = false;
-    private boolean doResetMetadata = false;
     private TILESCHEMA type = TILESCHEMA.google;
     private boolean isConnectedToInternet;
     private boolean doScaleTiles;
@@ -164,10 +153,9 @@ public class CustomTileDownloader extends TileDownloader {
         double[] bounds = new double[]{-180.0, -85.05113, 180, 85.05113};
         double[] center = {0.0, 0.0};
         double[] request_bounds = new double[]{0.0, 0.0, 0.0, 0.0};
-        mbtilesFilePath = "";
-        mapurlMetadata = new LinkedHashMap<>();
-        mbtilesMetadataMap = new LinkedHashMap<>();
-        mbtilesRequestUrl = new LinkedHashMap<>();
+        String mbtilesFilePath = "";
+        HashMap<String, String> mbtilesMetadataMap = new LinkedHashMap<>();
+        HashMap<String, String> mbtilesRequestUrl = new LinkedHashMap<>();
         if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
             sb.append("CustomTileDownloader called with:\n");
@@ -181,6 +169,12 @@ public class CustomTileDownloader extends TileDownloader {
             GPLog.addLogEntry(sb.toString());
         }
 
+        File mbtilesFile = null;
+        String tileRowType = "tms";
+        String requestType = "";
+        String requestUrl = "";
+        String requestBounds = "";
+        String requestedZoomLevels = "";
         for (String line : fileLines) {
             line = line.trim();
             if (line.length() == 0) {
@@ -188,16 +182,9 @@ public class CustomTileDownloader extends TileDownloader {
             }
 
             int split = line.indexOf('=');
-            if (split < 0) { // some sort of comment, save back when editing mapurl file
-                mapurlMetadata.put(line, "");
-            }
             if (split != -1) {
                 String parm = line.substring(0, split);
                 String value = line.substring(split + 1).trim();
-                // save value for future editing
-                mapurlMetadata.put(parm, value); // parm without '='
-                // GPLog.androidLog(-1,"CustomTileDownloader parm[" + parm+ "] value[" + value+
-                // "]");
                 if (line.startsWith(URL_STR)) {
                     requestUrl = value;
                     int indexOfS = value.indexOf(SSS_STR);
@@ -211,8 +198,11 @@ public class CustomTileDownloader extends TileDownloader {
                         // url=mytilesfolder/ZZZ/XXX/YYY.png
                         // url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
                         String s_work = value;
-                        if (value.startsWith(HTTP_STR)) { // tms_server
-                            s_work = value.substring(7); // removed: 'http://'
+                        if (value.startsWith(HTTPS_STR)) {
+                            s_work = value.substring(8);
+                            PROTOCOL = HTTPS_STR;
+                        } else if (value.startsWith(HTTP_STR)) {
+                            s_work = value.substring(7);
                         }
                         int indexOfSeperator = s_work.indexOf("/");
                         // tms_servers and local files will always have a '/' in them
@@ -226,7 +216,12 @@ public class CustomTileDownloader extends TileDownloader {
                     } else {
                         int indexOfParms = value.indexOf("?");
                         // wms server should always have a '?' in them
-                        HOST_NAME = value.substring(7, indexOfParms); // removed: 'http://'
+                        if (value.startsWith(HTTPS_STR)) {
+                            HOST_NAME = value.substring(8, indexOfParms); // removed: 'http://'
+                            PROTOCOL = HTTPS_STR;
+                        } else if (value.startsWith(HTTP_STR)) {
+                            HOST_NAME = value.substring(7, indexOfParms); // removed: 'http://'
+                        }
                         tilePart = value.substring(indexOfParms);
                     }
                 }
@@ -303,7 +298,7 @@ public class CustomTileDownloader extends TileDownloader {
                 }
                 if (line.startsWith(TILE_ROW_TYPE_STR)) {
                     if (value.equals(TILESCHEMA.tms.toString()) || value.equals(TILESCHEMA.osm.toString())) {
-                        this.tileRowType = value;
+                        tileRowType = value;
                     }
                 }
                 if (line.startsWith(DEFAULTZOOM_STR)) {
@@ -368,6 +363,7 @@ public class CustomTileDownloader extends TileDownloader {
         this.defaultZoom = ZOOM_DEFAULT;
         setDescription(this.description);
         if (mbtilesFilePath.length() > 0) {
+            boolean doResetMetadata = false;
             if (!requestType.equals("")) {
                 int run = 0;
                 int create = 0;
@@ -486,7 +482,7 @@ public class CustomTileDownloader extends TileDownloader {
                 mbtilesMetadataMap.put(DESCRIPTION_STR, this.description);
                 if (!mbtilesFile.exists()) {
                     mbtilesMetadataMap.put(FORMAT_STR, this.format);
-                    mbtilesMetadataMap.put(TILE_ROW_TYPE_STR, this.tileRowType);
+                    mbtilesMetadataMap.put(TILE_ROW_TYPE_STR, tileRowType);
                 }
                 // 'reset_metadata': will manually reset the mbtiles-metadata entries:
                 // 'name','description','bounds','center','minzoom','maxzoom' ; NOT:
@@ -537,7 +533,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return Min Zoom
-     * <p/>
+     * <p>
      * <p>default :  0
      * <p>mbtiles : taken from value of metadata 'minzoom'
      * <p>map : value is given in 'StartZoomLevel'
@@ -550,7 +546,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return Max Zoom
-     * <p/>
+     * <p>
      * <p>default :  22
      * <p>mbtiles : taken from value of metadata 'maxzoom'
      * <p>map : value not defined, seems to calculate bitmap from vector data [18]
@@ -563,7 +559,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return West X Value [Longitude]
-     * <p/>
+     * <p>
      * <p>default :  -180.0 [if not otherwise set]
      * <p>mbtiles : taken from 1st value of metadata 'bounds'
      *
@@ -575,7 +571,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return South Y Value [Latitude]
-     * <p/>
+     * <p>
      * <p>default :  -85.05113 [if not otherwise set]
      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
      *
@@ -587,7 +583,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return East X Value [Longitude]
-     * <p/>
+     * <p>
      * <p>default :  180.0 [if not otherwise set]
      * <p>mbtiles : taken from 3th value of metadata 'bounds'
      *
@@ -599,7 +595,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return North Y Value [Latitude]
-     * <p/>
+     * <p>
      * <p>default :  85.05113 [if not otherwise set]
      * <p>mbtiles : taken from 4th value of metadata 'bounds'
      *
@@ -611,7 +607,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return Center X Value [Longitude]
-     * <p/>
+     * <p>
      * <p>default : center of bounds
      * <p>mbtiles : taken from 1st value of metadata 'center'
      *
@@ -623,7 +619,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return Center Y Value [Latitude]
-     * <p/>
+     * <p>
      * <p>default : center of bounds
      * <p>mbtiles : taken from 2nd value of metadata 'center'
      *
@@ -635,7 +631,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Retrieve Zoom level
-     * <p/>
+     * <p>
      * <p>default : minZoom
      * <p>mbtiles : taken from 3rd value of metadata 'center'
      *
@@ -647,7 +643,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return short name of map/file
-     * <p/>
+     * <p>
      * <p>default: file name without path and extention
      * <p>mbtiles : metadata 'name'
      * <p>map : will be value of 'comment', if not null
@@ -660,7 +656,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return String of bounds [wms-format]
-     * <p/>
+     * <p>
      * <p>x_min,y_min,x_max,y_max
      *
      * @return bounds formatted using wms format
@@ -671,7 +667,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return String of Map-Center with default Zoom
-     * <p/>
+     * <p>
      * <p>x_position,y_position,default_zoom
      *
      * @return center formatted using mbtiles format
@@ -682,7 +678,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Return long description of map/file
-     * <p/>
+     * <p>
      * <p>default: s_name with bounds and center
      * <p>mbtiles : metadata description'
      * <p>map : will be value of 'comment', if not null
@@ -699,7 +695,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Set long description of map/file
-     * <p/>
+     * <p>
      * <p>default: s_name with bounds and center
      * <p>mbtiles : metadata description'
      * <p>map : will be value of 'comment', if not null
@@ -771,8 +767,13 @@ public class CustomTileDownloader extends TileDownloader {
                 }
             }
             StringBuilder sb = new StringBuilder();
-            if (!isFile && !tilePath.startsWith(HTTP_STR)) {
-                sb.append(HTTP_PROTOCOL_STR);
+            if (!isFile) {
+                if (!tilePath.startsWith(HTTPS_STR)) {
+                    sb.append(HTTPS_STR);
+                } else {
+                    sb.append(HTTP_STR);
+                }
+                sb.append("://");
             }
             String s_host_name = HOST_NAME;
             if (i_tile_server > 0) {
@@ -782,11 +783,6 @@ public class CustomTileDownloader extends TileDownloader {
             }
             sb.append(s_host_name);
             sb.append(tilePath);
-            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()+"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
-            if (isFile) {
-                if (GPLog.LOG_ABSURD)
-                    GPLog.androidLog(-1, "CustomTileDownloader.executeJob: request[" + sb.toString() + "] ");
-            }
             Bitmap decodedBitmap = null;
 
             Context context = GPApplication.getInstance();
@@ -796,6 +792,8 @@ public class CustomTileDownloader extends TileDownloader {
             if (isConnectedToInternet || isFile) {
                 try {
                     String urlString = sb.toString();
+                    if (GPLog.LOG_HEAVY)
+                        GPLog.addLogEntry(this, "CustomTileDownloader.executeJob: " + sb.toString());
                     if (isFile) {
                         File bitmapFile = new File(urlString);
                         if (bitmapFile.exists())
@@ -870,7 +868,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     /**
      * Function to check and correct bounds / zoom level [for 'CustomDownloader']
-     * <p/>
+     * <p>
      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation
      * [will be converted to 'tms' notation if needed]
      *
