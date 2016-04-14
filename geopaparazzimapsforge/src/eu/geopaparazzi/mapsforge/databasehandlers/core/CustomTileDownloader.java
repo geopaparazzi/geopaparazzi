@@ -200,7 +200,6 @@ public class CustomTileDownloader extends TileDownloader {
                         String s_work = value;
                         if (value.startsWith(HTTPS_STR)) {
                             s_work = value.substring(8);
-                            PROTOCOL = HTTPS_STR;
                         } else if (value.startsWith(HTTP_STR)) {
                             s_work = value.substring(7);
                         }
@@ -218,7 +217,6 @@ public class CustomTileDownloader extends TileDownloader {
                         // wms server should always have a '?' in them
                         if (value.startsWith(HTTPS_STR)) {
                             HOST_NAME = value.substring(8, indexOfParms); // removed: 'http://'
-                            PROTOCOL = HTTPS_STR;
                         } else if (value.startsWith(HTTP_STR)) {
                             HOST_NAME = value.substring(7, indexOfParms); // removed: 'http://'
                         }
@@ -768,11 +766,7 @@ public class CustomTileDownloader extends TileDownloader {
             }
             StringBuilder sb = new StringBuilder();
             if (!isFile) {
-                if (!tilePath.startsWith(HTTPS_STR)) {
-                    sb.append(HTTPS_STR);
-                } else {
-                    sb.append(HTTP_STR);
-                }
+                sb.append(HTTP_STR);
                 sb.append("://");
             }
             String s_host_name = HOST_NAME;
