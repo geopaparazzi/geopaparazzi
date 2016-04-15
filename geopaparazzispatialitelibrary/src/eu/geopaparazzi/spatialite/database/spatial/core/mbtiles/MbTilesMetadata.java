@@ -15,7 +15,7 @@ public class MbTilesMetadata {
     public final float[] bounds;
     public final float[] center;
     public final int minZoom;
-    public final int maxZoom;
+    public int maxZoom;
     public final int defaultZoom;
     public String s_tile_row_type = "tms";
     public String s_center_parm = "";

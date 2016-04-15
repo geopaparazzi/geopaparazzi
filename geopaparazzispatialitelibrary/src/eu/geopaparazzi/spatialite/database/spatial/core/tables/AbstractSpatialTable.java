@@ -56,6 +56,8 @@ public abstract class AbstractSpatialTable implements Serializable {
     protected String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     protected String primaryKeyFields = "";
+    // Detailed result of cause of error from parse_vector_key_value
+    protected String s_error_text="";
         /**
      * {@link HashMap} of all fields of this table [name,type]
      */
@@ -224,7 +226,7 @@ public abstract class AbstractSpatialTable implements Serializable {
            s_error="unknow error return code["+i_rc+"]";
           break;
          }
-         GPLog.androidLog(-1, "-E-> parse_vector_key_value["+i_rc+"]["+s_error+"]: vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
+         GPLog.androidLog(-1, "-E-> parse_vector_key_value["+i_rc+"]["+s_error+"] ["+s_error_text+"]: vector_key["+ vector_key+"] vector_value["+ vector_value+"]");
          isTableValid=false;
         }
      }
@@ -283,7 +285,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      * <ol>
      * <li>vector_key='coverage_name;compression;RasterLite2;title;abstract' = length=5[0-4]</li>
      * <li>vector_data='pixel_type;tile_width;srid;horz_resolution' = length=4[0-3]</li>
-     * <li>vector_extent='num_bands;extent_0-3;now;styles_0-4;zoom_levels_0-2' = length=5[0-4]</li>
+     * <li>vector_extent='num_bands;extent_0-3;now;center_x,center_y,srid;zoom_levels_0-2;styles_0-4' = length=5[0-4]</li>
      * </ol>
      * <p>MbTiles, Map, Mapurl
      * <ol>
@@ -314,8 +316,9 @@ public abstract class AbstractSpatialTable implements Serializable {
      int i_default_zoom=this.defaultZoom;
      int i_min_zoom=this.minZoom;
      int i_max_zoom=this.maxZoom;
-     String s_vector_extent_styles="";
+     String s_vector_extent_center_x_y_srid="";
      String s_vector_extent_zoom_levels="";
+     String s_vector_extent_styles="";
      String style_raster = "default";
      String style_vector = "default";
      String style_raster_group = "default";
@@ -325,6 +328,8 @@ public abstract class AbstractSpatialTable implements Serializable {
      this.view_read_only=0;
      String[] sa_string = vector_key.split(";");
      int i_length_key=sa_string.length; // remove later
+     boolean b_debug=false;
+     // b_debug=true;
      if (sa_string.length == 5) 
      {
       String layerType = sa_string[2];
@@ -342,7 +347,10 @@ public abstract class AbstractSpatialTable implements Serializable {
        i_rc=0;
       }
       else
+      {
+       s_error_text="layer_type["+layerType+"]";
        return  i_rc;
+      }
       this.tableName = sa_string[0];
       String geometry_column = sa_string[1];      
       // For SpatialTable/Views ; for RasterLite2/GeoPackage short description (title/identifier)
@@ -351,7 +359,6 @@ public abstract class AbstractSpatialTable implements Serializable {
       s_view_read_only = sa_string[4];
       // vector_value=vector_data+";"+vector_extent [MUST be a least length=7]
       sa_string = vector_value.split(";");
-      // GPLog.androidLog(-1, "parse_vector_key_value: vector_key["+ vector_key+"] key.length["+i_length_key+"] value.length["+sa_string.length+"] vector_value["+ vector_value+"]");
       // vector_value[5;2;3068;120;-4.24035848509084,1208.43017876675,49230.1528101726,38747.9589061869;2014-06-21T08:53:45.706Z]
       if (sa_string.length >= 7) 
       { // We may be overriding some of these values, before setting the final values
@@ -364,12 +371,13 @@ public abstract class AbstractSpatialTable implements Serializable {
         if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
         {
          s_srid=LibraryConstants.SRID_BRANDENBURGER_TOR_187999;
-        }
+        }  
         else
         {
+         s_error_text="srid["+s_srid+"]";
          i_rc=7; // "unexpected srid (Not supported: 'srid <= 0')
-        }
-       }
+        }      
+       }       
        String s_spatial_index_enabled = sa_string[3]; // spatial_index /  horz_resolution
        // -1;-75.5;18.0;-71.06667;20.08333;2013-12-24T16:32:14.000000Z
        // 0 = not possible as sub-query - but also not needed
@@ -383,11 +391,32 @@ public abstract class AbstractSpatialTable implements Serializable {
         {
          if (this.layerTypeDescription.equals(TableTypes.RL2RASTER.getDescription()))
          { // RasterLite2-Styles
-          s_vector_extent_styles= sa_string[7];
+          s_vector_extent_center_x_y_srid= sa_string[7];
           if (sa_string.length >= 9) 
           { // RasterLite2-Zoom-Levels
            s_vector_extent_zoom_levels= sa_string[8];
+           if (sa_string.length >= 10) 
+           {
+             s_vector_extent_styles= sa_string[9];
+           }
           }
+          if (b_debug)
+           GPLog.androidLog(-1, "parse_vector_key_value: center_x_y_srid["+s_vector_extent_center_x_y_srid+"] vector_extent_zoom_levels["+s_vector_extent_zoom_levels+"] vector_extent_styles["+s_vector_extent_styles+"]");
+          if (!s_vector_extent_center_x_y_srid.equals("")) 
+          {           
+           String[] sa_center_values = s_vector_extent_zoom_levels.split(",");
+           if (sa_center_values.length == 3) 
+           { // Center-Values: center_x,center_y,coverage_srid
+            try 
+            { // coverage_srid is NOT needed, but part of 'RL2_GetRasterCoverageDefaults'
+             centerCoordinate[0] = Double.parseDouble(sa_center_values[0]);  // center_x
+             centerCoordinate[1] = Double.parseDouble(sa_center_values[1]);   // center_y          
+            } 
+            catch (NumberFormatException e) 
+            {
+            }
+           }
+          } 
          }
         }
         String[] sa_bounds = s_bounds.split(",");
@@ -404,8 +433,8 @@ public abstract class AbstractSpatialTable implements Serializable {
                 (this.layerTypeDescription.equals(SpatialDataType.MAPURL.getTypeName())) ||
                 (this.layerTypeDescription.equals(SpatialDataType.MBTILES.getTypeName()))))
           { // MbTiles,Map,Mapurl only
-           centerCoordinate[0] = Double.parseDouble(sa_bounds[4]);
-           centerCoordinate[1] = Double.parseDouble(sa_bounds[5]);
+           centerCoordinate[0] = Double.parseDouble(sa_bounds[4]); // center_x
+           centerCoordinate[1] = Double.parseDouble(sa_bounds[5]); // center_y
            i_default_zoom = Integer.parseInt(sa_bounds[6]);
           }
          } 
@@ -426,7 +455,10 @@ public abstract class AbstractSpatialTable implements Serializable {
          }
         }
         else
+        {
+         s_error_text="length["+sa_string.length+"]";
          i_rc=4;
+        }
        }
        if (i_rc == 0)
        {
@@ -467,10 +499,12 @@ public abstract class AbstractSpatialTable implements Serializable {
          }
          if (i_spatial_index_enabled  != 1)
          {
+           s_error_text="i_spatial_index_enabled["+i_spatial_index_enabled+"]";
           i_rc=5; // 'spatial_index' not 1 where needed for 'SpatialTable'+'SpatialView' 
          }   
-         if (this.dbSpatialite  == null)
+         if (this.dbSpatialite == null)
          {
+          s_error_text="this.dbSpatialite == null";
           i_rc=6; // no spatialite Database connection  for 'SpatialTable'+'SpatialView'
          }  
         }
@@ -497,15 +531,15 @@ public abstract class AbstractSpatialTable implements Serializable {
            style_raster_group=sa_styles[2];
            style_vector_group=sa_styles[3];
           }
-         }
+         }        
          if (!s_vector_extent_zoom_levels.equals("")) 
          {           
           String[] sa_zoom_levels = s_vector_extent_zoom_levels.split(",");
           if (sa_zoom_levels.length == 3) 
-          { // Zoom-Levels: min/max/default
+          { // Zoom-Levels: min/default/max
            i_min_zoom = Integer.parseInt(sa_zoom_levels[0]); 
-           i_max_zoom = Integer.parseInt(sa_zoom_levels[1]); 
            i_default_zoom = Integer.parseInt(sa_zoom_levels[1]); 
+           i_max_zoom = Integer.parseInt(sa_zoom_levels[2]);            
           }
          }         
         }
@@ -598,10 +632,16 @@ public abstract class AbstractSpatialTable implements Serializable {
        }  
       }
       else
+      {
+       s_error_text="length["+sa_string.length+"]";
        i_rc=3;
+      }
      }
      else
+     {
+      s_error_text="length["+sa_string.length+"]";
       i_rc=1;
+     }
      return i_rc;
     }
     

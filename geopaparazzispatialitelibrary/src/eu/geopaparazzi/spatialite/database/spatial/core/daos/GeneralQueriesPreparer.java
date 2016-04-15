@@ -708,7 +708,15 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||','||extent_maxx"); // 1.2
             sb_query.append("||','||extent_maxy"); // 1.3
             sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')"); // 2
-            sb_query.append("||';default,default,default:default'"); // 3.1,3.2,3.3,3.4 (reserved for Styles[raster,vector,raster_group,vector_group]) 
+            // 'center_x,center_y,coverage_srid;zoom_min,zoom_default,zoom_max'
+            // field coverage_srid will show the error code if the function fails
+            // - coverage_srid is otherwise  not used
+            // Note: if RL2_GetRasterCoverageDefaults is NOT ir should be replaced with '0,0,777;0,0,0' 
+             // sb_query.append("||';'||'0,0,777;0,0,0'"); // turn off RL2_GetRasterCoverageDefaults
+            sb_query.append("||';'||CASE WHEN (RL2_GetRasterCoverageDefaults(coverage_name) GLOB '*[;,]*') ");
+            sb_query.append("THEN RL2_GetRasterCoverageDefaults(coverage_name) ");
+            sb_query.append("ELSE '0,0,'||RL2_GetRasterCoverageDefaults(coverage_name)||';0,0,0' END");
+            sb_query.append("||';default,default,default,default'");  // (reserved for Styles[raster,vector,group]) 
             sb_query.append(" AS vector_extent"); // 2
              VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
         }
@@ -779,8 +787,13 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("||','||CASE WHEN extent_maxx IS NULL THEN 'extent_maxx' ELSE extent_maxx END"); // 1.2
             sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE extent_maxy END"); // 1.3
             sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')"); // 2
+            // 'center_x,center_y,coverage_srid;zoom_min,zoom_default,zoom_max'
+            // field coverage_srid will show the error code if the function fails
+            // - coverage_srid is otherwise  not used
+            sb_query.append("||';'||CASE WHEN (RL2_GetRasterCoverageDefaults(coverage_name) GLOB '*[;,]*') ");
+            sb_query.append("THEN RL2_GetRasterCoverageDefaults(coverage_name) ");
+            sb_query.append("ELSE '0,0,'||RL2_GetRasterCoverageDefaults(coverage_name)||';0,0,0' END");
             sb_query.append("||';default,default,default'"); // 5 (reserved for Styles[raster,vector,group]) 
-            // SPL_Vectors.getSpatialVectorMap_V4 will ADD zoom_min/max/default values as default[';0,22,18']
             sb_query.append(" AS vector_extent"); // 2
             VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
         }

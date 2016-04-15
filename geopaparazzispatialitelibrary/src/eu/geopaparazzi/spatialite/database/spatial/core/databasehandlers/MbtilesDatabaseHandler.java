@@ -236,13 +236,14 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         } catch (NumberFormatException e) {
             return null;
         }
+        // GPLog.androidLog(-1,"MbtilesDatabaseHandler.getRasterTile["+query+"] ");
         byte[] tileAsBytes = mbtilesSplitter.getTileAsBytes(i_x, i_y_osm, i_z);
         return tileAsBytes;
     }
 
     /**
       * Function to retrieve Tile Bitmap from the mbtiles Database.
-      *
+      * Note: the main task has been moved into MBTilesDroidSpitter to simplify the possible Scal-Tile support for missing tiles
       * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation 
       * [will be converted to 'tms' notation if needed]
       *
@@ -254,6 +255,11 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
       * @return Bitmap of the tile or null if no tile matched the given parameters
       */
     public boolean getBitmapTile( int i_x, int i_y_osm, int i_z, int i_pixel_size, Bitmap tile_bitmap ) {
+        if (mbtilesSplitter.getmbtiles() == null) { // in case .'open' was forgotten
+            open(); // "" : default value will be used '1.1'
+       }
+       return mbtilesSplitter.getBitmapTile(i_x,i_y_osm,i_z,i_pixel_size,tile_bitmap);
+     /*
         boolean b_rc = true;
         if (mbtilesSplitter.getmbtiles() == null) { // in case .'open' was forgotten
             open(); // "" : default value will be used '1.1'
@@ -278,6 +284,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         // copy all pixels from the color array to the tile bitmap
         tile_bitmap.setPixels(pixels, 0, i_pixel_size, 0, 0, i_pixel_size, i_pixel_size);
         return b_rc;
+        */
     }
 
     /**
@@ -326,9 +333,9 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         float[] center = metadata.center;// center_x,center_y,zoom
         this.databaseFileNameNoExtension = metadata.name;
         this.tableName = metadata.description;
-        this.defaultZoom = metadata.maxZoom;
         this.minZoom = metadata.minZoom;
         this.maxZoom = metadata.maxZoom;
+        this.defaultZoom = metadata.defaultZoom;
         this.boundsWest = d_bounds[0];
         this.boundsSouth = d_bounds[1];
         this.boundsEast = d_bounds[2];

@@ -116,6 +116,7 @@ public class GeopackageTileDownloader extends TileDownloader {
                 rasterBytes = SPL_Rasterlite.getRasterTileInBounds(spatialiteDatabase, rasterTable, tileBounds, tileSize);
             } else {
                 tileQuery = getTilePath(tile);
+                 // GPLog.androidLog(-1,"GeopackageTileDownloader.executeJob["+tileQuery+"] ");
                 rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
             }
             Bitmap decodedBitmap = null;

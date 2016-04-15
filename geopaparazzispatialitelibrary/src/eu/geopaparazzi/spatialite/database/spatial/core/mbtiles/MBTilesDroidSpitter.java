@@ -11,6 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.Canvas; // Bitmap resizeBitmap
+import android.graphics.Matrix; // Bitmap resizeBitmap
+import android.graphics.Paint; // Bitmap resizeBitmap
+import java.io.FileOutputStream; // remove later
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,6 +51,7 @@ public class MBTilesDroidSpitter {
     public static final int i_request_url_count_drop = 3;
     public static final int i_request_url_count_insert = 4;
     public static final int i_request_url_count_delete = 5;
+    public int i_scale_tile_layers = 1;
     private boolean b_mbtiles_valid = false;
     private HashMap<String, String> mbtiles_metadata = null;
     HashMap<String, String> bounds_lat_long = null;
@@ -248,7 +253,8 @@ public class MBTilesDroidSpitter {
             s_z = Integer.toString(i_z);
         } catch (NumberFormatException e) {
             return null;
-        }
+        }        
+        int i_rc=0;
         // db_lock.readLock().lock();
         byte[] blob_data = null;
         try {
@@ -258,16 +264,86 @@ public class MBTilesDroidSpitter {
             if (!c.moveToFirst()) {
                 c.close();
                 // db_lock.readLock().unlock();
-                return null;
+                // The Raster at this Zoom-Level does not exist
+             i_rc=1;
+             if (i_scale_tile_layers > 0)
+             { // If the prev Zoom-Level tile exists, scale it and retrieve the portion needed here
+              // false: return only one tile ; true return the 4 tiles
+              GPLog.androidLog(-1,"MBTilesDroidSpitter.getTileAsBytes["+i_z+"/"+i_x+"/"+i_y_osm+" tms["+i_y+"] ");
+              Bitmap[] array_bitmaps=fetchBitmapsTileNextZoom(i_x, i_y_osm,i_z, true);
+              if ((array_bitmaps != null) && (array_bitmaps[0] != null))
+              { // The prev Zoom-Level tile exists
+               ByteArrayOutputStream ba_stream = new ByteArrayOutputStream();
+               array_bitmaps[0].compress(Bitmap.CompressFormat.PNG, 100, ba_stream);
+               blob_data = ba_stream.toByteArray();  
+               array_bitmaps[0].recycle();
+              }
+             }              
             }
-            blob_data = c.getBlob(c.getColumnIndex("tile_data"));
-            c.close();
+            if (i_rc== 0)
+            {
+             blob_data = c.getBlob(c.getColumnIndex("tile_data"));
+             c.close();
+            }
         } catch (Exception e) {
             GPLog.error(this, null, e);
             //} finally { // causes crash
             // db_lock.readLock().unlock();
         }
         return blob_data;
+    }
+     /**
+      * Function to retrieve Tile Bitmap from the mbtiles Database.
+      *
+      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation 
+      * [will be converted to 'tms' notation if needed]
+      *
+      * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+      * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+      * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+      * @param i_pixel_size the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+      * @param tile_bitmap retrieve the Bitmap as done in 'CustomTileDownloader'
+      * @return Bitmap of the tile or null if no tile matched the given parameters
+      */
+    public boolean getBitmapTile( int i_x, int i_y_osm, int i_z, int i_pixel_size, Bitmap tile_bitmap ) {
+        boolean b_rc = true;
+        if (getmbtiles() == null) { // in case .'open' was forgotten
+          return false;
+        }
+        int[] pixels = new int[i_pixel_size * i_pixel_size];
+        byte[] rasterBytes = getTileAsBytes(i_x, i_y_osm, i_z);
+        if (rasterBytes == null) {
+         b_rc = false;
+         // The Raster at this Zoom-Level does not exist
+         if (i_scale_tile_layers > 0)
+         { // If the prev Zoom-Level tile exists, scale it and retrieve the portion needed here
+           // false: return only one tile ; true return the 4 tiles
+          GPLog.androidLog(-1,"MBTilesDroidSpitter["+i_scale_tile_layers+"] ["+i_x+"/"+i_y_osm+"/"+i_z+"] ");
+          Bitmap[] array_bitmaps=fetchBitmapsTileNextZoom(i_x, i_y_osm,i_z, true);
+          if (array_bitmaps != null)
+          { // The prev Zoom-Level tile exists
+           b_rc = true;
+           GPLog.androidLog(4,"MBTilesDroidSpitter.getBitmapTile["+b_rc+"] ");
+           tile_bitmap=Bitmap.createBitmap(array_bitmaps[0]);
+           return b_rc;
+          }
+         }          
+         return b_rc;
+       }
+        Bitmap decodedBitmap = null;
+        decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
+        // check if the input stream could be decoded into a bitmap
+        if (decodedBitmap != null) {
+            // copy all pixels from the decoded bitmap to the color array
+            decodedBitmap.getPixels(pixels, 0, i_pixel_size, 0, 0, i_pixel_size, i_pixel_size);
+            decodedBitmap.recycle();
+        } else {
+            b_rc = false;
+            return b_rc;
+        }
+        // copy all pixels from the color array to the tile bitmap
+        tile_bitmap.setPixels(pixels, 0, i_pixel_size, 0, 0, i_pixel_size, i_pixel_size);
+        return b_rc;
     }
     // -----------------------------------------------
 
@@ -303,7 +379,7 @@ public class MBTilesDroidSpitter {
             i_rc = 1;
             GPLog.error(this, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
         }
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.insertBitmapTile: inserting["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
+        // GPLog.androidLog(4,"MBTilesDroidSpitter.insertBitmapTile: inserting["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
         return i_rc;
     }
     // -----------------------------------------------
@@ -456,7 +532,7 @@ public class MBTilesDroidSpitter {
             return i_rc;
         }
 
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.insertTile: inserted["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
+        // GPLog.androidLog(4,"MBTilesDroidSpitter.insertTile: inserted["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
         return i_rc;
     }
     // -----------------------------------------------
@@ -564,7 +640,7 @@ public class MBTilesDroidSpitter {
      */
     public int checkBounds(int i_x, int i_y_osm, int i_z, int i_update) throws IOException {
         int i_rc = 0;
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.icheckBounds: parms["+i_z+"/"+i_x+"/"+i_y_osm+"] i_fetch_bounds["+i_fetch_bounds+"]");
+        // GPLog.androidLog(4,"MBTilesDroidSpitter.icheckBounds: parms["+i_z+"/"+i_x+"/"+i_y_osm+"] i_fetch_bounds["+i_fetch_bounds+"]");
         // minx, miny, maxx, maxy
         double[] tileBounds = tileLatLonBounds(i_x, i_y_osm, i_z, 256);
         HashMap<String, String> update_metadata = this.metadata.checkTileLocation(tileBounds, i_z);
@@ -600,6 +676,10 @@ public class MBTilesDroidSpitter {
         this.metadata = MbTilesMetadata.createFromCursor(c, c.getColumnIndex(MbTilesSQLite.COL_METADATA_NAME),
                 c.getColumnIndex(MbTilesSQLite.COL_METADATA_VALUE), validator);
         if (this.metadata != null) { // mbtiles is only valid if 'metadata' has values
+            if (i_scale_tile_layers > 0)
+            {
+             this.metadata.maxZoom=this.metadata.maxZoom+i_scale_tile_layers;
+            }
             this.s_tile_row_type = this.metadata.s_tile_row_type;
             this.s_center_parm = this.metadata.s_center_parm;
             if (i_type_tiles < 0) { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
@@ -1402,7 +1482,7 @@ public class MBTilesDroidSpitter {
         String s_minzoom = "";
         String s_maxzoom = "";
         String s_centerzoom = "";
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
+        // GPLog.androidLog(4,"MBTilesDroidSpitter.fetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
         if (bounds_min_max.size() > 0) {
             if (bounds_lat_long != null) {
                 bounds_lat_long.clear();
@@ -1495,7 +1575,7 @@ public class MBTilesDroidSpitter {
         Cursor c_tiles = null;
         db_lock.readLock().lock();
         try {
-            // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
+            // GPLog.androidLog(4,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
             c_tiles = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
             // mj10777: 20131123: avoid using table/view 'tiles' - with big databases can bring
             // things to a halt
@@ -1507,7 +1587,7 @@ public class MBTilesDroidSpitter {
                     String s_bounds_tiles = c_tiles.getString(1) + "," + c_tiles.getString(2) + "," + c_tiles.getString(3) + ","
                             + c_tiles.getString(4);
                     bounds_min_max.put(s_zoom, s_bounds_tiles);
-                    // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
+                    // GPLog.androidLog(4,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
                 } while (c_tiles.moveToNext());
                 c_tiles.close();
             }
@@ -1560,7 +1640,7 @@ public class MBTilesDroidSpitter {
             String s_bounds_tiles = tile_bounds[0] + "," + tile_bounds[1] + "," + tile_bounds[2] + "," + tile_bounds[3] + ";"
                     + tile_bounds[4] + "," + tile_bounds[5];
             bounds_lat_long.put(zoom_bounds.getKey(), s_bounds_tiles);
-            // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: bounds_lat_long["+i_zoom+","+s_bounds_tiles+"]");
+            // GPLog.androidLog(4,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: bounds_lat_long["+i_zoom+","+s_bounds_tiles+"]");
         }
         String s_zoom = i_min_zoom + "," + i_max_zoom + "," + i_zoom_center;
         String s_bounds_tiles = max_bounds[0] + "," + max_bounds[1] + "," + max_bounds[2] + "," + max_bounds[3] + ";"
@@ -1836,19 +1916,35 @@ public class MBTilesDroidSpitter {
     }
 
     /**
+     * Converts Google tile coordinates to Lat/Long coordinates.
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * <p>mj10777: adapted to add values in mercator-meters</p>
+     * <p>min/max x+y in Lat/long ; meters: width/height, min/max x+y in meters</p>
+     * Used for distance, pistion of tile in next tile above
+     * <p>Note: tileBounds : for the Northern Hemisphere, the y-values are being returned as negative Numbers</p>
+     * <p>- this has been retained, since in this form it may be needed for ll-calculations</p>
+     * <p>- Afterwich these meter y-values : will be returned as positive numbers for the Northern Hemisphere</p>
+     * <p>-- since they will be used for diatance caluclations</p>
      *
      * @param tx
      * @param ty       [osm notation]
      * @param zoom
      * @param tileSize
-     * @return [minx, miny, maxx, maxy]
+     * @return [minx, miny, maxx, maxy,meters_width,meters_height,meters_min_x, meters_min_y,meters_max_x, meters_max_y]
      */
     public static double[] tileLatLonBounds(int tx, int ty, int zoom, int tileSize) {
         double[] bounds = tileBounds(tx, ty, zoom, tileSize);
-        double[] mins = metersToLatLon(bounds[0], bounds[1]);
-        double[] maxs = metersToLatLon(bounds[2], bounds[3]);
-        return new double[]{mins[1], maxs[0], maxs[1], mins[0]};
+        // [minx, miny, maxx, maxy,meters_width,meters_height]
+        double meters_min_x=bounds[0];
+        double meters_min_y=bounds[1];
+        double meters_max_x=bounds[2];
+        double meters_max_y=bounds[3];
+        double meters_width=bounds[4];
+        double meters_height=bounds[5];
+        double[] mins = metersToLatLon(meters_min_x, meters_min_y);
+        double[] maxs = metersToLatLon(meters_max_x, meters_max_y);
+        // Reverse the sign of the meter-y-values (Northern Hemisphere=positive)
+        return new double[]{mins[1], maxs[0], maxs[1], mins[0],meters_width,meters_height,meters_min_x, (meters_min_y*-1),meters_max_x, (meters_max_y*-1)};
     }
 
     /**
@@ -1857,6 +1953,8 @@ public class MBTilesDroidSpitter {
      * - was causing http 400 Bad Requests
      * - updated openstreetmap wiki
      *
+     * @param lat  [y position north]
+     * @param lat  [x position west]
      * @param zoom
      * @return [zoom, xtile, ytile_osm]
      */
@@ -1891,6 +1989,7 @@ public class MBTilesDroidSpitter {
 
     /**
      * <p>Code adapted from: LatLonBounds_to_TileBounds</p>
+     * - used in MBtilesAsync
      *
      * @param tile_bounds [minx, miny_osm, maxx, maxy_osm of tile_bounds]
      * @param i_zoom
@@ -1912,28 +2011,36 @@ public class MBTilesDroidSpitter {
 
     /**
      * Returns bounds of the given tile in EPSG:900913 coordinates
+     * (Spatialite EPSG:3857)
      * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * <p>mj10777: adapted to add width/height in mercator-meters</p>
+     * <p>Note: for the Northern Hemisphere, the y-values are being returned as negative Numbers</p>
+     * <p>- this will be retained, since in this form it may be needed for ll-calculations</p>
+     * <p>--[I assume due to the tms/osm numbering confusion]</p
      *
      * @param tx
      * @param ty
      * @param zoom
-     * @return [minx, miny, maxx, maxy]
+     * @return [minx, miny, maxx, maxy,meters_width,meters_height]
      */
     public static double[] tileBounds(int tx, int ty, int zoom, int tileSize) {
         double[] min = pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
         double minx = min[0], miny = min[1];
         double[] max = pixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
         double maxx = max[0], maxy = max[1];
-        return new double[]{minx, miny, maxx, maxy};
+        double meters_width=maxx-minx;
+        double meters_height=maxy-miny;
+        return new double[]{minx, miny, maxx, maxy,meters_width,meters_height};
     }
 
     /**
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
+     * (Spatialite EPSG:3857)
      * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @return
+     * @return [mx, my]
      */
     public static double[] pixelsToMeters(double px, double py, int zoom, int tileSize) {
         double res = getResolution(zoom, tileSize);
@@ -1944,7 +2051,7 @@ public class MBTilesDroidSpitter {
 
     /**
      * Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84
-     * Datum
+     * Datum (Spatialite EPSG:3857)
      * <p/>
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
@@ -1970,4 +2077,292 @@ public class MBTilesDroidSpitter {
         double initialResolution = 2 * Math.PI * 6378137 / tileSize;
         return initialResolution / Math.pow(2, zoom);
     }
+     /**
+     * Function to resize Tile Bitmap from the mbtiles Database
+     * - it is not yet clear which method brings the best result when resizing
+     * -- it is claimed that 'createScaledBitmap' is not so good, but that may be only with an older api
+     * [Candidate to be moved into a more general Image-Library class]
+     *
+     * @param this_bitmap  the Bitmap to resize
+     * @param i_ratio the width of the resized Image to be returned
+     * @return Bitmap the resized Image to be returned
+     */
+    public static Bitmap resizeBitmap(Bitmap this_bitmap, int i_ratio) {
+        int i_scaled_width = this_bitmap.getWidth()*i_ratio;
+        int i_scaled_height = this_bitmap.getHeight()*i_ratio;
+        float f_scaled_width=(((float) i_scaled_width) / this_bitmap.getWidth());
+        float f_scaled_height=(((float) i_scaled_width) / this_bitmap.getHeight());
+        Matrix scaled_matrix = new Matrix();
+        scaled_matrix.postScale(f_scaled_width,f_scaled_height);
+        Bitmap scaled_bitmap = Bitmap.createBitmap(this_bitmap,0,0, this_bitmap.getWidth(), this_bitmap.getHeight(),scaled_matrix,false);
+        // Bitmap scaled_bitmap = Bitmap.createScaledBitmap(this_bitmap,i_scaled_width, i_scaled_height,false);
+        return scaled_bitmap;
+    }
+         /**
+     * Function to resize Tile Bitmap from the mbtiles Database
+     * - Goal is to retrieve the 4 tiles of the next Zoom-Level
+     * [Candidate to be moved into a more general Image-Library class]
+     *
+     * @param this_bitmap  the Bitmap to resize
+     * @param i_ratio (2*width,2*height=4 tiles)
+     * @param i_position  : when < 0: all images will be returned, otherwise only a specific image
+     * @return Bitmap Array of resized original images split into the same size as original
+     */
+    public static Bitmap[] arrayResizedBitmap(Bitmap this_bitmap, int i_ratio,int i_position) {    
+        if (i_ratio < 2)
+         i_ratio=2;
+        Bitmap scaled_bitmap=resizeBitmap(this_bitmap,i_ratio);
+        int i_scaled_width = this_bitmap.getWidth()*i_ratio;
+        int i_scaled_height = this_bitmap.getHeight()*i_ratio;
+        int i_image_width = i_scaled_width/i_ratio;
+        int i_image_height = i_scaled_height/i_ratio;
+        // GPLog.androidLog(-1,"MBTilesDroidSpitter.arrayResizedBitmap["+i_ratio+"] ["+i_image_width+"] ["+i_image_height+"] scaled["+i_scaled_width+"] ["+i_scaled_height+"]");
+        // int[] argb_pixels = new int[i_image_width*i_image_height];
+        int i_array_count=i_ratio*i_ratio;
+        if (i_position >= 0)
+         i_array_count=1;
+        int i_array_bitmap=0;
+        Bitmap[] array_bitmap = new Bitmap[i_array_count];
+        int i_pos_x=0;
+        int i_pos_y=0;
+        i_array_count=0;
+        for (int y=0;y < i_ratio;y++)
+        { // Top to Bottom
+         if (y > 0)
+          i_pos_y=i_image_height*y;
+         i_pos_x=0;
+         for (int x=0;x < i_ratio;x++)
+         { // Left to Right
+          if (x > 0)
+           i_pos_x=i_image_width*x;
+           if ((i_position < 0) || (i_position == i_array_count))
+           { // Either all (-1)  or a specific Image-Part [0,1,2,3]
+           // GPLog.androidLog(-1,"MBTilesDroidSpitter.arrayResizedBitmap[ ["+i_array_count+"] x["+x+"] pos_x["+i_pos_x+"] y["+y+"] pos_y["+i_pos_y+"]");
+            array_bitmap[i_array_bitmap++]=Bitmap.createBitmap(scaled_bitmap,i_pos_x, i_pos_y, i_image_width, i_image_height); ;
+           // scaled_bitmap.getPixels(argb_pixels, 0, i_image_width*i_image_height, i_pos_x, i_pos_y, i_image_width, i_image_height);
+          }
+          i_array_count++;
+         }
+        }
+        scaled_bitmap.recycle();
+        return array_bitmap;
+    }
+     /**
+     * Function to fetch the Tile-Number of the lower Zoom-Level the requested Tile
+     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     * - the position of the gived tile inside the higher tile will also be returned
+     *
+     * @param i_x      the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_y_osm  the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_z      the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_tile_size the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @return {zoom, xtile, ytile_osm, i_array_position}
+     */
+    public static int[] fetchTilePrevZoom(int i_x, int i_y_osm, int i_z,int i_tile_size) {
+         //  [minx, miny, maxx, maxy,meters_width,meters_height,meters_min_x, meters_min_y,meters_max_x, meters_max_y]
+        double[] latlong_bounds = tileLatLonBounds(i_x, i_y_osm, i_z, i_tile_size);
+        double latlong_min_x=latlong_bounds[0];
+        double latlong_min_y=latlong_bounds[1];
+        double latlong_max_x=latlong_bounds[2];
+        double latlong_max_y=latlong_bounds[3];
+        double meters_width=latlong_bounds[4];
+        double meters_height=latlong_bounds[5];
+        double meters_min_x=latlong_bounds[6];
+        double meters_min_y=latlong_bounds[7];
+        double meters_max_x=latlong_bounds[8];
+        double meters_max_y=latlong_bounds[9];
+        // Do NOT query to near a tile boundry, otherwise you might 'slip' into the next tile - bringing confusing results !
+        double latlong_center_x=(latlong_min_x+latlong_max_x)/2;
+        double latlong_center_y=(latlong_min_y+latlong_max_y)/2;
+        int i_z_prev=i_z-1;
+        int[] tile_bounds = getTileNumber(latlong_center_y, latlong_center_x, i_z_prev);
+        int i_x_prev=tile_bounds[1];
+        int i_y_osm_prev=tile_bounds[2];
+        double[] latlong_bounds_prev = tileLatLonBounds(i_x_prev, i_y_osm_prev, i_z_prev, i_tile_size);
+        double latlong_min_x_prev=latlong_bounds_prev[0];
+        double latlong_min_y_prev=latlong_bounds_prev[1]; 
+        double latlong_max_x_prev=latlong_bounds_prev[2];
+        double latlong_max_y_prev=latlong_bounds_prev[3];
+        double meters_width_prev=latlong_bounds_prev[4];
+        double meters_height_prev=latlong_bounds_prev[5];
+        double meters_min_x_prev=latlong_bounds_prev[6];
+        double meters_min_y_prev=latlong_bounds_prev[7];
+        double meters_max_x_prev=latlong_bounds_prev[8];
+        double meters_max_y_prev=latlong_bounds_prev[9];
+        // Start calulation the final result
+        // In which of the 4 tiles is the given tile
+        double distance_min_x_to_prev=meters_min_x-meters_min_x_prev;
+        double distance_min_y_to_prev=meters_min_y-meters_min_y_prev;
+        double distance_max_x_to_prev=meters_max_x-meters_max_x_prev;
+        double distance_max_y_to_prev=meters_max_y-meters_max_y_prev;
+        int i_min_x=0;
+        int i_min_y=0;
+        int i_max_x=0;        
+        int i_max_y=0;
+        if (meters_min_x>meters_min_x_prev)
+         i_min_x=1;
+        if (meters_min_x<meters_min_x_prev)
+         i_min_x=-1;
+        if (meters_max_x>meters_max_x_prev)
+         i_max_x=1;
+        if (meters_max_x<meters_max_x_prev)
+         i_max_x=-1;         
+        if (meters_min_y>meters_min_y_prev)
+         i_min_y=1;
+        if (meters_min_y<meters_min_y_prev)
+         i_min_y=-1;
+        if (meters_max_y>meters_max_y_prev)
+         i_max_y=1;
+        if (meters_max_y<meters_max_y_prev)
+         i_max_y=-1;
+        int i_array_position=-1; 
+        if (((i_min_x == 0) && (i_min_y == 0)) &&
+             ((i_max_x < 0) && (i_max_y > 0)))
+          i_array_position=0;  // Left/Top=NW
+        if (((i_min_x > 0) && (i_min_y == 0)) &&
+             ((i_max_x == 0) && (i_max_y > 0)))
+          i_array_position=1;  // Right/Top=NE
+        if (((i_min_x == 0) && (i_min_y < 0)) &&
+             ((i_max_x < 0) && (i_max_y == 0)))
+          i_array_position=2; // Left/Bottom=SW
+         if (((i_min_x > 0) && (i_min_y < 0)) &&
+             ((i_max_x == 0) && (i_max_y == 0)))
+          i_array_position=3; // Right/Bottom=SE  
+          // MBTilesDroidSpitter.fetchTilePrevZoom[19/281626/171951] prev[18/140813/85976]  
+          // MbtilesDatabaseHandler.getBitmapTile[19/281626/171951 tms[352336] 
+          // 19/281626/171950
+          // 19/281627/171950
+          // 18/140813/85975 tms[176168] 
+        // if ((i_array_position < 0) && (GPLog.LOG_HEAVY))   
+        if (i_array_position < 0)
+        {// Known correct results:
+         // 18_140813_85975_osm [176168_tms]    |Position Brandenburg Gate, Quadriga]
+         // 19_281626_171950_osm_pos_0_NW [352337 tms]
+         // 19_281627_171950_osm_pos_1_NE   [352337 tms]
+         // 19_281626_171951_osm_pos_2_SW  [352336_tms] [Position Brandenburg Gate, Quadriga]
+         // 19_281627_171951_osm_pos_3_SE   [352336_tms]
+         GPLog.androidLog(-1,"MBTilesDroidSpitter.fetchTilePrevZoom["+i_z+"/"+i_x+"/"+i_y_osm+"] prev["+i_z_prev+"/"+i_x_prev+"/"+i_y_osm_prev+"]");
+         GPLog.androidLog(-1,"- ll x_min["+latlong_min_x+"]  prev["+latlong_min_x_prev+"]");
+         GPLog.androidLog(-1,"- ll y_min["+latlong_min_y+"]  prev["+latlong_min_y_prev+"]");
+         GPLog.androidLog(-1,"- ll x_max["+latlong_max_x+"]  prev["+latlong_max_x_prev+"]");
+         GPLog.androidLog(-1,"- ll y_max["+latlong_max_y+"]  prev["+latlong_max_y_prev+"]");
+         GPLog.androidLog(-1,"- meters_width["+meters_width+"]  prev["+meters_width_prev+"]");
+         GPLog.androidLog(-1,"- meters_height["+meters_height+"]  prev["+meters_height_prev+"]");
+         GPLog.androidLog(-1,"- x_min["+meters_min_x+"]  prev["+meters_min_x_prev+"]");
+         GPLog.androidLog(-1,"- y_min["+meters_min_y+"]  prev["+meters_min_y_prev+"]");
+         GPLog.androidLog(-1,"- x_max["+meters_max_x+"]  prev["+meters_max_x_prev+"]");
+         GPLog.androidLog(-1,"- y_max["+meters_max_y+"]  prev["+meters_max_y_prev+"]");
+         GPLog.androidLog(-1,"- distance_x_min_to_prev["+distance_min_x_to_prev+"] ["+i_min_x+"]");
+         GPLog.androidLog(-1,"- distance_y_min_to_prev["+distance_min_y_to_prev+"]  ["+i_min_y+"]");
+         GPLog.androidLog(-1,"- distance_x_max_to_prev["+distance_max_x_to_prev+"]  ["+i_max_x+"]");
+         GPLog.androidLog(-1,"- distance_y_max_to_prev["+distance_max_y_to_prev+"]  ["+i_max_y+"]");
+         GPLog.androidLog(-1,"- array_position["+i_array_position+"]");
+         // When correct, a smaller square should be seen inside the bigger square
+         StringBuilder sb = new StringBuilder();
+         sb.append("SELECT ST_Collect(ST_Transform(BuildMbr(");
+         sb.append(latlong_min_x_prev+","+latlong_min_y_prev+",");
+         sb.append(latlong_max_x_prev+","+latlong_max_y_prev+",4326),3857),ST_Transform(BuildMbr(");
+         sb.append(latlong_min_x+","+latlong_min_y+",");
+         sb.append(latlong_max_x+","+latlong_max_y+",4326),3857));"); 
+         GPLog.androidLog(-1,"- sql["+sb.toString()+"]");
+        }
+        // Final result being returned
+        int[] tile_bounds_position = new int[]{i_z_prev, i_x_prev, i_y_osm_prev, i_array_position};
+        return tile_bounds_position;
+    }
+     /**
+     * Function to fetch the Tile-Number of the lower Zoom-Level the requested Tile
+     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     *
+     * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_tile_size the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param tile_bitmap retrieve the Bitmap as done in 'CustomTileDownloader'
+     * @return Bitmap of the tile or null if no tile matched the given parameters
+     */
+    public int fetchBitmapTilePrevZoom(int i_x, int i_y_osm, int i_z, int i_tile_size, Bitmap tile_bitmap) {
+        int[] tile_bounds = fetchTilePrevZoom(i_x,i_y_osm, i_z,i_tile_size);
+        int i_x_prev=tile_bounds[1];
+        int i_y_osm_prev=tile_bounds[2];
+        int i_z_prev=tile_bounds[0];
+        int i_array_position=tile_bounds[3];
+        int i_y_prev = i_y_osm_prev;
+        String s_x = "";
+        String s_y = "";
+        String s_z = "";
+        if (s_tile_row_type.equals("tms")) {
+            int[] tmsTileXY = MBTilesDroidSpitter.googleTile2TmsTile(i_x_prev, i_y_osm_prev, i_z_prev);
+            i_y_prev = tmsTileXY[1];
+        }
+        try {
+            s_x = Integer.toString(i_x_prev);
+            s_y = Integer.toString(i_y_prev);
+            s_z = Integer.toString(i_z_prev);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+        // db_lock.readLock().lock();
+        byte[] rasterBytes = null;
+        // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetchTilePrevZoom["+i_array_position+"] ["+i_x_prev+"/"+i_y_osm_prev+"/"+i_z_prev+"] tms["+i_x_prev+"/"+i_y_prev+"/"+i_z_prev+"]");
+        try {
+            final Cursor c = db_mbtiles.rawQuery(
+                    "select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?",
+                    new String[]{s_x, s_y, s_z});
+            if (!c.moveToFirst()) 
+            {
+             c.close();
+             // select tile_data from tiles where tile_column=140797 and tile_row=176142 and zoom_level=18
+             if (GPLog.LOG_HEAVY)
+              GPLog.androidLog(-1,"MBTilesDroidSpitter.TilePrevZoom: tile_not_found["+i_z_prev+"/"+i_x_prev+"/"+i_y_osm_prev+" tms["+i_y_prev+"] ");
+             return -2;
+            }
+            rasterBytes = c.getBlob(c.getColumnIndex("tile_data"));
+            c.close();
+        }  catch (Exception e) {
+        }
+        if (rasterBytes == null)
+        {
+         return -3;
+        }
+        Bitmap decodedBitmap = null;
+        decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
+        if (decodedBitmap == null)
+        {
+         return -4;
+        }
+        int[] pixels = new int[i_tile_size *  i_tile_size];
+        // copy all pixels from the decoded bitmap to the color array
+        decodedBitmap.getPixels(pixels, 0, i_tile_size, 0, 0, i_tile_size, i_tile_size);
+        decodedBitmap.recycle();
+        // copy all pixels from the color array to the tile bitmap
+        tile_bitmap.setPixels(pixels, 0, i_tile_size, 0, 0, i_tile_size, i_tile_size);
+        return i_array_position;
+    }
+     /**
+     * Function to fetch the Array of Tiles of the Next Zoom-Level, scaled from an existing tile
+     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     *
+     * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param b_tile_only true=return only the requested tile ; false=all tiles
+     * @return BitmapArray of the tile or null if no tile matched the given parameters
+     */
+    public Bitmap[] fetchBitmapsTileNextZoom(int i_x, int i_y_osm, int i_z, boolean b_tile_only) {
+     int i_pixel_size=256;
+     Bitmap scaled_bitmap = Bitmap.createBitmap(i_pixel_size, i_pixel_size, Bitmap.Config.ARGB_8888);
+     // -2= Tile not found, this no-image
+     int i_array_position=fetchBitmapTilePrevZoom(i_x,i_y_osm,i_z,i_pixel_size,scaled_bitmap);
+     GPLog.androidLog(-1,"MBTilesDroidSpitter.fetchBitmapsTileNextZoom["+i_array_position+"] ");
+     if (i_array_position >= 0)
+     {
+      int i_position=-1;
+      if (b_tile_only)
+       i_position=i_array_position;
+      return MBTilesDroidSpitter.arrayResizedBitmap(scaled_bitmap, 2,i_position);
+     }
+     return null;
+    }
+     
 }

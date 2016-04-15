@@ -133,7 +133,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             // Driver was compiled with RasterLite2 support
             DatabaseCreationAndProperties.getJavaSqliteDescription(dbSpatialite, "DaoSpatialite.checkDatabaseTypeAndValidity");
             // Called only once during Application
-            GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode_["
+            GPLog.addLogEntry("DatabaseCreationAndProperties", "JavaSqliteDescription[" + DatabaseCreationAndProperties.JavaSqliteDescription + "] recovery_mode["
                     + SPL_Vectors.VECTORLAYER_QUERYMODE + "]");
             // Comment this out when not needed (only to check any changed sql-queries)
             // DaoSpatialite.dump_GeneralQueriesPreparer();
@@ -325,7 +325,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                     majorVersion = Integer.parseInt(spatialiteVersionNumber.substring(0, 1));
                 JavaSqliteDescription += "spatialite[" + spatialiteVersionNumber + "],";
                 JavaSqliteDescription += "proj4[" + getProj4Version(dbSpatialite) + "],";
-                JavaSqliteDescription += "geos[" + getGeosVersion(dbSpatialite) + "],";
+                JavaSqliteDescription += "geos[" + getGeosVersion(dbSpatialite) + "],"; 
+                JavaSqliteDescription += "lwgeom[" + getLwgeomVersion(dbSpatialite) + "],"; 
                 JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(dbSpatialite) + "],";
                 JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(dbSpatialite) + "]]";
             } catch (Exception e) {
@@ -603,6 +604,24 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      */
     public static String getGeosVersion(Database dbSpatialite) throws Exception {
         Stmt stmt = dbSpatialite.prepare("SELECT geos_version();");
+        try {
+            if (stmt.step()) {
+                return stmt.column_string(0);
+            }
+        } finally {
+            stmt.close();
+        }
+        return "-";
+    }
+   /**
+     * Get the version of lwgeom [starting with version 2.2 ].
+     *
+     * @param dbSpatialite the db to use.
+     * @return the version of lwgeom.
+     * @throws Exception if something goes wrong.
+     */
+    public static String getLwgeomVersion(Database dbSpatialite) throws Exception {
+        Stmt stmt = dbSpatialite.prepare("SELECT lwgeom_version();");
         try {
             if (stmt.step()) {
                 return stmt.column_string(0);
