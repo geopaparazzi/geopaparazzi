@@ -99,6 +99,8 @@ To be done...
    :width: 300px
    
    The list of spatialite based data.
+Spatialite Dash pattern:
+Dash patterns can be specified as dashWidth, dashGap, dashWidth2, dashGap2, dashWidth3, dashGap3, etc.  The most basic case would be dashWidth, dashGap i.e. ``10, 20``.
 
 .. index:: goto
 .. _goto:

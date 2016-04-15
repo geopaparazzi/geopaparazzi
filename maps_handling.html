@@ -110,7 +110,7 @@ and tiff rasters, select the module: <strong>GeopaparazziMapsCreator</strong></p
 <li>up to 2 raster tiff or asc maps</li>
 <li>up to 5 vector shapefiles</li>
 <li>define the name of the new mbtiles dataset</li>
-<li>define the minimum and maximum wanted zoomlevel (zoomlevels &gt; 18 start to take long tim
+<li>define the minimum and maximum wanted zoomlevel (zoomlevels &gt; 18 start to take long time
 to build because of the large number of tiles generated)</li>
 <li>the image type to use:
 - jpg: this should be used when photographic data are used (ex. aerial images)
@@ -137,7 +137,7 @@ data from a Geopaparazzi project database.</p>
 <p>The only parameter to set are the input Geopaparazzi database path and the
 output folder. It is also possible to toggle the creation of some of the data
 contained in the database.</p>
-<p>To run the module, refer to the <a class="reference internal" href="#stagembtiles"><span>mbtiles section</span></a>.</p>
+<p>To run the module, refer to the <a class="reference internal" href="#stagembtiles"><span class="std std-ref">mbtiles section</span></a>.</p>
 <p>How are the data are exported from the Geopaparazzi database?
 The following is created:</p>
 <ul class="simple">
@@ -210,7 +210,7 @@ Don&#8217;t think it finished unless you see a result like the following:</p>
 </div>
 <p>Once this result appears to you, you are good to go.</p>
 <p>Move the spatialite database to your device, fire up geopaparazzi and
-go directly to the <a class="reference internal" href="mapview_menu.html#spatialitedatalist"><span>spatialite data view</span></a>.</p>
+go directly to the <a class="reference internal" href="mapview_menu.html#spatialitedatalist"><span class="std std-ref">spatialite data view</span></a>.</p>
 <p>You should see something like:</p>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/10_spl.png"><img alt="_images/10_spl.png" src="_images/10_spl.png" style="width: 300px;" /></a>
@@ -233,18 +233,18 @@ must be warped to the proper projection before using it. To do it you can use
 <p>The target projection must be Google Web Mercator (EPSG code 3857); you must know
 also the source projection of the raster you are converting. As an example, if
 you have a WGS 84 projected (EPSG code 4326) input file, you will run this kind of command:</p>
-<div class="highlight-python"><div class="highlight"><pre>gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3857 -r bilinear input.tif output.tif
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gdalwarp</span> <span class="o">-</span><span class="n">s_srs</span> <span class="n">EPSG</span><span class="p">:</span><span class="mi">4326</span> <span class="o">-</span><span class="n">t_srs</span> <span class="n">EPSG</span><span class="p">:</span><span class="mi">3857</span> <span class="o">-</span><span class="n">r</span> <span class="n">bilinear</span> <span class="nb">input</span><span class="o">.</span><span class="n">tif</span> <span class="n">output</span><span class="o">.</span><span class="n">tif</span>
 </pre></div>
 </div>
 <p>To create the tiles you can use <a class="reference external" href="http://www.gdal.org/gdal2tiles.html">gdal2tiles.py</a> script,
 using as input your Google Web Mercator projected raster file:</p>
-<div class="highlight-python"><div class="highlight"><pre>gdal2tiles.py output.tif
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gdal2tiles</span><span class="o">.</span><span class="n">py</span> <span class="n">output</span><span class="o">.</span><span class="n">tif</span>
 </pre></div>
 </div>
 <p>It generates directory with TMS tiles, that you can use in Geopaparazzi. In the
 root of the this directory you will find &#8220;tilemapresource.xml&#8221; file
 which contains all the information to build the .mapurl file:</p>
-<div class="highlight-xml"><div class="highlight"><pre> <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<div class="highlight-xml"><div class="highlight"><pre><span></span> <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
  <span class="nt">&lt;TileMap</span> <span class="na">version=</span><span class="s">&quot;1.0.0&quot;</span> <span class="na">tilemapservice=</span><span class="s">&quot;http://tms.osgeo.org/1.0.0&quot;</span><span class="nt">&gt;</span>
    <span class="nt">&lt;Title&gt;</span>temp3.vrt<span class="nt">&lt;/Title&gt;</span>
    <span class="nt">&lt;Abstract&gt;&lt;/Abstract&gt;</span>
@@ -266,12 +266,12 @@ which contains all the information to build the .mapurl file:</p>
 </div>
 <p>Note that the <em>BoundingBox</em> and <em>Origin</em> values created by <em>gdal2tiles</em>
 are have <strong>x</strong> and <strong>y</strong> values switched against how we need them:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">minx</span><span class="o">=</span><span class="s">&quot;11.28858223249814&quot;</span>
-<span class="n">miny</span><span class="o">=</span><span class="s">&quot;46.39742402665929&quot;</span>
-<span class="n">maxx</span><span class="o">=</span><span class="s">&quot;11.37616698902041&quot;</span>
-<span class="n">maxy</span><span class="o">=</span><span class="s">&quot;46.45081836101696&quot;</span>
-<span class="n">x</span><span class="o">=</span><span class="s">&quot;11.28858223249814&quot;</span>
-<span class="n">y</span><span class="o">=</span><span class="s">&quot;46.39742402665929&quot;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">minx</span><span class="o">=</span><span class="s2">&quot;11.28858223249814&quot;</span>
+<span class="n">miny</span><span class="o">=</span><span class="s2">&quot;46.39742402665929&quot;</span>
+<span class="n">maxx</span><span class="o">=</span><span class="s2">&quot;11.37616698902041&quot;</span>
+<span class="n">maxy</span><span class="o">=</span><span class="s2">&quot;46.45081836101696&quot;</span>
+<span class="n">x</span><span class="o">=</span><span class="s2">&quot;11.28858223249814&quot;</span>
+<span class="n">y</span><span class="o">=</span><span class="s2">&quot;46.39742402665929&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -359,8 +359,8 @@ are have <strong>x</strong> and <strong>y</strong> values switched against how w
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, HydroloGIS S.r.l..
-      Last updated on Jul 14, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Apr 15, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

@@ -122,6 +122,8 @@ and elevation [m.s.l.] on the right.</li>
 <a class="reference internal image-reference" href="_images/18_spatialite_data_list.png"><img alt="_images/18_spatialite_data_list.png" src="_images/18_spatialite_data_list.png" style="width: 300px;" /></a>
 <p class="caption"><span class="caption-text">The list of spatialite based data.</span></p>
 </div>
+<p>Spatialite Dash pattern:
+Dash patterns can be specified as dashWidth, dashGap, dashWidth2, dashGap2, dashWidth3, dashGap3, etc.  The most basic case would be dashWidth, dashGap i.e. <code class="docutils literal"><span class="pre">10,</span> <span class="pre">20</span></code>.</p>
 </div>
 <div class="section" id="go-to">
 <span id="goto"></span><span id="index-3"></span><h2>Go to<a class="headerlink" href="#go-to" title="Permalink to this headline">¶</a></h2>
@@ -252,7 +254,7 @@ import dialog like this:</p>
 </div>
 <p>Depending on what has been imported first, the labels might not be coming from
 the right osm field. In that case it can be simply changed in the spatialite
-layer settings. Refer to the <a class="reference internal" href="#spatialitedatalist"><span>spatialite data list section</span></a>.</p>
+layer settings. Refer to the <a class="reference internal" href="#spatialitedatalist"><span class="std std-ref">spatialite data list section</span></a>.</p>
 <p>What happens in the case we use a map that also shows contour lines? To do so, we want
 to clear those layers. The fastest way to do so is to simply delete the mapsforge database
 and let Geopaparazzi recreate it on restart.</p>
@@ -263,11 +265,11 @@ and let Geopaparazzi recreate it on restart.</p>
 <p>To have a better idea, change the background map to something different. Here I also changed
 the contours color to white:</p>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="_images/27_mapsforge8.jpg"><img alt="_images/27_mapsforge8.jpg" src="_images/27_mapsforge8.jpg" style="width: 300px;" /></a>
+<a class="reference internal image-reference" href="_images/27_mapsforge8.png"><img alt="_images/27_mapsforge8.png" src="_images/27_mapsforge8.png" style="width: 300px;" /></a>
 </div>
 <p>Label support is not very advanced, so they get readable only once you zoom in:</p>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="_images/27_mapsforge9.jpg"><img alt="_images/27_mapsforge9.jpg" src="_images/27_mapsforge9.jpg" style="width: 300px;" /></a>
+<a class="reference internal image-reference" href="_images/27_mapsforge9.png"><img alt="_images/27_mapsforge9.png" src="_images/27_mapsforge9.png" style="width: 300px;" /></a>
 </div>
 </div>
 </div>
@@ -320,8 +322,8 @@ the contours color to white:</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, HydroloGIS S.r.l..
-      Last updated on Jul 14, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Last updated on Apr 15, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
     </div>
   </body>
 </html>

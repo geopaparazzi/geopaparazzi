@@ -71,7 +71,7 @@ The user will be able to add:
 * up to 2 raster tiff or asc maps
 * up to 5 vector shapefiles
 * define the name of the new mbtiles dataset
-* define the minimum and maximum wanted zoomlevel (zoomlevels > 18 start to take long tim
+* define the minimum and maximum wanted zoomlevel (zoomlevels > 18 start to take long time
   to build because of the large number of tiles generated)
 * the image type to use:
   - jpg: this should be used when photographic data are used (ex. aerial images)
