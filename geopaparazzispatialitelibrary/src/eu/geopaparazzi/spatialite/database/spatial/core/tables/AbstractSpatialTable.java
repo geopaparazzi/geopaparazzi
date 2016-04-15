@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Spatial table interface.
+ * An abstract Spatial table.
+ *
+ * <b>No database connections are supposed to occurr in the implementing classes.</b>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */

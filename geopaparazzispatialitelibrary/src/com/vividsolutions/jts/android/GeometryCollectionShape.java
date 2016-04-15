@@ -58,7 +58,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public class GeometryCollectionShape implements DrawableShape {
-    private ArrayList<DrawableShape> shapes = new ArrayList<DrawableShape>();
+    private ArrayList<DrawableShape> shapes = new ArrayList<>();
 
     public GeometryCollectionShape() {
     }

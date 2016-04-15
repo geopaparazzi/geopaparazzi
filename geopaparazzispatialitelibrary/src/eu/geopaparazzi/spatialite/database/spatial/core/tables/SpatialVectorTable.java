@@ -17,9 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.tables;
 
-import android.content.Context;
-
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,15 +25,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import eu.geopaparazzi.library.GPApplication;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.DataType;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
-import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
+
+import static eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities.UNIQUENAME_SEPARATOR;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
 
@@ -53,7 +48,6 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     private final int geomType;
 
     private Style style;
-    private String layerTypeDescription = "geometry";
 
     private boolean checkDone = false;
     private boolean isPolygon = false;
@@ -78,32 +72,31 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     private String primaryKeyFields = "";
     // AbstractSpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
     private String ROWID_PK = "ROWID";
-    // AbstractSpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
-    private int view_read_only = -1;
+
+    private boolean isReadonly = false;
     private String uniqueNameBasedOnDbFilePath = "";
-    // private String uniqueNameBasedOnDbFileName = "";
 
     /**
      * Constructor.
      *
-     * @param databasePath            the database file the table belongs to.
-     * @param tableName               the name of the table to use.
-     * @param geometryColumn          the name of the geometry column.
-     * @param geomType                the geometry type as off {@link GeometryType}.
-     * @param srid                    the srid code.
-     * @param center                  the wgs84 center coordinates.
-     * @param bounds                  the table bounds in wgs84.
-     * @param layerTypeDescription    the layer type description.
+     * @param databasePath         the database file the table belongs to.
+     * @param tableName            the name of the table to use.
+     * @param geometryColumn       the name of the geometry column.
+     * @param geomType             the geometry type as off {@link GeometryType}.
+     * @param srid                 the srid code.
+     * @param center               the wgs84 center coordinates.
+     * @param bounds               the table bounds in wgs84.
+     * @param tableTypeDescription the table type description.
      */
     public SpatialVectorTable(String databasePath, String tableName, String geometryColumn, int geomType, String srid,
-                              double[] center, double[] bounds, String layerTypeDescription) {
-        super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+                              double[] center, double[] bounds, String tableTypeDescription) {
+        super(databasePath, tableName, ESpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;
-        this.layerTypeDescription = layerTypeDescription;
+        this.tableTypeDescription = tableTypeDescription;
 
-        if (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) {
+        if (this.tableTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) {
             isView = true;
         }
 
@@ -116,46 +109,16 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * Create a unique names for the table based on db path/name, table and geometry.
      */
     private void createUniqueNames() {
-        String SEP = SpatialiteUtilities.UNIQUENAME_SEPARATOR;
-        try {
-            // uniqueNameBasedOnDbFileName = this.databaseFileName + SEP + tableName + SEP +
-            // geometryColumn;
-            Context context = GPApplication.getInstance();
-            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File mapsDir = resourcesManager.getMapsDir();
-            String mapsPath = mapsDir.getAbsolutePath();
-            if (databasePath.startsWith(mapsPath)) {
-                String relativePath = databasePath.substring(mapsPath.length());
-                StringBuilder sb = new StringBuilder();
-                if (relativePath.startsWith(File.separator)) {
-                    relativePath = relativePath.substring(1);
-                }
-                sb.append(relativePath);
-                sb.append(SEP);
-                sb.append(tableName);
-                sb.append(SEP);
-                sb.append(geometryColumn);
-                uniqueNameBasedOnDbFilePath = sb.toString();
-
-            } else {
-                uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
-                throw new RuntimeException("SpatialVectorTable.createUniqueNames mapsPath[" + mapsPath + "] ["
-                        + uniqueNameBasedOnDbFilePath + "]");
-            }
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            // ignore and use absolute path
-            uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
-        }
+        uniqueNameBasedOnDbFilePath = databasePath + UNIQUENAME_SEPARATOR + tableName + UNIQUENAME_SEPARATOR + geometryColumn;
     }
 
     /**
-     * Return layerTypeDescription
+     * Returns the layer's table tye as of TableTypes.
      *
-     * @return the layerTypeDescription
+     * @return the tableTypeDescription
      */
-    public String getLayerTypeDescription() {
-        return this.layerTypeDescription;
+    public String getTableTypeDescription() {
+        return this.tableTypeDescription;
     }
 
     /**
@@ -167,15 +130,6 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
 
     /**
      * Unique name for the spatial table.
-     * <p/>
-     * <p><b>This is the one that should be used for the properties table (name).</b>
-     * <p/>
-     * <ul>
-     * <li>- needed to identify one specfic field inside the whole Maps-Directory
-     * <li>--- Maps-Directory:  '/storage/emulated/0/maps/'
-     * <li>--- Directory inside the Maps-Directory: 'aurina/'
-     * <li>-- Result : 'aurina/aurina.sqlite#topcloud#Geometry'
-     * </ul>
      *
      * @return the unique name.
      */
@@ -183,20 +137,6 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         return uniqueNameBasedOnDbFilePath;
     }
 
-    // /**
-    // * Unique name for the spatial table based on the db file name..
-    // *
-    // * <ul>
-    // * <li>- needed to Directory portion if the Database has been moved
-    // * <li>--- Maps-Directory: ''/storage/emulated/0/maps/'
-    // * <li>--- Directory inside the Maps-Directory: 'aurina/'
-    // * <li>-- Result : 'aurina.sqlite#topcloud#Geometry'
-    // * </ul>
-    // * @return the unique name base.
-    // */
-    // public String getUniqueNameBasedOnDbFileName() {
-    // return uniqueNameBasedOnDbFileName;
-    // }
 
     /**
      * @return the geometry type.
@@ -236,25 +176,25 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * Get the data type for a given field name.
      *
      * @param fieldName the field name.
-     * @return the {@link DataType} or <code>null</code>.
+     * @return the {@link EDataType} or <code>null</code>.
      */
-    public DataType getTableFieldType(String fieldName) {
+    public EDataType getTableFieldType(String fieldName) {
         String type = fieldName2TypeMap.get(fieldName);
         // 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
         if (type != null) {
             type = type.toUpperCase(Locale.US);
             if (type.contains("TEXT")) {
-                return DataType.TEXT;
+                return EDataType.TEXT;
             } else if (type.contains("DOUBLE")) {
-                return DataType.DOUBLE;
+                return EDataType.DOUBLE;
             } else if (type.contains("INTEGER")) {
-                return DataType.INTEGER;
+                return EDataType.INTEGER;
             } else if (type.contains("REAL")) {
-                return DataType.DOUBLE;
+                return EDataType.DOUBLE;
             } else if (type.contains("DATE")) {
-                return DataType.DATE;
+                return EDataType.DATE;
             } else if (type.contains("BLOB")) {
-                return DataType.BLOB;
+                return EDataType.BLOB;
             }
         }
         return null;
@@ -370,10 +310,8 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
             setLabelField(labelField);
             // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
         }
-        // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only
-        // +"] primaryKeyFields["+primaryKeyFields+"]");
         if ((i_view_read_only == 0) || (i_view_read_only == 1))
-            view_read_only = i_view_read_only; // -1=AbstractSpatialTable otherwise SpatialView
+            isReadonly = true;
         if ((!s_ROWID_PK.equals("")) && (!s_ROWID_PK.contains("ROWID"))) {
             ROWID_PK = s_ROWID_PK;
         }
@@ -462,7 +400,6 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
                 throw new IllegalArgumentException("No geom type for: " + TYPE + " isGeometryCollection[" + isGeometryCollection
                         + "]");
         }
-        layerTypeDescription = TYPE.getDescription();
         checkDone = true;
     }
 
@@ -481,7 +418,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
 
     @Override
     public boolean isEditable() {
-        return view_read_only < 0;
+        return !isReadonly;
     }
 
 }

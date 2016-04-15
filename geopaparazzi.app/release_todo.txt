@@ -1,5 +1,0 @@
-Important things to do when releasing:
-
-* Check the release number (versionCode and versionName)
-* In the class eu.hydrologis.geopaparazzi.util.debug.Debug set doMock = false
-* In the class eu.hydrologis.geopaparazzi.util.debug.Debug set D = false;

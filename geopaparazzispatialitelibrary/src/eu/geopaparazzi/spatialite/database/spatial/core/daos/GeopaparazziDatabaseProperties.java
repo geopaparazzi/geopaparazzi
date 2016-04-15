@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.spatialite.database.spatial.util.Style;
+import eu.geopaparazzi.library.style.Style;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;

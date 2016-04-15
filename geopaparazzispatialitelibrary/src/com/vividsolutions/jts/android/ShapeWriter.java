@@ -198,7 +198,7 @@ public class ShapeWriter {
      * and PointShapeFactory (if relevant).
      * <p>
      * Note that Shapes do not
-     * preserve information about which elements in heterogeneous collections
+     * preserve information fragment_about which elements in heterogeneous collections
      * are 1D and which are 2D.
      * For example, a GeometryCollection containing a ring and a
      * disk will render as two disks if Graphics.fill is used, 

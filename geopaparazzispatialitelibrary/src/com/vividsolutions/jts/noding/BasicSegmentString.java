@@ -33,8 +33,6 @@
  */
 package com.vividsolutions.jts.noding;
 
-import java.util.*;
-import com.vividsolutions.jts.algorithm.LineIntersector;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.io.WKTWriter;

@@ -41,8 +41,6 @@ import java.util.List;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.impl.*;
-import com.vividsolutions.jts.io.*;
 import com.vividsolutions.jts.util.*;
 
 

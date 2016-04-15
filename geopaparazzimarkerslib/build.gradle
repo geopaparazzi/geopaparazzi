@@ -19,9 +19,9 @@ dependencies {
 
 
 android {
-        compileSdkVersion project.ext.myCompileSdkVersion
-        buildToolsVersion project.ext.myBuildToolsVersion
-        
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
+
         sourceSets {
                 main {
                         manifest {
@@ -43,6 +43,9 @@ android {
                                 srcDir 'src'
                         }
                 }
+        }
+        lintOptions {
+                abortOnError false
         }
 }
 

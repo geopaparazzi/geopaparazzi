@@ -1,7 +1,6 @@
 package com.vividsolutions.jts.algorithm.match;
 
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.algorithm.distance.*;
 
 /**
  * Measures the degree of similarity between two {@link Geometry}s

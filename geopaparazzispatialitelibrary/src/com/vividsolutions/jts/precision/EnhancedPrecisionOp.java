@@ -34,7 +34,6 @@
 package com.vividsolutions.jts.precision;
 
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.operation.overlay.OverlayOp;
 
 /**
   * Provides versions of Geometry spatial functions which use

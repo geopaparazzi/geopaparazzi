@@ -34,11 +34,6 @@ package com.vividsolutions.jts.precision;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Lineal;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.index.strtree.ItemBoundable;
 import com.vividsolutions.jts.index.strtree.ItemDistance;
 import com.vividsolutions.jts.index.strtree.STRtree;

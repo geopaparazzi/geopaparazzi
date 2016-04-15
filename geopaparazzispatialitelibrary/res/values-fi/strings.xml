@@ -11,4 +11,14 @@
   <string name="decimation_factor_default">0.000001</string>
   <string name="min_zoom">Min zoom</string>
   <string name="max_zoom">Max zoom</string>
+  <string name="dash_pattern">Viivakuvio</string>
+  <string name="label_properties">Nimiön ominaisuudet</string>
+  <string name="toggle_visibility">vaihda näkyvyyttä</string>
+  <string name="label_field">nimiön kenttä</string>
+  <string name="label_size">nimiön koko</string>
+  <string name="select_table_types">Valitse tyypit</string>
+  <string name="select_type">Valitse tyyppi</string>
+  <string name="remove_from_list">Poista %s listalta?</string>
+  <string name="selected_file_no_vector_data">Valittu tiedosto ei sisällä mitään vektoridataa:</string>
+  <string name="adding_new_source">Lisätään uusi lähde...</string>
 </resources>

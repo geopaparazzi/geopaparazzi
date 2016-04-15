@@ -2,7 +2,6 @@ package com.vividsolutions.jts.operation.overlay.snap;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.operation.overlay.OverlayOp;
-import com.vividsolutions.jts.operation.overlay.validate.OverlayResultValidator;
 
 
 /**

@@ -39,7 +39,6 @@ package com.vividsolutions.jts.geomgraph.index;
  * @version 1.7
  */
 import java.util.*;
-import com.vividsolutions.jts.geomgraph.*;
 
 /**
  * An EdgeSetIntersector computes all the intersections between the
@@ -50,7 +49,7 @@ import com.vividsolutions.jts.geomgraph.*;
  * <li>determining the mutual intersections between two different sets of edges
  * </ul>
  * It uses a {@link SegmentIntersector} to compute the intersections between
- * segments and to record statistics about what kinds of intersections were found.
+ * segments and to record statistics fragment_about what kinds of intersections were found.
  *
  * @version 1.7
  */

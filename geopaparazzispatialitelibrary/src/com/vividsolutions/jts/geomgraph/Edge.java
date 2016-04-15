@@ -36,10 +36,9 @@
 package com.vividsolutions.jts.geomgraph;
 
 import java.io.PrintStream;
-import java.util.Iterator;
+
 import com.vividsolutions.jts.algorithm.LineIntersector;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.util.*;
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.geomgraph.index.*;
 

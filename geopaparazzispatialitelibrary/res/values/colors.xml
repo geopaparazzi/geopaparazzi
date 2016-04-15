@@ -34,7 +34,7 @@
 
     <!--
 	 <color name="red">#FF0000</color>
-	<color name="green">#00FF00</color>
+	<color name="GREEN">#00FF00</color>
 	<color name="blue">#0000FF</color>
 	<color name="light">#d6d6d6</color>
 	<color name="dark">#a7a7a7</color>
@@ -46,7 +46,8 @@
 	<color name="darkorange">#993300</color>
 	<color name="mygreen_dark">#378756</color>
 	<color name="mygreen_light">#66CC99</color>
-	<color name="hydrogreen">#5d9d76</color>
+	<color name="hydrogreen">#5d9d76</color>
+
     -->
 
 </resources>

@@ -2,7 +2,6 @@ package com.vividsolutions.jts.geom.prep;
 
 import java.util.*;
 
-import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.algorithm.locate.PointOnGeometryLocator;
 import com.vividsolutions.jts.algorithm.locate.SimplePointInAreaLocator;
 import com.vividsolutions.jts.geom.*;

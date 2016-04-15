@@ -30,30 +30,14 @@ import jsqlite.*;
 public class SPL_Rasterlite {
 
     /**
-     * Return info of Rasterlite2
-     * - will be filled on first Database connection when empty
-     * -- called in checkDatabaseTypeAndValidity
-     * --- if this is empty, then the Driver has NOT been compiled for RasterLite2
-     * '0.8;x86_64-linux-gnu'
-     */
-    public static String Rasterlite2Version_CPU = "";
-
-    /*
-     * @return true, if there is rasterlite support.
-     */
-    public static boolean hasRasterLiteSupport(){
-        return !SPL_Rasterlite.Rasterlite2Version_CPU.equals("");
-    }
-
-    /**
      * Retrieve rasterlite2 image of a given bound and size.
      * <p/>
      * <p>https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImageFromRaster
      *
-     * @param db the database to use.
+     * @param db          the database to use.
      * @param rasterTable the table to use.
      * @param tileBounds  [west,south,east,north] [minx, miny, maxx, maxy] bounds.
-     * @param tileSize default 256 [Tile.TILE_SIZE].
+     * @param tileSize    default 256 [Tile.TILE_SIZE].
      * @return the image data as byte[]
      */
     public static byte[] getRasterTileInBounds(Database db, AbstractSpatialTable rasterTable, double[] tileBounds, int tileSize) {
@@ -79,7 +63,7 @@ public class SPL_Rasterlite {
      * @return the image data as byte[] as jpeg
      */
     public static byte[] rl2_GetMapImageFromRasterTile(Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
-                                             int i_tile_size) {
+                                                       int i_tile_size) {
         return rl2_GetMapImageFromRaster(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
                 "default", "image/jpeg", "#ffffff", 0, 80, 1);
     }
@@ -106,8 +90,8 @@ public class SPL_Rasterlite {
      * @return the image data as byte[]
      */
     public static byte[] rl2_GetMapImageFromRaster(Database sqlite_db, String sourceSrid, String destSrid, String coverageName, int width,
-                                         int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality,
-                                         int reaspect) {
+                                                   int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality,
+                                                   int reaspect) {
         boolean doTransform = false;
         if (!sourceSrid.equals(destSrid)) {
             doTransform = true;
@@ -171,14 +155,13 @@ public class SPL_Rasterlite {
         qSb.append(");");
         String s_sql_command = qSb.toString();
         Stmt stmt = null;
-        byte[] ba_image = null;
-        if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) { // only if rasterlite2 driver is active
-            try {
-                stmt = sqlite_db.prepare(s_sql_command);
-                if (stmt.step()) {
-                    ba_image = stmt.column_bytes(0);
-                }
-            } catch (jsqlite.Exception e_stmt) {
+        try {
+            stmt = sqlite_db.prepare(s_sql_command);
+            if (stmt.step()) {
+                byte[] ba_image = stmt.column_bytes(0);
+                return ba_image;
+            }
+        } catch (jsqlite.Exception e_stmt) {
                 /*
                   this internal lib error is not being caught and the application crashes
                   - the request was for a image 1/3 of the orignal size of 10607x8292 (3535x2764)
@@ -187,19 +170,18 @@ public class SPL_Rasterlite {
                   '/data/app-lib/eu.hydrologis.geopaparazzi-2/libjsqlite.so (rl2_raster_decode+8248)'
                   'I WindowState: WIN DEATH: Window{41ee0100 u0 eu.hydrologis.geopaparazzi/eu.hydrologis.geopaparazzi.GeoPaparazziActivity}'
                 */
-                int i_rc = sqlite_db.last_error();
-                GPLog.error("SPL_Rasterlite", "rl2_GetMapImageFromRaster sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
-            } finally {
-                if(stmt!=null)
-                    try {
-                        stmt.close();
-                    } catch (jsqlite.Exception e) {
-                        GPLog.error("SPL_Rasterlite", null, e);
-                    }
+            int i_rc = sqlite_db.last_error();
+            GPLog.error("SPL_Rasterlite", "rl2_GetMapImageFromRaster sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (jsqlite.Exception e) {
+                GPLog.error("SPL_Rasterlite", null, e);
             }
         }
-        return ba_image;
+        return null;
     }
-
 
 }

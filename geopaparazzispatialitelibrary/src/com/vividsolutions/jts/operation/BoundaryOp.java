@@ -35,7 +35,6 @@ package com.vividsolutions.jts.operation;
 import java.util.*;
 import com.vividsolutions.jts.algorithm.BoundaryNodeRule;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geomgraph.GeometryGraph;
 
 /**
  * Computes the boundary of a {@link Geometry}.

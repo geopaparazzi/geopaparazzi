@@ -42,10 +42,7 @@ package com.vividsolutions.jts.operation.relate;
  * @version 1.7
  */
 
-import java.io.PrintStream;
-import java.util.*;
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.util.*;
 import com.vividsolutions.jts.geomgraph.*;
 
 /**

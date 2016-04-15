@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dp">
+
+
+    <LinearLayout
+        android:id="@+id/colorLayout"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/colorButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_circle"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/colorLayout" />
+
+    <TextView
+        android:id="@+id/filename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/visible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/visible"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Button
+        android:id="@+id/propertiesButton"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_settings_primary_24dp" />
+
+</RelativeLayout>

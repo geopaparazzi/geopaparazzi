@@ -35,7 +35,7 @@
 package com.vividsolutions.jts.operation.valid;
 
 import java.util.*;
-import com.vividsolutions.jts.algorithm.*;
+
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.operation.overlay.*;
 import com.vividsolutions.jts.geom.*;

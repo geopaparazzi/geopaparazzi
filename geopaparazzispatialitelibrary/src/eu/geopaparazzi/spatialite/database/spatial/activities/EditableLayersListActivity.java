@@ -17,81 +17,76 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.R;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTableNameComparator;
+import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * Editable spatialtables listing and choosing activity.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class EditableLayersListActivity extends ListActivity implements OnTouchListener {
-
-    private String mapsDirPath;
+public class EditableLayersListActivity extends AppCompatActivity implements OnTouchListener {
 
     private int index = 0;
 
-    private SpatialVectorTable spatialVectorTable;
+    private SpatialiteMap spatialiteMap;
 
     private int buttonSelectionColor;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.data_list);
+        setContentView(R.layout.activity_editable_layers_list);
 
-        EditText filterText = (EditText) findViewById(R.id.search_box);
-        filterText.setVisibility(View.GONE);
-        LinearLayout toggleButtonsView = (LinearLayout) findViewById(R.id.sourceTypeToggleButtonsView);
-        toggleButtonsView.setVisibility(View.GONE);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        buttonSelectionColor = getResources().getColor(R.color.main_selection);
+        ListView mListView = (ListView) findViewById(R.id.editablelayerslist);
 
+        buttonSelectionColor = Compat.getColor(this, R.color.main_selection);
+
+        final List<SpatialiteMap> editableSpatialiteMaps = new ArrayList<>();
+        final HashMap<SpatialiteMap, SpatialVectorTable> spatialVectorTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
         try {
-            mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-        }
 
-        final List<SpatialVectorTable> editableSpatialVectorTables = new ArrayList<SpatialVectorTable>();
-        final List<String> editableSpatialVectorTablesNames = new ArrayList<String>();
-        try {
-            List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-            for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
+            for (Map.Entry<SpatialiteMap, SpatialVectorTable> entry : spatialVectorTables.entrySet()) {
+                SpatialVectorTable spatialVectorTable = entry.getValue();
                 if (spatialVectorTable.isEditable()) {
                     int geomType = spatialVectorTable.getGeomType();
                     GeometryType geometryType = GeometryType.forValue(geomType);
                     switch (geometryType) {
+                        // supported types
                         case POLYGON_XY:
                         case POLYGON_XYM:
                         case POLYGON_XYZ:
@@ -100,9 +95,6 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                         case MULTIPOLYGON_XYM:
                         case MULTIPOLYGON_XYZ:
                         case MULTIPOLYGON_XYZM:
-                            editableSpatialVectorTables.add(spatialVectorTable);
-                            editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
-                            break;
                         case LINESTRING_XY:
                         case LINESTRING_XYM:
                         case LINESTRING_XYZ:
@@ -111,20 +103,19 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                         case MULTILINESTRING_XYM:
                         case MULTILINESTRING_XYZ:
                         case MULTILINESTRING_XYZM:
-                            editableSpatialVectorTables.add(spatialVectorTable);
-                            editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                            editableSpatialiteMaps.add(entry.getKey());
                             break;
                         default:
                             break;
                     }
                 }
             }
-        } catch (jsqlite.Exception e) {
+        } catch (Exception e) {
             GPLog.error(this, null, e);
         }
 
-        if (editableSpatialVectorTables.size() == 0) {
-            Utilities.messageDialog(this, "No editable layers found", new Runnable() {
+        if (editableSpatialiteMaps.size() == 0) {
+            GPDialogs.warningDialog(this, "No editable layers found", new Runnable() {
                 @Override
                 public void run() {
                     finish();
@@ -133,33 +124,42 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
             return;
         }
 
-        Collections.sort(editableSpatialVectorTables, new SpatialTableNameComparator());
-        Collections.sort(editableSpatialVectorTablesNames);
+        Collections.sort(editableSpatialiteMaps, new Comparator<SpatialiteMap>() {
+            @Override
+            public int compare(SpatialiteMap lhs, SpatialiteMap rhs) {
+                return lhs.tableName.compareToIgnoreCase(rhs.tableName);
+            }
+        });
 
         final ILayer editLayer = EditManager.INSTANCE.getEditLayer();
 
+
         if (editLayer instanceof SpatialVectorTableLayer) {
             SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-            spatialVectorTable = layer.getSpatialVectorTable();
-            int indexOf = editableSpatialVectorTables.indexOf(spatialVectorTable);
-            if (indexOf != -1) {
-                index = indexOf;
+            SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+
+            int tmpIndex = 0;
+            for (Map.Entry<SpatialiteMap, SpatialVectorTable> entry : spatialVectorTables.entrySet()) {
+                SpatialVectorTable tmp = entry.getValue();
+                if (tmp.equals(spatialVectorTable)) {
+                    index = tmpIndex;
+                    spatialiteMap = entry.getKey();
+                    break;
+                }
+                tmpIndex++;
             }
         }
 
-        ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.editablelayers_row,
-                editableSpatialVectorTables) {
+        ArrayAdapter<SpatialiteMap> arrayAdapter = new ArrayAdapter<SpatialiteMap>(this, R.layout.editablelayers_row,
+                editableSpatialiteMaps) {
             private ImageButton currentEditable = null;
 
-            @SuppressWarnings("nls")
             @Override
             public View getView(final int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.editablelayers_row, null);
                 try {
-                    final SpatialVectorTable item = editableSpatialVectorTables.get(position);
-                    AbstractSpatialDatabaseHandler tableHandler = null;
-                    tableHandler = SpatialDatabasesManager.getInstance().getVectorHandler(item);
+                    final SpatialiteMap item = editableSpatialiteMaps.get(position);
 
                     TextView nameView = (TextView) rowView.findViewById(R.id.name);
                     TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
@@ -168,12 +168,13 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     editableButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             if (currentEditable != null) {
-                                currentEditable.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                                currentEditable.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                             }
-                            editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                            editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                             currentEditable = editableButton;
 
-                            SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(position);
+                            SpatialiteMap spatialiteMap = editableSpatialiteMaps.get(position);
+                            SpatialVectorTable spatialVectorTable = spatialVectorTables.get(spatialiteMap);
                             ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
                             EditManager.INSTANCE.setEditLayer(layer);
 
@@ -182,36 +183,23 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     });
                     editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
-                    if (spatialVectorTable != null && spatialVectorTable == item) {
-                        editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                    if (spatialiteMap != null && spatialiteMap == item) {
+                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                         currentEditable = editableButton;
-                    } else if (item.isTableEnabled() == 1) {
-                        editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                    } else if (item.isVisible) {
+                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                     } else {
                         editableButton.setEnabled(false);
                     }
 
-                    // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
-                    // mj10777: some tables may have more than one column, thus the column name will
-                    // also be shown item.getUniqueName()
-                    nameView.setText(item.getTableName());
+                    nameView.setText(item.tableName);
 
-                    String dbName = item.getFileName();
+                    String dbName = item.databasePath;
 
-                    if (mapsDirPath != null && tableHandler != null) {
-                        String databasePath = tableHandler.getFile().getAbsolutePath();
-                        if (databasePath.startsWith(mapsDirPath)) {
-                            dbName = databasePath.replaceFirst(mapsDirPath, "");
-                            if (dbName.startsWith(File.separator)) {
-                                dbName = dbName.substring(1);
-                            }
-                        }
-                    }
-
-                    descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + "\n" + "database: "
+                    descriptionView.setText(item.geometryType + "\n" + "database: "
                             + dbName);
 
-                } catch (jsqlite.Exception e1) {
+                } catch (Exception e1) {
                     GPLog.error(EditableLayersListActivity.this, null, e1);
                 }
 
@@ -219,12 +207,11 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
             }
 
         };
-        setListAdapter(arrayAdapter);
+        mListView.setAdapter(arrayAdapter);
 
         if (index != -1) {
             // move to the right position (this does not actually select the item)
-            ListView listView = getListView();
-            listView.setSelection(index);
+            mListView.setSelection(index);
         }
 
     }

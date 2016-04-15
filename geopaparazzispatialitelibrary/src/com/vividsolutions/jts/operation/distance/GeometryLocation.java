@@ -39,7 +39,7 @@ import com.vividsolutions.jts.geom.*;
  * Represents the location of a point on a Geometry.
  * Maintains both the actual point location 
  * (which may not be exact, if the point is not a vertex) 
- * as well as information about the component
+ * as well as information fragment_about the component
  * and segment index where the point occurs.
  * Locations inside area Geometrys will not have an associated segment index,
  * so in this case the segment index will have the sentinel value of 

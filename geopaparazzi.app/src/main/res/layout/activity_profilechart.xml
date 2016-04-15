@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/speed_plot"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/elevation_plot"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/reset_chart_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_refresh_primary_24dp" />
+
+    <LinearLayout
+        android:id="@+id/info_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:orientation="horizontal"
+        android:background="#dfffffff">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/info_text"
+            style="@style/GPTitleTextViewStyle"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="" />
+    </LinearLayout>
+</FrameLayout>

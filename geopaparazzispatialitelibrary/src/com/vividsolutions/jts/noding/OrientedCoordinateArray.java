@@ -32,7 +32,6 @@
  */
 package com.vividsolutions.jts.noding;
 
-import java.util.*;
 import com.vividsolutions.jts.geom.*;
 
 /**

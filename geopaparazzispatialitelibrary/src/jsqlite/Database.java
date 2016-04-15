@@ -42,10 +42,8 @@ public class Database {
         synchronized (this) {
             try {
                 _open4(filename, mode, null, false);
-            } catch (jsqlite.Exception se) {
+            } catch (Exception | OutOfMemoryError se) {
                 throw se;
-            } catch (java.lang.OutOfMemoryError me) {
-                throw me;
             } catch (Throwable t) {
                 _open(filename, mode);
             }
@@ -70,10 +68,8 @@ public class Database {
         synchronized (this) {
             try {
                 _open4(filename, mode, vfs, false);
-            } catch (jsqlite.Exception se) {
+            } catch (Exception | OutOfMemoryError se) {
                 throw se;
-            } catch (java.lang.OutOfMemoryError me) {
-                throw me;
             } catch (Throwable t) {
                 _open(filename, mode);
             }
@@ -99,10 +95,8 @@ public class Database {
         synchronized (this) {
             try {
                 _open4(filename, mode, vfs, ver2);
-            } catch (jsqlite.Exception se) {
+            } catch (Exception | OutOfMemoryError se) {
                 throw se;
-            } catch (java.lang.OutOfMemoryError me) {
-                throw me;
             } catch (Throwable t) {
                 _open(filename, mode);
             }

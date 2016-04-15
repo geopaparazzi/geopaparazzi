@@ -32,10 +32,8 @@
  */
 package com.vividsolutions.jts.noding;
 
-import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.algorithm.LineIntersector;
-import com.vividsolutions.jts.util.Debug;
 
 /**
  * Computes the intersections between two line segments in {@link SegmentString}s

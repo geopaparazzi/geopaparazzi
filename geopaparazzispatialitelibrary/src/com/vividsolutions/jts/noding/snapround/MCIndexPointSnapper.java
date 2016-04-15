@@ -1,13 +1,10 @@
 package com.vividsolutions.jts.noding.snapround;
 
-import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.noding.*;
-import com.vividsolutions.jts.algorithm.LineIntersector;
 import com.vividsolutions.jts.index.chain.*;
 import com.vividsolutions.jts.index.*;
 import com.vividsolutions.jts.index.strtree.STRtree;
-import com.vividsolutions.jts.index.quadtree.Quadtree;
 
 /**
  * "Snaps" all {@link SegmentString}s in a {@link SpatialIndex} containing

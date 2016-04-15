@@ -127,7 +127,7 @@ public class AffineTransformationFactory {
 	 * <ul>
 	 * <li>a translation 
 	 * from the start point of the source baseline to the start point of the destination baseline,
-	 * <li>a rotation through the angle between the baselines about the destination start point,
+	 * <li>a rotation through the angle between the baselines fragment_about the destination start point,
 	 * <li>and a scaling equal to the ratio of the baseline lengths.
 	 * </ul>
 	 * If the source baseline has zero length, an identity transformation is returned.

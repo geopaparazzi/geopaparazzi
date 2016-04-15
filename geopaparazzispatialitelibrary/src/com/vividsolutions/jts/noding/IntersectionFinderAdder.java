@@ -35,7 +35,6 @@ package com.vividsolutions.jts.noding;
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.algorithm.LineIntersector;
-import com.vividsolutions.jts.util.Debug;
 
 /**
  * Finds proper and interior intersections in a set of SegmentStrings,

@@ -39,7 +39,6 @@ package com.vividsolutions.jts.algorithm;
  */
 
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.util.Assert;
 
 /**
  * A robust version of {@link LineIntersector}.

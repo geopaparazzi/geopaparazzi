@@ -36,7 +36,6 @@ package com.vividsolutions.jts.operation.buffer;
  * @version 1.7
  */
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.precision.SimpleGeometryPrecisionReducer;
 import com.vividsolutions.jts.math.MathUtil;
 import com.vividsolutions.jts.noding.*;
 import com.vividsolutions.jts.noding.snapround.*;

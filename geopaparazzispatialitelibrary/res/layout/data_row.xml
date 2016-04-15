@@ -3,7 +3,6 @@
     android:id="@+id/row_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/main_background"
     android:padding="5dp" >
 
     <CheckBox

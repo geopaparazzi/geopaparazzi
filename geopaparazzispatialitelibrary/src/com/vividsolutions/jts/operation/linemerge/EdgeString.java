@@ -34,10 +34,6 @@
 package com.vividsolutions.jts.operation.linemerge;
 
 import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateList;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
 
 import java.util.ArrayList;
 import java.util.Iterator;

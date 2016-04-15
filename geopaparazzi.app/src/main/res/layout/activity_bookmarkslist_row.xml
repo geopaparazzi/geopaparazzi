@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bookmarksrowlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dip">
+
+    <Button
+        android:id="@+id/gobutton"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_goto_primary_24dp"
+        android:padding="5dip" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/gobutton"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/renamebutton"
+        android:layout_toRightOf="@+id/gobutton"
+        >
+        <TextView
+            android:id="@+id/bookmarkrowtext"
+            style="@style/GPTitleTextViewStyle"
+            android:padding="5dip"
+            android:text=""
+            android:layout_gravity="start"
+            android:gravity="center_vertical" />
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/deletebutton"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_delete_primary_24dp"
+        android:padding="5dip" />
+
+    <Button
+        android:id="@+id/renamebutton"
+        android:layout_width="@dimen/min_touch_size"
+        android:layout_height="@dimen/min_touch_size"
+        android:layout_alignTop="@+id/deletebutton"
+        android:layout_toLeftOf="@+id/deletebutton"
+        android:background="@drawable/ic_edit_primary_24dp"
+        android:padding="5dip" />
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/alertbutton"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignTop="@+id/renamebutton"-->
+    <!--android:layout_toLeftOf="@+id/renamebutton"-->
+    <!--android:padding="5dip"-->
+    <!--android:src="@android:drawable/ic_menu_rotate" />-->
+
+</RelativeLayout>

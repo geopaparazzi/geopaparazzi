@@ -45,9 +45,6 @@ import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.operation.overlay.*;
 import com.vividsolutions.jts.noding.*;
 
-import com.vividsolutions.jts.io.*;
-import com.vividsolutions.jts.util.*;
-
 
 /**
  * Builds the buffer geometry for a given input geometry and precision model.

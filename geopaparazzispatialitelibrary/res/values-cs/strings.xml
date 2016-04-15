@@ -16,4 +16,9 @@
   <string name="toggle_visibility">Přepnout viditelnost</string>
   <string name="label_field">Pole popisku</string>
   <string name="label_size">Velikost popisku</string>
+  <string name="select_table_types">Vybrat typy</string>
+  <string name="select_type">Vybrat typ</string>
+  <string name="remove_from_list">Odstranit %s ze seznamu?</string>
+  <string name="selected_file_no_vector_data">Vybraný soubor neobsahuje žádná vektorová data:</string>
+  <string name="adding_new_source">Přidává se nový zdroj...</string>
 </resources>

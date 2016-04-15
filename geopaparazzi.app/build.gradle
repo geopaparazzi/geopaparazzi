@@ -1,108 +1,109 @@
 import com.android.build.gradle.tasks.PackageApplication
 
-buildscript {
-    repositories {
-        mavenCentral()
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+//                    'proguard-rules.pro'
+//            signingConfig signingConfigs.config
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def file = output.outputFile
+                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk");
+                    output.outputFile = new File(file.parentFile, fileName)
+                }
+            }
+        }
+        debug {
+            debuggable true
+        }
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+
+    signingConfigs {
+        config {
+            def Properties props = new Properties()
+            def propFile = new File('geopaparazzi.app/ant.properties')
+            if (propFile.canRead()) {
+                props.load(new FileInputStream(propFile))
+                if (props != null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
+                        props.containsKey('key.alias') && props.containsKey('key.alias.password')) {
+                    storeFile = file(props['key.store'])
+                    storePassword = props['key.store.password']
+                    keyAlias = props['key.alias']
+                    keyPassword = props['key.alias.password']
+                } else {
+                    println 'geopaparazzi.app/ant.properties found but some entries are missing'
+                    android.buildTypes.release.signingConfig = null
+                }
+            } else {
+                println 'geopaparazzi.app/ant.properties not found'
+                android.buildTypes.release.signingConfig = null
+            }
+        }
+    }
+
+    defaultConfig {
+        applicationId "eu.hydrologis.geopaparazzi"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 73
+        versionName "5.0.0"
+        signingConfig signingConfigs.config
+        multiDexEnabled true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir new File(buildDir, 'native-libs')
+        }
+    }
+    productFlavors {
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
-apply plugin: 'com.android.application'
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:preference-v7:23.1.1'
+    compile project(':geopaparazzilibrary')
+    compile project(':geopaparazzispatialitelibrary')
+    compile project(':geopaparazzimapsforge')
+    compile project(':geopaparazzimarkerslib')
+    //    compile project(':wms_nww')
+    compile project(':wms_nww')
+}
 
 task copyNativeLibs(type: Copy) {
-    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'libs')) {
+    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'jniLibs')) {
         include 'armeabi/libjsqlite.so'
         include 'armeabi-v7a/libjsqlite.so'
+        include 'x86/libjsqlite.so'
     }
     into new File(buildDir, 'native-libs')
 }
 tasks.withType(JavaCompile) { compileTask -> compileTask.dependsOn copyNativeLibs }
 clean.dependsOn 'cleanCopyNativeLibs'
 
-tasks.whenTaskAdded { task ->
-    if (task.name.startsWith("lint")) {
-        task.enabled = false
-    }
-}
-
-dependencies {
-    compile project(":geopaparazzispatialitelibrary")
-    compile project(":geopaparazzimapsforge")
-    compile project(":geopaparazzilibrary")
-    compile project(":geopaparazzimarkerslib")
-}
-
-android {
-    compileSdkVersion project.ext.myCompileSdkVersion
-    buildToolsVersion project.ext.myBuildToolsVersion
-
-    packagingOptions {
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE.txt'
-    }
-
-    sourceSets {
-        main {
-            manifest {
-                srcFile 'AndroidManifest.xml'
-            }
-            java {
-                srcDir 'src'
-            }
-            res {
-                srcDir 'res'
-            }
-            assets {
-                srcDir 'assets'
-            }
-            resources {
-                srcDir 'src'
-            }
-            aidl {
-                srcDir 'src'
-            }
-            jniLibs.srcDir new File(buildDir, 'native-libs')
-        }
-    }
-    signingConfigs {
-        release
-    }
-    def Properties props = new Properties()
-    def propFile = new File('geopaparazzi.app/ant.properties')
-    if (propFile.canRead()) {
-        props.load(new FileInputStream(propFile))
-        if (props != null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
-                props.containsKey('key.alias') && props.containsKey('key.alias.password')) {
-            android.signingConfigs.release.storeFile = file(props['key.store'])
-            android.signingConfigs.release.storePassword = props['key.store.password']
-            android.signingConfigs.release.keyAlias = props['key.alias']
-            android.signingConfigs.release.keyPassword = props['key.alias.password']
-        } else {
-            println 'geopaparazzi.app/ant.properties found but some entries are missing'
-            android.buildTypes.release.signingConfig = null
-        }
-    } else {
-        println 'geopaparazzi.app/ant.properties not found'
-        android.buildTypes.release.signingConfig = null
-    }
-
-    buildTypes {
-        release {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-//                    'proguard-rules.pro'
-            signingConfig signingConfigs.release
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def file = output.outputFile
-                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + project.ext.geopaparazziVersion + ".apk");
-                    output.outputFile = new File(file.parentFile, fileName)
-                }
-            }
-        }
-    }
 
 
-}
+
+
+

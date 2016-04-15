@@ -45,7 +45,6 @@ package com.vividsolutions.jts.operation.relate;
 import java.util.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.util.*;
 
 /**
  * Computes the {@link EdgeEnd}s which arise from a noded {@link Edge}.

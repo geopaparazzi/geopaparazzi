@@ -38,7 +38,6 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.index.SpatialIndex;
 import com.vividsolutions.jts.index.strtree.STRtree;
-import com.vividsolutions.jts.util.*;
 
 /**
  * Tests whether any of a set of {@link LinearRing}s are

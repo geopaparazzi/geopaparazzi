@@ -21,7 +21,7 @@
         <attr name="interpolator" format="reference" />
     </declare-styleable>
     <declare-styleable name="SwatchButton">
-        <attr name="color" format="color" />
+        <attr name="markercolor" format="color" />
     </declare-styleable>
     <declare-styleable name="PenTypeButton">
         <attr name="penType">

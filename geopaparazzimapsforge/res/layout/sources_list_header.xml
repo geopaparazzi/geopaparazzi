@@ -3,29 +3,29 @@
     android:id="@+id/sessions_header_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/main_background"
-    android:padding="10dip" >
+    android:background="@color/transparent_white"
+    android:cacheColorHint="@color/transparent_white"
+    android:padding="10dip">
 
     <ImageView
         android:id="@+id/sources_header_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_folder" >
-    </ImageView>
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_folder_primary_24dp"/>
 
     <TextView
         android:id="@+id/sources_header_descriptiontext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/GPTextViewStyle"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/sources_header_image"
         android:paddingLeft="5dp"
         android:text="folderpath"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/main_text_color" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

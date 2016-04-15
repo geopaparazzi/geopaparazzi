@@ -4,42 +4,4 @@
     android:versionCode="48"
     android:versionName="3.8.0" >
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="21" />
-
-    <!--
-        <uses-permission android:name="android.permission.NFC" />
-        <uses-permission android:name="android.permission.BLUETOOTH" />
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.RECEIVE_SMS" />
-        <uses-permission android:name="android.permission.SEND_SMS" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.RECORD_AUDIO" />
-        <uses-permission android:name="android.permission.READ_CONTACTS" />
-        <uses-permission android:name="android.permission.VIBRATE" />
-
-
-
-
-    -->
-
-    <application  >
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LinesDataPropertiesActivity" >
-        </activity>
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PolygonsDataPropertiesActivity" >
-        </activity>
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PointsDataPropertiesActivity" >
-        </activity>
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
-        </activity>
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LabelPropertiesActivity" >
-        </activity>
-    </application>
-
 </manifest>

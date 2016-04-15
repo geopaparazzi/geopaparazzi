@@ -35,10 +35,8 @@ package com.vividsolutions.jts.geom.prep;
 import java.util.*;
 
 
-import com.vividsolutions.jts.algorithm.*;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.noding.*;
-import com.vividsolutions.jts.geom.util.*;
 
 /**
  * Computes the <tt>intersects</tt> spatial relationship predicate

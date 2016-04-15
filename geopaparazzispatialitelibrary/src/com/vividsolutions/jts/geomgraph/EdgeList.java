@@ -39,10 +39,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.index.SpatialIndex;
-import com.vividsolutions.jts.index.quadtree.Quadtree;
 import com.vividsolutions.jts.noding.OrientedCoordinateArray;
-import com.vividsolutions.jts.noding.SegmentString;
 
 /**
  * A EdgeList is a list of Edges.  It supports locating edges

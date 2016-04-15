@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
+  <string name="yes">evet</string>
+  <string name="no">hayır</string>
+  <string name="app_file_name">Geopaparazzi Proje Veritabanı</string>
+  <string name="notesvisibilityToggle">Not görünümleri geçişi</string>
+  <string name="loggingoff">Tüm sensörler durduruldu</string>
+  <string name="nogps_data">GPS verisi henüz yok</string>
+  <string name="about">hakkında</string>
+  <string name="exit">çıkış</string>
+  <string name="utctime">zaman</string>
+  <string name="altim">yükseklik</string>
+  <string name="lat">enlem</string>
+  <string name="lon">boylam</string>
+  <string name="azimuth">azimut</string>
+  <string name="go_to">git</string>
+  <string name="goto_coordinate">koordinata git</string>
+  <string name="geocoding">geokod</string>
+  <string name="prompt_gpsenable">GPS iniz kapandı! Açmak ister misiniz?</string>
+  <string name="width_label">genişlik</string>
+  <string name="color_label">renk</string>
+  <string name="mainmenu_kmlexport">dışa aktar</string>
+  <string name="mainmenu_import">içeri al</string>
+  <string name="mainmenu_gpsdataselect">GPS Veri listesi</string>
+  <string name="mainmenu_preferences">ayarlar</string>
+  <string name="mainmenu_merge">Seçilmiş logları birleştir</string>
+  <string name="gpslogproperty">özellikler</string>
+  <string name="gpslog_chart">Grafik</string>
+  <string name="gpslog_zoom">yaklaş</string>
+  <string name="gpslog_delete">Sil</string>
+  <string name="mapproperty">özellikler</string>
+  <string name="map_zoom">haritaya yaklaş</string>
+  <string name="map_delete">Haritayı sil</string>
+  <string name="chart_profile_view">Profil Görünümü</string>
+  <string name="text_show_position_on_map">Harita Görünümü</string>
+  <string name="text_take_a_gps_note">Not al</string>
+  <string name="audio_recording_stop">Dur</string>
+  <string name="panic">Panik!</string>
+  <string name="panic_number">Panik numarası</string>
+  <string name="panic_upper">PANİK!</string>
+  <string name="help_needed">Yardım gerekli!</string>
+  <string name="message_sent">Mesaj gönderildi</string>
+  <string name="last_note_deleted">Son not silindi</string>
+  <string name="last_note_not_deleted">Son not silinmedi</string>
+  <string name="text_gpson">GPS açık</string>
+  <!--added after 2.1.2-->
+  <!--added after 2.1.4-->
+  <string name="select_all">Tümünü seç</string>
+  <string name="unselect_all">Tüm seçimi kaldır</string>
+  <string name="delete_visible_notes_title">Notları sil</string>
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+  <!--ellipsis character instead of three dots-->
+  <string name="delete">Sil</string>
+</resources>

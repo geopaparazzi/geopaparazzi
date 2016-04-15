@@ -365,7 +365,7 @@ implements SpatialIndex, Serializable
       }
       else {
         // testing - does allowing a tolerance improve speed?
-        // Ans: by only about 10% - not enough to matter
+        // Ans: by only fragment_about 10% - not enough to matter
         /*
         double maxDist = bndPair.getMaximumDistance();
         if (maxDist * .99 < lastComputedDistance) 

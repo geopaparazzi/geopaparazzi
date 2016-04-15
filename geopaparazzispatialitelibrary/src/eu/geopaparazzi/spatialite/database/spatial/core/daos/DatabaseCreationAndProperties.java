@@ -484,9 +484,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
 
             if (stmt.step()) {
                 String value = stmt.column_string(0);
-                if (SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) {
-                    SPL_Rasterlite.Rasterlite2Version_CPU = value;
-                }
                 return value;
             }
         } catch (Exception e) {

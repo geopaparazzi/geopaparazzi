@@ -37,7 +37,7 @@ package com.vividsolutions.jts.operation.valid;
 import com.vividsolutions.jts.geom.*;
 
 /**
- * Contains information about the nature and location of a {@link Geometry}
+ * Contains information fragment_about the nature and location of a {@link Geometry}
  * validation error
  *
  * @version 1.7

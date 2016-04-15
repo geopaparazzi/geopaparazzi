@@ -42,7 +42,6 @@ import com.vividsolutions.jts.geom.IntersectionMatrix;
 import com.vividsolutions.jts.geom.Location;
 import com.vividsolutions.jts.geomgraph.GraphComponent;
 import com.vividsolutions.jts.geomgraph.Label;
-import com.vividsolutions.jts.util.*;
 
 
 /**

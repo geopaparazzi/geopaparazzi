@@ -32,11 +32,6 @@
  */
 package com.vividsolutions.jts.noding;
 
-import java.util.*;
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.algorithm.LineIntersector;
-import com.vividsolutions.jts.util.Debug;
-
 /**
  * Processes possible intersections detected by a {@link Noder}.
  * The {@link SegmentIntersector} is passed to a {@link Noder}.

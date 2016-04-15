@@ -48,7 +48,7 @@ public class NonEncroachingSplitPointFinder implements ConstraintSplitPointFinde
     public NonEncroachingSplitPointFinder() {}
 
     /**
-     * A basic strategy for finding split points when nothing extra is known about the geometry of
+     * A basic strategy for finding split points when nothing extra is known fragment_about the geometry of
      * the situation.
      * 
      * @param seg the encroached segment

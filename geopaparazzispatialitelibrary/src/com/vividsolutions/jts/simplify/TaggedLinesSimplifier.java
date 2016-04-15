@@ -1,7 +1,6 @@
 package com.vividsolutions.jts.simplify;
 
 import java.util.*;
-import com.vividsolutions.jts.algorithm.*;
 
 /**
  * Simplifies a collection of {@link TaggedLineString}s, preserving topology

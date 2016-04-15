@@ -35,12 +35,9 @@
  */
 package com.vividsolutions.jts.geomgraph.index;
 
-import java.util.*;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geomgraph.*;
-import com.vividsolutions.jts.util.Debug;
 
 /**
  * MonotoneChains are a way of partitioning the segments of an edge to

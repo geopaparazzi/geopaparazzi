@@ -36,7 +36,6 @@ import java.util.*;
 
 import com.vividsolutions.jts.index.SpatialIndex;
 import com.vividsolutions.jts.index.chain.*;
-import com.vividsolutions.jts.index.quadtree.Quadtree;
 import com.vividsolutions.jts.index.strtree.STRtree;
 import com.vividsolutions.jts.noding.SegmentIntersector;
 import com.vividsolutions.jts.noding.SegmentString;

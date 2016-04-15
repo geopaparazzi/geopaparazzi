@@ -555,7 +555,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             getSpatialVectorMap_Errors(database, spatialVectorMap, spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4);
         }
         // RasterLite2 support: a raster_coverages has been found and the driver supports it
-        if ((!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) && (b_raster_coverages)) {
+        if (b_raster_coverages) {
             try {
                 statement = database.prepare(GeneralQueriesPreparer.RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42.getQuery());
                 while (statement.step()) {

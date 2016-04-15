@@ -49,7 +49,7 @@ package com.vividsolutions.jts.geom;
  * are {@link LineString}s, {@link LinearRing}s and {@link Point}s.
  *  <p>
  *  A <code>GeometryComponentFilter</code> filter can either
- *  record information about the <code>Geometry</code>
+ *  record information fragment_about the <code>Geometry</code>
  *  or change the <code>Geometry</code> in some way.
  *  <code>GeometryComponentFilter</code>
  *  is an example of the Gang-of-Four Visitor pattern.

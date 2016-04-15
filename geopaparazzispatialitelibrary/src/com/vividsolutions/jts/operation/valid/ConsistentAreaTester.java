@@ -40,7 +40,6 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geomgraph.*;
 import com.vividsolutions.jts.geomgraph.index.SegmentIntersector;
 import com.vividsolutions.jts.operation.relate.*;
-import com.vividsolutions.jts.util.*;
 
 /**
  * Checks that a {@link GeometryGraph} representing an area

@@ -34,7 +34,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF000000"
+                markers:markercolor="#FF000000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -43,7 +43,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFFFFFF"
+                markers:markercolor="#FFFFFFFF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -52,7 +52,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#00000000"
+                markers:markercolor="#00000000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -68,7 +68,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF404040"
+                markers:markercolor="#FF404040"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -77,7 +77,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF808080"
+                markers:markercolor="#FF808080"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -86,7 +86,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFC0C0C0"
+                markers:markercolor="#FFC0C0C0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -104,7 +104,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF800000"
+                markers:markercolor="#FF800000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -113,7 +113,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFF0000"
+                markers:markercolor="#FFFF0000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -122,7 +122,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFF8080"
+                markers:markercolor="#FFFF8080"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -138,7 +138,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF008000"
+                markers:markercolor="#FF008000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -147,7 +147,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF00FF00"
+                markers:markercolor="#FF00FF00"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -156,7 +156,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF80FF80"
+                markers:markercolor="#FF80FF80"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -172,7 +172,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF000080"
+                markers:markercolor="#FF000080"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -181,7 +181,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF0000FF"
+                markers:markercolor="#FF0000FF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -190,7 +190,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF8080FF"
+                markers:markercolor="#FF8080FF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -208,7 +208,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF808000"
+                markers:markercolor="#FF808000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -217,7 +217,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFFFF00"
+                markers:markercolor="#FFFFFF00"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -226,7 +226,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFFFF80"
+                markers:markercolor="#FFFFFF80"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -242,7 +242,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF804000"
+                markers:markercolor="#FF804000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -251,7 +251,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFF8000"
+                markers:markercolor="#FFFF8000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -260,7 +260,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFFCC80"
+                markers:markercolor="#FFFFCC80"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -276,7 +276,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF800040"
+                markers:markercolor="#FF800040"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -285,7 +285,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFF0080"
+                markers:markercolor="#FFFF0080"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -294,7 +294,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFFF80CC"
+                markers:markercolor="#FFFF80CC"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -310,7 +310,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF400080"
+                markers:markercolor="#FF400080"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -319,7 +319,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF8000FF"
+                markers:markercolor="#FF8000FF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -328,7 +328,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFCC80FF"
+                markers:markercolor="#FFCC80FF"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -344,7 +344,7 @@
             
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF402000"
+                markers:markercolor="#FF402000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -353,7 +353,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FF804000"
+                markers:markercolor="#FF804000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -362,7 +362,7 @@
                
             <view
                 class="com.google.android.apps.markers.ToolButton$SwatchButton"
-                markers:color="#FFCCAA80"
+                markers:markercolor="#FFCCAA80"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

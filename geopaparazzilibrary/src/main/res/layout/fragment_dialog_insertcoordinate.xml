@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/titleLabel"
+        style="@style/GPTitleTextViewStyle"
+        android:text="@string/askcoord" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/longitudetextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="10dp"
+        android:hint="@string/longitude">
+
+        <EditText
+            android:id="@+id/longitudetext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="11.330748" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/latitudetextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="10dp"
+        android:hint="@string/latitude">
+
+        <EditText
+            android:id="@+id/latitudetext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="46.482556" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

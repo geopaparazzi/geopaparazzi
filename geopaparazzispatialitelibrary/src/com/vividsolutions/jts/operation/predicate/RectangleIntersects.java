@@ -117,7 +117,7 @@ class EnvelopeIntersectsVisitor extends ShortCircuitedGeometryVisitor
    * or whether further testing is required.
    * 
    * @return true if an intersection must occur 
-   * @return false if no conclusion about intersection can be made
+   * @return false if no conclusion fragment_about intersection can be made
    */
   public boolean intersects()
   {
@@ -144,7 +144,7 @@ class EnvelopeIntersectsVisitor extends ShortCircuitedGeometryVisitor
      * the Jordan Curve Theorem). The alternative situation is that the test
      * envelope is "on a corner" of the rectangle envelope, i.e. is not
      * completely bisected. In this case it is not possible to make a conclusion
-     * about the presence of an intersection.
+     * fragment_about the presence of an intersection.
      */
     if (elementEnv.getMinX() >= rectEnv.getMinX()
         && elementEnv.getMaxX() <= rectEnv.getMaxX()) {
@@ -191,7 +191,7 @@ class GeometryContainsPointVisitor extends ShortCircuitedGeometryVisitor
    * contained in the geometry, or whether further testing is required.
    * 
    * @return true if a corner point is contained 
-   * @return false if no conclusion about intersection can be made
+   * @return false if no conclusion fragment_about intersection can be made
    */
   public boolean containsPoint()
   {

@@ -1,35 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/main_background"
-    android:orientation="vertical">
 
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".sourcesview.SourcesTreeListActivity">
 
-    <Button
-        android:id="@+id/toggleTypesButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dip"
-        android:background="@drawable/button_background_drawable"
-        android:padding="@dimen/button_indent"
-        android:text="@string/select_map_types"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/main_text_color" />
-
-    <EditText
-        android:id="@+id/search_box"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toggleTypesButton"
-        android:hint="@string/type_to_filter"
-        android:inputType="text"
-        android:maxLines="1" />
-
-    <ExpandableListView
-        android:id="@+id/expandableSourceListView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/search_box" />
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/GeopapTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/sources_list_mainview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/search_box_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_horizontal"
+                android:layout_margin="8dp">
+
+                <EditText
+                    android:id="@+id/search_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/type_to_filter"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <ExpandableListView
+                android:id="@+id/expandableSourceListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/search_box_view" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addSourceButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@color/transparent_white"
+        android:cacheColorHint="@color/transparent_white"
+        android:onClick="add"
+        android:src="@drawable/ic_add_24dp" />
+</android.support.design.widget.CoordinatorLayout>

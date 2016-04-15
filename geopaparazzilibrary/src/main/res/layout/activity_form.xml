@@ -1,0 +1,75 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".forms.FormActivity">
+
+    <LinearLayout
+        android:id="@+id/gpsdatalistLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/GeopapTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:baselineAligned="false"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight=".50"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="6dp"
+                card_view:cardUseCompatPadding="true">
+
+                <fragment
+                    android:id="@+id/listFragment"
+                    class="eu.geopaparazzi.library.forms.FormListFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dip"/>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight=".50"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="6dp"
+                card_view:cardUseCompatPadding="true">
+
+                <fragment
+                    android:id="@+id/detailFragment"
+                    class="eu.geopaparazzi.library.forms.FormDetailFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="3dip"/>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
