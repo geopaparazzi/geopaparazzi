@@ -45,6 +45,7 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.objects.Line;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
-import eu.hydrologis.geopaparazzi.utilities.PolynomialInterpolator;
+import eu.hydrologis.geopaparazzi.utilities.FeatureSlidingAverage;
 
 /**
  * The profile chart activity.
@@ -358,7 +359,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 xyPlotElev.getCalculatedMaxY().floatValue());
 
 
-        infoTextView.setText(getString(R.string.active_elevation_diff) + elevDifference + "m");
+        infoTextView.setText(getString(R.string.active_elevation_diff) + (int) elevDifference + "m");
     }
 
     /**
@@ -372,14 +373,12 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
         double previousLat = 0;
         double previousLon = 0;
-        double previousElev = 0;
         double summedDistance = 0.0;
         long previousTime = 0;
 
-        List<Double> xList1 = new ArrayList<>(lonArray.size());
-        List<Double> yList1 = new ArrayList<>(lonArray.size());
-        List<Double> yList2 = new ArrayList<>(lonArray.size());
-        elevDifference = 0;
+        List<Coordinate> elevList = new ArrayList<>(lonArray.size());
+        List<Coordinate> speedList = new ArrayList<>(lonArray.size());
+
         for (int i = 0; i < lonArray.size(); i++) {
             double elev = elevArray.get(i);
             double lat = latArray.get(i);
@@ -388,6 +387,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
             long time = Long.parseLong(dateStr);
 
             double distance = 0.0;
+            double speedKmH = 0.0;
             if (i > 0) {
                 Location thisLoc = new Location("dummy1"); //$NON-NLS-1$
                 thisLoc.setLongitude(lon);
@@ -397,46 +397,53 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 thatLoc.setLatitude(previousLat);
                 distance = thisLoc.distanceTo(thatLoc);
 
-                double diff = elev - previousElev;
-                if (diff > 0)
-                    elevDifference = elevDifference + diff;
-
-
                 double timeSeconds = (time - previousTime) / 1000.0;
-                double speedKmH = 3.6 * Math.sqrt(diff * diff + distance * distance) / timeSeconds;
-
-                yList2.add(speedKmH);
-            } else {
-                yList2.add(0.0);
+                speedKmH = 3.6 * distance / timeSeconds;
             }
 
             previousLat = lat;
             previousLon = lon;
-            previousElev = elev;
             previousTime = time;
 
             summedDistance = summedDistance + distance;
 
-            xList1.add(summedDistance);
-            yList1.add(elev);
+            elevList.add(new Coordinate(summedDistance, elev));
+            speedList.add(new Coordinate(summedDistance, speedKmH));
         }
 
-        PolynomialInterpolator p1 = new PolynomialInterpolator(xList1, yList1);
-        PolynomialInterpolator p2 = new PolynomialInterpolator(xList1, yList2);
+        int lookAhead = 20;
+        double slide = 1;
+        FeatureSlidingAverage fsaElev = new FeatureSlidingAverage(elevList);
+        List<Coordinate> smoothedElev = fsaElev.smooth(lookAhead, false, slide);
+        FeatureSlidingAverage fsaSpeed = new FeatureSlidingAverage(speedList);
+        List<Coordinate> smoothedSpeed = fsaSpeed.smooth(lookAhead, false, slide);
 
-        List<Double> finalYList1 = new ArrayList<>(lonArray.size());
+        int size = lonArray.size();
+        List<Double> finalYList1 = new ArrayList<>(size);
         List<Double> finalYList2 = new ArrayList<>(lonArray.size());
-        for (Double x : xList1) {
-            double y1 = p1.getInterpolated(x);
-            double y2 = p2.getInterpolated(x);
-            finalYList1.add(y1);
-            finalYList2.add(y2);
-        }
+        List<Double> finalXList1 = new ArrayList<>(lonArray.size());
 
+        elevDifference = 0;
+        double previousElev = 0;
+        for (int i = 0; i < size; i++) {
+            Coordinate elev = smoothedElev.get(i);
+            Coordinate speed = smoothedSpeed.get(i);
+
+            finalXList1.add(elev.x);
+            finalYList1.add(elev.y);
+            finalYList2.add(speed.y);
+
+            if (i > 0) {
+                double diff = elev.y - previousElev;
+                if (diff > 0)
+                    elevDifference = elevDifference + diff;
+            }
+            previousElev = elev.y;
+        }
 
         // Setup the Series
-        seriesElev = new SimpleXYSeries(xList1, finalYList1, "Elev [m]");
-        seriesSpeed = new SimpleXYSeries(xList1, finalYList2s, "Speed [km/h]");
+        seriesElev = new SimpleXYSeries(finalXList1, finalYList1, "Elev [m]");
+        seriesSpeed = new SimpleXYSeries(finalXList1, finalYList2, "Speed [km/h]");
     }
 
     // Definition of the touch states
