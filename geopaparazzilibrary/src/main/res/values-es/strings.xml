@@ -69,11 +69,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">¡Por favor, activar NFC y pulsar Atrás para volver a la aplicación!</string>
   <string name="unable_to_read_tag_id">No es posible leer la etiqueta de identificación</string>
-  <string name="stroke_color">Color de borde</string>
-  <string name="width">Anchura de borde</string>
-  <string name="alpha">Valor alpha de borde</string>
-  <string name="fill_color">Color de relleno</string>
-  <string name="fill_alpha">Valor Alpha de relleno</string>
   <string name="point_shape_">Forma del punto</string>
   <string name="point_size">Tamaño del punto</string>
   <string name="decimation">Reducción decimal</string>

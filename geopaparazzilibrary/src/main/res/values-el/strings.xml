@@ -69,11 +69,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Παρακαλώ ενεργοποιήστε το NFC και πιέστε Πίσω για να επιστρέψετε στην εφαρμογή!</string>
   <string name="unable_to_read_tag_id">Αδυναμία ανάγνωσης του tag id</string>
-  <string name="stroke_color">Χρώμα γραμμής</string>
-  <string name="width">Πλάτος γραμμής</string>
-  <string name="alpha">Διαφάνεια γραμμής</string>
-  <string name="fill_color">Χρώμα γεμίσματος</string>
-  <string name="fill_alpha">Διαφάνεια επιφάνειας</string>
   <string name="point_shape_">Σχήμα σημείου</string>
   <string name="point_size">Μέγεθος σημείου</string>
   <string name="decimation">Δεκαδικοποίηση</string>

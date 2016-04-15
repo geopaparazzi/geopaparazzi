@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">Áno</string>
   <string name="no">Nie</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi Project Database</string>
   <string name="notesvisibilityToggle">Prepnúť viditeľnosť poznámok.</string>
-  <string name="datasaved">Údaje úspešne exportované do:</string>
-  <string name="data_nonsaved">Pri exporte údajov sa vyskytla chyba!</string>
   <string name="loggingoff">Všetky senzory zastavené.</string>
   <string name="nogps_data">Údaje GPS nedostupné!</string>
   <string name="about">O</string>
@@ -34,12 +33,9 @@
   <string name="mapproperty">Vlastnosti pre:</string>
   <string name="map_zoom">Priblížiť na mapu</string>
   <string name="map_delete">Vymazať mapu</string>
-  <string name="gps_preferences">Nastavenia GPS</string>
   <string name="gps_logging_distance">Min. vzdialenosť pri meraní GPS</string>
   <string name="gps_logging_interval">Min. interval záznamu GPS</string>
   <string name="gps_use_android_level">Použiť na úrovni Android (šetrí batériu, potrebuje reštart)</string>
-  <string name="gps_use_android_level_summary">Ak je označené, GPS nastavenia sú aplikované na úrovni operačného systému, čo môže šetriť batériu, ale môže spôsobiť horšiu stabilitu signálu pri zvolení dlhších intervalov (ak máte problém so signálom pri zapnutí tejto funkcie, ponechajte odškrtnuté). GPS je zapnuté nepretržite pri intervaloch väčších ako 100s. Pre lepšiu výdrž batérie zvoľte dlhší interval.</string>
-  <string name="sms_preferences">SMS nastavenia</string>
   <string name="sms_catcher">Povoliť sms catcher</string>
   <string name="databaseError">Pri pripojení databázy sa vyskytla chyba</string>
   <string name="chart_profile_view">Profil</string>
@@ -55,21 +51,16 @@
   <string name="audio_recording_stop">stop</string>
   <string name="panic">núdzový stav!</string>
   <string name="panic_number">Číslo pre núdzový stav</string>
-  <string name="panic_number_notset">Neexistuje  platné číslo pre núdzový stav. Nastavili ste ho v nastaveniach?</string>
   <string name="panic_upper">NÚDZOVÝ STAV</string>
-  <string name="send_status_update">pošli pozíciu</string>
   <string name="help_needed">Potrebná pomoc!</string>
   <string name="message_sent">Správa poslaná</string>
   <string name="last_note_deleted">Posledná poznámka vymazaná</string>
   <string name="last_note_not_deleted">Nemožné vymazať poslednú poznámku</string>
   <string name="text_logging">záznam</string>
   <string name="text_gpson">GPS zapnuté</string>
-  <string name="debug">Nastavenie debug</string>
   <string name="enable_debug">Povoľ debug log</string>
   <string name="gpslogging_only">Táto funkcia je dostupná iba pri zapnutom GPS a dostatočnom signále.</string>
   <string name="remove_last_note_prompt">Naozaj chceš vymazať poslednú poznámku? Táto zmena je nevratná.</string>
-  <string name="installgpsstatus_title">Nainštaluj GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi používa aplikáciu GPS Status pre zobrazenie informácií kompasu a GPS. Nainštalovať GPS Status?</string>
   <!--added after 2.1.2-->
   <string name="reset">Vytvoriť nový projekt</string>
   <string name="load">Nahrať existujúci projekt</string>
@@ -101,7 +92,6 @@
   <string name="formnotes">POZNÁMKY</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Pri tvorbe grafu sa vyskytla chyba.</string>
-  <string name="osm_preferences">Nastavenia OpenStreetMap</string>
   <string name="osm_do_it">Povoľ nástroje OSM</string>
   <string name="osm_user_label">Užívateľské meno</string>
   <string name="osm_password_label">Heslo</string>
@@ -122,12 +112,10 @@
   <string name="view_in_mixare">Zmiešané zobrazenie</string>
   <string name="gps_use_coarse">Použi pozíciu podľa sieťového pripojenia namioesto GPS (potrebný reštart)</string>
   <string name="type_to_filter">filter</string>
-  <string name="geopapcloud_preferences">Geopap-Cloud nastavenia</string>
   <string name="geopapcloud_user_label">Užívateľské meno</string>
   <string name="geopapcloud_password_label">Heslo</string>
   <string name="geopapcloud_server_label">Pripojiť sa k serveru</string>
   <string name="exporting_data">Export údsajov</string>
-  <string name="error_set_cloud_settings">Geopap-Cloud nastavenia nie sú zadané správne. Prosím skontrolujte vaše nastavenia.</string>
   <string name="exporting_data_to_the_cloud">Export údajov do cloudu.</string>
   <string name="error_uploadig_project_to_cloud">Pri nahrávaní projektu do Geopap-Cloudu sa vyskytla chyba</string>
   <string name="project_succesfully_uploaded_to_cloud">Projekt bol úspešne uložený do Geopap-Cloud.</string>
@@ -162,11 +150,8 @@
   <string name="distance">Vzdialenosť:</string>
   <string name="imported_notes_and_bookmarks">Importovaných {0} poznámok a {1} záložiek.</string>
   <string name="could_not_open_sms">Nie je možné otvoriť SMS URI.</string>
-  <string name="start_">Start: </string>
-  <string name="end_">Koniec:</string>
   <string name="map_textsize_factor">Veľkosť písma na mape</string>
   <string name="keep_screen_on">Nechať obrazovku zapnutú</string>
-  <string name="keep_screen_on_summary">Ponechá obrazovku zapnutú pri pracovnom paneli a mapovom pohľade</string>
   <string name="the_secret_view">Tajný pohľad</string>
   <string name="database_queries">Dotazy na databázu</string>
   <string name="demo_mode">Demo mode</string>
@@ -183,7 +168,6 @@
   <string name="labels">Popisy</string>
   <string name="show_labels">ukázať popisy</string>
   <string name="halo">halo</string>
-  <string name="screen_preferences">Nstavenia obrazovky</string>
   <string name="cross_properties_summary">Nastavenia kríža použitého k umiestneniu poznámok.</string>
   <string name="cross_properties">Centruj kríž</string>
   <string name="color">Farba</string>
@@ -221,7 +205,6 @@
   <string name="service_name_propmt">Zadajte názov pre službu. Ak bude ponechané prázdne, meno bude prevzaté zo služby.</string>
   <string name="info">INFO</string>
   <string name="calculate_length">Vypočítať dĺžku...</string>
-  <string name="spatialite_preferences">Nastavenia Spatialite</string>
   <string name="spatialite_recovery_mode">Spatialite Recovery Mode</string>
   <string name="spatialite_recover_mode_tooltip">Ak je zapnuté, pri nasledujúcom štarte bude vykonaný pokus o opravu chybných tabuliek.</string>
   <string name="map">Mapa</string>
@@ -238,7 +221,6 @@
   <string name="creation_date">Dátum založenia</string>
   <string name="creation_user">Projekt vytvoril</string>
   <string name="last_modification_user">Projekt naposledy modifikoval</string>
-  <string name="mapsfolder">Priečinok máp</string>
   <string name="preview_mode_save_warning">Preview mode. Pri stlačení tlačidla Uložiť bude geometria uložená do databázy.</string>
   <string name="reset_string">reset</string>
   <string name="avaiable_layers">Dostupné vrstvy</string>

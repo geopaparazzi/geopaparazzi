@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">是</string>
   <string name="no">否</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi 项目数据库</string>
-  <string name="datasaved">数据成功被输出到：</string>
   <string name="loggingoff">停止所有的传感器</string>
   <string name="nogps_data">没有可用的GPS数据！</string>
   <string name="about">关于</string>
@@ -24,7 +24,6 @@
   <string name="mapproperty">属性：</string>
   <string name="map_zoom">放大到地图</string>
   <string name="map_delete">删除地图</string>
-  <string name="gps_preferences">GPS偏好设置</string>
   <string name="gps_logging_distance">最小的GPS日志的距离</string>
   <string name="gps_logging_interval">最小的GPS记录间隔</string>
   <string name="sms_catcher">启用短信捕捉</string>
@@ -39,13 +38,11 @@
   <string name="panic">恐慌</string>
   <string name="panic_number">恐慌编号</string>
   <string name="panic_upper">恐慌！</string>
-  <string name="send_status_update">发送方位</string>
   <string name="help_needed">需要帮助</string>
   <string name="message_sent">发送信息</string>
   <string name="last_note_deleted">删除最近一条记录</string>
   <string name="last_note_not_deleted">不能删除最后一条便条</string>
   <string name="text_gpson">打开GPS</string>
-  <string name="installgpsstatus_title">安装GPS Status</string>
   <!--added after 2.1.2-->
   <string name="reset">创建新项目</string>
   <string name="pick_phonenumber_label">…</string>
@@ -88,8 +85,6 @@
   <string name="sent_sms">发送sms：</string>
   <string name="no_message_sent">没有信息发出</string>
   <string name="distance">距离：</string>
-  <string name="start_">开始：</string>
-  <string name="end_">结束：</string>
   <string name="database_queries">数据库查询</string>
   <string name="demo_mode">调试模式</string>
   <string name="select_database_query">选择数据库查询</string>

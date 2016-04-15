@@ -37,7 +37,6 @@
   <string name="hello_world">Hello world！</string>
   <string name="menu_settings">设定</string>
   <string name="unable_to_read_tag_id">不能读取标签id</string>
-  <string name="fill_color">填充颜色</string>
   <string name="point_size">点尺寸</string>
   <string name="no_data">没有允许的数据</string>
   <string name="share_note_with">共享记事本给...</string>

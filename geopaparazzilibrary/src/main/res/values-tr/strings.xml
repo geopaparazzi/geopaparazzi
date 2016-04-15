@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">evet</string>
+  <string name="no">hayır</string>
+  <string name="prompt_gpsenable">GPS iniz kapandı! Açmak ister misiniz?</string>
+  <string name="message_sent">Mesaj gönderildi</string>
+  <string name="menu_settings">ayarlar</string>
+</resources>

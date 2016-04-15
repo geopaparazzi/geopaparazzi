@@ -1,8 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">설정</string>
+  <string name="action_advanced_settings">고급</string>
+  <string name="label_green">초록</string>
+  <string name="label_blue">파랑</string>
+  <string name="label_alpha">알파</string>
+  <string name="label_red">빨강</string>
+  <!--old gpap-->
   <string name="yes">예</string>
   <string name="no">아니오</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi 프로젝트 데이터베이스</string>
   <string name="notesvisibilityToggle">메모 보이기를 전환합니다.</string>
   <string name="datasaved">데이터를 성공적으로 내보냄:</string>
@@ -28,6 +35,7 @@
   <string name="mainmenu_preferences">설정</string>
   <string name="mainmenu_merge">선택된 로그를 병합</string>
   <string name="gpslogproperty">등록정보: </string>
+  <string name="gpslog_name">로그 이름</string>
   <string name="gpslog_chart">차트</string>
   <string name="gpslog_zoom">확대</string>
   <string name="gpslog_delete">삭제</string>
@@ -35,11 +43,14 @@
   <string name="map_zoom">지도 확대</string>
   <string name="map_delete">지도 삭제</string>
   <string name="gps_preferences">GPS 설정</string>
+  <string name="gps_preferences_summary">
+거리나 간격을 로깅하기 위한 GPS 환경을 설정합니다.</string>
   <string name="gps_logging_distance">GPS 기록 최소 거리</string>
   <string name="gps_logging_interval">GPS 기록 최소 간격</string>
   <string name="gps_use_android_level">안드로이드 수준에서 사용 (배터리 절약, 재시작 필요)</string>
-  <string name="gps_use_android_level_summary">선택하면, GPS 설정은 운영체제 수준에서 적용되며, 매터리를 절약할 수 있지만 큰 간격을 설정하는 경우 덜 안정적인 신호를 얻게 됩니다  (장치에 GPS 연결 문제가있는 경우,이 확인란을 선택하지 않은 상태로 둡니다). 100초 미만의 간격에는 GPS OS가 지속적으로 전원을 공급합니다. 더 나은 배터리 수명을 위해 더 큰 간격을 선택하십시오.</string>
+  <string name="gps_use_android_level_summary">이 옵션을 선택하면, GPS 설정은 운영체제 수준에서 적용되며, 송신 간격을 늘리면 베터리를 절약할 수 있지만 불안정한 신호가 사용될 수 있습니다(이 장치에서 GPS 연결 문제가 있는 경우 선택하지 마십시오). 운영체제에서 GPS는 100초 이하의 송신 간격으로 연속 구동됩니다. 베터리 수명을 위해 더 큰 간격을 선택하십시오.</string>
   <string name="sms_preferences">SMS 설정</string>
+  <string name="sms_preferences_summary">패닉 번호를 설정하고 SMS 알림을 활성화합니다.</string>
   <string name="sms_catcher">SMS 알림 활성화</string>
   <string name="databaseError">데이터베이스에 연결 중 오류가 발생했습니다</string>
   <string name="chart_profile_view">프로필 보기</string>
@@ -55,9 +66,9 @@
   <string name="audio_recording_stop">중단</string>
   <string name="panic">패닉!</string>
   <string name="panic_number">패닉 번호</string>
-  <string name="panic_number_notset">사용 가능한 패닉 번호가 없습니다. 설정에 패닉 번호를 설정했습니까?</string>
+  <string name="panic_number_notset">사용 가능한 유효한 패닉 번호가 없습니다. 설정에서 활성화 하시겠습니까?</string>
   <string name="panic_upper">패닉!</string>
-  <string name="send_status_update">위치 전송</string>
+  <string name="send_status_update">또는 당신의 위치를 전송</string>
   <string name="help_needed">도움이 필요합니다!</string>
   <string name="message_sent">메세지 전송</string>
   <string name="last_note_deleted">마지막 메모가 삭제되었습니다</string>
@@ -68,8 +79,6 @@
   <string name="enable_debug">로그 디버깅 활성화</string>
   <string name="gpslogging_only">이 기능은 GPS 및 신호가 활성화 상태인 경우에만 사용 가능합니다.</string>
   <string name="remove_last_note_prompt">마지막 텍스트 메모를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.</string>
-  <string name="installgpsstatus_title">GPS 상태 설치</string>
-  <string name="installgpsstatus_message">Geopaparazzi는 나침반과 GPS 정보를 보는데 GPS 상태 응용 프로그램을 사용합니다. 설치 하시겠습니까?</string>
   <!--added after 2.1.2-->
   <string name="reset">새로운 프로젝트 생성하기</string>
   <string name="load">기존 프로젝트 불러오기</string>
@@ -84,7 +93,7 @@
   <string name="delete_visible_bookmarks_prompt">보이는 모든 북마크를 삭제 하시겠습니까? 이 작업은 취소 할 수 없습니다.</string>
   <string name="gps_searching_fix">GPS가 위치를 확인하고 있습니다.</string>
   <string name="bookmarks_list_rename">북마크 이름 변경</string>
-  <string name="mapsactivity_menu_toggle_scalebar">축척바 토글</string>
+  <string name="mapsactivity_menu_toggle_scalebar">축척바 전환</string>
   <string name="mapsactivity_menu_tilesource">타일 소스 선택</string>
   <string name="mapsactivity_delete_bookmarks">북마크 {0} 삭제중...</string>
   <string name="mapsactivity_delete_notes">메모 {0} 삭제중...</string>
@@ -101,7 +110,7 @@
   <string name="formnotes">폼 기반 메모</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">차트를 생성하는 중 오류가 발생했습니다.</string>
-  <string name="osm_preferences">오픈스트리트맵 설정</string>
+  <string name="osm_preferences">OpenStreetMap 설정</string>
   <string name="osm_do_it">OSM 도구 활성화</string>
   <string name="osm_user_label">이름</string>
   <string name="osm_password_label">비밀번호</string>
@@ -122,12 +131,13 @@
   <string name="view_in_mixare">MixAre에서 보기</string>
   <string name="gps_use_coarse">GPS 대신 네트워크 기반 위치 사용 (재시작 필요)</string>
   <string name="type_to_filter">필터 입력</string>
-  <string name="geopapcloud_preferences">Geopap-Cloud 설정</string>
+  <string name="geopapcloud_preferences">STAGE 동기화 설정</string>
+  <string name="geopapcloud_preferences_summary">STAGE의 서버 동기화 자격증명과 환경 설정.</string>
   <string name="geopapcloud_user_label">이름</string>
   <string name="geopapcloud_password_label">암호</string>
   <string name="geopapcloud_server_label">연결할 서버</string>
   <string name="exporting_data">데이터 내보내기</string>
-  <string name="error_set_cloud_settings">GeoPap-Cloud 환경이 제대로 설정되어 있지 않습니다. 설정을 확인하십시오.</string>
+  <string name="error_set_cloud_settings">STAGE 동기화 설정 파라미터가 적절하지 않습니다. 설정을 확인하십시오.</string>
   <string name="exporting_data_to_the_cloud">클라우드에 데이터 내보내는 중.</string>
   <string name="error_uploadig_project_to_cloud">Geopap-Cloud에 프로젝트 업로드 중 오류가 발생했습니다</string>
   <string name="project_succesfully_uploaded_to_cloud">Geopap-Cloud에 프로젝트를 성공적으로 업로드했습니다</string>
@@ -167,6 +177,7 @@
   <string name="start_">시작:</string>
   <string name="end_">종료:</string>
   <string name="map_textsize_factor">지도 텍스트 크기 인자</string>
+  <string name="map_textsize_factor_summary">MapsForge 지도 파일의 텍스트 크기 인자.</string>
   <string name="keep_screen_on">화면을 유지</string>
   <string name="keep_screen_on_summary">대시보드 및 지도보기 상태에서 화면을 유지합니다</string>
   <string name="the_secret_view">비밀 보기</string>
@@ -178,6 +189,7 @@
   <string name="custom_sdcard_path">사용자정의 SdCard 경로</string>
   <string name="opacity">투명도</string>
   <string name="size">크기</string>
+  <string name="size_color">크기와 색상</string>
   <string name="notes_properties">메모 속성</string>
   <string name="visibility">보이기</string>
   <string name="custom_icon_properties">사용자정의 아이콘 속성</string>
@@ -185,7 +197,8 @@
   <string name="labels">레이블</string>
   <string name="show_labels">레이블 보기</string>
   <string name="halo">헤일로</string>
-  <string name="screen_preferences">화면 속성</string>
+  <string name="screen_preferences">화면 설정</string>
+  <string name="screen_preferences_summary">중앙 십자표시 또는 화면 밀도에 대한 환경을 설정합니다.</string>
   <string name="cross_properties_summary">메모를 배치하는데 사용되는 십자표시 속성.</string>
   <string name="cross_properties">중심 십자표시</string>
   <string name="color">색상</string>
@@ -224,7 +237,8 @@
   <string name="service_name_propmt">서비스 이름을 입력하십시오. 공백인 경우 서비스에서 이름을 가져옵니다.</string>
   <string name="info">정보</string>
   <string name="calculate_length">길이 계산...</string>
-  <string name="spatialite_preferences">Spatialite 환경설정</string>
+  <string name="spatialite_preferences">Spatialite 설정</string>
+  <string name="spatialite_preferences_summary">Spatialite의 고급 환경을 설정합니다.</string>
   <string name="spatialite_recovery_mode">Spatialite 복구 모드</string>
   <string name="spatialite_recover_mode_tooltip">켜져 있으면, 다음 시작할 때  이 오류 테이블을 수정합니다.</string>
   <string name="map">지도</string>
@@ -242,7 +256,6 @@
   <string name="creation_date">생성 날짜</string>
   <string name="creation_user">프로젝트 생성 사용자</string>
   <string name="last_modification_user">마지막 프로젝트 수정 사용자</string>
-  <string name="mapsfolder">지도 폴더</string>
   <string name="preview_mode_save_warning">미리보기 보드. 저장 버튼을 탭하면, 지오메트리가 데이터베이스에 저장됩니다.</string>
   <string name="reset_string">초기화</string>
   <string name="avaiable_layers">사용가능한 레이어</string>
@@ -254,6 +267,7 @@
   <string name="extracting_info">정보를 추출 중...</string>
   <string name="geom_incompatible_with_layer">이 지오메트리는 대상 레이어와 호환되지 않습니다.</string>
   <string name="selected_features_in_layer">%2$d 폴리곤을 가진 %1$d 선택된 피처.</string>
+  <string name="selected_line_features_in_layer">%2$d 라인을 가진 %1$d 선택된 피처.</string>
   <string name="no_compatible_layers_found">호환되는 레이어를 찾을 수 없습니다</string>
   <string name="copied_features_to_layer">%1$d 지오메트리를 %2$s 레이어에 복사</string>
   <string name="area_colon">면적:</string>
@@ -276,7 +290,7 @@
   <string name="import_uc">가져오기</string>
   <string name="mapurls">지도URL</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Geopaparazzi 브라우저</string>
+  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">북마크</string>
   <string name="default_database">기본 데이터베이스</string>
   <string name="kmz">KMZ</string>
@@ -291,8 +305,9 @@
   <string name="extract_waterways">수로 추출</string>
   <string name="name_new_teample_db">새로운 데이터베이스 이름 입력</string>
   <string name="new_template_db_create">데이터베이스를 성공적으로 생성했습니다.</string>
-  <string name="extract_mapsforge_data">Mapsforge 데이터 추출중...</string>
-  <string name="extract_mapsforge_only_when_loaded">이 도구는 Mapsforge 지도가 로딩된 경우에만 사용가능합니다.</string>
+  <string name="extract_mapsforge_data">MapsForge 데이터 추출중...</string>
+  <string name="menu_extract_mapsforge_data">MapsForge 데이터 추출</string>
+  <string name="extract_mapsforge_only_when_loaded">이 도구는 MapsForge 지도가 로딩된 경우에만 사용가능합니다.</string>
   <string name="view">뷰</string>
   <string name="force_locale_title">로케일 적용</string>
   <string name="force_locale_summary">안드로이드의 현재 로케일을 무시하고 선택한 로케일로 설정</string>
@@ -302,4 +317,55 @@
   <string name="export_img_processing">이미지 내보내는 중...</string>
   <string name="routing_pref_title">경로탐색 API 키</string>
   <string name="routing_pref_summary">MapQuest와 Graphhopper 경로탐색 서비스를 사용하기 위해 API 키를 입력하십시오.</string>
+  <string name="gps_info_dialog_title">지도/GPS 정보</string>
+  <string name="open_gps_settings">GPS 설정 열기</string>
+  <string name="dashboard_note_action_description">텍스트, 사진 또는 스케치 메모 추가</string>
+  <string name="dashboard_metadata_action_description">프로젝트 정보 보기</string>
+  <string name="dashboard_gpslog_action_description">GPS 로깅 전환</string>
+  <string name="dashboard_mapview_action_description">지도 보기 열기</string>
+  <string name="dashboard_import_action_description">가져오기 뷰 열기</string>
+  <string name="dashboard_export_action_description">내보내기 뷰 열기</string>
+  <string name="add_new_metadata">새로운 메타데이터 항목 추가</string>
+  <string name="remove_selected_metadata">선택한 메타데이터 항목 제거</string>
+  <string name="metadata_insert_key">키 추가</string>
+  <string name="metadata_insert_label">레이블 추가</string>
+  <string name="metadata_insert_value">값 추가</string>
+  <string name="launch_custom_query">사용자정의 쿼리 실행</string>
+  <string name="write_own_query">또는 쿼리 작성</string>
+  <string name="sqlview">SQL 보기</string>
+  <string name="query_results">쿼리 결과</string>
+  <string name="no_images_in_project">프로젝트에 이미지가 없습니다.</string>
+  <string name="no_data_found_in_project_to_export">프로젝트에서 내보낼 데이터가 없습니다.</string>
+  <string name="select_gpx_file">불러올 GPX 파일 선택</string>
+  <string name="select_gpap_file">Geopaparazzi 프로젝트 선택</string>
+  <string name="no_gpx_selected">선택한 GPX 파일이 없습니다.</string>
+  <string name="gpx_file_imported">GPX 파일을 불러왔습니다.</string>
+  <string name="table_name">테이블 이름</string>
+  <string name="db_name">DB 이름</string>
+  <string name="incoming_logs_added">수신된 로그 로드:</string>
+  <string name="logs_sent">로그를 보냈습니다.</string>
+  <string name="active_elevation_diff">실제 고도 차이:</string>
+  <string name="selected_file_is_no_geopap_project">선택한 파일은 유효한 Geopaparazzi 데이터베이스 (*.gpap)가 아닙니다.</string>
+  <string name="error_while_setting_project">새로운 프로젝트를 설정하는 중 오류가 발생했습니다.</string>
+  <string name="sort_notes">메모 정렬</string>
+  <string name="path_lc">경로</string>
+  <string name="select_sort_mode">정렬 모드 선택</string>
+  <string name="no_editable_layer_set">편집가능한 레이어가 없습니다.</string>
+  <string name="basemaps">기본지도</string>
+  <string name="features">피처</string>
+  <string name="gps_data">GPS 데이터</string>
+  <string name="notes_properties_label">메모 속성</string>
+  <string name="gps_log_properties_label">GPS 로그 속성</string>
+  <string name="bookmarks_list_label">북마크 목록</string>
+  <string name="notes_list_label">메모 목록</string>
+  <string name="add_notes_label">메모 추가</string>
+  <string name="spatialite_databases">Spatialite 데이터베이스</string>
+  <string name="geocoding_label">지오코딩</string>
+  <string name="extract_mapsforge_label">MapsForge 데이터 추출</string>
+  <string name="editable_layers">편집가능한 레이어</string>
+  <string name="form_data">양식 데이터</string>
+  <string name="menu_simple_note">단순 메모</string>
+  <string name="menu_simple_picture">단순 사진</string>
+  <string name="menu_simple_sketch">단순 스케치</string>
+  <string name="warning_viewcone_gps">이 도구는 GPS 위치가 사용 가능할때만 작동합니다.</string>
 </resources>

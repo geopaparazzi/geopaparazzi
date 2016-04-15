@@ -1,11 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">да</string>
   <string name="no">нет</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Сменить видимость заметок.</string>
-  <string name="datasaved">Данные экспортированы в </string>
-  <string name="data_nonsaved">Ошибка при экспорте данных!</string>
   <string name="loggingoff">Остановлены все сенсоры.</string>
   <string name="nogps_data">Не доступны GPS данные!</string>
   <string name="about">О программе</string>
@@ -33,10 +32,8 @@
   <string name="mapproperty">Настройки для:</string>
   <string name="map_zoom">Масштабировать к карте</string>
   <string name="map_delete">Удалить карту</string>
-  <string name="gps_preferences">Настройки GPS</string>
   <string name="gps_logging_distance">Минимальное записываемое расстояние GPS</string>
   <string name="gps_logging_interval">Минимальный записываемый интервал GPS</string>
-  <string name="sms_preferences">Настройки SMS</string>
   <string name="sms_catcher">Разрешить ловлю SMS</string>
   <string name="databaseError">При соединении с базой данных произошла ошибка</string>
   <string name="chart_profile_view">Просмотр профиля</string>
@@ -52,21 +49,16 @@
   <string name="audio_recording_stop">стоп</string>
   <string name="panic">паника!</string>
   <string name="panic_number">Номер для паники</string>
-  <string name="panic_number_notset">Похоже, что нет ни одного корректного номера для паники. Вы установили его в настройках?</string>
   <string name="panic_upper">ПАНИКА!</string>
-  <string name="send_status_update">отправить позицию</string>
   <string name="help_needed">Нужна помощь!</string>
   <string name="message_sent">Сообщение отправлено</string>
   <string name="last_note_deleted">Удалена последняя заметка</string>
   <string name="last_note_not_deleted">Не могу удалить последнюю заметку</string>
   <string name="text_logging">журналирование</string>
   <string name="text_gpson">GPS вкл.</string>
-  <string name="debug">Настройки отладки</string>
   <string name="enable_debug">Включить журнал отладки</string>
   <string name="gpslogging_only">Данная функция доступна только когда GPS активен и есть сигнал</string>
   <string name="remove_last_note_prompt">Вы действительно хотите безвозвратно удалить последнюю заметку?</string>
-  <string name="installgpsstatus_title">Установить GPS-статус</string>
-  <string name="installgpsstatus_message">Geopaparazzi использует Gps Status Application как компас и для отображения подробной информации GPS. Хотите его поставить?</string>
   <!--added after 2.1.2-->
   <string name="reset">Создать новый проект</string>
   <string name="load">Загрузить существующий проект</string>
@@ -97,7 +89,6 @@
   <string name="formnotes">ФОРМЫ ДЛЯ ЗАМЕТОК</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">При создании графика произошла ошибка.</string>
-  <string name="osm_preferences">Настройки OpenStreetMap</string>
   <string name="osm_do_it">Включить инструменты OSM</string>
   <string name="osm_user_label">Имя пользователя</string>
   <string name="osm_password_label">Пароль</string>
@@ -115,12 +106,10 @@
   <string name="view_in_mixare">Просмотреть в mixare</string>
   <string name="gps_use_coarse">Использовать позиционирование сети вместо GPS (требуется перезапуск)</string>
   <string name="type_to_filter">введите для фильтрации</string>
-  <string name="geopapcloud_preferences">Настройки Geopap-Cloud</string>
   <string name="geopapcloud_user_label">Имя пользователя</string>
   <string name="geopapcloud_password_label">Пароль</string>
   <string name="geopapcloud_server_label">Сервер для соединения</string>
   <string name="exporting_data">Экспорт данных</string>
-  <string name="error_set_cloud_settings">Проверьте настройки Geopap-cloud!</string>
   <string name="exporting_data_to_the_cloud">Экспорт данных в облако.</string>
   <string name="error_uploadig_project_to_cloud">При загрузке проекта в облако Geopap произошла ошибка.</string>
   <string name="project_succesfully_uploaded_to_cloud">Проект успешно загружен в Geopap-cloud</string>
@@ -150,10 +139,7 @@
   <string name="no_message_sent">Сообщение не отправлено.</string>
   <string name="distance">Расстояние:</string>
   <string name="imported_notes_and_bookmarks">Импортировано {0} заметок и {1} закладок.</string>
-  <string name="start_">Начало:</string>
-  <string name="end_">Конец:</string>
   <string name="keep_screen_on">Не выключать экран</string>
-  <string name="keep_screen_on_summary">Не отключать экран при просмотре карты и заметок</string>
   <string name="the_secret_view">Секретный вид</string>
   <string name="database_queries">Запросы к БД</string>
   <string name="demo_mode">Демо-режим</string>
@@ -169,7 +155,6 @@
   <string name="labels">Подписи</string>
   <string name="show_labels">подписывать заметки на карте</string>
   <string name="halo">ореол</string>
-  <string name="screen_preferences">Настройки экрана</string>
   <string name="cross_properties_summary">Настройки креста, используемого для размещения заметок.</string>
   <string name="cross_properties">Центральный крест</string>
   <string name="color">Цвет</string>
@@ -197,7 +182,6 @@
   <string name="use_map_center_coordinate_to_filter_results">использовать координаты центра карты для фильтрации результатов</string>
   <string name="info">ИНФОРМАЦИЯ</string>
   <string name="calculate_length">Подсчёт длинны...</string>
-  <string name="spatialite_preferences">Настройки Spatialite</string>
   <string name="spatialite_recovery_mode">Режим восстановления</string>
   <string name="spatialite_recover_mode_tooltip">Провести проверку таблиц при следущем запуске программы</string>
   <string name="map">Карта</string>
@@ -214,7 +198,6 @@
   <string name="creation_date">Дата создания</string>
   <string name="creation_user">Пользователь, создавший проект</string>
   <string name="last_modification_user">Последний редактировавший пользователь</string>
-  <string name="mapsfolder">Каталог для карт</string>
   <string name="reset_string">сбросить</string>
   <string name="avaiable_layers">Доступные слои</string>
   <string name="geometry_saved">Геометрия сохранена.</string>
@@ -237,7 +220,6 @@
   <string name="delete_selected">Удалить выделенные</string>
   <string name="import_uc">Импорт</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Сервер Geopaparazzi</string>
   <string name="bookmarks">Закладки</string>
   <string name="default_database">База данных</string>
   <string name="kmz">KMZ</string>

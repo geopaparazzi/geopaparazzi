@@ -16,4 +16,9 @@
   <string name="toggle_visibility">przełącz widoczność</string>
   <string name="label_field">pole etykiety</string>
   <string name="label_size">rozmiar etykiety</string>
+  <string name="select_table_types">Wybierz typy</string>
+  <string name="select_type">Wybierz typ</string>
+  <string name="remove_from_list">Usunąć %s z listy?</string>
+  <string name="selected_file_no_vector_data">Wskazany plik nie zawiera żadnych danych wektorowych:</string>
+  <string name="adding_new_source">Dodawanie nowego źródła...</string>
 </resources>

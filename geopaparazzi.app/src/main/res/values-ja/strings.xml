@@ -1,8 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">設定</string>
+  <string name="action_advanced_settings">拡張</string>
+  <string name="label_green">緑色</string>
+  <string name="label_blue">青色</string>
+  <string name="label_alpha">透明度</string>
+  <string name="label_red">赤色</string>
+  <!--old gpap-->
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazziプロジェクトデータベース</string>
   <string name="notesvisibilityToggle">ノートを表示する。</string>
   <string name="datasaved">正常にエクスポートされました:</string>
@@ -28,6 +35,7 @@
   <string name="mainmenu_preferences">設定</string>
   <string name="mainmenu_merge">選択したログをマージ</string>
   <string name="gpslogproperty">設定: </string>
+  <string name="gpslog_name">ログ名</string>
   <string name="gpslog_chart">グラフ</string>
   <string name="gpslog_zoom">拡大</string>
   <string name="gpslog_delete">削除</string>
@@ -35,12 +43,13 @@
   <string name="map_zoom">マップにズーム</string>
   <string name="map_delete">マップの削除</string>
   <string name="gps_preferences">GPS設定</string>
+  <string name="gps_preferences_summary">GPSログ記録の距離または時間間隔優先設定</string>
   <string name="gps_logging_distance">GPSログ取得の最小距離区間</string>
   <string name="gps_logging_interval">GPSログ取得の最小時間区間</string>
   <string name="gps_use_android_level">省電力利用 (バッテリ節約, 再起動後に有効)</string>
-  <string name="gps_use_android_level_summary">チェックした場合、gps の設定は、オペレーティング システム レベルでバッテリーを節約することができますが、大きな間隔を選択すると信号の安定性が低くなります（gps の接続に問題がある場合は、チェックしないように)。gps は100 秒以内の間隔で電力が供給されます。バッテリー寿命を良くするには大きな間隔を選択してください。
-</string>
+  <string name="gps_use_android_level_summary">チェックすると、GPS設定はオペレーティングシステムレベルのバッテリセーブが適用されますが、長い間隔を選択している場合に信号が不安定になります。（チェックをした場合にGPS接続に問題がある場合は、チェックを外します）100秒未満の間隔で継続した電力がGPSに供給されるということに注意してください。バッテリー節約のためには長い間隔を選択します。</string>
   <string name="sms_preferences">SMS設定</string>
+  <string name="sms_preferences_summary">パニック番号とSMSキャッチャー有効設定</string>
   <string name="sms_catcher">SMS受信を有効にする</string>
   <string name="databaseError">データベース接続中にエラーが発生しました</string>
   <string name="chart_profile_view">プロフィール</string>
@@ -56,9 +65,9 @@
   <string name="audio_recording_stop">停止</string>
   <string name="panic">パニック通知！</string>
   <string name="panic_number">パニック通知番号</string>
-  <string name="panic_number_notset">有効なパニック通知番号が利用できません. パニック通知番号をセットしましたか？</string>
+  <string name="panic_number_notset">有効なパニック番号がありません。設定画面で有効にしましたか？</string>
   <string name="panic_upper">  パニック！</string>
-  <string name="send_status_update">位置情報を送信する</string>
+  <string name="send_status_update">または現在位置を送信</string>
   <string name="help_needed">Help needed!</string>
   <string name="message_sent">メッセージを送信する</string>
   <string name="last_note_deleted">最新のノートを削除しました</string>
@@ -69,8 +78,6 @@
   <string name="enable_debug">デバッグログを有効にする</string>
   <string name="gpslogging_only">GPS がアクティブで、信号が利用可能な場合にのみ利用できます。</string>
   <string name="remove_last_note_prompt">本当に最新のノートを削除しますか？ 削除されたデータは元に戻せません。</string>
-  <string name="installgpsstatus_title">GPS Statusのインストール</string>
-  <string name="installgpsstatus_message">GeoPaparazziはコンパス機能やGPS情報の閲覧にGps Statusを使います。Gps Statusをインストールしてもよろしいですか？</string>
   <!--added after 2.1.2-->
   <string name="reset">新しいプロジェクト</string>
   <string name="load">既存プロジェクトの読込み</string>
@@ -125,12 +132,13 @@
   <string name="view_in_mixare">mixare で表示</string>
   <string name="gps_use_coarse">ネットワーク位置使用(再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
-  <string name="geopapcloud_preferences">Geopap-Cloud設定</string>
+  <string name="geopapcloud_preferences">STAGE同期設定</string>
+  <string name="geopapcloud_preferences_summary">サーバ同期証明とSTAGE関連の設定</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
   <string name="geopapcloud_password_label">パスワード</string>
   <string name="geopapcloud_server_label">接続サーバ</string>
   <string name="exporting_data">データのエクスポート</string>
-  <string name="error_set_cloud_settings">geopap-cloud設定が正しくありません。設定値を確認してください。</string>
+  <string name="error_set_cloud_settings">STAGE同期パラメータが正しく設定されていません。設定を確認してください。</string>
   <string name="exporting_data_to_the_cloud">クラウドにデータをエクスポートします。</string>
   <string name="error_uploadig_project_to_cloud">プロジェクトを Geopap-cloudにアップロード中にエラーが発生しました。</string>
   <string name="project_succesfully_uploaded_to_cloud">プロジェクトが正常にGeopap-cloudにアップロードされました。</string>
@@ -169,11 +177,12 @@
   <string name="distance">距離: </string>
   <string name="imported_notes_and_bookmarks">{0}のメモ と {1} のブックマークをインポートします。</string>
   <string name="could_not_open_sms">SMSで渡された URI を開くことができません。</string>
-  <string name="start_">スタート: </string>
-  <string name="end_">エンド: </string>
+  <string name="start_">開始:</string>
+  <string name="end_">終了:</string>
   <string name="map_textsize_factor">マップテキストサイズ</string>
+  <string name="map_textsize_factor_summary">mapsforge mapファイルの文字サイズ係数</string>
   <string name="keep_screen_on">画面の保持</string>
-  <string name="keep_screen_on_summary">ダッシュ ボードとマップ ビューのときに、画面を保持します。</string>
+  <string name="keep_screen_on_summary">ダッシュボードとマップ画面の場合スクリーンオンを継続する。</string>
   <string name="the_secret_view">非表示ビュー</string>
   <string name="database_queries">データベース クエリ</string>
   <string name="demo_mode">デモモード</string>
@@ -183,6 +192,7 @@
   <string name="custom_sdcard_path">カスタム sd カードパス</string>
   <string name="opacity">不透明度</string>
   <string name="size">サイズ</string>
+  <string name="size_color">サイズと色</string>
   <string name="notes_properties">ノートプロパティ</string>
   <string name="visibility">表示/非表示</string>
   <string name="custom_icon_properties">カスタムアイコンプロパティ</string>
@@ -191,6 +201,7 @@
   <string name="show_labels">ラベルを表示します。</string>
   <string name="halo">輪郭</string>
   <string name="screen_preferences">画面設定</string>
+  <string name="screen_preferences_summary">センタークロス、スクリーン比率の優先設定</string>
   <string name="cross_properties_summary">ノートを配置するために使用される十字のプロパティ</string>
   <string name="cross_properties">センタークロス</string>
   <string name="color">色</string>
@@ -229,7 +240,8 @@
   <string name="service_name_propmt">サービス名を入力。空白の場合サービス名はサービスから取得されます。</string>
   <string name="info">情報</string>
   <string name="calculate_length">距離計算...</string>
-  <string name="spatialite_preferences">Spatialite設定</string>
+  <string name="spatialite_preferences">Spatialite 設定</string>
+  <string name="spatialite_preferences_summary">Spatialite 拡張構成設定</string>
   <string name="spatialite_recovery_mode">Spatialite復元モード</string>
   <string name="spatialite_recover_mode_tooltip">オンにした場合、次の起動の際に不良のあるテーブルの修正が試みられます。</string>
   <string name="map">地図</string>
@@ -247,7 +259,6 @@
   <string name="creation_date">作成日</string>
   <string name="creation_user">プロジェクト作成者</string>
   <string name="last_modification_user">プロジェクト変更者</string>
-  <string name="mapsfolder">マップフォルダ</string>
   <string name="preview_mode_save_warning">プレビューモード。保存ボタンをタップすると、ジオメトリはデータベースに保存されます。</string>
   <string name="reset_string">リセット</string>
   <string name="avaiable_layers">利用可能なレイヤー</string>
@@ -259,6 +270,7 @@
   <string name="extracting_info">情報抽出...</string>
   <string name="geom_incompatible_with_layer">結果のジオメトリは追加先のレイヤーと互換性がありません。</string>
   <string name="selected_features_in_layer">%2$d ポリゴンの %1$d 地物が選択されました。</string>
+  <string name="selected_line_features_in_layer">%2$d ラインの %1$d 地物が選択されました。</string>
   <string name="no_compatible_layers_found">互換性のあるレイヤーがありません</string>
   <string name="copied_features_to_layer">%1$d のジオメトリがレイヤ: %2$s にコピーされました</string>
   <string name="area_colon">面積: </string>
@@ -281,7 +293,7 @@
   <string name="import_uc">インポート</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Geopaparazzi Browser</string>
+  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">ブックマーク</string>
   <string name="default_database">初期データベース</string>
   <string name="kmz">KMZ</string>
@@ -297,6 +309,7 @@
   <string name="name_new_teample_db">新規データベースの名前を入力</string>
   <string name="new_template_db_create">データベースは正常に作成されました</string>
   <string name="extract_mapsforge_data">mapsforge データの抽出中...</string>
+  <string name="menu_extract_mapsforge_data">mapsforge データ抽出</string>
   <string name="extract_mapsforge_only_when_loaded">このツールはmapsforge マップがロードされているときのみ使用できます。</string>
   <string name="view">ビュー</string>
   <string name="force_locale_title">位置強制</string>
@@ -307,4 +320,56 @@
   <string name="export_img_processing">画像をエクスポート中...</string>
   <string name="routing_pref_title">経路検索 api キー</string>
   <string name="routing_pref_summary">MapQuest と Graphhopper の経路検索サービスを利用するための適切なApiキーを入れます。</string>
+  <string name="gps_info_dialog_title">Map/GPS情報</string>
+  <string name="open_gps_settings">GPS設定を開く</string>
+  <string name="dashboard_note_action_description">テキスト、画像、スケッチノートを追加</string>
+  <string name="dashboard_metadata_action_description">プロジェクト情報の表示</string>
+  <string name="dashboard_gpslog_action_description">GPSログの切替</string>
+  <string name="dashboard_mapview_action_description">マップ画面を開く</string>
+  <string name="dashboard_import_action_description">インポート画面を開く</string>
+  <string name="dashboard_export_action_description">エクスポート画面を開く</string>
+  <string name="add_new_metadata">新規メタデータ項目を追加</string>
+  <string name="remove_selected_metadata">選択したメタデータ項目を削除</string>
+  <string name="metadata_insert_key">キーを挿入</string>
+  <string name="metadata_insert_label">ラベルを挿入</string>
+  <string name="metadata_insert_value">値を挿入</string>
+  <string name="launch_custom_query">カスタムクエリーを実行</string>
+  <string name="write_own_query">またはクエリーを作成</string>
+  <string name="sqlview">SQLビュー</string>
+  <string name="query_results">クエリー結果</string>
+  <string name="no_images_in_project">プロジェクトにイメージがありません</string>
+  <string name="no_data_found_in_project_to_export">エクスポート可能なデータがありません。</string>
+  <string name="select_gpx_file">インポートするGPSファイルの選択</string>
+  <string name="select_gpap_file">Geopaparazzi プロジェクトの選択</string>
+  <string name="no_gpx_selected">GPXファイルは選択されませんでした。</string>
+  <string name="gpx_file_imported">GPXファイルがインポートされました。</string>
+  <string name="table_name">テーブル名</string>
+  <string name="db_name">DB名</string>
+  <string name="incoming_logs_added">ロードされた入力ログ:</string>
+  <string name="logs_sent">ログ送信されました。</string>
+  <string name="active_elevation_diff">活動中の高度差:</string>
+  <string name="selected_file_is_no_geopap_project">選択されたファイルは有効なGeopaparazzi データベース (*.gpap)ではないようです
+。</string>
+  <string name="error_while_setting_project">新しいプロジェクトを設定中にエラーが発生しました。</string>
+  <string name="sort_notes">ノートのソート</string>
+  <string name="path_lc">パス</string>
+  <string name="select_sort_mode">ソートモード選択</string>
+  <string name="no_editable_layer_set">編集可能なレイヤーがありません。</string>
+  <string name="basemaps">背景地図</string>
+  <string name="features">地物</string>
+  <string name="gps_data">GPSデータ</string>
+  <string name="notes_properties_label">ノート属性</string>
+  <string name="gps_log_properties_label">GPSログ属性</string>
+  <string name="bookmarks_list_label">ブックマークリスト</string>
+  <string name="notes_list_label">ノートリスト</string>
+  <string name="add_notes_label">ノートの追加</string>
+  <string name="spatialite_databases">Spatialiteデータベース</string>
+  <string name="geocoding_label">地理座標検索</string>
+  <string name="extract_mapsforge_label">mapsforge データの抽出</string>
+  <string name="editable_layers">編集可能なレイヤー</string>
+  <string name="form_data">フォームデータ</string>
+  <string name="menu_simple_note">シンプルノート</string>
+  <string name="menu_simple_picture">シンプル画像</string>
+  <string name="menu_simple_sketch">シンプルスケッチ</string>
+  <string name="warning_viewcone_gps">このツールはGPS座標が利用可能な場合のみ使用できます。</string>
 </resources>

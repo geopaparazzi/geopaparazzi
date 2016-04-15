@@ -1,8 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">Nastavení</string>
+  <string name="action_advanced_settings">Pokročilé</string>
+  <string name="label_green">Zelená</string>
+  <string name="label_blue">Modrá</string>
+  <string name="label_alpha">Neprůhlednost</string>
+  <string name="label_red">Červená</string>
+  <!--old gpap-->
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Projektová databáze Geopaparazzi</string>
   <string name="notesvisibilityToggle">Zobrazit poznámky</string>
   <string name="datasaved">Data úspěšně vyvedena do: </string>
@@ -28,6 +35,7 @@
   <string name="mainmenu_preferences">Nastavení</string>
   <string name="mainmenu_merge">Sloučit vybrané záznamy</string>
   <string name="gpslogproperty">Vlastnosti pro:</string>
+  <string name="gpslog_name">Název záznamu</string>
   <string name="gpslog_chart">Graf</string>
   <string name="gpslog_zoom">Přiblížit</string>
   <string name="gpslog_delete">Smazat</string>
@@ -38,7 +46,6 @@
   <string name="gps_logging_distance">Nejmenší vzdálenost pro GPS záznam</string>
   <string name="gps_logging_interval">Nejmenší interval pro GPS záznam</string>
   <string name="gps_use_android_level">Použít na úrovni Androidu (šetří baterii, vyžaduje opětovné spuštění)</string>
-  <string name="gps_use_android_level_summary">Je-li zaškrtnuto, nastavení GPS se použijí na úrovni operačního systému, což může šetřit baterii, ale signál může být méně stálý, když se zvolí větší intervaly (pokud máte u zaškrtnutých zařízení u GPS potíže se spojením, ponechejte nezaškrtnuto). Povšimněte si, že GPS OS pracuje nepřetržitě, aby se signál posílal v intervalech menších než 100 sekund. Aby baterie vydržela déle, zvolte větší intervaly.</string>
   <string name="sms_preferences">Nastavení SMS</string>
   <string name="sms_catcher">Povolit zachytávač SMS</string>
   <string name="databaseError">Při připojení k databázi se vyskytla chyba</string>
@@ -55,9 +62,8 @@
   <string name="audio_recording_stop">Zastavit</string>
   <string name="panic">Pomoc!</string>
   <string name="panic_number">Číslo pro stav nouze</string>
-  <string name="panic_number_notset">Zdá se, že není dostupné žádné číslo pro stav nouze, na které má být zpráva zaslána. Bylo číslo zadáno v nastavení?</string>
   <string name="panic_upper">STAV NOUZE!</string>
-  <string name="send_status_update">Poslat polohu</string>
+  <string name="send_status_update">nebo pouze poslat vaši polohu</string>
   <string name="help_needed">Potřebuji pomoc!</string>
   <string name="message_sent">Zpráva poslána</string>
   <string name="last_note_deleted">Poslední poznámka smazána</string>
@@ -68,8 +74,6 @@
   <string name="enable_debug">Zapnout ladicí záznam</string>
   <string name="gpslogging_only">Tato funkce je dostupná, jen když je  GPS v činnosti a signál je dostupný.</string>
   <string name="remove_last_note_prompt">Opravdu chcete odstranit poslední textovou poznámku? Tento krok nelze vrátit zpět.</string>
-  <string name="installgpsstatus_title">Instalace GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi používá program GPS Status pro kompas a GPS informace. Chcete ji nainstalovat?</string>
   <!--added after 2.1.2-->
   <string name="reset">Vytvořit nový projekt</string>
   <string name="load">Otevřít stávající projekt</string>
@@ -122,12 +126,13 @@
   <string name="view_in_mixare">Zobrazit v aplikaci mixare</string>
   <string name="gps_use_coarse">Použít polohu založenou na síti místo GPS (vyžaduje opětovné spuštění)</string>
   <string name="type_to_filter">Zadejte text pro filtrování</string>
-  <string name="geopapcloud_preferences">Nastavení Geopap-Cloud</string>
+  <string name="geopapcloud_preferences">Nastavení synchronizace STAGE</string>
+  <string name="geopapcloud_preferences_summary">Nastavit přihlašovací údaje pro seřízení serveru a nastavení pro STAGE.</string>
   <string name="geopapcloud_user_label">Uživatelské jméno</string>
   <string name="geopapcloud_password_label">Heslo</string>
   <string name="geopapcloud_server_label">Server, ke kterému se připojit</string>
   <string name="exporting_data">Exportují se data</string>
-  <string name="error_set_cloud_settings">Nastavení geopap-cloud nejsou nastavena řádně. Prověřte, prosím, svá nastavení</string>
+  <string name="error_set_cloud_settings">Parametry synchronizace STAGE nejsou nastaveny správně. Prověřte, prosím, tato nastavení.</string>
   <string name="exporting_data_to_the_cloud">Vyvádí se data do internetového úložiště.</string>
   <string name="error_uploadig_project_to_cloud">Během nahrávání projektu do Geopap-cloud se vyskytla chyba.</string>
   <string name="project_succesfully_uploaded_to_cloud">Projekt byl úspěšně nahrán na Geopap-cloud</string>
@@ -167,8 +172,8 @@
   <string name="start_">Začátek:</string>
   <string name="end_">Konec:</string>
   <string name="map_textsize_factor">Zvětšení textu mapy</string>
+  <string name="map_textsize_factor_summary">Násobek velikosti textu pro mapové soubory mapsforge.</string>
   <string name="keep_screen_on">Ponechat obrazovku zapnutou</string>
-  <string name="keep_screen_on_summary">Ponechá obrazovku zapnutou pokud je zobrazena úvodní stránka nebo mapa</string>
   <string name="the_secret_view">Tajný pohled</string>
   <string name="database_queries">Databázové dotazy</string>
   <string name="demo_mode">Zkušební režim</string>
@@ -178,6 +183,7 @@
   <string name="custom_sdcard_path">Vlastní cesta k SD kartě</string>
   <string name="opacity">Neprůhlednost</string>
   <string name="size">Velikost</string>
+  <string name="size_color">Velikost a barvy</string>
   <string name="notes_properties">Nastavení poznámek</string>
   <string name="visibility">Viditelnost</string>
   <string name="custom_icon_properties">Vlastní nastavení ikon</string>
@@ -186,6 +192,7 @@
   <string name="show_labels">Zobrazit popisky</string>
   <string name="halo">Záře</string>
   <string name="screen_preferences">Nastavení zobrazení</string>
+  <string name="screen_preferences_summary">Nastavit nastavení obrazovky jako středový křížek nebo hustotu obrazovky.</string>
   <string name="cross_properties_summary">Vlastnosti křížku používaného k umísťování poznámek.</string>
   <string name="cross_properties">Středový křížek</string>
   <string name="color">Barva</string>
@@ -224,7 +231,8 @@
   <string name="service_name_propmt">Zadejte název pro službu. Pokud je ponecháno prázdné, název je převzat od služby.</string>
   <string name="info">Info</string>
   <string name="calculate_length">Spočítat délku...</string>
-  <string name="spatialite_preferences">Nastavení Spatialite</string>
+  <string name="spatialite_preferences">Nastavení DB SpatiaLite</string>
+  <string name="spatialite_preferences_summary">Nastavit pokročilá nastavení SpatiaLite.</string>
   <string name="spatialite_recovery_mode">Režim obnovy Spatialite</string>
   <string name="spatialite_recover_mode_tooltip">Je-li zapnuto, bude při příštím spuštění proveden pokus o opravu špatných tabulek.</string>
   <string name="map">Mapa</string>
@@ -242,7 +250,6 @@
   <string name="creation_date">Datum vytvoření</string>
   <string name="creation_user">Autor projektu</string>
   <string name="last_modification_user">Uživatel poslední změny</string>
-  <string name="mapsfolder">Složka s mapami</string>
   <string name="preview_mode_save_warning">Režim náhledu. Jakmile klepnete na tlačítko pro uložení, uspořádání bude uloženo do databáze</string>
   <string name="reset_string">Nastavit znovu</string>
   <string name="avaiable_layers">Dostupné vrstvy</string>
@@ -254,6 +261,7 @@
   <string name="extracting_info">Vytahují se informace...</string>
   <string name="geom_incompatible_with_layer">Výsledné uspořádání se neslučuje s cílovou vrstvou.</string>
   <string name="selected_features_in_layer">Vybráno %1$d prvků s %2$d mnohoúhelníky.</string>
+  <string name="selected_line_features_in_layer">Vybráno %1$d prvků s %2$d stranami.</string>
   <string name="no_compatible_layers_found">Nenalezeny žádné slučitelné vrstvy</string>
   <string name="copied_features_to_layer">Zkopírováno %1$d uspořádání do vrstvy: %2$s</string>
   <string name="area_colon">Oblast:</string>
@@ -276,7 +284,7 @@
   <string name="import_uc">IMPORT</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Geopaparazzi prohlížeč</string>
+  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Záložky</string>
   <string name="default_database">Výchozí databáze</string>
   <string name="kmz">KMZ</string>
@@ -292,6 +300,7 @@
   <string name="name_new_teample_db">Zadat název nové databáze</string>
   <string name="new_template_db_create">Databáze úspěšně vytvořena.</string>
   <string name="extract_mapsforge_data">Vytahují se data mapsforge...</string>
+  <string name="menu_extract_mapsforge_data">Vytáhnout data mapsforge</string>
   <string name="extract_mapsforge_only_when_loaded">Tento nástroj funguje pouze po načtení mapsforge mapy.</string>
   <string name="view">Pohled</string>
   <string name="force_locale_title">Vynutit jazyk</string>
@@ -302,4 +311,53 @@
   <string name="export_img_processing">Vyvádí se obrázky...</string>
   <string name="routing_pref_title">Klíč pro api směrování</string>
   <string name="routing_pref_summary">Pro používání směrovacích služeb MapQuest a Graphhopper vložte správný klíč Api.</string>
+  <string name="gps_info_dialog_title">Informace Map/GPS</string>
+  <string name="open_gps_settings">Otevřít nastavení GPS</string>
+  <string name="dashboard_note_action_description">Přidat text, obrázek nebo načrtnout poznámku.</string>
+  <string name="dashboard_metadata_action_description">Zobrazit informace o projektu</string>
+  <string name="dashboard_gpslog_action_description">Přepnout záznam GPS</string>
+  <string name="dashboard_mapview_action_description">Otevřít pohled s mapou</string>
+  <string name="dashboard_import_action_description">Otevřít pohled na načítání</string>
+  <string name="dashboard_export_action_description">Otevřít pohled na ukládání</string>
+  <string name="add_new_metadata">Přidat novou položku popisných dat</string>
+  <string name="remove_selected_metadata">Odstranit vybranou položku popisných dat</string>
+  <string name="metadata_insert_key">Vložit klíč</string>
+  <string name="metadata_insert_label">Vložit popisek</string>
+  <string name="metadata_insert_value">Vložit hodnotu</string>
+  <string name="launch_custom_query">Spustit vlastní dotazování</string>
+  <string name="write_own_query">nebo zapsat vlastní dotaz</string>
+  <string name="sqlview">Pohled SQL</string>
+  <string name="query_results">Výsledky dotazu</string>
+  <string name="no_images_in_project">V projektu nejsou přítomny žádné obrázky.</string>
+  <string name="no_data_found_in_project_to_export">Nelze uložit žádná data nalezená v projektu.</string>
+  <string name="select_gpx_file">Vybrat soubor GPX k načtení</string>
+  <string name="select_gpap_file">Vybrat projekt Geopaparazzi</string>
+  <string name="no_gpx_selected">Nebyl vybrán žádný soubor GPX.</string>
+  <string name="gpx_file_imported">Soubor GPX načten.</string>
+  <string name="table_name">Název tabulky</string>
+  <string name="db_name">Název databáze</string>
+  <string name="incoming_logs_added">Nahrány příchozí záznamy:</string>
+  <string name="logs_sent">Poslány záznamy.</string>
+  <string name="selected_file_is_no_geopap_project">Zdá se, že vybraný soubor není platnou databází Geopaparazzi (*.gpap).</string>
+  <string name="error_while_setting_project">Během nastavování nového projektu se vyskytla chyba.</string>
+  <string name="sort_notes">Třídit poznámky</string>
+  <string name="path_lc">cesta</string>
+  <string name="select_sort_mode">Vybrat režim třídění</string>
+  <string name="no_editable_layer_set">Nenalezena žádná upravitelná vrstva.</string>
+  <string name="basemaps">Podkladové mapy</string>
+  <string name="features">Funkce</string>
+  <string name="gps_data">Záznamy GPS</string>
+  <string name="notes_properties_label">Vlastnosti poznámek</string>
+  <string name="gps_log_properties_label">Vlastnosti záznamů GPS</string>
+  <string name="bookmarks_list_label">Seznam záložek</string>
+  <string name="notes_list_label">Seznam poznámek</string>
+  <string name="add_notes_label">Přidat poznámky</string>
+  <string name="spatialite_databases">Databáze SpatiaLite</string>
+  <string name="geocoding_label">Vyhledání místa/adresy</string>
+  <string name="extract_mapsforge_label">Vytáhnout data mapsforge</string>
+  <string name="editable_layers">Upravitelné vrstvy</string>
+  <string name="menu_simple_note">Jedna poznámka</string>
+  <string name="menu_simple_picture">Jeden obrázek</string>
+  <string name="menu_simple_sketch">Jeden náčrtek</string>
+  <string name="warning_viewcone_gps">Tento nástroj pracuje pouze, je-li dostupná poloha GPS.</string>
 </resources>

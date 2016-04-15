@@ -68,11 +68,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Vennligst aktivèr NFC og trykk Tilbake for å gå tilbake til programmet!</string>
   <string name="unable_to_read_tag_id">Kan ikke lese tagg-id</string>
-  <string name="stroke_color">Strekfarge        </string>
-  <string name="width">Strekbredde</string>
-  <string name="alpha">Strekuthevning</string>
-  <string name="fill_color">Fyllfarge</string>
-  <string name="fill_alpha">Fylluthevning</string>
   <string name="point_shape_">Figur for punkt </string>
   <string name="point_size">Punktstørrelse</string>
   <string name="decimation">Fjern</string>

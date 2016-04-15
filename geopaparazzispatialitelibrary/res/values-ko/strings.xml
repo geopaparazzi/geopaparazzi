@@ -16,4 +16,9 @@
   <string name="toggle_visibility">보이기 전환</string>
   <string name="label_field">레이블 필드</string>
   <string name="label_size">레이블 크기</string>
+  <string name="select_table_types">유형 선택</string>
+  <string name="select_type">유형 선택</string>
+  <string name="remove_from_list">목록에서 %s를 제거하시겠습니까?</string>
+  <string name="selected_file_no_vector_data">선택한 파일이 벡터 데이터를 포함하지 않습니다: </string>
+  <string name="adding_new_source">새로운 원본 추가하기 ...</string>
 </resources>

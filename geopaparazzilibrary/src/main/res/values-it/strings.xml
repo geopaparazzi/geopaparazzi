@@ -69,11 +69,6 @@
   <string name="title_activity_nfc_id_reader">Attività del lettore NCF</string>
   <string name="activate_nfc">Si prega di attivare il lettore NFC e premere indietro per tornare all\'applicazione!</string>
   <string name="unable_to_read_tag_id">Impossibile leggere il tag id</string>
-  <string name="stroke_color">Colore del tratto        </string>
-  <string name="width">Spessore del tratto</string>
-  <string name="alpha">Trasparenza del tratto</string>
-  <string name="fill_color">Colore del riempimento</string>
-  <string name="fill_alpha">Trasparenza del riempimento</string>
   <string name="point_shape_">Forma del punto</string>
   <string name="point_size">Dimensione del punto</string>
   <string name="decimation">Decimazione</string>
@@ -91,4 +86,8 @@
   <string name="crash_toast_text">E\' avvenuto un errore fatale. Verranno raccolte informazioni utili alla risoluzione del problema. Si prega di mandarle al team di sviluppo quando possibile.</string>
   <string name="share_current_position">Condividi posizione corrente</string>
   <string name="share_current_center">Condividi il centro mappa corrente</string>
+  <string name="label_alpha">trasparenza</string>
+  <string name="label_red">rosso</string>
+  <string name="label_green">verde</string>
+  <string name="label_blue">blu</string>
 </resources>

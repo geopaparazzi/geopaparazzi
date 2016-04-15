@@ -68,11 +68,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Aktivirajte NFC and kliknite NAZAD da biste se vratili nazad na aplikaciju</string>
   <string name="unable_to_read_tag_id">Nemoguće da se pročita id nalepnice</string>
-  <string name="stroke_color">Boja okvira</string>
-  <string name="width">Debljina okvira</string>
-  <string name="alpha">Alfa okvira</string>
-  <string name="fill_color">Boja unosa</string>
-  <string name="fill_alpha">Alfa unosa</string>
   <string name="point_shape_">Oblik tačke</string>
   <string name="point_size">Veličina tačke</string>
   <string name="decimation">Desetkovanje</string>

@@ -69,11 +69,6 @@
   <string name="title_activity_nfc_id_reader">АктивністьЧиталкиNfcId</string>
   <string name="activate_nfc">Будь ласка, активуйте NFC та натисніть Назад для повернення до програми!</string>
   <string name="unable_to_read_tag_id">Неможливо прочитати id тегу</string>
-  <string name="stroke_color">Колір штриха</string>
-  <string name="width">Ширина штриха</string>
-  <string name="alpha">Альфа штриха</string>
-  <string name="fill_color">Колір заповнення</string>
-  <string name="fill_alpha">Заповнення альфа</string>
   <string name="point_shape_">Обриси точки</string>
   <string name="point_size">Розмір точки</string>
   <string name="decimation">Децимація</string>

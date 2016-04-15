@@ -68,11 +68,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Prosím aktivujte NFC a stlačte Back pre návrat do aplikácie!</string>
   <string name="unable_to_read_tag_id">Nemožné čítať id tagu</string>
-  <string name="stroke_color">Farba čiary</string>
-  <string name="width">Hrúbka čiary</string>
-  <string name="alpha">Priesvitnosť čiary</string>
-  <string name="fill_color">Farba výplne</string>
-  <string name="fill_alpha">Priesvitnosť výplne</string>
   <string name="point_shape_">Tvar bodu</string>
   <string name="point_size">Veľkosť bodu</string>
   <string name="decimation">Decimation</string>

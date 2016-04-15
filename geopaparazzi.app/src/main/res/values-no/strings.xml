@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <!--old gpap-->
   <string name="yes">ja</string>
   <string name="no">nei</string>
   <string name="notesvisibilityToggle">Synlighet notater, av/på.</string>
-  <string name="datasaved">Data ble eksportert til: </string>
-  <string name="data_nonsaved">Det oppstod en feil under dataeksport!</string>
   <string name="loggingoff">Stoppet alle sensorer.</string>
   <string name="nogps_data">Ingen gps data tilgjengelig ennå!</string>
   <string name="utctime">tid: </string>
@@ -26,12 +25,9 @@
   <string name="mapproperty">Egenskaper for: </string>
   <string name="map_zoom">Zoom til kartet</string>
   <string name="map_delete">Slett kartet</string>
-  <string name="gps_preferences">GPS innstillinger</string>
   <string name="gps_logging_distance">Min. distance for gps logging</string>
   <string name="gps_logging_interval">Min. intervall for gps logging</string>
   <string name="gps_use_android_level">Brukes av Android (sparer batteri, trenger omstart)</string>
-  <string name="gps_use_android_level_summary">Hvis valgt, vil gps innstillingene brukes på operativsystemnivå. Dette kan spare batteri, men kan også gi mindre stabilt signal når du velger store intervaller. Hvis du har problemer med gps-tilkoblingen, la dette stå uvalgt. Merk at gps er påslått kontinuerlig for intervaller mindre enn 100 sekunder. Velge større intervaller for bedre batterilevetid.</string>
-  <string name="sms_preferences">SMS-innstillinger</string>
   <string name="sms_catcher">Aktiver sms henting</string>
   <string name="databaseError">Det oppstod en feil under tilkobling til databasen</string>
   <string name="chart_profile_view">Profil-visning</string>
@@ -47,21 +43,16 @@
   <string name="audio_recording_stop">stopp</string>
   <string name="panic">panikk!</string>
   <string name="panic_number">Panikknummer</string>
-  <string name="panic_number_notset">Ingen panikknummer synes å være tilgjengelig. Er det satt i innstillingene?</string>
   <string name="panic_upper">  PANIKK!  </string>
-  <string name="send_status_update">send posisjon</string>
   <string name="help_needed">Trenger hjelp!</string>
   <string name="message_sent">Melding sendt</string>
   <string name="last_note_deleted">Slettet siste notat</string>
   <string name="last_note_not_deleted">Kunne ikke slette siste notat</string>
   <string name="text_logging">logging</string>
   <string name="text_gpson">GPS på</string>
-  <string name="debug">Innstillinger for feilsøking</string>
   <string name="enable_debug">Aktivèr feilsøkingslogg</string>
   <string name="gpslogging_only">Denne funksjonen er bare tilgjengelig når gps er aktivert og et signal er tilgjengelig.</string>
   <string name="remove_last_note_prompt">Vil du fjerne det siste notatet? Dette kan ikke gjøres om.</string>
-  <string name="installgpsstatus_title">Installere GPS-Status</string>
-  <string name="installgpsstatus_message">GeoPaparazzi bruker Gps Status-app som kompass og gps-informasjonsvisning. Vil du installere appen?</string>
   <!--added after 2.1.2-->
   <string name="phonenumber_hint">Tast inn komma-separerte telefonnumre…</string>
   <string name="pick_phonenumber_label">…</string>
@@ -88,7 +79,6 @@
   <string name="formnotes">Notat fra skjema</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Det oppstod en feil under oppretting av diagrammet.</string>
-  <string name="osm_preferences">Innstillinger for OpenStreetMap</string>
   <string name="osm_do_it">Aktivèr OSM verktøy</string>
   <string name="osm_user_label">Brukernavn</string>
   <string name="osm_password_label">Passord</string>
@@ -105,12 +95,10 @@
   <string name="check_valid_field">Kontroller at feltet \"{0}\" er riktig.</string>
   <string name="gps_use_coarse">Bruk nettverksbasert posisjon, i stedet for gps (krever omstart)</string>
   <string name="type_to_filter">tast inn for å filtrere</string>
-  <string name="geopapcloud_preferences">Innstillinger for Geopap-Cloud</string>
   <string name="geopapcloud_user_label">Brukernavn</string>
   <string name="geopapcloud_password_label">Passord</string>
   <string name="geopapcloud_server_label">Server for tilkobling</string>
   <string name="exporting_data">Eksporterer data</string>
-  <string name="error_set_cloud_settings">Geopap-Cloud innstillinger er ikke riktig. Sjekk dine innstillinger.</string>
   <string name="exporting_data_to_the_cloud">Eksporterer data til Cloud.</string>
   <string name="error_uploadig_project_to_cloud">Det oppstod en feil under opplasting av prosjektet til Geopap-Cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">Prosjektet er lastet opp til Geopap-Cloud</string>
@@ -142,10 +130,8 @@
   <string name="distance">Distanse:</string>
   <string name="imported_notes_and_bookmarks">Importerte {0} notater og {1} bokmerker.</string>
   <string name="could_not_open_sms">Kunne ikke åpne de sendte sms dataene (URI).</string>
-  <string name="end_">Slutt:</string>
   <string name="map_textsize_factor">Faktor for tekststørrelse i kart</string>
   <string name="keep_screen_on">Behold skjermen på</string>
-  <string name="keep_screen_on_summary">Beholder skjermen på, i forside- og kartvisningen</string>
   <string name="the_secret_view">Hemmelig visning</string>
   <string name="database_queries">Databasespørringer</string>
   <string name="demo_mode">Demo-modus</string>
@@ -162,7 +148,6 @@
   <string name="labels">Etiketter</string>
   <string name="show_labels">Vis etiketter</string>
   <string name="halo">halo</string>
-  <string name="screen_preferences">Skjerminnstillinger</string>
   <string name="cross_properties_summary">Egenskaper for krysset som brukes til å plassere notater.</string>
   <string name="color">Farge</string>
   <string name="prompt_delete_note">Er du sikker på at du vil slette notatet? Dette kan ikke angres.</string>

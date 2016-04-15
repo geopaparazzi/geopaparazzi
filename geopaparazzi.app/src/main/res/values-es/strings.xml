@@ -1,16 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">Sí</string>
   <string name="no">No</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Base de datos del proyecto Geopaparazzi</string>
   <string name="notesvisibilityToggle">Conmutar la visibilidad de las notas.</string>
-  <string name="datasaved">Datos correctamente exportados a:</string>
-  <string name="data_nonsaved">¡Ha ocurrido un error durante la exportación de datos!</string>
   <string name="loggingoff">Todos los sensores están parados.</string>
   <string name="nogps_data">¡Todavía no se dispone de datos gps!</string>
-  <string name="about">Sobre</string>
-  <string name="exit">Salida</string>
+  <string name="about">Acerca de</string>
+  <string name="exit">Salir</string>
   <string name="utctime">tiempo: </string>
   <string name="altim">altim: </string>
   <string name="lat">lat: </string>
@@ -34,12 +33,9 @@
   <string name="mapproperty">Propiedades para: </string>
   <string name="map_zoom">Zoom al mapa</string>
   <string name="map_delete">Borrar el mapa</string>
-  <string name="gps_preferences">Preferencias gps</string>
   <string name="gps_logging_distance">Distancia minima de registro gps</string>
   <string name="gps_logging_interval">Intervalo minimo de registro gps</string>
   <string name="gps_use_android_level">Utilizar en el nivel de Android (ahorra batería, requiere inicializar)</string>
-  <string name="gps_use_android_level_summary">Si se selecciona, las preferencias gps se aplican a nivel de sistema operativo. Esto puede ahorrar batería, pero podría generar una señal menos estable cuando seleccione  intervalos grandes (si al comprobar los dispositivos tiene problemas de conexión gps, deje esta casilla sin marcar). Tenga en cuenta que el sistema operativo alimenta el gps de forma continua para intervalos de envío menores de 100 segundos. Para lograr una mayor duración de la batería seleccione intervalos mayores.</string>
-  <string name="sms_preferences">Preferencias sms</string>
   <string name="sms_catcher">Activa el receptor de sms</string>
   <string name="databaseError">Se ha producido un error al conectar con la base de datos</string>
   <string name="chart_profile_view">Vista perfil</string>
@@ -55,21 +51,16 @@
   <string name="audio_recording_stop">parar</string>
   <string name="panic">¡pánico!</string>
   <string name="panic_number">Número de pánico</string>
-  <string name="panic_number_notset">No parece que exista un número de pánico válido. ¿Lo ha activado en las preferencias?</string>
   <string name="panic_upper"> ¡PÁNICO!  </string>
-  <string name="send_status_update">enviar posición</string>
   <string name="help_needed">¡Necesito ayuda!</string>
   <string name="message_sent">Mensaje enviado</string>
   <string name="last_note_deleted">Cancelada la última nota</string>
   <string name="last_note_not_deleted">No ha sido posible cancelar la última nota</string>
   <string name="text_logging">registrando</string>
   <string name="text_gpson">gps activo</string>
-  <string name="debug">Preferencias de depuración</string>
   <string name="enable_debug">Activa el registro de depuración</string>
   <string name="gpslogging_only">Esta función solamente está disponible cuando el gps está activo y existe señal</string>
   <string name="remove_last_note_prompt">¿Está seguro que desea eliminar la última nota? Esta acción no es reversible.</string>
-  <string name="installgpsstatus_title">Instalar GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi utiliza como brújula la vista información de la aplicación Gps Status. ¿Desea instalarla?</string>
   <!--added after 2.1.2-->
   <string name="reset">Crear un nuevo proyecto</string>
   <string name="load">Cargar un proyecto existente</string>
@@ -87,7 +78,7 @@
   <string name="mapsactivity_menu_toggle_scalebar">Conmutar la barra de escala</string>
   <string name="mapsactivity_menu_tilesource">Seleccionar la procedencia de las teselas</string>
   <string name="mapsactivity_delete_bookmarks">Borrando {0} marcadores...</string>
-  <string name="mapsactivity_delete_notes">Borrando {0} notas</string>
+  <string name="mapsactivity_delete_notes">Borrando {0} notas...</string>
   <string name="mapsactivity_new_bookmark">Nuevo marcador</string>
   <string name="mapsactivity_enter_bookmark_name">Introducir un nombre para el nuevo marcador (opcional)</string>
   <string name="maptagsactivity_error_reading_tags">Error en la lectura de etiquetas</string>
@@ -101,7 +92,6 @@
   <string name="formnotes"> NOTAS BASADAS EN FORMULARIOS</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Se ha producido un error mientras se creaba el gráfico</string>
-  <string name="osm_preferences">Preferencias OpenStreetMap</string>
   <string name="osm_do_it">Activar herramientas OSM</string>
   <string name="osm_user_label">Nombre de usuario</string>
   <string name="osm_password_label">Contraseña</string>
@@ -122,12 +112,10 @@
   <string name="view_in_mixare">Visualizar en mixware</string>
   <string name="gps_use_coarse">Utilizar la posición basada en red, en lugar de la posición gps (necesita reiniciar)</string>
   <string name="type_to_filter">Escribir para filtrar</string>
-  <string name="geopapcloud_preferences">Preferencias Geopap-Cloud</string>
   <string name="geopapcloud_user_label">Nombre de usuario</string>
   <string name="geopapcloud_password_label">Contraseña</string>
-  <string name="geopapcloud_server_label">Servidor conectado a</string>
+  <string name="geopapcloud_server_label">Servidor al que conectarse</string>
   <string name="exporting_data">Exportando datos</string>
-  <string name="error_set_cloud_settings">Las preferencias geopap-cloud no son correctas. Verifique por favor su configuración.</string>
   <string name="exporting_data_to_the_cloud">Exportando datos a la nube.</string>
   <string name="error_uploadig_project_to_cloud">Se ha producido un error en la transferencia del proyecto a Geopap-cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">El proyecto ha sido correctamente transferido a Geopap-cloud</string>
@@ -164,11 +152,8 @@
   <string name="distance">Distancia:</string>
   <string name="imported_notes_and_bookmarks">Se han importado {0} notas y {1} marcadores</string>
   <string name="could_not_open_sms">No se ha podido abrir el dato URI pasado vía sms</string>
-  <string name="start_">Inicio:</string>
-  <string name="end_">Fin:</string>
   <string name="map_textsize_factor">Factor de tamaño de texto del mapa</string>
   <string name="keep_screen_on">Mantener la pantalla activada</string>
-  <string name="keep_screen_on_summary">Mantener la pantalla activada para el cuadro de mandos y la vista mapa</string>
   <string name="the_secret_view">La Vista Secreta</string>
   <string name="database_queries">Consultas de base de datos</string>
   <string name="demo_mode">Modo demostración</string>
@@ -185,7 +170,6 @@
   <string name="labels">Etiquetas</string>
   <string name="show_labels">mostrar etiquetas</string>
   <string name="halo">aureola</string>
-  <string name="screen_preferences">Preferencias de Pantalla</string>
   <string name="cross_properties_summary">Propiedades de la cruz filiar utilizada para la colocación de notas.</string>
   <string name="cross_properties">Centrar en cruz filiar</string>
   <string name="color">Color</string>
@@ -224,7 +208,6 @@
   <string name="service_name_propmt">Introducir un nombre para el servicio. Si se deja vacío, se capturará el nombre del servicio.</string>
   <string name="info">INFO</string>
   <string name="calculate_length">Calcular longitud...</string>
-  <string name="spatialite_preferences">Preferencias de Spatialite</string>
   <string name="spatialite_recovery_mode">Modo Recuperación de Spatialite</string>
   <string name="spatialite_recover_mode_tooltip">si está activo, en el siguiente inicio se intentarán corregir las tablas defectuosas.</string>
   <string name="map">Mapa</string>
@@ -242,7 +225,6 @@
   <string name="creation_date">Fecha de creación</string>
   <string name="creation_user">Usuario autor del proyecto</string>
   <string name="last_modification_user">Usuario que modificado el proyecto por última vez</string>
-  <string name="mapsfolder">Carpeta de mapas</string>
   <string name="preview_mode_save_warning">Modo de vista previa. Una vez que se pulse el botón de guardar, la geometría se guardará en la base de datos</string>
   <string name="reset_string">reinicio</string>
   <string name="avaiable_layers">Capas disponibles</string>
@@ -277,7 +259,6 @@
   <string name="import_uc">IMPORTAR</string>
   <string name="mapurls">Urls de mapas</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Navegador Geopaparazzi</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Base de datos por defecto</string>
   <string name="kmz">KMZ</string>

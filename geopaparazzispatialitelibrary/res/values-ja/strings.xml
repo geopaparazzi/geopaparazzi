@@ -16,4 +16,9 @@
   <string name="toggle_visibility">表示の切替</string>
   <string name="label_field">ラベルフィールド</string>
   <string name="label_size">ラベルサイズ</string>
+  <string name="select_table_types">タイプの選択</string>
+  <string name="select_type">タイプ選択</string>
+  <string name="remove_from_list">リストから %s を削除しますか？</string>
+  <string name="selected_file_no_vector_data">選択されたファイルにはベクトルデータが含まれていません。</string>
+  <string name="adding_new_source">新しいソースを追加...</string>
 </resources>

@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">Da</string>
   <string name="no">Ne</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Baza podataka Geopaparazzi projekta</string>
   <string name="notesvisibilityToggle">Taster za vidljivost beleške.</string>
-  <string name="datasaved">Podaci su uspešno izvezeni u:</string>
-  <string name="data_nonsaved">Pojavila se greška u toku izvoza podataka!</string>
   <string name="loggingoff">Svi senzori zaustavljeni</string>
   <string name="nogps_data">GPS podaci su još uvek nedostupni!</string>
   <string name="about">O programu</string>
@@ -34,12 +33,9 @@
   <string name="mapproperty">Svojstva za:</string>
   <string name="map_zoom">Zumiraj do mape</string>
   <string name="map_delete">Obrisati mapu</string>
-  <string name="gps_preferences">Gps opcije</string>
   <string name="gps_logging_distance">Minimalna razdaljina gps prijave</string>
   <string name="gps_logging_interval">Minimalni interval gps prijave</string>
   <string name="gps_use_android_level">Koristi na android nivou (čuva bateriju, potrebno restartovanje)</string>
-  <string name="gps_use_android_level_summary">Ukoliko je čekirana, gps podešavanja su primenjena na nivo operativnog sistema gde se čuva baterija. Medjutim, kod dužih intervala može doći do nestabilnosti signala (ukoliko imate problema sa gps konekcijom kod čekiranih uredjaja, ostavite ovu opciju nečekiranu). Napomena da uključen gps neprekidno šalje intervale kraće od 100 sekundi. Za duže trajanje baterije izaberite duže intervale.</string>
-  <string name="sms_preferences">Sms opcije</string>
   <string name="sms_catcher">Dopusti prijem SMS-a</string>
   <string name="databaseError">Pojavila se greška u toku povezivanja sa datom podataka</string>
   <string name="chart_profile_view">Prikaz profila</string>
@@ -55,21 +51,16 @@
   <string name="audio_recording_stop">zaustaviti</string>
   <string name="panic">pomoć!</string>
   <string name="panic_number">Broj za hitne pozive</string>
-  <string name="panic_number_notset">Broj za hitne pozive je nedostupan. Da li ste unesti broj u opcijama?</string>
   <string name="panic_upper">POMOĆ HITNO! </string>
-  <string name="send_status_update">Poslati poziciju</string>
   <string name="help_needed">Pomoć je bila potrebna!</string>
   <string name="message_sent">Poruka poslata</string>
   <string name="last_note_deleted">Obrisana poslednja beleška</string>
   <string name="last_note_not_deleted">Neuspešno obrisana poslednja beleška</string>
   <string name="text_logging">Prijavljivanje</string>
   <string name="text_gpson">gps uključen</string>
-  <string name="debug">Opcije ispravljanja</string>
   <string name="enable_debug">Omogućiti ispravljanje prijave</string>
   <string name="gpslogging_only">Ova funkcija je dostupna sada kada je gps opcija uključena i dostupan signal </string>
   <string name="remove_last_note_prompt">Da li zaista želite da uklonite poslednju belešku? Posle brisanja, belešku je nemoguće vratiti</string>
-  <string name="installgpsstatus_title">Instaliraj GPS Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi koristi Gps Status aplikaciju kao kompas i za pregled gps podataka. Želite li da instalirate ovu aplikaciju? </string>
   <!--added after 2.1.2-->
   <string name="reset">Kreirajte novi projekat</string>
   <string name="load">Učitajte već postojeći projekat</string>
@@ -101,7 +92,6 @@
   <string name="formnotes">BELEŠKE ZADATE KAO FORMULARI</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Pojavila se greška u toku kreiranja grafika</string>
-  <string name="osm_preferences">OpenStreetMap opcije</string>
   <string name="osm_do_it">Omogući OSM alatke</string>
   <string name="osm_user_label">Korisničko ime</string>
   <string name="osm_password_label">Šifra</string>
@@ -122,12 +112,10 @@
   <string name="view_in_mixare">Pogledati u aplikaciji mixare</string>
   <string name="gps_use_coarse">Koristite poziciju baziranu na mobilnoj mreži umesto gps-a (potrebno restartovati)</string>
   <string name="type_to_filter">Ukucajte tekst za filtriranje</string>
-  <string name="geopapcloud_preferences">Geopap-Cloud opcije</string>
   <string name="geopapcloud_user_label">Korisničko ime</string>
   <string name="geopapcloud_password_label">Šifra</string>
   <string name="geopapcloud_server_label">Server na koji se povezujete</string>
   <string name="exporting_data">Podaci se izvoze</string>
-  <string name="error_set_cloud_settings">Geopap-cloud opcije nisu dobro unete. Proverite ponovo podešavanja</string>
   <string name="exporting_data_to_the_cloud">Podaci se izvoze u Cloud server.</string>
   <string name="error_uploadig_project_to_cloud">Pojavila se greška u toku učitavanja projekta u Geopap-cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">Projekat je uspešno učitan u Geopap-cloud</string>
@@ -162,11 +150,8 @@
   <string name="distance">Rastojanje:</string>
   <string name="imported_notes_and_bookmarks">Uvezeno {0} beležaka i {1} obeleživača</string>
   <string name="could_not_open_sms">Neuspešno su otvoreni poslati sms podaci URI.</string>
-  <string name="start_">Početak:</string>
-  <string name="end_">Završetak:</string>
   <string name="map_textsize_factor">Veličina teksta na mapi</string>
   <string name="keep_screen_on">Ostaviti ekran uključen</string>
-  <string name="keep_screen_on_summary">Ostaviti ekran uključen kada su kontrolna tabla i prikaz mape uključeni</string>
   <string name="the_secret_view">Tajni pogled</string>
   <string name="database_queries">Upiti baze podataka</string>
   <string name="demo_mode">Demo verzija</string>
@@ -183,7 +168,6 @@
   <string name="labels">Oznake</string>
   <string name="show_labels">pokaži oznake</string>
   <string name="halo">halo</string>
-  <string name="screen_preferences">Opcije ekrana</string>
   <string name="cross_properties_summary">Svojstva krstića koji obeležava mesto beleške</string>
   <string name="cross_properties">Centrirati Krstić</string>
   <string name="color">Boja</string>
@@ -221,7 +205,6 @@
   <string name="service_name_propmt">Unesite ime usluge. U slučaju da polje ostane nepopunjeno, ime će biti uzeto iz same usluge</string>
   <string name="info">INFORMACIJE</string>
   <string name="calculate_length">Izračunajte dužinu...</string>
-  <string name="spatialite_preferences">SpatiaLite opcije</string>
   <string name="spatialite_recovery_mode">Režim obnove SpatiaLite</string>
   <string name="spatialite_recover_mode_tooltip">Ako je uključeno, prilikom sledećeg pokretanja neispravne tablete će biti pokušane da se isprave</string>
   <string name="map">Mapa</string>
@@ -238,7 +221,6 @@
   <string name="creation_date">Datum kreiranja</string>
   <string name="creation_user">Korisnik kreiranog projekta</string>
   <string name="last_modification_user">Korisnik promena poslednjeg projekta</string>
-  <string name="mapsfolder">Direktorijum sa mapama</string>
   <string name="preview_mode_save_warning">Režim pregleda. U trenutku pritiska Sačuvaj dugmeta, geometrija će biti sačuvana u bazi podataka</string>
   <string name="reset_string">resetovanje</string>
   <string name="avaiable_layers">Dostupni slojevi</string>

@@ -64,11 +64,6 @@
   <string name="menu_settings">Настройки</string>
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="unable_to_read_tag_id">Не удалось прочитать ID метки</string>
-  <string name="stroke_color">Цвет штрихов</string>
-  <string name="width">Ширина штрихов</string>
-  <string name="alpha">Прозрачность штрихов</string>
-  <string name="fill_color">Цвет заливки</string>
-  <string name="fill_alpha">Прозрачность заливки</string>
   <string name="point_shape_">Форма точки</string>
   <string name="point_size">Размер точки</string>
   <string name="decimation">Упрощение линии</string>

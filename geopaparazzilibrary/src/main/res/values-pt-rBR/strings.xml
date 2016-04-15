@@ -69,11 +69,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Por favor ative o NFC e pressione Voltar para retornar para a aplicação!</string>
   <string name="unable_to_read_tag_id">Não é possível ler ID tag</string>
-  <string name="stroke_color">Cor do traço</string>
-  <string name="width">Largura do traço</string>
-  <string name="alpha">Alfa do traço</string>
-  <string name="fill_color">Cor de preenchimento</string>
-  <string name="fill_alpha">Preencha alpha</string>
   <string name="point_shape_">Forma do ponto</string>
   <string name="point_size">Tamanho do ponto</string>
   <string name="decimation">Eliminação</string>
@@ -91,4 +86,8 @@
   <string name="crash_toast_text">O aplicativo sofreu um erro fatal. Informações sobre a falha será coletada, isso é útil para resolver o problema. Por favor envie-o para o time de desenvolvimento quando possível.</string>
   <string name="share_current_position">Compartilhar a posição atual.</string>
   <string name="share_current_center">Compartilhar o centro do mapa atual.</string>
+  <string name="label_alpha">alfa</string>
+  <string name="label_red">vermelho</string>
+  <string name="label_green">verde</string>
+  <string name="label_blue">alfa</string>
 </resources>

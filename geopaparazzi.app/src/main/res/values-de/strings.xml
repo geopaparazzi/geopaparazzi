@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">Ja</string>
   <string name="no">Nein</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi Projektdatenbank</string>
   <string name="notesvisibilityToggle">Sichtbarkeit der Notizen umschalten.</string>
-  <string name="datasaved">Daten erfolgreich exportiert nach: </string>
-  <string name="data_nonsaved">Während des Daten-Exports ist ein Fehler aufgetreten!</string>
   <string name="loggingoff">Alle Sensoren gestoppt.</string>
   <string name="nogps_data">Bisher kein GPS-Signal!</string>
   <string name="about">Über</string>
@@ -34,12 +33,9 @@
   <string name="mapproperty">Einstellungen für: </string>
   <string name="map_zoom">Zoom auf karte</string>
   <string name="map_delete">Karte Löschen</string>
-  <string name="gps_preferences">GPS-Einstellungen</string>
   <string name="gps_logging_distance">Min. GPS Entfernung</string>
   <string name="gps_logging_interval">Min. GPS Intervall</string>
   <string name="gps_use_android_level">Benutze Android-Level (reduziert Batterieverbrauch, erfordert Neustart)</string>
-  <string name="gps_use_android_level_summary">Wenn aktiviert, werden die GPS-Einstellungen auf Betriebssystemebene angewendet, was die Batterie schonen kann, aber eventuell ein weniger stabiles Signal liefert, falls große Intervalle gewählt werden (wenn Ihr Gerät GPS-Verbindungsprobleme hat, lassen Sie diese Option deaktiviert). Beachten Sie, dass das GPS bei Sendeintervallen von weniger als 100 Sekunden kontinuierlich mit Strom versorgt wird. Für eine bessere Akkulaufzeit wählen Sie größere Intervalle.</string>
-  <string name="sms_preferences">SMS-Einstellungen</string>
   <string name="sms_catcher">Aktivierung SMS-Autopositionsrücksender</string>
   <string name="databaseError">Ein Fehler ist während des Verbindens mit der Datenbank aufgetreten</string>
   <string name="chart_profile_view">Profil-Ansicht</string>
@@ -55,21 +51,16 @@
   <string name="audio_recording_stop">Stop</string>
   <string name="panic">Panik!</string>
   <string name="panic_number">Panik-Nummer</string>
-  <string name="panic_number_notset">Keine gültige Panik-Nummer steht zur Verfühgung. Einstellungen überprüfen?</string>
   <string name="panic_upper">  PANIK!  </string>
-  <string name="send_status_update">Sende Position</string>
   <string name="help_needed">Hilfe benötigt!</string>
   <string name="message_sent">Nachricht versendet</string>
   <string name="last_note_deleted">Letzte Notiz gelöscht</string>
   <string name="last_note_not_deleted">Konnte letzte Notiz nicht löschen</string>
   <string name="text_logging">Aufzeichung</string>
   <string name="text_gpson">GPS an</string>
-  <string name="debug">Debug Einstellungen</string>
   <string name="enable_debug">Aktiviere Debug-Log</string>
   <string name="gpslogging_only">Diese Funktion ist nur verfügbar, wenn GPS aktiviert und ein Signal verfügbar ist.</string>
   <string name="remove_last_note_prompt">Letzte Notiz wirklich löschen? Aktion kann nicht rückgängig gemacht werden.</string>
-  <string name="installgpsstatus_title">Installiere GPS-Status</string>
-  <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
   <!--added after 2.1.2-->
   <string name="reset">Neues Projekt anlegen</string>
   <string name="load">Vorhandenes Projekt laden</string>
@@ -101,7 +92,6 @@
   <string name="formnotes">FORMULAR NOTIZEN</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Fehler beim Erstellen des Diagramms.</string>
-  <string name="osm_preferences">OpenStreetMap-Einstellungen</string>
   <string name="osm_do_it">OSM-Werkzeuge aktivieren</string>
   <string name="osm_user_label">Benutzername</string>
   <string name="osm_password_label">Kennwort</string>
@@ -122,12 +112,10 @@
   <string name="view_in_mixare">In Mixare anzeigen</string>
   <string name="gps_use_coarse">Verwendung Netz-basierter Position anstelle von GPS (Neustart erforderlich)</string>
   <string name="type_to_filter">Eingeben, um zu filtern.</string>
-  <string name="geopapcloud_preferences">Geopap-Cloud-Einstellungen</string>
   <string name="geopapcloud_user_label">Benutzername</string>
   <string name="geopapcloud_password_label">Kennwort</string>
   <string name="geopapcloud_server_label">Server verbunden zu</string>
   <string name="exporting_data">Exportieren von Daten</string>
-  <string name="error_set_cloud_settings">Die geopap-cloud Konfiguration ist nicht korrekt. Bitte prüfen Sie Ihre Einstellungen. </string>
   <string name="exporting_data_to_the_cloud">Exportieren von Daten in die Cloud.</string>
   <string name="error_uploadig_project_to_cloud">Ein Fehler ist aufgetreten während des Hochladens des Projekts in die Geopap Cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">Das Projekt wurde erfolgreich in die Geopap Cloud geladen.</string>
@@ -140,6 +128,7 @@
   <string name="no_sdcard_use_internal_memory">Es scheint keine SD-Card vorhanden zu sein (prüfen Sie, ob das Gerät nicht mit einem PC verbunden ist). Möchten Sie stattdessen den internen Speicher des Geräts verwenden? Bitte beachten Sie, dass in diesem Fall die Kartenansicht aus Platzgründen kein Karte anzeigen wird.</string>
   <string name="add_message">Nachricht hinzufügen</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Geben Sie einen optionalen Text an, der zur GeoSMS mit gesendet werden soll.</string>
+  <string name="enter_a_name_for_the_new_project">Geben Sie einen Dateinamen für das neue Projekt ein</string>
   <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
   <string name="no_external_sdcard_for_db_renderer">Databank-Rendering wird nur von externem Speicher unterstützt. Externer Speicher konnte nicht gefunden werden. Ist eine solcher vorhanden?</string>
   <string name="no_map_files_found_go_online">Es wurden keine Karten-Dateien im Ordner /sdcard/maps gefunden. Wechsle zu Online-Karten.\nKarten können heruntergeladen werden von: http://download.mapsforge.org</string>
@@ -163,11 +152,8 @@
   <string name="distance">Entfernung:</string>
   <string name="imported_notes_and_bookmarks">{0} Notizen und {1} Lesezeichen importiert.</string>
   <string name="could_not_open_sms">Die weitergegebene SMS-Daten-URI konnte nicht geöffnet werden.</string>
-  <string name="start_">Anfang:</string>
-  <string name="end_">Ende:</string>
   <string name="map_textsize_factor">Faktor der Kartentextgröße </string>
   <string name="keep_screen_on">Den Bildschirm anlassen</string>
-  <string name="keep_screen_on_summary">Der Bildschirm wird angelassen, wenn Dashboard oder Kartenansicht zu sehen ist</string>
   <string name="the_secret_view">Die Geheimansicht</string>
   <string name="database_queries">Datenbank-Abfragen</string>
   <string name="demo_mode">Demo-Modus</string>
@@ -184,7 +170,6 @@
   <string name="labels">Beschriftung</string>
   <string name="show_labels">Zeige Beschriftung</string>
   <string name="halo">Halo</string>
-  <string name="screen_preferences">Bildschirm-Einstellungen</string>
   <string name="cross_properties_summary">Eigenschaften des Kreuzes, das für platzierte Notizen verwendet wird.</string>
   <string name="cross_properties">Fadenkreuz</string>
   <string name="color">Farbe</string>
@@ -223,11 +208,11 @@
   <string name="service_name_propmt">Geben Sie einen Namen für den Dienst an. Falls leer gelassen, wird der Name von dem Dienst übernommen.</string>
   <string name="info">INFO</string>
   <string name="calculate_length">Länge berechnen</string>
-  <string name="spatialite_preferences">Spatialite Einstellungen</string>
   <string name="spatialite_recovery_mode">Spatialite Wiederherstellungsmodus</string>
   <string name="spatialite_recover_mode_tooltip">Falls aktiviert wird beim nächsten Start versucht, die fehlerhaften Tabellen zu korrigieren.</string>
   <string name="map">Karte</string>
   <string name="name_lc">Name</string>
+  <string name="name_uc">Projektname</string>
   <string name="bounds">Grenzen</string>
   <string name="maps_loading_not_finished_yet">Das Laden der Karten wurde noch nicht abgeschlossen. Bitte warten Sie einen Moment und versuchen es noch einmal.</string>
   <string name="save">speichere</string>
@@ -240,7 +225,6 @@
   <string name="creation_date">Erstellungsdatum</string>
   <string name="creation_user">Projekterstellung durch Benutzer</string>
   <string name="last_modification_user">Letzte Projektänderung  durch Benutzer</string>
-  <string name="mapsfolder">Kartenverzeichnis</string>
   <string name="preview_mode_save_warning">Vorschaumodus. Sobald der \"Sichern\" Button angetippt wird, wird die Geometrie in der Datenbank gespeichert.</string>
   <string name="reset_string">zurücksetzen</string>
   <string name="avaiable_layers">Verfügbare Layer</string>
@@ -252,6 +236,7 @@
   <string name="extracting_info">Extrahiere Informationen...</string>
   <string name="geom_incompatible_with_layer">Die resultierende Geometrie ist nicht mit dem Ziel-Layer kompatibel.</string>
   <string name="selected_features_in_layer">%1$d Features mit %2$d Polygonen ausgewählt.</string>
+  <string name="selected_line_features_in_layer">%1$d Eigenschaften mit %2$d Zeilen ausgewählt.</string>
   <string name="no_compatible_layers_found">Es wurden keine kompatiblen Layer gefunden</string>
   <string name="copied_features_to_layer">%1$d Geometrien wurde zu Layer kopiert: %2$s</string>
   <string name="area_colon">Fläche:</string>
@@ -274,7 +259,6 @@
   <string name="import_uc">IMPORTIEREN</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Geopaparazzi Browser</string>
   <string name="bookmarks">Lesezeichen</string>
   <string name="default_database">Standarddatenbank</string>
   <string name="kmz">KMZ</string>

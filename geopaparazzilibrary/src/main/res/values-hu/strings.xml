@@ -68,11 +68,6 @@
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Aktiválja az NFC-t majd a Back gombbal térhet vissza az alkalmazásba!</string>
   <string name="unable_to_read_tag_id">Nem kiolvasható cimke azonosító</string>
-  <string name="stroke_color">Vonal színe        </string>
-  <string name="width">Vonal szélesség</string>
-  <string name="alpha">Vonal átlátszatlanság</string>
-  <string name="fill_color">Kitöltő szín</string>
-  <string name="fill_alpha">Kitöltés átlátszatlanság</string>
   <string name="point_shape_">Pont alakzat </string>
   <string name="point_size">Pont méret</string>
   <string name="decimation">Méretezés</string>
@@ -82,6 +77,12 @@
   <string name="http_not_found_msg">A kért forrás nem található. Kérem ellenőrizze a kapcsolat url-t!</string>
   <string name="http_not_implemented_code_msg">Válasz üzenet érkezett (Kérem küldje el a fejlesztőnek!):</string>
   <string name="post_completed_properly">A küldés rendben lezajlott.</string>
+  <string name="http_ok_msg">A kérés feldolgozásra került.</string>
   <string name="the_file_exists_wont_overwrite">A fájl már létezik. Ne írja felül:</string>
   <string name="share_note_with">Ossza meg a jegyzetet v.kivel...</string>
+  <string name="downloading_mapurl_to_the_device">A kiválasztott szolgáltatás letöltése.</string>
+  <string name="mapurl_successfully_downloaded">A térképlink letöltésre és installálásra került. A szolgáltatás választásához a Geopaparazzit újra kell indítani.</string>
+  <string name="crash_toast_text">Az alkalmazás súlyos hiba miatti leállásra kényszerült. Az összeomlási információ begyűjtésre kerül a hiba javítása érdekében. Kérem küld el a fejlesztőknek ha lehetséges.</string>
+  <string name="share_current_position">Oszd meg pozíciódat</string>
+  <string name="share_current_center">Oszd meg a térkép középpontot</string>
 </resources>

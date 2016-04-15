@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
   <string name="yes">ναι</string>
   <string name="no">όχι</string>
-  <string name="app_name">Geopaparazzi</string>
   <string name="app_file_name">Geopaparazzi Project Βάση δεδομένων</string>
   <string name="notesvisibilityToggle">Εναλλαγή ορατότητας σημειώσεων.</string>
-  <string name="datasaved">Τα δεδομένα έχουν εξαχθεί επιτυχώς σε:</string>
-  <string name="data_nonsaved">Ένα σφάλμα παρουσιάστηκε κατα την εξαγωγή των δεδομένων!</string>
   <string name="loggingoff">Διακοπή όλων των αισθητήρων.</string>
   <string name="nogps_data">Μη διαθέσιμα δεδομένα gps ακόμη!</string>
   <string name="about">Σχετικά</string>
@@ -34,12 +33,9 @@
   <string name="mapproperty">Ιδιότητες για:</string>
   <string name="map_zoom">Μεγέθυνση στον χάρτη</string>
   <string name="map_delete">Διαγραφή του χάρτη</string>
-  <string name="gps_preferences">Προτιμήσεις gps</string>
   <string name="gps_logging_distance">Ελάχιστη απόσταση καταγραφής του gps</string>
   <string name="gps_logging_interval">Ελάχιστο διάστημα καταγραφής του gps</string>
   <string name="gps_use_android_level">Χρήση σε επίπεδο android (εξοικονομεί μπαταρία, χρειάζεται επανεκκίνηση)</string>
-  <string name="gps_use_android_level_summary">Εάν επιλεχθεί, οι ρυθμίσεις του gps εφαρμόζονται σε επίπεδο λειτουργικού συστήματος, το οποίο μπορεί να εξοικονομίσει μπαταρία, αλλά ίσως να έχει λιγότερο σταθερό σήμα όταν επιλέγονται μεγάλα διαστήματα (εάν έχετε προβήματα σύνδεσης του gps, αφήστε το αποεπιλεγμένο). Σημειώστε ότι το gps τροφοδοτείται συνεχώς όταν στέλνει σε διαστήματα μικρότερα των 100 δευτερολέπτων. Για καλύτερη διάρκεια μπαταρίας επιλέξτε μεγαλύτερα διαστήματα.</string>
-  <string name="sms_preferences">Προτιμήσεις sms</string>
   <string name="sms_catcher">Ενεργοποίηση sms catcher</string>
   <string name="databaseError">Ένα σφάλμα παρουσιάστηκε κατα τη σύνδεση στη βάση δεδομένων</string>
   <string name="chart_profile_view">Προβολή προφίλ</string>
@@ -55,21 +51,16 @@
   <string name="audio_recording_stop">διακοπή</string>
   <string name="panic">πανικός!</string>
   <string name="panic_number">αριθμός πανικού</string>
-  <string name="panic_number_notset">Μη έγκυρος αριθμός πανικού φαίνεται να είναι διαθέσιμος. Το έχετε ορίσει στις ρυθμίσεις;</string>
   <string name="panic_upper">ΠΑΝΙΚΟΣ!</string>
-  <string name="send_status_update">Στείλτε θέση</string>
   <string name="help_needed">Ανάγκη βοήθειας!</string>
   <string name="message_sent">Το μήνυμα στάλθηκε</string>
   <string name="last_note_deleted">Η τελευταία σημείωση διαγράφηκε</string>
   <string name="last_note_not_deleted">Αδυναμία διαγραφής τελευταίας σημείωσης</string>
   <string name="text_logging">καταγραφή</string>
   <string name="text_gpson">gps ανοιχτό</string>
-  <string name="debug">Προτιμήσεις αποσφαλμάτωσης</string>
   <string name="enable_debug">Ενεργοποίηση αρχείου καταγραφής αποσφαλμάτωσης</string>
   <string name="gpslogging_only">Η λειτουργία είναι διαθέσιμη μόνο όταν το gps είναι ενεργό και υπάρχει διαθέσιμο σήμα.</string>
   <string name="remove_last_note_prompt">Θέλετε να διαγραφεί η τελευταία σημείωση κειμένου; Αυτό δε μπορεί να αναιρεθεί.</string>
-  <string name="installgpsstatus_title">Εγκατάσταση κατάστασης GPS</string>
-  <string name="installgpsstatus_message">Το Geopaparazzi χρησιμοποιεί την εφαρμογή κατάστασης GPS σας πυξίδα και προβολή πληροφοριών GPS. Θέλετε να την εγκαταστήσετε;</string>
   <!--added after 2.1.2-->
   <string name="reset">Δημιουργία νέου έργου</string>
   <string name="load">Φορτώστε υφιστάμενο έργο</string>
@@ -101,7 +92,6 @@
   <string name="formnotes">ΣΗΜΕΙΩΣΕΙΣ ΒΑΣΙΣΜΕΝΕΣ ΣΕ ΦΟΡΜΑ</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Ένα σφάλμα παρουσιάστηκε κατα τη δημιουργία του διαγράμματος.</string>
-  <string name="osm_preferences">Προτιμήσεις OpenStreetMap</string>
   <string name="osm_do_it">Ενεργοποίηση εργαλείων OSM</string>
   <string name="osm_user_label">Όνομα χρήστη</string>
   <string name="osm_password_label">Κωδικός</string>
@@ -124,12 +114,10 @@
   <string name="view_in_mixare">Προβολή σε mixare</string>
   <string name="gps_use_coarse">Χρησιμοποιήστε θέση βασισμένη στο δίκτυο αντί για το gps (απαιτεί επανεκκίνηση)</string>
   <string name="type_to_filter">Πληκτρολογήστε το φίλτρο</string>
-  <string name="geopapcloud_preferences">Προτιμήσεις Geopap-Cloud</string>
   <string name="geopapcloud_user_label">Όνομα χρήστη</string>
   <string name="geopapcloud_password_label">Κωδικός</string>
   <string name="geopapcloud_server_label">Εξυπηρετητής προς σύνδεση</string>
   <string name="exporting_data">Εξαγωγή δεδομένων</string>
-  <string name="error_set_cloud_settings">Οι προτιμήσεις geopap-cloud δεν έχουν οριστεί σωστά. Παρακαλώ ελέγξτε τις ρυθμίσεις.</string>
   <string name="exporting_data_to_the_cloud">Εξαγωγή δεδομένων στο cloud.</string>
   <string name="error_uploadig_project_to_cloud">Ένα σφάλμα προέκυψε κατα το ανέβασμα του έργου στο Geopap-cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">Το έργο έχει ανέβει στο Geopap-cloud επιτυχώς</string>
@@ -167,11 +155,8 @@
   <string name="distance">Απόσταση:</string>
   <string name="imported_notes_and_bookmarks">Εισαγωγή {0} σημειώσεων και {1} σελιδοδεικτών.</string>
   <string name="could_not_open_sms">Αδυναμία ανοίγματος του passed sms data URI.</string>
-  <string name="start_">Έναρξη:</string>
-  <string name="end_">Τέλος:</string>
   <string name="map_textsize_factor">Μέγεθος κειμένου χάρτη</string>
   <string name="keep_screen_on">Κράτα την οθόνη ανοιχτή</string>
-  <string name="keep_screen_on_summary">Κράτα την οθόνη ανοιχτή όταν είσαι στο dashboard και στην προβολή χάρτη</string>
   <string name="the_secret_view">Η Μυστική Προβολή</string>
   <string name="database_queries">Ερωτήματα βάσεων δεδομένων</string>
   <string name="demo_mode">Λειτουργία demo</string>
@@ -188,7 +173,6 @@
   <string name="labels">Ετικέτες</string>
   <string name="show_labels">εμφάνιση ετικετών</string>
   <string name="halo">halo</string>
-  <string name="screen_preferences">Προτιμήσεις οθόνης</string>
   <string name="cross_properties_summary">Οι ιδιότητες του σταυρού χρησιμοποιήθηκαν στην τοποθέτηση σημειώσεων.</string>
   <string name="cross_properties">Κεντρικός Σταυρός</string>
   <string name="color">Χρώμα</string>
@@ -227,7 +211,6 @@
   <string name="service_name_propmt">Εισάγετε ένα όνομα για την υπηρεσία. Εάν μείνει κενό, το όνομα θα μπει από την υπηρεσία.</string>
   <string name="info">ΠΛΗΡΟΦΟΡΙΑ</string>
   <string name="calculate_length">Υπολογισμός μήκους...</string>
-  <string name="spatialite_preferences">Προτιμήσεις</string>
   <string name="spatialite_recovery_mode">Λειτουργία επαναφοράς</string>
   <string name="spatialite_recover_mode_tooltip">Αν ενεργοποιηθει, κατά την επόμενη εκκίνηση θα γίνει μια προσπάθεια να διορθωθούν ελαττωματικοι πίνακες.</string>
   <string name="map">Χάρτης</string>
@@ -245,7 +228,6 @@
   <string name="creation_date">Ημερομηνία δημιουργίας</string>
   <string name="creation_user">Χρήστης δημιουργίας έργου</string>
   <string name="last_modification_user">Τελευταία τροποποίηση του σχεδίου χρήστη</string>
-  <string name="mapsfolder">Φάκελος Χαρτών</string>
   <string name="preview_mode_save_warning">Τρόπος λειτουργίας προεπισκόπησης. Μόλις έχετε πατήσει το κουμπί αποθήκευσης, η γεωμετρία θα αποθηκευτεί στη βάση δεδομένων</string>
   <string name="reset_string">επαναφορά</string>
   <string name="avaiable_layers">Διαθέσιμες στρώσεις</string>
@@ -279,7 +261,6 @@
   <string name="import_uc">ΕΙΣΑΓΩΓΗ</string>
   <string name="mapurls">Διευθύνσεις URL χάρτη </string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">Geopaparazzi Προγράμμα περιήγησης</string>
   <string name="bookmarks">Σελιδοδείκτες</string>
   <string name="default_database">Προεπιλεγμένη βάση δεδομένων</string>
   <string name="kmz">KMZ</string>
