@@ -24,13 +24,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 
 import java.io.File;
@@ -38,7 +36,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -264,7 +261,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                     }).show();
         } catch (Exception e1) {
             GPLog.error(this, null, e1);
-            GPDialogs.warningDialog(this, "An error occurred while importing bookmarks.", null);
+            GPDialogs.warningDialog(this, getString(R.string.bookmarks_import_error), null);
         }
 
     }
@@ -414,7 +411,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
                 BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(newMapurl);
                 Button wmsImportButton = (Button) findViewById(R.id.wmsImportButton);
-                GPDialogs.quickInfo(wmsImportButton, "WMS mapurl file successfully added to the tile sources: " + newMapurl.getName());
+                GPDialogs.quickInfo(wmsImportButton, getString(R.string.wms_mapurl_added) + newMapurl.getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

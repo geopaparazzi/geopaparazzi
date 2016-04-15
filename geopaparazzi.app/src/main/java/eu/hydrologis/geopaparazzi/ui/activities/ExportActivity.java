@@ -216,13 +216,13 @@ public class ExportActivity extends AppCompatActivity implements
 
             FileUtilities.writefile(sb.toString(), bookmarksfile);
             if (bookmarksfile.exists()) {
-                GPDialogs.infoDialog(this, "New bookmarks added to existing file: " + exported, null);
+                GPDialogs.infoDialog(this, getString(R.string.bookmarks_exported) + exported, null);
             } else {
-                GPDialogs.infoDialog(this, "Successfully exported bookmarks: " + exported, null);
+                GPDialogs.infoDialog(this, getString(R.string.bookmarks_exported_newfile) + exported, null);
             }
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            GPDialogs.warningDialog(this, "An error occurred while exporting the bookmarks.", null);
+            GPDialogs.warningDialog(this, getString(R.string.bookmarks_exported_error), null);
         }
 
     }

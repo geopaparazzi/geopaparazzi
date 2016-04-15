@@ -372,5 +372,22 @@
     <string name="menu_simple_picture">Simple Picture</string>
     <string name="menu_simple_sketch">Simple Sketch</string>
     <string name="warning_viewcone_gps">This tool works only if a GPS position is available.</string>
+    <string name="import_bookmark_prompt">Do you want to import the link data as a bookmark and visualize it?</string>
+    <string name="premissions_cant_start">"Geopaparazzi can't be started because the following permission was not granted: "</string>
+    <string name="log_cleared">Log cleared.</string>
+    <string name="bookmarks_exported">"New bookmarks added to existing file: "</string>
+    <string name="bookmarks_exported_newfile">"Successfully exported bookmarks: "</string>
+    <string name="bookmarks_exported_error">An error occurred while exporting the bookmarks.</string>
+    <string name="bookmarks_import_error">An error occurred while importing bookmarks.</string>
+    <string name="wms_mapurl_added">WMS mapurl file successfully added to the tile sources: \n</string>
+    <string name="sortby_none">None</string>
+    <string name="sortby_name">By Name</string>
+    <string name="sortby_name_inverse">By Name Inverse</string>
+    <string name="sortby_mapcenterdist">By Mapcenter Distance</string>
+    <string name="sortby_mapcenterdist_inverse">By Mapcenter Distance Inverse</string>
+    <string name="use_as_selection">Use as selection</string>
+    <string name="only_complex_notes_editing">Only complex notes can be edited. Simple notes have to be replaced.</string>
+    <string name="error_while_removing_notes">"An error occurred while deleting the notes: "</string>
+    <string name="removing_notes">Removing notes...</string>
 
 </resources>

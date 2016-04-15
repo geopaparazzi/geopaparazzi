@@ -128,7 +128,13 @@ public class NotesListActivity extends AppCompatActivity {
 
         currentComparatorIndex = mPreferences.getInt(CURRENT_NOTES_COMPARATOR_INDEX, 0);
 
-        checkItems = new String[]{"None", "By Name", "By Name Inverse", "By Mapcenter Distance", "By Mapcenter Distance Inverse"};
+        checkItems = new String[]{//
+                getString(R.string.sortby_none),//
+                getString(R.string.sortby_name),//
+                getString(R.string.sortby_name_inverse),//
+                getString(R.string.sortby_mapcenterdist), //
+                getString(R.string.sortby_mapcenterdist_inverse)//
+        };
         comparators = new Comparator[]{//
                 null, //
                 new ItemComparators.NotesComparator(),//
@@ -144,7 +150,7 @@ public class NotesListActivity extends AppCompatActivity {
         edit = getString(R.string.edit);
         view = getString(R.string.view);
         delete = getString(R.string.delete);
-        asSelection = "Use as selection";
+        asSelection = getString(R.string.use_as_selection);
         allNotesSubmenu = getString(R.string.all_notes_submenu);
         selectAll = getString(R.string.select_all);
         invertSelection = getString(R.string.invert_selection);
@@ -463,7 +469,7 @@ public class NotesListActivity extends AppCompatActivity {
             if (note.getForm() == null || note.getForm().length() == 0) {
                 // can't edit simple notes
                 GPDialogs.warningDialog(this,
-                        "Only complex notes can be edited. Simple notes have to be replaced.", null);
+                        getString(R.string.only_complex_notes_editing), null);
             } else {
                 String description = note.getDescription();
                 double lat = note.getLat();
@@ -572,7 +578,7 @@ public class NotesListActivity extends AppCompatActivity {
                                                 }
                                             }
                                         } catch (Exception e) {
-                                            return "An error occurred while deleting the notes: " + e.getLocalizedMessage();
+                                            return getString(R.string.error_while_removing_notes) + e.getLocalizedMessage();
                                         }
                                         return "";
                                     }
@@ -586,7 +592,7 @@ public class NotesListActivity extends AppCompatActivity {
                                         }
                                     }
                                 };
-                                deletionTask.setProgressDialog(null, "Removing notes...", false, total);
+                                deletionTask.setProgressDialog(null, getString(R.string.removing_notes), false, total);
                                 deletionTask.execute();
                             }
                         });

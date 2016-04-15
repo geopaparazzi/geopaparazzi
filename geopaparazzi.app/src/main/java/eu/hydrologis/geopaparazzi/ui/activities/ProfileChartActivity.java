@@ -59,6 +59,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.objects.Line;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
+import eu.hydrologis.geopaparazzi.utilities.PolynomialInterpolator;
 
 /**
  * The profile chart activity.
@@ -420,9 +421,22 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
             yList1.add(elev);
         }
 
+        PolynomialInterpolator p1 = new PolynomialInterpolator(xList1, yList1);
+        PolynomialInterpolator p2 = new PolynomialInterpolator(xList1, yList2);
+
+        List<Double> finalYList1 = new ArrayList<>(lonArray.size());
+        List<Double> finalYList2 = new ArrayList<>(lonArray.size());
+        for (Double x : xList1) {
+            double y1 = p1.getInterpolated(x);
+            double y2 = p2.getInterpolated(x);
+            finalYList1.add(y1);
+            finalYList2.add(y2);
+        }
+
+
         // Setup the Series
-        seriesElev = new SimpleXYSeries(xList1, yList1, "Elev [m]");
-        seriesSpeed = new SimpleXYSeries(xList1, yList2, "Speed [km/h]");
+        seriesElev = new SimpleXYSeries(xList1, finalYList1, "Elev [m]");
+        seriesSpeed = new SimpleXYSeries(xList1, finalYList2s, "Speed [km/h]");
     }
 
     // Definition of the touch states

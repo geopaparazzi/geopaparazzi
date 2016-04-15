@@ -159,7 +159,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
         try {
             SQLiteDatabase database = GeopaparazziApplication.getInstance().getDatabase();
             GPLog.clearLogTable(database);
-            GPDialogs.infoDialog(this, "Log cleared.", null);
+            GPDialogs.infoDialog(this, getString(R.string.log_cleared), null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);

@@ -126,7 +126,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             // try osm
             final SimplePosition simplePosition = UrlUtilities.getLatLonTextFromOsmUrl(path);
             if (simplePosition.latitude != null) {
-                GPDialogs.yesNoMessageDialog(this, "Do you want to import the link data as a bookmark and visualize it?", new Runnable() {
+                GPDialogs.yesNoMessageDialog(this, getString(R.string.import_bookmark_prompt), new Runnable() {
                     @Override
                     public void run() {
                         GeopaparazziActivity activity = GeopaparazziActivity.this;
@@ -165,7 +165,7 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
             }
 
         } else {
-            GPDialogs.infoDialog(this, "Geopaparazzi can't be started because the following permission was not granted: " + permissionHelper.getDescription(), new Runnable() {
+            GPDialogs.infoDialog(this, getString(R.string.premissions_cant_start) + permissionHelper.getDescription(), new Runnable() {
                 @Override
                 public void run() {
                     finish();
