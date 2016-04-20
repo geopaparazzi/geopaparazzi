@@ -16,4 +16,9 @@
   <string name="toggle_visibility">Alterna visibilità</string>
   <string name="label_field">campo etichetta</string>
   <string name="label_size">dimensione etichetta</string>
+  <string name="select_table_types">Seleziona tipi</string>
+  <string name="select_type">Seleziona tipo</string>
+  <string name="remove_from_list">Eliminare %s dall\'elenco?</string>
+  <string name="selected_file_no_vector_data">Il file selezionato non contiene alcun dato vettoriale:</string>
+  <string name="adding_new_source">Aggiunta di una nuova sorgente...</string>
 </resources>
