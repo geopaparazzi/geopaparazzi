@@ -424,8 +424,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         overlays.clear();
         overlays.add(mDataOverlay);
 
-        readData();
-
         super.onResume();
     }
 
@@ -563,7 +561,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
             if (lastCenter != null)
                 setNewCenterAtZoom(lastCenter[0], lastCenter[1], (int) lastCenter[2]);
-//            readData(); // TODO make sure this is not needed (moved to onResume)
+            readData();
         }
         super.onWindowFocusChanged(hasFocus);
     }
