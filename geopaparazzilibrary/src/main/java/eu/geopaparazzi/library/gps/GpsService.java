@@ -193,6 +193,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
             isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+
             toastHandler = new Handler();
             log("onStartCommand: Preferences created");
         }

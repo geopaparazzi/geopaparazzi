@@ -29,11 +29,17 @@ import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOGGING;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_HELPER_CLASS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_NAME;
 import static eu.geopaparazzi.library.gps.GpsService.*;
+
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.appcompat.BuildConfig;
 
 import java.util.Date;
 
@@ -41,40 +47,39 @@ import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
- * 
  * A service utils class.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsServiceUtilities {
 
     /**
      * Start the service.
-     * 
+     *
      * @param activity the activity to use.
      */
-    public static void startGpsService( Activity activity ) {
+    public static void startGpsService(Activity activity) {
         Intent intent = new Intent(activity, GpsService.class);
         activity.startService(intent);
     }
 
     /**
      * Stop the service.
-     * 
+     *
      * @param activity the activity to use.
      */
-    public static void stopGpsService( Activity activity ) {
+    public static void stopGpsService(Activity activity) {
         Intent intent = new Intent(activity, GpsService.class);
         activity.stopService(intent);
     }
 
     /**
      * Utility to get the {@link GpsServiceStatus} from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the status.
      */
-    public static GpsServiceStatus getGpsServiceStatus( Intent intent ) {
+    public static GpsServiceStatus getGpsServiceStatus(Intent intent) {
         if (intent == null) {
             return null;
         }
@@ -84,11 +89,11 @@ public class GpsServiceUtilities {
 
     /**
      * Utility to get the {@link GpsLoggingStatus} from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the status.
      */
-    public static GpsLoggingStatus getGpsLoggingStatus( Intent intent ) {
+    public static GpsLoggingStatus getGpsLoggingStatus(Intent intent) {
         if (intent == null) {
             return null;
         }
@@ -98,11 +103,11 @@ public class GpsServiceUtilities {
 
     /**
      * Utility to get the position from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the position as lon, lat, elev.
      */
-    public static double[] getPosition( Intent intent ) {
+    public static double[] getPosition(Intent intent) {
         if (intent == null) {
             return null;
         }
@@ -112,11 +117,11 @@ public class GpsServiceUtilities {
 
     /**
      * Utility to get the position extras from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the position as accuracy, speed, bearing.
      */
-    public static float[] getPositionExtras( Intent intent ) {
+    public static float[] getPositionExtras(Intent intent) {
         if (intent == null) {
             return null;
         }
@@ -126,11 +131,11 @@ public class GpsServiceUtilities {
 
     /**
      * Utility to get the position time from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the position time.
      */
-    public static long getPositionTime( Intent intent ) {
+    public static long getPositionTime(Intent intent) {
         if (intent == null) {
             return -1;
         }
@@ -140,11 +145,11 @@ public class GpsServiceUtilities {
 
     /**
      * Utility to get the gps status extras from an intent.
-     * 
+     *
      * @param intent the intent.
      * @return the position as maxSatellites, satCount, satUsedInFixCount.
      */
-    public static int[] getGpsStatusExtras( Intent intent ) {
+    public static int[] getGpsStatusExtras(Intent intent) {
         if (intent == null) {
             return null;
         }
@@ -154,31 +159,31 @@ public class GpsServiceUtilities {
 
     /**
      * register an activity for {@link GpsService} broadcasts.
-     * 
+     *
      * @param activity the activity.
      * @param receiver the receiver.
      */
-    public static void registerForBroadcasts( Activity activity, BroadcastReceiver receiver ) {
+    public static void registerForBroadcasts(Activity activity, BroadcastReceiver receiver) {
         activity.registerReceiver(receiver, new IntentFilter(GPS_SERVICE_BROADCAST_NOTIFICATION));
     }
 
     /**
      * unregister an activity from {@link GpsService} broadcasts.
-     * 
+     *
      * @param activity the activity.
      * @param receiver the receiver.
      */
-    public static void unregisterFromBroadcasts( Activity activity, BroadcastReceiver receiver ) {
+    public static void unregisterFromBroadcasts(Activity activity, BroadcastReceiver receiver) {
         if (receiver != null)
             activity.unregisterReceiver(receiver);
     }
 
     /**
      * Trigger a broadcast.
-     * 
+     *
      * @param context the {@link Context} to use.
      */
-    public static void triggerBroadcast( Context context ) {
+    public static void triggerBroadcast(Context context) {
         Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(GPS_SERVICE_DO_BROADCAST, true);
         context.startService(intent);
@@ -186,13 +191,13 @@ public class GpsServiceUtilities {
 
     /**
      * Start logging to the database.
-     * 
-     * @param context the context to use.
-     * @param logName the name of the log.
+     *
+     * @param context            the context to use.
+     * @param logName            the name of the log.
      * @param continueLastGpsLog if true, the last previous log is continued.
-     * @param className the class to use as helper.
+     * @param className          the class to use as helper.
      */
-    public static void startDatabaseLogging( Context context, String logName, boolean continueLastGpsLog, String className ) {
+    public static void startDatabaseLogging(Context context, String logName, boolean continueLastGpsLog, String className) {
         Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(START_GPS_LOGGING, true);
         intent.putExtra(START_GPS_LOG_NAME, logName);
@@ -203,13 +208,35 @@ public class GpsServiceUtilities {
 
     /**
      * Stop logging to the database.
-     * 
+     *
      * @param context the context to use.
      */
-    public static void stopDatabaseLogging( Context context ) {
+    public static void stopDatabaseLogging(Context context) {
         Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(STOP_GPS_LOGGING, true);
         context.startService(intent);
+    }
+
+    public static boolean isMockSettingsON(Context context) {
+        boolean isMockLocation = false;
+        try {
+            //if marshmallow
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                AppOpsManager opsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+//                String applicationId = BuildConfig.APPLICATION_ID;
+                Context appContext = context.getApplicationContext();
+                ApplicationInfo appInfo = appContext.getApplicationInfo();
+                String applicationId = appInfo.packageName;
+                isMockLocation = (opsManager.checkOp(AppOpsManager.OPSTR_MOCK_LOCATION, android.os.Process.myUid(), applicationId) == AppOpsManager.MODE_ALLOWED);
+            } else {
+                // in marshmallow this will always return true
+                isMockLocation = !android.provider.Settings.Secure.getString(context.getContentResolver(), "mock_location").equals("0");
+            }
+        } catch (Exception e) {
+            return isMockLocation;
+        }
+
+        return isMockLocation;
     }
 
 }

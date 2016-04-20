@@ -34,6 +34,7 @@ import java.util.Collection;
 import eu.geopaparazzi.library.core.activities.LogAnalysisActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -58,6 +59,8 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advancedsettings);
 
+        checkMockSettings();
+
         Toolbar toolbar = (Toolbar) findViewById(eu.hydrologis.geopaparazzi.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,8 +68,14 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         CheckBox demoCheckbox = (CheckBox) findViewById(R.id.demoCheckbox);
+        boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+        demoCheckbox.setChecked(isDemoMode);
         demoCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
+                    GPDialogs.warningDialog(AdvancedSettingsActivity.this, "Mock locations are not enabled in the Android settings. Demo mode is not allowed.", null);
+                }
+
                 Editor edit = preferences.edit();
                 if (isChecked) {
                     edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, true);
@@ -76,10 +85,24 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
                 edit.apply();
             }
         });
-        boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
-        demoCheckbox.setChecked(isDemoMode);
 
         initLogs(preferences);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        checkMockSettings();
+    }
+
+    private void checkMockSettings() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (!GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
+            Editor edit = preferences.edit();
+            edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+            edit.apply();
+        }
     }
 
     private void initLogs(final SharedPreferences preferences) {
