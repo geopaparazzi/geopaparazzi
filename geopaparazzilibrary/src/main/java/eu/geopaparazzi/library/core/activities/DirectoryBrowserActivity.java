@@ -283,6 +283,8 @@ public class DirectoryBrowserActivity extends ListActivity {
     }
 
     private boolean endsWith(String name, String[] extentions) {
+        if (extentions == null || extentions.length == 0)
+            return true;
         name = name.toLowerCase();
         for (String ext : extentions) {
             if (name.endsWith(ext.toLowerCase())) {
