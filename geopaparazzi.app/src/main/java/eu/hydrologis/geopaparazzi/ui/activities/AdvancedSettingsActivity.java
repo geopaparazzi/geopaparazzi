@@ -67,13 +67,14 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        CheckBox demoCheckbox = (CheckBox) findViewById(R.id.demoCheckbox);
-        boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+        final CheckBox demoCheckbox = (CheckBox) findViewById(R.id.demoCheckbox);
+        final boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         demoCheckbox.setChecked(isDemoMode);
         demoCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
-                    GPDialogs.warningDialog(AdvancedSettingsActivity.this, "Mock locations are not enabled in the Android settings. Demo mode is not allowed.", null);
+                if (isChecked && !GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
+                    GPDialogs.warningDialog(AdvancedSettingsActivity.this, getString(R.string.enable_mock_locations_for_demo), null);
+                    demoCheckbox.setChecked(false);
                 }
 
                 Editor edit = preferences.edit();
