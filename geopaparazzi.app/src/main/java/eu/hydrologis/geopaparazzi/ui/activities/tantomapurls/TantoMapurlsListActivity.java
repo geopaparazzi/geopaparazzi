@@ -193,7 +193,7 @@ public class TantoMapurlsListActivity extends ListActivity {
     };
 
     private void downloadProject(final TantoMapurl tantoMapurl, final String fileName) {
-        StringAsyncTask task = new StringAsyncTask(this) {
+        final StringAsyncTask task = new StringAsyncTask(this) {
 
             @Override
             protected String doBackgroundWork() {
@@ -233,7 +233,12 @@ public class TantoMapurlsListActivity extends ListActivity {
                 }
             }
         };
-        task.setProgressDialog(getString(R.string.downloading), getString(R.string.downloading_mapurl_to_the_device), false, null);
-        task.execute();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                task.setProgressDialog(getString(R.string.downloading), getString(R.string.downloading_mapurl_to_the_device), false, null);
+                task.execute();
+            }
+        });
     }
 }

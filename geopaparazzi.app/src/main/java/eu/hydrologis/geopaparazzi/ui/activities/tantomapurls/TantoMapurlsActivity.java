@@ -43,6 +43,23 @@ import eu.hydrologis.geopaparazzi.R;
 
 /**
  * Client for Tanto's mapurls download service written by Giovanni Allegri.
+ * <p/>
+ * <p/>
+ * <p/>
+ * <p>Specs:</p>
+ * <pre>
+ * http://mapurls.geopaparazzi.eu/mapurlshtml/?l=25&o=0&fc=service!!!title&ft=Toscana!!!geodetici
+ *
+ * l: numero di risultati
+ * o: offset da cui cominciare (insieme a "l" ti permette di fare richieste paginate)
+ * fc: colonne di filtraggio (separate a !!!). Queste due nell'esempio dovrebbero bastarti,
+ * la prima (service) è il nome del servizio, e "title" il nome del layer
+ * ft: termini di filtraggio, uno per colonna
+ *
+ * Il tuo esempio sarebbe
+ *
+ * http://mapurls.geopaparazzi.eu/mapurls/?l=20&o=0&fc=service&ft=Toscana&p=11.521233,46.498944
+ * </pre>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -113,10 +130,12 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
         }
 
         EditText filterText = (EditText) findViewById(R.id.textfilterText);
-        String filterStr = filterText.getText().toString();
+        String filterStr = filterText.getText().toString().trim();
         boolean useTextFilter = false;
         if (filterStr.length() > 0) {
             useTextFilter = true;
+            filterStr = "fc=service&ft=" + filterStr;
+            filterStr=filterStr.replaceAll("\\s+", "%20");
         }
 
         String relativeUrl = "";
