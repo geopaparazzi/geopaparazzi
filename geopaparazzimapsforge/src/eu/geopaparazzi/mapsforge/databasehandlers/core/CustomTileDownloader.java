@@ -199,8 +199,10 @@ public class CustomTileDownloader extends TileDownloader {
                         // url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
                         String s_work = value;
                         if (value.startsWith(HTTPS_STR)) {
+                            PROTOCOL = HTTPS_STR;
                             s_work = value.substring(8);
                         } else if (value.startsWith(HTTP_STR)) {
+                            PROTOCOL = HTTP_STR;
                             s_work = value.substring(7);
                         }
                         int indexOfSeperator = s_work.indexOf("/");
@@ -216,9 +218,11 @@ public class CustomTileDownloader extends TileDownloader {
                         int indexOfParms = value.indexOf("?");
                         // wms server should always have a '?' in them
                         if (value.startsWith(HTTPS_STR)) {
-                            HOST_NAME = value.substring(8, indexOfParms); // removed: 'http://'
+                            HOST_NAME = value.substring(8, indexOfParms); // removed: 'https://'
+                            PROTOCOL = HTTPS_STR;
                         } else if (value.startsWith(HTTP_STR)) {
                             HOST_NAME = value.substring(7, indexOfParms); // removed: 'http://'
+                            PROTOCOL = HTTP_STR;
                         }
                         tilePart = value.substring(indexOfParms);
                     }
@@ -766,7 +770,7 @@ public class CustomTileDownloader extends TileDownloader {
             }
             StringBuilder sb = new StringBuilder();
             if (!isFile) {
-                sb.append(HTTP_STR);
+                sb.append(PROTOCOL);
                 sb.append("://");
             }
             String s_host_name = HOST_NAME;
