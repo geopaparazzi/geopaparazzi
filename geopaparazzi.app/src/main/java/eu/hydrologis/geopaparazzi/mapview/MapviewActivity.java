@@ -42,6 +42,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -500,10 +501,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             // read last known gps position
             if (lastGpsPosition != null) {
-                GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * E6),
-                        (int) (lastGpsPosition[0] * E6));
-                mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
-                mDataOverlay.requestRedraw();
+                GeoPoint geoPoint = toGeopoint((int) (lastGpsPosition[0] * E6), (int) (lastGpsPosition[1] * E6));
+                if (geoPoint != null) {
+                    mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
+                    mDataOverlay.requestRedraw();
+                }
             }
             // mDataOverlay.requestRedraw();
         } catch (IOException e1) {
@@ -600,17 +602,30 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     public void setNewCenterAtZoom(double lon, double lat, int zoom) {
-        GeoPoint geoPoint = new GeoPoint(lat, lon);
-        mMapView.getController().setZoom(zoom);
-        mMapView.getController().setCenter(geoPoint);
-        setGuiZoomText(zoom);
-        saveCenterPref(lon, lat, zoom);
+        GeoPoint geoPoint = toGeopoint(lon, lat);
+        if (geoPoint != null) {
+            mMapView.getController().setZoom(zoom);
+            mMapView.getController().setCenter(geoPoint);
+            setGuiZoomText(zoom);
+            saveCenterPref(lon, lat, zoom);
+        }
+    }
+
+    private GeoPoint toGeopoint(double lon, double lat) {
+        try {
+            return new GeoPoint(lat, lon);
+        } catch (Exception e) {
+            GPLog.error(this, "ERROR", e);
+            return null;
+        }
     }
 
     public void setNewCenter(double lon, double lat) {
-        GeoPoint geoPoint = new GeoPoint(lat, lon);
-        mMapView.getController().setCenter(geoPoint);
-        saveCenterPref();
+        GeoPoint geoPoint = toGeopoint(lon, lat);
+        if (geoPoint != null) {
+            mMapView.getController().setCenter(geoPoint);
+            saveCenterPref();
+        }
     }
 
 
@@ -1094,9 +1109,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
             if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
-                GeoPoint point = new GeoPoint(latE6, lonE6);
-                mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
-                mDataOverlay.requestRedraw();
+                GeoPoint point = toGeopoint(lonE6, latE6);
+                if (point != null) {
+                    mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
+                    mDataOverlay.requestRedraw();
+                }
             }
 
             Projection p = mMapView.getProjection();
