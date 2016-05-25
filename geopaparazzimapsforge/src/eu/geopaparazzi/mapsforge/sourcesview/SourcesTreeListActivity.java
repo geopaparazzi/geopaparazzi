@@ -152,7 +152,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                 }
             }
         };
-        task.setProgressDialog("", "Loading sources...", false, null);
+        task.setProgressDialog("", getString(R.string.loading_sources), false, null);
         task.execute();
     }
 
@@ -164,8 +164,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
     public void add(View view) {
         try {
-            String title = "Select basemap source to add";
-            String[] supportedExtensions = {"mapurl", "map", "sqlite", "mbtiles"};
+            String title = getString(R.string.select_basemap_source);
+            String[] supportedExtensions = ESpatialDataSources.getSupportedTileSourcesExtensions();
             AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
         } catch (Exception e) {
             GPLog.error(this, null, e);

@@ -151,6 +151,13 @@ public enum ESpatialDataSources {
     }
 
     /**
+     * @return list of supported tile sources file extensions (without dot).
+     */
+    public static String[] getSupportedTileSourcesExtensions() {
+        return new String[]{MAPURL.getExtension().substring(1), MAP.getExtension().substring(1), SQLITE.getExtension().substring(1), MBTILES.getExtension().substring(1),};
+    }
+
+    /**
      * @return the db's type code.
      */
     public int getCode() {
