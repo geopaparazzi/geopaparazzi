@@ -36,7 +36,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import jsqlite.Exception;
 
 /**
@@ -120,10 +120,10 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * @return
      */
     private static String dbPathCheck( String dbPath ) {
-        if (!dbPath.endsWith(ESpatialDataType.MBTILES.getExtension())) {
+        if (!dbPath.endsWith(ESpatialDataSources.MBTILES.getExtension())) {
             // .mbtiles files must have an .mbtiles
             // extension, force this
-            dbPath = dbPath.substring(0, dbPath.lastIndexOf(".")) + ESpatialDataType.MBTILES.getExtension();
+            dbPath = dbPath.substring(0, dbPath.lastIndexOf(".")) + ESpatialDataSources.MBTILES.getExtension();
         }
         return dbPath;
     }
@@ -162,7 +162,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
                     this.maxZoom, centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
             // table.setDescription(getDescription());
-            table.setMapType(ESpatialDataType.MBTILES.getTypeName());
+            table.setMapType(ESpatialDataSources.MBTILES.getTypeName());
             rasterTableList.add(table);
         }
         return rasterTableList;

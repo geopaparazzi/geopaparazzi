@@ -32,7 +32,7 @@ import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
 import jsqlite.Database;
 
@@ -44,7 +44,7 @@ public class GeopackageTileDownloader extends TileDownloader {
 
     private byte ZOOM_MIN = 0;
     private byte ZOOM_MAX = 18;
-    private ESpatialDataType mapType;
+    private ESpatialDataSources mapType;
     private SpatialRasterTable rasterTable;
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
@@ -57,8 +57,8 @@ public class GeopackageTileDownloader extends TileDownloader {
         rasterTable = table;
         spatialDatabaseHandler = BaseMapSourcesManager.INSTANCE.getRasterHandlerForFile(rasterTable.getDatabaseFile());
         String mapTypeString = rasterTable.getMapType();
-        mapType = ESpatialDataType.getType4Name(mapTypeString);
-        if (mapType == ESpatialDataType.RASTERLITE2) {
+        mapType = ESpatialDataSources.getType4Name(mapTypeString);
+        if (mapType == ESpatialDataSources.RASTERLITE2) {
             SpatialiteDatabaseHandler databaseHandler = (SpatialiteDatabaseHandler) spatialDatabaseHandler;
             spatialiteDatabase = databaseHandler.getDatabase();
         }
@@ -106,7 +106,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             int tileSize = Tile.TILE_SIZE;
             byte[] rasterBytes = null;
             String tileQuery;
-            if (mapType == ESpatialDataType.RASTERLITE2) {
+            if (mapType == ESpatialDataSources.RASTERLITE2) {
                 tileQuery = mapType.name();
                 int zoomLevel = tile.zoomLevel;
                 int tileX = (int) tile.tileX;

@@ -18,7 +18,6 @@
 
 package eu.geopaparazzi.library.profiles;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -34,9 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 
 /**
  * Profile handling related stuff.
@@ -291,7 +289,7 @@ public enum ProfilesHandler {
                     map.parentFolder = databaseFile.getParentFile().getAbsolutePath();
                     map.databasePath = databaseFile.getAbsolutePath();
                     map.title = FileUtilities.getNameWithoutExtention(databaseFile);
-                    map.mapType = ESpatialDataType.getTypeName4FileName(databaseFile.getName());
+                    map.mapType = ESpatialDataSources.getTypeName4FileName(databaseFile.getName());
                     baseMaps.add(map);
                 }
             }

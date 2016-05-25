@@ -23,7 +23,7 @@ package eu.geopaparazzi.library.util.types;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum ESpatialDataType {
+public enum ESpatialDataSources {
     /**
      * Mbtiles based database.
      */
@@ -49,15 +49,11 @@ public enum ESpatialDataType {
      */
     MAPURL("Mapurl", ".mapurl", 5, false, "Mapurl"),
     /**
-     * A Rasterlite2 Image in a spatialite 4.2.0 database.
-     * - avoids .db being read 2x
-     * - real spatialite .atlas files can also be read
+     * A Rasterlite2  database.
      */
-    RASTERLITE2("RasterLite2", ".atlas", 6, true, "RL2");
+    RASTERLITE2("RasterLite2", ".rl2", 6, true, "RL2");
 
     private String name;
-    // extention must be unique 
-    // - otherwise will be read in twice in SpatialDatabasesManager.init
     private String extension;
     private int code;
     private boolean isSpatialiteBased;
@@ -68,7 +64,7 @@ public enum ESpatialDataType {
      * @param extension the extension used by the db type.
      * @param code      a code for the db type.
      */
-    private ESpatialDataType(String name, String extension, int code, boolean isSpatialiteBased, String shortName) {
+    private ESpatialDataSources(String name, String extension, int code, boolean isSpatialiteBased, String shortName) {
         this.name = name;
         this.extension = extension;
         this.code = code;
@@ -82,8 +78,8 @@ public enum ESpatialDataType {
      * @param code the code.
      * @return the data type.
      */
-    public static ESpatialDataType getType4Code(int code) {
-        for (ESpatialDataType type : values()) {
+    public static ESpatialDataSources getType4Code(int code) {
+        for (ESpatialDataSources type : values()) {
             if (type.getCode() == code) {
                 return type;
             }
@@ -97,8 +93,8 @@ public enum ESpatialDataType {
      * @param name the name.
      * @return the data type.
      */
-    public static ESpatialDataType getType4Name(String name) {
-        for (ESpatialDataType type : values()) {
+    public static ESpatialDataSources getType4Name(String name) {
+        for (ESpatialDataSources type : values()) {
             if (type.getTypeName().equals(name)) {
                 return type;
             }
@@ -113,7 +109,7 @@ public enum ESpatialDataType {
      * @return the code.
      */
     public static int getCode4Name(String name) {
-        for (ESpatialDataType type : values()) {
+        for (ESpatialDataSources type : values()) {
             if (type.getTypeName().equals(name)) {
                 return type.getCode();
             }
@@ -132,7 +128,7 @@ public enum ESpatialDataType {
      * @return the db type's name.
      */
     public static String getTypeName4FileName(String fileName) {
-        for (ESpatialDataType type : values()) {
+        for (ESpatialDataSources type : values()) {
             if (fileName.toLowerCase().endsWith(type.getExtension())) {
                 return type.getTypeName();
             }
@@ -145,6 +141,13 @@ public enum ESpatialDataType {
      */
     public String getExtension() {
         return extension;
+    }
+
+    /**
+     * @return list of supported vector file extensions (without dot).
+     */
+    public static String[] getSupportedVectorExtensions() {
+        return new String[]{SQLITE.getExtension().substring(1), GPKG.getExtension().substring(1), DB.getExtension().substring(1)};
     }
 
     /**

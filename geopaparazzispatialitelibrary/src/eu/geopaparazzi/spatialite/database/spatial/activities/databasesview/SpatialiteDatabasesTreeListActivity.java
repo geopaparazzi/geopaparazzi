@@ -62,6 +62,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
@@ -150,7 +151,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                 }
             }
         };
-        task.setProgressDialog("", "Loading databases...", false, null);
+        task.setProgressDialog("", getString(R.string.loading_databases), false, null);
         task.execute();
     }
 
@@ -165,8 +166,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 
     public void add(View view) {
         try {
-            String title = "Select spatialite database to add";
-            String[] supportedExtensions = {"sqlite"};
+            String title = getString(R.string.select_spatialite_database);
+            String[] supportedExtensions = ESpatialDataSources.getSupportedVectorExtensions();
             AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
         } catch (Exception e) {
             GPLog.error(this, null, e);

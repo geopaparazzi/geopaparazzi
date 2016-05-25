@@ -18,7 +18,6 @@
 package eu.geopaparazzi.mapsforge.sourcesview;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,7 +27,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -59,7 +57,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 
 /**
  * Activity for tile source visualisation.
@@ -104,10 +102,10 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         boolean showMbtiles = mPreferences.getBoolean(SHOW_MBTILES, true);
         boolean showRasterLite2 = mPreferences.getBoolean(SHOW_RASTER_LITE_2, true);
 
-        String mapTypeName = ESpatialDataType.MAP.getTypeName();
-        String mapurlTypeName = ESpatialDataType.MAPURL.getTypeName();
-        String mbtilesTypeName = ESpatialDataType.MBTILES.getTypeName();
-        String rasterLiteTypeName = ESpatialDataType.RASTERLITE2.getTypeName();
+        String mapTypeName = ESpatialDataSources.MAP.getTypeName();
+        String mapurlTypeName = ESpatialDataSources.MAPURL.getTypeName();
+        String mbtilesTypeName = ESpatialDataSources.MBTILES.getTypeName();
+        String rasterLiteTypeName = ESpatialDataSources.RASTERLITE2.getTypeName();
         mTypeNames = new ArrayList<>();
         mTypeNames.add(mapTypeName);
         mTypeNames.add(mapurlTypeName);
@@ -272,13 +270,13 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
             boolean doAdd = false;
             String mapType = baseMap.mapType;
-            if (mCheckedValues[0] && mapType.equals(ESpatialDataType.MAP.getTypeName())) {
+            if (mCheckedValues[0] && mapType.equals(ESpatialDataSources.MAP.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[1] && mapType.equals(ESpatialDataType.MAPURL.getTypeName())) {
+            } else if (mCheckedValues[1] && mapType.equals(ESpatialDataSources.MAPURL.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[2] && mapType.equals(ESpatialDataType.MBTILES.getTypeName())) {
+            } else if (mCheckedValues[2] && mapType.equals(ESpatialDataSources.MBTILES.getTypeName())) {
                 doAdd = true;
-            } else if (mCheckedValues[3] && mapType.equals(ESpatialDataType.RASTERLITE2.getTypeName())) {
+            } else if (mCheckedValues[3] && mapType.equals(ESpatialDataSources.RASTERLITE2.getTypeName())) {
                 doAdd = true;
             }
             if (log) {

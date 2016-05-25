@@ -32,7 +32,7 @@ import java.util.Map;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -700,7 +700,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                         }
                         checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                        if (layerType.equals(ESpatialDataType.RASTERLITE2.getTypeName())) {
+                        if (layerType.equals(ESpatialDataSources.RASTERLITE2.getTypeName())) {
                             // s_ROWID_PK == title [Berlin Straube Postgrenzen] - needed
                             // s_view_read_only == abstract [1890 - 1:17777] - needed
                             // s_geometry_type == pixel_type [RGB] - not needed

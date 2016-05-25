@@ -51,7 +51,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
@@ -290,14 +290,14 @@ public enum BaseMapSourcesManager {
     public static AbstractSpatialDatabaseHandler getRasterHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
-            for (ESpatialDataType spatialiteType : ESpatialDataType.values()) {
+            for (ESpatialDataSources spatialiteType : ESpatialDataSources.values()) {
                 if (!spatialiteType.isSpatialiteBased()) {
                     continue;
                 }
                 String extension = spatialiteType.getExtension();
                 if (name.endsWith(extension)) {
                     AbstractSpatialDatabaseHandler sdb = null;
-                    if (name.endsWith(ESpatialDataType.MBTILES.getExtension())) {
+                    if (name.endsWith(ESpatialDataSources.MBTILES.getExtension())) {
                         sdb = new MbtilesDatabaseHandler(file.getAbsolutePath(), null);
                     } else {
                         sdb = new SpatialiteDatabaseHandler(file.getAbsolutePath());
@@ -390,10 +390,10 @@ public enum BaseMapSourcesManager {
     public void loadSelectedBaseMap(MapView mapView) {
         AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
         if (selectedSpatialTable != null) {
-            int selectedSpatialDataTypeCode = ESpatialDataType.getCode4Name(selectedTileSourceType);
+            int selectedSpatialDataTypeCode = ESpatialDataSources.getCode4Name(selectedTileSourceType);
             MapGenerator selectedMapGenerator = null;
             try {
-                ESpatialDataType selectedSpatialDataType = ESpatialDataType.getType4Code(selectedSpatialDataTypeCode);
+                ESpatialDataSources selectedSpatialDataType = ESpatialDataSources.getType4Code(selectedSpatialDataTypeCode);
                 switch (selectedSpatialDataType) {
                     case MAP:
                         MapTable selectedMapTable = (MapTable) selectedSpatialTable;

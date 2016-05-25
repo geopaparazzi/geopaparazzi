@@ -27,7 +27,7 @@ import java.util.Map;
 
 import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.library.style.Style;
 
@@ -90,7 +90,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      */
     public SpatialVectorTable(String databasePath, String tableName, String geometryColumn, int geomType, String srid,
                               double[] center, double[] bounds, String tableTypeDescription) {
-        super(databasePath, tableName, ESpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+        super(databasePath, tableName, ESpatialDataSources.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;

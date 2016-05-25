@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.GPApplication;
-import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
@@ -42,7 +41,7 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.library.util.types.ESpatialDataType;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -335,7 +334,7 @@ public enum SpatialiteSourcesManager {
     public SpatialiteDatabaseHandler getDatabaseHandlerForFile(File file) throws IOException {
         if (file.exists() && file.isFile()) {
             String name = file.getName();
-            for (ESpatialDataType spatialiteType : ESpatialDataType.values()) {
+            for (ESpatialDataSources spatialiteType : ESpatialDataSources.values()) {
                 if (!spatialiteType.isSpatialiteBased()) {
                     continue;
                 }
