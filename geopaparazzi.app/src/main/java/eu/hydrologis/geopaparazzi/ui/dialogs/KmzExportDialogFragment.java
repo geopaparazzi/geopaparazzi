@@ -216,18 +216,18 @@ public class KmzExportDialogFragment extends DialogFragment {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.equals(NODATA)) {
-                    String msg = getString(R.string.no_data_found_in_project_to_export);
+                    String msg = getActivity().getString(R.string.no_data_found_in_project_to_export);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else if (response.equals(INTERRUPTED)) {
-                    alertDialog.setMessage("Interrupted by user");
+                    alertDialog.setMessage(getActivity().getString(R.string.interrupted_by_user));
                     positiveButton.setEnabled(true);
                 } else if (response.length() > 0) {
-                    String msg = getString(R.string.datasaved) + " " + response;
+                    String msg = getActivity().getString(R.string.datasaved) + " " + response;
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else {
-                    String msg = getString(R.string.data_nonsaved);
+                    String msg = getActivity().getString(R.string.data_nonsaved);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 }

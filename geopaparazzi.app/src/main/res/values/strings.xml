@@ -389,5 +389,6 @@
     <string name="only_complex_notes_editing">Only complex notes can be edited. Simple notes have to be replaced.</string>
     <string name="error_while_removing_notes">"An error occurred while deleting the notes: "</string>
     <string name="removing_notes">Removing notes...</string>
+    <string name="interrupted_by_user">Interrupted by user</string>
 
 </resources>
