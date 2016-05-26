@@ -54,8 +54,8 @@ android {
         applicationId "eu.hydrologis.geopaparazzi"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 74
-        versionName "5.0.1"
+        versionCode 75
+        versionName "5.0.2"
         signingConfig signingConfigs.config
         multiDexEnabled true
     }
@@ -80,9 +80,9 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:preference-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:preference-v7:23.4.0'
     compile project(':geopaparazzilibrary')
     compile project(':geopaparazzispatialitelibrary')
     compile project(':geopaparazzimapsforge')
