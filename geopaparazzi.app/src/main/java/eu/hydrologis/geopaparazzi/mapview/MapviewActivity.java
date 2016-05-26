@@ -620,6 +620,15 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         }
     }
 
+    private GeoPoint toGeopoint(int lonE6, int latE6) {
+        try {
+            return new GeoPoint(latE6, lonE6);
+        } catch (Exception e) {
+            GPLog.error(this, "ERROR", e);
+            return null;
+        }
+    }
+
     public void setNewCenter(double lon, double lat) {
         GeoPoint geoPoint = toGeopoint(lon, lat);
         if (geoPoint != null) {
