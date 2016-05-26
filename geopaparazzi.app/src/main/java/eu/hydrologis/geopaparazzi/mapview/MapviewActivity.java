@@ -494,7 +494,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
 
             /* bookmarks */
-            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_star_accent_24dp);
+            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_star_accent_32dp);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);

@@ -195,7 +195,7 @@ public class GPictureView extends View implements GView {
                 Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
                 ImageView imageView = new ImageView(context);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150,150);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150, 150);
                 lp.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(lp);
                 imageView.setPadding(5, 5, 5, 5);
@@ -258,15 +258,19 @@ public class GPictureView extends View implements GView {
 
     @Override
     public void setOnActivityResult(Intent data) {
-        long imageId = data.getLongExtra(LibraryConstants.DATABASE_ID, -1);
-        if (imageId == -1) {
-            return;
-        }
-        _value = _value + IMAGE_ID_SEPARATOR + imageId;
-        try {
-            refresh(getContext());
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
+
+        boolean imageTaken = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
+        if (imageTaken) {
+            long imageId = data.getLongExtra(LibraryConstants.DATABASE_ID, -1);
+            if (imageId == -1) {
+                return;
+            }
+            _value = _value + IMAGE_ID_SEPARATOR + imageId;
+            try {
+                refresh(getContext());
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
         }
     }
 }
