@@ -42,7 +42,6 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -130,7 +129,6 @@ import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
-import eu.hydrologis.geopaparazzi.maptools.tools.ViewingConeTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
 import eu.hydrologis.geopaparazzi.ui.activities.BookmarksListActivity;
@@ -480,7 +478,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             /* images */
             if (imagesVisible) {
-                Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_image_accent_24dp);
+                Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_images_48dp);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 mDataOverlay.addItems(imagesOverlaysList);
@@ -494,7 +492,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             }
 
             /* bookmarks */
-            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_star_accent_32dp);
+            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_bookmarks_48dp);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);
