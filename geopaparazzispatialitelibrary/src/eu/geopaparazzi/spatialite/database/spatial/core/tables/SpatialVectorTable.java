@@ -105,11 +105,30 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         checkType();
     }
 
+
     /**
      * Create a unique names for the table based on db path/name, table and geometry.
      */
     private void createUniqueNames() {
         uniqueNameBasedOnDbFilePath = databasePath + UNIQUENAME_SEPARATOR + tableName + UNIQUENAME_SEPARATOR + geometryColumn;
+    }
+
+    @Override
+    public String toString() {
+        return "SpatialVectorTable{" +
+                "\n\tgeometryColumn='" + geometryColumn + '\'' +
+                ",\n\tgeomType=" + geomType +
+                ",\n\tstyle=" + style +
+                ",\n\tisPolygon=" + isPolygon +
+                ",\n\tisLine=" + isLine +
+                ",\n\tisPoint=" + isPoint +
+                ",\n\tisGeometryCollection=" + isGeometryCollection +
+                ",\n\tlabelField='" + labelField + '\'' +
+                ",\n\tprimaryKeyFields='" + primaryKeyFields + '\'' +
+                ",\n\tROWID_PK='" + ROWID_PK + '\'' +
+                ",\n\tisReadonly=" + isReadonly +
+                ",\n\tuniqueNameBasedOnDbFilePath='" + uniqueNameBasedOnDbFilePath + '\'' +
+                "\n}";
     }
 
     /**

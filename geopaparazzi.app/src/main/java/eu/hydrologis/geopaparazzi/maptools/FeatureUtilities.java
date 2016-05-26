@@ -99,14 +99,20 @@ public class FeatureUtilities {
      */
     public static List<Feature> buildWithoutGeometry(String query, SpatialVectorTable spatialTable) throws Exception {
         List<Feature> featuresList = new ArrayList<>();
-        SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
-        Database database = spatialiteDbHandler.getDatabase();
-
-        String tableName = spatialTable.getTableName();
-        String databasePath = spatialTable.getDatabasePath();
-
-        Stmt stmt = database.prepare(query);
+        Stmt stmt = null;
         try {
+            SpatialiteDatabaseHandler spatialiteDbHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(spatialTable);
+            if (spatialiteDbHandler == null) {
+                GPLog.addLogEntry("Featureutilities", "ERROR, could not get spatialiteDbHandler for spatialTable: " + spatialTable.toString());
+                return featuresList;
+            }
+            Database database = spatialiteDbHandler.getDatabase();
+
+            String tableName = spatialTable.getTableName();
+            String databasePath = spatialTable.getDatabasePath();
+
+            stmt = database.prepare(query);
+
             while (stmt.step()) {
                 int column_count = stmt.column_count();
                 // the first is the id, transparent to the user
@@ -121,7 +127,8 @@ public class FeatureUtilities {
                 featuresList.add(feature);
             }
         } finally {
-            stmt.close();
+            if (stmt != null)
+                stmt.close();
         }
         return featuresList;
     }
