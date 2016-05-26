@@ -9,4 +9,16 @@
   <string name="point_size">点尺寸</string>
   <string name="decimation">抽取</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">最小放大</string>
+  <string name="max_zoom">最大擴大</string>
+  <string name="dash_pattern">虛線樣式</string>
+  <string name="label_properties">标签属性</string>
+  <string name="toggle_visibility">可見性切換</string>
+  <string name="label_field">標記字段</string>
+  <string name="label_size">標籤尺寸</string>
+  <string name="select_table_types">選擇類型</string>
+  <string name="select_type">選擇類型</string>
+  <string name="remove_from_list">從列表移除 %s</string>
+  <string name="selected_file_no_vector_data">選擇的文件不包含任何矢量數據：</string>
+  <string name="adding_new_source">添加新的代碼</string>
 </resources>

@@ -1,6 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geopaparazzi</string>
+  <string name="action_advanced_settings">高級</string>
+  <string name="label_green">綠色</string>
+  <string name="label_blue">藍色</string>
+  <string name="label_red">紅色</string>
   <!--old gpap-->
   <string name="yes">是</string>
   <string name="no">否</string>
@@ -24,15 +28,19 @@
   <string name="mapproperty">属性：</string>
   <string name="map_zoom">放大到地图</string>
   <string name="map_delete">删除地图</string>
+  <string name="gps_preferences">GPS 設置</string>
   <string name="gps_logging_distance">最小的GPS日志的距离</string>
   <string name="gps_logging_interval">最小的GPS记录间隔</string>
+  <string name="sms_preferences">Sms 設置</string>
   <string name="sms_catcher">启用短信捕捉</string>
   <string name="chart_profile_view">
 个人资料查看</string>
   <string name="gpx_import_processing">读入gpx中...</string>
   <string name="osm_additionalinfo">为标签添加信息</string>
+  <string name="osm_tagsgrid">選擇一個標簽去添加</string>
   <string name="text_take_a_gps_note">写便签</string>
   <string name="gps_log">GPS轨迹</string>
+  <string name="gps_log_name">插入一個GPS記錄名稱或者接受默認名稱</string>
   <string name="audio_recording">重放语音... 按这里结束</string>
   <string name="audio_recording_stop">停止</string>
   <string name="panic">恐慌</string>
@@ -43,6 +51,8 @@
   <string name="last_note_deleted">删除最近一条记录</string>
   <string name="last_note_not_deleted">不能删除最后一条便条</string>
   <string name="text_gpson">打开GPS</string>
+  <string name="debug">除错設定</string>
+  <string name="enable_debug">允許除錯記錄</string>
   <!--added after 2.1.2-->
   <string name="reset">创建新项目</string>
   <string name="pick_phonenumber_label">…</string>

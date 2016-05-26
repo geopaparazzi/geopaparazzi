@@ -46,7 +46,9 @@
   <string name="gps_logging_distance">Nejmenší vzdálenost pro GPS záznam</string>
   <string name="gps_logging_interval">Nejmenší interval pro GPS záznam</string>
   <string name="gps_use_android_level">Použít na úrovni Androidu (šetří baterii, vyžaduje opětovné spuštění)</string>
+  <string name="gps_use_android_level_summary">Je-li zaškrtnuto, nastavení GPS se použijí na úrovni operačního systému, což může šetřit baterii, ale signál může být méně stálý, když se zvolí větší intervaly (pokud máte u zaškrtnutých zařízení u GPS potíže se spojením, ponechejte nezaškrtnuto). Povšimněte si, že GPS OS pracuje nepřetržitě, aby se signál posílal v intervalech menších než 100 sekund. Aby baterie vydržela déle, zvolte větší intervaly.</string>
   <string name="sms_preferences">Nastavení SMS</string>
+  <string name="sms_preferences_summary">Zadat číslo pro stav nouze a povolit chytač SMS.</string>
   <string name="sms_catcher">Povolit zachytávač SMS</string>
   <string name="databaseError">Při připojení k databázi se vyskytla chyba</string>
   <string name="chart_profile_view">Pohled na profil</string>
@@ -62,6 +64,7 @@
   <string name="audio_recording_stop">Zastavit</string>
   <string name="panic">Pomoc!</string>
   <string name="panic_number">Číslo pro stav nouze</string>
+  <string name="panic_number_notset">Zdá se, že není dostupné žádné číslo pro stav nouze, na které má být zpráva zaslána. Bylo číslo zadáno v nastavení?</string>
   <string name="panic_upper">STAV NOUZE!</string>
   <string name="send_status_update">nebo pouze poslat vaši polohu</string>
   <string name="help_needed">Potřebuji pomoc!</string>
@@ -174,6 +177,7 @@
   <string name="map_textsize_factor">Zvětšení textu mapy</string>
   <string name="map_textsize_factor_summary">Násobek velikosti textu pro mapové soubory mapsforge.</string>
   <string name="keep_screen_on">Ponechat obrazovku zapnutou</string>
+  <string name="keep_screen_on_summary">Udržuje obrazovku zapnutu, když jste na obrazovce s nástroji a v pohledu s mapou.</string>
   <string name="the_secret_view">Tajný pohled</string>
   <string name="database_queries">Databázové dotazy</string>
   <string name="demo_mode">Zkušební režim</string>

@@ -16,4 +16,9 @@
   <string name="toggle_visibility">Conmutar visibilidad</string>
   <string name="label_field">Campo de la etiqueta</string>
   <string name="label_size">Tamaño de la etiqueta</string>
+  <string name="select_table_types">Seleccionar tipos</string>
+  <string name="select_type">Seleccionar tipo</string>
+  <string name="remove_from_list">¿Eliminar %s de la lista?</string>
+  <string name="selected_file_no_vector_data">El fichero seleccionado no contiene ningún dato vectorial</string>
+  <string name="adding_new_source">Añadiendo nueva fuente</string>
 </resources>

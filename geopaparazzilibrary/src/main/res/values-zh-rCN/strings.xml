@@ -34,10 +34,26 @@
   <string name="cancel">取消</string>
   <string name="take_picture">拍照</string>
   <string name="read_nfc_uid">读标签的ID</string>
+  <string name="undo">解開</string>
+  <string name="redo">重做</string>
   <string name="hello_world">Hello world！</string>
   <string name="menu_settings">设定</string>
   <string name="unable_to_read_tag_id">不能读取标签id</string>
   <string name="point_size">点尺寸</string>
   <string name="no_data">没有允许的数据</string>
   <string name="share_note_with">共享记事本给...</string>
+  <string name="save_note">保存當前記事本</string>
+  <string name="downloading_mapurl_to_the_device">下載選擇的服務到設備.</string>
+  <string name="installgpsstatus_title">安裝GPS狀態</string>
+  <string name="label_red">紅色</string>
+  <string name="label_green">綠色</string>
+  <string name="label_blue">藍色</string>
+  <string name="label_size">標籤尺寸</string>
+  <string name="toggle_label_visibility">切換標籤的可見性</string>
+  <string name="label_field">標籤字段</string>
+  <string name="set_properties">設置屬性</string>
+  <string name="unauthorized_api_key">越權存取。檢查你的API密鑰</string>
+  <string name="fill_and_stroke_color_title">填充和描邊色</string>
+  <string name="fill_color_title">填充色</string>
+  <string name="stroke_color_title">描邊色</string>
 </resources>
