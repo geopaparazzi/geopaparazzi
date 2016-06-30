@@ -49,6 +49,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Spatial
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineOnSelectionToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.PointOnSelectionToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonOnSelectionToolGroup;
 import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
 import jsqlite.Database;
@@ -179,6 +180,9 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
                 toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
             } else if (activeToolGroup instanceof LineOnSelectionToolGroup) {
                 LineOnSelectionToolGroup toolGroup = (LineOnSelectionToolGroup) activeToolGroup;
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
+            } else if (activeToolGroup instanceof PointOnSelectionToolGroup) {
+                PointOnSelectionToolGroup toolGroup = (PointOnSelectionToolGroup) activeToolGroup;
                 toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
             }
 
