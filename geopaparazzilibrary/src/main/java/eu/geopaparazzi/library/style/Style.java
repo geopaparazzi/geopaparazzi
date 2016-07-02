@@ -115,7 +115,7 @@ public class Style {
     /**
      * Decimation factor for geometries.
      */
-    public float decimationFactor = 0.00001f;
+    public float decimationFactor = 0.0f;
 
     /**
      * @return a string that can be used in a sql insert statement with

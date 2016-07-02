@@ -176,7 +176,7 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
         if (editLayer != null) {
             gpsStreamButton = new ImageButton(context);
             gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
+            gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_gps_off));
             gpsStreamButton.setPadding(0, padding, 0, padding);
             gpsStreamButton.setOnTouchListener(this);
             gpsStreamButton.setOnLongClickListener(this);
@@ -185,7 +185,7 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
 
             addVertexButton = new ImageButton(context);
             addVertexButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            addVertexButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex));
+            addVertexButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_center));
             addVertexButton.setPadding(0, padding, 0, padding);
             addVertexButton.setOnTouchListener(this);
             addVertexButton.setOnClickListener(this);
@@ -194,7 +194,7 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
             addVertexByTapButton = new ImageButton(context);
             addVertexByTapButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap));
+            addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_tap_off));
             addVertexByTapButton.setPadding(0, padding, 0, padding);
             addVertexByTapButton.setOnTouchListener(this);
             addVertexByTapButton.setOnClickListener(this);
@@ -298,7 +298,7 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
             }
         } else if (v == undoButton) {
             if (coordinatesList.size() == 0) {
-                EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PointMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 return;
             } else if (coordinatesList.size() > 0) {
@@ -337,16 +337,16 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
         if (gpsStreamButton != null)
             if (gpsStreamActive) {
                 gpsStreamButton
-                        .setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_gps_on));
             } else {
-                gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
+                gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_gps_off));
                 gpsStreamButton.getBackground().clearColorFilter();
             }
         if (addVertexByTapButton != null)
             if (addVertexByTapActive) {
-                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap_active));
+                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_tap_on));
             } else {
-                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap));
+                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point_tap_off));
             }
 
     }

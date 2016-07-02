@@ -236,22 +236,20 @@ public class FeatureUtilities {
         GeometryType geometryType = GeometryType.forValue(geometryTypeInt);
         DrawableShape shape = shapeWriter.toShape(geom);
         switch (geometryType) {
-            // case POINT_XY:
-            // case POINT_XYM:
-            // case POINT_XYZ:
-            // case POINT_XYZM:
-            // case MULTIPOINT_XY:
-            // case MULTIPOINT_XYM:
-            // case MULTIPOINT_XYZ:
-            // case MULTIPOINT_XYZM: {
-            // if (selectedGeometryPaintFill != null)
-            // shape.fill(canvas, selectedGeometryPaintFill);
-            // if (selectedGeometryPaintStroke != null)
-            // shape.draw(canvas, selectedGeometryPaintStroke);
-            // //
-            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
-            // }
-            // break;
+            case POINT_XY:
+            case POINT_XYM:
+            case POINT_XYZ:
+            case POINT_XYZM:
+            case MULTIPOINT_XY:
+            case MULTIPOINT_XYM:
+            case MULTIPOINT_XYZ:
+            case MULTIPOINT_XYZM: {
+                if (geometryPaintFill != null)
+                    shape.fill(canvas, geometryPaintFill);
+                if (geometryPaintStroke != null)
+                    shape.draw(canvas, geometryPaintStroke);
+            }
+            break;
             case LINESTRING_XY:
             case LINESTRING_XYM:
             case LINESTRING_XYZ:

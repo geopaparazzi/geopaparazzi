@@ -91,7 +91,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_create_line));
+            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);

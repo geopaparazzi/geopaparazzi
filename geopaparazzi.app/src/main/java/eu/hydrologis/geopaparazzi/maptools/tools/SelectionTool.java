@@ -251,7 +251,7 @@ public class SelectionTool extends MapTool {
                                 LineOnSelectionToolGroup selectionGroup = new LineOnSelectionToolGroup(mapView, features);
                                 EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                             } else if (spatialVectorTable.isPoint()) {
-                                GPDialogs.toast(context, String.format(context.getString(R.string.selected_line_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                                GPDialogs.toast(context, String.format(context.getString(R.string.selected_point_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
                                 PointOnSelectionToolGroup selectionGroup = new PointOnSelectionToolGroup(mapView, features);
                                 EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                             }

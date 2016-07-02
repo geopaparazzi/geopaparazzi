@@ -159,7 +159,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
     private void importTemplateDatabase() {
         String ts = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
-        String newName = "geopaparazzi_" + ts + ".sqlite";
+        String newName = "spatialite_" + ts + ".sqlite";
         GPDialogs.inputMessageDialog(this, getString(R.string.name_new_teample_db), newName, new TextRunnable() {
             @Override
             public void run() {

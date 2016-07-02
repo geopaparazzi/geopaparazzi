@@ -330,6 +330,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             if (!ignore) {
                 EDataType dataType = EDataType.getType4Name(type);
                 if (dataType == EDataType.TEXT) {
+                    value = escapeString(value);
                     sb.append(" , ").append(fieldName).append("='").append(value).append("'");
                 } else {
                     sb.append(" , ").append(fieldName).append("=").append(value);
@@ -347,6 +348,10 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
 
         String updateQuery = sbIn.toString();
         database.exec(updateQuery, null);
+    }
+
+    private static String escapeString(String value) {
+        return value.replaceAll("'", "''");
     }
 
     /**

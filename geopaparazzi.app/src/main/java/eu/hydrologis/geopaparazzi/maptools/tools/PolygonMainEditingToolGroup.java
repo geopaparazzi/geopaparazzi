@@ -338,6 +338,9 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (tool instanceof PolygonCutExtendTool) {
             PolygonCutExtendTool cutExtendTool = (PolygonCutExtendTool) tool;
             Feature[] processedFeatures = cutExtendTool.getProcessedFeatures();
+            if (processedFeatures == null) {
+                return;
+            }
             cutExtendProcessedFeature = processedFeatures[0];
             cutExtendFeatureToRemove = processedFeatures[1];
 

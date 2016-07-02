@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
@@ -77,9 +78,13 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
     private SliderDrawProjection editingViewProjection;
 
     private Paint geometryPaintStroke = new Paint();
+    private Paint geometryPaintFill = new Paint();
 
     private final Paint selectedGeometryPaintStroke = new Paint();
+    private final Paint selectedGeometryPaintFill = new Paint();
+
     private final Paint selectedPreviewGeometryPaintStroke = new Paint();
+    private final Paint selectedPreviewGeometryPaintFill = new Paint();
 
     private WKBReader wkbReader = new WKBReader();
 
@@ -99,8 +104,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
     private ImageButton commitButton;
 
     private ImageButton undoButton;
-    private ImageButton continueLineFeatureButton;
-//    private ImageButton copyFeatureButton;
+    private ImageButton copyFeatureButton;
 
     /**
      * Constructor.
@@ -123,13 +127,24 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
         selectedGeometryPaintStroke.setColor(stroke);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
+        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
+        selectedGeometryPaintFill.setAntiAlias(true);
+        selectedGeometryPaintFill.setColor(fill);
+        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
+
         stroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
         selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
         selectedPreviewGeometryPaintStroke.setColor(stroke);
         selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
+        fill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
+        selectedPreviewGeometryPaintFill.setAntiAlias(true);
+        selectedPreviewGeometryPaintFill.setColor(fill);
+        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
+
         geometryPaintStroke = selectedGeometryPaintStroke;
+        geometryPaintFill = selectedGeometryPaintFill;
 
         point = new Point();
         positionBeforeDraw = new Point();
@@ -152,29 +167,20 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_line_feature));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_point_feature));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
             parent.addView(deleteFeatureButton);
 
-//            copyFeatureButton = new ImageButton(context);
-//            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-//                    LayoutParams.WRAP_CONTENT));
-//            copyFeatureButton.setBackground(context.getDrawable(R.drawable.editing_copy_geoms));
-//            copyFeatureButton.setPadding(0, padding, 0, padding);
-//            copyFeatureButton.setOnTouchListener(this);
-//            copyFeatureButton.setOnClickListener(this);
-//            parent.addView(copyFeatureButton);
-
-            continueLineFeatureButton = new ImageButton(context);
-            continueLineFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            copyFeatureButton = new ImageButton(context);
+            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            continueLineFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_continue_line));
-            continueLineFeatureButton.setPadding(0, padding, 0, padding);
-            continueLineFeatureButton.setOnClickListener(this);
-            continueLineFeatureButton.setOnTouchListener(this);
-            parent.addView(continueLineFeatureButton);
+            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_copy_geoms));
+            copyFeatureButton.setPadding(0, padding, 0, padding);
+            copyFeatureButton.setOnTouchListener(this);
+            copyFeatureButton.setOnClickListener(this);
+            parent.addView(copyFeatureButton);
 
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -225,30 +231,23 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
             if (!isInDeletePreview) {
                 isInDeletePreview = true;
                 geometryPaintStroke = selectedPreviewGeometryPaintStroke;
+                geometryPaintFill = selectedPreviewGeometryPaintFill;
                 commitButton.setVisibility(View.VISIBLE);
                 EditManager.INSTANCE.invalidateEditingView();
             }
-//        } else if (v == copyFeatureButton) {
-//            if (selectedFeatures.size() > 0) {
-//                List<Feature> copySelectedFeatures = new ArrayList<Feature>(selectedFeatures);
-//                Context context = v.getContext();
-//                Intent intent = new Intent(context, CopyToLayersListActivity.class);
-//                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-//                        (ArrayList< ? extends Parcelable>) copySelectedFeatures);
-//                context.startActivity(intent);
-//
-//                selectedFeatures.clear();
-//                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
-//                EditManager.INSTANCE.setActiveTool(null);
-//
-//            }
-        } else if (v == continueLineFeatureButton) {
-            Feature featureToContinue = null;
+        } else if (v == copyFeatureButton) {
             if (selectedFeatures.size() > 0) {
-                featureToContinue = selectedFeatures.get(0);
+                List<Feature> copySelectedFeatures = new ArrayList<>(selectedFeatures);
+                Context context = v.getContext();
+                Intent intent = new Intent(context, CopyToLayersListActivity.class);
+                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                        (ArrayList<? extends Parcelable>) copySelectedFeatures);
+                context.startActivity(intent);
+
+                selectedFeatures.clear();
+                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveTool(null);
             }
-            ToolGroup createFeatureToolGroup = new PointCreateFeatureToolGroup(mapView, featureToContinue);
-            EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == undoButton) {
             if (isInDeletePreview) {
                 /*
@@ -256,6 +255,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                  */
                 isInDeletePreview = false;
                 geometryPaintStroke = selectedGeometryPaintStroke;
+                geometryPaintFill = selectedGeometryPaintFill;
                 commitButton.setVisibility(View.GONE);
                 EditManager.INSTANCE.invalidateEditingView();
             } else if (selectedFeatures.size() > 0) {
@@ -263,7 +263,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                  * if in selection mode, clear the selection
                  */
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new PointMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 commitButton.setVisibility(View.GONE);
             }
@@ -283,7 +283,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                     context.startService(intent);
 
                     // reset drawview
-                    EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
+                    EditManager.INSTANCE.setActiveToolGroup(new PointMainEditingToolGroup(mapView));
                     EditManager.INSTANCE.setActiveTool(null);
 
                 } catch (jsqlite.Exception e) {
@@ -291,6 +291,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                 }
 
                 geometryPaintStroke = selectedGeometryPaintStroke;
+                geometryPaintFill = selectedGeometryPaintFill;
             }
         }
     }
@@ -346,7 +347,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                     if (defaultGeometry != null) {
                         try {
                             Geometry geometry = wkbReader.read(defaultGeometry);
-                            FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, null, geometryPaintStroke);
+                            FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
                         } catch (Exception e) {
                             GPLog.error(this, null, e); //$NON-NLS-1$
                         }
