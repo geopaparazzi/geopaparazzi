@@ -127,6 +127,7 @@ import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.maptools.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.NoEditableLayerToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PointMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
@@ -1326,14 +1327,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
+            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer == null) {
-                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
-                return;
-            }
-            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
-
-            if (editLayer.isPolygon())
+                // if not layer is
+                activeToolGroup = new NoEditableLayerToolGroup(mMapView);
+//                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
+//                return;
+            } else if (editLayer.isPolygon())
                 activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
             else if (editLayer.isLine())
                 activeToolGroup = new LineMainEditingToolGroup(mMapView);

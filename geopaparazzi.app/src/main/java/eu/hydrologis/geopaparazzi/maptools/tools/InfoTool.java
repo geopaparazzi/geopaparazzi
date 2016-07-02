@@ -32,8 +32,11 @@ import org.mapsforge.core.model.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -185,19 +188,14 @@ public class InfoTool extends MapTool {
 
     private void infoDialog(final double n, final double w, final double s, final double e) {
         try {
-            Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
-//            double[] boundsCoordinates = new double[]{w, s, e, n};
+
             final List<SpatialVectorTable> visibleTables = new ArrayList<>();
-            for (SpatialVectorTable spatialTable : spatialTables) {
-                if (spatialTable.getStyle().enabled == 0) {
+            HashMap<SpatialiteMap, SpatialVectorTable> spatialiteMaps2TablesMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
+            for (Map.Entry<SpatialiteMap, SpatialVectorTable> entry : spatialiteMaps2TablesMap.entrySet()) {
+                if (!entry.getKey().isVisible) {
                     continue;
                 }
-                // do not add tables that are out of range
-                // TODO activate this only when a decent strategy has been developed to update the bounds also
-                //                if (!spatialTable.checkBounds(boundsCoordinates)) {
-                //                    continue;
-                //                }
-                visibleTables.add(spatialTable);
+                visibleTables.add(entry.getValue());
             }
 
             final Context context = EditManager.INSTANCE.getEditingView().getContext();

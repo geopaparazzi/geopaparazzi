@@ -36,7 +36,10 @@ import org.mapsforge.android.maps.MapView;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -180,10 +183,10 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             } else {
                 // check maps enablement
                 try {
-                    final Collection<SpatialVectorTable> spatialTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
+                    HashMap<SpatialiteMap, SpatialVectorTable> spatialiteMaps2TablesMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap();
                     boolean atLeastOneEnabled = false;
-                    for (SpatialVectorTable spatialVectorTable : spatialTables) {
-                        if (spatialVectorTable.getStyle().enabled == 1) {
+                    for (Map.Entry<SpatialiteMap, SpatialVectorTable> entry : spatialiteMaps2TablesMap.entrySet()) {
+                        if (entry.getKey().isVisible) {
                             atLeastOneEnabled = true;
                             break;
                         }
