@@ -250,6 +250,10 @@ public class SelectionTool extends MapTool {
                                 GPDialogs.toast(context, String.format(context.getString(R.string.selected_line_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
                                 LineOnSelectionToolGroup selectionGroup = new LineOnSelectionToolGroup(mapView, features);
                                 EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                            } else if (spatialVectorTable.isPoint()) {
+                                GPDialogs.toast(context, String.format(context.getString(R.string.selected_line_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                                PointOnSelectionToolGroup selectionGroup = new PointOnSelectionToolGroup(mapView, features);
+                                EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                             }
                         } catch (java.lang.Exception e) {
                             GPLog.error(this, null, e); //$NON-NLS-1$
