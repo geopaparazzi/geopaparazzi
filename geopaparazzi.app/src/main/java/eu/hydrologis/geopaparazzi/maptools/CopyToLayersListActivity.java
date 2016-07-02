@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +54,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTableNameComparator;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
 
 /**
@@ -58,22 +62,30 @@ import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CopyToLayersListActivity extends ListActivity implements OnTouchListener {
+public class CopyToLayersListActivity extends AppCompatActivity implements OnTouchListener {
 
     private SpatialVectorTable spatialVectorTable;
 
     private int buttonSelectionColor;
     private ArrayList<Feature> featuresList;
     private String fromTableSrid;
+    private ListView mListView;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(eu.geopaparazzi.spatialite.R.layout.data_list);
 
+        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         EditText filterText = (EditText) findViewById(eu.geopaparazzi.spatialite.R.id.search_box);
         filterText.setVisibility(View.GONE);
         LinearLayout toggleButtonsView = (LinearLayout) findViewById(eu.geopaparazzi.spatialite.R.id.sourceTypeToggleButtonsView);
         toggleButtonsView.setVisibility(View.GONE);
+
+        mListView = (ListView) findViewById(R.id.dataList);
+
 
         Bundle extras = getIntent().getExtras();
         featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
@@ -86,7 +98,6 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
             buttonSelectionColor = Compat.getColor(this, eu.geopaparazzi.spatialite.R.color.main_selection);
 
             final List<SpatialVectorTable> compatibleSpatialVectorTables = new ArrayList<>();
-            final List<String> compatibleSpatialVectorTablesNames = new ArrayList<>();
             Collection<SpatialVectorTable> spatialVectorTables = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2TablesMap().values();
             for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                 if (spatialVectorTable.isEditable()) {
@@ -94,7 +105,6 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                     GeometryType geometryType = GeometryType.forValue(geomType);
                     if (fromTableGeometryType.isGeometryTypeCompatible(geometryType)) {
                         compatibleSpatialVectorTables.add(spatialVectorTable);
-                        compatibleSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
                     }
                 }
             }
@@ -110,7 +120,6 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
             }
 
             Collections.sort(compatibleSpatialVectorTables, new SpatialTableNameComparator());
-            Collections.sort(compatibleSpatialVectorTablesNames);
 
 
             ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, eu.geopaparazzi.spatialite.R.layout.editablelayers_row,
@@ -194,7 +203,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                 }
 
             };
-            setListAdapter(arrayAdapter);
+            mListView.setAdapter(arrayAdapter);
 
         } catch (Exception e) {
             GPLog.error(this, null, e);

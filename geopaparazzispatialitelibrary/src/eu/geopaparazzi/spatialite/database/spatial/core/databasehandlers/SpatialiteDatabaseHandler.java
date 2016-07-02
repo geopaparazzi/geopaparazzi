@@ -84,6 +84,8 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     // List of all SpatialView of Database [view_name,view_data] - that have errors
     private HashMap<String, String> spatialVectorMapErrors = new HashMap<String, String>();
 
+    private volatile boolean isOpen = false;
+
     /**
      * Constructor.
      *
@@ -96,16 +98,23 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     @Override
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    @Override
     public void open() {
         try {
             uniqueDbName4DataProperties = databasePath;
             dbJava = new jsqlite.Database();
             try {
                 dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+                isOpen = true;
                 isDatabaseValid = true;
             } catch (Exception e) {
                 GPLog.error(this, "Database marked as invalid: " + databasePath, e);
                 isDatabaseValid = false;
+                isOpen = false;
                 GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "].open has failed", e);
             }
             if (isValid()) {
@@ -115,6 +124,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                     isDatabaseValid = false;
+                    isOpen = false;
                 }
                 switch (databaseType) {
              /*
@@ -127,8 +137,10 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                     case SPATIALITE4:
                         isDatabaseValid = true;
                         break;
-                    default:
+                    default: {
                         isDatabaseValid = false;
+                        isOpen = false;
+                    }
                 }
             }
             if (!isValid()) {
@@ -259,7 +271,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
 
     /**
      * Get the stroke {@link Paint} for a given style.
-     *
+     * <p/>
      * <p>Paints are cached and reused.</p>
      *
      * @param style the {@link Style} to use.
@@ -360,6 +372,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     public void close() throws Exception {
+        isOpen = false;
         if (dbJava != null) {
             dbJava.close();
         }

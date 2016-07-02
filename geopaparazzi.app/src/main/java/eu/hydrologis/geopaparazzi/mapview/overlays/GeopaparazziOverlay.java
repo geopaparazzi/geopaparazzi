@@ -467,7 +467,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int intrinsicHeight = itemMarker.getIntrinsicHeight() / 2;
 
             // calculate the bounding box of the marker
-            int left = this.itemPosition.x +  intrinsicWidth / 2 - intrinsicWidth;
+            int left = this.itemPosition.x + intrinsicWidth / 2 - intrinsicWidth;
             int right = this.itemPosition.x + intrinsicWidth / 2 + intrinsicWidth;
             int top = this.itemPosition.y + intrinsicHeight / 2 - intrinsicHeight;
             int itemBottom = this.itemPosition.y + intrinsicHeight / 2 + intrinsicHeight;
@@ -764,36 +764,38 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         dbTextPaint.setTextAlign(Align.LEFT);
                     }
 
-                    geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds(
-                            LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
-                    while (geometryIterator.hasNext()) {
-                        Geometry geom = geometryIterator.next();
-                        if (geom != null) {
-                            if (!canvasEnvelope.intersects(geom.getEnvelopeInternal())) {
-                                // TODO check the performance impact of this
-                                continue;
-                            }
-                            String labelText = geometryIterator.getLabelText();
-                            if (labelText == null || labelText.length() == 0) {
-                                continue;
-                            }
-                            if (spatialTable.isGeometryCollection()) {
-                                int geometriesCount = geom.getNumGeometries();
-                                for (int j = 0; j < geometriesCount; j++) {
-                                    Geometry geom_collect = geom.getGeometryN(j);
-                                    if (geom_collect != null) {
-                                        drawLabel(pointTransformer, geom_collect, labelText, canvas, dbTextPaint,
-                                                dbTextHaloPaint, delta, linesWriter);
-                                        if (stopDrawing()) { // stop working
-                                            return;
+                    if (spatialDatabaseHandler.isOpen()) {
+                        geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds(
+                                LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
+                        while (geometryIterator.hasNext()) {
+                            Geometry geom = geometryIterator.next();
+                            if (geom != null) {
+                                if (!canvasEnvelope.intersects(geom.getEnvelopeInternal())) {
+                                    // TODO check the performance impact of this
+                                    continue;
+                                }
+                                String labelText = geometryIterator.getLabelText();
+                                if (labelText == null || labelText.length() == 0) {
+                                    continue;
+                                }
+                                if (spatialTable.isGeometryCollection()) {
+                                    int geometriesCount = geom.getNumGeometries();
+                                    for (int j = 0; j < geometriesCount; j++) {
+                                        Geometry geom_collect = geom.getGeometryN(j);
+                                        if (geom_collect != null) {
+                                            drawLabel(pointTransformer, geom_collect, labelText, canvas, dbTextPaint,
+                                                    dbTextHaloPaint, delta, linesWriter);
+                                            if (stopDrawing()) { // stop working
+                                                return;
+                                            }
                                         }
                                     }
-                                }
-                            } else {
-                                drawLabel(pointTransformer, geom, labelText, canvas, dbTextPaint, dbTextHaloPaint, delta,
-                                        linesWriter);
-                                if (stopDrawing()) { // stop working
-                                    return;
+                                } else {
+                                    drawLabel(pointTransformer, geom, labelText, canvas, dbTextPaint, dbTextHaloPaint, delta,
+                                            linesWriter);
+                                    if (stopDrawing()) { // stop working
+                                        return;
+                                    }
                                 }
                             }
                         }

@@ -124,6 +124,8 @@ public abstract class AbstractSpatialDatabaseHandler implements AutoCloseable {
      */
     public abstract void open() throws IOException;
 
+    public abstract boolean isOpen() throws IOException;
+
     /**
       * Return the absolute path of the database.
       *

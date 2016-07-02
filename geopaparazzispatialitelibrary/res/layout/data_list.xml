@@ -1,59 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/dataList"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:id="@+id/sourceTypeToggleButtonsView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dip"
-        android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/toggleTablesButton"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dataListLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="2dip"
-            android:layout_weight="1"
-            android:background="@drawable/button_background_drawable"
-            android:padding="@dimen/button_indent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/main_text_color" />
+            android:theme="@style/GeopapTheme.AppBarOverlay">
 
-        <Button
-            android:id="@+id/toggleViewsButton"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:id="@+id/sourceTypeToggleButtonsView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="2dip"
-            android:layout_weight="1"
-            android:background="@drawable/button_background_drawable"
-            android:padding="@dimen/button_indent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/main_text_color" />
+            android:layout_margin="5dip"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/toggleTablesButton"
+                style="@style/GPMediumButton"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/toggleViewsButton"
+                style="@style/GPMediumButton"
+                android:layout_width="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/search_box"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/type_to_filter"
+                android:inputType="text"
+                android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:layout_marginBottom="5dip"
+            android:orientation="horizontal" />
+
+        <ListView
+            android:id="@+id/dataList"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" />
+
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/search_box"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/type_to_filter"
-        android:inputType="text"
-        android:layout_margin="5dip"
-        android:maxLines="1" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dip"
-        android:background="@color/main_decorations"
-        android:orientation="horizontal"
-        android:layout_marginBottom="5dip" />
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

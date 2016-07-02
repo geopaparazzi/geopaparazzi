@@ -46,6 +46,8 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
 
     private CustomTileDownloader customTileDownloader = null;
 
+    private volatile boolean isOpen = false;
+
     /**
      * Constructor.
      *
@@ -108,6 +110,7 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
     }
 
     public void close() throws Exception {
+        isOpen = false;
         if (customTileDownloader != null) {
             customTileDownloader.cleanup();
         }
@@ -115,6 +118,11 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
 
     public byte[] getRasterTile(String query) {
         throw new RuntimeException("should not be called");
+    }
+
+    @Override
+    public boolean isOpen() {
+        return isOpen;
     }
 
     @Override
@@ -133,6 +141,8 @@ public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler im
         if ((tableName == null) || (tableName.length() == 0)) {
             tableName = this.databaseFile.getName().substring(0, this.databaseFile.getName().lastIndexOf("."));
         }
+
+        isOpen = true;
     }
 
     @Override

@@ -41,7 +41,7 @@ import jsqlite.Exception;
 
 /**
  * An utility class to handle an mbtiles database.
- *
+ * <p/>
  * author Andrea Antonello (www.hydrologis.com)
  * adapted to create and fill mbtiles databases Mark Johnson (www.mj10777.de)
  */
@@ -52,10 +52,11 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     private MBTilesDroidSpitter mbtilesSplitter;
     private HashMap<String, String> mbtilesMetadata = null;
     /**
-     * 
+     *
      */
     public HashMap<String, String> async_mbtiles_metadata = null;
     private MBtilesAsync mbtiles_async = null;
+    private boolean isOpen;
 
     @SuppressWarnings("javadoc")
     public static enum AsyncTasks {
@@ -95,31 +96,30 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     public String s_request_type = ""; // 'fill', 'replace'
 
     /**
-      * Constructor.
-      *
-      * <ul>
-      *  <li>if the file does not exist, a valid mbtile database will be created</li>
-      *  <li>if the parent directory does not exist, it will be created</li>
-      * </ul>
-      *
-      * @param dbPath full path to mbtiles file to open.
-      * @param initMetadata list of initial metadata values to set 
-      *                         upon creation (can be <code>null</code>).
-     * @throws IOException  if something goes wrong. 
-      */
-    public MbtilesDatabaseHandler( String dbPath, HashMap<String, String> initMetadata ) throws IOException {
+     * Constructor.
+     * <p/>
+     * <ul>
+     * <li>if the file does not exist, a valid mbtile database will be created</li>
+     * <li>if the parent directory does not exist, it will be created</li>
+     * </ul>
+     *
+     * @param dbPath       full path to mbtiles file to open.
+     * @param initMetadata list of initial metadata values to set
+     *                     upon creation (can be <code>null</code>).
+     * @throws IOException if something goes wrong.
+     */
+    public MbtilesDatabaseHandler(String dbPath, HashMap<String, String> initMetadata) throws IOException {
         super(dbPathCheck(dbPath));
         this.mbtilesMetadata = initMetadata;
         mbtilesSplitter = new MBTilesDroidSpitter(databaseFile, mbtilesMetadata);
     }
 
     /**
-     * @mj107777 WHY IS THIS DONE HERE? DOES THIS WORK?
-     * 
      * @param dbPath
      * @return
+     * @mj107777 WHY IS THIS DONE HERE? DOES THIS WORK?
      */
-    private static String dbPathCheck( String dbPath ) {
+    private static String dbPathCheck(String dbPath) {
         if (!dbPath.endsWith(ESpatialDataSources.MBTILES.getExtension())) {
             // .mbtiles files must have an .mbtiles
             // extension, force this
@@ -136,12 +136,12 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Called during Construction of Async-Tasks.
-      * 
-      * <p>- Database connection needed
-      * 
-      * @return list of Tasks to be completed.
-      */
+     * Called during Construction of Async-Tasks.
+     * <p/>
+     * <p>- Database connection needed
+     *
+     * @return list of Tasks to be completed.
+     */
     public List<MbtilesDatabaseHandler.AsyncTasks> getAsyncTasks() {
         if (mbtilesSplitter.getmbtiles() == null) { // in case .'open' was forgotten
             open(); // "" : default value will be used '1.1'
@@ -149,11 +149,11 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         return asyncTasksList;
     }
 
-    public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
+    public List<SpatialVectorTable> getSpatialVectorTables(boolean forceRead) throws Exception {
         return Collections.emptyList();
     }
 
-    public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
+    public List<SpatialRasterTable> getSpatialRasterTables(boolean forceRead) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
             open();
@@ -168,7 +168,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         return rasterTableList;
     }
 
-    public float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception {
+    public float[] getTableBounds(AbstractSpatialTable spatialTable) throws Exception {
         MbTilesMetadata metadata = mbtilesSplitter.getMetadata();
         float[] bounds = metadata.bounds;// left, bottom, right, top
         float w = bounds[0];
@@ -178,7 +178,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         return new float[]{n, s, e, w};
     }
 
-    public byte[] getRasterTile( String query ) {
+    public byte[] getRasterTile(String query) {
         String[] split = query.split(",");
         if (split.length != 3) {
             return null;
@@ -198,19 +198,19 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Function to retrieve Tile Bitmap from the mbtiles Database.
-      *
-      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation 
-      * [will be converted to 'tms' notation if needed]
-      *
-      * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param i_pixel_size the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param tile_bitmap retrieve the Bitmap as done in 'CustomTileDownloader'
-      * @return Bitmap of the tile or null if no tile matched the given parameters
-      */
-    public boolean getBitmapTile( int i_x, int i_y_osm, int i_z, int i_pixel_size, Bitmap tile_bitmap ) {
+     * Function to retrieve Tile Bitmap from the mbtiles Database.
+     * <p/>
+     * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation
+     * [will be converted to 'tms' notation if needed]
+     *
+     * @param i_x          the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_y_osm      the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_z          the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_pixel_size the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param tile_bitmap  retrieve the Bitmap as done in 'CustomTileDownloader'
+     * @return Bitmap of the tile or null if no tile matched the given parameters
+     */
+    public boolean getBitmapTile(int i_x, int i_y_osm, int i_z, int i_pixel_size, Bitmap tile_bitmap) {
         boolean b_rc = true;
         if (mbtilesSplitter.getmbtiles() == null) { // in case .'open' was forgotten
             open(); // "" : default value will be used '1.1'
@@ -238,24 +238,24 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Function to insert a new Tile Bitmap to the mbtiles Database
-      *
-      * <ul>
-      *  <li>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will
-      *      be converted to 'tms' notation if needed]</li>
-      *  <li>checking will be done to determine if the Bitmap is blank [i.e.
-      *      all pixels have the same RGB]</li>
-      * </ul>
-      *
-      * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
-      * @param tile_bitmap the Bitmap to extract image-data extracted from. [Will be converted to JPG or PNG depending on metdata setting]
-      * @param forceUnique if 1, it check if image is unique in Database [may be slow if used]
-      * @return 0: correct, otherwise error
-      * @throws IOException  if something goes wrong.
-      */
-    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int forceUnique ) throws IOException {
+     * Function to insert a new Tile Bitmap to the mbtiles Database
+     * <p/>
+     * <ul>
+     * <li>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will
+     * be converted to 'tms' notation if needed]</li>
+     * <li>checking will be done to determine if the Bitmap is blank [i.e.
+     * all pixels have the same RGB]</li>
+     * </ul>
+     *
+     * @param i_x         the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_y_osm     the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param i_z         the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
+     * @param tile_bitmap the Bitmap to extract image-data extracted from. [Will be converted to JPG or PNG depending on metdata setting]
+     * @param forceUnique if 1, it check if image is unique in Database [may be slow if used]
+     * @return 0: correct, otherwise error
+     * @throws IOException if something goes wrong.
+     */
+    public int insertBitmapTile(int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int forceUnique) throws IOException {
         try {
             return mbtilesSplitter.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, forceUnique);
         } catch (IOException e) {
@@ -268,14 +268,20 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         if (mbtilesSplitter.getmbtiles() == null) {
             mbtilesSplitter.open(true, ""); // "" : default value will be used '1.1'
             loadMetadata();
+            isOpen = true;
         }
     }
 
+    @Override
+    public boolean isOpen() {
+        return isOpen;
+    }
+
     /**
-      * Load and set metadata from mbtiles Database, with all default tasks
-      * 
-      * <p>- do this in one place to insure that it is allways done in the same way.
-      */
+     * Load and set metadata from mbtiles Database, with all default tasks
+     * <p/>
+     * <p>- do this in one place to insure that it is allways done in the same way.
+     */
     public void loadMetadata() {
         MbTilesMetadata metadata = mbtilesSplitter.getMetadata();
         float[] bounds = metadata.bounds;// left, bottom, right, top
@@ -304,6 +310,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     public void close() throws Exception {
+        isOpen = false;
         if (mbtiles_async != null) {
             if (mbtiles_async.getStatus() == AsyncTask.Status.RUNNING) {
                 mbtiles_async.cancel(true);
@@ -315,13 +322,13 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Return list of all zoom-levels and Bounds in LatLong.
-      * 
-      * <br>- last entry: min/max zoom-levels and Bounds
-      * <br>- this is calculated from the Database and will update the metadata-table
-      * 
-      * @return map of zoom-levels and Bounds in LatLong
-      */
+     * Return list of all zoom-levels and Bounds in LatLong.
+     * <p/>
+     * <br>- last entry: min/max zoom-levels and Bounds
+     * <br>- this is calculated from the Database and will update the metadata-table
+     *
+     * @return map of zoom-levels and Bounds in LatLong
+     */
     public HashMap<String, String> getBoundsZoomLevels() {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.getBoundsZoomLevels();
@@ -330,10 +337,10 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Return center position with zoom-level.
-      * 
-      * @return Center as [lon, lat, default zoom] 
-      */
+     * Return center position with zoom-level.
+     *
+     * @return Center as [lon, lat, default zoom]
+     */
     public String getCenterParms() {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.getCenterParms();
@@ -342,12 +349,12 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Update mbtiles Bounds / Zoom (min/max) levels
-      * 
-      * @param doReloadMetadata if 1 reload values after update [not needed upon creation, update after bounds/center/zoom changes]
-      * @return o if reading was ok.
-      */
-    public int updateBounds( int doReloadMetadata ) {
+     * Update mbtiles Bounds / Zoom (min/max) levels
+     *
+     * @param doReloadMetadata if 1 reload values after update [not needed upon creation, update after bounds/center/zoom changes]
+     * @return o if reading was ok.
+     */
+    public int updateBounds(int doReloadMetadata) {
         if (mbtilesSplitter != null) {
             mbtilesSplitter.fetch_bounds_minmax(doReloadMetadata, 1);
             loadMetadata(); // will read and reset values
@@ -357,14 +364,14 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * General Function to update mbtiles metadata Table.
-      * 
-      * @param mbtilesMetadata list of key,values to update. [fill this with valued that need to be added/changed]
-      * @param doReloadMetadata 1: reload values after update [not needed upon creation, update after bounds/center/zoom changes]
-      * @return 0: no error
-      * @throws IOException  if something goes wrong.
-      */
-    public int updateMetadata( HashMap<String, String> mbtilesMetadata, int doReloadMetadata ) throws IOException {
+     * General Function to update mbtiles metadata Table.
+     *
+     * @param mbtilesMetadata  list of key,values to update. [fill this with valued that need to be added/changed]
+     * @param doReloadMetadata 1: reload values after update [not needed upon creation, update after bounds/center/zoom changes]
+     * @return 0: no error
+     * @throws IOException if something goes wrong.
+     */
+    public int updateMetadata(HashMap<String, String> mbtilesMetadata, int doReloadMetadata) throws IOException {
         int i_rc = 1;
         if (mbtilesSplitter != null) {
             try {
@@ -380,12 +387,12 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-    * Launch async retrieve url.
-    *
-    * @param mbtiles_request_url a map of url retrival info.
-    * @param async_mbtiles_metadata a map of mbtiles metadata.
-    */
-    public void runRetrieveUrl( HashMap<String, String> mbtiles_request_url, HashMap<String, String> async_mbtiles_metadata ) {
+     * Launch async retrieve url.
+     *
+     * @param mbtiles_request_url    a map of url retrival info.
+     * @param async_mbtiles_metadata a map of mbtiles metadata.
+     */
+    public void runRetrieveUrl(HashMap<String, String> mbtiles_request_url, HashMap<String, String> async_mbtiles_metadata) {
         int i_run_create = 0;
         int i_run_fill = 0;
         int i_run_replace = 0;
@@ -395,7 +402,7 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
         int i_vacuum = 0;
         int i_update_bounds = 0;
         this.async_mbtiles_metadata = async_mbtiles_metadata;
-        for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
+        for (Map.Entry<String, String> request_url : mbtiles_request_url.entrySet()) {
             String s_key = request_url.getKey();
             String s_value = request_url.getValue();
             if (s_key.equals("request_type")) {
@@ -518,12 +525,12 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Returns list of collected urlmapped to their tile id. 
-      * 
-      * @param limit amount of records to retrieve [i_limit < 1 == all]
-      * @return  the map of ids, urls.
-      */
-    public HashMap<String, String> getRequestUrlsMap( int limit ) {
+     * Returns list of collected urlmapped to their tile id.
+     *
+     * @param limit amount of records to retrieve [i_limit < 1 == all]
+     * @return the map of ids, urls.
+     */
+    public HashMap<String, String> getRequestUrlsMap(int limit) {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.retrieve_request_url(limit);
         }
@@ -531,14 +538,14 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Bulk insert of record in table.
-      * 
-      * - the request_url table will be created if it does not exist
-      * 
-      * @param requestUrlsMap the map of urls to request.
-      * @return number of opened requests.
-      */
-    public int bulkInsertFromUrlsTilesInTable( HashMap<String, String> requestUrlsMap ) {
+     * Bulk insert of record in table.
+     * <p/>
+     * - the request_url table will be created if it does not exist
+     *
+     * @param requestUrlsMap the map of urls to request.
+     * @return number of opened requests.
+     */
+    public int bulkInsertFromUrlsTilesInTable(HashMap<String, String> requestUrlsMap) {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.insert_list_request_url(requestUrlsMap);
         }
@@ -546,18 +553,18 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Returns amount of records of table: request_url
-      * 
-      * <p>parm values:
-      * <br>0: return existing value [set when database was opended,not reading the table] [MBTilesDroidSpitter.i_request_url_read_value]
-      * <br>1 : return existing value return existing value [reading the table with count after checking if it exits] [MBTilesDroidSpitter.i_request_url_read_db]
-      * <br>2: create table (if it does not exist) [MBTilesDroidSpitter.i_request_url_count_create]
-      * <br>3: delete table (if it does exist) [MBTilesDroidSpitter.i_request_url_count_drop]
-      * 
-      * @param parm type of result
-      * @return if < 0: table does not exist; 0=exist but is empty ; > 0 open requests
-      */
-    public int getRequestUrlCount( int parm ) {
+     * Returns amount of records of table: request_url
+     * <p/>
+     * <p>parm values:
+     * <br>0: return existing value [set when database was opended,not reading the table] [MBTilesDroidSpitter.i_request_url_read_value]
+     * <br>1 : return existing value return existing value [reading the table with count after checking if it exits] [MBTilesDroidSpitter.i_request_url_read_db]
+     * <br>2: create table (if it does not exist) [MBTilesDroidSpitter.i_request_url_count_create]
+     * <br>3: delete table (if it does exist) [MBTilesDroidSpitter.i_request_url_count_drop]
+     *
+     * @param parm type of result
+     * @return if < 0: table does not exist; 0=exist but is empty ; > 0 open requests
+     */
+    public int getRequestUrlCount(int parm) {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.get_request_url_count(parm);
         }
@@ -565,16 +572,16 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Delete of record in table: request_url
-      * 
-      * <p>parm values:  [3 only for internal use] - only 4 supported
-      * <br>3: insert record with: s_tile_id and s_tile_url [MBTilesDroidSpitter.i_request_url_count_insert]
-      * <br>4: delete record with: s_tile_id, delete table if count is 0 [MBTilesDroidSpitter.i_request_url_count_delete]
-      * 
-      * @param s_tile_id tile_id to use
-      * @return if< 0: table does not exist; 0=exist but is empty ; > 0 open requests
-      */
-    public int deleteRequestUrl( String s_tile_id ) {
+     * Delete of record in table: request_url
+     * <p/>
+     * <p>parm values:  [3 only for internal use] - only 4 supported
+     * <br>3: insert record with: s_tile_id and s_tile_url [MBTilesDroidSpitter.i_request_url_count_insert]
+     * <br>4: delete record with: s_tile_id, delete table if count is 0 [MBTilesDroidSpitter.i_request_url_count_delete]
+     *
+     * @param s_tile_id tile_id to use
+     * @return if< 0: table does not exist; 0=exist but is empty ; > 0 open requests
+     */
+    public int deleteRequestUrl(String s_tile_id) {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.insert_request_url(MBTilesDroidSpitter.i_request_url_count_delete, s_tile_id, "");
         }
@@ -582,22 +589,22 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * Retrieves a list of tile id requested, based on bounds and zoom-level.
-      * 
-      * <p>return values values:
-      * <br>tile_id : created with: get_tile_id_from_zxy
-      * <br>- will be read and parsed with: get_zxy_from_tile_id in on_request_create_url
-      * <br>s_request_type: 'fill': only missing tiles ; 'replace' all tiles ; 'exists' tiles that exist
-      * 
-      * @param request_bounds bounds of request area
-      * @param i_zoom_level zoom level of tiles
-      * @param s_request_type request type ['fill','replace','exists']
-      * @param s_url_source TODO
-      * @param s_request_y_type TODO 
-      * @return list of 'tile_id' needed
-      */
-    public List<String> buildRequestList( double[] request_bounds, int i_zoom_level, String s_request_type, String s_url_source,
-            String s_request_y_type ) {
+     * Retrieves a list of tile id requested, based on bounds and zoom-level.
+     * <p/>
+     * <p>return values values:
+     * <br>tile_id : created with: get_tile_id_from_zxy
+     * <br>- will be read and parsed with: get_zxy_from_tile_id in on_request_create_url
+     * <br>s_request_type: 'fill': only missing tiles ; 'replace' all tiles ; 'exists' tiles that exist
+     *
+     * @param request_bounds   bounds of request area
+     * @param i_zoom_level     zoom level of tiles
+     * @param s_request_type   request type ['fill','replace','exists']
+     * @param s_url_source     TODO
+     * @param s_request_y_type TODO
+     * @return list of 'tile_id' needed
+     */
+    public List<String> buildRequestList(double[] request_bounds, int i_zoom_level, String s_request_type, String s_url_source,
+                                         String s_request_y_type) {
         if (mbtilesSplitter != null) {
             return mbtilesSplitter.build_request_list(request_bounds, i_zoom_level, s_request_type, s_url_source,
                     s_request_y_type);
@@ -606,14 +613,14 @@ public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     /**
-      * House-keeping tasks for Database.
-      * 
-      * <p>The ANALYZE command gathers statistics fragment_about tables and indices
-      * <br>The VACUUM command rebuilds the entire database.
-      * <br>- A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
-      * 
-      * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
-      */
+     * House-keeping tasks for Database.
+     * <p/>
+     * <p>The ANALYZE command gathers statistics fragment_about tables and indices
+     * <br>The VACUUM command rebuilds the entire database.
+     * <br>- A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
+     *
+     * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
+     */
     public int on_analyze_vacuum() {
         int i_rc = 0;
         if (mbtilesSplitter != null) {

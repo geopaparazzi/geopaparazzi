@@ -47,11 +47,12 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implements AutoCloseable {
+public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler  {
     private List<MapTable> mapTableList;
     private FileOpenResult fileOpenResult;
     private MapDatabase mapDatabase = null;
     private MapFileInfo mapFileInfo = null;
+    private volatile boolean isOpen = false;
 
     /**
      * Constructor.
@@ -84,6 +85,10 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
         return null;
     }
 
+    @Override
+    public boolean isOpen() {
+        return isOpen;
+    }
 
     @Override
     public void open() {
@@ -122,6 +127,8 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
             }
             minZoom = 0;
             maxZoom = 22;
+
+            isOpen = true;
         } catch (java.lang.Exception e) {
             GPLog.error(this, "MapDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
@@ -149,9 +156,11 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler implement
     }
 
     public void close() throws Exception {
+        isOpen = false;
         if (mapDatabase != null) {
             mapDatabase.closeFile();
         }
+
     }
 
     @Override

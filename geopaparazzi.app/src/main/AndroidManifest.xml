@@ -189,6 +189,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".mapview.MapviewActivity" />
         </activity>
+        <activity
+            android:name=".maptools.CopyToLayersListActivity"
+            android:label="@string/features"
+            android:parentActivityName=".mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mapview.MapviewActivity" />
+        </activity>
 
         <activity
             android:name=".ui.activities.GpsDataListActivity"
