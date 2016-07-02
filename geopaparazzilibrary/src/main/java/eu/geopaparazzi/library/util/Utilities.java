@@ -31,6 +31,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -38,6 +40,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.os.StatFs;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +56,7 @@ import android.widget.Toast;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -63,6 +67,23 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class Utilities {
 
+    public static String getLastFilePath(Context context) throws Exception {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(LibraryConstants.PREFS_KEY_LASTPATH, ResourcesManager.getInstance(context).getSdcardDir().getAbsolutePath());
+    }
+
+    public static void setLastFilePath(Context context, String lastPath) throws Exception {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        File file = new File(lastPath);
+        if (file.exists()){
+            if (!file.isDirectory()){
+                file = file.getParentFile();
+            }
+        }
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LibraryConstants.PREFS_KEY_LASTPATH, file.getAbsolutePath());
+        editor.apply();
+    }
 
 
     /**
@@ -230,7 +251,6 @@ public class Utilities {
     }
 
 
-
     /**
      * Convert unsafe chars.
      *
@@ -309,7 +329,6 @@ public class Utilities {
         long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
         return bytes / (1024.f * 1024.f);
     }
-
 
 
     /**

@@ -55,6 +55,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
@@ -166,7 +167,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         try {
             String title = getString(R.string.select_basemap_source);
             String[] supportedExtensions = ESpatialDataSources.getSupportedTileSourcesExtensions();
-            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
+            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);
@@ -183,6 +184,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                         String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         File  file = new File(filePath);
                         if (file.exists()) {
+                            Utilities.setLastFilePath(this, filePath);
                             final File finalFile = file;
                             StringAsyncTask task = new StringAsyncTask(this) {
                                 public List<BaseMap> baseMaps;

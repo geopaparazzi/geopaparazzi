@@ -52,6 +52,7 @@ import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
@@ -197,7 +198,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
     private void importGpx() throws Exception {
         String title = getString(R.string.select_gpx_file);
-        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, new String[]{FileTypes.GPX.getExtension()}, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
+        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, new String[]{FileTypes.GPX.getExtension()}, null);
     }
 
 
@@ -214,6 +215,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                         }
                         File file = new File(filePath);
                         if (file.exists()) {
+                            Utilities.setLastFilePath(this, filePath);
                             GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
                             gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");
                         }

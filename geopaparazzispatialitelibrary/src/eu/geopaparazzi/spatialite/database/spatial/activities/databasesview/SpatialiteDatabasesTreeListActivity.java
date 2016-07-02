@@ -62,6 +62,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
@@ -168,7 +169,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         try {
             String title = getString(R.string.select_spatialite_database);
             String[] supportedExtensions = ESpatialDataSources.getSupportedVectorExtensions();
-            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath());
+            AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);
@@ -185,6 +186,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                         String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         final File file = new File(filePath);
                         if (file.exists()) {
+                            Utilities.setLastFilePath(this, filePath);
                             StringAsyncTask task = new StringAsyncTask(this) {
                                 public List<SpatialiteMap> spatialiteMaps;
 

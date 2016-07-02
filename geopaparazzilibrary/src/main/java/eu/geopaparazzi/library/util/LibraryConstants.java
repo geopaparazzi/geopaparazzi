@@ -339,4 +339,8 @@ public interface LibraryConstants {
      */
     String GEOPAPARAZZI_TEMPLATE_DB_NAME = "geopaparazzi_template.sqlite";
 
+    /**
+     * Key used to define the last picked path.
+     */
+    String PREFS_KEY_LASTPATH = "PREFS_KEY_LASTPATH";
 }

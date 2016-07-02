@@ -23,15 +23,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 
 /**
@@ -156,7 +159,21 @@ public class AppsUtilities {
         }
     }
 
-    public static void pickFile(IActivityStarter activityStarter, int requestCode, String title, String[] filterExtensions, String startPath) {
+    /**
+     * Start a file picking activity.
+     *
+     * @param activityStarter
+     * @param requestCode
+     * @param title
+     * @param filterExtensions
+     * @param startPath
+     * @throws Exception
+     */
+    public static void pickFile(IActivityStarter activityStarter, int requestCode, String title, String[] filterExtensions, String startPath) throws Exception {
+        if (startPath == null) {
+            startPath = Utilities.getLastFilePath(activityStarter.getContext());
+        }
+
         Intent browseIntent = new Intent(activityStarter.getContext(), DirectoryBrowserActivity.class);
         browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, filterExtensions);
         browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, startPath);

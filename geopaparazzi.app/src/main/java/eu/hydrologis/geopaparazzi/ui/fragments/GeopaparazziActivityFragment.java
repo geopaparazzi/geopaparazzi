@@ -60,6 +60,7 @@ import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
@@ -270,7 +271,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             case R.id.action_load: {
                 try {
                     String title = getString(R.string.select_gpap_file);
-                    AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, new String[]{FileTypes.GPAP.getExtension()}, ResourcesManager.getInstance(getActivity()).getSdcardDir().getAbsolutePath());
+                    AppsUtilities.pickFile(this, RETURNCODE_BROWSE_FOR_NEW_PREOJECT, title, new String[]{FileTypes.GPAP.getExtension()}, null);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
@@ -325,6 +326,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                         }
                         File file = new File(filePath);
                         if (file.exists()) {
+                            Utilities.setLastFilePath(getActivity(), filePath);
                             try {
                                 DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), file.getAbsolutePath());
 
