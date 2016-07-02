@@ -50,6 +50,7 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
     private EditText unitText;
     private EditText finalDashText;
     private EditText finalShiftText;
+    private float[] mInitialDash;
 
     /**
      * A simple interface to use to notify color and stroke changes.
@@ -96,7 +97,7 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            float[] mInitialDash = arguments.getFloatArray(PREFS_KEY_STROKEDASH);
+            mInitialDash = arguments.getFloatArray(PREFS_KEY_STROKEDASH);
             if (mInitialDash != null) {
                 mCurrentDash = mInitialDash;
             }
@@ -205,6 +206,8 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
                 dashImages[i].setBackgroundColor(Color.WHITE);
             }
         }
+
+        if (mCurrentDash == null) mCurrentDash = mInitialDash;
         String dashStr = Style.dashToString(mCurrentDash, null);
         finalDashText.setText(dashStr);
         finalShiftText.setText("" + mDashShift);
