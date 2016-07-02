@@ -99,6 +99,7 @@
   <string name="toggle_label_visibility">라벨 보이기 전환</string>
   <string name="label_field">레이블 필드</string>
   <string name="set_properties">속성 설정</string>
+  <string name="set_dash">대시 설정</string>
   <string name="unauthorized_api_key">인증되지 않은 접근입니다. API 키를 확인하십시오.</string>
   <string name="fill_and_stroke_color_title">채움과 테두리 색상</string>
   <string name="fill_color_title">채움 색상</string>

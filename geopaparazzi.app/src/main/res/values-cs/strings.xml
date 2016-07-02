@@ -43,6 +43,7 @@
   <string name="map_zoom">Přiblížit mapu</string>
   <string name="map_delete">Smazat mapu</string>
   <string name="gps_preferences">Nastavení GPS</string>
+  <string name="gps_preferences_summary">Nastavit GPS předvolby jako logování vzdálenosti nebo intervalu.</string>
   <string name="gps_logging_distance">Nejmenší vzdálenost pro GPS záznam</string>
   <string name="gps_logging_interval">Nejmenší interval pro GPS záznam</string>
   <string name="gps_use_android_level">Použít na úrovni Androidu (šetří baterii, vyžaduje opětovné spuštění)</string>
@@ -364,4 +365,21 @@
   <string name="menu_simple_picture">Jeden obrázek</string>
   <string name="menu_simple_sketch">Jeden náčrtek</string>
   <string name="warning_viewcone_gps">Tento nástroj pracuje pouze, je-li dostupná poloha GPS.</string>
+  <string name="premissions_cant_start">Geopaparazzi nelze spustit z důvodu chybějícího oprávnění pro:</string>
+  <string name="log_cleared">Log vyčištěn.</string>
+  <string name="bookmarks_exported">Nové záložky přidány do existujícího souboru:</string>
+  <string name="bookmarks_exported_newfile">Úspěšně exportované záložky:</string>
+  <string name="bookmarks_exported_error">Došlo k chybě při exportu záložek.</string>
+  <string name="bookmarks_import_error">Došlo k chybě při importu záložek.</string>
+  <string name="wms_mapurl_added">Soubor WMS mapurl úspěšně přidán mezi zdroje dat: \n</string>
+  <string name="sortby_none">Žádný</string>
+  <string name="sortby_name">Dle jména</string>
+  <string name="sortby_name_inverse">Dle jména opačně</string>
+  <string name="sortby_mapcenterdist">Dle vzdálenosti od středu mapy</string>
+  <string name="sortby_mapcenterdist_inverse">Dle vzdálenosti od středu mapy opačně</string>
+  <string name="use_as_selection">Použít výběr</string>
+  <string name="only_complex_notes_editing">Upravovat lze pouze složité poznámky. Jednoduché poznámky musí být nahrazeny.</string>
+  <string name="error_while_removing_notes">Došlo k chybě při mazání poznámek:</string>
+  <string name="removing_notes">Odstraňují se poznámky...</string>
+  <string name="interrupted_by_user">Přerušeno uživatelem</string>
 </resources>

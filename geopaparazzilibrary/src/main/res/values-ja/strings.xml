@@ -99,6 +99,7 @@
   <string name="toggle_label_visibility">ラベル表示の切替</string>
   <string name="label_field">ラベルフィールド</string>
   <string name="set_properties">属性設定</string>
+  <string name="set_dash">破線設定</string>
   <string name="unauthorized_api_key">アクセスは許可されていません。API-Keyを確認してください。</string>
   <string name="fill_and_stroke_color_title">塗りつぶしと線色</string>
   <string name="fill_color_title">塗りつぶし色</string>

@@ -372,4 +372,22 @@
   <string name="menu_simple_picture">シンプル画像</string>
   <string name="menu_simple_sketch">シンプルスケッチ</string>
   <string name="warning_viewcone_gps">このツールはGPS座標が利用可能な場合のみ使用できます。</string>
+  <string name="import_bookmark_prompt">リンクデータをブックマークとしてインポートて表示しますか？</string>
+  <string name="premissions_cant_start">パーミッションが許可されていないため、Geopaparazziを開始できませんでした。</string>
+  <string name="log_cleared">ログが消去されました。</string>
+  <string name="bookmarks_exported">既存ファイルに新しいブックマークが追加されました。</string>
+  <string name="bookmarks_exported_newfile">ブックマークがエクスポートされました:</string>
+  <string name="bookmarks_exported_error">ブックマークのエクスポート中にエラーが発生しました 。</string>
+  <string name="bookmarks_import_error">ブックマークのインポート中にエラーが発生しました。</string>
+  <string name="wms_mapurl_added">WMS mapurl ファイルは正常にタイルソースに追加されました:\n</string>
+  <string name="sortby_none">なし</string>
+  <string name="sortby_name">名称</string>
+  <string name="sortby_name_inverse">名称除外</string>
+  <string name="sortby_mapcenterdist">マップ中心距離範囲</string>
+  <string name="sortby_mapcenterdist_inverse">マップ中心距離範囲を除外</string>
+  <string name="use_as_selection">選択とする</string>
+  <string name="only_complex_notes_editing">複合ノートのみが編集可能です。シンプルノートを置換しなければなりません。</string>
+  <string name="error_while_removing_notes">ノート削除中にエラーが発生しました。</string>
+  <string name="removing_notes">ノート削除中...</string>
+  <string name="interrupted_by_user">ユーザーによる中断</string>
 </resources>
