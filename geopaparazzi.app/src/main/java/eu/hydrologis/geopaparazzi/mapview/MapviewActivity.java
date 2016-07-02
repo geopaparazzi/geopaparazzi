@@ -127,6 +127,7 @@ import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.maptools.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.PointMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
@@ -1336,6 +1337,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
             else if (editLayer.isLine())
                 activeToolGroup = new LineMainEditingToolGroup(mMapView);
+            else if (editLayer.isPoint())
+                activeToolGroup = new PointMainEditingToolGroup(mMapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {

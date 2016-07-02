@@ -103,6 +103,14 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
                         case MULTILINESTRING_XYM:
                         case MULTILINESTRING_XYZ:
                         case MULTILINESTRING_XYZM:
+                        case POINT_XY:
+                        case POINT_XYM:
+                        case POINT_XYZ:
+                        case POINT_XYZM:
+                        case MULTIPOINT_XY:
+                        case MULTIPOINT_XYM:
+                        case MULTIPOINT_XYZ:
+                        case MULTIPOINT_XYZM:
                             editableSpatialiteMaps.add(entry.getKey());
                             break;
                         default:
