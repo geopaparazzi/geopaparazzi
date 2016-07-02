@@ -340,6 +340,13 @@ public enum BaseMapSourcesManager {
      */
     public AbstractSpatialTable getSelectedBaseMapTable() {
         if (selectedBaseMapTable == null) {
+            if (mBaseMaps2TablesMap.size() == 0) {
+                try {
+                    getBaseMaps();
+                } catch (java.lang.Exception e) {
+                    GPLog.error(this, null, e);
+                }
+            }
             BaseMap baseMap = mBaseMaps2TablesMap.keySet().iterator().next();
             try {
                 setSelectedBaseMap(baseMap);
