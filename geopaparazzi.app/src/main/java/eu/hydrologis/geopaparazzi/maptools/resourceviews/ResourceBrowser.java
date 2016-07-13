@@ -160,6 +160,7 @@ public class ResourceBrowser extends AppCompatActivity {
 
                         @Override
                         protected void doUiPostWork(String response) {
+                            gridAdapter.notifyDataSetChanged();
                             if (ex != null) {
                                 GPLog.error(this, "ERROR", ex);
                                 GPDialogs.errorDialog(ResourceBrowser.this, ex, null);
@@ -181,6 +182,5 @@ public class ResourceBrowser extends AppCompatActivity {
         } catch (Exception e) {}
         ExternalResource res = new ExternalResource(-1, imgPath, "");
         storage.insertResource(rowId, res, ExternalResource.TYPES.EXTERNAL_IMAGE);
-        gridAdapter.notifyDataSetChanged();
     }
 }
