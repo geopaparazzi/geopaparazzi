@@ -367,4 +367,13 @@
   <string name="menu_simple_picture">Imagen simple</string>
   <string name="menu_simple_sketch">Croquis simple</string>
   <string name="warning_viewcone_gps">Esta función es operativa solo si se dispone de posición GPS</string>
+  <string name="Images">Imágenes</string>
+  <string name="browse_images">Mostrar imágenes</string>
+  <string name="new_picture">Nueva imagen</string>
+
+  <plurals name="n_images">
+    <item quantity="zero">@string/no_images</item>
+    <item quantity="one">1 imagen</item>
+    <item quantity="other">%d imágenes</item>
+  </plurals>
 </resources>

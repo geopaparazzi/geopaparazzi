@@ -304,6 +304,41 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         database.exec(insertQuery, null);
     }
 
+    protected static void createImageField(SpatialVectorTable table) {
+        String GEOPAP_IMG_TYPE = "GEOPAP_TEXTARRAY_IMG";
+        String GEOPAP_IMG_DEFAULT_NAME = "geopapimgs";
+        String GEOPAP_IMG_DEFAULT_VALUE = "'[]'";
+
+        SpatialiteDatabaseHandler spatialiteDatabaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(table);
+        Database database = spatialiteDatabaseHandler.getDatabase();
+        String tableName = table.getTableName();
+
+        try {
+            HashMap<String, String> names2fieldInfo = collectTableFields(database, table.getTableName());
+            String imageField = null;
+            for (String name: names2fieldInfo.keySet()) {
+                String typeInfo = names2fieldInfo.get(name);
+                if (typeInfo.contains(GEOPAP_IMG_TYPE)) {
+                    imageField = name;
+                    break;
+                }
+            }
+            if (imageField==null) {
+                StringBuilder sqlImageField = new StringBuilder();
+                sqlImageField.append("ALTER TABLE ").append(tableName);
+                sqlImageField.append(" ADD COLUMN ");
+                sqlImageField.append(GEOPAP_IMG_DEFAULT_NAME);
+                sqlImageField.append(" ");
+                sqlImageField.append(GEOPAP_IMG_TYPE);
+                sqlImageField.append(" DEFAULT ").append(GEOPAP_IMG_DEFAULT_VALUE);
+                database.exec(sqlImageField.toString(), null);
+            }
+
+            } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Updates the alphanumeric values of a feature in the given database.
      *
@@ -348,6 +383,9 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
 
         String updateQuery = sbIn.toString();
         database.exec(updateQuery, null);
+
+        //SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+        //createImageField(table);
     }
 
     private static String escapeString(String value) {

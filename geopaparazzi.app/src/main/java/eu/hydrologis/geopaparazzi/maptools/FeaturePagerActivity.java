@@ -33,7 +33,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -44,6 +43,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+import eu.hydrologis.geopaparazzi.maptools.resourceviews.ResourceBrowser;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -68,6 +68,9 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     private TextView dbNameView;
     private Feature selectedFeature;
     private boolean isReadOnly;
+    public final static String TABLENAME_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.TABLEVIEW";
+    public final static String DBPATH_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.DBPATH";
+    public final static String ROWID_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.ROWID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,17 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_goto) {
             gotoFeature();
-        } else if (item.getItemId() == R.id.action_save) {
+        }
+        else if (item.getItemId() == R.id.action_image_browser) {
+            Intent intent = new Intent(this, ResourceBrowser.class);
+            String tableName = selectedFeature.getTableName();
+            SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(selectedFeature);
+            intent.putExtra(TABLENAME_EXTRA_MESSAGE, tableName);
+            intent.putExtra(DBPATH_EXTRA_MESSAGE, selectedFeature.getDatabasePath());
+            intent.putExtra(ROWID_EXTRA_MESSAGE, selectedFeature.getId());
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.action_save) {
             int dirtyCount = 0;
             for (Feature feature : featuresList) {
                 if (feature.isDirty()) {

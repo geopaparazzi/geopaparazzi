@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".maptools.resourceviews.ResourceBrowser">
+
+    <LinearLayout
+        android:id="@+id/mainresourcesbrowser"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/GeopapTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/GeopapTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/main_background"
+            android:padding="10dip">
+            <GridView
+                android:id="@+id/resourcesGridView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:columnWidth="100dp"
+                android:drawSelectorOnTop="true"
+                android:gravity="center"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="5dp"
+                android:focusable="true"
+                android:clickable="true"/>
+
+
+            <TextView
+                android:id="@+id/numImages"
+                style="@style/GPTextViewStyle"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp"
+                android:gravity="center_vertical"
+                android:text="@string/no_images"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

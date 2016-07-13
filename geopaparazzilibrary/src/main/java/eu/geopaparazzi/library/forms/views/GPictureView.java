@@ -42,7 +42,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -132,7 +132,7 @@ public class GPictureView extends View implements GView {
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
                 String imageName = ImageUtilities.getCameraImageName(null);
-                Intent cameraIntent = new Intent(activity, CameraActivity.class);
+                Intent cameraIntent = new Intent(activity, CameraNoteActivity.class);
                 cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageName);
                 cameraIntent.putExtra(LibraryConstants.DATABASE_ID, noteId);
                 if (gpsLocation != null) {

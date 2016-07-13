@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Geopaparazzi - Digital field mapping on Android based devices
   ~ Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+  ~ Copyright (C) 2016  Scolab (www.scolab.es)
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,26 +21,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activities.ProjectMetadataActivity">
+    tools:context="eu.hydrologis.geopaparazzi.maptools.resourceviews.ResourceBrowser">
 
     <item
-        android:id="@+id/action_goto"
-        android:icon="@drawable/ic_goto_24dp"
+        android:id="@+id/capture_picture"
+        android:icon="@drawable/mapview_zoomin"
         android:orderInCategory="10"
-        android:title="@string/goto_feature"
+        android:title="@string/new_picture"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_image_browser"
-        android:icon="@drawable/mapview_viewingcone_off"
-        android:orderInCategory="10"
-        android:title="@string/browse_images"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/action_save"
-        android:icon="@drawable/ic_save_24dp"
-        android:orderInCategory="11"
-        android:title="@string/save"
-        app:showAsAction="ifRoom" />
 </menu>
