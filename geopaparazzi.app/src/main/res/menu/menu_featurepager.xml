@@ -30,7 +30,7 @@
 
     <item
         android:id="@+id/action_image_browser"
-        android:icon="@drawable/mapview_viewingcone_off"
+        android:icon="@drawable/ic_photo_camera_black_24dp"
         android:orderInCategory="10"
         android:title="@string/browse_images"
         app:showAsAction="ifRoom" />
