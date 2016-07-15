@@ -45,14 +45,14 @@ public class ResourceStorage {
         this.database = database;
     }
 
-    public List<ExternalResource> getExternalResources(long rowId, ExternalResource.TYPES type) {
+    public List<ExternalResource> getExternalResources(long rowIdFk, ExternalResource.TYPES type) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT ");
         buffer.append(ID_FIELD).append(", ").append(RESPATH_FIELD).append(", ").append(RESNAME_FIELD);
         buffer.append(" FROM ").append(AUX_TABLE_NAME);
         buffer.append(" WHERE ");
         buffer.append(RESTABLE_FIELD).append("='").append(this.tableName).append("' AND ");
-        buffer.append(ROWFK_FIELD).append("=").append(rowId).append(" AND ");
+        buffer.append(ROWFK_FIELD).append("=").append(rowIdFk).append(" AND ");
         buffer.append(RESTYPE_FIELD).append("='").append(type.toString()).append("'");
 
         String sqlCommand = buffer.toString();
@@ -82,7 +82,41 @@ public class ResourceStorage {
         return result;
     }
 
-    public void insertResource(long rowId, ExternalResource res, ExternalResource.TYPES type) {
+    public ExternalResource getExternalResource(long id) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT ");
+        buffer.append(RESPATH_FIELD).append(", ").append(RESNAME_FIELD);
+        buffer.append(" FROM ").append(AUX_TABLE_NAME);
+        buffer.append(" WHERE ");
+        buffer.append(RESTABLE_FIELD).append("='").append(this.tableName).append("' AND ");
+        buffer.append(ID_FIELD).append("=").append(id);
+
+        String sqlCommand = buffer.toString();
+        Stmt statement = null;
+        try {
+            statement = database.prepare(sqlCommand);
+            if (statement.step()) {
+                String path = statement.column_string(0);
+                String name = statement.column_string(1);
+                return new ExternalResource(id, path, name);
+            }
+        } catch (Exception e) {
+            GPLog.error("DAO" +
+                            "SPATIALITE",
+                    "Error in checkResTableExists sql[" + sqlCommand + "] db[" + database.getFilename() + "]", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (Exception e) {
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void insertResource(long rowIdFk, ExternalResource res, ExternalResource.TYPES type) {
         // INSERT INTO AUX_TABLE_NAME
         // (RESTABLE_FIELD. ROWFK_FIELD. RESTYPE_FIELD, RESNAME_FIELD, RESPATH_FIELD) VALUES ()
         StringBuffer buffer = new StringBuffer();
@@ -95,7 +129,7 @@ public class ResourceStorage {
         buffer.append(RESPATH_FIELD);
         buffer.append(") VALUES ('");
         buffer.append(this.tableName).append("', ");
-        buffer.append(Long.toString(rowId)).append(", '");
+        buffer.append(Long.toString(rowIdFk)).append(", '");
         buffer.append(type.toString()).append("', '");
         buffer.append(res.getName()).append("', '");
         buffer.append(res.getPath());
@@ -120,32 +154,27 @@ public class ResourceStorage {
         }
     }
 
-    public void deleteResource(long rowId, ExternalResource res) {
+    public void deleteResource(long rowId) {
         //FIXME: should we also filter by TYPE? should we store a resource PK?
         StringBuffer buffer = new StringBuffer();
         buffer.append("DELETE FROM ").append(AUX_TABLE_NAME);
         buffer.append(" WHERE ");
-        buffer.append(ID_FIELD).append("=%?");
-        String[] args = new String[] {Long.toString(res.getId())};
+        buffer.append(ID_FIELD).append("=").append(rowId);
         String sqlCommand = buffer.toString();
+        Stmt statement = null;
         try {
-            database.exec(sqlCommand, new Callback() {
-                @Override
-                public void columns(String[] coldata) {}
-
-                @Override
-                public void types(String[] types) {}
-
-                @Override
-                public boolean newrow(String[] rowdata) {
-                    return false;
-                }
-            }, args);
+            statement = database.prepare(sqlCommand);
+            statement.step();
         } catch (Exception e) {
             GPLog.error("DAO" +
                             "SPATIALITE",
                     "Error in checkResTableExists sql[" + sqlCommand + "] db[" + database.getFilename() + "]", e);
         } finally {
+            if (statement!=null) {
+                try {
+                    statement.close();
+                } catch (Exception e) {}
+            }
         }
     }
 

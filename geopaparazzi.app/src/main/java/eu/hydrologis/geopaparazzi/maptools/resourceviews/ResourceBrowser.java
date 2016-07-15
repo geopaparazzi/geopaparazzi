@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -20,11 +21,13 @@ import java.util.List;
 
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ExternalResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ResourceStorage;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -41,7 +44,7 @@ import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 public class ResourceBrowser extends AppCompatActivity {
     private static final int CAMERA_RETURN_CODE = 667;
     private GridView gridView;
-    private ImageGridViewAdapter gridAdapter;
+    private ImageGridViewAdapter<ImageItem> gridAdapter;
     private ResourceStorage storage;
     private long rowId = -1;
     private TextView numImagesView;
@@ -78,10 +81,49 @@ public class ResourceBrowser extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.resourcesGridView);
         numImagesView = (TextView) findViewById(R.id.numImages);
-        gridAdapter = new ImageGridViewAdapter(this, R.layout.fragment_image_item, getData());
+        gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, getData());
         gridView.setAdapter(gridAdapter);
 
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
+                removeImage(item);
+                return true;
+            }
 
+        });
+
+    }
+
+    protected void removeImage(ImageItem item) {
+        ExternalResource res = (ExternalResource)item.getResource();
+        final ImageItem theItem = item;
+        final long theId = res.getId();
+        final String imgPath = res.getPath();
+        if (theId >= 0){
+            GPDialogs.yesNoMessageDialog(ResourceBrowser.this, getString(R.string.confirm_remove_image), new Runnable() {
+                @Override
+                public void run() {
+                    storage.deleteResource(theId);
+                    File f = new File(imgPath);
+                    if (f.exists()) {
+                        f.delete();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                gridAdapter.remove(theItem);
+                            } catch (Exception e) {
+                                GPLog.error(this, null, e);
+                            }
+                        }
+                    });
+
+                }
+            }, null);
+        }
     }
 
     protected void startCameraActivity() {
@@ -111,7 +153,7 @@ public class ResourceBrowser extends AppCompatActivity {
             }
 
             Bitmap bitmap = ImageUtilities.decodeSampledBitmapFromFile(absPath, 100, 100);
-            imageItems.add(new ImageItem(bitmap, "Image#" + i++));
+            imageItems.add(new ImageItem(bitmap, "Image#" + i++, r));
         }
         String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
         numImagesView.setText(text);

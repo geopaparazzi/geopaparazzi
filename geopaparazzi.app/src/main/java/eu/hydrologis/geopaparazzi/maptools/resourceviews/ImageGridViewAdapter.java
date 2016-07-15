@@ -16,7 +16,7 @@ import eu.geopaparazzi.spatialite.R;
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
-public class ImageGridViewAdapter extends ArrayAdapter {
+public class ImageGridViewAdapter<T> extends ArrayAdapter<T> {
 
     private Context context;
     private int layoutResourceId;
