@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -120,9 +121,22 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_geopaparazzi, container, false);
 
+        // TODO remove after foss4g
+        final View foss4GLayout = v.findViewById(R.id.foss4gLayout);
+        ImageView foss4GImg = (ImageView) v.findViewById(R.id.foss4g);
+        foss4GImg.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("http://2016.foss4g.org/ws20.html"));
+                startActivity(intent);
+                foss4GLayout.setVisibility(View.GONE);
+            }
+        });
+
         // this fragment adds to the menu
         setHasOptionsMenu(true);
-
 
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
