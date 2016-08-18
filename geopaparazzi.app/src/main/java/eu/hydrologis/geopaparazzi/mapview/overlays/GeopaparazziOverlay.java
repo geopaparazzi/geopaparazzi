@@ -467,10 +467,21 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int intrinsicHeight = itemMarker.getIntrinsicHeight() / 2;
 
             // calculate the bounding box of the marker
-            int left = this.itemPosition.x + intrinsicWidth / 2 - intrinsicWidth;
-            int right = this.itemPosition.x + intrinsicWidth / 2 + intrinsicWidth;
-            int top = this.itemPosition.y + intrinsicHeight / 2 - intrinsicHeight;
-            int itemBottom = this.itemPosition.y + intrinsicHeight / 2 + intrinsicHeight;
+            int left;
+            int right;
+            int top;
+            int itemBottom;
+            if (overlayItem instanceof NoteOverlayItem) {
+                left = this.itemPosition.x - intrinsicWidth;
+                right = this.itemPosition.x + intrinsicWidth;
+                top = this.itemPosition.y - intrinsicHeight;
+                itemBottom = this.itemPosition.y + intrinsicHeight;
+            } else {
+                left = this.itemPosition.x + intrinsicWidth / 2 - intrinsicWidth;
+                right = this.itemPosition.x + intrinsicWidth / 2 + intrinsicWidth;
+                top = this.itemPosition.y + intrinsicHeight / 2 - intrinsicHeight;
+                itemBottom = this.itemPosition.y + intrinsicHeight / 2 + intrinsicHeight;
+            }
 
             // check if the bounding box of the marker intersects with the canvas
             if (right >= 0 && left <= canvasWidth && itemBottom >= 0 && top <= canvasHeight) {

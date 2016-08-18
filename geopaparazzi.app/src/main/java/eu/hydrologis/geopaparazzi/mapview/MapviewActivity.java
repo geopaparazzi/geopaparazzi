@@ -481,21 +481,23 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             /* images */
             if (imagesVisible) {
                 Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_images_48dp);
-                Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
+                Drawable newImageMarker = imageMarker;//ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 mDataOverlay.addItems(imagesOverlaysList);
             }
 
             /* gps notes */
             if (notesVisible) {
-                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
+//                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth() , notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
+//                        notesDrawable.getIntrinsicHeight() / 2);
+                Drawable newNotesMarker = notesDrawable;//ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
                 mDataOverlay.addItems(noteOverlaysList);
             }
 
             /* bookmarks */
             Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_bookmarks_48dp);
-            Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
+            Drawable newBookmarkMarker = bookmarkMarker;//ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);
 
