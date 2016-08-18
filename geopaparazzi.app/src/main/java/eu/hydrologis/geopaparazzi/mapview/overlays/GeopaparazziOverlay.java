@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -635,89 +636,95 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
             List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
             Collections.sort(spatialiteMaps, new SpatialiteMapOrderComparator());
-            for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-                if (stopDrawing()) {
-                    // stop working
-                    return;
-                }
-                if (!spatialiteMap.isVisible) {
-                    continue;
-                }
-                SpatialiteDatabaseHandler spatialDatabaseHandler = spatialiteMaps2DbHandlersMap.get(spatialiteMap);
-                SpatialVectorTable spatialTable = spatialiteMaps2TablesMap.get(spatialiteMap);
-                Style style = spatialTable.getStyle();
-                if (drawZoomLevel < style.minZoom || drawZoomLevel > style.maxZoom) {
-                    // we do not draw outside of the zoom levels
-                    continue;
-                }
-
-                GeometryIterator geometryIterator = null;
-                try {
-                    Paint fill = null;
-                    Paint stroke = null;
-                    if (style.fillcolor != null && style.fillcolor.trim().length() > 0)
-                        fill = spatialDatabaseHandler.getFillPaint4Style(style);
-                    if (style.strokecolor != null && style.strokecolor.trim().length() > 0)
-                        stroke = spatialDatabaseHandler.getStrokePaint4Style(style);
-                    PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
-                            drawZoomLevel);
-                    ShapeWriter shapeWriter;
-                    ShapeWriter shape_writer_point = null;
-                    if (spatialTable.isPoint()) {
-                        shapeWriter = new ShapeWriter(pointTransformer, style.shape,
-                                style.size);
-                    } else {
-                        shapeWriter = new ShapeWriter(pointTransformer);
-                        if (spatialTable.isGeometryCollection()) {
-                            shape_writer_point = new ShapeWriter(pointTransformer, style.shape,
-                                    style.size);
-                        }
+            try {
+                for (SpatialiteMap spatialiteMap : spatialiteMaps) {
+                    if (stopDrawing()) {
+                        // stop working
+                        return;
                     }
-                    shapeWriter.setRemoveDuplicatePoints(true);
-                    shapeWriter.setDecimation(style.decimationFactor);
-                    geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds(
-                            LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
-                    while (geometryIterator.hasNext()) {
-                        Geometry geom = geometryIterator.next();
-                        if (geom != null) {
-                            if (!canvasEnvelope.intersects(geom.getEnvelopeInternal())) {
-                                // TODO check the performance impact of this
-                                continue;
-                            }
+                    if (!spatialiteMap.isVisible) {
+                        continue;
+                    }
+                    SpatialiteDatabaseHandler spatialDatabaseHandler = spatialiteMaps2DbHandlersMap.get(spatialiteMap);
+                    SpatialVectorTable spatialTable = spatialiteMaps2TablesMap.get(spatialiteMap);
+                    Style style = spatialTable.getStyle();
+                    if (drawZoomLevel < style.minZoom || drawZoomLevel > style.maxZoom) {
+                        // we do not draw outside of the zoom levels
+                        continue;
+                    }
+
+                    GeometryIterator geometryIterator = null;
+                    try {
+                        Paint fill = null;
+                        Paint stroke = null;
+                        if (style.fillcolor != null && style.fillcolor.trim().length() > 0)
+                            fill = spatialDatabaseHandler.getFillPaint4Style(style);
+                        if (style.strokecolor != null && style.strokecolor.trim().length() > 0)
+                            stroke = spatialDatabaseHandler.getStrokePaint4Style(style);
+                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
+                                drawZoomLevel);
+                        ShapeWriter shapeWriter;
+                        ShapeWriter shape_writer_point = null;
+                        if (spatialTable.isPoint()) {
+                            shapeWriter = new ShapeWriter(pointTransformer, style.shape,
+                                    style.size);
+                        } else {
+                            shapeWriter = new ShapeWriter(pointTransformer);
                             if (spatialTable.isGeometryCollection()) {
-                                int geometriesCount = geom.getNumGeometries();
-                                for (int j = 0; j < geometriesCount; j++) {
-                                    Geometry geom_collect = geom.getGeometryN(j);
-                                    if (geom_collect != null) {
-                                        String geometryType = geom_collect.getGeometryType();
-                                        if (geometryType.toUpperCase().contains("POINT")) {
-                                            drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
-                                        } else {
-                                            drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
+                                shape_writer_point = new ShapeWriter(pointTransformer, style.shape,
+                                        style.size);
+                            }
+                        }
+                        shapeWriter.setRemoveDuplicatePoints(true);
+                        shapeWriter.setDecimation(style.decimationFactor);
+                        geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds(
+                                LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
+                        while (geometryIterator.hasNext()) {
+                            Geometry geom = geometryIterator.next();
+                            if (geom != null) {
+                                if (!canvasEnvelope.intersects(geom.getEnvelopeInternal())) {
+                                    // TODO check the performance impact of this
+                                    continue;
+                                }
+                                if (spatialTable.isGeometryCollection()) {
+                                    int geometriesCount = geom.getNumGeometries();
+                                    for (int j = 0; j < geometriesCount; j++) {
+                                        Geometry geom_collect = geom.getGeometryN(j);
+                                        if (geom_collect != null) {
+                                            String geometryType = geom_collect.getGeometryType();
+                                            if (geometryType.toUpperCase().contains("POINT")) {
+                                                drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
+                                            } else {
+                                                drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
+                                            }
+                                            if (stopDrawing()) { // stop working
+                                                return;
+                                            }
                                         }
-                                        if (stopDrawing()) { // stop working
-                                            return;
-                                        }
+                                    }
+                                } else {
+                                    drawGeometry(geom, canvas, shapeWriter, fill, stroke);
+                                    if (stopDrawing()) { // stop working
+                                        return;
                                     }
                                 }
                             } else {
-                                drawGeometry(geom, canvas, shapeWriter, fill, stroke);
-                                if (stopDrawing()) { // stop working
-                                    return;
-                                }
+                                GPLog.error(this, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
+                                        + spatialTable.getTableName() + "]", new NullPointerException());
                             }
-                        } else {
-                            GPLog.error(this, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getTableName() + "]", new NullPointerException());
                         }
+                    } finally {
+                        if (geometryIterator != null)
+                            geometryIterator.close();
                     }
-                } finally {
-                    if (geometryIterator != null)
-                        geometryIterator.close();
+
+
                 }
-
-
+            } catch (ConcurrentModificationException cme) {
+                GPLog.error(this, "Error while looping on spatialite maps, skipped rendering.", cme);
+                return;
             }
+
 
             /*
              * draw labels
