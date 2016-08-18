@@ -212,6 +212,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     }
 
     private void getFiles(File parent, File[] files) {
+        if (files == null || files.length == 0 || files[0] == null) return;
         Arrays.sort(files);
         currentDir = parent;
         filesList.clear();

@@ -56,7 +56,7 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
             if (activity.checkSelfPermission(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                     PackageManager.PERMISSION_GRANTED) {
-    
+
                 if (canAskPermission) {
                     if (activity.shouldShowRequestPermissionRationale(
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -93,7 +93,7 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
         if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             return true;
         return false;
     }
