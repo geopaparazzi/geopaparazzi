@@ -319,7 +319,7 @@
 
         <activity android:name="com.google.android.apps.markers.MarkersActivity" />
         <activity android:name="eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity" />
-
+        <activity android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
 
         <provider
             android:name=".providers.SourceUrlsContentProvider"

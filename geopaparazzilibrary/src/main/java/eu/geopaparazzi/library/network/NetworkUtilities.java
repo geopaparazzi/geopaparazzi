@@ -456,6 +456,7 @@ public class NetworkUtilities {
      * @throws Exception if something goes wrong.
      */
     public static String sendGetRequest(String urlStr, String requestParameters, String user, String password) throws Exception {
+        if (!urlStr.startsWith("http")) urlStr = "http://" + urlStr;
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;
         }
@@ -489,7 +490,7 @@ public class NetworkUtilities {
 
     /**
      * Download a bitmap from a given url.
-     *
+     * <p/>
      * http://android-developers.blogspot.it/2010/07/multithreading-for-performance.html
      *
      * @param url the url.
