@@ -103,7 +103,12 @@ public class MBTilesDroidSpitter {
     public void open(boolean fetchMetadata, String metadataVersion) {
         if (!metadataVersion.equals(""))
             this.s_metadataVersion = metadataVersion;
-        db_mbtiles = SQLiteDatabase.openOrCreateDatabase(file_mbtiles, null);
+        try {
+            db_mbtiles = SQLiteDatabase.openOrCreateDatabase(file_mbtiles, null);
+        } catch (Exception e) {
+            // try to open it readonly
+            db_mbtiles = SQLiteDatabase.openDatabase(file_mbtiles.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY);
+        }
         if (!fetchMetadata)
             return;
         try {

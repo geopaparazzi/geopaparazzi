@@ -267,8 +267,8 @@ public class NetworkUtilities {
         FileInputStream fis = null;
         HttpURLConnection conn = null;
         try {
-            fis = new FileInputStream(file);
             long fileSize = file.length();
+            fis = new FileInputStream(file);
             // Authenticator.setDefault(new Authenticator(){
             // protected PasswordAuthentication getPasswordAuthentication() {
             // return new PasswordAuthentication("test", "test".toCharArray());
@@ -279,13 +279,13 @@ public class NetworkUtilities {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            // conn.setChunkedStreamingMode(0);
+//            conn.setChunkedStreamingMode(0);
             conn.setUseCaches(true);
 
             // conn.setRequestProperty("Accept-Encoding", "gzip ");
             // conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Type", "application/octet-stream");
-            // conn.setRequestProperty("Content-Length", "" + fileSize);
+            conn.setRequestProperty("Content-Length", "" + fileSize);
             // conn.setRequestProperty("Connection", "Keep-Alive");
 
             if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
