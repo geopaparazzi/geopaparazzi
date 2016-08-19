@@ -481,23 +481,23 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             /* images */
             if (imagesVisible) {
                 Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_images_48dp);
-                Drawable newImageMarker = imageMarker;//ArrayGeopaparazziOverlay.boundCenter(imageMarker);
+                Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
                 mDataOverlay.addItems(imagesOverlaysList);
             }
 
             /* gps notes */
             if (notesVisible) {
-//                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth() , notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
-//                        notesDrawable.getIntrinsicHeight() / 2);
-                Drawable newNotesMarker = notesDrawable;//ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
+                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth() , notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
+                        notesDrawable.getIntrinsicHeight() / 2);
+                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
                 mDataOverlay.addItems(noteOverlaysList);
             }
 
             /* bookmarks */
             Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_bookmarks_48dp);
-            Drawable newBookmarkMarker = bookmarkMarker;//ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
+            Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             mDataOverlay.addItems(bookmarksOverlays);
 
