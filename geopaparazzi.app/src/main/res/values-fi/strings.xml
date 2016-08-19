@@ -267,6 +267,7 @@
   <string name="geom_incompatible_with_layer">Tulosgeometria ei ole yhteensopiva kohdetason kanssa.</string>
   <string name="selected_features_in_layer">Valittu %1$d ominaisuutta %2$d monikulmiossa.</string>
   <string name="selected_line_features_in_layer">Valittu %1$d ominaisuutta mukana %2$d riviä.</string>
+  <string name="selected_point_features_in_layer">Valitut %1$d ominaisuudet joissa %2$d pistettä.</string>
   <string name="no_compatible_layers_found">Yhteensopivia tasoja ei löytynyt</string>
   <string name="copied_features_to_layer">Kopioitiin %1$d geometraa tasolle: %2$s</string>
   <string name="area_colon">Ala:</string>

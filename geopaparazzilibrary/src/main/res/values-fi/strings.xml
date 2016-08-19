@@ -99,6 +99,7 @@
   <string name="toggle_label_visibility">Vaihda nimiön näkyvyyttä</string>
   <string name="label_field">Nimiötieto</string>
   <string name="set_properties">Aseta ominaisuudet</string>
+  <string name="set_dash">Aseta nopeus</string>
   <string name="unauthorized_api_key">Luvaton käyttö. Tarkista API-avaimesi.</string>
   <string name="fill_and_stroke_color_title">Täytön ja vahvistuksen väri</string>
   <string name="fill_color_title">Täyttöväri</string>
