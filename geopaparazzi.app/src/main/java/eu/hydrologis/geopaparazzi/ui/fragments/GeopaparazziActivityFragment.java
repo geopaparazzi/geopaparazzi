@@ -84,6 +84,7 @@ import eu.hydrologis.geopaparazzi.utilities.Constants;
 import eu.hydrologis.geopaparazzi.utilities.IApplicationChangeListener;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
  * The fragment of the main geopap view.
@@ -122,18 +123,29 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         View v = inflater.inflate(R.layout.fragment_geopaparazzi, container, false);
 
         // TODO remove after foss4g
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean do_foss4G_screen = preferences.getBoolean("DO_FOSS4G_SCREEN", true);
         final View foss4GLayout = v.findViewById(R.id.foss4gLayout);
-        ImageView foss4GImg = (ImageView) v.findViewById(R.id.foss4g);
-        foss4GImg.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse("http://2016.foss4g.org/ws20.html"));
-                startActivity(intent);
-                foss4GLayout.setVisibility(View.GONE);
-            }
-        });
+        if (do_foss4G_screen) {
+            ImageView foss4GImg = (ImageView) v.findViewById(R.id.foss4g);
+            foss4GImg.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse("http://2016.foss4g.org/ws20.html"));
+                    startActivity(intent);
+                    foss4GLayout.setVisibility(View.GONE);
+                }
+            });
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("DO_FOSS4G_SCREEN", false);
+            editor.apply();
+        } else {
+            foss4GLayout.setVisibility(View.GONE);
+        }
+
 
         // this fragment adds to the menu
         setHasOptionsMenu(true);
