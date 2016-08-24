@@ -123,7 +123,7 @@ public class SpatialiteUtilities {
             qSb.append(table.getStyle().labelfield);
         }
         qSb.append(" FROM ");
-        qSb.append(table.getTableName());
+        qSb.append("\"").append(table.getTableName()).append("\"");
         // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
         // the SpatialIndex could be fulfilled, but checking the Geometry could return the result
         // that it is not

@@ -41,6 +41,7 @@ import java.util.List;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -118,7 +119,6 @@ public class WebDataListActivity extends ListActivity {
                 String defaultName = "spatialite_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".sqlite";
 
                 GPDialogs.inputMessageDialog(WebDataListActivity.this, "Set name for downloaded database", defaultName, new TextRunnable() {
-                    public ProgressDialog downloadDatabaseDialog;
 
                     @Override
                     public void run() {
@@ -137,14 +137,17 @@ public class WebDataListActivity extends ListActivity {
                     }
 
                     private void downloadData(final String json) {
-                        downloadDatabaseDialog = ProgressDialog.show(WebDataListActivity.this, getString(R.string.downloading),
-                                getString(R.string.downloading_data_from_server));
-                        new AsyncTask<String, Void, String>() {
 
-                            protected String doInBackground(String... params) {
+                        final StringAsyncTask stringAsyncTask = new StringAsyncTask(WebDataListActivity.this) {
+                            @Override
+                            protected String doBackgroundWork() {
                                 WebDataListActivity context = WebDataListActivity.this;
                                 try {
-                                    WebDataManager.INSTANCE.downloadData(WebDataListActivity.this, url, user, pwd, json, theTextToRunOn);
+                                    String errorMessage = WebDataManager.INSTANCE.downloadData(WebDataListActivity.this, url, user, pwd, json, theTextToRunOn);
+                                    if (errorMessage != null) {
+                                        return errorMessage;
+                                    }
+
                                     return ""; //$NON-NLS-1$
                                 } catch (Exception e) {
                                     GPLog.error(this, null, e);
@@ -152,18 +155,26 @@ public class WebDataListActivity extends ListActivity {
                                 }
                             }
 
-                            protected void onPostExecute(String response) { // on UI thread!
-                                GPDialogs.dismissProgressDialog(downloadDatabaseDialog);
+                            @Override
+                            protected void doUiPostWork(String response) {
+                                dispose();
                                 WebDataListActivity context = WebDataListActivity.this;
                                 String okMsg = getString(R.string.data_successfully_downloaded);
                                 if (response.startsWith(ERROR)) {
-                                    GPDialogs.warningDialog(WebDataListActivity.this, response, null);
+                                    GPDialogs.warningDialog(context, response, null);
                                 } else {
-                                    GPDialogs.infoDialog(WebDataListActivity.this, okMsg, null);
+                                    GPDialogs.infoDialog(context, okMsg, null);
                                 }
                             }
+                        };
 
-                        }.execute((String) null);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                stringAsyncTask.setProgressDialog(getString(R.string.downloading), getString(R.string.downloading_data_from_server), false, null);
+                                stringAsyncTask.execute();
+                            }
+                        });
 
                     }
 
@@ -222,6 +233,7 @@ public class WebDataListActivity extends ListActivity {
                 TextView geomTypeText = (TextView) rowView.findViewById(R.id.geomtypetext);
                 TextView sridText = (TextView) rowView.findViewById(R.id.sridtext);
                 final CheckBox selectedBox = (CheckBox) rowView.findViewById(R.id.selectedCheck);
+                selectedBox.setChecked(webDataLayer.isSelected);
                 selectedBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -232,7 +244,7 @@ public class WebDataListActivity extends ListActivity {
                 titleText.setText(webDataLayer.name);
                 descriptionText.setText(webDataLayer.title);
                 geomTypeText.setText(webDataLayer.geomtype);
-                sridText.setText(webDataLayer.srid);
+                sridText.setText("" + webDataLayer.srid);
                 return rowView;
             }
         };

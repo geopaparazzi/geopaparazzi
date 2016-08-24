@@ -254,11 +254,11 @@ public class NetworkUtilities {
     /**
      * Sends a string via POST to a given url expecting a file in return.
      *
-     * @param context      the context to use.
-     * @param urlStr       the url to which to send to.
-     * @param string       the string to send as post body.
-     * @param user         the user or <code>null</code>.
-     * @param password     the password or <code>null</code>.
+     * @param context  the context to use.
+     * @param urlStr   the url to which to send to.
+     * @param string   the string to send as post body.
+     * @param user     the user or <code>null</code>.
+     * @param password the password or <code>null</code>.
      * @return the response.
      * @throws Exception if something goes wrong.
      */
@@ -267,6 +267,10 @@ public class NetworkUtilities {
         BufferedOutputStream wr = null;
         HttpURLConnection conn = null;
         try {
+            if (!urlStr.endsWith("/")) {
+                urlStr = urlStr + "/";
+            }
+
             conn = makeNewConnection(urlStr);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -288,6 +292,7 @@ public class NetworkUtilities {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream in = null;
                 FileOutputStream out = null;
+                long bytesCount = 0;
                 try {
                     in = conn.getInputStream();
                     out = new FileOutputStream(outputFile);
@@ -297,6 +302,7 @@ public class NetworkUtilities {
                     while (bytesRead > 0) {
                         out.write(buffer, 0, bytesRead);
                         bytesRead = in.read(buffer, 0, (int) maxBufferSize);
+                        bytesCount += bytesRead;
                     }
                     out.flush();
                 } finally {
@@ -304,6 +310,9 @@ public class NetworkUtilities {
                         in.close();
                     if (out != null)
                         out.close();
+                }
+                if (bytesCount == 0) {
+                    throw new RuntimeException("Error downloading the data. Buffer was empty.");
                 }
             } else {
                 throw new RuntimeException("Error downloading the data. Got error code: " + responseCode);
@@ -555,7 +564,7 @@ public class NetworkUtilities {
 
     /**
      * Download a bitmap from a given url.
-     * <p>
+     * <p/>
      * http://android-developers.blogspot.it/2010/07/multithreading-for-performance.html
      *
      * @param url the url.

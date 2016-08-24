@@ -99,7 +99,7 @@ public enum WebDataManager {
      * @param server     the server from which to download.
      * @param user       the username for authentication.
      * @param passwd     the password for authentication.
-     * @return the return code.
+     * @return the error message or null.
      */
     public String downloadData(Context context, String server, String user, String passwd, String postJson, String outputFileName) {
         String downloadedProjectFileName = "no information available";
@@ -114,7 +114,12 @@ public enum WebDataManager {
             server = addActionPath(server, DOWNLOAD_DATA);
             NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile);
 
-            return context.getString(R.string.project_successfully_downloaded);
+            long fileLength = downloadeddataFile.length();
+            if (fileLength == 0){
+                throw new RuntimeException("Error in downloading file.");
+            }
+
+            return null;
         } catch (Exception e) {
             GPLog.error(this, null, e);
             String message = e.getMessage();
@@ -176,7 +181,7 @@ public enum WebDataManager {
             String geomtype = projectObject.getString("geomtype");
             int srid = projectObject.getInt("srid");
             String permissions = projectObject.getString("permissions");
-            long lastEdited = projectObject.getLong("last-edited");
+            long lastEdited = projectObject.getLong("last-modified");
 
             WebDataLayer wdl = new WebDataLayer();
             wdl.name = name;
