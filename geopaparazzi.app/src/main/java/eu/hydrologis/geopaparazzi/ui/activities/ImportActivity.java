@@ -53,6 +53,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.webproject.WebDataListActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
@@ -123,6 +124,34 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 }
 
                 Intent webImportIntent = new Intent(ImportActivity.this, WebProjectsListActivity.class);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, server);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);
+                startActivity(webImportIntent);
+            }
+        });
+
+        Button cloudSpatialiteImportButton = (Button) findViewById(R.id.cloudSpatialiteImportButton);
+        cloudSpatialiteImportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                final ImportActivity context = ImportActivity.this;
+
+                if (!NetworkUtilities.isNetworkAvailable(context)) {
+                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
+                    return;
+                }
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ImportActivity.this);
+                final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
+                final String passwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
+                final String server = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
+
+                if (server.length() == 0) {
+                    GPDialogs.infoDialog(context, getString(R.string.error_set_cloud_settings), null);
+                    return;
+                }
+
+                Intent webImportIntent = new Intent(ImportActivity.this, WebDataListActivity.class);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, server);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);

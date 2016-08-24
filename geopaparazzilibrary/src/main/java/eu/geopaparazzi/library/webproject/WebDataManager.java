@@ -17,6 +17,12 @@
  */
 package eu.geopaparazzi.library.webproject;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -24,72 +30,59 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
- * Singleton to handle projects to/from cloud up- and download.
+ * Singleton to handle cloud up- and download.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum WebProjectManager {
+public enum WebDataManager {
     /**
      * Singleton instance.
      */
     INSTANCE;
 
     /**
-     * The relative path appended to the server url to compose the upload url.
+     * The relative path appended to the server url to compose the get layers info url.
      */
-    public static String UPLOADPATH = "stage_gpproject_upload";
+    public static String GET_LAYERS_INFO = "sync/layerinfo";
 
     /**
-     * The relative path appended to the server url to compose the download projects list url.
+     * The relative path appended to the server url to compose the download data url.
      */
-    public static String DOWNLOADLISTPATH = "stage_gplist_download";
+    public static String DOWNLOAD_DATA = "sync/download";
 
-    public static String DOWNLOADPROJECTPATH = "stage_gpproject_download";
-
-    /**
-     * The id parameter name to use in the server url.
-     */
-    public static String ID = "id";
-
-    /**
-     * Uploads a project folder as zip to the given server via POST.
-     *
-     * @param context the {@link Context} to use.
-     * @param server  the server to which to upload.
-     * @param user    the username for authentication.
-     * @param passwd  the password for authentication.
-     * @return the return message.
-     */
-    public String uploadProject(Context context, String server, String user, String passwd) {
-        try {
-            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File databaseFile = resourcesManager.getDatabaseFile();
-
-            server = addActionPath(server, UPLOADPATH);
-            String result = NetworkUtilities.sendFilePost(context, server, databaseFile, user, passwd);
-            if (GPLog.LOG) {
-                GPLog.addLogEntry(this, result);
-            }
-            return result;
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            return e.getLocalizedMessage();
-        }
-    }
+//    /**
+//     * Uploads a project folder as zip to the given server via POST.
+//     *
+//     * @param context the {@link Context} to use.
+//     * @param server  the server to which to upload.
+//     * @param user    the username for authentication.
+//     * @param passwd  the password for authentication.
+//     * @return the return message.
+//     */
+//    public String uploadProject(Context context, String server, String user, String passwd) {
+//        try {
+//            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+//            File databaseFile = resourcesManager.getDatabaseFile();
+//
+//            server = addActionPath(server, UPLOADPATH);
+//            String result = NetworkUtilities.sendFilePost(context, server, databaseFile, user, passwd);
+//            if (GPLog.LOG) {
+//                GPLog.addLogEntry(this, result);
+//            }
+//            return result;
+//        } catch (Exception e) {
+//            GPLog.error(this, null, e);
+//            return e.getLocalizedMessage();
+//        }
+//    }
 
     private String addActionPath(String server, String path) {
         if (server.endsWith("/")) {
@@ -106,21 +99,20 @@ public enum WebProjectManager {
      * @param server     the server from which to download.
      * @param user       the username for authentication.
      * @param passwd     the password for authentication.
-     * @param webproject the project to download.
      * @return the return code.
      */
-    public String downloadProject(Context context, String server, String user, String passwd, Webproject webproject) {
+    public String downloadData(Context context, String server, String user, String passwd, String postJson, String outputFileName) {
         String downloadedProjectFileName = "no information available";
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File sdcardDir = resourcesManager.getSdcardDir();
-            File downloadedProjectFile = new File(sdcardDir, webproject.id);
-            if (downloadedProjectFile.exists()) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();
+            File downloadeddataFile = new File(sdcardDir, outputFileName);
+            if (downloadeddataFile.exists()) {
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadeddataFile.getName();
                 return wontOverwrite;
             }
-            server = addActionPath(server, DOWNLOADPROJECTPATH);
-            NetworkUtilities.sendGetRequest4File(server, downloadedProjectFile, "id=" + webproject.id, user, passwd);
+            server = addActionPath(server, DOWNLOAD_DATA);
+            NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile);
 
             return context.getString(R.string.project_successfully_downloaded);
         } catch (Exception e) {
@@ -135,7 +127,7 @@ public enum WebProjectManager {
     }
 
     /**
-     * Downloads the project list from the given server via GET.
+     * Downloads the data layers list from the given server via GET.
      *
      * @param context the {@link Context} to use.
      * @param server  the server from which to download.
@@ -144,7 +136,7 @@ public enum WebProjectManager {
      * @return the project list.
      * @throws Exception if something goes wrong.
      */
-    public List<Webproject> downloadProjectList(Context context, String server, String user, String passwd) throws Exception {
+    public List<WebDataLayer> downloadDataLayersList(Context context, String server, String user, String passwd) throws Exception {
         String jsonString = "[]";
         if (server.equals("test")) {
             AssetManager assetManager = context.getAssets();
@@ -157,49 +149,46 @@ public enum WebProjectManager {
             }
             jsonString = sb.toString();
         } else {
-            server = addActionPath(server, DOWNLOADLISTPATH);
+            server = addActionPath(server, GET_LAYERS_INFO);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
-        List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
-        return webprojectsList;
+        List<WebDataLayer> webDataList = json2WebDataList(jsonString);
+        return webDataList;
     }
 
     /**
-     * Transform a json string to a list of webprojects.
+     * Transform a json string to a list of WebDataLayer.
      *
      * @param json the json string.
-     * @return the list of {@link Webproject}.
+     * @return the list of {@link WebDataLayer}.
      * @throws Exception if something goes wrong.
      */
-    public static List<Webproject> json2WebprojectsList(String json) throws Exception {
-        List<Webproject> wpList = new ArrayList<>();
+    public static List<WebDataLayer> json2WebDataList(String json) throws Exception {
+        List<WebDataLayer> webDataList = new ArrayList<>();
 
-        JSONObject jsonObject = new JSONObject(json);
-        JSONArray projectsArray = jsonObject.getJSONArray("projects");
+        JSONArray projectsArray = new JSONArray(json);
         int projectNum = projectsArray.length();
         for (int i = 0; i < projectNum; i++) {
             JSONObject projectObject = projectsArray.getJSONObject(i);
-            String id = projectObject.getString("id");
-            String title = projectObject.getString("title");
-            String date = projectObject.getString("date");
-            String author = projectObject.getString("author");
             String name = projectObject.getString("name");
-            String size = projectObject.getString("size");
+            String title = projectObject.getString("title");
+            String abstractStr = projectObject.getString("abstract");
+            String geomtype = projectObject.getString("geomtype");
+            int srid = projectObject.getInt("srid");
+            String permissions = projectObject.getString("permissions");
+            long lastEdited = projectObject.getLong("last-edited");
 
-            Webproject wp = new Webproject();
-            wp.author = author;
-            wp.date = date;
-            wp.name = name;
-            wp.title = title;
-            wp.id = id;
-            try {
-                wp.size = Long.parseLong(size);
-            } catch (Exception e) {
-                // unused for now
-            }
-            wpList.add(wp);
+            WebDataLayer wdl = new WebDataLayer();
+            wdl.name = name;
+            wdl.title = title;
+            wdl.abstractStr = abstractStr;
+            wdl.geomtype = geomtype;
+            wdl.srid = srid;
+            wdl.permissions = permissions;
+            wdl.lastEdited = lastEdited;
+            webDataList.add(wdl);
         }
-        return wpList;
+        return webDataList;
     }
 
 }

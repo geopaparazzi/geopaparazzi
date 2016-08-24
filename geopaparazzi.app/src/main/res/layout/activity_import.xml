@@ -68,6 +68,12 @@
                     android:text="@string/geopap_browser" />
 
                 <Button
+                    android:id="@+id/cloudSpatialiteImportButton"
+                    style="@style/GPMediumButton"
+                    android:layout_width="match_parent"
+                    android:text="@string/import_cloud_data" />
+
+                <Button
                     android:id="@+id/bookmarksImportButton"
                     style="@style/GPMediumButton"
                     android:layout_width="match_parent"

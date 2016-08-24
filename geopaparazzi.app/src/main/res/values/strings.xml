@@ -391,5 +391,6 @@
     <string name="error_while_removing_notes">"An error occurred while deleting the notes: "</string>
     <string name="removing_notes">Removing notes...</string>
     <string name="interrupted_by_user">Interrupted by user</string>
+    <string name="import_cloud_data">Cloud Data</string>
 
 </resources>

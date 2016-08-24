@@ -35,10 +35,15 @@
     <string name="webprojects_list_title">Remote Projects List</string>
     <string name="downloading">Downloading…</string>
     <string name="downloading_projects_list_from_server">Downloading projects list from server.</string>
+    <string name="downloading_layers_list_from_server">Downloading layers list from server.</string>
+    <string name="downloading_data_from_server">Downloading data from server.</string>
     <string name="error_projects_list">An error occurred while retrieving the projects list.</string>
+    <string name="error_data_list">An error occurred while retrieving the data layers list.</string>
     <string name="downloading_project">Downloading project…</string>
-    <string name="downloading_project_to_the_device">Downloading selected project to the device.</string>
+    <string name="downloading_data">Downloading data…</string>
+    <string name="downloading_data_to_the_device">Downloading selected layers as spatialite database to the device.</string>
     <string name="project_successfully_downloaded">The project has been successfully downloaded.</string>
+    <string name="data_successfully_downloaded">The data have been successfully downloaded.</string>
     <string name="proximity_alert">Proximity Alert!</string>
     <string name="approaching_poi">Approaching a point of interest.</string>
     <string name="form_field_check">Please check that the field \"%1$s\" in section \"%2$s\" is valid. Not validated constraints: %3$s.</string>
