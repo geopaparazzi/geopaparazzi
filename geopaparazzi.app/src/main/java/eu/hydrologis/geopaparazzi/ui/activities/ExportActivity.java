@@ -41,13 +41,18 @@ import java.util.List;
 import java.util.TreeSet;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.webproject.WebDataUploadListActivity;
+import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -57,6 +62,8 @@ import eu.hydrologis.geopaparazzi.ui.dialogs.GpxExportDialogFragment;
 import eu.hydrologis.geopaparazzi.ui.dialogs.KmzExportDialogFragment;
 import eu.hydrologis.geopaparazzi.ui.dialogs.StageExportDialogFragment;
 import eu.hydrologis.geopaparazzi.utilities.Constants;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.DATABASE_ID;
 
 /**
  * Activity for export tasks.
@@ -129,6 +136,41 @@ public class ExportActivity extends AppCompatActivity implements
 
                 StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
                 stageExportDialogFragment.show(getSupportFragmentManager(), "stage export");
+            }
+        });
+
+        Button cloudDataExportButton = (Button) findViewById(R.id.cloudDataExportButton);
+        cloudDataExportButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                final ExportActivity context = ExportActivity.this;
+                if (!NetworkUtilities.isNetworkAvailable(context)) {
+                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
+                    return;
+                }
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
+                final String pwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
+                final String serverUrl = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
+                if (serverUrl.length() == 0) {
+                    GPDialogs.infoDialog(context, getString(R.string.error_set_cloud_settings), null);
+                    return;
+                }
+
+                Intent webExportIntent = new Intent(ExportActivity.this, WebDataUploadListActivity.class);
+                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, serverUrl);
+                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
+                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, pwd);
+                List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+                List<String> databases = new ArrayList<String>();
+                for (int i = 0; i < spatialiteMaps.size(); i++) {
+                    String dbPath = spatialiteMaps.get(i).databasePath;
+                    if (!databases.contains(dbPath)) {
+                        databases.add(dbPath);
+                    }
+                }
+                webExportIntent.putExtra(DATABASE_ID, databases.toArray(new String[0]));
+                startActivity(webExportIntent);
             }
         });
 

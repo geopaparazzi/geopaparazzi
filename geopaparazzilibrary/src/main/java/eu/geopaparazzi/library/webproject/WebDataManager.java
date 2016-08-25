@@ -58,31 +58,32 @@ public enum WebDataManager {
      */
     public static String DOWNLOAD_DATA = "sync/download";
 
-//    /**
-//     * Uploads a project folder as zip to the given server via POST.
-//     *
-//     * @param context the {@link Context} to use.
-//     * @param server  the server to which to upload.
-//     * @param user    the username for authentication.
-//     * @param passwd  the password for authentication.
-//     * @return the return message.
-//     */
-//    public String uploadProject(Context context, String server, String user, String passwd) {
-//        try {
-//            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-//            File databaseFile = resourcesManager.getDatabaseFile();
-//
-//            server = addActionPath(server, UPLOADPATH);
-//            String result = NetworkUtilities.sendFilePost(context, server, databaseFile, user, passwd);
-//            if (GPLog.LOG) {
-//                GPLog.addLogEntry(this, result);
-//            }
-//            return result;
-//        } catch (Exception e) {
-//            GPLog.error(this, null, e);
-//            return e.getLocalizedMessage();
-//        }
-//    }
+    public static String UPLOAD_DATA = "sync/upload";
+
+    /**
+     * Uploads a project folder as zip to the given server via POST.
+     *
+     * @param context the {@link Context} to use.
+     * @param fileToUpload  the file to upload.
+     * @param server  the server to which to upload.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
+     * @return the return message.
+     */
+    public String uploadData(Context context, File fileToUpload, String server, String user, String passwd) {
+        try {
+
+            server = addActionPath(server, UPLOAD_DATA);
+            String result = NetworkUtilities.sendFilePost(context, server, fileToUpload, user, passwd);
+            if (GPLog.LOG) {
+                GPLog.addLogEntry(this, result);
+            }
+            return result;
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            return e.getLocalizedMessage();
+        }
+    }
 
     private String addActionPath(String server, String path) {
         if (server.endsWith("/")) {
@@ -95,10 +96,10 @@ public enum WebDataManager {
     /**
      * Downloads a project from the given server via GET.
      *
-     * @param context    the {@link Context} to use.
-     * @param server     the server from which to download.
-     * @param user       the username for authentication.
-     * @param passwd     the password for authentication.
+     * @param context the {@link Context} to use.
+     * @param server  the server from which to download.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
      * @return the error message or null.
      */
     public String downloadData(Context context, String server, String user, String passwd, String postJson, String outputFileName) {
@@ -115,7 +116,7 @@ public enum WebDataManager {
             NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile);
 
             long fileLength = downloadeddataFile.length();
-            if (fileLength == 0){
+            if (fileLength == 0) {
                 throw new RuntimeException("Error in downloading file.");
             }
 
