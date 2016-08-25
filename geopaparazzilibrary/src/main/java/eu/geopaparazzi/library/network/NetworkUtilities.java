@@ -25,6 +25,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Base64;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -53,6 +54,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -75,6 +77,7 @@ public class NetworkUtilities {
      *
      */
     public static final long maxBufferSize = 4096;
+    public static final String SLASH = "/";
 
     /**
      * Read url to string.
@@ -254,12 +257,12 @@ public class NetworkUtilities {
     /**
      * Sends a string via POST to a given url expecting a file in return.
      *
-     * @param context  the context to use.
-     * @param urlStr   the url to which to send to.
-     * @param string   the string to send as post body.
-     * @param user     the user or <code>null</code>.
-     * @param password the password or <code>null</code>.
-     * @return the response.
+     * @param context    the context to use.
+     * @param urlStr     the url to which to send to.
+     * @param string     the string to send as post body.
+     * @param user       the user or <code>null</code>.
+     * @param password   the password or <code>null</code>.
+     * @param outputFile the file to save to.
      * @throws Exception if something goes wrong.
      */
     public static void sendPostForFile(Context context, String urlStr, String string, String user, String password,
@@ -267,8 +270,8 @@ public class NetworkUtilities {
         BufferedOutputStream wr = null;
         HttpURLConnection conn = null;
         try {
-            if (!urlStr.endsWith("/")) {
-                urlStr = urlStr + "/";
+            if (!urlStr.endsWith(SLASH)) {
+                urlStr = urlStr + SLASH;
             }
 
             conn = makeNewConnection(urlStr);
@@ -348,6 +351,9 @@ public class NetworkUtilities {
             // return new PasswordAuthentication("test", "test".toCharArray());
             // }
             // });
+            if (!urlStr.endsWith(SLASH)) {
+                urlStr = urlStr + SLASH;
+            }
             urlStr = urlStr + "?name=" + file.getName();
             conn = makeNewConnection(urlStr);
             conn.setRequestMethod("POST");
@@ -401,6 +407,7 @@ public class NetworkUtilities {
                 conn.disconnect();
         }
     }
+
 
     /**
      * Get a default message for an HTTP code.
