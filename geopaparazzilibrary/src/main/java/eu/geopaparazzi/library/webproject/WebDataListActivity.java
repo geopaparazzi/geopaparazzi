@@ -17,11 +17,17 @@
  */
 package eu.geopaparazzi.library.webproject;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,22 +38,35 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
+import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
+import static eu.geopaparazzi.library.util.LibraryConstants.LATITUDE;
+import static eu.geopaparazzi.library.util.LibraryConstants.LONGITUDE;
+import static eu.geopaparazzi.library.util.LibraryConstants.NAME;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
+import static eu.geopaparazzi.library.util.LibraryConstants.ROUTE;
+import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 
 /**
  * Web projects listing activity.
@@ -55,6 +74,8 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class WebDataListActivity extends ListActivity {
+    public static final int DOWNLOADDATA_RETURN_CODE = 667;
+
     private static final String ERROR = "error"; //$NON-NLS-1$
 
     private ArrayAdapter<WebDataLayer> arrayAdapter;
@@ -163,7 +184,15 @@ public class WebDataListActivity extends ListActivity {
                                 if (response.startsWith(ERROR)) {
                                     GPDialogs.warningDialog(context, response, null);
                                 } else {
-                                    GPDialogs.infoDialog(context, okMsg, null);
+                                    GPDialogs.infoDialog(context, okMsg, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent intent = getIntent();
+                                            intent.putExtra(LibraryConstants.DATABASE_ID, theTextToRunOn);
+                                            WebDataListActivity.this.setResult(RESULT_OK, intent);
+                                            finish();
+                                        }
+                                    });
                                 }
                             }
                         };
@@ -251,6 +280,10 @@ public class WebDataListActivity extends ListActivity {
 
         setListAdapter(arrayAdapter);
     }
+
+
+
+
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
 

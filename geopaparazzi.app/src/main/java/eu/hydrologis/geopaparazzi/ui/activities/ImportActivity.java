@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebDataListActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.ui.activities.tantomapurls.TantoMapurlsActivity;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -155,7 +156,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, server);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);
-                startActivity(webImportIntent);
+                startActivityForResult(webImportIntent, WebDataListActivity.DOWNLOADDATA_RETURN_CODE);
             }
         });
 
@@ -247,6 +248,20 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                             Utilities.setLastFilePath(this, filePath);
                             GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
                             gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(this, e, null);
+                    }
+                }
+                break;
+            }
+            case (WebDataListActivity.DOWNLOADDATA_RETURN_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String filePath = data.getStringExtra(LibraryConstants.DATABASE_ID);
+                        File file = new File(filePath);
+                        if (file.exists()) {
+                            SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file);
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(this, e, null);
