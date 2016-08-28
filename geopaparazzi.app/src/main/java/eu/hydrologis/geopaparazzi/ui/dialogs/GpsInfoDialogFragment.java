@@ -107,7 +107,7 @@ public class GpsInfoDialogFragment extends DialogFragment {
         GpsServiceStatus lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         GpsLoggingStatus lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         double[] lastGpsPosition = GpsServiceUtilities.getPosition(intent);
-//        float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
+        float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
         long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
 
@@ -120,6 +120,8 @@ public class GpsInfoDialogFragment extends DialogFragment {
         String loggingString = context.getString(R.string.text_logging);
         String acquirefixString = context.getString(R.string.gps_searching_fix);
         String satellitesString = context.getString(R.string.satellites);
+        String gpsAccuracyString = "accuracy:";
+        String gpsUnits = " m";
         String gpsStatusString = context.getString(R.string.gps_status);
         String mapString = context.getString(R.string.map);
         String pathString = context.getString(R.string.path_lc);
@@ -161,6 +163,14 @@ public class GpsInfoDialogFragment extends DialogFragment {
             String lon;
             String elev;
             String time;
+            String acc;
+
+            if (lastGpsPositionExtras != null) {
+                acc = String.valueOf(lastGpsPositionExtras[0]);
+            } else {
+                acc = " - ";
+            }
+
             if (lastGpsPosition != null) {
                 DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
                 lat = formatter.format(lastGpsPosition[1]);
@@ -182,8 +192,11 @@ public class GpsInfoDialogFragment extends DialogFragment {
             sb.append(indent).append(lonString);
             sb.append(" ").append(lon); //$NON-NLS-1$
             sb.append("\n");
+            sb.append(indent).append(gpsAccuracyString);
+            sb.append(" ").append(acc).append(gpsUnits); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(indent).append(altimString);
-            sb.append(" ").append(elev); //$NON-NLS-1$
+            sb.append(" ").append(elev).append(gpsUnits); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(loggingString);
             sb.append(": ").append(lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON); //$NON-NLS-1$
