@@ -120,7 +120,7 @@ public class GpsInfoDialogFragment extends DialogFragment {
         String loggingString = context.getString(R.string.text_logging);
         String acquirefixString = context.getString(R.string.gps_searching_fix);
         String satellitesString = context.getString(R.string.satellites);
-        String gpsAccuracyString = "accuracy:";
+        String gpsAccuracyString = context.getString(R.string.accuracy_colon);
         String gpsUnits = " m";
         String gpsStatusString = context.getString(R.string.gps_status);
         String mapString = context.getString(R.string.map);
