@@ -291,6 +291,7 @@
   <string name="write_own_query">lub napisz własne zapytanie</string>
   <string name="sqlview">Widok SQL</string>
   <string name="query_results">Rezultaty zapytania</string>
+  <string name="no_images_in_project">Brak obrazów w projekcie.</string>
   <string name="select_gpx_file">Wskaż plik gpx do zaimportowania</string>
   <string name="select_gpap_file">Wskaż projekt Geopaparazzi</string>
   <string name="no_gpx_selected">Nie wskazano pliku GPX.</string>
@@ -321,4 +322,7 @@
   <string name="menu_simple_picture">Proste Zdjęcie</string>
   <string name="menu_simple_sketch">Prosty Szkic</string>
   <string name="warning_viewcone_gps">To narzędzie działa tylko wtedy gdy dostępna jest pozycja GPS.</string>
+  <string name="sortby_name">Po nazwie</string>
+  <string name="use_as_selection">Użyj jako selekcji</string>
+  <string name="interrupted_by_user">Przerwane przez użytkownika</string>
 </resources>

@@ -21,4 +21,6 @@
   <string name="remove_from_list">Eliminare %s dall\'elenco?</string>
   <string name="selected_file_no_vector_data">Il file selezionato non contiene alcun dato vettoriale:</string>
   <string name="adding_new_source">Aggiunta di una nuova sorgente...</string>
+  <string name="select_spatialite_database">Selezione database spatialite da aggiungere</string>
+  <string name="loading_databases">Caricamento database...</string>
 </resources>

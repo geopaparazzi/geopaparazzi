@@ -272,6 +272,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="geom_incompatible_with_layer">La geometria risultante non è compatibile con il piano di destinazione.</string>
   <string name="selected_features_in_layer">Selezionate %1$d features con %2$d polygoni.</string>
   <string name="selected_line_features_in_layer">Selezionate %1$d features con %2$d linee.</string>
+  <string name="selected_point_features_in_layer">Selezionate %1$d features con %2$d punti.</string>
   <string name="no_compatible_layers_found">Non sono stati trovati piani compatibili.</string>
   <string name="copied_features_to_layer">Copiate %1$d geometrie nel piano: %2$s</string>
   <string name="area_colon">Area:</string>
@@ -372,4 +373,22 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="menu_simple_picture">Foto semplice</string>
   <string name="menu_simple_sketch">Schizzo semplice</string>
   <string name="warning_viewcone_gps">Questo strumento funziona solo se è disponibile una posizione GPS.</string>
+  <string name="import_bookmark_prompt">Vuoi importare i dati del link come preferito e visualizzarlo?</string>
+  <string name="premissions_cant_start">Geopaparazzi non puo\' essere avviato perche i seguenti permessi non sono stati accordati:</string>
+  <string name="log_cleared">Log cancellato.</string>
+  <string name="bookmarks_exported">Nuovo preferito aggiunto al file esistente:</string>
+  <string name="bookmarks_exported_newfile">Esportati correttamente i segnalibri:</string>
+  <string name="bookmarks_exported_error">E\' avvenuto un errore durante l\'esportazione dei segnalibri.</string>
+  <string name="bookmarks_import_error">E\' avvenuto un errore durante l\'importazione dei segnalibri.</string>
+  <string name="wms_mapurl_added">File mapurl WMS aggiunto ai sorgenti tiles con successo:\n</string>
+  <string name="sortby_none">Nessuno</string>
+  <string name="sortby_name">Per nome</string>
+  <string name="sortby_name_inverse">Per nome inverso</string>
+  <string name="sortby_mapcenterdist">Per distanza dal centro mappa</string>
+  <string name="sortby_mapcenterdist_inverse">Per distanza inversa dal centro mappa</string>
+  <string name="use_as_selection">Usa come selezione</string>
+  <string name="only_complex_notes_editing">Solo note complesse possono essere modificate, devono essere sostituite.</string>
+  <string name="error_while_removing_notes">Si verificato un errore durante la cancellazione delle note:</string>
+  <string name="removing_notes">Cancella note...</string>
+  <string name="interrupted_by_user">Interrotto dall\'utente</string>
 </resources>

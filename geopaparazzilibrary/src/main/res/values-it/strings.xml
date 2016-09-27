@@ -99,6 +99,7 @@
   <string name="toggle_label_visibility">Visualizza etichette</string>
   <string name="label_field">Campo etichetta</string>
   <string name="set_properties">Imposta opzioni</string>
+  <string name="set_dash">Setta tratteggio</string>
   <string name="unauthorized_api_key">Accesso non autorizzato. Verificare la chiave API (API-key).</string>
   <string name="fill_and_stroke_color_title">Colore del bordo e del riempimento</string>
   <string name="fill_color_title">Colore riempimento</string>
