@@ -21,6 +21,7 @@ package eu.hydrologis.geopaparazzi.ui.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -122,6 +123,8 @@ public class GpxExportDialogFragment extends DialogFragment {
     }
 
     private void startExport() {
+        final Context context = getContext();
+
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {
@@ -172,18 +175,18 @@ public class GpxExportDialogFragment extends DialogFragment {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.equals(NODATA)) {
-                    String msg = getString(R.string.no_data_found_in_project_to_export);
+                    String msg = context.getString(R.string.no_data_found_in_project_to_export);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else if (response.equals(INTERRUPTED)) {
                     alertDialog.setMessage("Interrupted by user");
                     positiveButton.setEnabled(true);
                 } else if (response.length() > 0) {
-                    String msg = getString(R.string.datasaved) + response;
+                    String msg = context.getString(R.string.datasaved) + response;
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else {
-                    String msg = getString(R.string.data_nonsaved);
+                    String msg = context.getString(R.string.data_nonsaved);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 }

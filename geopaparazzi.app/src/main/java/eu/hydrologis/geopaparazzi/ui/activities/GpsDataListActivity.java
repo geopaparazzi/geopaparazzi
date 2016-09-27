@@ -405,7 +405,13 @@ public class GpsDataListActivity extends AppCompatActivity implements
                         GPLog.error(this, null, e); //$NON-NLS-1$
                     }
                 }
-                refreshList(true);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshList(true);
+                    }
+                });
             }
         }, null);
     }

@@ -21,6 +21,7 @@ package eu.hydrologis.geopaparazzi.ui.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -127,6 +128,8 @@ public class KmzExportDialogFragment extends DialogFragment {
     }
 
     private void startExport() {
+        final Context context = getContext();
+
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 File kmlOutputFile = null;
@@ -216,18 +219,18 @@ public class KmzExportDialogFragment extends DialogFragment {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.equals(NODATA)) {
-                    String msg = getActivity().getString(R.string.no_data_found_in_project_to_export);
+                    String msg = context.getString(R.string.no_data_found_in_project_to_export);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else if (response.equals(INTERRUPTED)) {
-                    alertDialog.setMessage(getActivity().getString(R.string.interrupted_by_user));
+                    alertDialog.setMessage(context.getString(R.string.interrupted_by_user));
                     positiveButton.setEnabled(true);
                 } else if (response.length() > 0) {
-                    String msg = getActivity().getString(R.string.datasaved) + " " + response;
+                    String msg = context.getString(R.string.datasaved) + " " + response;
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else {
-                    String msg = getActivity().getString(R.string.data_nonsaved);
+                    String msg = context.getString(R.string.data_nonsaved);
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 }
