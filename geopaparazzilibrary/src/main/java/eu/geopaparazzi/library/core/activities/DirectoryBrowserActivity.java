@@ -41,6 +41,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
@@ -165,6 +167,14 @@ public class DirectoryBrowserActivity extends ListActivity {
         });
 
         startFolderFile = new File(startFolder);
+        if (!startFolderFile.exists()) {
+            try {
+                startFolderFile = ResourcesManager.getInstance(this).getSdcardDir();
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
+        }
+        currentDir = startFolderFile;
         getFiles(startFolderFile, startFolderFile.listFiles(fileFilter));
 
     }

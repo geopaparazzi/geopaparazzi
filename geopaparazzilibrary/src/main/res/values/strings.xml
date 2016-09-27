@@ -106,7 +106,7 @@
     <string name="label_field">Label field</string>
     <string name="set_properties">Set properties</string>
     <string name="set_dash">Set Dash</string>
-    <string name="unauthorized_api_key">Unauthorized access. Check you API-key.</string>
+    <string name="unauthorized_api_key">Unauthorized access. Check your API-key.</string>
 
     <string name="fill_and_stroke_color_title">Fill and Stroke color</string>
     <string name="fill_color_title">Fill color</string>

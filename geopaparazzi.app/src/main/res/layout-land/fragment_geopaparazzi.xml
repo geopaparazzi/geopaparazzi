@@ -105,36 +105,4 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_panic_24dp" />
 
-    <FrameLayout
-        android:id="@+id/foss4gLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="@color/main_background">
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="15dp"
-                android:text="We will be having a geopaparazzi workshop and a talk at this years foss4g in Bonn. Come and join us! For info (and to close this panel) tap the image."
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/foss4g"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/foss4g2016" />
-
-    </FrameLayout>
 </FrameLayout>

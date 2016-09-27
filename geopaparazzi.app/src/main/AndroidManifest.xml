@@ -22,6 +22,8 @@
         android:name="android.permission.ACCESS_MOCK_LOCATION"
         tools:ignore="MockLocation" />
 
+    <uses-feature android:name="android.hardware.location.gps" />
+
     <application
         android:name=".GeopaparazziApplication"
         android:allowBackup="true"
