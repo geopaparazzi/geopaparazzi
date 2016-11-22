@@ -440,8 +440,8 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
         StringBuilder sbQ = new StringBuilder();
         sbQ.append("SELECT ");
         sbQ.append(fieldNamesList);
-        sbQ.append(" FROM ").append(spatialTable.getTableName());
-        sbQ.append(" WHERE ST_Intersects(");
+        sbQ.append(" FROM \"").append(spatialTable.getTableName());
+        sbQ.append("\" WHERE ST_Intersects(");
         if (doTransform)
             sbQ.append("ST_Transform(");
         sbQ.append("BuildMBR(");
