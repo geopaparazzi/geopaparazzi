@@ -130,8 +130,8 @@
   <string name="view_in_mixare">Visualizar en mixware</string>
   <string name="gps_use_coarse">Utilizar la posición basada en red, en lugar de la posición gps (necesita reiniciar)</string>
   <string name="type_to_filter">Escribir para filtrar</string>
-  <string name="geopapcloud_preferences">Configuración de STAGE Sync</string>
-  <string name="geopapcloud_preferences_summary">Establecer credenciales del servidor sync y la configuración para STAGE.</string>
+  <string name="geopapcloud_preferences">Configuración de sincronización de proyectos en la nube</string>
+  <string name="geopapcloud_preferences_summary">Establecer credenciales de sincronización con el servidor y la configuración para servicios en la nube</string>
   <string name="geopapcloud_user_label">Nombre de usuario</string>
   <string name="geopapcloud_password_label">Contraseña</string>
   <string name="geopapcloud_server_label">Servidor al que conectarse</string>
