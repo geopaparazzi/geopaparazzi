@@ -151,7 +151,7 @@ public class WebDataListActivity extends ListActivity {
                         }
 
                         String names = sb.substring(1);
-                        String json = "{ layers: [ " + names + "] }";
+                        String json = "{ \"layers\": [ " + names + "] }";
 
                         downloadData(json);
 

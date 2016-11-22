@@ -51,14 +51,16 @@ public enum WebDataManager {
     /**
      * The relative path appended to the server url to compose the get layers info url.
      */
-    public static String GET_LAYERS_INFO = "sync/layerinfo";
+    public static String GET_LAYERS_INFO = "sync/layerinfo/";
 
     /**
      * The relative path appended to the server url to compose the download data url.
      */
-    public static String DOWNLOAD_DATA = "sync/download";
+    public static String DOWNLOAD_DATA = "sync/download/";
 
-    public static String UPLOAD_DATA = "sync/upload";
+    public static String UPLOAD_DATA = "sync/upload/";
+
+    public static String LOGIN_URL = "auth/login_user/";
 
     /**
      * Uploads a project folder as zip to the given server via POST.
@@ -73,8 +75,9 @@ public enum WebDataManager {
     public String uploadData(Context context, File fileToUpload, String server, String user, String passwd) {
         try {
 
+            String loginUrl = addActionPath(server, LOGIN_URL);
             server = addActionPath(server, UPLOAD_DATA);
-            String result = NetworkUtilities.sendFilePost(context, server, fileToUpload, user, passwd);
+            String result = NetworkUtilities.sendFilePost(context, server, fileToUpload, user, passwd, loginUrl);
             if (GPLog.LOG) {
                 GPLog.addLogEntry(this, result);
             }
@@ -112,8 +115,9 @@ public enum WebDataManager {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadeddataFile.getName();
                 return wontOverwrite;
             }
+            String loginUrl = addActionPath(server, LOGIN_URL);
             server = addActionPath(server, DOWNLOAD_DATA);
-            NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile);
+            NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile, loginUrl);
 
             long fileLength = downloadeddataFile.length();
             if (fileLength == 0) {
@@ -155,8 +159,9 @@ public enum WebDataManager {
             }
             jsonString = sb.toString();
         } else {
+            String loginUrl = addActionPath(server, LOGIN_URL);
             server = addActionPath(server, GET_LAYERS_INFO);
-            jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
+            jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd, loginUrl);
         }
         List<WebDataLayer> webDataList = json2WebDataList(jsonString);
         return webDataList;
@@ -182,7 +187,10 @@ public enum WebDataManager {
             String geomtype = projectObject.getString("geomtype");
             int srid = projectObject.getInt("srid");
             String permissions = projectObject.getString("permissions");
-            long lastEdited = projectObject.getLong("last-modified");
+            Long lastEdited = null;
+            if (projectObject.has("last-modified")) {
+                 lastEdited = projectObject.getLong("last-modified");
+            }
 
             WebDataLayer wdl = new WebDataLayer();
             wdl.name = name;
