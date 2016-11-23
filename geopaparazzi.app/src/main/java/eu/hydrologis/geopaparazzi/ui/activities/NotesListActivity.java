@@ -77,6 +77,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.ItemComparators;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
+import eu.hydrologis.geopaparazzi.ui.utils.ImageIntents;
 
 /**
  * Notes listing activity.
@@ -494,21 +495,10 @@ public class NotesListActivity extends AppCompatActivity {
                 }
             }
         } else if (currentNote instanceof Image) {
-            Image image = (Image) currentNote;
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-
             try {
-                File tempDir = ResourcesManager.getInstance(this).getTempDir();
-                String ext = ".jpg";
-                if (image.getName().endsWith(".png"))
-                    ext = ".png";
-                File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+                Image image = (Image) currentNote;
                 byte[] imageData = new DaoImages().getImageData(image.getId());
-                ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
-
-                intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
-                this.startActivity(intent);
+                ImageIntents.showImage(imageData, image.getName(), this);
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }

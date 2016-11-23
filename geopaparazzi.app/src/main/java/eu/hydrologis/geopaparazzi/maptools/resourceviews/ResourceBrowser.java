@@ -10,10 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.content.res.Resources;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,18 +19,18 @@ import java.util.List;
 
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.AbstractResource;
+import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.BlobResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ExternalResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ResourceStorage;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
+import eu.hydrologis.geopaparazzi.ui.utils.ImageIntents;
 
 /**
  * Activity to manage images associated to a vector feature.
@@ -81,7 +79,7 @@ public class ResourceBrowser extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.resourcesGridView);
         numImagesView = (TextView) findViewById(R.id.numImages);
-        gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, getData());
+        gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, getBlobThumbnails());
         gridView.setAdapter(gridAdapter);
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -94,35 +92,57 @@ public class ResourceBrowser extends AppCompatActivity {
 
         });
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
+                showImage(item);
+            }
+
+        });
+
     }
 
     protected void removeImage(ImageItem item) {
-        ExternalResource res = (ExternalResource)item.getResource();
+        final AbstractResource res = item.getResource();
         final ImageItem theItem = item;
-        final long theId = res.getId();
-        final String imgPath = res.getPath();
-        if (theId >= 0){
-            GPDialogs.yesNoMessageDialog(ResourceBrowser.this, getString(R.string.confirm_remove_image), new Runnable() {
-                @Override
-                public void run() {
-                    storage.deleteResource(theId);
-                    File f = new File(imgPath);
-                    if (f.exists()) {
-                        f.delete();
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                gridAdapter.remove(theItem);
-                            } catch (Exception e) {
-                                GPLog.error(this, null, e);
-                            }
+        GPDialogs.yesNoMessageDialog(ResourceBrowser.this, getString(R.string.confirm_remove_image), new Runnable() {
+            @Override
+            public void run() {
+                storage.deleteResource(res);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            gridAdapter.remove(theItem);
+                        } catch (Exception e) {
+                            GPLog.error(this, null, e);
                         }
-                    });
+                    }
+                });
 
-                }
-            }, null);
+            }
+        }, null);
+    }
+
+    protected void showImage(ImageItem item) {
+        try {
+            final AbstractResource res = item.getResource();
+            if (res instanceof BlobResource) {
+                BlobResource blobRes = (BlobResource) res;
+                // the item resource only contains the thumbnail,
+                // so we need to get the complete resource
+                BlobResource completeRes = storage.getBlobResource(res.getId());
+                ImageIntents.showImage(completeRes.getBlob(), blobRes.getName(), this);
+            }
+            else {
+                ExternalResource extRes = (ExternalResource) res;
+                File image = new File(imageSaveFolder, extRes.getPath());
+                ImageIntents.showImage(image, this);
+
+            }
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
         }
     }
 
@@ -137,9 +157,9 @@ public class ResourceBrowser extends AppCompatActivity {
 
     }
 
-    private ArrayList<ImageItem> getData() {
+    private ArrayList<ImageItem> getExternalImages() {
         final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        List<ExternalResource> resources = storage.getExternalResources(rowId, ExternalResource.TYPES.EXTERNAL_IMAGE);
+        List<ExternalResource> resources = storage.getExternalResources(rowId, AbstractResource.ResourceType.EXTERNAL_IMAGE);
         int i=0;
         for (ExternalResource r: resources) {
             String imgPath = r.getPath();
@@ -161,7 +181,19 @@ public class ResourceBrowser extends AppCompatActivity {
         return imageItems;
     }
 
+    private ArrayList<ImageItem> getBlobThumbnails() {
+        final ArrayList<ImageItem> imageItems = new ArrayList<>();
+        List<BlobResource> resources = storage.getBlobThumbnails(rowId, AbstractResource.ResourceType.BLOB_IMAGE);
+        int i=0;
+        for (BlobResource r: resources) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);
+            imageItems.add(new ImageItem(bitmap, "Image#" + i++, r));
+        }
+        String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
+        numImagesView.setText(text);
 
+        return imageItems;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,7 +225,7 @@ public class ResourceBrowser extends AppCompatActivity {
                         @Override
                         protected String doBackgroundWork() {
                             try {
-                                storeImagePath(imgPath);
+                                storeImageBlob(imgPath);
                             } catch (Exception e) {
                                 ex = e;
                             }
@@ -222,7 +254,23 @@ public class ResourceBrowser extends AppCompatActivity {
             // get relative path
             imgPath = imageSaveFolder.toURI().relativize(new File(imgPath).toURI()).getPath();
         } catch (Exception e) {}
-        ExternalResource res = new ExternalResource(-1, imgPath, "");
-        storage.insertResource(rowId, res, ExternalResource.TYPES.EXTERNAL_IMAGE);
+        ExternalResource res = new ExternalResource(imgPath, "", AbstractResource.ResourceType.EXTERNAL_IMAGE);
+        storage.insertResource(rowId, res);
+    }
+
+    /**
+     * Stores as blob the image provided as a file system path
+     * @param imgPath
+     */
+    protected void storeImageBlob(String imgPath) {
+        try{
+            byte[][] imageAndThumb = ImageUtilities.getImageAndThumbnailFromPath(imgPath, 10);
+            BlobResource res = new BlobResource(imageAndThumb[0], "", AbstractResource.ResourceType.BLOB_IMAGE);
+            res.setThumbnail(imageAndThumb[1]);
+            storage.insertResource(rowId, res);
+        } catch (Exception e) {
+            GPLog.error(this, "ERROR", e);
+            // FIXME: properly manage errors
+        }
     }
 }

@@ -6,15 +6,13 @@ package eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage;
 public class ExternalResource extends AbstractResource {
     private String path;
 
-    public enum TYPES {
-        EXTERNAL_IMAGE,
-        EXTERNAL_VIDEO,
-        EXTERNAL_PDF,
-        EXTERNAL_FILE
+    public ExternalResource(String path, String name, ResourceType type) {
+        super(-1, name, type);
+        this.path = path;
     }
 
-    public ExternalResource(long id, String path, String name) {
-        super(id, name);
+    public ExternalResource(long id, String path, String name, ResourceType type) {
+        super(id, name, type);
         this.path = path;
     }
 
