@@ -33,7 +33,9 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -60,10 +62,11 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
 @SuppressWarnings("nls")
-public class AbstractCameraActivity extends Activity {
+public abstract class AbstractCameraActivity extends Activity {
 
     protected static final int CAMERA_PIC_REQUEST = 1337;
     protected String imageFilePath;
+    protected File imageFile;
     protected Date currentDate;
     protected int lastImageMediastoreId;
 
@@ -135,11 +138,11 @@ public class AbstractCameraActivity extends Activity {
             if (imageFile.exists()) {
                 intent.putExtra(LibraryConstants.PREFS_KEY_PATH, imageFilePath);
                 intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+                doSaveData();
             } else {
                 intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
             }
             setResult(Activity.RESULT_OK, intent);
-
             finish();
         }
     }
@@ -172,7 +175,7 @@ public class AbstractCameraActivity extends Activity {
             }
             imageCursor.close();
 
-            File imageFile = new File(imageFilePath);
+            imageFile = new File(imageFilePath);
 
             boolean imageExists = imageFile.exists();
             if (GPLog.LOG)
@@ -219,4 +222,5 @@ public class AbstractCameraActivity extends Activity {
         }
     }
 
+    protected abstract void doSaveData();
 }

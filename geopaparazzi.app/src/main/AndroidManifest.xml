@@ -269,7 +269,7 @@
             android:name="eu.geopaparazzi.library.camera.CameraNoteActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.camera.CameraDbActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name="eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity"

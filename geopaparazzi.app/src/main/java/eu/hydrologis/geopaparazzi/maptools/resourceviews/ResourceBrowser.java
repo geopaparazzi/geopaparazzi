@@ -17,13 +17,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.spatialite.database.spatial.activities.camera.CameraDbActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.AbstractResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.BlobResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ExternalResource;
@@ -43,6 +42,7 @@ public class ResourceBrowser extends AppCompatActivity {
     private static final int CAMERA_RETURN_CODE = 667;
     private GridView gridView;
     private ImageGridViewAdapter<ImageItem> gridAdapter;
+    private ArrayList<ImageItem> imageItems = new ArrayList<ImageItem>();
     private ResourceStorage storage;
     private long rowId = -1;
     private TextView numImagesView;
@@ -79,7 +79,8 @@ public class ResourceBrowser extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.resourcesGridView);
         numImagesView = (TextView) findViewById(R.id.numImages);
-        gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, getBlobThumbnails());
+        refreshBlobThumbnails(imageItems);
+        gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, imageItems);
         gridView.setAdapter(gridAdapter);
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -147,9 +148,12 @@ public class ResourceBrowser extends AppCompatActivity {
     }
 
     protected void startCameraActivity() {
-        Intent intent = new Intent(ResourceBrowser.this, CameraActivity.class);
+        Intent intent = new Intent(ResourceBrowser.this, CameraDbActivity.class);
         try {
             intent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER, imageSaveFolder.toString());
+            intent.putExtra(CameraDbActivity.DBPATH_EXTRA_MESSAGE, storage.getDbFile());
+            intent.putExtra(CameraDbActivity.TABLENAME_EXTRA_MESSAGE, storage.getTableName());
+            intent.putExtra(CameraDbActivity.ROWID_EXTRA_MESSAGE, this.rowId);
             ResourceBrowser.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,8 +161,8 @@ public class ResourceBrowser extends AppCompatActivity {
 
     }
 
-    private ArrayList<ImageItem> getExternalImages() {
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
+    private ArrayList<ImageItem> refreshExternalImages(ArrayList<ImageItem> imageItems) {
+        imageItems.clear();
         List<ExternalResource> resources = storage.getExternalResources(rowId, AbstractResource.ResourceType.EXTERNAL_IMAGE);
         int i=0;
         for (ExternalResource r: resources) {
@@ -181,8 +185,8 @@ public class ResourceBrowser extends AppCompatActivity {
         return imageItems;
     }
 
-    private ArrayList<ImageItem> getBlobThumbnails() {
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
+    private ArrayList<ImageItem> refreshBlobThumbnails(ArrayList<ImageItem> imageItems) {
+        imageItems.clear();
         List<BlobResource> resources = storage.getBlobThumbnails(rowId, AbstractResource.ResourceType.BLOB_IMAGE);
         int i=0;
         for (BlobResource r: resources) {
@@ -215,62 +219,13 @@ public class ResourceBrowser extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (CAMERA_RETURN_CODE == 667) {
+        if (CAMERA_RETURN_CODE == requestCode) {
             if(resultCode == RESULT_OK){
                 if (data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false)) {
-                    final String imgPath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    StringAsyncTask saveDataTask = new StringAsyncTask(this) {
-                        private Exception ex;
-
-                        @Override
-                        protected String doBackgroundWork() {
-                            try {
-                                storeImageBlob(imgPath);
-                            } catch (Exception e) {
-                                ex = e;
-                            }
-                            return "";
-                        }
-
-                        @Override
-                        protected void doUiPostWork(String response) {
-                            gridAdapter.notifyDataSetChanged();
-                            if (ex != null) {
-                                GPLog.error(this, "ERROR", ex);
-                                GPDialogs.errorDialog(ResourceBrowser.this, ex, null);
-                            }
-                        }
-
-                    };
-                    saveDataTask.setProgressDialog(null, getString(R.string.saving_to_database), false, null);
-                    saveDataTask.execute();
+                    refreshBlobThumbnails(imageItems);
+                    gridAdapter.notifyDataSetChanged();
                 }
             }
-        }
-    }
-
-    protected void storeImagePath(String imgPath) {
-        try{
-            // get relative path
-            imgPath = imageSaveFolder.toURI().relativize(new File(imgPath).toURI()).getPath();
-        } catch (Exception e) {}
-        ExternalResource res = new ExternalResource(imgPath, "", AbstractResource.ResourceType.EXTERNAL_IMAGE);
-        storage.insertResource(rowId, res);
-    }
-
-    /**
-     * Stores as blob the image provided as a file system path
-     * @param imgPath
-     */
-    protected void storeImageBlob(String imgPath) {
-        try{
-            byte[][] imageAndThumb = ImageUtilities.getImageAndThumbnailFromPath(imgPath, 10);
-            BlobResource res = new BlobResource(imageAndThumb[0], "", AbstractResource.ResourceType.BLOB_IMAGE);
-            res.setThumbnail(imageAndThumb[1]);
-            storage.insertResource(rowId, res);
-        } catch (Exception e) {
-            GPLog.error(this, "ERROR", e);
-            // FIXME: properly manage errors
         }
     }
 }

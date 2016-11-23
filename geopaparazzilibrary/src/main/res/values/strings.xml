@@ -114,6 +114,6 @@
     <string name="stroke_color_title">Stroke color</string>
     <string name="stroke_width_title">Stroke width</string>
     <string name="stroke_alpha_title">Stroke alpha</string>
-
+    <string name="saving_to_database">Saving data to database...</string>
 
 </resources>

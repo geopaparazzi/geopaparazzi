@@ -82,42 +82,29 @@ public class CameraNoteActivity extends AbstractCameraActivity {
         doTakePicture(icicle);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_PIC_REQUEST) {
-            checkTakenPictureConsistency();
-
+    @Override
+    public void doSaveData() {
+        try {
             Intent intent = getIntent();
-            File imageFile = new File(imageFilePath);
-            if (imageFile.exists()) {
+            byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
 
-                try {
-                    byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
+            Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
+            IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
-                    Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
-                    IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
+            double azimuth = orientationSensor.getAzimuthDegrees();
 
-                    double azimuth = orientationSensor.getAzimuthDegrees();
+            long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
+                    imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
+            intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
+            intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
 
-                    long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
-                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
-                    intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
-                    intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
-
-                    // delete the file after insertion in db
-                    imageFile.delete();
-                } catch (Exception e) {
-                    GPLog.error(this, null, e);
-                    GPDialogs.errorDialog(this, e, null);
-                }
-            } else {
-                intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
-            }
-
-            setResult(Activity.RESULT_OK, intent);
-
-
-            finish();
+            // delete the file after insertion in db
+            imageFile.delete();
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            GPDialogs.errorDialog(this, e, null);
         }
+
     }
 
     @Override

@@ -47,6 +47,13 @@ public class ResourceStorage {
         this.database = database;
     }
 
+    public String getTableName() {
+        return this.tableName;
+    }
+    public String getDbFile() {
+        return this.database.getFilename();
+    }
+
     public List<ExternalResource> getExternalResources(long rowIdFk, AbstractResource.ResourceType type) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT ");

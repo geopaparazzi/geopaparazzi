@@ -376,4 +376,26 @@
     <item quantity="one">1 imagen</item>
     <item quantity="other">%d imágenes</item>
   </plurals>
+  <string name="accuracy_colon">exactitud:</string>
+  <string name="bookmarks_exported">\"Nuevos marcadores añadidos al fichero existente: \"</string>
+  <string name="bookmarks_exported_error">Ocurrió un error exportando los marcadores</string>
+  <string name="bookmarks_import_error">Ocurrió un error exportando los marcadores</string>
+  <string name="bookmarks_exported_newfile">\"Marcadores exportados correctamente: \"</string>
+  <string name="confirm_remove_image">¿Realmente quiere eliminar la imagen?</string>
+  <string name="wms_mapurl_added">Se añadió correctamente el fichero mapurl de WMS a las fuentes de teselas</string>
+  <string name="use_as_selection">Usar como selección</string>
+  <string name="sortby_none">Ninguno</string>
+  <string name="import_cloud_data">Datos en la nube</string>
+  <string name="sortby_name">Por Nombre</string>
+  <string name="sortby_name_inverse">Por Nombre Inversa</string>
+  <string name="sortby_mapcenterdist_inverse">Por Distancia al Centro Inversa</string>
+  <string name="sortby_mapcenterdist">Por Distancia al Centro</string>
+  <string name="removing_notes">Borrando notas...</string>
+  <string name="selected_point_features_in_layer">%1$d fenómenos seleccionados con %2$d puntos.</string>
+  <string name="premissions_cant_start">\"Geopaparazzi no pudo arrancar porque el siguiente permiso no fue concedido: \"</string>
+  <string name="only_complex_notes_editing">Sólo las notas complejas se pueden editar. Las notas simples se deben reemplazar.</string>
+  <string name="log_cleared">Log vaciado.</string>
+  <string name="import_bookmark_prompt">¿Quiere importar el enlace de datos como marcador y visualizarlo?</string>
+  <string name="interrupted_by_user">Interrumpido por el usuario</string>
+  <string name="error_while_removing_notes">\"Ocurrió un error borrando las notas: \"</string>
 </resources>
