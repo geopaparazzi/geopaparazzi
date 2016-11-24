@@ -391,7 +391,7 @@ public class ResourceStorage {
     }
 
     public static void addResTable(Database database) {
-        String sqlCommand = String.format("CREATE TABLE %s (%s integer PRIMARY KEY NOT NULL, %s text, %s integer, %s TEXT, %s TEXT, %s TEXT, %s BLOB)",
+        String sqlCommand = String.format("CREATE TABLE %s (%s integer PRIMARY KEY NOT NULL, %s text, %s integer, %s TEXT, %s TEXT, %s TEXT, %s BLOB, %s BLOB)",
                 AUX_TABLE_NAME, ID_FIELD, RESTABLE_FIELD, ROWFK_FIELD, RESTYPE_FIELD, RESNAME_FIELD,  RESPATH_FIELD, RESBLOB_FIELD, RESBLOBTHUMB_FIELD);
         try {
             database.exec(sqlCommand, new Callback() {
