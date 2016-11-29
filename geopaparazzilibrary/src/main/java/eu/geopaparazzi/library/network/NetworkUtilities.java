@@ -68,6 +68,7 @@ import java.util.Set;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -106,14 +107,13 @@ public class NetworkUtilities {
     }
 
     private static HttpURLConnection makeNewConnection(String fileUrl) throws Exception {
-        if (fileUrl.startsWith("http")) { // will also work for https
-            URL url = new URL(fileUrl);
-            return (HttpURLConnection) url.openConnection();
-        } else {
-            // try to add http
-            URL url = new URL("http://" + fileUrl);
-            return (HttpURLConnection) url.openConnection();
+        URL url;
+        if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
+            url = new URL(fileUrl);
+        } else { // try to add http
+            url = new URL("http://" + fileUrl);
         }
+        return (HttpURLConnection) url.openConnection();
     }
 
     /**
@@ -602,8 +602,8 @@ public class NetworkUtilities {
             if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
                 conn = makeNewConnection(loginUrl);
                 conn.connect();
-                if (conn.getResponseCode()!=200) {
-                    String message = "Authentication failed. Check loginUrl";
+                if (conn.getResponseCode() != 200) {
+                    String message = "Authentication failed. Check loginUrl. Response code: " + conn.getResponseCode() + ". Response message: " + conn.getResponseMessage();
                     IOException ioException = new IOException(message);
                     GPLog.error(TAG, message, ioException);
                     throw ioException;
@@ -614,7 +614,7 @@ public class NetworkUtilities {
                         csrfToken = c.getValue();
                     }
                 }
-                if (csrfToken==null) {
+                if (csrfToken == null) {
                     String message = "Authentication failed.";
                     IOException ioException = new IOException(message);
                     GPLog.error(TAG, message, ioException);
@@ -622,12 +622,13 @@ public class NetworkUtilities {
                 }
 
                 conn = makeNewConnection(loginUrl);
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+
                 HashMap<String, String> auth = new HashMap<String, String>();
                 auth.put("username", user);
                 auth.put("password", password);
                 auth.put("csrfmiddlewaretoken", csrfToken);
-                conn.setRequestMethod("POST");
-                conn.setDoOutput(true);
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
@@ -636,14 +637,16 @@ public class NetworkUtilities {
                 writer.close();
                 os.close();
                 conn.connect();
-                if (conn.getResponseCode()!=200) {
-                    String message = "Authentication failed.";
+                if (conn.getResponseCode() != 200) {
+                    String message = "Authentication failed. Response code: " + conn.getResponseCode() + ". Response message: " + conn.getResponseMessage();
                     IOException ioException = new IOException(message);
                     GPLog.error(TAG, message, ioException);
                     throw ioException;
                 }
             }
-
+        }
+        catch (IOException ex) {
+            throw ex;
         } catch (Exception e) {
             String message = "Authentication failed.";
             IOException ioException = new IOException(message, e);
