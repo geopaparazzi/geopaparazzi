@@ -334,7 +334,10 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 if (dataType == EDataType.TEXT) {
                     value = escapeString(value);
                     sb.append(" , ").append(fieldName).append("='").append(value).append("'");
-                } else {
+                } else if (value == null || "".equals(value)) {
+                    sb.append(" , ").append(fieldName).append("=NULL");
+                }
+                else{
                     sb.append(" , ").append(fieldName).append("=").append(value);
                 }
             }
