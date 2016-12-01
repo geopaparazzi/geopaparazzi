@@ -181,7 +181,7 @@ public class WebDataListActivity extends ListActivity {
                                 dispose();
                                 WebDataListActivity context = WebDataListActivity.this;
                                 String okMsg = getString(R.string.data_successfully_downloaded);
-                                if (response.startsWith(ERROR)) {
+                                if (response.toLowerCase().startsWith(ERROR)) {
                                     GPDialogs.warningDialog(context, response, null);
                                 } else {
                                     GPDialogs.infoDialog(context, okMsg, new Runnable() {
