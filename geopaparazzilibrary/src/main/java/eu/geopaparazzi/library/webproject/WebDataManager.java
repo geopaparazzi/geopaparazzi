@@ -129,8 +129,7 @@ public enum WebDataManager {
             GPLog.error(this, null, e);
             String message = e.getMessage();
             if (message.equals(CompressionUtilities.FILE_EXISTS)) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName;
-                return wontOverwrite;
+                throw new RuntimeException(context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName);
             }
             return e.getLocalizedMessage();
         }
