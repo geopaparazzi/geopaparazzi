@@ -107,15 +107,23 @@ public class NetworkUtilities {
     }
 
     private static HttpURLConnection makeNewConnection(String fileUrl) throws Exception {
-        URL url;
-        if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
-            url = new URL(fileUrl);
-        } else { // try to add http
-            url = new URL("http://" + fileUrl);
-        }
+        URL url = new URL(normalizeUrl(fileUrl));
         return (HttpURLConnection) url.openConnection();
     }
 
+    private static String normalizeUrl(String url) {
+        return normalizeUrl(url, false);
+    }
+
+    private static String normalizeUrl(String url, boolean addSlash) {
+        if ( (!url.startsWith("http://")) && (!url.startsWith("https://"))) {
+            url = "http://" + url;
+        }
+        if (addSlash && !url.endsWith(SLASH)) {
+            url = url + SLASH;
+        }
+        return url;
+    }
     /**
      * Sends an HTTP GET request to a url
      *
@@ -454,7 +462,7 @@ public class NetworkUtilities {
      * @throws Exception if something goes wrong.
      */
     public static String sendGetRequest(String urlStr, String requestParameters, String user, String password) throws Exception {
-        if (!urlStr.startsWith("http")) urlStr = "http://" + urlStr;
+        urlStr = normalizeUrl(urlStr);
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;
         }
@@ -583,9 +591,6 @@ public class NetworkUtilities {
     }
 
     public static CookieManager getAuthenticatedSession(String loginUrl, String user, String password) throws IOException {
-        if (!loginUrl.endsWith(SLASH)) {
-            loginUrl = loginUrl + SLASH;
-        }
         HttpURLConnection conn = null;
         CookieManager manager;
         if (CookieHandler.getDefault()!=null && (CookieHandler.getDefault() instanceof CookieManager)) {
@@ -610,7 +615,7 @@ public class NetworkUtilities {
                 }
                 String csrfToken = null;
                 for (HttpCookie c : manager.getCookieStore().getCookies()) {
-                    if (c.getName().equals("csrftoken")) {
+                    if (c.getName().equals("csrftoken") && c.getDomain().equals(new URL(loginUrl).getHost())) {
                         csrfToken = c.getValue();
                     }
                 }
@@ -675,9 +680,7 @@ public class NetworkUtilities {
                                         String password,
                                         String loginUrl) throws Exception {
 
-        if (!urlStr.endsWith(SLASH)) {
-            urlStr = urlStr + SLASH;
-        }
+        loginUrl = normalizeUrl(loginUrl, true);
         CookieManager manager = getAuthenticatedSession(loginUrl, user, password);
         HttpURLConnection conn = null;
         BufferedReader in = null;
@@ -785,6 +788,7 @@ public class NetworkUtilities {
                                       String user,
                                       String password,
                                       String loginUrl) throws Exception {
+        loginUrl = normalizeUrl(loginUrl, true);
         CookieManager manager = getAuthenticatedSession(loginUrl, user, password);
         BufferedOutputStream wr = null;
         FileInputStream fis = null;
@@ -792,9 +796,7 @@ public class NetworkUtilities {
         try {
             long fileSize = file.length();
             fis = new FileInputStream(file);
-            if (!urlStr.endsWith(SLASH)) {
-                urlStr = urlStr + SLASH;
-            }
+            urlStr = normalizeUrl(urlStr, true);
             urlStr = urlStr + "?name=" + file.getName();
             conn = makeNewConnection(urlStr);
             conn.setRequestMethod("POST");
@@ -864,15 +866,13 @@ public class NetworkUtilities {
                                        File outputFile,
                                        String loginUrl) throws Exception {
 
+        loginUrl = normalizeUrl(loginUrl, true);
         CookieManager manager = getAuthenticatedSession(loginUrl, user, password);
 
         BufferedOutputStream wr = null;
         HttpURLConnection conn = null;
         try {
-            if (!urlStr.endsWith(SLASH)) {
-                urlStr = urlStr + SLASH;
-            }
-
+            urlStr = normalizeUrl(urlStr, true);
             conn = makeNewConnection(urlStr);
             setCsrfHeader(manager, conn);
             conn.setRequestMethod("POST");
