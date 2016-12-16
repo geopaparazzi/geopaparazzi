@@ -329,7 +329,7 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
             boolean ignore = SpatialiteUtilities.doIgnoreField(fieldName);
             if (!ignore) {
                 EDataType dataType = EDataType.getType4Name(type);
-                if (dataType == EDataType.TEXT) {
+                if (dataType == EDataType.TEXT || dataType == EDataType.DATE) {
                     value = escapeString(value);
                     sb.append(" , ").append(fieldName).append("='").append(value).append("'");
                 } else {

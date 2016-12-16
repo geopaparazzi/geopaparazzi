@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maptools;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.text.Editable;
 import android.text.InputType;
@@ -32,10 +33,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.types.EDataType;
 
 /**
@@ -47,6 +55,7 @@ public class FeaturePageAdapter extends PagerAdapter {
     private Context context;
     private List<Feature> featuresList;
     private boolean isReadOnly;
+    private FragmentManager fragmentManager;
 
     private DecimalFormat areaLengthFormatter = new DecimalFormat("0.00");
 
@@ -57,11 +66,12 @@ public class FeaturePageAdapter extends PagerAdapter {
      * @param featuresList the list of features to show.
      * @param isReadOnly   if <code>true</code>, the adapter will be initially readonly.
      */
-    public FeaturePageAdapter(Context context, List<Feature> featuresList, boolean isReadOnly) {
+    public FeaturePageAdapter(Context context, List<Feature> featuresList, boolean isReadOnly, FragmentManager manager) {
         super();
         this.context = context;
         this.featuresList = featuresList;
         this.isReadOnly = isReadOnly;
+        this.fragmentManager = manager;
     }
 
     /**
@@ -121,16 +131,13 @@ public class FeaturePageAdapter extends PagerAdapter {
 
             linearLayoutView.addView(textView);
 
-            final EditText editView = new EditText(context);
+            final TextView editView = getEditView(feature, name, type, value);
             LinearLayout.LayoutParams editViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT);
             editViewParams.setMargins(margin, 0, margin, 0);
             editView.setLayoutParams(editViewParams);
             editView.setPadding(padding * 2, padding, padding * 2, padding);
-            editView.setText(value);
-//            editView.setEnabled(!isReadOnly);
             editView.setFocusable(!isReadOnly);
-            // editView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
 
             if (isReadOnly) {
                 editView.setOnTouchListener(new View.OnTouchListener() {
@@ -142,40 +149,6 @@ public class FeaturePageAdapter extends PagerAdapter {
                     }
                 });
             }
-
-            switch (type) {
-                case DOUBLE:
-                case FLOAT:
-                    editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    break;
-                case PHONE:
-                    editView.setInputType(InputType.TYPE_CLASS_PHONE);
-                    break;
-                case DATE:
-                    editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-                    break;
-                case INTEGER:
-                    editView.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    break;
-                default:
-                    break;
-            }
-
-            editView.addTextChangedListener(new TextWatcher() {
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // ignore
-                }
-
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // ignore
-                }
-
-                public void afterTextChanged(Editable s) {
-                    String text = editView.getText().toString();
-                    feature.setAttribute(name, text);
-                }
-            });
-
             linearLayoutView.addView(editView);
         }
 
@@ -211,4 +184,91 @@ public class FeaturePageAdapter extends PagerAdapter {
         return view == object;
     }
 
+    private TextView getEditView(final Feature feature, final String fieldName, EDataType type, String value) {
+        final TextView editView;
+        switch (type) {
+            case DATE:
+                editView = new TextView(context);
+                editView.setInputType(InputType.TYPE_CLASS_DATETIME);
+                editView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FeaturePageAdapter.this.openDatePicker((EditText) view);
+                    }
+                });
+                if (value == null || value.equals("")) {
+                    value = "____-__-__";
+                }
+                break;
+            default:
+                editView = new EditText(context);
+                break;
+        }
+        editView.setText(value);
+
+        switch (type) {
+            case DOUBLE:
+            case FLOAT:
+                editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                break;
+            case PHONE:
+                editView.setInputType(InputType.TYPE_CLASS_PHONE);
+                break;
+            case DATE:
+                editView.setInputType(InputType.TYPE_CLASS_DATETIME);
+                editView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FeaturePageAdapter.this.openDatePicker((TextView) view);
+                    }
+                });
+                break;
+            case INTEGER:
+                editView.setInputType(InputType.TYPE_CLASS_NUMBER);
+                break;
+            default:
+                break;
+        }
+        editView.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // ignore
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // ignore
+            }
+
+            public void afterTextChanged(Editable s) {
+                String text = editView.getText().toString();
+                feature.setAttribute(fieldName, text);
+            }
+        });
+
+        return editView;
+    }
+
+    private void openDatePicker(TextView editView) {
+        String dateStr = editView.getText().toString();
+        Date date = null;
+        try {
+            final SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.DATEONLY_FORMATTER;
+            if (dateStr!=null && dateStr.equals("")) {
+                date = dateFormatter.parse(dateStr);
+            }
+            else {
+                date = new Date();
+            }
+        } catch (ParseException e) {
+            GPLog.error(this, null, e);
+            date = new Date();
+        }
+        final Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialogFragment newFragment = new DatePickerDialogFragment(year, month, day, editView);
+        newFragment.show(this.fragmentManager, "datePicker");
+    }
 }
