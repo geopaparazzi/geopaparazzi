@@ -92,6 +92,7 @@ import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
@@ -124,12 +125,15 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.Bookmark;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
+import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.MapTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.GpsLogInfoTool;
 import eu.hydrologis.geopaparazzi.maptools.tools.LineMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.NoEditableLayerToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.OnSelectionToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PointMainEditingToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.PolygonMainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.PolygonOnSelectionToolGroup;
 import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.ui.activities.AddNotesActivity;
@@ -154,6 +158,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      */
     public static final int FORMUPDATE_RETURN_CODE = 669;
     private final int CONTACT_RETURN_CODE = 670;
+    public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;
     // private static final int MAPSDIR_FILETREE = 777;
 
     private final int MENU_GPSDATA = 1;
@@ -947,6 +952,19 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 }
                 break;
             }
+            case (SELECTED_FEATURES_UPDATED_RETURN_CODE):
+                if (resultCode == Activity.RESULT_OK) {
+                    ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+                    if (activeToolGroup != null) {
+                        if (activeToolGroup instanceof OnSelectionToolGroup) {
+                            Bundle extras = data.getExtras();
+                            ArrayList<Feature> featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
+                            OnSelectionToolGroup selectionGroup = (OnSelectionToolGroup) activeToolGroup;
+                            selectionGroup.setSelectedFeatures(featuresList);
+                        }
+                    }
+                }
+                break;
         }
     }
 

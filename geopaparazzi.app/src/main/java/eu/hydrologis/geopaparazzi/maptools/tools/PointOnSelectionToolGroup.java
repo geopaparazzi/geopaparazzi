@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -60,6 +61,7 @@ import eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.mapview.MapsSupportService;
+import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
 import eu.hydrologis.geopaparazzi.mapview.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.mapview.overlays.SliderDrawProjection;
 
@@ -68,7 +70,7 @@ import eu.hydrologis.geopaparazzi.mapview.overlays.SliderDrawProjection;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener, OnSelectionToolGroup {
 
     private final MapView mapView;
 
@@ -225,7 +227,13 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                 intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
                         (ArrayList<? extends Parcelable>) selectedFeatures);
                 intent.putExtra(FeatureUtilities.KEY_READONLY, false);
-                context.startActivity(intent);
+                if (context instanceof Activity) {
+                    Activity activity = (Activity) context;
+                    activity.startActivityForResult(intent, MapviewActivity.SELECTED_FEATURES_UPDATED_RETURN_CODE);
+                }
+                else {
+                    context.startActivity(intent);
+                }
             }
         } else if (v == deleteFeatureButton) {
             if (!isInDeletePreview) {
