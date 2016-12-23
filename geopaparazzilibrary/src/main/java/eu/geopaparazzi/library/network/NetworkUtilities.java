@@ -762,7 +762,7 @@ public class NetworkUtilities {
     private static void setCsrfHeader(CookieManager session, HttpURLConnection connection) throws IOException {
         String csrfToken = null;
         for (HttpCookie c : session.getCookieStore().getCookies()) {
-            if (c.getName().equals("csrftoken")) {
+            if (c.getName().equals("csrftoken") && c.getDomain().equals(connection.getURL().getHost())) {
                 csrfToken = c.getValue();
             }
         }
