@@ -239,6 +239,7 @@
   <string name="reset_string">resetuj</string>
   <string name="avaiable_layers">Dostępne warstwy</string>
   <string name="geometry_saved">Zapisano geometrię.</string>
+  <string name="info_uppercase">INFO</string>
   <string name="extracting_info">Wyciąganie informacji...</string>
   <string name="selected_features_in_layer">Wybrano %1$d obiektów z %2$d poligonów.</string>
   <string name="selected_line_features_in_layer">Wybrano %1$d obiektów z %2$d linii.</string>

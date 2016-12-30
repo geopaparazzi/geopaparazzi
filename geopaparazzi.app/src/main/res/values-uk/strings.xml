@@ -130,10 +130,12 @@
   <string name="gps_use_coarse">Використання позиції на основі мережі замість gps (потрібен рестарт)</string>
   <string name="type_to_filter">напишіть для фільтрування</string>
   <string name="geopapcloud_preferences">Налаштування синхронізації STAGE</string>
+  <string name="geopapcloud_preferences_summary">Встановлення параметрів синхронізації та налаштувань для STAGE</string>
   <string name="geopapcloud_user_label">Користувач</string>
   <string name="geopapcloud_password_label">Пароль</string>
   <string name="geopapcloud_server_label">Сервер для з’єднання</string>
   <string name="exporting_data">Експорт даних</string>
+  <string name="error_set_cloud_settings">Параметри синхронізації для STAGE не встановлені правильно. Будь ласка, перевірте Ваші налаштування.</string>
   <string name="exporting_data_to_the_cloud">Експорт даних до хмари.</string>
   <string name="error_uploadig_project_to_cloud">Сталася помилка при завантаженні проекту до </string>
   <string name="project_succesfully_uploaded_to_cloud">Проект успішно завантажено до </string>
@@ -191,6 +193,7 @@
   <string name="show_labels">показ міток</string>
   <string name="halo">гало</string>
   <string name="screen_preferences">Налаштування екрану</string>
+  <string name="cross_properties">Центральний перетин</string>
   <string name="color">Колір</string>
   <string name="prompt_delete_note">Ви дійсно бажаєте вилучити ці нотатку? Її не вдасться відновити.</string>
   <string name="prompt_delete_selected_notes">Ви дійсно бажаєте вилучити всі вибрані нотатки? Їх неможливо буде відновити.</string>
@@ -203,6 +206,7 @@
   <string name="start">початок</string>
   <string name="end">кінець</string>
   <string name="other">інше</string>
+  <string name="base_maps">Список просторових даних</string>
   <string name="maps_manager">Менеджер мап</string>
   <string name="loading_maps">Завантажую мапи...</string>
   <!--ellipsis character instead of three dots-->
@@ -227,6 +231,7 @@
   <string name="map">Мапа</string>
   <string name="name_lc">назва</string>
   <string name="name_uc">Назва проекту</string>
+  <string name="bounds">границі</string>
   <string name="maps_loading_not_finished_yet">Завантаження мап ще не закінчено. Почекайте хвильку і спробуйте знову.</string>
   <string name="save">зберегти</string>
   <string name="goto_feature">перейти до</string>
@@ -296,6 +301,7 @@
   <string name="routing_pref_summary">Для використання сервісів  MapQuest і Graphhopper введіть відповідний ключ Api.</string>
   <string name="gps_info_dialog_title">Інформація про Мапу/Gps </string>
   <string name="open_gps_settings">Відкрити налаштування GPS</string>
+  <string name="dashboard_note_action_description">Додавання тексту, малюнку або нотатки з начерком</string>
   <string name="dashboard_metadata_action_description">Перегляд інформації про проект</string>
   <string name="dashboard_gpslog_action_description">Включення журналювання gps</string>
   <string name="dashboard_mapview_action_description">Відкрити перегляд мапою</string>
@@ -320,6 +326,7 @@
   <string name="db_name">Назва бази даних</string>
   <string name="incoming_logs_added">Вхідний журнал завантажено:</string>
   <string name="logs_sent">Журнал вислано.</string>
+  <string name="active_elevation_diff">Різниці активних висот:</string>
   <string name="selected_file_is_no_geopap_project">Здається, що вибраний файл не є файлом даних Geopaparazzi (*.gpap).</string>
   <string name="error_while_setting_project">Сталася помилка при налаштування нового проекту.</string>
   <string name="sort_notes">Сортування нотаток</string>
@@ -340,6 +347,7 @@
   <string name="form_data">Дані форми</string>
   <string name="menu_simple_note">Проста нотатка</string>
   <string name="menu_simple_picture">Простий малюнок</string>
+  <string name="menu_simple_sketch">Простий начерк</string>
   <string name="warning_viewcone_gps">Ця утиліта працює тільки тоді, коли доступна позиція GPS.</string>
   <string name="import_bookmark_prompt">Ви бажаєте імпортувати посилання на дані як закладку і візуалізувати їх?</string>
   <string name="premissions_cant_start">Неможливо запустити Geopaparazzi, оскільки не було надано наступні дозволи: </string>
@@ -351,7 +359,10 @@
   <string name="sortby_none">Нічого</string>
   <string name="sortby_name">По назві</string>
   <string name="sortby_name_inverse">По назві обернено</string>
+  <string name="sortby_mapcenterdist">По відстані в Mapcenter</string>
+  <string name="sortby_mapcenterdist_inverse">По оберненій відстані в Mapcenter</string>
   <string name="use_as_selection">Використати як вибір</string>
+  <string name="only_complex_notes_editing">Тільки складні нотатки можна редагувати. Прості нотатки мають бути заміщені.</string>
   <string name="error_while_removing_notes">Сталася помилка під час вилучення нотаток:</string>
   <string name="removing_notes">Вилучення нотаток...</string>
   <string name="interrupted_by_user">Перервано користувачем</string>

@@ -4,7 +4,7 @@
   <string name="no">não</string>
   <string name="up">cima</string>
   <string name="cantcreate_sdcard">Não foi possível criar a pasta no cartão SD (%1$s). A sair…</string>
-  <string name="sdcard_notexist">A pasta Sdcard não existe ou está protegida contra escrita (será possível estar montada num PC?). A sair...</string>
+  <string name="sdcard_notexist">A pasta sdcard não existe ou está protegida contra escrita (está ligado e montado num computador?). A sair...</string>
   <string name="error_disk_full">O disco onde são gravados os registos parece estar cheio. Liberte algum espaço em disco e inicie novamente.</string>
   <string name="cantwrite_gpslog">ERRO: não foi possível gravar o registo de GPS!</string>
   <string name="gpsloggingoff">Registo de GPS parado.</string>
@@ -31,7 +31,7 @@
   <string name="message_sent">Mensagem enviada</string>
   <string name="select_dotdot">Selecionar...</string>
   <string name="type_to_filter">digite para filtrar</string>
-  <string name="webprojects_list_title">Lista de Projeto Remota</string>
+  <string name="webprojects_list_title">Lista Remota de Projetos</string>
   <string name="downloading">A descarregar...</string>
   <string name="downloading_projects_list_from_server">A descarregar a lista de projetos do servidor.</string>
   <string name="error_projects_list">Ocorreu um erro ao tentar obter a lista de projetos.</string>
@@ -66,7 +66,7 @@
   <string name="redo">refazer</string>
   <string name="hello_world">Olá Mundo!</string>
   <string name="menu_settings">Configurações</string>
-  <string name="title_activity_nfc_id_reader">AtividadeLeitorIDComunicaçãoCampoProximidade</string>
+  <string name="title_activity_nfc_id_reader">Atividade do Leitor NFC</string>
   <string name="activate_nfc">Por favor ative a Comunicação por Campo de Proximidade (NFC) e pressione o botão de Voltar Atrás para voltar à aplicação!</string>
   <string name="unable_to_read_tag_id">Não foi possível ler o ID da etiqueta</string>
   <string name="point_shape_">Forma do ponto</string>
@@ -101,10 +101,10 @@
   <string name="set_properties">Definir propriedades</string>
   <string name="set_dash">Definbir Tracejado</string>
   <string name="unauthorized_api_key">Acesso não autorizado. Verifique a chave API.</string>
-  <string name="fill_and_stroke_color_title">Cor do Traço e Preenchimento</string>
-  <string name="fill_color_title">Cor do preenchimento</string>
-  <string name="fill_alpha_title">Transparência do preenchimento</string>
-  <string name="stroke_color_title">Cor do traço</string>
-  <string name="stroke_width_title">Espessura do traço</string>
-  <string name="stroke_alpha_title">Transparência do traço</string>
+  <string name="fill_and_stroke_color_title">Cor da Linha e do Preenchimento</string>
+  <string name="fill_color_title">Cor do Preenchimento</string>
+  <string name="fill_alpha_title">Transparência do Preenchimento</string>
+  <string name="stroke_color_title">Cor da Linha</string>
+  <string name="stroke_width_title">Espessura da Linha</string>
+  <string name="stroke_alpha_title">Transparência da Linha</string>
 </resources>

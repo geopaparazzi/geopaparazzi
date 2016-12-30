@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="stroke_color">Cor do traço</string>
-  <string name="width">Espessura do traço</string>
-  <string name="alpha">Transparência do traço</string>
-  <string name="fill_color">Cor do preenchimento</string>
-  <string name="fill_alpha">Transparência do preenchimento</string>
+  <string name="stroke_color">Cor da Linha</string>
+  <string name="width">Espessura da Linha</string>
+  <string name="alpha">Transparência da Linha</string>
+  <string name="fill_color">Cor do Preenchimento</string>
+  <string name="fill_alpha">Transparência do Preenchimento</string>
   <string name="point_shape_">Forma do ponto</string>
   <string name="point_size">Tamanho do ponto</string>
   <string name="decimation">Redução decimal</string>
   <string name="decimation_factor_default">0.000001</string>
-  <string name="min_zoom">Aprox.mínima</string>
-  <string name="max_zoom">Aprox.máxima</string>
+  <string name="min_zoom">Aproximação mínima</string>
+  <string name="max_zoom">Aproximação máxima</string>
   <string name="dash_pattern">Padrão tracejado</string>
   <string name="label_properties">Propriedades da etiqueta</string>
   <string name="toggle_visibility">alternar visibilidade</string>

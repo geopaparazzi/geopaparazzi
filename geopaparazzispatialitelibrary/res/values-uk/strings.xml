@@ -16,4 +16,11 @@
   <string name="toggle_visibility">включити видимість</string>
   <string name="label_field">поле мітки</string>
   <string name="label_size">розмір мітки</string>
+  <string name="select_table_types">Вибрати типи</string>
+  <string name="select_type">Вибрати тип</string>
+  <string name="remove_from_list">Вилучити %s зі списку?</string>
+  <string name="selected_file_no_vector_data">Вибраний файл не містить жодних векторних даних:</string>
+  <string name="adding_new_source">Додавання нового джерела...</string>
+  <string name="select_spatialite_database">Вибір просторової бази даних для додавання</string>
+  <string name="loading_databases">Завантаження баз даних...</string>
 </resources>
