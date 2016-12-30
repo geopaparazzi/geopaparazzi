@@ -136,7 +136,7 @@
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
     <string name="type_to_filter">type to filter</string>
     <string name="geopapcloud_preferences">Cloud projects sync settings</string>
-    <string name="geopapcloud_preferences_summary">Set server sync credentials and settings for STAGE.</string>
+    <string name="geopapcloud_preferences_summary">Set server sync credentials and settings for cloud services.</string>
     <string name="geopapcloud_user_label">Username</string>
     <string name="geopapcloud_password_label">Password</string>
     <string name="geopapcloud_server_label">Server to connect to</string>

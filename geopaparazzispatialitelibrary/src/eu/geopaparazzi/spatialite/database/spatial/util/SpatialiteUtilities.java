@@ -23,6 +23,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import jsqlite.Database;
 import jsqlite.Stmt;
@@ -51,7 +52,7 @@ public class SpatialiteUtilities {
 
 
     /**
-     * Checks if a field needs to be ignores.
+     * Checks if a field needs to be ignored.
      * 
      * @param field the field to check. 
      * @return <code>true</code> if the field needs to be ignored.
@@ -65,6 +66,51 @@ public class SpatialiteUtilities {
         return false;
     }
 
+    /**
+     * Checks if a field needs to be ignored.
+     *
+     * @param field the field to check.
+     * @param pkField a primary key field to be ignored. It can be null
+     * @return <code>true</code> if the field needs to be ignored.
+     */
+    public static boolean doIgnoreField( String field, String pkField) {
+        if (field.equals(pkField)) {
+            return true;
+        }
+        for( String ingoredField : SpatialiteUtilities.IGNORED_FIELDS ) {
+            if (field.equals(ingoredField)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Checks if a primary key field needs to be ignored.
+     *
+     * Primary keys formed by a single integer field are managed by Sqlite as an alias
+     * of ROWID, and a unique value is assigned to this column if omitted on INSERT queries.
+     *
+     * These PK columns should be excluded when creating a new feature, so that the user
+     * does not need to worry about assigning a unique ID.
+     *
+     * See http://sqlite.org/autoinc.html for more info.
+     *
+     * @param field the field to check.
+     * @return The PK field to be ignored (or null if no PK field has to be ignored)
+     */
+    public static String getIgnoredPkField(SpatialVectorTable spatialVectorTable) {
+        try {
+            String fields = spatialVectorTable.getPrimaryKeyFields();
+            if (!fields.contains(";") &&
+                    (spatialVectorTable.getTableFieldType(fields) == EDataType.INTEGER)) {
+                return fields;
+            }
+        }
+        catch (Exception e) {}
+        return null;
+    }
 
     /**
      * Build a query to retrieve geometries from a table in a given bound.
@@ -191,8 +237,8 @@ public class SpatialiteUtilities {
             sbQ.append(")");
         }
         sbQ.append("))");
-        sbQ.append(" FROM ").append(spatialTable.getTableName());
-        sbQ.append(" WHERE ST_Intersects(");
+        sbQ.append(" FROM \"").append(spatialTable.getTableName());
+        sbQ.append("\" WHERE ST_Intersects(");
         if (doTransform)
             sbQ.append("ST_Transform(");
         sbQ.append("BuildMBR(");
@@ -254,8 +300,8 @@ public class SpatialiteUtilities {
             sbQ.append(")");
         }
         sbQ.append("))");
-        sbQ.append(" FROM ").append(spatialTable.getTableName());
-        sbQ.append(" order by " + SPATIALTABLE_ID_FIELD + " desc limit 1");
+        sbQ.append(" FROM \"").append(spatialTable.getTableName());
+        sbQ.append("\" order by " + SPATIALTABLE_ID_FIELD + " desc limit 1");
         sbQ.append(");");
 
         query = sbQ.toString();
