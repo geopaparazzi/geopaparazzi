@@ -106,4 +106,5 @@
   <string name="stroke_color_title">Color de borde</string>
   <string name="stroke_width_title">Anchura de borde</string>
   <string name="stroke_alpha_title">Alfa de borde</string>
+  <string name="saving_to_database">Gurdando los datos en la base de datos...</string>
 </resources>

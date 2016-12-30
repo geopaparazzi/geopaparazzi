@@ -59,7 +59,7 @@ public class WebDataLayer {
     /**
      * Last UTC timestamp of editing.
      */
-    public long lastEdited; // Unix long
+    public Long lastEdited; // Unix long
 
     public boolean isSelected;
 

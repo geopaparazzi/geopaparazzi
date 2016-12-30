@@ -48,7 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
@@ -253,7 +253,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             noteDialogFragment.show(getSupportFragmentManager(), "Simple Note");
         } else if (item.getItemId() == R.id.action_simplepicture) {
             checkPositionCoordinates();
-            Intent intent = new Intent(AddNotesActivity.this, CameraActivity.class);
+            Intent intent = new Intent(AddNotesActivity.this, CameraNoteActivity.class);
             intent.putExtra(LibraryConstants.DATABASE_ID, -1l);
             intent.putExtra(LibraryConstants.LONGITUDE, longitude);
             intent.putExtra(LibraryConstants.LATITUDE, latitude);

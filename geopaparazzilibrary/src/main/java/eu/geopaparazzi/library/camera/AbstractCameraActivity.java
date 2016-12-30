@@ -18,34 +18,32 @@
 
 package eu.geopaparazzi.library.camera;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.hardware.SensorManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
- * The taking pictures activity.
+ * <p>Abstract activity for taking pictures, can be subclassed to
+ * get specialized behaviours
  * <p/>
  * <p>
  * The image is created in a <b>tmp</b> folder inside the
@@ -53,40 +51,26 @@ import eu.geopaparazzi.library.core.ResourcesManager;
  * {@link LibraryConstants#PREFS_KEY_CAMERA_IMAGESAVEFOLDER}
  * value, that one is used as folder.
  * </p>
- * <p>
- * The bundle is supposed to contain the gps position available through the keys:
- * {@link LibraryConstants#LONGITUDE},{@link LibraryConstants#LATITUDE},
- * {@link LibraryConstants#ELEVATION},{@link LibraryConstants#AZIMUTH}
- * </p>
  * <p/>
  * <p>
- * The activity returns the id of the image inserted in the database, that can be
- * retrieved through the {@link LibraryConstants#DATABASE_ID} key from
+ * The activity returns the path to the image on "disk"., that can be
+ * retrieved through the {@link LibraryConstants#PREFS_KEY_PATH} key from
  * the bundle.
  * </p>
  *
  * @author Andrea Antonello (www.hydrologis.com)
+ * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
 @SuppressWarnings("nls")
-public class CameraActivity extends Activity {
+public abstract class AbstractCameraActivity extends Activity {
 
-    private static final int CAMERA_PIC_REQUEST = 1337;
-    private String imageFilePath;
-    private Date currentDate;
-    private double lon;
-    private double lat;
-    private double elevation;
-    private int lastImageMediastoreId;
-    private long noteId = -1;
-    private OrientationSensor orientationSensor;
+    protected static final int CAMERA_PIC_REQUEST = 1337;
+    protected String imageFilePath;
+    protected File imageFile;
+    protected Date currentDate;
+    protected int lastImageMediastoreId;
 
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        orientationSensor = new OrientationSensor(sensorManager, null);
-        orientationSensor.register(this, SensorManager.SENSOR_DELAY_NORMAL);
-
+    protected void doTakePicture(Bundle icicle) {
         Bundle extras = getIntent().getExtras();
         File imageSaveFolder = null;
         try {
@@ -98,10 +82,6 @@ public class CameraActivity extends Activity {
                     imageSaveFolder = new File(imageSaveFolderTmp);
                 }
                 imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
-                noteId = extras.getLong(LibraryConstants.DATABASE_ID);
-                lon = extras.getDouble(LibraryConstants.LONGITUDE);
-                lat = extras.getDouble(LibraryConstants.LATITUDE);
-                elevation = extras.getDouble(LibraryConstants.ELEVATION);
             } else {
                 throw new RuntimeException("Not implemented yet...");
             }
@@ -146,6 +126,7 @@ public class CameraActivity extends Activity {
                 }
             });
         }
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,46 +136,18 @@ public class CameraActivity extends Activity {
             Intent intent = getIntent();
             File imageFile = new File(imageFilePath);
             if (imageFile.exists()) {
-
-                try {
-                    byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
-
-                    Class<?> logHelper = Class.forName(DefaultHelperClasses.IMAGE_HELPER_CLASS);
-                    IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
-
-                    double azimuth = orientationSensor.getAzimuthDegrees();
-
-                    long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
-                            imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
-                    intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
-                    intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
-
-                    // delete the file after insertion in db
-                    imageFile.delete();
-                } catch (Exception e) {
-                    GPLog.error(this, null, e);
-                    GPDialogs.errorDialog(this, e, null);
-                }
+                intent.putExtra(LibraryConstants.PREFS_KEY_PATH, imageFilePath);
+                intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+                doSaveData();
             } else {
                 intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
             }
-
             setResult(Activity.RESULT_OK, intent);
-
-
             finish();
         }
     }
 
-
-    @Override
-    public void finish() {
-        orientationSensor.unregister();
-        super.finish();
-    }
-
-
-    private void checkTakenPictureConsistency() {
+    protected void checkTakenPictureConsistency() {
         try {
             /*
              * Checking for duplicate images
@@ -222,7 +175,7 @@ public class CameraActivity extends Activity {
             }
             imageCursor.close();
 
-            File imageFile = new File(imageFilePath);
+            imageFile = new File(imageFilePath);
 
             boolean imageExists = imageFile.exists();
             if (GPLog.LOG)
@@ -269,4 +222,5 @@ public class CameraActivity extends Activity {
         }
     }
 
+    protected abstract void doSaveData();
 }

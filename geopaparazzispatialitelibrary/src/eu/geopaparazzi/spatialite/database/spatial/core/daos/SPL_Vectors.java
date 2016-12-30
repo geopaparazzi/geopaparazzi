@@ -18,6 +18,8 @@
 
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -535,11 +537,10 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 vector_extent = statement.column_string(2);
                 if (vector_extent != null) {
                     spatialVectorMap.put(vector_key, vector_data + vector_extent);
-                } else { // should never happen
-                    // GPLog.addLogEntry("getSpatialVectorMap_V4 vector_key["
-                    // + vector_key + "] vector_data["+ vector_data+"] vector_extent["+
-                    // vector_extent + "] VECTOR_LAYERS_QUERY["+
-                    // VECTOR_LAYERS_QUERY_EXTENT_VALID_V4 + "]");
+                } else {
+                    // should only happen when row_count is 0
+                    String time = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
+                    spatialVectorMap.put(vector_key, vector_data + "0;0.0,0.0,1.0,1.0;" + time);
                 }
             }
         } catch (jsqlite.Exception e_stmt) {

@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.images;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -93,6 +95,18 @@ public class ImageUtilities {
             image = BitmapFactory.decodeFile(imageFilePath);
         }
         if (image == null) return null;
+
+        // It is necessary to rotate the image before converting to bytes, as the exif information
+        // will be lost afterwards and the image will be incorrectly oriented in some devices
+        float orientation = getRotation(imageFilePath);
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            image = Bitmap.createBitmap(image, 0, 0, image.getWidth(),
+                    image.getHeight(), matrix, true);
+        }
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
         return stream.toByteArray();
@@ -121,6 +135,17 @@ public class ImageUtilities {
             image = BitmapFactory.decodeFile(imageFilePath);
         }
         if (image == null) return null;
+
+        // It is necessary to rotate the image before converting to bytes, as the exif information
+        // will be lost afterwards and the image will be incorrectly oriented in some devices
+        float orientation = getRotation(imageFilePath);
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            image = Bitmap.createBitmap(image, 0, 0, image.getWidth(),
+                    image.getHeight(), matrix, true);
+        }
 
         int width = image.getWidth();
         int height = image.getHeight();
@@ -184,5 +209,76 @@ public class ImageUtilities {
         } finally {
             fout.close();
         }
+    }
+
+    /**
+     * Calculates the optimum inSampleSize parameter based on the real
+     * image size and the required subsampled size
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    /**
+     * Loads a subsampled version of the image
+     *
+     * @param imgPath The path to the image to load
+     * @param reqWidth The width required for the subsampled version
+     * @param reqHeight The height required for the subsampled version
+     * @return
+     */
+    public static Bitmap decodeSampledBitmapFromFile(String imgPath,
+                                                     int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imgPath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imgPath, options);
+    }
+
+    public static float getRotation(String imagePath) {
+        try {
+            ExifInterface exif = new ExifInterface(imagePath);
+            int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                return 90f;
+            } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                return 180f;
+            } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                return 270f;
+            }
+        } catch (IOException e) {}
+        return 0f;
     }
 }

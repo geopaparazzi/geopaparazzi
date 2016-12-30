@@ -48,4 +48,7 @@
 
     <color name="transparent_white">#BFFFFFFF</color>
 
+    <color name="blue">#0000FF</color>
+    <color name="white">#FFFFFF</color>
+
 </resources>

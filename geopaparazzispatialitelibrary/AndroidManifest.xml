@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.geopaparazzi.spatialite"
     android:versionCode="48"
-    android:versionName="3.8.0" >
+    android:versionName="3.8.0">
+    <!--
+    <application>
+        <activity android:name=".database.spatial.activities.resourceviews.ResourceBrowser"></activity>
+    </application> -->
 
 </manifest>

@@ -130,13 +130,13 @@
   <string name="view_in_mixare">Visualizar en mixware</string>
   <string name="gps_use_coarse">Utilizar la posición basada en red, en lugar de la posición gps (necesita reiniciar)</string>
   <string name="type_to_filter">Escribir para filtrar</string>
-  <string name="geopapcloud_preferences">Configuración de STAGE Sync</string>
-  <string name="geopapcloud_preferences_summary">Establecer credenciales del servidor sync y la configuración para STAGE.</string>
+  <string name="geopapcloud_preferences">Configuración de sincronización de proyectos en la nube</string>
+  <string name="geopapcloud_preferences_summary">Establecer credenciales de sincronización con el servidor y la configuración para servicios en la nube</string>
   <string name="geopapcloud_user_label">Nombre de usuario</string>
   <string name="geopapcloud_password_label">Contraseña</string>
   <string name="geopapcloud_server_label">Servidor al que conectarse</string>
   <string name="exporting_data">Exportando datos</string>
-  <string name="error_set_cloud_settings">Los parámetros de STAGE sync no se han establecido correctamente. Verifique por favor la configuración.</string>
+  <string name="error_set_cloud_settings">Los parámetros de sincronización en la nube no se han establecido correctamente. Verifique por favor la configuración.</string>
   <string name="exporting_data_to_the_cloud">Exportando datos a la nube.</string>
   <string name="error_uploadig_project_to_cloud">Se ha producido un error en la transferencia del proyecto a Geopap-cloud</string>
   <string name="project_succesfully_uploaded_to_cloud">El proyecto ha sido correctamente transferido a Geopap-cloud</string>
@@ -289,7 +289,7 @@
   <string name="import_uc">IMPORTAR</string>
   <string name="mapurls">Urls de mapas</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
+  <string name="geopap_browser">Proyectos en la nube</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Base de datos por defecto</string>
   <string name="kmz">KMZ</string>
@@ -367,4 +367,5 @@
   <string name="menu_simple_picture">Imagen simple</string>
   <string name="menu_simple_sketch">Croquis simple</string>
   <string name="warning_viewcone_gps">Esta función es operativa solo si se dispone de posición GPS</string>
+  <string name="import_cloud_data">Datos en la nube</string>
 </resources>
