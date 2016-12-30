@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.maptools;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -155,6 +156,10 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
                         GPLog.error(this, "ERROR", ex);
                         GPDialogs.errorDialog(FeaturePagerActivity.this, ex, null);
                     }
+                    Intent result = new Intent();
+                    result.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                            (ArrayList<? extends Parcelable>) featuresList);
+                    FeaturePagerActivity.this.setResult(RESULT_OK, result);
                     finish();
                 }
 
