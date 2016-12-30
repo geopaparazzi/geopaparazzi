@@ -214,6 +214,8 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
                 return EDataType.DATE;
             } else if (type.contains("BLOB")) {
                 return EDataType.BLOB;
+            } else if (type.contains("FLOAT")) {
+                return EDataType.FLOAT;
             }
         }
         return null;
