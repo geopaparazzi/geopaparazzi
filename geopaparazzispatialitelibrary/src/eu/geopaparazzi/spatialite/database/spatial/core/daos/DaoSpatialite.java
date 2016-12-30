@@ -119,9 +119,9 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         queryBuilder.append("))||','||Max(MbrMaxY(");
         queryBuilder.append(geometryColumn);
         queryBuilder.append("))||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now')");
-        queryBuilder.append(" FROM ");
+        queryBuilder.append(" FROM \"");
         queryBuilder.append(tableName);
-        queryBuilder.append(";");
+        queryBuilder.append("\" ;");
         // ;617;7255796.59288944,246133.478270624,7395508.96772464,520956.218508861;2014-03-26T06:32:58.572Z
         String s_select_bounds = queryBuilder.toString();
         Stmt statement = null;
@@ -201,8 +201,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         String tableName = firstFeature.getTableName();
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("delete from ").append(tableName);
-        sbIn.append(" where ");
+        sbIn.append("delete from \"").append(tableName);
+        sbIn.append("\" where ");
 
         StringBuilder sb = new StringBuilder();
         for (Feature feature : features) {
@@ -242,11 +242,13 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         String spaceDimensionsCast = geometryType.getSpaceDimensionsCast();
         String multiSingleCast = geometryType.getMultiSingleCast();
 
+        String pkIgnoredField = SpatialiteUtilities.getIgnoredPkField(spatialVectorTable);
+
         // get list of non geom fields and default values
         String nonGeomFieldsNames = "";
         String nonGeomFieldsValues = "";
         for (String field : spatialVectorTable.getTableFieldNamesList()) {
-            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field, pkIgnoredField);
             if (!ignore) {
                 EDataType tableFieldType = spatialVectorTable.getTableFieldType(field);
                 if (tableFieldType != null) {
@@ -262,8 +264,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         }
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("insert into ").append(tableName);
-        sbIn.append(" (");
+        sbIn.append("insert into \"").append(tableName);
+        sbIn.append("\" (");
         sbIn.append(geometryFieldName);
         // add fields
         if (nonGeomFieldsNames.length() > 0) {
@@ -318,8 +320,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         List<String> attributeTypes = feature.getAttributeTypes();
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("update ").append(tableName);
-        sbIn.append(" set ");
+        sbIn.append("update \"").append(tableName);
+        sbIn.append("\" set ");
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < attributeNames.size(); i++) {
@@ -332,7 +334,10 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
                 if (dataType == EDataType.TEXT) {
                     value = escapeString(value);
                     sb.append(" , ").append(fieldName).append("='").append(value).append("'");
-                } else {
+                } else if (value == null || "".equals(value)) {
+                    sb.append(" , ").append(fieldName).append("=NULL");
+                }
+                else{
                     sb.append(" , ").append(fieldName).append("=").append(value);
                 }
             }
@@ -378,8 +383,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         }
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("update ").append(tableName);
-        sbIn.append(" set ");
+        sbIn.append("update \"").append(tableName);
+        sbIn.append("\" set ");
         sbIn.append(geometryFieldName);
         sbIn.append(" = ");
         if (doTransform)
@@ -433,8 +438,8 @@ public class DaoSpatialite implements ISpatialiteTableAndFieldsNames {
         sbIn.append("SELECT ");
         sbIn.append("Area(").append(geomName).append("),");
         sbIn.append("Length(").append(geomName).append(")");
-        sbIn.append(" from ").append(tableName);
-        sbIn.append(" where ");
+        sbIn.append(" from \"").append(tableName);
+        sbIn.append("\" where ");
         sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append(" = ").append(id);
 
         String selectQuery = sbIn.toString();

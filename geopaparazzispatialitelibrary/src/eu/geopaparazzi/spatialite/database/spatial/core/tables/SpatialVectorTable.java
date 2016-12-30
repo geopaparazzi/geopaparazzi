@@ -202,7 +202,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         // 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
         if (type != null) {
             type = type.toUpperCase(Locale.US);
-            if (type.contains("TEXT")) {
+            if (type.contains("TEXT") || type.contains("CHAR")) {
                 return EDataType.TEXT;
             } else if (type.contains("DOUBLE")) {
                 return EDataType.DOUBLE;
