@@ -86,7 +86,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
         isReadOnly = extras.getBoolean(FeatureUtilities.KEY_READONLY);
 
         selectedFeature = featuresList.get(0);
-        PagerAdapter featureAdapter = new FeaturePageAdapter(this, featuresList, isReadOnly);
+        PagerAdapter featureAdapter = new FeaturePageAdapter(this, featuresList, isReadOnly, getSupportFragmentManager());
 
         ViewPager featuresPager = (ViewPager) findViewById(R.id.featurePager);
         // ViewPager viewPager = new ViewPager(this);
