@@ -703,6 +703,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (style4Table.enabled == 0) {
                     continue;
                 }
+                // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite TableName["+spatialTable.getTableName()+"]: GeomName["+spatialTable.getGeomName()+"]");
                 // TODO enable this again only when updating of bound when adding geometries has been done
                 //                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
                 //                    continue;
@@ -755,7 +756,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
                                         String geometryType = geom_collect.getGeometryType();
-                                        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
+                                        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+geometryType+"]: ["+drawZoomLevel+"]");
                                         if (geometryType.toUpperCase().contains("POINT")) {
                                             drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
                                         } else {
@@ -767,6 +768,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     }
                                 }
                             } else {
+                                // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite GeometryType["+geom.getGeometryType()+"]: GeomName["+spatialTable.getGeomName()+"]");
                                 drawGeometry(geom, canvas, shapeWriter, fill, stroke);
                                 if (stopDrawing()) { // stop working
                                     return;

@@ -326,7 +326,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 JavaSqliteDescription += "spatialite[" + spatialiteVersionNumber + "],";
                 JavaSqliteDescription += "proj4[" + getProj4Version(dbSpatialite) + "],";
                 JavaSqliteDescription += "geos[" + getGeosVersion(dbSpatialite) + "],"; 
-                JavaSqliteDescription += "lwgeom[" + getLwgeomVersion(dbSpatialite) + "],"; 
+                JavaSqliteDescription += "rttopo[" + getRttopoVersion(dbSpatialite) + "],"; 
                 JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(dbSpatialite) + "],";
                 JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(dbSpatialite) + "]]";
             } catch (Exception e) {
@@ -541,7 +541,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <p/>
      * <br>- use the known 'SELECT Has..' functions
      * <br>- when HasIconv=0: no VirtualShapes,VirtualXL
-     *
+     * - with 4.4.0 replace HasLwGeom() with HasRtTopo()
+     * - starting with 4.4.0 HasGCP, HasTopology
      * @param dbSpatialite the db to use.
      * @return the properties of Spatialite.
      * @throws Exception if something goes wrong.
@@ -549,16 +550,17 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
     public static String getSpatialiteProperties(Database dbSpatialite) throws Exception {
         String s_value = "-";
         Stmt stmt = dbSpatialite
-                .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasLwGeom(),HasLibXML2(),HasEpsg(),HasFreeXL();");
+                .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasRtTopo(), HasGCP(), HasTopology(),HasLibXML2(),HasEpsg(),HasFreeXL();");
         try {
             if (stmt.step()) {
                 s_value = "HasIconv[" + stmt.column_int(0) + "],HasMathSql[" + stmt.column_int(1) + "],HasGeoCallbacks["
                         + stmt.column_int(2) + "],";
                 s_value += "HasProj[" + stmt.column_int(3) + "],HasGeos[" + stmt.column_int(4) + "],HasGeosAdvanced["
                         + stmt.column_int(5) + "],";
-                s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasLwGeom[" + stmt.column_int(7) + "],HasLibXML2["
+                s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasRtTopo[" + stmt.column_int(7) + "],HasGCP["
                         + stmt.column_int(8) + "],";
-                s_value += "HasEpsg[" + stmt.column_int(9) + "],HasFreeXL[" + stmt.column_int(10) + "]";
+                s_value += "HasTopology[" + stmt.column_int(9) + "],HasLibXML2[" + stmt.column_int(10) + "],";
+                s_value += "HasEpsg[" + stmt.column_int(11) + "],HasFreeXL[" + stmt.column_int(12) + "]";
             }
         } finally {
             stmt.close();
@@ -614,14 +616,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         return "-";
     }
    /**
-     * Get the version of lwgeom [starting with version 2.2 ].
+     * Get the version of rttopo [starting with version 4.4.0 ].
      *
      * @param dbSpatialite the db to use.
      * @return the version of lwgeom.
      * @throws Exception if something goes wrong.
      */
-    public static String getLwgeomVersion(Database dbSpatialite) throws Exception {
-        Stmt stmt = dbSpatialite.prepare("SELECT lwgeom_version();");
+    public static String getRttopoVersion(Database dbSpatialite) throws Exception {
+        Stmt stmt = dbSpatialite.prepare("SELECT rttopo_version();");
         try {
             if (stmt.step()) {
                 return stmt.column_string(0);

@@ -208,6 +208,7 @@ public class SpatialiteUtilities {
         qSb.append(mbr);
         qSb.append(");");
         String q = qSb.toString();
+        // GPLog.androidLog(-1,"buildGeometriesInBoundsQuery["+table.getLayerTypeDescription()+"] ["+table.isView()+"] query["+q+"]");
         return q;
     }
 
