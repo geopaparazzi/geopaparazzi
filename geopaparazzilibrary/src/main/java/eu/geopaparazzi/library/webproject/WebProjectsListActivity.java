@@ -194,8 +194,8 @@ public class WebProjectsListActivity extends ListActivity {
     };
 
     private void downloadProject(final Webproject webproject) {
-        cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading_project),
-                getString(R.string.downloading_project_to_the_device), true, true);
+        cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
+                getString(R.string.downloading_project), true, true);
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {
