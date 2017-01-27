@@ -516,9 +516,9 @@ public class NetworkUtilities {
             // return new PasswordAuthentication("test", "test".toCharArray());
             // }
             // });
-            if (!urlStr.endsWith(SLASH)) {
-                urlStr = urlStr + SLASH;
-            }
+//            if (urlStr.endsWith(SLASH)) {
+//                urlStr = urlStr + SLASH;
+//            }
             urlStr = urlStr + "?name=" + file.getName();
             conn = makeNewConnection(urlStr);
             conn.setRequestMethod("POST");

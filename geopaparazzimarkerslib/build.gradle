@@ -1,6 +1,6 @@
 buildscript {
         repositories {
-                mavenCentral()
+                jcenter()
         }
         dependencies {
             classpath 'com.android.tools.build:gradle:2.2.3'
@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 repositories {
-    mavenCentral()
+        jcenter()
 }
 
 dependencies {
