@@ -45,7 +45,6 @@ import android.widget.RelativeLayout;
 
 import org.json.JSONException;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
@@ -182,7 +181,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                        File  file = new File(filePath);
+                        File file = new File(filePath);
                         if (file.exists()) {
                             Utilities.setLastFilePath(this, filePath);
                             final File finalFile = file;
@@ -192,7 +191,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                 protected String doBackgroundWork() {
                                     try {
                                         // add basemap to list and in mPreferences
-                                        if (BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(finalFile)) {
+                                        if (BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(finalFile).size() != 0) {
                                             baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                                         } else {
                                             return getString(R.string.selected_file_no_basemap) + finalFile;

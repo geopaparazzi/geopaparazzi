@@ -514,14 +514,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
     public static String getSpatialiteProperties(Database database) throws Exception {
         String s_value = "-";
         Stmt stmt = database
-                .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasLwGeom(),HasLibXML2(),HasEpsg(),HasFreeXL();");
+                .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasRtTopo(),HasLibXML2(),HasEpsg(),HasFreeXL();");
         try {
             if (stmt.step()) {
                 s_value = "HasIconv[" + stmt.column_int(0) + "],HasMathSql[" + stmt.column_int(1) + "],HasGeoCallbacks["
                         + stmt.column_int(2) + "],";
                 s_value += "HasProj[" + stmt.column_int(3) + "],HasGeos[" + stmt.column_int(4) + "],HasGeosAdvanced["
                         + stmt.column_int(5) + "],";
-                s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasLwGeom[" + stmt.column_int(7) + "],HasLibXML2["
+                s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasRtTopo[" + stmt.column_int(7) + "],HasLibXML2["
                         + stmt.column_int(8) + "],";
                 s_value += "HasEpsg[" + stmt.column_int(9) + "],HasFreeXL[" + stmt.column_int(10) + "]";
             }

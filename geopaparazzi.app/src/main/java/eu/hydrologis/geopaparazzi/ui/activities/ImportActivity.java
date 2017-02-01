@@ -455,7 +455,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 String mapurlText = sb.toString();
                 FileUtilities.writefile(mapurlText, newMapurl);
 
-                BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(newMapurl);
+                BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(newMapurl);
                 Button wmsImportButton = (Button) findViewById(R.id.wmsImportButton);
                 GPDialogs.quickInfo(wmsImportButton, getString(R.string.wms_mapurl_added) + newMapurl.getName());
             } catch (Exception e) {

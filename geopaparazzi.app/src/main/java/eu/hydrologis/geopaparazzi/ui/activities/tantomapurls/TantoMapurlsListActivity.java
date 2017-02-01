@@ -214,7 +214,7 @@ public class TantoMapurlsListActivity extends ListActivity {
                     }
                     File writtenFile = NetworkUtilities.sendGetRequest4File(url, appsupporterFile, null, null, null);
 
-                    BaseMapSourcesManager.INSTANCE.addBaseMapFromFile(writtenFile);
+                    BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(writtenFile);
 
                     return writtenFile.getName();
                 } catch (Exception e) {
