@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -231,13 +232,22 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
             final Button deleteButton = (Button) findViewById(R.id.gpslog_delete);
             deleteButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
-                    try {
-                        long id = item.getId();
-                        new DaoGpsLog().deleteGpslog(id);
-                        finish();
-                    } catch (IOException e) {
-                        GPLog.error(this, null, e); //$NON-NLS-1$
-                    }
+
+
+                    GPDialogs.yesNoMessageDialog(GpsLogPropertiesActivity.this, "The log will be removed. This can't be undone.", new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+
+                                long id = item.getId();
+                                new DaoGpsLog().deleteGpslog(id);
+                                finish();
+                            } catch (IOException e) {
+                                GPLog.error(this, null, e); //$NON-NLS-1$
+                            }
+                        }
+                    }, null);
+
                 }
             });
         }
