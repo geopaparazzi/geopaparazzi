@@ -105,6 +105,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private FileFilter fileFilter;
 
     private File currentDir;
+    private File sdcardDir;
     private boolean doFolder;
     private boolean doHidden;
     private String startFolder;
@@ -115,6 +116,14 @@ public class DirectoryBrowserActivity extends ListActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.browse);
+
+        try {
+            sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
+            currentDir = sdcardDir;
+        } catch (Exception e) {
+            e.printStackTrace();
+            GPLog.error(this, "Error retrieving sdcard dir", e);
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -202,9 +211,9 @@ public class DirectoryBrowserActivity extends ListActivity {
         if (file.isDirectory()) {
             File[] filesArray = file.listFiles(fileFilter);
             if (filesArray != null) {
-                if (filesArray.length == 0){
+                if (filesArray.length == 0) {
                     GPDialogs.quickInfo(v, "No files are contained in the folder.");
-                }else {
+                } else {
                     currentDir = file;
                     getFiles(currentDir, filesArray);
                 }
@@ -220,6 +229,8 @@ public class DirectoryBrowserActivity extends ListActivity {
     }
 
     private void goUp() {
+        if (currentDir==null)
+            currentDir = sdcardDir;
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
             if (tmpDir.canRead()) {
