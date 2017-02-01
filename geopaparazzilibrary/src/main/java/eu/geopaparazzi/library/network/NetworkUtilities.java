@@ -56,6 +56,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -614,9 +615,14 @@ public class NetworkUtilities {
                     throw ioException;
                 }
                 String csrfToken = null;
-                for (HttpCookie c : manager.getCookieStore().getCookies()) {
-                    if (c.getName().equals("csrftoken") && c.getDomain().equals(new URL(loginUrl).getHost())) {
+                URL domainUrl = new URL(loginUrl);
+                CookieStore store = manager.getCookieStore();
+                for (HttpCookie c : store.getCookies()) {
+                    if (c.getName().equals("csrftoken") && c.getDomain().equals(domainUrl.getHost())) {
                         csrfToken = c.getValue();
+                    }
+                    else if (c.getName().equals("sessionid") && c.getDomain().equals(domainUrl.getHost())) {
+                        store.remove(domainUrl.toURI(), c);
                     }
                 }
                 if (csrfToken == null) {
@@ -756,7 +762,7 @@ public class NetworkUtilities {
     private static void setCsrfHeader(CookieManager session, HttpURLConnection connection) throws IOException {
         String csrfToken = null;
         for (HttpCookie c : session.getCookieStore().getCookies()) {
-            if (c.getName().equals("csrftoken")) {
+            if (c.getName().equals("csrftoken") && c.getDomain().equals(connection.getURL().getHost())) {
                 csrfToken = c.getValue();
             }
         }
