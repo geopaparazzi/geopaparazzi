@@ -391,7 +391,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
         }
 
         int logsNum = selected.size();
-        String message = logsNum + getString(R.string.logs_will_be_merged);
+        String message = logsNum + " " + getString(R.string.logs_will_be_merged);
         GPDialogs.yesNoMessageDialog(this, message, new Runnable() {
             @Override
             public void run() {

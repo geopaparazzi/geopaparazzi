@@ -82,6 +82,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
     private double elevDifference;
     private FloatingActionButton resetButton;
     private View textLayout;
+    private StringAsyncTask resumeTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -293,7 +294,8 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
     @Override
     protected void onResume() {
         super.onResume();
-        StringAsyncTask task = new StringAsyncTask(this) {
+        //$NON-NLS-1$
+        resumeTask = new StringAsyncTask(this) {
             protected String doBackgroundWork() {
                 try {
                     createDatasetFromProfile();
@@ -313,8 +315,14 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 }
             }
         };
-        task.setProgressDialog("", "Loading data...", false, null);
-        task.execute();
+        resumeTask.setProgressDialog("", "Loading data...", false, null);
+        resumeTask.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (resumeTask!= null) resumeTask.dispose();
+        super.onDestroy();
     }
 
     private void updateView() {

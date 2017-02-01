@@ -64,6 +64,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
     private float newWidth;
     private String newColor;
     private double newLengthm;
+    private StringAsyncTask task = null;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -139,8 +140,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
             refreshLogLenButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     final long logID = item.getLogID();
-                    @SuppressWarnings("nls")
-                    StringAsyncTask task = new StringAsyncTask(GpsLogPropertiesActivity.this) {
+                    task = new StringAsyncTask(GpsLogPropertiesActivity.this) {
                         @Override
                         protected void doUiPostWork(String response) {
                             trackLengthTextView.setText(response);
@@ -251,6 +251,13 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                 }
             });
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (task != null) task.dispose();
+
+        super.onDestroy();
     }
 
     @Override

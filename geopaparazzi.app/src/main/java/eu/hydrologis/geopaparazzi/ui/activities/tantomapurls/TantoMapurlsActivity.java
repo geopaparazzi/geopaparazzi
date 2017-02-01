@@ -77,6 +77,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
     private CheckBox useMapcenterCheckbox;
     private CheckBox useLimitCheckbox;
+    private StringAsyncTask task;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -157,7 +158,8 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
         final String getUrl = BASEURL + relativeUrl;
 
-        StringAsyncTask task = new StringAsyncTask(this) {
+        //$NON-NLS-1$
+        task = new StringAsyncTask(this) {
             @Override
             protected void doUiPostWork(String response) {
                 if (response.startsWith("ERROR")) {
@@ -189,5 +191,11 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
         };
         task.setProgressDialog(getString(R.string.downloading), getString(R.string.requesting_available_services), false, null);
         task.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (task != null) task.dispose();
+        super.onDestroy();
     }
 }

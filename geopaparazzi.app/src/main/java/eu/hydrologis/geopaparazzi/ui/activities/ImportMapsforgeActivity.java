@@ -65,6 +65,7 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
 
     private float[] nswe;
     private int zoomLevel;
+    private StringAsyncTask importTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,16 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
             }
 
 
-            StringAsyncTask task = new StringAsyncTask(this) {
+            // get mapsforge db
+            // ignore external points
+            // ignore
+            // check if the complete text contains the thing
+            // check if it is double
+            // TODO
+            // get next available field
+            // now alpha values
+            // ignore only the one unable to import
+            importTask = new StringAsyncTask(this) {
                 @Override
                 protected String doBackgroundWork() {
                     Database database = null;
@@ -377,8 +387,8 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
             if (!doPois) {
                 count = singleZoomCount;
             }
-            task.setProgressDialog(null, getString(R.string.extract_mapsforge_data), false, (int) count);
-            task.execute();
+            importTask.setProgressDialog(null, getString(R.string.extract_mapsforge_data), false, (int) count);
+            importTask.execute();
 
 
         } else {
@@ -386,5 +396,9 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if (importTask!= null) importTask.dispose();
+        super.onDestroy();
+    }
 }

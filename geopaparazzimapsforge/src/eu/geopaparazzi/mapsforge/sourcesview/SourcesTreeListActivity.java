@@ -79,6 +79,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     private boolean[] mCheckedValues;
     private List<String> mTypeNames;
     private final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
+    private StringAsyncTask loadTask;
+    private StringAsyncTask addNewSourcesTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +137,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     protected void onStart() {
         super.onStart();
 
-        StringAsyncTask task = new StringAsyncTask(this) {
+        loadTask = new StringAsyncTask(this) {
             List<BaseMap> baseMaps;
 
             protected String doBackgroundWork() {
@@ -152,8 +154,15 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                 }
             }
         };
-        task.setProgressDialog("", getString(R.string.loading_sources), false, null);
-        task.execute();
+        loadTask.setProgressDialog("", getString(R.string.loading_sources), false, null);
+        loadTask.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (loadTask!= null) loadTask.dispose();
+        if (addNewSourcesTask!= null) addNewSourcesTask.dispose();
+        super.onDestroy();
     }
 
     @Override
@@ -185,7 +194,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                         if (file.exists()) {
                             Utilities.setLastFilePath(this, filePath);
                             final File finalFile = file;
-                            StringAsyncTask task = new StringAsyncTask(this) {
+                            // add basemap to list and in mPreferences
+                            addNewSourcesTask = new StringAsyncTask(this) {
                                 public List<BaseMap> baseMaps;
 
                                 protected String doBackgroundWork() {
@@ -216,8 +226,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                     }
                                 }
                             };
-                            task.setProgressDialog("", getString(R.string.adding_new_source), false, null);
-                            task.execute();
+                            addNewSourcesTask.setProgressDialog("", getString(R.string.adding_new_source), false, null);
+                            addNewSourcesTask.execute();
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(this, e, null);

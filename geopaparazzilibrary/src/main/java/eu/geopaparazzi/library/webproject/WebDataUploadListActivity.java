@@ -77,6 +77,7 @@ public class WebDataUploadListActivity extends ListActivity {
     private ProgressDialog cloudProgressDialog;
     private String[] databases;
     private ArrayAdapter<File> arrayAdapter;
+    private StringAsyncTask uploadTask;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -143,7 +144,7 @@ public class WebDataUploadListActivity extends ListActivity {
     }
 
     private void upload(final int position) {
-        StringAsyncTask task = new StringAsyncTask(this) {
+        uploadTask = new StringAsyncTask(this) {
             protected String doBackgroundWork() {
                 try {
                     String result = WebDataManager.INSTANCE.uploadData(WebDataUploadListActivity.this, dataListToLoad.get(position), url, user, pwd);
@@ -163,9 +164,15 @@ public class WebDataUploadListActivity extends ListActivity {
                 });
             }
         };
-        task.setProgressDialog(null, "Uploading data to the cloud...", false, null);
-        task.execute();
+        uploadTask.setProgressDialog(null, "Uploading data to the cloud...", false, null);
+        uploadTask.execute();
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (uploadTask!= null) uploadTask.dispose();
+        super.onDestroy();
     }
 }

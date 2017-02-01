@@ -63,6 +63,7 @@ public class TantoMapurlsListActivity extends ListActivity {
 
     private List<TantoMapurl> mapurlsList = new ArrayList<>();
     private List<TantoMapurl> mapurlsToLoad = new ArrayList<>();
+    private StringAsyncTask task;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -112,8 +113,9 @@ public class TantoMapurlsListActivity extends ListActivity {
     }
 
     protected void onDestroy() {
-        super.onDestroy();
+        if (task != null) task.dispose();
         filterText.removeTextChangedListener(filterTextWatcher);
+        super.onDestroy();
     }
 
     private void filterList(String filterText) {
@@ -193,7 +195,8 @@ public class TantoMapurlsListActivity extends ListActivity {
     };
 
     private void downloadProject(final TantoMapurl tantoMapurl, final String fileName) {
-        final StringAsyncTask task = new StringAsyncTask(this) {
+        // String mapurlFileNameBkp = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
+        task = new StringAsyncTask(this) {
 
             @Override
             protected String doBackgroundWork() {
@@ -241,4 +244,6 @@ public class TantoMapurlsListActivity extends ListActivity {
             }
         });
     }
+
+
 }

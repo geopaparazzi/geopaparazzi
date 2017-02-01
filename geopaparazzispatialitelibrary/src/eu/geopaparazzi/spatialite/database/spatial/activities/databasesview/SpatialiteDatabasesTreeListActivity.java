@@ -89,6 +89,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     private List<String> mTypeNames;
     private final LinkedHashMap<String, List<SpatialiteMap>> newMap = new LinkedHashMap<>();
     private SpatialiteDatabasesExpandableListAdapter expandableListAdapter;
+    private StringAsyncTask loadDataTask;
+    private StringAsyncTask addNewSourceTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +137,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     protected void onStart() {
         super.onStart();
 
-        StringAsyncTask task = new StringAsyncTask(this) {
+        loadDataTask = new StringAsyncTask(this) {
             List<SpatialiteMap> spatialiteMaps;
 
             protected String doBackgroundWork() {
@@ -152,8 +154,15 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                 }
             }
         };
-        task.setProgressDialog("", getString(R.string.loading_databases), false, null);
-        task.execute();
+        loadDataTask.setProgressDialog("", getString(R.string.loading_databases), false, null);
+        loadDataTask.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (loadDataTask != null) loadDataTask.dispose();
+        if (addNewSourceTask != null) addNewSourceTask.dispose();
+        super.onDestroy();
     }
 
     @Override
@@ -187,7 +196,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                         final File file = new File(filePath);
                         if (file.exists()) {
                             Utilities.setLastFilePath(this, filePath);
-                            StringAsyncTask task = new StringAsyncTask(this) {
+                            // add basemap to list and in mPreferences
+                            addNewSourceTask = new StringAsyncTask(this) {
                                 public List<SpatialiteMap> spatialiteMaps;
 
                                 protected String doBackgroundWork() {
@@ -218,8 +228,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                     }
                                 }
                             };
-                            task.setProgressDialog("", getString(R.string.adding_new_source), false, null);
-                            task.execute();
+                            addNewSourceTask.setProgressDialog("", getString(R.string.adding_new_source), false, null);
+                            addNewSourceTask.execute();
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(this, e, null);

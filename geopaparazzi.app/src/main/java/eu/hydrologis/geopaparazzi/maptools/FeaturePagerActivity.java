@@ -72,6 +72,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     public final static String TABLENAME_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.TABLEVIEW";
     public final static String DBPATH_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.DBPATH";
     public final static String ROWID_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.ROWID";
+    private StringAsyncTask saveDataTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +138,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
                 finish();
             }
 
-            StringAsyncTask saveDataTask = new StringAsyncTask(this) {
+            saveDataTask = new StringAsyncTask(this) {
                 private Exception ex;
 
                 @Override
@@ -168,6 +169,12 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
             saveDataTask.execute();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (saveDataTask != null) saveDataTask.dispose();
+        super.onDestroy();
     }
 
     private void saveData() throws Exception {

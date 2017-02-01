@@ -200,7 +200,7 @@ public class InfoTool extends MapTool {
 
             final Context context = EditManager.INSTANCE.getEditingView().getContext();
 
-            StringAsyncTask task = new StringAsyncTask(context) {
+            StringAsyncTask task =  new StringAsyncTask(context) {
                 private List<Feature> features = new ArrayList<>();
 
                 @Override

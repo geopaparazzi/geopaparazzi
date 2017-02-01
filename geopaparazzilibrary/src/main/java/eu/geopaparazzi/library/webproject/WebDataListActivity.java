@@ -90,6 +90,7 @@ public class WebDataListActivity extends ListActivity {
 
     private ProgressDialog downloadDataListDialog;
     private ProgressDialog cloudProgressDialog;
+    private StringAsyncTask stringAsyncTask;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -159,7 +160,7 @@ public class WebDataListActivity extends ListActivity {
 
                     private void downloadData(final String json) {
 
-                        final StringAsyncTask stringAsyncTask = new StringAsyncTask(WebDataListActivity.this) {
+                        stringAsyncTask = new StringAsyncTask(WebDataListActivity.this) {
                             @Override
                             protected String doBackgroundWork() {
                                 WebDataListActivity context = WebDataListActivity.this;
@@ -229,8 +230,9 @@ public class WebDataListActivity extends ListActivity {
     }
 
     protected void onDestroy() {
-        super.onDestroy();
+        if (stringAsyncTask != null) stringAsyncTask.dispose();
         filterText.removeTextChangedListener(filterTextWatcher);
+        super.onDestroy();
     }
 
     private void filterList(String filterText) {

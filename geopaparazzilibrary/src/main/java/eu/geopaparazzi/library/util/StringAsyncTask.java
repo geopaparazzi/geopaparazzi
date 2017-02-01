@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.library.util;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -27,31 +28,33 @@ import android.view.Window;
  * <p/>
  * <p>example usage:</p>
  * <pre>
-  StringAsyncTask task = new StringAsyncTask(this) {
-      protected String doBackgroundWork() {
-          try {
-              int index = 0;
-              for (...){
-                 // do stuff
-                 publishProgress(index);
-              }
-          } catch (Exception e) {
-            return "ERROR: " + e.getLocalizedMessage();
-          }
-          return "";
-      }
-
-      protected void doUiPostWork(String response) {
-          dispose();
-          if (response.length() != 0) {
-             GPDialogs.warningDialog(YourActivity.this, response, null);
-          }
-          // do UI stuff
-      }
-  };
-  task.setProgressDialog("TITLE", "Process...", false, progressCount);
-  task.execute();
+ * StringAsyncTask task = new StringAsyncTask(this) {
+ * protected String doBackgroundWork() {
+ * try {
+ * int index = 0;
+ * for (...){
+ * // do stuff
+ * publishProgress(index);
+ * }
+ * } catch (Exception e) {
+ * return "ERROR: " + e.getLocalizedMessage();
+ * }
+ * return "";
+ * }
+ *
+ * protected void doUiPostWork(String response) {
+ * dispose();
+ * if (response.length() != 0) {
+ * GPDialogs.warningDialog(YourActivity.this, response, null);
+ * }
+ * // do UI stuff
+ * }
+ * };
+ * task.setProgressDialog("TITLE", "Process...", false, progressCount);
+ * task.execute();
  * </pre>
+ *
+ * <p>Remember to dispose the progressdialog in the activity destroy method.</p>
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -122,9 +125,7 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
     }
 
     protected void onPostExecute(String response) {
-        if (progressIsOk()) {
-            progressDialog.dismiss();
-        }
+        dismissProgressDialog();
         doUiPostWork(response);
     }
 
@@ -136,6 +137,16 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
      * Dispose any connected resource.
      */
     public void dispose() {
+        dismissProgressDialog();
+    }
+
+    private void dismissProgressDialog() {
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            if (activity.isDestroyed()){
+                return;
+            }
+        }
         if (progressIsOk()) {
             progressDialog.dismiss();
         }

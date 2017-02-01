@@ -109,6 +109,7 @@ public class NotesListActivity extends AppCompatActivity {
     private Comparator<ANote>[] comparators;
     private int currentComparatorIndex = 0;
     private SharedPreferences mPreferences;
+    private StringAsyncTask deletionTask;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -171,8 +172,9 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     protected void onDestroy() {
-        super.onDestroy();
+        if (deletionTask != null) deletionTask.dispose();
         filterText.removeTextChangedListener(filterTextWatcher);
+        super.onDestroy();
     }
 
     @Override
@@ -552,7 +554,7 @@ public class NotesListActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                StringAsyncTask deletionTask = new StringAsyncTask(NotesListActivity.this) {
+                                deletionTask = new StringAsyncTask(NotesListActivity.this) {
                                     protected String doBackgroundWork() {
                                         try {
                                             int index = 0;
@@ -590,6 +592,7 @@ public class NotesListActivity extends AppCompatActivity {
                 }, null
         );
     }
+
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
 

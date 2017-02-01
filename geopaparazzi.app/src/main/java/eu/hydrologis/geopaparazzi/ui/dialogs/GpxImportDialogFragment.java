@@ -57,6 +57,7 @@ public class GpxImportDialogFragment extends DialogFragment {
     private boolean isInterrupted = false;
     private AlertDialog alertDialog;
     private Button positiveButton;
+    private StringAsyncTask task;
 
 
     public static GpxImportDialogFragment newInstance(String gpxPath) {
@@ -109,8 +110,7 @@ public class GpxImportDialogFragment extends DialogFragment {
     }
 
     private void startImport() {
-
-        StringAsyncTask task = new StringAsyncTask(getActivity()) {
+        task = new StringAsyncTask(getActivity()) {
             protected String doBackgroundWork() {
                 try {
                     File file = new File(gpxPath);
@@ -193,6 +193,13 @@ public class GpxImportDialogFragment extends DialogFragment {
         task.execute();
     }
 
+    @Override
+    public void onDestroy() {
+        if (task != null) task.dispose();
+
+        super.onDestroy();
+    }
+
     public void onStart() {
         super.onStart();
         AlertDialog d = (AlertDialog) getDialog();
@@ -201,18 +208,6 @@ public class GpxImportDialogFragment extends DialogFragment {
             positiveButton.setEnabled(false);
         }
         startImport();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-
-        super.onAttach(activity);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
 }

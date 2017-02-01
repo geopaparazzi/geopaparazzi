@@ -412,8 +412,12 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                         } else {
                             bboxStr = "YYY,XXX,YYY,XXX";
                         }
+                        String srsLabel = "SRS";
+                        if (wmsversion.equals("1.3.0")){
+                            srsLabel = "CRS";
+                        }
                         sb.append("url=" + baseurl.trim() + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
-                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //
+                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&"+srsLabel+"=" //
                                 + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");
                         sb.append("minzoom=1\n");
                         sb.append("maxzoom=22\n");
