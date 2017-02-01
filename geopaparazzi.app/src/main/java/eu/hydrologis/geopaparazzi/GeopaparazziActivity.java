@@ -223,6 +223,13 @@ public class GeopaparazziActivity extends AppCompatActivity implements IApplicat
 
     @Override
     public void onAppIsShuttingDown() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putFloat(MapviewActivity.MAPSCALE_X, 1);
+        edit.putFloat(MapviewActivity.MAPSCALE_Y, 1);
+        edit.apply();
+
+
         GpsServiceUtilities.stopDatabaseLogging(this);
         GpsServiceUtilities.stopGpsService(this);
 

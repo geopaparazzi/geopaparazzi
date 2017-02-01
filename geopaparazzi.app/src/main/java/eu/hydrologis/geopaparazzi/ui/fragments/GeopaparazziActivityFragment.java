@@ -304,7 +304,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 return true;
             }
             case R.id.action_exit: {
-
                 appChangeListener.onAppIsShuttingDown();
                 getActivity().finish();
                 return true;

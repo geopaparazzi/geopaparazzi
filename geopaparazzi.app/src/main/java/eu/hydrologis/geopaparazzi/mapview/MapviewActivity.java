@@ -173,6 +173,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     private final int MENU_LOADMAPSFORGE_VECTORS_ID = 10;
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
+    public static final String MAPSCALE_X = "MAPSCALE_X"; //$NON-NLS-1$
+    public static final String MAPSCALE_Y = "MAPSCALE_Y"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private MapView mMapView;
     private SharedPreferences mPeferences;
@@ -273,6 +275,13 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         mMapView.setBuiltInZoomControls(false);
         mMapView.setOnTouchListener(this);
 
+        float mapScaleX = mPeferences.getFloat(MAPSCALE_X, 1f);
+        float mapScaleY = mPeferences.getFloat(MAPSCALE_Y, 1f);
+        if (mapScaleX > 1 || mapScaleY > 1) {
+            mMapView.setScaleX(mapScaleX);
+            mMapView.setScaleY(mapScaleY);
+        }
+
         // TODO
         // boolean persistent = mPeferences.getBoolean("cachePersistence", false);
         // int capacity = Math.min(mPeferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
@@ -310,11 +319,13 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         ImageButton zoomInButton = (ImageButton) findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(this);
+        zoomInButton.setOnLongClickListener(this);
 
         zoomLevelText = (TextView) findViewById(R.id.zoomlevel);
 
         ImageButton zoomOutButton = (ImageButton) findViewById(R.id.zoomout);
         zoomOutButton.setOnClickListener(this);
+        zoomOutButton.setOnLongClickListener(this);
 
         batteryButton = (Button) findViewById(R.id.battery);
 
@@ -493,7 +504,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
             /* gps notes */
             if (notesVisible) {
-                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth() , notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
+                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth(), notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
                         notesDrawable.getIntrinsicHeight() / 2);
                 Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
@@ -1191,6 +1202,31 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 Editor edit = mPeferences.edit();
                 edit.putBoolean(ARE_BUTTONSVISIBLE_OPEN, !areButtonsVisible);
                 edit.apply();
+                return true;
+            case R.id.zoomin:
+                float scaleX1 = mMapView.getScaleX() * 2;
+                float scaleY1 = mMapView.getScaleY() * 2;
+                mMapView.setScaleX(scaleX1);
+                mMapView.setScaleY(scaleY1);
+                Editor edit1 = mPeferences.edit();
+                edit1.putFloat(MAPSCALE_X, scaleX1);
+                edit1.putFloat(MAPSCALE_Y, scaleY1);
+                edit1.apply();
+                return true;
+            case R.id.zoomout:
+                float scaleX2 = mMapView.getScaleX();
+                float scaleY2 = mMapView.getScaleY();
+                if (scaleX2 > 1 && scaleY2 > 1) {
+                    scaleX2 = scaleX2 / 2;
+                    scaleY2 = scaleY2 / 2;
+                    mMapView.setScaleX(scaleX2);
+                    mMapView.setScaleY(scaleY2);
+                }
+
+                Editor edit2 = mPeferences.edit();
+                edit2.putFloat(MAPSCALE_X, scaleX2);
+                edit2.putFloat(MAPSCALE_Y, scaleY2);
+                edit2.apply();
                 return true;
             default:
                 break;
