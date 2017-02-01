@@ -458,56 +458,60 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View arg0, MotionEvent event) {
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: // Start gesture
-                textLayout.setVisibility(View.VISIBLE);
-                firstFinger = new PointF(event.getX(), event.getY());
-                mode = ONE_FINGER_DRAG;
-                stopThread = true;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                mode = NONE;
-                textLayout.setVisibility(View.GONE);
-
-                PointF upPoint = new PointF(event.getX(), event.getY());
-                if (!firstFinger.equals(upPoint.x, upPoint.y))
-                    resetButton.show();
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN: // second finger
-                distBetweenFingers = spacing(event);
-                // the distance check is done to avoid false alarms
-                if (distBetweenFingers > 5f) {
-                    mode = TWO_FINGERS_DRAG;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                textLayout.setVisibility(View.GONE);
-                if (mode == ONE_FINGER_DRAG) {
-                    PointF oldFirstFinger = firstFinger;
+        try {
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_DOWN: // Start gesture
+                    textLayout.setVisibility(View.VISIBLE);
                     firstFinger = new PointF(event.getX(), event.getY());
-                    scrollElev(oldFirstFinger.x - firstFinger.x);
-                    scrollSpeed(oldFirstFinger.x - firstFinger.x);
-                    xyPlotSpeed.setDomainBoundaries(minXYSpeed.x, maxXYSpeed.x,
-                            BoundaryMode.FIXED);
-                    xyPlotElev.setDomainBoundaries(minXYElevation.x, maxXYElevation.x,
-                            BoundaryMode.FIXED);
-                    xyPlotSpeed.redraw();
-                    xyPlotElev.redraw();
+                    mode = ONE_FINGER_DRAG;
+                    stopThread = true;
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP:
+                    mode = NONE;
+                    textLayout.setVisibility(View.GONE);
 
-                } else if (mode == TWO_FINGERS_DRAG) {
-                    float oldDist = distBetweenFingers;
+                    PointF upPoint = new PointF(event.getX(), event.getY());
+                    if (!firstFinger.equals(upPoint.x, upPoint.y))
+                        resetButton.show();
+                    break;
+                case MotionEvent.ACTION_POINTER_DOWN: // second finger
                     distBetweenFingers = spacing(event);
-                    zoomElev(oldDist / distBetweenFingers);
-                    zoomSpeed(oldDist / distBetweenFingers);
-                    xyPlotSpeed.setDomainBoundaries(minXYSpeed.x, maxXYSpeed.x,
-                            BoundaryMode.FIXED);
-                    xyPlotElev.setDomainBoundaries(minXYElevation.x, maxXYElevation.x,
-                            BoundaryMode.FIXED);
-                    xyPlotSpeed.redraw();
-                    xyPlotElev.redraw();
-                }
-                break;
+                    // the distance check is done to avoid false alarms
+                    if (distBetweenFingers > 5f) {
+                        mode = TWO_FINGERS_DRAG;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    textLayout.setVisibility(View.GONE);
+                    if (mode == ONE_FINGER_DRAG) {
+                        PointF oldFirstFinger = firstFinger;
+                        firstFinger = new PointF(event.getX(), event.getY());
+                        scrollElev(oldFirstFinger.x - firstFinger.x);
+                        scrollSpeed(oldFirstFinger.x - firstFinger.x);
+                        xyPlotSpeed.setDomainBoundaries(minXYSpeed.x, maxXYSpeed.x,
+                                BoundaryMode.FIXED);
+                        xyPlotElev.setDomainBoundaries(minXYElevation.x, maxXYElevation.x,
+                                BoundaryMode.FIXED);
+                        xyPlotSpeed.redraw();
+                        xyPlotElev.redraw();
+
+                    } else if (mode == TWO_FINGERS_DRAG) {
+                        float oldDist = distBetweenFingers;
+                        distBetweenFingers = spacing(event);
+                        zoomElev(oldDist / distBetweenFingers);
+                        zoomSpeed(oldDist / distBetweenFingers);
+                        xyPlotSpeed.setDomainBoundaries(minXYSpeed.x, maxXYSpeed.x,
+                                BoundaryMode.FIXED);
+                        xyPlotElev.setDomainBoundaries(minXYElevation.x, maxXYElevation.x,
+                                BoundaryMode.FIXED);
+                        xyPlotSpeed.redraw();
+                        xyPlotElev.redraw();
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
         }
         return true;
     }
