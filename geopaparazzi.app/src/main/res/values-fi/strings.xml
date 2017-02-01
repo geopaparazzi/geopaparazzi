@@ -130,16 +130,11 @@
   <string name="view_in_mixare">Katso Mixaressa</string>
   <string name="gps_use_coarse">Käytä verkkopaikannusta GPS:n sijaan. Vaatii uudelleen käynnistyksen.</string>
   <string name="type_to_filter">Kirjoita valitaksesi</string>
-  <string name="geopapcloud_preferences">STAGE Sync asetukset</string>
-  <string name="geopapcloud_preferences_summary">Aseta palvelimen synkronoinnin käyttäjätiedot ja asetukset STAGE:lle.</string>
   <string name="geopapcloud_user_label">Käyttäjänimi</string>
   <string name="geopapcloud_password_label">Salasana</string>
   <string name="geopapcloud_server_label">Yhdistettävä palvelin</string>
   <string name="exporting_data">Vie tiedot</string>
-  <string name="error_set_cloud_settings">STAGEn synkronoinnin parametrit eivät ole asetettu oikein. Ole ystävällinen ja tarkista asetuksesi.</string>
   <string name="exporting_data_to_the_cloud">Viedään tiedot pilveen.</string>
-  <string name="error_uploadig_project_to_cloud">Tapahtui virhe vietäessä projektia Geopap-pilveen</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekti on ladattu Geopap-pilvipalveluun</string>
   <string name="exporting_data_to_kmz">Viedään KMZ-tiedostoksi</string>
   <string name="exporting_data_to_gpx">Viedään GPX-tiedostoksi</string>
   <string name="media_upload">Median lataus</string>
@@ -290,7 +285,6 @@
   <string name="import_uc">TUO</string>
   <string name="mapurls">KartanURLit</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Kirjanmerkit</string>
   <string name="default_database">Oletus tietokanta</string>
   <string name="kmz">KMZ</string>

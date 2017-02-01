@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">서버에서 프로젝트 목록을 다운로드합니다.</string>
   <string name="error_projects_list">프로젝트 목록을 가져오는 중 오류가 발생했습니다.</string>
   <string name="downloading_project">프로젝트 다운로드 중...</string>
-  <string name="downloading_project_to_the_device">장치에 선택한 프로젝트를 다운로드합니다.</string>
   <string name="project_successfully_downloaded">프로젝트를 성공적으로 다운로드했습니다.</string>
   <string name="proximity_alert">근접 알림!</string>
   <string name="approaching_poi">관심지역 접근중.</string>
@@ -100,7 +99,6 @@
   <string name="label_field">레이블 필드</string>
   <string name="set_properties">속성 설정</string>
   <string name="set_dash">대시 설정</string>
-  <string name="unauthorized_api_key">인증되지 않은 접근입니다. API 키를 확인하십시오.</string>
   <string name="fill_and_stroke_color_title">채움과 테두리 색상</string>
   <string name="fill_color_title">채움 색상</string>
   <string name="fill_alpha_title">채움 알파</string>

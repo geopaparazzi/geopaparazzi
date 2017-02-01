@@ -115,8 +115,6 @@
   <string name="geopapcloud_server_label">Elérendő szerver</string>
   <string name="exporting_data">Adatok exportálása</string>
   <string name="exporting_data_to_the_cloud">Adatok exportálása a felhőbe.</string>
-  <string name="error_uploadig_project_to_cloud">Hiba történt a projekt Geopap-felhőbe történő feltöltése során.</string>
-  <string name="project_succesfully_uploaded_to_cloud">A projekt sikeresen feltöltésre került a Geopap-cloud-ba.</string>
   <string name="exporting_data_to_kmz">Adatok exportálása KMZ-be.</string>
   <string name="exporting_data_to_gpx">Adatok exportálása GPX-be</string>
   <string name="media_upload">MÉDIA FELTÖLTÉS</string>

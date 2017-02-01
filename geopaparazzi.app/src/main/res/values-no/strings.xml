@@ -100,8 +100,6 @@
   <string name="geopapcloud_server_label">Server for tilkobling</string>
   <string name="exporting_data">Eksporterer data</string>
   <string name="exporting_data_to_the_cloud">Eksporterer data til Cloud.</string>
-  <string name="error_uploadig_project_to_cloud">Det oppstod en feil under opplasting av prosjektet til Geopap-Cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Prosjektet er lastet opp til Geopap-Cloud</string>
   <string name="exporting_data_to_kmz">Eksporterer data til KMZ.</string>
   <string name="exporting_data_to_gpx">Eksporterer data til GPX</string>
   <string name="media_upload">LASTE OPP MEDIA</string>

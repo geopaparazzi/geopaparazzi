@@ -132,16 +132,11 @@ Vuoi rimuovere le note dal dispositivo?</string>
   <string name="view_in_mixare">Visualizza in mixare</string>
   <string name="gps_use_coarse">Utilizzare la posizione basata su rete invece del gps (necessario riavvio)</string>
   <string name="type_to_filter">inserire testo per filtrare</string>
-  <string name="geopapcloud_preferences">Impostazioni di sincronizzazione STAGE</string>
-  <string name="geopapcloud_preferences_summary">Impostazioni e credenziali per STAGE</string>
   <string name="geopapcloud_user_label">Nome utente</string>
   <string name="geopapcloud_password_label">Password</string>
   <string name="geopapcloud_server_label">Server al quale connettersi</string>
   <string name="exporting_data">Esportazione dei dati</string>
-  <string name="error_set_cloud_settings">Le impostazioni di STAGE non sono corrette. Si prega di controllarle.</string>
   <string name="exporting_data_to_the_cloud">Esportazione dei dati della nuvola.</string>
-  <string name="error_uploadig_project_to_cloud">Errore durante il caricamento del progetto su Geopap-Cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Il progetto è stato caricato con successo su Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Esportazione di dati in KMZ.</string>
   <string name="exporting_data_to_gpx">Esportazione di dati in GPX</string>
   <string name="media_upload">CARICAMENTO FILE MEDIA</string>
@@ -295,7 +290,6 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="import_uc">IMPORT</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Favoriti</string>
   <string name="default_database">Database di default</string>
   <string name="kmz">KMZ</string>

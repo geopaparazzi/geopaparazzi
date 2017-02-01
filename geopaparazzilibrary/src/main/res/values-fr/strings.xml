@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Téléchargement de la liste des projets depuis le serveur.</string>
   <string name="error_projects_list">Une erreur s\'est produite lors de la récupération de la liste des projets.</string>
   <string name="downloading_project">Téléchargement du projet ...</string>
-  <string name="downloading_project_to_the_device">Téléchargement du projet sélectionné sur le périphérique.</string>
   <string name="project_successfully_downloaded">Le projet a été téléchargé avec succès.</string>
   <string name="proximity_alert">Alerte de proximité !</string>
   <string name="approaching_poi">Approche d\'un point d\'intérêt.</string>

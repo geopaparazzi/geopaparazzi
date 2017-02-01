@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">A descarregar a lista de projetos do servidor.</string>
   <string name="error_projects_list">Ocorreu um erro ao tentar obter a lista de projetos.</string>
   <string name="downloading_project">A descarregar o projeto...</string>
-  <string name="downloading_project_to_the_device">A descarregar o projeto selecionado para o dispositivo.</string>
   <string name="project_successfully_downloaded">O projeto foi descarregado com sucesso.</string>
   <string name="proximity_alert">Alerta de Proximidade!</string>
   <string name="approaching_poi">A chegar perto de um ponto de interesse.</string>
@@ -100,7 +99,6 @@
   <string name="label_field">Campo da etiqueta</string>
   <string name="set_properties">Definir propriedades</string>
   <string name="set_dash">Definbir Tracejado</string>
-  <string name="unauthorized_api_key">Acesso não autorizado. Verifique a chave API.</string>
   <string name="fill_and_stroke_color_title">Cor da Linha e do Preenchimento</string>
   <string name="fill_color_title">Cor do Preenchimento</string>
   <string name="fill_alpha_title">Transparência do Preenchimento</string>

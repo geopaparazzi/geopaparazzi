@@ -132,16 +132,11 @@
   <string name="view_in_mixare">mixare で表示</string>
   <string name="gps_use_coarse">ネットワーク位置使用(再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
-  <string name="geopapcloud_preferences">STAGE同期設定</string>
-  <string name="geopapcloud_preferences_summary">サーバ同期証明とSTAGE関連の設定</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
   <string name="geopapcloud_password_label">パスワード</string>
   <string name="geopapcloud_server_label">接続サーバ</string>
   <string name="exporting_data">データのエクスポート</string>
-  <string name="error_set_cloud_settings">STAGE同期パラメータが正しく設定されていません。設定を確認してください。</string>
   <string name="exporting_data_to_the_cloud">クラウドにデータをエクスポートします。</string>
-  <string name="error_uploadig_project_to_cloud">プロジェクトを Geopap-cloudにアップロード中にエラーが発生しました。</string>
-  <string name="project_succesfully_uploaded_to_cloud">プロジェクトが正常にGeopap-cloudにアップロードされました。</string>
   <string name="exporting_data_to_kmz">KMZ へのデータのエクスポート</string>
   <string name="exporting_data_to_gpx">GPX へのデータのエクスポート</string>
   <string name="media_upload">メディアアップロード</string>
@@ -271,6 +266,7 @@
   <string name="geom_incompatible_with_layer">結果のジオメトリは追加先のレイヤーと互換性がありません。</string>
   <string name="selected_features_in_layer">%2$d ポリゴンの %1$d 地物が選択されました。</string>
   <string name="selected_line_features_in_layer">%2$d ラインの %1$d 地物が選択されました。</string>
+  <string name="selected_point_features_in_layer">%2$d ポイントの %1$d 地物が選択されました。</string>
   <string name="no_compatible_layers_found">互換性のあるレイヤーがありません</string>
   <string name="copied_features_to_layer">%1$d のジオメトリがレイヤ: %2$s にコピーされました</string>
   <string name="area_colon">面積: </string>
@@ -293,7 +289,6 @@
   <string name="import_uc">インポート</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">ブックマーク</string>
   <string name="default_database">初期データベース</string>
   <string name="kmz">KMZ</string>
@@ -312,7 +307,7 @@
   <string name="menu_extract_mapsforge_data">mapsforge データ抽出</string>
   <string name="extract_mapsforge_only_when_loaded">このツールはmapsforge マップがロードされているときのみ使用できます。</string>
   <string name="view">ビュー</string>
-  <string name="force_locale_title">位置強制</string>
+  <string name="force_locale_title">ロケールの強制</string>
   <string name="force_locale_summary">端末の現在の場所に関係なく指定場所を強制する。</string>
   <string name="export_images">画像</string>
   <string name="export_img_unable_to_create_folder">sdcardにフォルダを作成できません:</string>

@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Stahuje se seznam projektů ze serveru.</string>
   <string name="error_projects_list">Během získávání seznamu projektů se vyskytla chyba.</string>
   <string name="downloading_project">Stahuje se projekt…</string>
-  <string name="downloading_project_to_the_device">Vybraný projekt se stahuje do zařízení.</string>
   <string name="project_successfully_downloaded">Projekt byl úspěšně stažen.</string>
   <string name="proximity_alert">Blízkostní poplach!</string>
   <string name="approaching_poi">Blíží se zájmový bod.</string>
@@ -99,7 +98,6 @@
   <string name="toggle_label_visibility">Přepnout viditelnost popisku</string>
   <string name="label_field">Pole popisku</string>
   <string name="set_properties">Nastavit vlastnosti</string>
-  <string name="unauthorized_api_key">Neoprávněný přístup. Prověřte svůj klíč API.</string>
   <string name="fill_and_stroke_color_title">Barva výplně a čáry</string>
   <string name="fill_color_title">Barva výplně</string>
   <string name="fill_alpha_title">Neprůhlednost výplně</string>

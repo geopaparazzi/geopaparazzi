@@ -1,11 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">Paramètres</string>
+  <string name="action_advanced_settings">Avancée</string>
+  <string name="label_green">vert</string>
+  <string name="label_blue">bleu</string>
+  <string name="label_alpha">alpha</string>
+  <string name="label_red">rouge</string>
   <!--old gpap-->
   <string name="yes">Oui</string>
   <string name="no">Non</string>
   <string name="app_file_name">Base de données de projet Geopaparazzi</string>
   <string name="notesvisibilityToggle">Activer/désactiver la visibilité des notes.</string>
+  <string name="datasaved">Données exportées avec succès vers</string>
+  <string name="data_nonsaved">Une erreur s\'est produite lors de l\'exportation de données !</string>
   <string name="loggingoff">Arrêté tous les capteurs.</string>
   <string name="nogps_data">Pas encore de données gps disponible!</string>
   <string name="about">A propos</string>
@@ -27,15 +35,21 @@
   <string name="mainmenu_preferences">Paramètres</string>
   <string name="mainmenu_merge">fusionner les logs sélectionnés</string>
   <string name="gpslogproperty">Propriétés pour:</string>
+  <string name="gpslog_name">Nom du journal</string>
   <string name="gpslog_chart">Graphique</string>
   <string name="gpslog_zoom">zoomer sur</string>
   <string name="gpslog_delete">Supprimer</string>
   <string name="mapproperty">Propriétés pour: </string>
   <string name="map_zoom">Zoomer sur la carte</string>
   <string name="map_delete">Supprimer la carte</string>
+  <string name="gps_preferences">Paramètres du GPS</string>
+  <string name="gps_preferences_summary">Préférences du journal du GPS, distance ou interval</string>
   <string name="gps_logging_distance">Distance minimum de connexion du GPS</string>
   <string name="gps_logging_interval">Intervalle minimum de connexion du GPS</string>
   <string name="gps_use_android_level">Utiliser au niveau d\'android (sauvegarde la batterie, redémarrage nécessaire)</string>
+  <string name="gps_use_android_level_summary">Si elle est cochée, les paramètres GPS sont appliqués au niveau du système d\'exploitation, ce qui permet d\'économiser de la batterie, mais pourrait avoir un signal moins stable lors du choix de grands intervalles (si vous avez gps problèmes de connexion sur les appareils de contrôle, laissez cette case non cochée). Notez que les os gps alimentés en continu pendant des intervalles de moins de 100 secondes d\'envoi. Pour une meilleure autonomie de la batterie choisir des intervalles plus grands.</string>
+  <string name="sms_preferences">Paramètres SMS</string>
+  <string name="sms_preferences_summary">Définissez le numéro de panique et permettre au receveur de sms.</string>
   <string name="sms_catcher">Activer le receveur de SMS</string>
   <string name="databaseError">Une erreur s\'est produite lors de la connexion à la base de données</string>
   <string name="chart_profile_view">Vue du profil</string>
@@ -51,13 +65,16 @@
   <string name="audio_recording_stop">stop</string>
   <string name="panic">panique !</string>
   <string name="panic_number">Numéro panique</string>
+  <string name="panic_number_notset">Aucun numéro de panique valide semble être disponible. Avez-vous activé dans les paramètres?</string>
   <string name="panic_upper">  PANIQUE !  </string>
+  <string name="send_status_update">ou tout simplement envoyer votre position</string>
   <string name="help_needed">Besoin d\'aide !</string>
   <string name="message_sent">Message envoyé</string>
   <string name="last_note_deleted">Dernière note supprimé</string>
   <string name="last_note_not_deleted">Ne peux pas supprimer la dernière note</string>
   <string name="text_logging">connexion</string>
   <string name="text_gpson">GPS activé</string>
+  <string name="debug">Paramètres de débogage</string>
   <string name="enable_debug">Activer le journal de débogage</string>
   <string name="gpslogging_only">Cette fonction est disponible uniquement lorsque le GPS est actif et qu\'un signal est disponible.</string>
   <string name="remove_last_note_prompt">Voulez-vous vraiment supprimer la dernière note de texte ? Cette action est définitive.</string>
@@ -92,6 +109,7 @@
   <string name="formnotes">FORMULAIRE DE BASE POUR LES NOTES</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Une erreur s\'est produite lors de la création du graphique.</string>
+  <string name="osm_preferences">Paramètres OpenStreetMap</string>
   <string name="osm_do_it">Activer les outils OSM</string>
   <string name="osm_user_label">Nom d\'utilisateur</string>
   <string name="osm_password_label">Mot de passe</string>
@@ -117,8 +135,6 @@
   <string name="geopapcloud_server_label">Se connecter au serveur</string>
   <string name="exporting_data">Export de données</string>
   <string name="exporting_data_to_the_cloud">Export de données vers le cloud.</string>
-  <string name="error_uploadig_project_to_cloud">Une erreur s\'est produite lors de l\'envoi du projet vers Geopap-cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Le projet a été correctement envoyé vers Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Export des données en KMZ.</string>
   <string name="exporting_data_to_gpx">Export des données vers GPX</string>
   <string name="media_upload">ENVOYER UN MEDIA</string>
@@ -128,6 +144,7 @@
   <string name="no_sdcard_use_internal_memory">Aucune carte SD ne semble être disponible (vérifier si elle n\'est pas montée sur un PC).  Souhaitez vous utiliser la mémoire interne de l\'appareil à la place ? Veuillez noter que dans ce cas, il n\'y aura pas d\'affichage de carte pour des raisons d\'espace.</string>
   <string name="add_message">AJOUTER UN MESSAGE</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Insérer un texte optionnel à envoyer avec le GeoSMS</string>
+  <string name="enter_a_name_for_the_new_project">Entrez un nom de fichier pour le nouveau projet</string>
   <string name="chosen_project_exists">Le nom du projet choisi existe déjà, veuillez choisir un autre nom</string>
   <string name="no_external_sdcard_for_db_renderer">Le rendu de cette base de données est suporté seulement à partir d\'un sockage externe. Aucun stockage externe a été trouvé, est ce qu\'il y en a un disponible?</string>
   <string name="no_map_files_found_go_online">Aucun fichier carte trouvé dans le dossier /sdcard/maps. Activation des cartes en ligne.\nLes cartes peuvent être téléchargées à : http://download.mapsforge.org</string>
@@ -151,8 +168,12 @@
   <string name="distance">Distance: </string>
   <string name="imported_notes_and_bookmarks">Importé {0} notes et {1} signets.</string>
   <string name="could_not_open_sms">Ne peux pas ouvrir l\'URI des données sms passés</string>
+  <string name="start_">Départ: </string>
+  <string name="end_">Fin:</string>
   <string name="map_textsize_factor">Coefficient de la taille du texte de la carte</string>
+  <string name="map_textsize_factor_summary">Texte facteur de taille pour  fichiers cartographiques mapsforge.</string>
   <string name="keep_screen_on">Garder l\'écran allumé</string>
+  <string name="keep_screen_on_summary">Maintient l\'écran allumé pour le tableau de bord et la carte.</string>
   <string name="the_secret_view">La vue secrète</string>
   <string name="database_queries">Requêtes de base de données</string>
   <string name="demo_mode">Mode de démonstration</string>
@@ -162,6 +183,7 @@
   <string name="custom_sdcard_path">Chemin d\'accès personnalisé sdcard</string>
   <string name="opacity">opacité</string>
   <string name="size">Taille</string>
+  <string name="size_color">Dimensions et couleurs</string>
   <string name="notes_properties">Propriétés des notes</string>
   <string name="visibility">Visibilité</string>
   <string name="custom_icon_properties">Propriétés de l\'icône personnalisée</string>
@@ -169,6 +191,8 @@
   <string name="labels">Étiquettes</string>
   <string name="show_labels">afficher les étiquettes</string>
   <string name="halo">halo</string>
+  <string name="screen_preferences">Paramètres écran</string>
+  <string name="screen_preferences_summary">Définissez les préférences de l\'écran comme la croix centrale ou la densité de l\'écran.</string>
   <string name="cross_properties_summary">Propriétés de la Croix utilisée pour placer les notes.</string>
   <string name="cross_properties">Centrage la croix</string>
   <string name="color">Couleur</string>
@@ -207,10 +231,13 @@
   <string name="service_name_propmt">Entrez un nom pour le service. Si laissé vide, le nom sera tiré du service.</string>
   <string name="info">INFO</string>
   <string name="calculate_length">Calculer la longueur ...</string>
+  <string name="spatialite_preferences">Paramètres Spatialite</string>
+  <string name="spatialite_preferences_summary">Définir les configurations de SpatiaLite avancées.</string>
   <string name="spatialite_recovery_mode">Recovery Mode de Spatialite</string>
   <string name="spatialite_recover_mode_tooltip">Si oui, au prochain démarrage une tentative sera faite pour corriger tableaux défectueux.</string>
   <string name="map">Carte</string>
   <string name="name_lc">nom</string>
+  <string name="name_uc">Nom du projet</string>
   <string name="bounds">limites</string>
   <string name="maps_loading_not_finished_yet">Le chargement de cartes n\'a pas encore fini. S\'il vous plaît patientez quelques instants et essayez à nouveau.</string>
   <string name="save">sauvegarder</string>
@@ -233,7 +260,9 @@
   <string name="info_uppercase">INFO</string>
   <string name="extracting_info">Extraction d\'informations ...</string>
   <string name="geom_incompatible_with_layer">La géométrie résultante n\'est pas compatible avec la couche de destination.</string>
-  <string name="selected_features_in_layer">%1$d caractéristiques dans %2$d polygones ont été sélectionnées.</string>
+  <string name="selected_features_in_layer">%1$d caractéristiques avec %2$d polygones ont été sélectionnées.</string>
+  <string name="selected_line_features_in_layer">%1$d caractéristiques avec %2$d lignes ont été sélectionnées.</string>
+  <string name="selected_point_features_in_layer">%1$d caractéristiques avec %2$d points ont été sélectionnées.</string>
   <string name="no_compatible_layers_found">Pas de couches compatibles trouvées</string>
   <string name="copied_features_to_layer">Copié %1$d géométries dans la couche: %2$s</string>
   <string name="area_colon">Surface :</string>
@@ -271,8 +300,11 @@
   <string name="name_new_teample_db">Entrer un nom pour la nouvelle base de données</string>
   <string name="new_template_db_create">Base de données crée avec succès.</string>
   <string name="extract_mapsforge_data">Extraction de données mapsforge</string>
+  <string name="menu_extract_mapsforge_data">Extraction de données mapsforge</string>
   <string name="extract_mapsforge_only_when_loaded">Cet outil ne marche qu\'avec un carte mapsforge chargée</string>
   <string name="view">Voir</string>
   <string name="force_locale_title">Forcer language</string>
   <string name="force_locale_summary">Force language sans tenir compte de ce qui est courant dans Android</string>
+  <string name="export_images">Images</string>
+  <string name="export_img_unable_to_create_folder">Impossible de créer dossier sur sdcard:</string>
 </resources>

@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Ladataan projektilistaus palvelimelta</string>
   <string name="error_projects_list">Tapahtui virhe noudattaessa projektilistausta</string>
   <string name="downloading_project">Ladataan projektia...</string>
-  <string name="downloading_project_to_the_device">Ladataan valittua projektia laitteelle</string>
   <string name="project_successfully_downloaded">Projekti on ladattu</string>
   <string name="proximity_alert">Lähestytään kohdetta</string>
   <string name="approaching_poi">Lähestytään POI-pistettä</string>
@@ -100,7 +99,6 @@
   <string name="label_field">Nimiötieto</string>
   <string name="set_properties">Aseta ominaisuudet</string>
   <string name="set_dash">Aseta nopeus</string>
-  <string name="unauthorized_api_key">Luvaton käyttö. Tarkista API-avaimesi.</string>
   <string name="fill_and_stroke_color_title">Täytön ja vahvistuksen väri</string>
   <string name="fill_color_title">Täyttöväri</string>
   <string name="fill_alpha_title">Alfatäyttö</string>

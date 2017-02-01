@@ -119,8 +119,6 @@
   <string name="geopapcloud_server_label">Εξυπηρετητής προς σύνδεση</string>
   <string name="exporting_data">Εξαγωγή δεδομένων</string>
   <string name="exporting_data_to_the_cloud">Εξαγωγή δεδομένων στο cloud.</string>
-  <string name="error_uploadig_project_to_cloud">Ένα σφάλμα προέκυψε κατα το ανέβασμα του έργου στο Geopap-cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Το έργο έχει ανέβει στο Geopap-cloud επιτυχώς</string>
   <string name="exporting_data_to_kmz">Εξαγωγή δεδομένων σε KMZ.</string>
   <string name="exporting_data_to_gpx">Εξαγωγή δεδομένων σε GPX</string>
   <string name="media_upload">ΜΕΤΑΦΟΡΤΩΣΗ MEDIA</string>

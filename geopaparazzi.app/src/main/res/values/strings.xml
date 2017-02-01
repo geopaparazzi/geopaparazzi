@@ -400,7 +400,6 @@
     <string name="upload_to_cloud_prompt">Upload the current project to the cloud?</string>
 
     <plurals name="n_images">
-        <item quantity="zero">@string/no_images</item>
         <item quantity="one">1 image</item>
         <item quantity="other">%d images</item>
     </plurals>

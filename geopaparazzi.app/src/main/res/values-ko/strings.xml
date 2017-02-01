@@ -131,16 +131,11 @@
   <string name="view_in_mixare">MixAre에서 보기</string>
   <string name="gps_use_coarse">GPS 대신 네트워크 기반 위치 사용 (재시작 필요)</string>
   <string name="type_to_filter">필터 입력</string>
-  <string name="geopapcloud_preferences">STAGE 동기화 설정</string>
-  <string name="geopapcloud_preferences_summary">STAGE의 서버 동기화 자격증명과 환경 설정.</string>
   <string name="geopapcloud_user_label">이름</string>
   <string name="geopapcloud_password_label">암호</string>
   <string name="geopapcloud_server_label">연결할 서버</string>
   <string name="exporting_data">데이터 내보내기</string>
-  <string name="error_set_cloud_settings">STAGE 동기화 설정 파라미터가 적절하지 않습니다. 설정을 확인하십시오.</string>
   <string name="exporting_data_to_the_cloud">클라우드에 데이터 내보내는 중.</string>
-  <string name="error_uploadig_project_to_cloud">Geopap-Cloud에 프로젝트 업로드 중 오류가 발생했습니다</string>
-  <string name="project_succesfully_uploaded_to_cloud">Geopap-Cloud에 프로젝트를 성공적으로 업로드했습니다</string>
   <string name="exporting_data_to_kmz">데이터를 KMZ로 내보내기.</string>
   <string name="exporting_data_to_gpx">데이터를 GPX로 내보내기.</string>
   <string name="media_upload">미디어 업로드</string>
@@ -268,6 +263,7 @@
   <string name="geom_incompatible_with_layer">이 지오메트리는 대상 레이어와 호환되지 않습니다.</string>
   <string name="selected_features_in_layer">%2$d 폴리곤을 가진 %1$d 선택된 피처.</string>
   <string name="selected_line_features_in_layer">%2$d 라인을 가진 %1$d 선택된 피처.</string>
+  <string name="selected_point_features_in_layer">%2$d 포인트를 가진 %1$d 선택된 피처.</string>
   <string name="no_compatible_layers_found">호환되는 레이어를 찾을 수 없습니다</string>
   <string name="copied_features_to_layer">%1$d 지오메트리를 %2$s 레이어에 복사</string>
   <string name="area_colon">면적:</string>
@@ -290,7 +286,6 @@
   <string name="import_uc">가져오기</string>
   <string name="mapurls">지도URL</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">북마크</string>
   <string name="default_database">기본 데이터베이스</string>
   <string name="kmz">KMZ</string>

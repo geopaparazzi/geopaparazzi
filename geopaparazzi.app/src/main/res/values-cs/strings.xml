@@ -43,7 +43,7 @@
   <string name="map_zoom">Přiblížit mapu</string>
   <string name="map_delete">Smazat mapu</string>
   <string name="gps_preferences">Nastavení GPS</string>
-  <string name="gps_preferences_summary">Nastavit GPS předvolby jako logování vzdálenosti nebo intervalu.</string>
+  <string name="gps_preferences_summary">Nastavit předvolby GPS jako logování vzdálenosti nebo intervalu.</string>
   <string name="gps_logging_distance">Nejmenší vzdálenost pro GPS záznam</string>
   <string name="gps_logging_interval">Nejmenší interval pro GPS záznam</string>
   <string name="gps_use_android_level">Použít na úrovni Androidu (šetří baterii, vyžaduje opětovné spuštění)</string>
@@ -130,16 +130,11 @@
   <string name="view_in_mixare">Zobrazit v aplikaci mixare</string>
   <string name="gps_use_coarse">Použít polohu založenou na síti místo GPS (vyžaduje opětovné spuštění)</string>
   <string name="type_to_filter">Zadejte text pro filtrování</string>
-  <string name="geopapcloud_preferences">Nastavení synchronizace STAGE</string>
-  <string name="geopapcloud_preferences_summary">Nastavit přihlašovací údaje pro seřízení serveru a nastavení pro STAGE.</string>
   <string name="geopapcloud_user_label">Uživatelské jméno</string>
   <string name="geopapcloud_password_label">Heslo</string>
   <string name="geopapcloud_server_label">Server, ke kterému se připojit</string>
   <string name="exporting_data">Exportují se data</string>
-  <string name="error_set_cloud_settings">Parametry synchronizace STAGE nejsou nastaveny správně. Prověřte, prosím, tato nastavení.</string>
   <string name="exporting_data_to_the_cloud">Vyvádí se data do internetového úložiště.</string>
-  <string name="error_uploadig_project_to_cloud">Během nahrávání projektu do Geopap-cloud se vyskytla chyba.</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt byl úspěšně nahrán na Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Exportují se data do KMZ.</string>
   <string name="exporting_data_to_gpx">Exportují se data do GPX.</string>
   <string name="media_upload">Nahrávání médií</string>
@@ -267,6 +262,7 @@
   <string name="geom_incompatible_with_layer">Výsledné uspořádání se neslučuje s cílovou vrstvou.</string>
   <string name="selected_features_in_layer">Vybráno %1$d prvků s %2$d mnohoúhelníky.</string>
   <string name="selected_line_features_in_layer">Vybráno %1$d prvků s %2$d stranami.</string>
+  <string name="selected_point_features_in_layer">Vybráno %1$d prvků s %2$d body.</string>
   <string name="no_compatible_layers_found">Nenalezeny žádné slučitelné vrstvy</string>
   <string name="copied_features_to_layer">Zkopírováno %1$d uspořádání do vrstvy: %2$s</string>
   <string name="area_colon">Oblast:</string>
@@ -289,7 +285,6 @@
   <string name="import_uc">IMPORT</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Záložky</string>
   <string name="default_database">Výchozí databáze</string>
   <string name="kmz">KMZ</string>
@@ -365,6 +360,7 @@
   <string name="menu_simple_picture">Jeden obrázek</string>
   <string name="menu_simple_sketch">Jeden náčrtek</string>
   <string name="warning_viewcone_gps">Tento nástroj pracuje pouze, je-li dostupná poloha GPS.</string>
+  <string name="import_bookmark_prompt">Chcete zavést data odkazu jako záložku a znázornit ji?</string>
   <string name="premissions_cant_start">Geopaparazzi nelze spustit z důvodu chybějícího oprávnění pro:</string>
   <string name="log_cleared">Log vyčištěn.</string>
   <string name="bookmarks_exported">Nové záložky přidány do existujícího souboru:</string>

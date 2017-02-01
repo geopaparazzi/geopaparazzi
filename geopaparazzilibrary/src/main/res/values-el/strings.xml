@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Μεταφόρτωση λίστας έργων από εξυπηρετητή.</string>
   <string name="error_projects_list">Παρουσιάστηκε σφάλμα κατα την ανάκτηση της λίστας έργων.</string>
   <string name="downloading_project">Μεταφόρτωση έργου...</string>
-  <string name="downloading_project_to_the_device">Μεταφόρτωση του επιλεγμένου έργου στη συσκευή.</string>
   <string name="project_successfully_downloaded">Το έργο μεταφορτώθηκε με επιτυχία.</string>
   <string name="proximity_alert">Ειδοποίηση εγγύτητας!</string>
   <string name="approaching_poi">Προσέγγιση ενός σημείου ενδιαφέροντος.</string>

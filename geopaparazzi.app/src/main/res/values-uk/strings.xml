@@ -129,16 +129,11 @@
   <string name="view_in_mixare">Перегляд в mixare</string>
   <string name="gps_use_coarse">Використання позиції на основі мережі замість gps (потрібен рестарт)</string>
   <string name="type_to_filter">напишіть для фільтрування</string>
-  <string name="geopapcloud_preferences">Налаштування синхронізації STAGE</string>
-  <string name="geopapcloud_preferences_summary">Встановлення параметрів синхронізації та налаштувань для STAGE</string>
   <string name="geopapcloud_user_label">Користувач</string>
   <string name="geopapcloud_password_label">Пароль</string>
   <string name="geopapcloud_server_label">Сервер для з’єднання</string>
   <string name="exporting_data">Експорт даних</string>
-  <string name="error_set_cloud_settings">Параметри синхронізації для STAGE не встановлені правильно. Будь ласка, перевірте Ваші налаштування.</string>
   <string name="exporting_data_to_the_cloud">Експорт даних до хмари.</string>
-  <string name="error_uploadig_project_to_cloud">Сталася помилка при завантаженні проекту до </string>
-  <string name="project_succesfully_uploaded_to_cloud">Проект успішно завантажено до </string>
   <string name="exporting_data_to_kmz">Експорт даних до KMZ.</string>
   <string name="exporting_data_to_gpx">Експорт даних до GPX</string>
   <string name="media_upload">ЗАВАНТАЖЕННЯ МЕДІА</string>
@@ -272,7 +267,6 @@
   <string name="import_uc">ІМПОРТ</string>
   <string name="mapurls">Url мап</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Закладки</string>
   <string name="default_database">Типова база даних</string>
   <string name="kmz">KMZ</string>

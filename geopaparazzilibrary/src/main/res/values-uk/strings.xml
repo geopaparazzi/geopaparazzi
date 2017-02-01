@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Звантаження списку проектів з сервера.</string>
   <string name="error_projects_list">Сталася помилка під час отримання списку проектів.</string>
   <string name="downloading_project">Звантаження проекту...</string>
-  <string name="downloading_project_to_the_device">Звантаження вибраного проекту на пристрій.</string>
   <string name="project_successfully_downloaded">Проект успішно звантажений.</string>
   <string name="proximity_alert">Увага, наближення!</string>
   <string name="approaching_poi">Наближення до заданої точки.</string>
@@ -100,7 +99,6 @@
   <string name="label_field">Поле мітки</string>
   <string name="set_properties">Налаштувати властивості</string>
   <string name="set_dash">Налаштувати тире</string>
-  <string name="unauthorized_api_key">Неавторизований доступ. Перевірте ключ API.</string>
   <string name="fill_and_stroke_color_title">Колір заповнення і мазка</string>
   <string name="fill_color_title">Колір заповнення</string>
   <string name="fill_alpha_title">Колір шару альфа</string>

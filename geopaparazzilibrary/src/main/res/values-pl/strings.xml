@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Pobieranie wykazu projektów z serwera.</string>
   <string name="error_projects_list">Wystąpił błąd podczas pobierania wykazu projektów.</string>
   <string name="downloading_project">Pobieranie projektu...</string>
-  <string name="downloading_project_to_the_device">Pobieranie wskazanego projektu na urządzenie.</string>
   <string name="project_successfully_downloaded">Projekt został poprawnie pobrany.</string>
   <string name="proximity_alert">Alarm Bliskości!</string>
   <string name="approaching_poi">Zbliżanie się do POI.</string>
@@ -99,7 +98,6 @@
   <string name="toggle_label_visibility">Przełącz widoczność etykiety</string>
   <string name="label_field">Pole etykiety</string>
   <string name="set_properties">Ustaw właściwości</string>
-  <string name="unauthorized_api_key">Nieautoryzowany dostęp. Sprawdź swój klucz API.</string>
   <string name="fill_and_stroke_color_title">Kolor wypełnienia i otoczki</string>
   <string name="fill_color_title">Kolor wypełnienia</string>
   <string name="fill_alpha_title">Przeźroczystość wypełnienia</string>

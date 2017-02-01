@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Sťahovanie zoznamu projektov zo servera.</string>
   <string name="error_projects_list">Pri získavaní zoznamu projektov sa vyskytla chyba.</string>
   <string name="downloading_project">Sťahovanie projektu...</string>
-  <string name="downloading_project_to_the_device">Sťahovanie vybraného projektu do zariadenia.</string>
   <string name="project_successfully_downloaded">Projekt bol úspešne stiahnutý.</string>
   <string name="proximity_alert">Výstraha priblíženia!</string>
   <string name="approaching_poi">Priblíženie k POI</string>

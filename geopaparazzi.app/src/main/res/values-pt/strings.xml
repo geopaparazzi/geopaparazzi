@@ -130,16 +130,11 @@
   <string name="view_in_mixare">Visualizar em mixare</string>
   <string name="gps_use_coarse">Usar posicionamento baseado na rede em vez do GPS (necessário reiniciar)</string>
   <string name="type_to_filter">digite para filtrar</string>
-  <string name="geopapcloud_preferences">Configuração de Sincronização STAGE</string>
-  <string name="geopapcloud_preferences_summary">Definir credenciais de sincronização com o servidor e configurações do STAGE.</string>
   <string name="geopapcloud_user_label">Nome de utilizador</string>
   <string name="geopapcloud_password_label">Palavra-chave</string>
   <string name="geopapcloud_server_label">Servidor ao qual ligar</string>
   <string name="exporting_data">A exportar dados</string>
-  <string name="error_set_cloud_settings">Os parâmetros de sincronização do STAGE não estão configurados corretamente. Por favor verifique as configurações.</string>
   <string name="exporting_data_to_the_cloud">A exportar dados para a nuvem.</string>
-  <string name="error_uploadig_project_to_cloud">Ocorreu um erro ao tentar enviar o projeto para o Geopap-cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">O projeto foi enviado com sucesso para o Geopap-cloud</string>
   <string name="exporting_data_to_kmz">A exportar dados em KMZ.</string>
   <string name="exporting_data_to_gpx">A exportar dados em GPX</string>
   <string name="media_upload">ENVIO DE MEDIA</string>
@@ -290,7 +285,6 @@
   <string name="import_uc">IMPORTAR</string>
   <string name="mapurls">URLs de mapas</string>
   <string name="gpx">GPX</string>
-  <string name="geopap_browser">S.T.A.G.E.</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Base de Dados Padrão</string>
   <string name="kmz">KMZ</string>

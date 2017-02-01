@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Download elenco progetti dal server.</string>
   <string name="error_projects_list">Errore durante il recupero dell\'elenco di progetti.</string>
   <string name="downloading_project">Download progetto...</string>
-  <string name="downloading_project_to_the_device">Download progetto selezionato per il dispositivo.</string>
   <string name="project_successfully_downloaded">Il progetto è stato scaricato con successo.</string>
   <string name="proximity_alert">Allarme di prossimità!</string>
   <string name="approaching_poi">Avvicinamento di un punto di interesse.</string>
@@ -100,7 +99,6 @@
   <string name="label_field">Campo etichetta</string>
   <string name="set_properties">Imposta opzioni</string>
   <string name="set_dash">Setta tratteggio</string>
-  <string name="unauthorized_api_key">Accesso non autorizzato. Verificare la chiave API (API-key).</string>
   <string name="fill_and_stroke_color_title">Colore del bordo e del riempimento</string>
   <string name="fill_color_title">Colore riempimento</string>
   <string name="fill_alpha_title">Trasparenza riempimento</string>

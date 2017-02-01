@@ -131,8 +131,6 @@
   <string name="geopapcloud_server_label">Serwer do podłączenia</string>
   <string name="exporting_data">Eksportowanie danych</string>
   <string name="exporting_data_to_the_cloud">Eksportowanie danych do chmury.</string>
-  <string name="error_uploadig_project_to_cloud">Wystąpił błąd podczas eksportowania danych do Geopap-cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt został poprawnie przesłany do Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Eksport danych do KMZ.</string>
   <string name="exporting_data_to_gpx">Eksport danych do GPX</string>
   <string name="media_upload">PRZESYŁANIE MEDIÓW</string>

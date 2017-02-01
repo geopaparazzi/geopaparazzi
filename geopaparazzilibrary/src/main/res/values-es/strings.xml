@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Descargando el listado de proyectos desde el servidor</string>
   <string name="error_projects_list">Se ha producido un error al recuperar el listado de proyectos</string>
   <string name="downloading_project">Descargando proyecto...</string>
-  <string name="downloading_project_to_the_device">Descargando en el dispositivo el proyecto seleccionado.</string>
   <string name="project_successfully_downloaded">El proyecto ha sido correctamente descargado.</string>
   <string name="proximity_alert">¡Alerta de proximidad!</string>
   <string name="approaching_poi">Aproximándose a un punto de interés</string>
@@ -99,12 +98,11 @@
   <string name="toggle_label_visibility">Commutar la visibilidad de las etiquetas</string>
   <string name="label_field">Campo etiqueta</string>
   <string name="set_properties">Configurar propiedades</string>
-  <string name="unauthorized_api_key">Acceso no autorizado. Compruebe su API-key (Clave API)</string>
+  <string name="set_dash">Establecer Discontinuidad</string>
   <string name="fill_and_stroke_color_title">Color de relleno y borde</string>
   <string name="fill_color_title">Color de relleno</string>
   <string name="fill_alpha_title">Relleno alfa</string>
   <string name="stroke_color_title">Color de borde</string>
   <string name="stroke_width_title">Anchura de borde</string>
   <string name="stroke_alpha_title">Alfa de borde</string>
-  <string name="saving_to_database">Gurdando los datos en la base de datos...</string>
 </resources>

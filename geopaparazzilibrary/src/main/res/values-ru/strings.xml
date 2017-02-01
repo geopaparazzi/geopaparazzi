@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Загрузка списка проектов с сервера.</string>
   <string name="error_projects_list">Ошибка при получении списка проектов.</string>
   <string name="downloading_project">Загружается проект…</string>
-  <string name="downloading_project_to_the_device">Загрузить выбранный проект.</string>
   <string name="project_successfully_downloaded">Проект загружен удачно.</string>
   <string name="form_field_check">Проверьте поле \"%1$s\" раздела \"%2$s\". Не корректное значение %3$s</string>
   <string name="enterLocationLabel">Введите местоположение:</string>

@@ -111,8 +111,6 @@
   <string name="geopapcloud_server_label">Сервер для соединения</string>
   <string name="exporting_data">Экспорт данных</string>
   <string name="exporting_data_to_the_cloud">Экспорт данных в облако.</string>
-  <string name="error_uploadig_project_to_cloud">При загрузке проекта в облако Geopap произошла ошибка.</string>
-  <string name="project_succesfully_uploaded_to_cloud">Проект успешно загружен в Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Экспорт данных в KMZ.</string>
   <string name="exporting_data_to_gpx">Экспорт данных в GPX</string>
   <string name="media_upload">ЗАГРУЗКА МЕДИА</string>

@@ -36,7 +36,6 @@
   <string name="downloading_projects_list_from_server">Preuzimanje liste projekata sa servera</string>
   <string name="error_projects_list">Pojavila se greška u toku ponovnog preuzimanja liste projekata</string>
   <string name="downloading_project">Preuzimanje projekta...</string>
-  <string name="downloading_project_to_the_device">Preuzimanje izabranog projekta na uredjaj</string>
   <string name="project_successfully_downloaded">Projekat je uspešno preuzet</string>
   <string name="proximity_alert">Upozorenje blizine!</string>
   <string name="approaching_poi">Približavanje tački od interesa</string>

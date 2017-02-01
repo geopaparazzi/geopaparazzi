@@ -117,8 +117,6 @@
   <string name="geopapcloud_server_label">Server na koji se povezujete</string>
   <string name="exporting_data">Podaci se izvoze</string>
   <string name="exporting_data_to_the_cloud">Podaci se izvoze u Cloud server.</string>
-  <string name="error_uploadig_project_to_cloud">Pojavila se greška u toku učitavanja projekta u Geopap-cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekat je uspešno učitan u Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Podaci se izvoze u KMZ.</string>
   <string name="exporting_data_to_gpx">Podaci se izvoze u GPX</string>
   <string name="media_upload">UČITAVANJE MEDIJA</string>

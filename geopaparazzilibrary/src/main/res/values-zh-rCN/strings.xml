@@ -26,7 +26,6 @@
   <string name="downloading">下载中...</string>
   <string name="downloading_projects_list_from_server">從服務器下載項目列表。</string>
   <string name="downloading_project">项目下载中...</string>
-  <string name="downloading_project_to_the_device">正在为设备下载选中项目</string>
   <string name="project_successfully_downloaded">项目被成功下载。</string>
   <string name="proximity_alert">鄰近警報！</string>
   <string name="enterLocationLabel">输入位置：</string>
@@ -59,7 +58,6 @@
   <string name="toggle_label_visibility">切換標籤的可見性</string>
   <string name="label_field">標籤字段</string>
   <string name="set_properties">設置屬性</string>
-  <string name="unauthorized_api_key">越權存取。檢查你的API密鑰</string>
   <string name="fill_and_stroke_color_title">填充和描邊色</string>
   <string name="fill_color_title">填充色</string>
   <string name="stroke_color_title">描邊色</string>

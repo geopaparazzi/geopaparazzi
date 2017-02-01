@@ -117,8 +117,6 @@
   <string name="geopapcloud_server_label">Pripojiť sa k serveru</string>
   <string name="exporting_data">Export údsajov</string>
   <string name="exporting_data_to_the_cloud">Export údajov do cloudu.</string>
-  <string name="error_uploadig_project_to_cloud">Pri nahrávaní projektu do Geopap-Cloudu sa vyskytla chyba</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt bol úspešne uložený do Geopap-Cloud.</string>
   <string name="exporting_data_to_kmz">Export údajov do KMZ.</string>
   <string name="exporting_data_to_gpx">Export do GPX</string>
   <string name="media_upload">NAHRANIE MÉDIÍ</string>
