@@ -372,9 +372,11 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
     }
 
     public void close() throws Exception {
-        isOpen = false;
-        if (dbJava != null) {
-            dbJava.close();
+        if (isOpen) {
+            isOpen = false;
+            if (dbJava != null) {
+                dbJava.close();
+            }
         }
     }
 

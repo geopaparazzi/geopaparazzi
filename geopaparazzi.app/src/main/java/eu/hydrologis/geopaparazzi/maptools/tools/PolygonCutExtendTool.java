@@ -350,7 +350,7 @@ public class PolygonCutExtendTool extends MapTool {
             Feature feature = new Feature(startFeature.getTableName(), startFeature.getDatabasePath(), startFeature.getId(), geomBytes);
             return new Feature[]{feature, endFeature}; // new geom feature + feature to remove
         } catch (Exception e) {
-            String msg = "Unable to write geometry" + (previewGeometry == null ? "." : ": " + previewGeometry.toText();
+            String msg = "Unable to write geometry" + (previewGeometry == null ? "." : ": " + previewGeometry.toText());
             GPLog.error(this, msg, e);
             final Context context = EditManager.INSTANCE.getEditingView().getContext();
             GPDialogs.warningDialog(context, msg, null);

@@ -268,7 +268,7 @@ public enum SpatialiteSourcesManager {
                 }
             }
         }
-        if (!foundTables) {
+        if (!foundTables && sdbHandler != null) {
             // close this unused db connection
             sdbHandler.close();
         }

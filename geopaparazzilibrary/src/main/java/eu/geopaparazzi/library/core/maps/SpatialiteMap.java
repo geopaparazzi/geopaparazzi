@@ -45,7 +45,7 @@ public class SpatialiteMap {
     public String tableType;
     public String geometryType;
     public String tableName;
-    public boolean isVisible = true;
+    public boolean isVisible = false;
     public double order = 0;
 
     public JSONObject toJson() throws JSONException {
