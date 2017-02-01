@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -43,6 +45,8 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.FileNameComparator;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
@@ -198,8 +202,12 @@ public class DirectoryBrowserActivity extends ListActivity {
         if (file.isDirectory()) {
             File[] filesArray = file.listFiles(fileFilter);
             if (filesArray != null) {
-                currentDir = file;
-                getFiles(currentDir, filesArray);
+                if (filesArray.length == 0){
+                    GPDialogs.quickInfo(v, "No files are contained in the folder.");
+                }else {
+                    currentDir = file;
+                    getFiles(currentDir, filesArray);
+                }
             } else {
                 filesArray = currentDir.listFiles(fileFilter);
                 getFiles(currentDir, filesArray);
@@ -231,6 +239,8 @@ public class DirectoryBrowserActivity extends ListActivity {
                 continue;
             }
             filesList.add(file);
+
+            Collections.sort(filesList, new FileNameComparator());
         }
 
         if (fileListAdapter == null) {
