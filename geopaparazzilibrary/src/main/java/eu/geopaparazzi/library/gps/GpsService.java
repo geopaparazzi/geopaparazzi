@@ -280,26 +280,31 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Starts listening to the gps provider.
      */
     private void registerForLocationUpdates() {
-        if (isMockMode) {
-            log("Gps started using Mock locations");
-            TestMock.startMocking(locationManager, this);
-            isListeningForUpdates = true;
-        } else {
-            float minDistance = 0.2f;
-            long waitForSecs = WAITSECONDS;
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                throw new SecurityException();
-            }
-            if (useNetworkPositions) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance, this);
+        try {
+            if (isMockMode) {
+                log("Gps started using Mock locations");
+                TestMock.startMocking(locationManager, this);
+                isListeningForUpdates = true;
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForSecs * 1000l, minDistance, this);
+                float minDistance = 0.2f;
+                long waitForSecs = WAITSECONDS;
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    throw new SecurityException();
+                }
+                if (useNetworkPositions) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance, this);
+                } else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForSecs * 1000l, minDistance, this);
+                }
+                isListeningForUpdates = true;
+                log("registered for updates.");
             }
-            isListeningForUpdates = true;
-            log("registered for updates.");
+            broadcast("triggered by registerForLocationUpdates");
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            isListeningForUpdates = false;
         }
-        broadcast("triggered by registerForLocationUpdates");
     }
 
     /**

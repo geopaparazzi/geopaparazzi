@@ -23,13 +23,15 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAP_ZOOM;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Position and preferences related utils.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PositionUtilities {
@@ -39,18 +41,38 @@ public class PositionUtilities {
     private static final float NOVALUE = -9999f;
 
     /**
+     * Maximum possible latitude coordinate.
+     */
+    public static final double LATITUDE_MAX = 90;
+
+    /**
+     * Minimum possible latitude coordinate.
+     */
+    public static final double LATITUDE_MIN = -90;
+
+    /**
+     * Maximum possible longitude coordinate.
+     */
+    public static final double LONGITUDE_MAX = 180;
+
+    /**
+     * Minimum possible longitude coordinate.
+     */
+    public static final double LONGITUDE_MIN = -180;
+
+    /**
      * Insert the gps position data in the preferences.
-     * 
+     * <p>
      * <p>This method handles double->float conversion of the values where necessary.</p>
-     * 
+     *
      * @param preferences the preferences to use.
-     * @param longitude the longitude in its real value.
-     * @param latitude  the latitude in its real value.
-     * @param elevation the elevation in meters.
+     * @param longitude   the longitude in its real value.
+     * @param latitude    the latitude in its real value.
+     * @param elevation   the elevation in meters.
      */
     @SuppressWarnings("nls")
-    public static void putGpsLocationInPreferences( SharedPreferences preferences, double longitude, double latitude,
-            double elevation ) {
+    public static void putGpsLocationInPreferences(SharedPreferences preferences, double longitude, double latitude,
+                                                   double elevation) {
         if (longitude > 1E5 || longitude < -1E5 //
                 || latitude > 1E5 || latitude < -1E5) {
             throw new IllegalArgumentException("The method takes coordinate values in their real format.");
@@ -69,14 +91,14 @@ public class PositionUtilities {
 
     /**
      * Get the gps position data from the preferences.
-     * 
+     * <p>
      * <p>This method handles float->double conversion of the values where necessary.</p>
-     * 
+     *
      * @param preferences the preferences to use.
      * @return the array containing [lon, lat, elevation].
      */
     @SuppressWarnings("nls")
-    public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
+    public static double[] getGpsLocationFromPreferences(SharedPreferences preferences) {
         // these are *E6 values of the coordinates
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
@@ -101,16 +123,16 @@ public class PositionUtilities {
 
     /**
      * Insert the map center position data in the preferences.
-     * 
+     * <p>
      * <p>This method handles double->float conversion of the values where necessary.</p>
-     * 
+     *
      * @param preferences the preferences to use.
-     * @param longitude the longitude in its real value.
-     * @param latitude  the latitude in its real value.
-     * @param zoom the zoomlevel.
+     * @param longitude   the longitude in its real value.
+     * @param latitude    the latitude in its real value.
+     * @param zoom        the zoomlevel.
      */
     @SuppressWarnings("nls")
-    public static void putMapCenterInPreferences( SharedPreferences preferences, double longitude, double latitude, float zoom ) {
+    public static void putMapCenterInPreferences(SharedPreferences preferences, double longitude, double latitude, float zoom) {
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
@@ -125,20 +147,20 @@ public class PositionUtilities {
 
     /**
      * Get the map center position data from the preferences.
-     * 
+     * <p>
      * <p>This method handles float->double conversion of the values where necessary.</p>
-     * 
+     *
      * @param preferences the preferences to use.
-     * @param backOnGps if set to <code>true</code> and the map center was not set,
-     *          it backs on the gps position.
-     * @param backOnZero if set to <code>true</code> it assures that
-     *          the result is never <code>null</code>. In case 0,0 is used.
-     *          Note that this can be used only if backOnGps is true, else
-     *          it will be ignored.
+     * @param backOnGps   if set to <code>true</code> and the map center was not set,
+     *                    it backs on the gps position.
+     * @param backOnZero  if set to <code>true</code> it assures that
+     *                    the result is never <code>null</code>. In case 0,0 is used.
+     *                    Note that this can be used only if backOnGps is true, else
+     *                    it will be ignored.
      * @return the array containing [lon, lat, zoom].
      */
     @SuppressWarnings("nls")
-    public static double[] getMapCenterFromPreferences( SharedPreferences preferences, boolean backOnGps, boolean backOnZero ) {
+    public static double[] getMapCenterFromPreferences(SharedPreferences preferences, boolean backOnGps, boolean backOnZero) {
         float lonFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LAT, NOVALUE);
         float zoom = preferences.getFloat(PREFS_KEY_MAP_ZOOM, 16f);
@@ -172,4 +194,19 @@ public class PositionUtilities {
         return new double[]{lon, lat, zoom};
     }
 
+    public static void validateLatitude(double latitude) {
+        if (latitude < LATITUDE_MIN || latitude > LATITUDE_MAX) {
+            throw new IllegalArgumentException("invalid latitude: " + latitude);
+        }
+    }
+
+    /**
+     * Check a lat/lon coordinate.
+     *
+     * @param longitude the longitude coordinate in degrees to check.
+     * @param latitude  the longitude coordinate in degrees to check.
+     */
+    public static boolean isValidCoordinateLL(double longitude, double latitude) {
+        return !(longitude < LONGITUDE_MIN || longitude > LONGITUDE_MAX || latitude < LATITUDE_MIN || latitude > LATITUDE_MAX);
+    }
 }

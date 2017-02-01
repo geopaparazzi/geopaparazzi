@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.model.Coordinates;
 import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
@@ -397,6 +399,12 @@ public class DaoNotes {
         while (!c.isAfterLast()) {
             double lon = c.getDouble(0);
             double lat = c.getDouble(1);
+
+
+            if(!PositionUtilities.isValidCoordinateLL(lon, lat)){
+                continue;
+            }
+
             long date = c.getLong(2);
             String text = c.getString(3);
 
