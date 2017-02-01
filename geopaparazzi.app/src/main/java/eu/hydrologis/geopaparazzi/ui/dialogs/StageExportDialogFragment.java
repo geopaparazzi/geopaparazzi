@@ -106,6 +106,7 @@ public class StageExportDialogFragment extends DialogFragment {
         progressBar.setIndeterminate(true);
 
         alertDialog = builder.create();
+        alertDialog.setCancelable(false);
         return alertDialog;
     }
 

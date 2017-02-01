@@ -77,7 +77,7 @@ public class WebProjectsListActivity extends ListActivity {
         filterText.addTextChangedListener(filterTextWatcher);
 
         downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
-                getString(R.string.downloading_projects_list_from_server));
+                getString(R.string.downloading_projects_list_from_server), true, false);
         new AsyncTask<String, Void, String>() {
 
             protected String doInBackground(String... params) {
@@ -195,7 +195,7 @@ public class WebProjectsListActivity extends ListActivity {
 
     private void downloadProject(final Webproject webproject) {
         cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
-                getString(R.string.downloading_project), true, true);
+                getString(R.string.downloading_project), true, false);
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {

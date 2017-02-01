@@ -134,8 +134,13 @@ public class ExportActivity extends AppCompatActivity implements
                     return;
                 }
 
-                StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
-                stageExportDialogFragment.show(getSupportFragmentManager(), "stage export");
+                GPDialogs.yesNoMessageDialog(context, getString(R.string.upload_to_cloud_prompt), new Runnable() {
+                    @Override
+                    public void run() {
+                        StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
+                        stageExportDialogFragment.show(getSupportFragmentManager(), "cloud export");
+                    }
+                }, null);
             }
         });
 
