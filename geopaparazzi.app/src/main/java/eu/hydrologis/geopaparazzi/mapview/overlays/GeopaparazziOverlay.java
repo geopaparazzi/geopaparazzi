@@ -178,7 +178,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         defaultWayPaintOutline.setStyle(Paint.Style.STROKE);
         defaultWayPaintOutline.setColor(Color.BLACK);
 
-        gpsMarker = Compat.getDrawable(context, R.drawable.current_position);
+        gpsMarker = Compat.getDrawable(context, R.drawable.ic_my_location_black_24dp);
         gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsFill.setStyle(Paint.Style.FILL);
         gpsFill.setColor(Color.BLUE);
