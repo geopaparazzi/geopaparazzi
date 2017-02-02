@@ -16,4 +16,12 @@
   <string name="toggle_visibility">alternar visibilidade.</string>
   <string name="label_field">rótulo do campo</string>
   <string name="label_size">tamanho do rótulo</string>
+  <string name="select_table_types">Selecionar tipos</string>
+  <string name="select_type">Selecionar tipo</string>
+  <string name="remove_from_list">Remover %s da lista?</string>
+  <string name="selected_file_no_vector_data">O arquivos selecionados nenhum dado dados vetorial:</string>
+  <string name="adding_new_source">Adicionar nova origem...</string>
+  <string name="select_spatialite_database">Selecionar Banco de dados spatialite para adicionar</string>
+  <string name="select_spatialite_database_folder">Selecionar pasta de banco de dados spatialite para adicionar </string>
+  <string name="loading_databases">Carregando banco de dados...</string>
 </resources>
