@@ -228,7 +228,7 @@ public enum BaseMapSourcesManager {
 
     @NonNull
     private List<AbstractSpatialTable> collectTablesFromFile(File file) throws IOException, Exception {
-        GPLog.addLogEntry(this, "Processing file: " + file);
+//        GPLog.addLogEntry(this, "Processing file: " + file);
         List<AbstractSpatialTable> collectedTables = new ArrayList<>();
             /*
              * add MAPURL TABLES

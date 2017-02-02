@@ -30,5 +30,6 @@
  <string name="selected_file_no_basemap">"The selected file is not supported as basemap: "</string>
  <string name="adding_new_source">Adding new source...</string>
  <string name="select_basemap_source">Select basemap source to add</string>
+ <string name="select_basemap_source_folder">Select basemap source folder to add</string>
  <string name="loading_sources">Loading sources...</string>
 </resources>

@@ -23,5 +23,6 @@
     <string name="selected_file_no_vector_data">The selected file doesn\'t contain any vector data: </string>
     <string name="adding_new_source">Adding new source...</string>
     <string name="select_spatialite_database">Select spatialite database to add</string>
+    <string name="select_spatialite_database_folder">Select spatialite database folder to add</string>
     <string name="loading_databases">Loading databases...</string>
 </resources>

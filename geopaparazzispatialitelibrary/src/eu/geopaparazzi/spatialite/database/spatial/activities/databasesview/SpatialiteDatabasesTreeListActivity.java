@@ -58,6 +58,7 @@ import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStarter;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -77,6 +78,7 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener,
         StrokeDashDialogFragment.IDashStrokePropertiesChangeListener, ZoomlevelDialogFragment.IZoomlevelPropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
+    public static final int PICKFOLDER_REQUEST_CODE = 667;
 
     public static final String SHOW_TABLES = "showTables";
     public static final String SHOW_VIEWS = "showViews";
@@ -131,11 +133,6 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
             FloatingActionButton addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
             addSourceButton.hide();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         loadDataTask = new StringAsyncTask(this) {
             List<SpatialiteMap> spatialiteMaps;
@@ -159,6 +156,13 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     protected void onDestroy() {
         if (loadDataTask != null) loadDataTask.dispose();
         if (addNewSourceTask != null) addNewSourceTask.dispose();
@@ -167,11 +171,11 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
 
     @Override
     protected void onStop() {
-        super.onStop();
         mFilterText.removeTextChangedListener(filterTextWatcher);
 
         // save changes to preferences also
         SpatialiteSourcesManager.INSTANCE.saveCurrentSpatialiteMapsToPreferences();
+        super.onStop();
     }
 
     public void add(View view) {
@@ -179,6 +183,16 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
             String title = getString(R.string.select_spatialite_database);
             String[] supportedExtensions = ESpatialDataSources.getSupportedVectorExtensions();
             AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, null);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            GPDialogs.errorDialog(this, e, null);
+        }
+    }
+
+    public void addFolder(View view) {
+        try {
+            String title = getString(R.string.select_spatialite_database_folder);
+            AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);
@@ -229,6 +243,67 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
                                 }
                             };
                             addNewSourceTask.setProgressDialog("", getString(R.string.adding_new_source), false, null);
+                            addNewSourceTask.execute();
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(this, e, null);
+                    }
+                }
+                break;
+            }
+            case (PICKFOLDER_REQUEST_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String folderPath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                        final File folder = new File(folderPath);
+                        if (folder.exists()) {
+                            Utilities.setLastFilePath(this, folderPath);
+                            final List<File> foundFiles = new ArrayList<>();
+                            // get all supported files
+                            String[] supportedExtensions = ESpatialDataSources.getSupportedVectorExtensions();
+                            FileUtilities.searchDirectoryRecursive(folder, supportedExtensions, foundFiles);
+                            // add basemap to list and in mPreferences
+                            addNewSourceTask = new StringAsyncTask(this) {
+                                public List<SpatialiteMap> spatialiteMaps;
+
+                                protected String doBackgroundWork() {
+                                    try {
+                                        for (int i = 0; i < foundFiles.size(); i++) {
+                                            File file = foundFiles.get(i);
+                                            try {
+                                                // add basemap to list and in mPreferences
+                                                SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file);
+                                            } catch (Exception e) {
+                                                // ignore
+                                            } finally {
+                                                onProgressUpdate(i + 1);
+                                            }
+                                        }
+                                        spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+                                        if (spatialiteMaps.size() == 0) {
+                                            return getString(R.string.selected_file_no_vector_data) + folder.getAbsolutePath();
+                                        }
+                                    } catch (Exception e) {
+                                        GPLog.error(this, "Problem getting sources.", e);
+                                        return "ERROR: " + e.getLocalizedMessage();
+                                    }
+                                    return "";
+                                }
+
+                                protected void doUiPostWork(String response) {
+                                    dispose();
+                                    if (response.length() > 0) {
+                                        GPDialogs.warningDialog(SpatialiteDatabasesTreeListActivity.this, response, null);
+                                    } else {
+                                        try {
+                                            refreshData(spatialiteMaps);
+                                        } catch (Exception e) {
+                                            GPLog.error(this, null, e);
+                                        }
+                                    }
+                                }
+                            };
+                            addNewSourceTask.setProgressDialog("", getString(R.string.adding_new_source), false, foundFiles.size());
                             addNewSourceTask.execute();
                         }
                     } catch (Exception e) {

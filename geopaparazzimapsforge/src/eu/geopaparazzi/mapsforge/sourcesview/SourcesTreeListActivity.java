@@ -171,8 +171,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
     @Override
     protected void onStop() {
-        super.onStop();
         mFilterText.removeTextChangedListener(filterTextWatcher);
+        super.onStop();
     }
 
     public void add(View view) {
@@ -188,7 +188,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
 
     public void addFolder(View view) {
         try {
-            String title = getString(R.string.select_basemap_source);
+            String title = getString(R.string.select_basemap_source_folder);
             AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
@@ -270,6 +270,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                         for (int i = 0; i < foundFiles.size(); i++) {
                                             File file = foundFiles.get(i);
                                             try {
+                                                // add basemap to list and in mPreferences
                                                 BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(file);
                                             } catch (Exception e) {
                                                 // ignore
@@ -278,7 +279,6 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                             }
                                         }
 
-                                        // add basemap to list and in mPreferences
                                         baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                                         if (baseMaps.size() == 0) {
                                             return getString(R.string.selected_file_no_basemap) + folder;
