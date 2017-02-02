@@ -56,11 +56,10 @@ public class AppsUtilities {
      * @param context the context to use.
      */
     public static void checkAndOpenGpsStatus(final Context context) {
-        String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
-        String gpsStatusPackage = "com.eclipsim.gpsstatus";
+
+        final String gpsStatusPackage = "com.android.gpstest";
         boolean hasGpsStatus = false;
         List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
-
         { // try to get the installed packages list. Seems to have troubles over different
             // versions, so trying them all
             try {
@@ -94,8 +93,10 @@ public class AppsUtilities {
         }
 
         if (hasGpsStatus) {
-            Intent intent = new Intent(gpsStatusAction);
-            context.startActivity(intent);
+            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(gpsStatusPackage);
+            if (launchIntent != null) {
+                context.startActivity(launchIntent);//null pointer check in case package name was not found
+            }
         } else {
             new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
                     .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
@@ -106,7 +107,7 @@ public class AppsUtilities {
                     }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));
+                    intent.setData(Uri.parse("market://details?id=" + gpsStatusPackage));
                     context.startActivity(intent);
                 }
             }).show();

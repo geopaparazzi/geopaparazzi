@@ -87,7 +87,6 @@ dependencies {
     compile project(':geopaparazzispatialitelibrary')
     compile project(':geopaparazzimapsforge')
     compile project(':geopaparazzimarkerslib')
-    //    compile project(':wms_nww')
     compile project(':wms_nww')
 }
 
