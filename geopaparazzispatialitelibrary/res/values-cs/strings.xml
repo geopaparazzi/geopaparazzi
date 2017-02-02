@@ -22,5 +22,6 @@
   <string name="selected_file_no_vector_data">Vybraný soubor neobsahuje žádná vektorová data:</string>
   <string name="adding_new_source">Přidává se nový zdroj...</string>
   <string name="select_spatialite_database">Vybrat spatialite databázi k přidání</string>
+  <string name="select_spatialite_database_folder">Vyberte složku s databází spatialite k přidání</string>
   <string name="loading_databases">Načítání databází...</string>
 </resources>

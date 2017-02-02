@@ -132,11 +132,16 @@
   <string name="view_in_mixare">mixare で表示</string>
   <string name="gps_use_coarse">ネットワーク位置使用(再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
+  <string name="geopapcloud_preferences">クラウドプロジェクト同期設定</string>
+  <string name="geopapcloud_preferences_summary">クラウドサービスのサーバ同期権限と設定を行います。</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
   <string name="geopapcloud_password_label">パスワード</string>
   <string name="geopapcloud_server_label">接続サーバ</string>
   <string name="exporting_data">データのエクスポート</string>
+  <string name="error_set_cloud_settings">クラウド同期パラメータが正しく設定されていません。 設定を確認してください。</string>
   <string name="exporting_data_to_the_cloud">クラウドにデータをエクスポートします。</string>
+  <string name="error_uploadig_project_to_cloud">プロジェクトをクラウドにアップロード中にエラーが発生しました。</string>
+  <string name="project_succesfully_uploaded_to_cloud">プロジェクトがクラウドに正常にアップロードされました</string>
   <string name="exporting_data_to_kmz">KMZ へのデータのエクスポート</string>
   <string name="exporting_data_to_gpx">GPX へのデータのエクスポート</string>
   <string name="media_upload">メディアアップロード</string>
@@ -208,6 +213,7 @@
   <string name="high_density_display">高解像度ディスプレイ</string>
   <string name="high_density_display_sum">オンにするとOSMマップがより見やすくなります。</string>
   <string name="satellites">衛星数</string>
+  <string name="accuracy_colon">精度:</string>
   <string name="start">開始</string>
   <string name="end">終了</string>
   <string name="other">その他</string>
@@ -289,6 +295,7 @@
   <string name="import_uc">インポート</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
+  <string name="geopap_browser">クラウドプロジェクト</string>
   <string name="bookmarks">ブックマーク</string>
   <string name="default_database">初期データベース</string>
   <string name="kmz">KMZ</string>
@@ -385,4 +392,13 @@
   <string name="error_while_removing_notes">ノート削除中にエラーが発生しました。</string>
   <string name="removing_notes">ノート削除中...</string>
   <string name="interrupted_by_user">ユーザーによる中断</string>
+  <string name="import_cloud_data">クラウドデータ</string>
+  <string name="browse_images">画像参照</string>
+  <string name="new_picture">新規画像</string>
+  <string name="Images">画像</string>
+  <string name="confirm_remove_image">本当に画像を削除しますか？</string>
+  <string name="upload_to_cloud_prompt">現在のプロジェクトをクラウドにアップロードしますか？</string>
+  <plurals name="n_images">
+    <item quantity="other">%d 画像</item>
+  </plurals>
 </resources>

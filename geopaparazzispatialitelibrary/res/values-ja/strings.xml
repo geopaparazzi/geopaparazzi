@@ -22,5 +22,6 @@
   <string name="selected_file_no_vector_data">選択されたファイルにはベクトルデータが含まれていません。</string>
   <string name="adding_new_source">新しいソースを追加...</string>
   <string name="select_spatialite_database">追加するSpatialiteデータベースを選択</string>
+  <string name="select_spatialite_database_folder">追加するSpatialiteデータベースフォルダを選択</string>
   <string name="loading_databases">データを読み込んでいます...</string>
 </resources>

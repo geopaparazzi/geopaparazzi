@@ -34,9 +34,15 @@
   <string name="webprojects_list_title">Vzdálený seznam projektů</string>
   <string name="downloading">Stahuje se...</string>
   <string name="downloading_projects_list_from_server">Stahuje se seznam projektů ze serveru.</string>
+  <string name="downloading_layers_list_from_server">Stahuje se seznam vrstev ze serveru.</string>
+  <string name="downloading_data_from_server">Stahují se data ze serveru.</string>
   <string name="error_projects_list">Během získávání seznamu projektů se vyskytla chyba.</string>
+  <string name="error_data_list">Během získávání seznamu datových vrstev se vyskytla chyba.</string>
   <string name="downloading_project">Stahuje se projekt…</string>
+  <string name="downloading_data">Stahují se data...</string>
+  <string name="downloading_data_to_the_device">Vybrané vrstvy se stahují jako databáze spatialite do zařízení.</string>
   <string name="project_successfully_downloaded">Projekt byl úspěšně stažen.</string>
+  <string name="data_successfully_downloaded">Data byla úspěšně stažena.</string>
   <string name="proximity_alert">Blízkostní poplach!</string>
   <string name="approaching_poi">Blíží se zájmový bod.</string>
   <string name="form_field_check">Ověřte, prosím, že pole \"%1$s\" v části \"%2$s\" je platné. Neschválená omezení: %3$s.</string>
@@ -98,10 +104,13 @@
   <string name="toggle_label_visibility">Přepnout viditelnost popisku</string>
   <string name="label_field">Pole popisku</string>
   <string name="set_properties">Nastavit vlastnosti</string>
+  <string name="set_dash">Nastavit nástěnku</string>
+  <string name="unauthorized_api_key">Neschválený přístup. Prověřte svůj klíč API.</string>
   <string name="fill_and_stroke_color_title">Barva výplně a čáry</string>
   <string name="fill_color_title">Barva výplně</string>
   <string name="fill_alpha_title">Neprůhlednost výplně</string>
   <string name="stroke_color_title">Barva linie</string>
   <string name="stroke_width_title">Šířka linie</string>
   <string name="stroke_alpha_title">Neprůhlednost linie</string>
+  <string name="saving_to_database">Ukládají se data do databáze...</string>
 </resources>

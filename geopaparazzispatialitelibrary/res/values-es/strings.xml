@@ -21,6 +21,7 @@
   <string name="remove_from_list">¿Eliminar %s de la lista?</string>
   <string name="selected_file_no_vector_data">El fichero seleccionado no contiene ningún dato vectorial</string>
   <string name="adding_new_source">Añadiendo nueva fuente</string>
+  <string name="select_spatialite_database">Seleccionar base de datos Spatialite a añadir</string>
+  <string name="select_spatialite_database_folder">Seleccionar la carpeta de la base de datos spatialite a añadir</string>
   <string name="loading_databases">Cargando bases de datos...</string>
-  <string name="select_spatialite_database">Selecciona la base de datos Spatialite a añadir</string>
 </resources>

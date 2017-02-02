@@ -132,11 +132,16 @@ Vuoi rimuovere le note dal dispositivo?</string>
   <string name="view_in_mixare">Visualizza in mixare</string>
   <string name="gps_use_coarse">Utilizzare la posizione basata su rete invece del gps (necessario riavvio)</string>
   <string name="type_to_filter">inserire testo per filtrare</string>
+  <string name="geopapcloud_preferences">Impostazioni di sincronizzazione progetti cloud</string>
+  <string name="geopapcloud_preferences_summary">Impostazioni e credenziali per servizio di sincronizzazione cloud</string>
   <string name="geopapcloud_user_label">Nome utente</string>
   <string name="geopapcloud_password_label">Password</string>
   <string name="geopapcloud_server_label">Server al quale connettersi</string>
   <string name="exporting_data">Esportazione dei dati</string>
+  <string name="error_set_cloud_settings">I parametri di sincronizzazione cloud non sono impostati correttamente. Controllare le impostazioni.</string>
   <string name="exporting_data_to_the_cloud">Esportazione dei dati della nuvola.</string>
+  <string name="error_uploadig_project_to_cloud">Si è verificato un errore durante il caricamento del progetto.</string>
+  <string name="project_succesfully_uploaded_to_cloud">Il progetto è stato caricato con successo.</string>
   <string name="exporting_data_to_kmz">Esportazione di dati in KMZ.</string>
   <string name="exporting_data_to_gpx">Esportazione di dati in GPX</string>
   <string name="media_upload">CARICAMENTO FILE MEDIA</string>
@@ -209,6 +214,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="high_density_display">Schermo ad alta densità</string>
   <string name="high_density_display_sum">Se selezionato, le tavolette scaricate da osm verranno scalate per migliorarne la leggibilità.</string>
   <string name="satellites">satelliti</string>
+  <string name="accuracy_colon">accuratezza:</string>
   <string name="start">inizio</string>
   <string name="end">fine</string>
   <string name="other">altro</string>
@@ -290,6 +296,7 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="import_uc">IMPORT</string>
   <string name="mapurls">Mapurls</string>
   <string name="gpx">GPX</string>
+  <string name="geopap_browser">Progetto Cloud</string>
   <string name="bookmarks">Favoriti</string>
   <string name="default_database">Database di default</string>
   <string name="kmz">KMZ</string>
@@ -385,4 +392,14 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="error_while_removing_notes">Si verificato un errore durante la cancellazione delle note:</string>
   <string name="removing_notes">Cancella note...</string>
   <string name="interrupted_by_user">Interrotto dall\'utente</string>
+  <string name="import_cloud_data">Dati Cloud</string>
+  <string name="browse_images">Sfoglia immagini</string>
+  <string name="new_picture">Nuova immagine</string>
+  <string name="Images">Immagini</string>
+  <string name="confirm_remove_image">Sei sicuro di volere cancellare l\'immagine?</string>
+  <string name="upload_to_cloud_prompt">Caricare il progetto corrente?</string>
+  <plurals name="n_images">
+    <item quantity="one">1 immagine</item>
+    <item quantity="other">%d immagini</item>
+  </plurals>
 </resources>

@@ -22,5 +22,6 @@
   <string name="selected_file_no_vector_data">Valittu tiedosto ei sisällä mitään vektoridataa:</string>
   <string name="adding_new_source">Lisätään uusi lähde...</string>
   <string name="select_spatialite_database">Valitse spatialite tietokanta lisättäväksi</string>
+  <string name="select_spatialite_database_folder">Valitse spatialite tietokannan hakemisto lisätäksesi</string>
   <string name="loading_databases">Ladataan tietokantoja...</string>
 </resources>
