@@ -66,4 +66,15 @@
         android:cacheColorHint="@color/transparent_white"
         android:onClick="add"
         android:src="@drawable/ic_add_24dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addSourceFolderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@color/transparent_white"
+        android:cacheColorHint="@color/transparent_white"
+        android:onClick="addFolder"
+        android:src="@drawable/ic_add_folder_24dp" />
 </android.support.design.widget.CoordinatorLayout>

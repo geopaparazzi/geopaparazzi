@@ -180,6 +180,17 @@ public class AppsUtilities {
         activityStarter.startActivityForResult(browseIntent, requestCode);
     }
 
+    public static void pickFolder(IActivityStarter activityStarter, int requestCode, String title, String startPath) throws Exception {
+        if (startPath == null) {
+            startPath = Utilities.getLastFilePath(activityStarter.getContext());
+        }
+
+        Intent browseIntent = new Intent(activityStarter.getContext(), DirectoryBrowserActivity.class);
+        browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{DirectoryBrowserActivity.FOLDER});
+        browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, startPath);
+        activityStarter.startActivityForResult(browseIntent, requestCode);
+    }
+
 
     public static void checkAmazeExplorer(final IActivityStarter activityStarter) {
         Context context = activityStarter.getContext();

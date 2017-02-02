@@ -306,21 +306,23 @@ public class FileUtilities {
      * <p>This can be called multiple times, adding to the same list
      *
      * @param searchDir the directory to read.
-     * @param searchExtention the extension of the files to search for.
+     * @param searchExtentions the extensions of the files to search for.
      * @param returnFiles the List<File> where the found files will be added to.
      * @return the number of files found.
      */
-    public static int searchDirectoryRecursive( File searchDir, String searchExtention, List<File> returnFiles ) {
+    public static int searchDirectoryRecursive( File searchDir, String[] searchExtentions, List<File> returnFiles ) {
         File[] listFiles = searchDir.listFiles();
         for( File thisFile : listFiles ) {
             // mj10777: collect desired extension
             if (thisFile.isDirectory()) {
                 // mj10777: read recursive directories inside the
                 // sdcard/maps directory
-                searchDirectoryRecursive(thisFile, searchExtention, returnFiles);
+                searchDirectoryRecursive(thisFile, searchExtentions, returnFiles);
             } else {
-                if (thisFile.getName().endsWith(searchExtention)) {
-                    returnFiles.add(thisFile);
+                for (String searchExtention : searchExtentions) {
+                    if (thisFile.getName().endsWith(searchExtention)) {
+                        returnFiles.add(thisFile);
+                    }
                 }
             }
         }
