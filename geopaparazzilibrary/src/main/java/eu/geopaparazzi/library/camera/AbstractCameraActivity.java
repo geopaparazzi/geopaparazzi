@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * <p>Abstract activity for taking pictures, can be subclassed to
@@ -109,7 +111,8 @@ public abstract class AbstractCameraActivity extends Activity {
 
             imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
             File imgFile = new File(imageFilePath);
-            Uri outputFileUri = Uri.fromFile(imgFile);
+            Uri outputFileUri = Utilities.getFileUriInApplicationFolder(this, imgFile);
+
 
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);

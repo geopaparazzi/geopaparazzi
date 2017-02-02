@@ -65,6 +65,7 @@ import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -77,7 +78,6 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.objects.ItemComparators;
 import eu.hydrologis.geopaparazzi.database.objects.Note;
 import eu.hydrologis.geopaparazzi.mapview.MapviewActivity;
-import eu.hydrologis.geopaparazzi.ui.utils.ImageIntents;
 
 /**
  * Notes listing activity.
@@ -500,7 +500,7 @@ public class NotesListActivity extends AppCompatActivity {
             try {
                 Image image = (Image) currentNote;
                 byte[] imageData = new DaoImages().getImageData(image.getId());
-                ImageIntents.showImage(imageData, image.getName(), this);
+                AppsUtilities.showImage(imageData, image.getName(), this);
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }

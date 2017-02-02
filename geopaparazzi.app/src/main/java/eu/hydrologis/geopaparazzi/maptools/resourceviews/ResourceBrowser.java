@@ -20,6 +20,7 @@ import java.util.List;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.activities.camera.CameraDbActivity;
@@ -29,7 +30,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.External
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ResourceStorage;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
-import eu.hydrologis.geopaparazzi.ui.utils.ImageIntents;
 
 /**
  * Activity to manage images associated to a vector feature.
@@ -134,12 +134,12 @@ public class ResourceBrowser extends AppCompatActivity {
                 // the item resource only contains the thumbnail,
                 // so we need to get the complete resource
                 BlobResource completeRes = storage.getBlobResource(res.getId());
-                ImageIntents.showImage(completeRes.getBlob(), blobRes.getName(), this);
+                AppsUtilities.showImage(completeRes.getBlob(), blobRes.getName(), this);
             }
             else {
                 ExternalResource extRes = (ExternalResource) res;
                 File image = new File(imageSaveFolder, extRes.getPath());
-                ImageIntents.showImage(image, this);
+                AppsUtilities.showImage(image, this);
 
             }
         } catch (Exception e) {

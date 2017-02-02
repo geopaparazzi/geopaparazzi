@@ -26,21 +26,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.images.ImageUtilities;
 
 /**
  * An utility to handle 3rd party apps.
  *
  * @author Andrea Antonello (www.hydrologis.com)
+ * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
 public class AppsUtilities {
     public static final String AMAZE_PACKAGE = "com.amaze.filemanager";
@@ -245,6 +249,61 @@ public class AppsUtilities {
             hasPackage = true;
         }
         return hasPackage;
+    }
+
+    /**
+     * Show an image through intent.
+     *
+     * @param imageData the image data.
+     * @param imageName the image name.
+     * @param context the context to use.
+     * @throws Exception
+     */
+    public static void showImage(byte[] imageData, String imageName, Context context) throws Exception {
+        File tempDir = ResourcesManager.getInstance(context).getTempDir();
+        String ext = ".jpg";
+        if (imageName.endsWith(".png")) {
+            ext = ".png";
+        }
+        File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+        ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
+
+        showImage(imageFile, context);
+    }
+
+    /**
+     * Show and image.
+     *
+     * @param imageFile the image file.
+     * @param context the context to use.
+     * @throws Exception
+     */
+    public static void showImage(File imageFile, Context context) throws Exception {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Utilities.getFileUriInApplicationFolder(context, imageFile);
+        intent.setDataAndType(uri, "image/*"); //$NON-NLS-1$
+
+        grantPermission(context, intent, uri);
+        context.startActivity(intent);
+    }
+
+
+    /**
+     * Grant permission to access a file from another app.
+     *
+     * <p>This is necessary since Android 7.</p>
+     *
+     * @param context the context.
+     * @param intent the intent.
+     * @param uri the file uri.
+     */
+    public static void grantPermission(Context context, Intent intent, Uri uri) {
+        List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
     }
 
 }
