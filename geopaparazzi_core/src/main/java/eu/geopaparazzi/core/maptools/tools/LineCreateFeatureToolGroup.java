@@ -439,7 +439,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
                 GeoPoint tapGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 Coordinate coordinate = new Coordinate(tapGeoPoint.getLongitude(), tapGeoPoint.getLatitude());
                 addVertex(mapView.getContext(), coordinate);
-                if (coordinatesList.size() > 2) {
+                if (coordinatesList.size() > 1) {
                     commitButton.setVisibility(View.VISIBLE);
                 } else {
                     commitButton.setVisibility(View.GONE);
