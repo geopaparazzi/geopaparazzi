@@ -14,7 +14,7 @@ android {
 //    compileSdkVersion project.ext.myCompileSdkVersion
 //    buildToolsVersion project.ext.myBuildToolsVersion
     compileSdkVersion 25
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '24.0.3'
     sourceSets {
         main {
             manifest {
