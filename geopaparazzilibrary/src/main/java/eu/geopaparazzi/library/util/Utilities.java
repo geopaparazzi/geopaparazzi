@@ -68,7 +68,7 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class Utilities {
 
-    public static final String GEOPAPARAZZI_LIBRARY_FILEPROVIDER = "eu.geopaparazzi.library.fileprovider";
+    public static final String GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS = ".library.fileprovider";
 
     public static String getLastFilePath(Context context) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -78,8 +78,8 @@ public class Utilities {
     public static void setLastFilePath(Context context, String lastPath) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         File file = new File(lastPath);
-        if (file.exists()){
-            if (!file.isDirectory()){
+        if (file.exists()) {
+            if (!file.isDirectory()) {
                 file = file.getParentFile();
             }
         }
@@ -88,8 +88,10 @@ public class Utilities {
         editor.apply();
     }
 
-    public static Uri getFileUriInApplicationFolder(Context context, File imageFile){
-        Uri outputFileUri = FileProvider.getUriForFile(context, GEOPAPARAZZI_LIBRARY_FILEPROVIDER, imageFile);
+    public static Uri getFileUriInApplicationFolder(Context context, File imageFile) throws Exception {
+        String packageName = ResourcesManager.getInstance(context).getPackageName();
+
+        Uri outputFileUri = FileProvider.getUriForFile(context, packageName + GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS, imageFile);
         return outputFileUri;
     }
 

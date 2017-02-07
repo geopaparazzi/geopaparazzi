@@ -84,6 +84,7 @@ public class ResourcesManager implements Serializable {
     private static boolean useInternalMemory = true;
 
     private File sdcardDir;
+    private final String packageName;
 
     /**
      * @param useInternalMemory if <code>true</code>, internal memory is used.
@@ -133,7 +134,7 @@ public class ResourcesManager implements Serializable {
         Context appContext = context.getApplicationContext();
         ApplicationInfo appInfo = appContext.getApplicationInfo();
 
-        String packageName = appInfo.packageName;
+        packageName = appInfo.packageName;
         int lastDot = packageName.lastIndexOf('.');
         applicationLabel = packageName.replace('.', '_');
         if (lastDot != -1) {
@@ -261,6 +262,15 @@ public class ResourcesManager implements Serializable {
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE, sdcardDir.getAbsolutePath());
         editor.apply();
+    }
+
+    /**
+     * Get the name of the package..
+     *
+     * @return the name of the package.
+     */
+    public String getPackageName() {
+        return packageName;
     }
 
     /**
