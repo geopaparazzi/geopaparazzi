@@ -189,7 +189,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     public void addFolder(View view) {
         try {
             String title = getString(R.string.select_basemap_source_folder);
-            AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null);
+            String[] supportedExtensions = ESpatialDataSources.getSupportedTileSourcesExtensions();
+            AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null, supportedExtensions);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);

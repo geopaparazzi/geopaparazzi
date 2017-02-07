@@ -192,7 +192,8 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
     public void addFolder(View view) {
         try {
             String title = getString(R.string.select_spatialite_database_folder);
-            AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null);
+            String[] supportedExtensions = ESpatialDataSources.getSupportedVectorExtensions();
+            AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null, supportedExtensions);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);

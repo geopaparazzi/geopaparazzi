@@ -22,7 +22,6 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -37,7 +36,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,7 +54,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
  * Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
  * browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_EXTERNALSTORAGE);
- * browseIntent.putExtra(DirectoryBrowserActivity.EXTENTIONS, new String[]{ DirectoryBrowserActivity.FOLDER});
+ * browseIntent.putExtra(DirectoryBrowserActivity.EXTENTIONS, new String[]{ DirectoryBrowserActivity.DOFOLDER});
  * browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
  * startActivityForResult(browseIntent, RETURNCODE_BROWSE);
  * <p/>
@@ -96,7 +94,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     /**
      *
      */
-    public static final String FOLDER = "folder"; //$NON-NLS-1$
+    public static final String DOFOLDER = "folder"; //$NON-NLS-1$
 
     private List<File> filesList = new ArrayList<File>();
     private File startFolderFile;
@@ -132,22 +130,18 @@ public class DirectoryBrowserActivity extends ListActivity {
             startFolder = extras.getString(STARTFOLDERPATH);
             doHidden = extras.getBoolean(SHOWHIDDEN, false);
             preferencesKey = extras.getString(PUT_PATH_PREFERENCE);
-
-            if (extentions != null && extentions.length > 0) {
-                if (extentions[0].equals(FOLDER))
-                    doFolder = true;
-            }
+            doFolder=  extras.getBoolean(DOFOLDER, false);
 
             fileFilter = new FileFilter() {
                 public boolean accept(File file) {
                     if (file.isDirectory()) {
                         return true;
                     }
-                    if (!doFolder) {
+                    if(extentions!=null && extentions.length>0) {
                         String name = file.getName();
                         return endsWith(name, extentions);
                     }
-                    return false;
+                    return true;
                 }
             };
         }
@@ -222,14 +216,16 @@ public class DirectoryBrowserActivity extends ListActivity {
                 getFiles(currentDir, filesArray);
             }
         } else {
-            String absolutePath = file.getAbsolutePath();
-            handleIntent(absolutePath);
-            finish();
+            if(!doFolder) {
+                String absolutePath = file.getAbsolutePath();
+                handleIntent(absolutePath);
+                finish();
+            }
         }
     }
 
     private void goUp() {
-        if (currentDir==null)
+        if (currentDir == null)
             currentDir = sdcardDir;
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
@@ -303,7 +299,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             if (file.isDirectory()) {
                 holder.imageView.setImageResource(R.drawable.ic_folder_primary_24dp);
             } else {
-                if (!doFolder && endsWith(fileName, extentions)) {
+                if (endsWith(fileName, extentions)) {
                     holder.imageView.setImageResource(R.drawable.ic_star_accent_24dp);
                 } else {
                     holder.imageView.setImageResource(R.drawable.ic_file_primary_24dp);

@@ -203,7 +203,7 @@ public class CustomSdcardPathPreference extends DialogPreference implements View
             File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
             Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
             browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_EXTERNALSTORAGE);
-            browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, DirectoryBrowserActivity.FOLDER);
+            browseIntent.putExtra(DirectoryBrowserActivity.DOFOLDER, true);
             browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
 
             context.startActivity(browseIntent);

@@ -18,18 +18,14 @@
 
 package eu.geopaparazzi.library.util;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -185,13 +181,14 @@ public class AppsUtilities {
         activityStarter.startActivityForResult(browseIntent, requestCode);
     }
 
-    public static void pickFolder(IActivityStarter activityStarter, int requestCode, String title, String startPath) throws Exception {
+    public static void pickFolder(IActivityStarter activityStarter, int requestCode, String title, String startPath, String[] visibleExtensions) throws Exception {
         if (startPath == null) {
             startPath = Utilities.getLastFilePath(activityStarter.getContext());
         }
 
         Intent browseIntent = new Intent(activityStarter.getContext(), DirectoryBrowserActivity.class);
-        browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{DirectoryBrowserActivity.FOLDER});
+        browseIntent.putExtra(DirectoryBrowserActivity.DOFOLDER, true);
+        browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, visibleExtensions);
         browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, startPath);
         activityStarter.startActivityForResult(browseIntent, requestCode);
     }
