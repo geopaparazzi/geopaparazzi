@@ -18,14 +18,14 @@
 package eu.geopaparazzi.core.providers;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-
-import org.json.JSONException;
+import android.util.SparseArray;
 
 import java.io.File;
 import java.util.List;
@@ -37,6 +37,15 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
+import static eu.geopaparazzi.library.core.maps.BaseMap.MAP_TYPE;
+import static eu.geopaparazzi.library.core.maps.BaseMap.PARENT_FOLDER;
+import static eu.geopaparazzi.library.core.maps.BaseMap.TITLE;
+import static eu.geopaparazzi.library.core.maps.SpatialiteMap.GEOMETRY_TYPE;
+import static eu.geopaparazzi.library.core.maps.SpatialiteMap.ISVISIBLE;
+import static eu.geopaparazzi.library.core.maps.SpatialiteMap.ORDER;
+import static eu.geopaparazzi.library.core.maps.SpatialiteMap.TABLENAME;
+import static eu.geopaparazzi.library.core.maps.SpatialiteMap.TABLE_TYPE;
+
 /**
  * Content provider to query and modify current available data (spatialite, basemaps, tags)
  *
@@ -44,7 +53,12 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
  */
 public class AvailableDataContentProvider extends ContentProvider {
 
-    public static final String[] CONTENT_PROVIDER_FIELDS = new String[]{"id", "json"};
+    public static final String ID = "id";
+    public static final String[] CONTENT_PROVIDER_FIELDS_SPATIALITE = new String[]{ID, SpatialiteMap.DATABASE_PATH, TABLE_TYPE, GEOMETRY_TYPE,
+            ISVISIBLE, ORDER, TABLENAME};
+    public static final String[] CONTENT_PROVIDER_FIELDS_BASEMAPS = new String[]{ID, PARENT_FOLDER, BaseMap.DATABASE_PATH, MAP_TYPE, TITLE};
+    public static final String[] CONTENT_PROVIDER_FIELDS_TAGS = new String[]{"id", "json"};
+
     public static final String CONTENTVALUES_ADD_PATH = "CONTENTVALUES_ADD_PATH";
 
     public static final String SPATIALITE = "SPATIALITE";
@@ -58,7 +72,6 @@ public class AvailableDataContentProvider extends ContentProvider {
 
     public static String AUTHORITY = "";
     public static Uri BASE_CONTENT_URI = null;
-    public static Uri CONTENT_URI = null;
 
     @Override
     public boolean onCreate() {
@@ -66,7 +79,6 @@ public class AvailableDataContentProvider extends ContentProvider {
             String packageName = ResourcesManager.getInstance(getContext()).getPackageName();
             AUTHORITY = packageName + ".provider.availabledata";
             BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-            CONTENT_URI = BASE_CONTENT_URI.buildUpon().build();
 
             uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
             uriMatcher.addURI(AUTHORITY, SPATIALITE, SPATIALITE_ID);
@@ -84,31 +96,25 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        MatrixCursor mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS);
+        MatrixCursor mc;
 
         switch (uriMatcher.match(uri)) {
             case SPATIALITE_ID:
+                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_SPATIALITE);
                 List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
                 int id = 0;
                 for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-                    try {
-                        Object[] objs = new Object[]{id++, spatialiteMap.toJson()};
-                        mc.addRow(objs);
-                    } catch (JSONException e) {
-                        GPLog.error(this, null, e);
-                    }
+                    Object[] objs = new Object[]{id++, spatialiteMap.databasePath, spatialiteMap.tableType, spatialiteMap.geometryType, spatialiteMap.isVisible ? 1 : 0, spatialiteMap.order, spatialiteMap.tableName};
+                    mc.addRow(objs);
                 }
                 break;
             case BASEMAPS_ID:
+                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_BASEMAPS);
                 List<BaseMap> baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                 int bmId = 1;
                 for (BaseMap baseMap : baseMaps) {
-                    try {
-                        Object[] objs = new Object[]{bmId++, baseMap.toJson()};
-                        mc.addRow(objs);
-                    } catch (JSONException e) {
-                        GPLog.error(this, null, e);
-                    }
+                    Object[] objs = new Object[]{bmId++, baseMap.parentFolder, baseMap.databasePath, baseMap.mapType, baseMap.title};
+                    mc.addRow(objs);
                 }
                 break;
             default:
@@ -174,5 +180,43 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         throw new RuntimeException("Not allowed");
+    }
+
+
+    /**
+     * Get the available Spatialite maps and their ids.
+     *
+     * @param contentResolver the resolver to use.
+     * @return the SparseArray of the Spatialite maps and ids to use.
+     */
+    public static SparseArray<SpatialiteMap> getSpatialiteMaps(ContentResolver contentResolver) {
+        String[] projection = CONTENT_PROVIDER_FIELDS_SPATIALITE;
+        Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(SPATIALITE).build();
+        Cursor cursor = contentResolver.query(CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+        SparseArray<SpatialiteMap> id2Map = new SparseArray<>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                SpatialiteMap spatialiteMap = new SpatialiteMap();
+
+                int i = 0;
+                int id = cursor.getInt(i++);
+                spatialiteMap.databasePath = cursor.getString(i++);
+                spatialiteMap.tableType = cursor.getString(i++);
+                spatialiteMap.geometryType = cursor.getString(i++);
+                int isVisibleInt = cursor.getInt(i++);
+                spatialiteMap.isVisible = isVisibleInt != 0;
+                spatialiteMap.order = cursor.getDouble(i++);
+                spatialiteMap.tableName = cursor.getString(i);
+                id2Map.put(id, spatialiteMap);
+
+            } while (cursor.moveToNext());
+            cursor.close();
+
+        }
+        return id2Map;
     }
 }

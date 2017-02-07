@@ -86,15 +86,6 @@
                 android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
         <activity
-            android:name="eu.geopaparazzi.core.providers.ProviderTestActivity"
-            android:label="Available Source Urls List"
-            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
-        </activity>
-        <activity
             android:name="eu.geopaparazzi.core.ui.activities.PanicActivity"
             android:label="@string/panic"
             android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
@@ -332,12 +323,6 @@
             android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
             android:label="@string/Images"
             android:theme="@style/GeopapTheme.NoActionBar"/>
-
-        <provider
-            android:name="eu.geopaparazzi.core.providers.SourceUrlsContentProvider"
-            android:authorities="${applicationId}.provider.sourceurls"
-            android:enabled="true"
-            android:exported="false" />
 
         <provider
             android:name=".providers.AvailableDataContentProvider"
