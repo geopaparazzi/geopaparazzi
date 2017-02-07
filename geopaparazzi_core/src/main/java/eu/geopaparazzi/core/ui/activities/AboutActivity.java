@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.fragments.AboutFragment;
 import eu.geopaparazzi.core.R;
 
@@ -40,7 +41,14 @@ public class AboutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        AboutFragment aboutFragment = AboutFragment.newInstance("eu.hydrologis.geopaparazzi");
+        String packageName = "eu.hydrologis.geopaparazzi";
+        try {
+            packageName = ResourcesManager.getInstance(this).getPackageName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        AboutFragment aboutFragment = AboutFragment.newInstance(packageName);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.fragmentAboutContainer, aboutFragment);
         transaction.commit();

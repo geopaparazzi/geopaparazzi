@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * The about fragment view.
@@ -90,6 +91,12 @@ public class AboutFragment extends Fragment {
             InputStream inputStream = assetManager.open("about.html");
             String htmlText = new Scanner(inputStream).useDelimiter("\\A").next();
 
+            String applicationName= "Geopaparazzi";
+            try {
+                applicationName = ResourcesManager.getInstance(getActivity()).getApplicationName();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (packageName != null) {
                 String version = "";
                 try {
@@ -103,6 +110,8 @@ public class AboutFragment extends Fragment {
             } else {
                 htmlText = htmlText.replaceFirst("VERSION", "");
             }
+
+            htmlText = htmlText.replaceAll("Geopaparazzi", applicationName);
 
             WebView aboutView = (WebView) view;
             aboutView.loadData(htmlText, "text/html", "utf-8");
