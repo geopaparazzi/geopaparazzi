@@ -110,14 +110,14 @@
             android:title="@string/spatialite_recovery_mode" />
     </PreferenceScreen>
 
-    <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference
+    <eu.geopaparazzi.core.preferences.CustomSdcardPathPreference
         android:defaultValue=""
         android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
         android:order="100"
         android:summary="@string/use_custom_sdcard_summary"
         android:title="@string/custom_sdcard_path" />
 
-    <eu.hydrologis.geopaparazzi.preferences.ForceLocalePreference
+    <eu.geopaparazzi.core.preferences.ForceLocalePreference
         android:defaultValue="en"
         android:key="PREFS_KEY_FORCELOCALE"
         android:order="102"

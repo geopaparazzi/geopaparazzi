@@ -32,14 +32,14 @@ public class DefaultHelperClasses {
      * <p/>
      * <P>Follows interface {@link IImagesDbHelper}</P>
      */
-    public static String IMAGE_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoImages";
+    public static String IMAGE_HELPER_CLASS = "eu.geopaparazzi.core.database.DaoImages";
 
     /**
      * Helper class for gps logs.
      * <p/>
      * <P>Follows interface {@link IGpsLogDbHelper}</P>
      */
-    public static String GPSLOG_HELPER_CLASS = "eu.hydrologis.geopaparazzi.database.DaoGpsLog";
+    public static String GPSLOG_HELPER_CLASS = "eu.geopaparazzi.core.database.DaoGpsLog";
 
     public static IImagesDbHelper getDefaulfImageHelper() throws Exception {
         Class<?> logHelper = Class.forName(IMAGE_HELPER_CLASS);

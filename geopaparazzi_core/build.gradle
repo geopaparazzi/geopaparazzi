@@ -1,62 +1,29 @@
 import com.android.build.gradle.tasks.PackageApplication
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '24.0.3'
 
 
 
     buildTypes {
         release {
             minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-//                    'proguard-rules.pro'
-//            signingConfig signingConfigs.config
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def file = output.outputFile
-                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk");
-                    output.outputFile = new File(file.parentFile, fileName)
-                }
-            }
+    //            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+    //                    'proguard-rules.pro'
+    //            signingConfig signingConfigs.config
+
         }
         debug {
             debuggable true
         }
     }
 
-    signingConfigs {
-        config {
-            def Properties props = new Properties()
-            def propFile = new File('geopaparazzi.app/ant.properties')
-            if (propFile.canRead()) {
-                props.load(new FileInputStream(propFile))
-                if (props != null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
-                        props.containsKey('key.alias') && props.containsKey('key.alias.password')) {
-                    storeFile = file(props['key.store'])
-                    storePassword = props['key.store.password']
-                    keyAlias = props['key.alias']
-                    keyPassword = props['key.alias.password']
-                } else {
-                    println 'geopaparazzi.app/ant.properties found but some entries are missing'
-                    android.buildTypes.release.signingConfig = null
-                }
-            } else {
-                println 'geopaparazzi.app/ant.properties not found'
-                android.buildTypes.release.signingConfig = null
-            }
-        }
-    }
-
     defaultConfig {
-        applicationId "eu.hydrologis.geopaparazzi"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 79
-        versionName "5.2.0"
-        signingConfig signingConfigs.config
         multiDexEnabled true
     }
     compileOptions {

@@ -1,0 +1,60 @@
+<resources>
+
+    <style name="GeopapTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/main_decorations</item>
+        <item name="colorPrimaryDark">@color/main_decorations_dark</item>
+        <item name="colorAccent">@color/main_selection</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="android:colorBackground">@color/main_background</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
+
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="GeopapTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="GeopapTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="GeopapTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="GeopapTheme.Button.Colored" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Inverse
+        </item>
+    </style>
+
+
+    <!-- custom widgets -->
+    <style name="GPMediumButton" parent="GeopapTheme.Button.Colored">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:textColor">@color/main_text_color</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:background">@drawable/button_background_drawable</item>
+        <item name="android:padding">@dimen/button_indent</item>
+    </style>
+
+    <style name="GPTextViewStyle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/main_text_color</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="GPTitleTextViewStyle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:textColor">@color/main_text_color</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+</resources>

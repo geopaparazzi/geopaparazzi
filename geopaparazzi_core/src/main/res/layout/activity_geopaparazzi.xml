@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".GeopaparazziActivity"
+    tools:context="eu.geopaparazzi.core.GeopaparazziCoreActivity"
     tools:showIn="@layout/fragment_geopaparazzi">
 
     <android.support.design.widget.AppBarLayout

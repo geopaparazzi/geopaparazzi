@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="eu.hydrologis.geopaparazzi">
+    package="eu.geopaparazzi.core">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -25,22 +25,24 @@
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
-        android:name=".GeopaparazziApplication"
+        android:name="eu.geopaparazzi.core.GeopaparazziApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/GeopapTheme">
+        >
+        <!--android:label="@string/app_name"-->
+        <!--android:theme="@style/GeopapTheme"-->
         <activity
-            android:name=".GeopaparazziActivity"
-            android:label="@string/app_name"
+            android:name="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:launchMode="singleTop"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            >
+            <!--android:label="@string/app_name"-->
+            <!--android:theme="@style/GeopapTheme.NoActionBar"-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
             <intent-filter>
                 <data android:mimeType="*/*" />
                 <data android:host="*" />
@@ -68,69 +70,69 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.SettingsActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
         <activity
-            android:name=".ui.activities.AboutActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.AboutActivity"
             android:label="@string/about"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
         <activity
-            android:name=".providers.ProviderTestActivity"
+            android:name="eu.geopaparazzi.core.providers.ProviderTestActivity"
             android:label="Available Source Urls List"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
         <activity
-            android:name=".ui.activities.PanicActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.PanicActivity"
             android:label="@string/panic"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />>
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />>
         </activity>
         <activity
-            android:name=".ui.activities.ProjectMetadataActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.ProjectMetadataActivity"
             android:label="@string/project_info"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />>
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />>
         </activity>
 
         <activity
-            android:name=".ui.activities.AdvancedSettingsActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity"
             android:label="@string/action_advanced_settings"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.SqlViewActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.SqlViewActivity"
             android:label="@string/sqlview"
-            android:parentActivityName=".ui.activities.AdvancedSettingsActivity"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.AdvancedSettingsActivity" />
+                android:value="eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity" />
         </activity>
 
         <activity android:name="eu.geopaparazzi.library.core.activities.LogAnalysisActivity" />
@@ -138,131 +140,131 @@
         <activity
             android:name="eu.geopaparazzi.library.core.activities.DatabaseListActivity"
             android:label="@string/query_results"
-            android:parentActivityName=".ui.activities.SqlViewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.SqlViewActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name=".ui.activities.ExportActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.ExportActivity"
             android:label="@string/export_uc"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.ImportActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.ImportActivity"
             android:label="@string/import_uc"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.tantomapurls.TantoMapurlsActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
         <activity
-            android:name=".ui.activities.tantomapurls.TantoMapurlsListActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsListActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
             android:name="eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity"
             android:label="@string/basemaps"
-            android:parentActivityName=".GeopaparazziActivity"
+            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GeopaparazziActivity" />
+                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
         </activity>
 
         <activity
-            android:name=".mapview.MapviewActivity"
+            android:name="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name=".maptools.FeaturePagerActivity"
+            android:name="eu.geopaparazzi.core.maptools.FeaturePagerActivity"
             android:label="@string/features"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
         <activity
-            android:name=".maptools.CopyToLayersListActivity"
+            android:name="eu.geopaparazzi.core.maptools.CopyToLayersListActivity"
             android:label="@string/features"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.GpsDataListActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.GpsDataListActivity"
             android:label="@string/gps_data"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.NotesPropertiesActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.NotesPropertiesActivity"
             android:label="@string/notes_properties_label"
-            android:parentActivityName=".ui.activities.GpsDataListActivity"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.GpsDataListActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.GpsDataListActivity" />
+                android:value="eu.geopaparazzi.core.ui.activities.GpsDataListActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.GpsLogPropertiesActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.GpsLogPropertiesActivity"
             android:label="@string/gps_log_properties_label"
-            android:parentActivityName=".ui.activities.GpsDataListActivity"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.GpsDataListActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.GpsDataListActivity" />
+                android:value="eu.geopaparazzi.core.ui.activities.GpsDataListActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.ProfileChartActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.ProfileChartActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name=".ui.activities.BookmarksListActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.BookmarksListActivity"
             android:label="@string/bookmarks_list_label"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.NotesListActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.NotesListActivity"
             android:label="@string/notes_list_label"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
-        </activity>
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
+        </activity>GeopaparazziActivity
 
         <activity
-            android:name=".ui.activities.AddNotesActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.AddNotesActivity"
             android:label="@string/add_notes_label"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
@@ -274,51 +276,51 @@
         <activity
             android:name="eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity"
             android:label="@string/spatialite_databases"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
             android:name="eu.geopaparazzi.library.core.activities.GeocodeActivity"
             android:label="@string/geocoding_label"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
-            android:name=".ui.activities.ImportMapsforgeActivity"
+            android:name="eu.geopaparazzi.core.ui.activities.ImportMapsforgeActivity"
             android:label="@string/extract_mapsforge_label"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
             android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity"
             android:label="@string/editable_layers"
-            android:parentActivityName=".mapview.MapviewActivity"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mapview.MapviewActivity" />
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
 
         <activity
             android:name="eu.geopaparazzi.library.forms.FormActivity"
             android:label="@string/form_data"
-            android:parentActivityName=".ui.activities.AddNotesActivity"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.AddNotesActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.AddNotesActivity" />
+                android:value="eu.geopaparazzi.core.ui.activities.AddNotesActivity" />
         </activity>
 
         <activity android:name="com.google.android.apps.markers.MarkersActivity" />
@@ -327,20 +329,20 @@
         <activity android:name="eu.geopaparazzi.library.webproject.WebDataListActivity" />
         <activity android:name="eu.geopaparazzi.library.webproject.WebDataUploadListActivity" />
 
-        <activity android:name=".maptools.resourceviews.ResourceBrowser"
+        <activity android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
             android:label="@string/Images"
             android:theme="@style/GeopapTheme.NoActionBar"
             >
         </activity>
 
         <provider
-            android:name=".providers.SourceUrlsContentProvider"
-            android:authorities="eu.geopaparazzi.provider.sourceurls"
+            android:name="eu.geopaparazzi.core.providers.SourceUrlsContentProvider"
+            android:authorities="${applicationId}.provider.sourceurls"
             android:enabled="true"
             android:exported="false" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
-        <service android:name=".mapview.MapsSupportService" />
+        <service android:name="eu.geopaparazzi.core.mapview.MapsSupportService" />
     </application>
 
 </manifest>
