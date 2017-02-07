@@ -28,20 +28,18 @@
         android:name="eu.geopaparazzi.core.GeopaparazziApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:supportsRtl="true"
-        >
+        android:supportsRtl="true">
         <!--android:label="@string/app_name"-->
         <!--android:theme="@style/GeopapTheme"-->
         <activity
             android:name="eu.geopaparazzi.core.GeopaparazziCoreActivity"
-            android:launchMode="singleTop"
-            >
+            android:launchMode="singleTop">
             <!--android:label="@string/app_name"-->
             <!--android:theme="@style/GeopapTheme.NoActionBar"-->
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
             <intent-filter>
                 <data android:mimeType="*/*" />
@@ -255,7 +253,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
-        </activity>GeopaparazziActivity
+        </activity>
+        GeopaparazziActivity
 
         <activity
             android:name="eu.geopaparazzi.core.ui.activities.AddNotesActivity"
@@ -329,17 +328,22 @@
         <activity android:name="eu.geopaparazzi.library.webproject.WebDataListActivity" />
         <activity android:name="eu.geopaparazzi.library.webproject.WebDataUploadListActivity" />
 
-        <activity android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
+        <activity
+            android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
             android:label="@string/Images"
-            android:theme="@style/GeopapTheme.NoActionBar"
-            >
-        </activity>
+            android:theme="@style/GeopapTheme.NoActionBar"/>
 
         <provider
             android:name="eu.geopaparazzi.core.providers.SourceUrlsContentProvider"
             android:authorities="${applicationId}.provider.sourceurls"
             android:enabled="true"
             android:exported="false" />
+
+        <provider
+            android:name=".providers.AvailableDataContentProvider"
+            android:authorities="${applicationId}.provider.availabledata"
+            android:enabled="true"
+            android:exported="true" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
         <service android:name="eu.geopaparazzi.core.mapview.MapsSupportService" />
