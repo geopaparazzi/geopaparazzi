@@ -3,7 +3,7 @@ package eu.geopaparazzi.library.plugin.types;
 import android.content.Context;
 
 import eu.geopaparazzi.library.plugin.ActivityStarter;
-import eu.geopaparazzi.library.plugin.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStarter;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
