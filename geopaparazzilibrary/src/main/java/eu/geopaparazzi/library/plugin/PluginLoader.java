@@ -12,6 +12,7 @@ import android.os.IBinder;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
 
 /**
@@ -49,7 +50,14 @@ public abstract class PluginLoader {
 
     public void connect() {
         PackageManager packageManager = context.getPackageManager();
+
         Intent intent = new Intent(this.serviceName);
+        try {
+            String packageName = ResourcesManager.getInstance(context).getPackageName();
+            intent.setPackage(packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<ResolveInfo> menuProviders = packageManager.queryIntentServices(intent, PackageManager.GET_RESOLVED_FILTER);
         numberOfPlugins = menuProviders.size();
         for (int i = 0; i < menuProviders.size(); ++i) {
