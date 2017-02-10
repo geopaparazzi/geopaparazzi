@@ -31,9 +31,35 @@ import android.content.Intent;
  */
 public interface IActivityStarter {
 
+    /**
+     * Start an activity through and intent.
+     *
+     * @param intent the intent.
+     */
     void startActivity(Intent intent);
 
+    /**
+     * Start an activity for result.
+     *
+     * @param intent the intent to use.
+     * @param requestCode the request code.
+     */
     void startActivityForResult(Intent intent, int requestCode);
 
+    /**
+     * Getter for the context.
+     *
+     * @return the context.
+     */
     Context getContext();
+
+    /**
+     * Start an activity by its action.
+     *
+     * @param context the context to use.
+     * @param action the action to start.
+     */
+    void start(Context context, String action);
+
+
 }
