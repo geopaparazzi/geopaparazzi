@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.geopaparazzi.plugins.projectexport">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <service android:name="eu.geopaparazzi.plugins.projectexport.ProjectExportsMenuProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.core.extension.ep.exporter.MENU_PROVIDER" />
+                <category android:name="androidsrc.intent.category.MENU_PROVIDER" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>

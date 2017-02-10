@@ -51,18 +51,6 @@
                     android:text="@string/gpx" />
 
                 <Button
-                    android:id="@+id/cloudExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/geopap_browser" />
-
-                <Button
-                    android:id="@+id/cloudDataExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/import_cloud_data" />
-
-                <Button
                     android:id="@+id/bookmarksExportButton"
                     style="@style/GPMediumButton"
                     android:layout_width="match_parent"

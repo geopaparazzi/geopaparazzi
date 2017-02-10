@@ -18,6 +18,7 @@
 package eu.geopaparazzi.core.ui.activities;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -29,8 +30,10 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,8 +48,14 @@ import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.plugin.PluginLoaderListener;
+import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
+import eu.geopaparazzi.library.plugin.menu.MenuLoader;
+import eu.geopaparazzi.library.plugin.style.StyleHelper;
+import eu.geopaparazzi.library.plugin.types.IMenuEntry;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -70,14 +79,16 @@ import static eu.geopaparazzi.library.util.LibraryConstants.DATABASE_ID;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ExportActivity extends AppCompatActivity implements
-        NfcAdapter.CreateBeamUrisCallback {
-
+        NfcAdapter.CreateBeamUrisCallback, IActivitySupporter {
+    public static final int START_REQUEST_CODE = 666;
     private NfcAdapter mNfcAdapter;
 
     // List of URIs to provide to Android Beam
     private Uri[] mFileUris = new Uri[1];
     private PendingIntent pendingIntent;
     private StringAsyncTask exportImagesTask;
+
+    private SparseArray<IMenuEntry> menuEntriesMap = new SparseArray<>();
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -116,68 +127,41 @@ public class ExportActivity extends AppCompatActivity implements
                 exportBookmarks();
             }
         });
-        Button cloudExportButton = (Button) findViewById(R.id.cloudExportButton);
-        cloudExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                final ExportActivity context = ExportActivity.this;
-                if (!NetworkUtilities.isNetworkAvailable(context)) {
-                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
-                    return;
-                }
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
-                final String pwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
-                final String serverUrl = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
-                if (serverUrl.length() == 0) {
-                    GPDialogs.infoDialog(context, getString(R.string.error_set_cloud_settings), null);
-                    return;
-                }
-
-                GPDialogs.yesNoMessageDialog(context, getString(R.string.upload_to_cloud_prompt), new Runnable() {
-                    @Override
-                    public void run() {
-                        StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
-                        stageExportDialogFragment.show(getSupportFragmentManager(), "cloud export");
-                    }
-                }, null);
-            }
-        });
-
-        Button cloudDataExportButton = (Button) findViewById(R.id.cloudDataExportButton);
-        cloudDataExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                final ExportActivity context = ExportActivity.this;
-                if (!NetworkUtilities.isNetworkAvailable(context)) {
-                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
-                    return;
-                }
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
-                final String pwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
-                final String serverUrl = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
-                if (serverUrl.length() == 0) {
-                    GPDialogs.infoDialog(context, getString(R.string.error_set_cloud_settings), null);
-                    return;
-                }
-
-                Intent webExportIntent = new Intent(ExportActivity.this, WebDataUploadListActivity.class);
-                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, serverUrl);
-                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
-                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, pwd);
-                List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
-                List<String> databases = new ArrayList<String>();
-                for (int i = 0; i < spatialiteMaps.size(); i++) {
-                    String dbPath = spatialiteMaps.get(i).databasePath;
-                    if (!databases.contains(dbPath)) {
-                        databases.add(dbPath);
-                    }
-                }
-                webExportIntent.putExtra(DATABASE_ID, databases.toArray(new String[0]));
-                startActivity(webExportIntent);
-            }
-        });
+//        Button cloudDataExportButton = (Button) findViewById(R.id.cloudDataExportButton);
+//        cloudDataExportButton.setOnClickListener(new Button.OnClickListener() {
+//            public void onClick(View v) {
+//                final ExportActivity context = ExportActivity.this;
+//                if (!NetworkUtilities.isNetworkAvailable(context)) {
+//                    GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
+//                    return;
+//                }
+//
+//                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+//                final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
+//                final String pwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
+//                final String serverUrl = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
+//                if (serverUrl.length() == 0) {
+//                    GPDialogs.infoDialog(context, getString(R.string.error_set_cloud_settings), null);
+//                    return;
+//                }
+//
+//                Intent webExportIntent = new Intent(ExportActivity.this, WebDataUploadListActivity.class);
+//                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, serverUrl);
+//                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
+//                webExportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, pwd);
+//                List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+//                List<String> databases = new ArrayList<String>();
+//                for (int i = 0; i < spatialiteMaps.size(); i++) {
+//                    String dbPath = spatialiteMaps.get(i).databasePath;
+//                    if (!databases.contains(dbPath)) {
+//                        databases.add(dbPath);
+//                    }
+//                }
+//                webExportIntent.putExtra(DATABASE_ID, databases.toArray(new String[0]));
+//                startActivity(webExportIntent);
+//            }
+//        });
 
         Button imagesExportButton = (Button) findViewById(R.id.imagesExportButton);
         imagesExportButton.setOnClickListener(new Button.OnClickListener() {
@@ -185,6 +169,37 @@ public class ExportActivity extends AppCompatActivity implements
                 exportImages();
             }
         });
+
+
+        MenuLoader menuLoader = new MenuLoader(this, IMenuLoader.MENU_EXPORT_PROVIDER);
+        menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
+            @Override
+            public void pluginLoaded(MenuLoader loader) {
+                addMenuEntries(loader.getEntries());
+            }
+        });
+        menuLoader.connect();
+    }
+
+    protected void addMenuEntries(List<IMenuEntry> entries) {
+        menuEntriesMap.clear();
+        int code = START_REQUEST_CODE + 1;
+        for (final eu.geopaparazzi.library.plugin.types.IMenuEntry entry : entries) {
+            final Context context = this;
+
+            Button button = new Button(context);
+            LinearLayout.LayoutParams lp = StyleHelper.styleButton(this, button);
+            button.setText(entry.getLabel());
+            entry.setRequestCode(code);
+            menuEntriesMap.put(code, entry);
+            LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
+            container.addView(button, lp);
+            button.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    entry.onClick(ExportActivity.this);
+                }
+            });
+        }
     }
 
     private void checkNfc() throws Exception {
@@ -378,4 +393,8 @@ public class ExportActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

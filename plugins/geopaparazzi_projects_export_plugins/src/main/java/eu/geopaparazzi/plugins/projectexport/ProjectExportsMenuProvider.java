@@ -15,36 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.plugins.defaultimports;
+package eu.geopaparazzi.plugins.projectexport;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.IBinder;
 
-import eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity;
-import eu.geopaparazzi.library.plugin.types.MenuEntry;
-import eu.geopaparazzi.library.util.IActivitySupporter;
+import eu.geopaparazzi.library.plugin.PluginService;
+import eu.geopaparazzi.library.plugin.types.MenuEntryList;
+
 
 /**
+ * Menu provider for project imports.
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportTantoMapurlsMenuEntry extends MenuEntry {
+public class ProjectExportsMenuProvider extends PluginService {
+    private static final String NAME = "ProjectExportsMenuProvider";
+    private MenuEntryList list = null;
 
-
-    private Context serviceContext;
-
-    public ImportTantoMapurlsMenuEntry(Context context) {
-        this.serviceContext = context;
+    public ProjectExportsMenuProvider() {
+        super(NAME);
     }
 
-    @Override
-    public String getLabel() {
-        return serviceContext.getString(eu.geopaparazzi.core.R.string.mapurls);
-    }
-
-    @Override
-    public void onClick(IActivitySupporter clickActivityStarter) {
-        Intent browseIntent = new Intent(clickActivityStarter.getContext(), TantoMapurlsActivity.class);
-        clickActivityStarter.startActivity(browseIntent);
+    public IBinder onBind(Intent intent) {
+        if (list == null) {
+            list = new MenuEntryList();
+            list.addEntry(new ExportProjectsMenuEntry(getApplicationContext()));
+        }
+        return list;
     }
 
 

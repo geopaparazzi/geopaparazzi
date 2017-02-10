@@ -20,13 +20,10 @@ package eu.geopaparazzi.core.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
-import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -37,8 +34,7 @@ import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
 import eu.geopaparazzi.library.plugin.menu.MenuLoader;
 import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.plugin.types.IMenuEntry;
-import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.core.R;
 
 /**
@@ -46,7 +42,7 @@ import eu.geopaparazzi.core.R;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportActivity extends AppCompatActivity implements IActivityStupporter {
+public class ImportActivity extends AppCompatActivity implements IActivitySupporter {
 
     public static final int START_REQUEST_CODE = 666;
 

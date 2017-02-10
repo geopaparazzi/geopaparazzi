@@ -18,19 +18,17 @@
 package eu.geopaparazzi.plugins.defaultimports;
 
 import android.content.Context;
-import android.widget.Button;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-import eu.geopaparazzi.core.ui.activities.ImportActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import gov.nasa.worldwind.AddWMSDialog;
 import gov.nasa.worldwind.ogc.OGCBoundingBox;
@@ -43,7 +41,7 @@ import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 public class ImportWmsMenuEntry extends MenuEntry implements AddWMSDialog.OnWMSLayersAddedListener {
 
     private final Context serviceContext;
-    private IActivityStupporter clickActivityStarter;
+    private IActivitySupporter clickActivityStarter;
 
     public ImportWmsMenuEntry(Context context) {
         this.serviceContext = context;
@@ -55,7 +53,7 @@ public class ImportWmsMenuEntry extends MenuEntry implements AddWMSDialog.OnWMSL
     }
 
     @Override
-    public void onClick(IActivityStupporter clickActivityStarter) {
+    public void onClick(IActivitySupporter clickActivityStarter) {
         this.clickActivityStarter = clickActivityStarter;
         Context context = clickActivityStarter.getContext();
         if (!NetworkUtilities.isNetworkAvailable(context)) {

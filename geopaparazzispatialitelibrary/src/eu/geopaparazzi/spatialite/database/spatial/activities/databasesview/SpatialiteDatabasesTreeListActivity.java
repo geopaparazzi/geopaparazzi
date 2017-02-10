@@ -55,7 +55,7 @@ import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
@@ -69,7 +69,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStupporter,
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivitySupporter,
         LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener,
         StrokeDashDialogFragment.IDashStrokePropertiesChangeListener, ZoomlevelDialogFragment.IZoomlevelPropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;

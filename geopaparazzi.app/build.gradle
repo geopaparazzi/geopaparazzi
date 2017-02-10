@@ -70,4 +70,5 @@ dependencies {
     compile project(':geopaparazzi_core')
     compile project(':geopaparazzi_default_import_plugins')
     compile project(':geopaparazzi_projects_import_plugins')
+    compile project(':geopaparazzi_projects_export_plugins')
 }

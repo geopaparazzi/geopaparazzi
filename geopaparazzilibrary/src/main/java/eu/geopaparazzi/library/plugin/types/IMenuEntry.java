@@ -2,9 +2,8 @@ package eu.geopaparazzi.library.plugin.types;
 
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 
 /**
  * MenuEntry extension type. An extension that returns a label and icon
@@ -27,7 +26,7 @@ public interface IMenuEntry {
      * by the action is started. The activity execution can be cancelled if this
      * method returns false
      */
-    void onClick(IActivityStupporter clickActivityStarter);
+    void onClick(IActivitySupporter clickActivityStarter);
 
     /**
      * Gets the order in which the entry should be placed. The application installing the

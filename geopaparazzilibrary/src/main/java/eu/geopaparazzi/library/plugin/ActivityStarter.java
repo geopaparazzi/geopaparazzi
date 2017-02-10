@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
-public class ActivityStarter implements IActivityStupporter {
+public class ActivityStarter implements IActivitySupporter {
     private Intent intent = new Intent();
     private Context context;
 

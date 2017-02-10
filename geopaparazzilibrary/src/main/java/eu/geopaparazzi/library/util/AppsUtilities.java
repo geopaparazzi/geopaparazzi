@@ -120,7 +120,7 @@ public class AppsUtilities {
      * @param startPath
      * @throws Exception
      */
-    public static void pickFile(IActivityStupporter activityStarter, int requestCode, String title, String[] filterExtensions, String startPath) throws Exception {
+    public static void pickFile(IActivitySupporter activityStarter, int requestCode, String title, String[] filterExtensions, String startPath) throws Exception {
         if (startPath == null) {
             startPath = Utilities.getLastFilePath(activityStarter.getContext());
         }
@@ -149,7 +149,7 @@ public class AppsUtilities {
      * @param mimeType        the mimetype.
      * @param uri             the uri of the start folder.
      */
-    public static void pickFileByExternalBrowser(IActivityStupporter activityStarter, int requestCode, String title, String mimeType, Uri uri) {
+    public static void pickFileByExternalBrowser(IActivitySupporter activityStarter, int requestCode, String title, String mimeType, Uri uri) {
         // first try with amaze
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setPackage(AppsUtilities.AMAZE_PACKAGE);
@@ -181,7 +181,7 @@ public class AppsUtilities {
         }
     }
 
-    public static void pickFolder(IActivityStupporter activityStarter, int requestCode, String title, String startPath, String[] visibleExtensions) throws Exception {
+    public static void pickFolder(IActivitySupporter activityStarter, int requestCode, String title, String startPath, String[] visibleExtensions) throws Exception {
         if (startPath == null) {
             startPath = Utilities.getLastFilePath(activityStarter.getContext());
         }
@@ -194,7 +194,7 @@ public class AppsUtilities {
     }
 
 
-    public static void checkAmazeExplorer(final IActivityStupporter activityStarter) {
+    public static void checkAmazeExplorer(final IActivitySupporter activityStarter) {
         Context context = activityStarter.getContext();
         boolean hasPackage = hasPackage(context, AMAZE_PACKAGE);
 

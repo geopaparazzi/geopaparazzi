@@ -15,13 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.plugins.projectimport;
+package eu.geopaparazzi.plugins.projectexport;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import eu.geopaparazzi.core.ui.dialogs.StageExportDialogFragment;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
@@ -33,12 +34,12 @@ import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportProjectsMenuEntry extends MenuEntry {
+public class ExportProjectsMenuEntry extends MenuEntry {
 
     private final Context serviceContext;
     private IActivitySupporter clickActivityStarter;
 
-    public ImportProjectsMenuEntry(Context context) {
+    public ExportProjectsMenuEntry(Context context) {
         this.serviceContext = context;
     }
 
@@ -53,7 +54,7 @@ public class ImportProjectsMenuEntry extends MenuEntry {
     }
 
     @Override
-    public void onClick(IActivitySupporter clickActivityStarter) {
+    public void onClick(final IActivitySupporter clickActivityStarter) {
         this.clickActivityStarter = clickActivityStarter;
         Context context = clickActivityStarter.getContext();
 
@@ -65,19 +66,20 @@ public class ImportProjectsMenuEntry extends MenuEntry {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final String user = preferences.getString(Constants.PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
-        final String passwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
-        final String server = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
-
-        if (server.length() == 0) {
+        final String pwd = preferences.getString(Constants.PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
+        final String serverUrl = preferences.getString(Constants.PREF_KEY_SERVER, ""); //$NON-NLS-1$
+        if (serverUrl.length() == 0) {
             GPDialogs.infoDialog(context, context.getString(eu.geopaparazzi.core.R.string.error_set_cloud_settings), null);
             return;
         }
 
-        Intent webImportIntent = new Intent(context, WebProjectsListActivity.class);
-        webImportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, server);
-        webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
-        webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);
-        clickActivityStarter.startActivity(webImportIntent);
+        GPDialogs.yesNoMessageDialog(context, context.getString(eu.geopaparazzi.core.R.string.upload_to_cloud_prompt), new Runnable() {
+            @Override
+            public void run() {
+                StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
+                stageExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "cloud export");
+            }
+        }, null);
     }
 
 }

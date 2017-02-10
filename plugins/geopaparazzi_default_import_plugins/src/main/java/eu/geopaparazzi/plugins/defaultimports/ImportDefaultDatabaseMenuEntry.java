@@ -31,7 +31,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -54,7 +54,7 @@ public class ImportDefaultDatabaseMenuEntry extends MenuEntry {
     }
 
     @Override
-    public void onClick(IActivityStupporter clickActivityStarter) {
+    public void onClick(IActivitySupporter clickActivityStarter) {
 
         Context context = clickActivityStarter.getContext();
         Activity activity = null;

@@ -30,7 +30,7 @@ import android.support.v4.app.FragmentManager;
  *
  * Created by hydrologis on 04/02/16.
  */
-public interface IActivityStupporter {
+public interface IActivitySupporter {
 
     /**
      * Start an activity through and intent.

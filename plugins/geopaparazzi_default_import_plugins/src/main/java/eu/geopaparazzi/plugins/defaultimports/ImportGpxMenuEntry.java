@@ -29,7 +29,7 @@ import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -39,7 +39,7 @@ import eu.geopaparazzi.library.util.Utilities;
 public class ImportGpxMenuEntry extends MenuEntry {
 
     private final Context serviceContext;
-    private IActivityStupporter clickActivityStarter;
+    private IActivitySupporter clickActivityStarter;
 
     public ImportGpxMenuEntry(Context context) {
         this.serviceContext = context;
@@ -51,7 +51,7 @@ public class ImportGpxMenuEntry extends MenuEntry {
     }
 
     @Override
-    public void onClick(IActivityStupporter clickActivityStarter) {
+    public void onClick(IActivitySupporter clickActivityStarter) {
         this.clickActivityStarter = clickActivityStarter;
         String title = clickActivityStarter.getContext().getString(eu.geopaparazzi.core.R.string.select_gpx_file);
         try {

@@ -1,9 +1,8 @@
 package eu.geopaparazzi.library.plugin.types;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
@@ -32,7 +31,7 @@ public class MenuEntry implements IMenuEntry {
     }
 
     @Override
-    public void onClick(IActivityStupporter clickActivityStarter) {
+    public void onClick(IActivitySupporter clickActivityStarter) {
         if (processOnClick()) {
             start();
         }

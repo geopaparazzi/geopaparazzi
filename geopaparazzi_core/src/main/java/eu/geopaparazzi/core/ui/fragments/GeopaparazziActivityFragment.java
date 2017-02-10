@@ -54,7 +54,7 @@ import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStupporter;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -87,7 +87,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivityStupporter {
+public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivitySupporter {
 
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
 
