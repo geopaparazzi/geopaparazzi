@@ -1,6 +1,7 @@
 package eu.geopaparazzi.library.plugin;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.os.IBinder;
 
 /**
@@ -8,6 +9,7 @@ import android.os.IBinder;
  */
 public abstract class PluginServiceConnection implements android.content.ServiceConnection {
     private boolean bound = false;
+
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         bound = true;
@@ -20,6 +22,13 @@ public abstract class PluginServiceConnection implements android.content.Service
 
     public boolean isBound() {
         return bound;
+    }
+
+    public void disconnect(Context context) {
+        if (bound) {
+            bound = false;
+            context.unbindService(this);
+        }
     }
 
 }

@@ -65,13 +65,6 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
         menuLoader.connect();
     }
 
-    @Override
-    protected void onDestroy() {
-        menuLoader.disconnect();
-
-        super.onDestroy();
-    }
-
     protected void addMenuEntries(List<IMenuEntry> entries) {
         menuEntriesMap.clear();
         int code = START_REQUEST_CODE + 1;

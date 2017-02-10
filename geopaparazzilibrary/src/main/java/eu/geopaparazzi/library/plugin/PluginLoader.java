@@ -50,17 +50,23 @@ public abstract class PluginLoader {
     public void connect() {
         PackageManager packageManager = context.getPackageManager();
         Intent intent = new Intent(this.serviceName);
-        List<ResolveInfo> menuProviders = packageManager.queryIntentServices(intent, PackageManager.GET_RESOLVED_FILTER);
+        List<ResolveInfo> menuProviders = packageManager.queryIntentServices(intent, PackageManager.MATCH_ALL);
         numberOfPlugins = menuProviders.size();
         for (int i = 0; i < menuProviders.size(); ++i) {
             ResolveInfo info = menuProviders.get(i);
             ServiceInfo sinfo = info.serviceInfo;
-            intent.setPackage(sinfo.packageName);
-            context.bindService(intent, pluginServiceConn, Service.BIND_AUTO_CREATE);
+
+            String packageName = sinfo.packageName;
+            String className = sinfo.name;
+            ComponentName component = new ComponentName(packageName, className);
+            Intent explicitIntent = new Intent(intent);
+            explicitIntent.setComponent(component);
+
+            context.bindService(explicitIntent, pluginServiceConn, Service.BIND_AUTO_CREATE);
         }
     }
 
-    private void processService(IBinder binder) {
+    private synchronized void processService(IBinder binder) {
         doProcessService(binder);
         numberOfPlugins = numberOfPlugins - 1;
         if (numberOfPlugins == 0) { // all the plugins have been processed
@@ -77,9 +83,7 @@ public abstract class PluginLoader {
 
 
     public void disconnect() {
-        if (pluginServiceConn.isBound()) {
-            context.unbindService(pluginServiceConn);
-        }
+        pluginServiceConn.disconnect(context);
     }
 
     public boolean isLoadComplete() {
