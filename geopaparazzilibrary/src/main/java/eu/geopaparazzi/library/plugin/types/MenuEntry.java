@@ -32,15 +32,16 @@ public class MenuEntry implements IMenuEntry {
 
     @Override
     public void onClick(IActivitySupporter clickActivityStarter) {
-        if (processOnClick()) {
-            start();
+        if (processOnClick(clickActivityStarter)) {
+            start(clickActivityStarter);
         }
     }
 
     /**
      * The start method called if the processOnCLick returns true.
+     * @param clickActivityStarter
      */
-    protected void start(){};
+    protected void start(IActivitySupporter clickActivityStarter){};
 
     /**
      * This method is invoked when the entry is clicked, before the activity specified
@@ -48,8 +49,9 @@ public class MenuEntry implements IMenuEntry {
      * method returns false
      *
      * @return false to cancel the execution of the action, true otherwise
+     * @param clickActivityStarter
      */
-    protected boolean processOnClick() {
+    protected boolean processOnClick(IActivitySupporter clickActivityStarter) {
         return true;
     }
 
