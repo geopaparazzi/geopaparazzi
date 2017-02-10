@@ -1,7 +1,10 @@
 package eu.geopaparazzi.library.plugin.types;
 
 
-import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+
+import eu.geopaparazzi.library.util.IActivityStarter;
 
 /**
  * MenuEntry extension type. An extension that returns a label and icon
@@ -20,19 +23,11 @@ public interface IMenuEntry {
     byte[] getIcon();
 
     /**
-     * Gets the name of the action to launch when the entry is clicked
-     */
-    String getAction();
-
-    /**
      * This is invoked when the entry is clicked, before the activity specified
      * by the action is started. The activity execution can be cancelled if this
      * method returns false
-     *
-     * @param context
-     * @return false to cancel the execution of the action, true otherwise
      */
-    void onClick(Context context);
+    void onClick(IActivityStarter clickActivityStarter);
 
     /**
      * Gets the order in which the entry should be placed. The application installing the
@@ -43,4 +38,17 @@ public interface IMenuEntry {
      * item. Negative numbers means no particular order.
      */
     int getOrder();
+
+    /**
+     * Setter for a request code to be used.
+     *
+     * @param requestCode the code.
+     */
+    void setRequestCode(int requestCode);
+
+    /**
+     * If an activity result is necessary, this can be launched on it.
+     */
+    void onActivityResultExecute(AppCompatActivity callingActivity, int requestCode, int resultCode, Intent data);
+
 }

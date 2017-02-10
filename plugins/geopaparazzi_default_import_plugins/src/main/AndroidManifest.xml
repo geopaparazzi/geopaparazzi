@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.gvsig.android.plugin_gvsigol_io">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity android:name="eu.geopaparazzi.plugins.defaultimports.SpatialiteImporterActivity">
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.core.extension.importer.spatialite.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            </intent-filter>
+        </activity>
+        <service android:name="eu.geopaparazzi.plugins.defaultimports.DefaultImportsMenuProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER" />
+                <category android:name="androidsrc.intent.category.MENU_PROVIDER" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>

@@ -501,4 +501,9 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     public Context getContext() {
         return this;
     }
+
+    @Override
+    public void start(Context context, String action) {
+
+    }
 }

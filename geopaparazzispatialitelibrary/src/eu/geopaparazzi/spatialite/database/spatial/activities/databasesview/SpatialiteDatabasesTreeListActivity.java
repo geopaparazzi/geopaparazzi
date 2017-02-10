@@ -557,5 +557,10 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         return this;
     }
 
+    @Override
+    public void start(Context context, String action) {
+
+    }
+
 
 }

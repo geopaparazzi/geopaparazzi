@@ -30,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -85,6 +86,8 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
     public static final int PICKFILE_REQUEST_CODE = 666;
 
+    private SparseArray<IMenuEntry> menuEntriesMap = new SparseArray<>();
+
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_import);
@@ -94,16 +97,6 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        Button gpxExportButton = (Button) findViewById(R.id.gpxImportButton);
-        gpxExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                try {
-                    importGpx();
-                } catch (Exception e) {
-                    GPLog.error(this, null, e);
-                }
-            }
-        });
         Button tantoMapurlsImportButton = (Button) findViewById(R.id.tantoMapurlsImportButton);
         tantoMapurlsImportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -208,16 +201,20 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
     }
 
     protected void addMenuEntries(List<IMenuEntry> entries) {
+        menuEntriesMap.clear();
+        int code = PICKFILE_REQUEST_CODE+1;
         for (final eu.geopaparazzi.library.plugin.types.IMenuEntry entry: entries) {
             final Context context = this;
             Button button = new Button(this);
             button.setText(entry.getLabel());
+            entry.setRequestCode(code);
+            menuEntriesMap.put(code, entry);
             LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             container.addView(button, lp);
             button.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
-                    entry.onClick(context);
+                    entry.onClick(ImportActivity.this);
                 }
             });
         }
@@ -261,48 +258,33 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
 
     }
 
-    private void importGpx() throws Exception {
-        String title = getString(R.string.select_gpx_file);
-        AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, new String[]{FileTypes.GPX.getExtension()}, null);
-    }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case (PICKFILE_REQUEST_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                        if (!filePath.toLowerCase().endsWith(FileTypes.GPX.getExtension())) {
-                            GPDialogs.warningDialog(this, getString(R.string.no_gpx_selected), null);
-                            return;
-                        }
-                        File file = new File(filePath);
-                        if (file.exists()) {
-                            Utilities.setLastFilePath(this, filePath);
-                            GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
-                            gpxImportDialogFragment.show(getSupportFragmentManager(), "gpx import");
-                        }
-                    } catch (Exception e) {
-                        GPDialogs.errorDialog(this, e, null);
-                    }
-                }
+
                 break;
             }
-            case (WebDataListActivity.DOWNLOADDATA_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        String filePath = data.getStringExtra(LibraryConstants.DATABASE_ID);
-                        File file = new File(filePath);
-                        if (file.exists()) {
-                            SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file);
-                        }
-                    } catch (Exception e) {
-                        GPDialogs.errorDialog(this, e, null);
-                    }
+//            case (WebDataListActivity.DOWNLOADDATA_RETURN_CODE): {
+//                if (resultCode == Activity.RESULT_OK) {
+//                    try {
+//                        String filePath = data.getStringExtra(LibraryConstants.DATABASE_ID);
+//                        File file = new File(filePath);
+//                        if (file.exists()) {
+//                            SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(file);
+//                        }
+//                    } catch (Exception e) {
+//                        GPDialogs.errorDialog(this, e, null);
+//                    }
+//                }
+//                break;
+//            }
+            default:{
+                IMenuEntry entry = menuEntriesMap.get(requestCode);
+                if (entry!=null){
+                    entry.onActivityResultExecute(this, requestCode, resultCode, data);
                 }
-                break;
             }
         }
     }
@@ -398,6 +380,11 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void start(Context context, String action) {
+        throw new RuntimeException("Not implemented");
     }
 
     @Override

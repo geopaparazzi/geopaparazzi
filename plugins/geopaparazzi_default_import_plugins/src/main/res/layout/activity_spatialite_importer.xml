@@ -8,6 +8,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.gvsig.android.plugin_gvsigol_io.importer.SpatialiteImporterActivity">
+    tools:context="org.gvsig.android.plugin_gvsigol_io.eu.geopaparazzi.plugins.defaultimports.SpatialiteImporterActivity">
 
 </RelativeLayout>

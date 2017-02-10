@@ -56,12 +56,6 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/gpxImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/gpx" />
-
-                <Button
                     android:id="@+id/cloudImportButton"
                     style="@style/GPMediumButton"
                     android:layout_width="match_parent"

@@ -9,17 +9,12 @@ import android.os.IBinder;
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
 public abstract class PluginService extends IntentService {
-     protected String action;
 
     /**
      * @param name Service name
-     * @param serviceAction The name of the action that will be used as extension point (for
-     *                      instance, "eu.geopaparazzi.core.extension.importer.spatialite.PICK"
-     *                      for the extension point used to register importer menu entries)
      */
-    public PluginService(String name, String serviceAction) {
+    public PluginService(String name) {
         super(name);
-        this.action = serviceAction;
     }
 
     @Override

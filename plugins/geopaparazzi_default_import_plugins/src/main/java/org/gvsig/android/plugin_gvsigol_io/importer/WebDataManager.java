@@ -20,6 +20,7 @@ package org.gvsig.android.plugin_gvsigol_io.importer;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import org.gvsig.android.plugin_gvsigol_io.exceptions.DownloadError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,7 +36,6 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.webproject.WebDataLayer;
 
 /**
  * Singleton to handle cloud up- and download.
@@ -104,9 +104,54 @@ public enum WebDataManager {
      * @param server  the server from which to download.
      * @param user    the username for authentication.
      * @param passwd  the password for authentication.
+     * @return The path to the downloaded file
+     */
+    public String downloadData(Context context, String server, String user, String passwd, String postJson, String outputFileName) throws DownloadError {
+        String downloadedProjectFileName = "no information available";
+        try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+            File sdcardDir = resourcesManager.getSdcardDir();
+            File downloadeddataFile = new File(sdcardDir, outputFileName);
+            if (downloadeddataFile.exists()) {
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadeddataFile.getName();
+                // FIXME: log error?
+                throw new DownloadError(wontOverwrite);
+            }
+            String loginUrl = addActionPath(server, LOGIN_URL);
+            server = addActionPath(server, DOWNLOAD_DATA);
+            NetworkUtilities.sendPostForFile(context, server, postJson, user, passwd, downloadeddataFile, loginUrl);
+
+            long fileLength = downloadeddataFile.length();
+            if (fileLength == 0) {
+                // FIXME: log error?
+                throw new DownloadError("Error in downloading file.");
+            }
+
+            return downloadeddataFile.getCanonicalPath();
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            throw new DownloadError(e);
+            /*
+            String message = e.getMessage();
+            if (message.equals(CompressionUtilities.FILE_EXISTS)) {
+                throw new RuntimeException(context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName);
+            }
+            return e.getLocalizedMessage();*/
+        }
+    }
+
+
+
+    /**
+     * Downloads a project from the given server via GET.
+     *
+     * @param context the {@link Context} to use.
+     * @param server  the server from which to download.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
      * @return the error message or null.
      */
-    public String downloadData(Context context, String server, String user, String passwd, String postJson, String outputFileName) {
+    public String downloadDataOld(Context context, String server, String user, String passwd, String postJson, String outputFileName) {
         String downloadedProjectFileName = "no information available";
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
@@ -146,7 +191,7 @@ public enum WebDataManager {
      * @return the project list.
      * @throws Exception if something goes wrong.
      */
-    public List<eu.geopaparazzi.library.webproject.WebDataLayer> downloadDataLayersList(Context context, String server, String user, String passwd) throws Exception {
+    public List<WebDataLayer> downloadDataLayersList(Context context, String server, String user, String passwd) throws Exception {
         String jsonString = "[]";
         if (server.equals("test")) {
             AssetManager assetManager = context.getAssets();
@@ -163,7 +208,7 @@ public enum WebDataManager {
             server = addActionPath(server, GET_LAYERS_INFO);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd, loginUrl);
         }
-        List<eu.geopaparazzi.library.webproject.WebDataLayer> webDataList = json2WebDataList(jsonString);
+        List<WebDataLayer> webDataList = json2WebDataList(jsonString);
         return webDataList;
     }
 
@@ -171,11 +216,11 @@ public enum WebDataManager {
      * Transform a json string to a list of WebDataLayer.
      *
      * @param json the json string.
-     * @return the list of {@link eu.geopaparazzi.library.webproject.WebDataLayer}.
+     * @return the list of {@link WebDataLayer}.
      * @throws Exception if something goes wrong.
      */
-    public static List<eu.geopaparazzi.library.webproject.WebDataLayer> json2WebDataList(String json) throws Exception {
-        List<eu.geopaparazzi.library.webproject.WebDataLayer> webDataList = new ArrayList<>();
+    public static List<WebDataLayer> json2WebDataList(String json) throws Exception {
+        List<WebDataLayer> webDataList = new ArrayList<>();
 
         JSONArray projectsArray = new JSONArray(json);
         int projectNum = projectsArray.length();
@@ -192,7 +237,7 @@ public enum WebDataManager {
                  lastEdited = projectObject.getLong("last-modified");
             }
 
-            eu.geopaparazzi.library.webproject.WebDataLayer wdl = new WebDataLayer();
+            WebDataLayer wdl = new WebDataLayer();
             wdl.name = name;
             wdl.title = title;
             wdl.abstractStr = abstractStr;

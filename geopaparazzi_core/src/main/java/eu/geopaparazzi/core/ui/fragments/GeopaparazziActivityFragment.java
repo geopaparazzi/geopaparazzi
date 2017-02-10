@@ -650,4 +650,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     public BroadcastReceiver getGpsServiceBroadcastReceiver() {
         return mGpsServiceBroadcastReceiver;
     }
+
+    @Override
+    public void start(Context context, String action) {
+
+    }
 }

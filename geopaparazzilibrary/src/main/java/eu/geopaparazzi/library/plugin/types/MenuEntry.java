@@ -1,6 +1,9 @@
 package eu.geopaparazzi.library.plugin.types;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 
 import eu.geopaparazzi.library.plugin.ActivityStarter;
 import eu.geopaparazzi.library.util.IActivityStarter;
@@ -11,8 +14,9 @@ import eu.geopaparazzi.library.util.IActivityStarter;
 public class MenuEntry implements IMenuEntry {
     private String label = null;
     private byte[] icon = null;
-    private String action = null;
-    private IActivityStarter starter;
+    protected IActivityStarter starter;
+    protected int requestCode = -1;
+
 
     public MenuEntry() {
         starter = new ActivityStarter();
@@ -41,20 +45,16 @@ public class MenuEntry implements IMenuEntry {
     }
 
     @Override
-    public String getAction() {
-        return this.action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    @Override
-    public void onClick(Context context) {
-        if (processOnClick(context)) {
-            this.starter.start(context, getAction());
+    public void onClick(IActivityStarter clickActivityStarter) {
+        if (processOnClick()) {
+            start();
         }
     }
+
+    /**
+     * The start method called if the processOnCLick returns true.
+     */
+    protected void start(){};
 
     /**
      * This method is invoked when the entry is clicked, before the activity specified
@@ -63,7 +63,7 @@ public class MenuEntry implements IMenuEntry {
      *
      * @return false to cancel the execution of the action, true otherwise
      */
-    protected boolean processOnClick(Context context) {
+    protected boolean processOnClick() {
         return true;
     }
 
@@ -71,4 +71,11 @@ public class MenuEntry implements IMenuEntry {
     public int getOrder() {
         return 500;
     }
+
+    public void onActivityResultExecute(AppCompatActivity callingActivity, int requestCode, int resultCode, Intent data){};
+
+    public void setRequestCode(int requestCode){
+        this.requestCode = requestCode;
+    }
+
 }
