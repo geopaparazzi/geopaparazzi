@@ -30,7 +30,8 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import eu.geopaparazzi.library.plugin.PluginLoaderListener;
-import eu.geopaparazzi.library.plugin.menu.ImportMenuLoader;
+import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
+import eu.geopaparazzi.library.plugin.menu.MenuLoader;
 import eu.geopaparazzi.library.plugin.types.IMenuEntry;
 import eu.geopaparazzi.library.util.IActivityStupporter;
 import eu.geopaparazzi.core.R;
@@ -45,7 +46,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
     public static final int START_REQUEST_CODE = 666;
 
     private SparseArray<IMenuEntry> menuEntriesMap = new SparseArray<>();
-    private ImportMenuLoader menuLoader;
+    private MenuLoader menuLoader;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -55,10 +56,10 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        menuLoader = new ImportMenuLoader(this);
-        menuLoader.addListener(new PluginLoaderListener<ImportMenuLoader>() {
+        menuLoader = new MenuLoader(this, IMenuLoader.MENU_IMPORT_PROVIDER);
+        menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
             @Override
-            public void pluginLoaded(ImportMenuLoader loader) {
+            public void pluginLoaded(MenuLoader loader) {
                 addMenuEntries(loader.getEntries());
             }
         });
