@@ -61,18 +61,6 @@
                     android:layout_width="match_parent"
                     android:text="@string/geopap_browser" />
 
-                <Button
-                    android:id="@+id/templatedatabaseImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/default_database" />
-
-                <Button
-                    android:id="@+id/tantoMapurlsImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/mapurls" />
-
             </LinearLayout>
         </ScrollView>
 

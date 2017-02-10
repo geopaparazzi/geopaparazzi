@@ -78,15 +78,6 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        Button tantoMapurlsImportButton = (Button) findViewById(R.id.tantoMapurlsImportButton);
-        tantoMapurlsImportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                Intent browseIntent = new Intent(ImportActivity.this, TantoMapurlsActivity.class);
-                startActivity(browseIntent);
-                finish();
-            }
-        });
         Button cloudImportButton = (Button) findViewById(R.id.cloudImportButton);
         cloudImportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -112,13 +103,6 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
                 webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);
                 startActivity(webImportIntent);
-            }
-        });
-
-        Button defaultDatabaseImportButton = (Button) findViewById(R.id.templatedatabaseImportButton);
-        defaultDatabaseImportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                importTemplateDatabase();
             }
         });
 
@@ -150,44 +134,6 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
                 }
             });
         }
-    }
-
-    private void importTemplateDatabase() {
-        String ts = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
-        String newName = "spatialite_" + ts + ".sqlite";
-        GPDialogs.inputMessageDialog(this, getString(R.string.name_new_teample_db), newName, new TextRunnable() {
-            @Override
-            public void run() {
-
-                try {
-                    File sdcardDir = ResourcesManager.getInstance(ImportActivity.this).getSdcardDir();
-                    File newDbFile = new File(sdcardDir, theTextToRunOn);
-
-                    AssetManager assetManager = ImportActivity.this.getAssets();
-                    InputStream inputStream = assetManager.open(LibraryConstants.GEOPAPARAZZI_TEMPLATE_DB_NAME);
-
-                    FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GPDialogs.infoDialog(ImportActivity.this, getString(R.string.new_template_db_create), null);
-                        }
-                    });
-                } catch (final Exception e) {
-                    GPLog.error(ImportActivity.this, null, e);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GPDialogs.errorDialog(ImportActivity.this, e, null);
-                        }
-                    });
-                }
-
-            }
-        });
-
     }
 
 

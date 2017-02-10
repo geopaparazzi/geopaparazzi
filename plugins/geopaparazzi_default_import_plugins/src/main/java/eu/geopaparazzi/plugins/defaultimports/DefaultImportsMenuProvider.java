@@ -43,6 +43,8 @@ public class DefaultImportsMenuProvider extends PluginService {
             list.addEntry(new ImportGpxMenuEntry(getApplicationContext()));
             list.addEntry(new ImportBookmarksMenuEntry(getApplicationContext()));
             list.addEntry(new ImportWmsMenuEntry(getApplicationContext()));
+            list.addEntry(new ImportTantoMapurlsMenuEntry(getApplicationContext()));
+            list.addEntry(new ImportDefaultDatabaseMenuEntry(getApplicationContext()));
         }
         return list;
     }
