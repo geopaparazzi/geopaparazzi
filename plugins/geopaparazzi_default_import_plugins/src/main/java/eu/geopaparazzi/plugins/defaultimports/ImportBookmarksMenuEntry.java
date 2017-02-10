@@ -36,6 +36,9 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStupporter;
 
+/**
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class ImportBookmarksMenuEntry extends MenuEntry {
 
 

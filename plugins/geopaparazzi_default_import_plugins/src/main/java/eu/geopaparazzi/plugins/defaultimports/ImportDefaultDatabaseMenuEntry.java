@@ -36,6 +36,9 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
+/**
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class ImportDefaultDatabaseMenuEntry extends MenuEntry {
 
 

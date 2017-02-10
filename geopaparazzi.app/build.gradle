@@ -69,4 +69,5 @@ dependencies {
     compile 'com.android.support:preference-v7:25.1.1'
     compile project(':geopaparazzi_core')
     compile project(':geopaparazzi_default_import_plugins')
+    compile project(':geopaparazzi_projects_import_plugins')
 }

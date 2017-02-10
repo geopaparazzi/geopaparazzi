@@ -55,12 +55,6 @@
                 android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/cloudImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/geopap_browser" />
-
             </LinearLayout>
         </ScrollView>
 

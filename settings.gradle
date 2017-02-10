@@ -3,3 +3,5 @@ include ':wms_nww'
 project(':wms_nww').projectDir = new File('../wms_nww/')
 include ':geopaparazzi_default_import_plugins'
 project(':geopaparazzi_default_import_plugins').projectDir = new File('plugins/geopaparazzi_default_import_plugins/')
+include ':geopaparazzi_projects_import_plugins'
+project(':geopaparazzi_projects_import_plugins').projectDir = new File('plugins/geopaparazzi_projects_import_plugins/')
