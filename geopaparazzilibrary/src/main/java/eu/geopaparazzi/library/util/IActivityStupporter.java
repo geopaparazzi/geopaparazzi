@@ -21,6 +21,7 @@ package eu.geopaparazzi.library.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 
 /**
  * Class able to start activities.
@@ -29,7 +30,7 @@ import android.content.Intent;
  *
  * Created by hydrologis on 04/02/16.
  */
-public interface IActivityStarter {
+public interface IActivityStupporter {
 
     /**
      * Start an activity through and intent.
@@ -53,13 +54,12 @@ public interface IActivityStarter {
      */
     Context getContext();
 
-    /**
-     * Start an activity by its action.
-     *
-     * @param context the context to use.
-     * @param action the action to start.
-     */
-    void start(Context context, String action);
 
+    /**
+     * Getter for a support fragment handler.
+     *
+     * @return the fragment manager, if available.
+     */
+    FragmentManager getSupportFragmentManager();
 
 }

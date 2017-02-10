@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -38,15 +37,11 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 
-import org.json.JSONException;
-
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.core.dialogs.StrokeDashDialogFragment;
@@ -60,7 +55,7 @@ import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
@@ -74,7 +69,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStarter,
+public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity implements IActivityStupporter,
         LabelDialogFragment.ILabelPropertiesChangeListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener,
         StrokeDashDialogFragment.IDashStrokePropertiesChangeListener, ZoomlevelDialogFragment.IZoomlevelPropertiesChangeListener {
     public static final int PICKFILE_REQUEST_CODE = 666;
@@ -557,10 +552,6 @@ public class SpatialiteDatabasesTreeListActivity extends AppCompatActivity imple
         return this;
     }
 
-    @Override
-    public void start(Context context, String action) {
-
-    }
 
 
 }

@@ -52,7 +52,7 @@ import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
@@ -65,7 +65,7 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SourcesTreeListActivity extends AppCompatActivity implements IActivityStarter {
+public class SourcesTreeListActivity extends AppCompatActivity implements IActivityStupporter {
     public static final int PICKFILE_REQUEST_CODE = 666;
     public static final int PICKFOLDER_REQUEST_CODE = 667;
 
@@ -500,10 +500,5 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     @Override
     public Context getContext() {
         return this;
-    }
-
-    @Override
-    public void start(Context context, String action) {
-
     }
 }

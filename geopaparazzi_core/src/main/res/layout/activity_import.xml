@@ -62,12 +62,6 @@
                     android:text="@string/geopap_browser" />
 
                 <Button
-                    android:id="@+id/bookmarksImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/bookmarks" />
-
-                <Button
                     android:id="@+id/templatedatabaseImportButton"
                     style="@style/GPMediumButton"
                     android:layout_width="match_parent"
@@ -78,12 +72,6 @@
                     style="@style/GPMediumButton"
                     android:layout_width="match_parent"
                     android:text="@string/mapurls" />
-
-                <Button
-                    android:id="@+id/wmsImportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="WMS" />
 
             </LinearLayout>
         </ScrollView>

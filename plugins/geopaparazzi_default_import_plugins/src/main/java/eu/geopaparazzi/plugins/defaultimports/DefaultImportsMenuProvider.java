@@ -1,23 +1,27 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.plugins.defaultimports;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 
-import java.io.File;
-
-import eu.geopaparazzi.core.ui.dialogs.GpxImportDialogFragment;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.plugin.PluginService;
-import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.plugin.types.MenuEntryList;
-import eu.geopaparazzi.library.util.AppsUtilities;
-import eu.geopaparazzi.library.util.FileTypes;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStarter;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.Utilities;
 
 
 /**
@@ -26,7 +30,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DefaultImportsMenuProvider extends PluginService {
-    private static final String NAME = "DefauktsImportsMenuProvider";
+    private static final String NAME = "DefaultsImportsMenuProvider";
     private MenuEntryList list = null;
 
     public DefaultImportsMenuProvider() {
@@ -36,49 +40,12 @@ public class DefaultImportsMenuProvider extends PluginService {
     public IBinder onBind(Intent intent) {
         if (list == null) {
             list = new MenuEntryList();
-            list.addEntry(new ImportGpxMenuEntry());
+            list.addEntry(new ImportGpxMenuEntry(getApplicationContext()));
+            list.addEntry(new ImportBookmarksMenuEntry(getApplicationContext()));
+            list.addEntry(new ImportWmsMenuEntry(getApplicationContext()));
         }
         return list;
     }
 
-
-    public class ImportGpxMenuEntry extends MenuEntry {
-        @Override
-        public String getLabel() {
-            return getString(eu.geopaparazzi.core.R.string.gpx);
-        }
-
-        @Override
-        public void onClick(IActivityStarter clickActivityStarter) {
-            String title = getString(eu.geopaparazzi.core.R.string.select_gpx_file);
-            try {
-                AppsUtilities.pickFile(clickActivityStarter, requestCode, title, new String[]{FileTypes.GPX.getExtension()}, null);
-            } catch (Exception e) {
-                GPLog.error(this, null, e);
-                GPDialogs.errorDialog(clickActivityStarter.getContext(), e, null);
-            }
-        }
-
-        @Override
-        public void onActivityResultExecute(AppCompatActivity callingActivity, int requestCode, int resultCode, Intent data) {
-            if (resultCode == Activity.RESULT_OK) {
-                try {
-                    String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (!filePath.toLowerCase().endsWith(FileTypes.GPX.getExtension())) {
-                        GPDialogs.warningDialog(callingActivity, getString(eu.geopaparazzi.core.R.string.no_gpx_selected), null);
-                        return;
-                    }
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        Utilities.setLastFilePath(callingActivity, filePath);
-                        GpxImportDialogFragment gpxImportDialogFragment = GpxImportDialogFragment.newInstance(file.getAbsolutePath());
-                        gpxImportDialogFragment.show(callingActivity.getSupportFragmentManager(), "gpx import");
-                    }
-                } catch (Exception e) {
-                    GPDialogs.errorDialog(callingActivity, e, null);
-                }
-            }
-        }
-    }
 
 }

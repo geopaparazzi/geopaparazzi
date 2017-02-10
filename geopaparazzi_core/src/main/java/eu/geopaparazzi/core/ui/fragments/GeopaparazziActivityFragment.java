@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,7 +54,7 @@ import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -86,7 +87,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivityStarter {
+public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivityStupporter {
 
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
 
@@ -652,7 +653,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
     @Override
-    public void start(Context context, String action) {
-
+    public FragmentManager getSupportFragmentManager() {
+        return null;
     }
 }

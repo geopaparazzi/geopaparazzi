@@ -6,13 +6,6 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity android:name="eu.geopaparazzi.plugins.defaultimports.SpatialiteImporterActivity">
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.core.extension.importer.spatialite.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            </intent-filter>
-        </activity>
         <service android:name="eu.geopaparazzi.plugins.defaultimports.DefaultImportsMenuProvider"
             android:exported="false">
             <intent-filter>

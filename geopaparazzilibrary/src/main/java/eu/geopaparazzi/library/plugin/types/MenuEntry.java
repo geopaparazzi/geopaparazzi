@@ -1,12 +1,9 @@
 package eu.geopaparazzi.library.plugin.types;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
-import eu.geopaparazzi.library.plugin.ActivityStarter;
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
@@ -14,17 +11,7 @@ import eu.geopaparazzi.library.util.IActivityStarter;
 public class MenuEntry implements IMenuEntry {
     private String label = null;
     private byte[] icon = null;
-    protected IActivityStarter starter;
     protected int requestCode = -1;
-
-
-    public MenuEntry() {
-        starter = new ActivityStarter();
-    }
-
-    public MenuEntry(IActivityStarter starter) {
-        this.starter = starter;
-    }
 
     @Override
     public String getLabel() {
@@ -45,7 +32,7 @@ public class MenuEntry implements IMenuEntry {
     }
 
     @Override
-    public void onClick(IActivityStarter clickActivityStarter) {
+    public void onClick(IActivityStupporter clickActivityStarter) {
         if (processOnClick()) {
             start();
         }
@@ -72,7 +59,7 @@ public class MenuEntry implements IMenuEntry {
         return 500;
     }
 
-    public void onActivityResultExecute(AppCompatActivity callingActivity, int requestCode, int resultCode, Intent data){};
+    public void onActivityResultExecute(int requestCode, int resultCode, Intent data){};
 
     public void setRequestCode(int requestCode){
         this.requestCode = requestCode;

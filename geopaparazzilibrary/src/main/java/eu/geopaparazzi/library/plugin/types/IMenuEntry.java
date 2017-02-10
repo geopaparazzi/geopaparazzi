@@ -4,7 +4,7 @@ package eu.geopaparazzi.library.plugin.types;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 
 /**
  * MenuEntry extension type. An extension that returns a label and icon
@@ -27,7 +27,7 @@ public interface IMenuEntry {
      * by the action is started. The activity execution can be cancelled if this
      * method returns false
      */
-    void onClick(IActivityStarter clickActivityStarter);
+    void onClick(IActivityStupporter clickActivityStarter);
 
     /**
      * Gets the order in which the entry should be placed. The application installing the
@@ -49,6 +49,6 @@ public interface IMenuEntry {
     /**
      * If an activity result is necessary, this can be launched on it.
      */
-    void onActivityResultExecute(AppCompatActivity callingActivity, int requestCode, int resultCode, Intent data);
+    void onActivityResultExecute(int requestCode, int resultCode, Intent data);
 
 }

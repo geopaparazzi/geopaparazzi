@@ -1,41 +1,57 @@
 package eu.geopaparazzi.library.plugin;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
-import java.util.List;
-
-import eu.geopaparazzi.library.util.IActivityStarter;
+import eu.geopaparazzi.library.util.IActivityStupporter;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
-public class ActivityStarter implements IActivityStarter {
+public class ActivityStarter implements IActivityStupporter {
     private Intent intent = new Intent();
+    private Context context;
+
+    public ActivityStarter(Context context) {
+        this.context = context;
+    }
+
 
     @Override
     public void startActivity(Intent intent) {
-        // unused
+        context.startActivity(intent);
     }
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        // unused
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            activity.startActivityForResult(intent, requestCode);
+        }
     }
 
     @Override
     public Context getContext() {
-        // unused
+        return context;
+    }
+
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        if (context instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) context;
+            activity.getSupportFragmentManager();
+        }
         return null;
     }
 
-    public void start(Context context, String action) {
-        intent.setAction(action);
-        List<ResolveInfo> info = context.getPackageManager().queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER);
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        }
-    }
+//    public void start(Context context, String action) {
+//        intent.setAction(action);
+//        List<ResolveInfo> info = context.getPackageManager().queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER);
+//        if (intent.resolveActivity(context.getPackageManager()) != null) {
+//            context.startActivity(intent);
+//        }
+//    }
 }
