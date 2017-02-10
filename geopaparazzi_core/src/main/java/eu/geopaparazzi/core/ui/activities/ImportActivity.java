@@ -19,6 +19,7 @@ package eu.geopaparazzi.core.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,14 +29,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +48,10 @@ import java.util.TreeSet;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.plugin.PluginLoader;
+import eu.geopaparazzi.library.plugin.PluginLoaderListener;
+import eu.geopaparazzi.library.plugin.menu.MenuLoader;
+import eu.geopaparazzi.library.plugin.types.IMenuEntry;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -132,6 +140,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
             }
         });
 
+        /*
         Button cloudSpatialiteImportButton = (Button) findViewById(R.id.cloudSpatialiteImportButton);
         cloudSpatialiteImportButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -159,6 +168,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 startActivityForResult(webImportIntent, WebDataListActivity.DOWNLOADDATA_RETURN_CODE);
             }
         });
+        */
 
         Button bookmarksImportButton = (Button) findViewById(R.id.bookmarksImportButton);
         bookmarksImportButton.setOnClickListener(new Button.OnClickListener() {
@@ -186,6 +196,31 @@ public class ImportActivity extends AppCompatActivity implements IActivityStarte
                 addWMSDialog.show(getSupportFragmentManager(), "wms import");
             }
         });
+
+        MenuLoader loader = new MenuLoader(this);
+        loader.addListener(new PluginLoaderListener<MenuLoader>() {
+            @Override
+            public void pluginLoaded(MenuLoader loader) {
+                addMenuEntries(loader.getEntries());
+            }
+        });
+        loader.connect();
+    }
+
+    protected void addMenuEntries(List<IMenuEntry> entries) {
+        for (final eu.geopaparazzi.library.plugin.types.IMenuEntry entry: entries) {
+            final Context context = this;
+            Button button = new Button(this);
+            button.setText(entry.getLabel());
+            LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            container.addView(button, lp);
+            button.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    entry.onClick(context);
+                }
+            });
+        }
     }
 
     private void importTemplateDatabase() {
