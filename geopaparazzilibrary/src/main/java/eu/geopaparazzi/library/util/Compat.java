@@ -21,6 +21,7 @@ package eu.geopaparazzi.library.util;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,6 +59,14 @@ public class Compat {
             textView.setTextAppearance(type);
         } else {
             textView.setTextAppearance(context, type);
+        }
+    }
+
+    public static void setButtonTextAppearance(Context context, Button button, int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            button.setTextAppearance(type);
+        } else {
+            button.setTextAppearance(context, type);
         }
     }
 }
