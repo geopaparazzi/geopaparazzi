@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.plugins.defaultimports;
+package eu.geopaparazzi.plugins.defaultexports;
 
 import android.content.Intent;
 import android.os.IBinder;
@@ -25,26 +25,25 @@ import eu.geopaparazzi.library.plugin.types.MenuEntryList;
 
 
 /**
- * Menu provider for all default imports.
+ * Menu provider for all default exports.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class DefaultImportsMenuProvider extends PluginService {
-    private static final String NAME = "DefaultsImportsMenuProvider";
+public class DefaultExportsMenuProvider extends PluginService {
+    private static final String NAME = "DefaultExportsMenuProvider";
     private MenuEntryList list = null;
 
-    public DefaultImportsMenuProvider() {
+    public DefaultExportsMenuProvider() {
         super(NAME);
     }
 
     public IBinder onBind(Intent intent) {
         if (list == null) {
             list = new MenuEntryList();
-            list.addEntry(new ImportGpxMenuEntry(getApplicationContext()));
-            list.addEntry(new ImportBookmarksMenuEntry(getApplicationContext()));
-            list.addEntry(new ImportWmsMenuEntry(getApplicationContext()));
-            list.addEntry(new ImportTantoMapurlsMenuEntry(getApplicationContext()));
-            list.addEntry(new ImportDefaultDatabaseMenuEntry(getApplicationContext()));
+            list.addEntry(new ExportKmzMenuEntry(getApplicationContext()));
+            list.addEntry(new ExportGpxMenuEntry(getApplicationContext()));
+            list.addEntry(new ExportBookmarksMenuEntry(getApplicationContext()));
+            list.addEntry(new ExportImagesMenuEntry(getApplicationContext()));
         }
         return list;
     }

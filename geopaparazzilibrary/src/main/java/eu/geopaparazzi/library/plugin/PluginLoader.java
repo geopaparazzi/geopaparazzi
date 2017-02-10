@@ -50,7 +50,7 @@ public abstract class PluginLoader {
     public void connect() {
         PackageManager packageManager = context.getPackageManager();
         Intent intent = new Intent(this.serviceName);
-        List<ResolveInfo> menuProviders = packageManager.queryIntentServices(intent, PackageManager.MATCH_ALL);
+        List<ResolveInfo> menuProviders = packageManager.queryIntentServices(intent, PackageManager.GET_RESOLVED_FILTER);
         numberOfPlugins = menuProviders.size();
         for (int i = 0; i < menuProviders.size(); ++i) {
             ResolveInfo info = menuProviders.get(i);

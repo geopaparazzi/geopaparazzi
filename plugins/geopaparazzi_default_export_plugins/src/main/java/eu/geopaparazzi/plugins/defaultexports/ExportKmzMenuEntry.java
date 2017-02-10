@@ -15,37 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.plugins.defaultimports;
+package eu.geopaparazzi.plugins.defaultexports;
 
 import android.content.Context;
-import android.content.Intent;
 
-import eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity;
+import eu.geopaparazzi.core.ui.dialogs.KmzExportDialogFragment;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ImportTantoMapurlsMenuEntry extends MenuEntry {
+public class ExportKmzMenuEntry extends MenuEntry {
 
 
     private Context serviceContext;
 
-    public ImportTantoMapurlsMenuEntry(Context context) {
+    public ExportKmzMenuEntry(Context context) {
         this.serviceContext = context;
     }
 
     @Override
     public String getLabel() {
-        return serviceContext.getString(eu.geopaparazzi.core.R.string.mapurls);
+        return serviceContext.getString(eu.geopaparazzi.core.R.string.kmz);
     }
 
     @Override
     public void onClick(IActivitySupporter clickActivityStarter) {
-        Intent browseIntent = new Intent(clickActivityStarter.getContext(), TantoMapurlsActivity.class);
-        clickActivityStarter.startActivity(browseIntent);
+        KmzExportDialogFragment kmzExportDialogFragment = KmzExportDialogFragment.newInstance(null);
+        kmzExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "kmz export");
     }
-
-
 }

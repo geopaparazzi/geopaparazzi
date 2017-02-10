@@ -38,29 +38,6 @@
                 android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/kmzExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/kmz" />
-
-                <Button
-                    android:id="@+id/gpxExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/gpx" />
-
-                <Button
-                    android:id="@+id/bookmarksExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/bookmarks" />
-
-                <Button
-                    android:id="@+id/imagesExportButton"
-                    style="@style/GPMediumButton"
-                    android:layout_width="match_parent"
-                    android:text="@string/export_images" />
             </LinearLayout>
         </ScrollView>
 

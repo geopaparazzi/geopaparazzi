@@ -86,7 +86,6 @@ public class ExportActivity extends AppCompatActivity implements
     // List of URIs to provide to Android Beam
     private Uri[] mFileUris = new Uri[1];
     private PendingIntent pendingIntent;
-    private StringAsyncTask exportImagesTask;
 
     private SparseArray<IMenuEntry> menuEntriesMap = new SparseArray<>();
 
@@ -106,27 +105,6 @@ public class ExportActivity extends AppCompatActivity implements
         } catch (Exception e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
         }
-
-        Button kmzExportButton = (Button) findViewById(R.id.kmzExportButton);
-        kmzExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                KmzExportDialogFragment kmzExportDialogFragment = KmzExportDialogFragment.newInstance(null);
-                kmzExportDialogFragment.show(getSupportFragmentManager(), "kmz export");
-            }
-        });
-        Button gpxExportButton = (Button) findViewById(R.id.gpxExportButton);
-        gpxExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                GpxExportDialogFragment gpxExportDialogFragment = GpxExportDialogFragment.newInstance(null);
-                gpxExportDialogFragment.show(getSupportFragmentManager(), "gpx export");
-            }
-        });
-        Button bookmarksExportButton = (Button) findViewById(R.id.bookmarksExportButton);
-        bookmarksExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                exportBookmarks();
-            }
-        });
 
 //        Button cloudDataExportButton = (Button) findViewById(R.id.cloudDataExportButton);
 //        cloudDataExportButton.setOnClickListener(new Button.OnClickListener() {
@@ -162,14 +140,6 @@ public class ExportActivity extends AppCompatActivity implements
 //                startActivity(webExportIntent);
 //            }
 //        });
-
-        Button imagesExportButton = (Button) findViewById(R.id.imagesExportButton);
-        imagesExportButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                exportImages();
-            }
-        });
-
 
         MenuLoader menuLoader = new MenuLoader(this, IMenuLoader.MENU_EXPORT_PROVIDER);
         menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
@@ -226,133 +196,6 @@ public class ExportActivity extends AppCompatActivity implements
 
     }
 
-
-    @SuppressWarnings("nls")
-    private void exportBookmarks() {
-
-        try {
-            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
-            TreeSet<String> bookmarksNames = new TreeSet<>();
-            for (Bookmark bookmark : allBookmarks) {
-                String tmpName = bookmark.getName();
-                bookmarksNames.add(tmpName.trim());
-            }
-
-            List<String> namesToNOTAdd = new ArrayList<>();
-            ResourcesManager resourcesManager = ResourcesManager.getInstance(this);
-            File sdcardDir = resourcesManager.getSdcardDir();
-            File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$
-            StringBuilder sb = new StringBuilder();
-            if (bookmarksfile.exists()) {
-                List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
-                for (String bookmarkLine : bookmarksList) {
-                    String[] split = bookmarkLine.split(","); //$NON-NLS-1$
-                    // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969, 12
-                    if (split.length < 3) {
-                        continue;
-                    }
-                    String name = split[0].trim();
-                    if (bookmarksNames.contains(name)) {
-                        namesToNOTAdd.add(name);
-                    }
-                }
-                for (String string : bookmarksList) {
-                    sb.append(string).append("\n");
-                }
-            }
-            int exported = 0;
-            for (Bookmark bookmark : allBookmarks) {
-                String name = bookmark.getName().trim();
-                if (!namesToNOTAdd.contains(name)) {
-                    sb.append(name);
-                    sb.append(",");
-                    sb.append(bookmark.getLat());
-                    sb.append(",");
-                    sb.append(bookmark.getLon());
-                    sb.append(",");
-                    sb.append(bookmark.getZoom());
-                    sb.append("\n");
-                    exported++;
-                }
-            }
-
-            FileUtilities.writefile(sb.toString(), bookmarksfile);
-            if (bookmarksfile.exists()) {
-                GPDialogs.infoDialog(this, getString(R.string.bookmarks_exported) + exported, null);
-            } else {
-                GPDialogs.infoDialog(this, getString(R.string.bookmarks_exported_newfile) + exported, null);
-            }
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            GPDialogs.warningDialog(this, getString(R.string.bookmarks_exported_error), null);
-        }
-
-    }
-
-    private void exportImages() {
-        try {
-            File sdcardDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getSdcardDir();
-            final File outFolder = new File(sdcardDir, "geopaparazzi_images_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()));
-            if (!outFolder.mkdir()) {
-                GPDialogs.warningDialog(this, getString(R.string.export_img_unable_to_create_folder) + outFolder, null);
-                return;
-            }
-            final List<Image> imagesList = DaoImages.getImagesList(false, false);
-            if (imagesList.size() == 0) {
-                GPDialogs.infoDialog(this, getString(R.string.no_images_in_project), null);
-                return;
-            }
-
-
-            final DaoImages imageHelper = new DaoImages();
-            exportImagesTask = new StringAsyncTask(this) {
-                protected String doBackgroundWork() {
-                    try {
-                        for (int i = 0; i < imagesList.size(); i++) {
-                            Image image = imagesList.get(i);
-                            try {
-                                byte[] imageData = imageHelper.getImageData(image.getId());
-                                File imageFile = new File(outFolder, image.getName());
-
-                                FileOutputStream fos = new FileOutputStream(imageFile);
-                                fos.write(imageData);
-                                fos.close();
-                            } catch (IOException e) {
-                                GPLog.error(this, "For file: " + image.getName(), e);
-                            } finally {
-                                publishProgress(i);
-                            }
-                        }
-                    } catch (Exception e) {
-                        return "ERROR: " + e.getLocalizedMessage();
-                    }
-                    return "";
-                }
-
-                protected void doUiPostWork(String response) {
-                    if (response == null) response = "";
-                    if (response.length() != 0) {
-                        GPDialogs.warningDialog(ExportActivity.this, response, null);
-                    } else {
-                        GPDialogs.infoDialog(ExportActivity.this, getString(R.string.export_img_ok_exported) + outFolder, null);
-                    }
-                }
-            };
-            exportImagesTask.setProgressDialog(getString(R.string.export_uc), getString(R.string.export_img_processing), false, imagesList.size());
-            exportImagesTask.execute();
-
-
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-            GPDialogs.errorDialog(this, e, null);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (exportImagesTask != null) exportImagesTask.dispose();
-        super.onDestroy();
-    }
 
     @Override
     public Uri[] createBeamUris(NfcEvent nfcEvent) {
