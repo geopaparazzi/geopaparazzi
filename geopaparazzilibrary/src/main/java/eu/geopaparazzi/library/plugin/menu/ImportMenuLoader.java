@@ -16,11 +16,11 @@ import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
-public class MenuLoader extends PluginLoader {
+public class ImportMenuLoader extends PluginLoader implements IMenuLoader {
     private ArrayList<IMenuEntryList> menuGroups = new ArrayList<IMenuEntryList>();
     private ArrayList<IMenuEntry> menuEntries = new ArrayList<IMenuEntry>();
-    public MenuLoader(Context context) {
-        super(context, "eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER");
+    public ImportMenuLoader(Context context) {
+        super(context, MENU_IMPORT_PROVIDER);
     }
 
     @Override
@@ -74,4 +74,5 @@ public class MenuLoader extends PluginLoader {
             }
         });
     }
+
 }

@@ -19,10 +19,7 @@ package eu.geopaparazzi.core.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
@@ -30,34 +27,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.plugin.PluginLoaderListener;
-import eu.geopaparazzi.library.plugin.menu.MenuLoader;
+import eu.geopaparazzi.library.plugin.menu.ImportMenuLoader;
 import eu.geopaparazzi.library.plugin.types.IMenuEntry;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivityStupporter;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TextRunnable;
-import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity;
-import eu.geopaparazzi.core.utilities.Constants;
-import gov.nasa.worldwind.AddWMSDialog;
-import gov.nasa.worldwind.ogc.OGCBoundingBox;
-import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
-import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 
 /**
  * Activity for export tasks.
@@ -69,6 +45,7 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
     public static final int START_REQUEST_CODE = 666;
 
     private SparseArray<IMenuEntry> menuEntriesMap = new SparseArray<>();
+    private ImportMenuLoader menuLoader;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -78,14 +55,21 @@ public class ImportActivity extends AppCompatActivity implements IActivityStuppo
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        MenuLoader loader = new MenuLoader(this);
-        loader.addListener(new PluginLoaderListener<MenuLoader>() {
+        menuLoader = new ImportMenuLoader(this);
+        menuLoader.addListener(new PluginLoaderListener<ImportMenuLoader>() {
             @Override
-            public void pluginLoaded(MenuLoader loader) {
+            public void pluginLoaded(ImportMenuLoader loader) {
                 addMenuEntries(loader.getEntries());
             }
         });
-        loader.connect();
+        menuLoader.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        menuLoader.disconnect();
+
+        super.onDestroy();
     }
 
     protected void addMenuEntries(List<IMenuEntry> entries) {

@@ -20,7 +20,7 @@ import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
 public abstract class PluginLoader {
 
     protected final Context context;
-    protected String serviceName = "eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER";
+    protected String serviceName = null;
     private int numberOfPlugins;
     protected PluginServiceConnection pluginServiceConn = new PluginServiceConnection() {
         @Override
@@ -42,6 +42,7 @@ public abstract class PluginLoader {
     public void addListener(PluginLoaderListener listener) {
         listeners.add(listener);
     }
+
     public void removeListener(PluginLoaderListener listener) {
         listeners.remove(listener);
     }
@@ -68,9 +69,16 @@ public abstract class PluginLoader {
             }
             onLoadComplete();
             isLoadComplete = true;
-            for (PluginLoaderListener listener: listeners) {
+            for (PluginLoaderListener listener : listeners) {
                 listener.pluginLoaded(this);
             }
+        }
+    }
+
+
+    public void disconnect() {
+        if (pluginServiceConn.isBound()) {
+            context.unbindService(pluginServiceConn);
         }
     }
 

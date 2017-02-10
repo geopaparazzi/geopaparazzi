@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <service android:name=".ProjectImportsMenuProvider"
+        <service android:name="eu.geopaparazzi.plugins.projectimport.ProjectImportsMenuProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER" />

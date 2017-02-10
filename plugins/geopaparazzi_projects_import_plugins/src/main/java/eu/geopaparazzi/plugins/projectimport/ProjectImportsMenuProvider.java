@@ -30,7 +30,7 @@ import eu.geopaparazzi.library.plugin.types.MenuEntryList;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ProjectImportsMenuProvider extends PluginService {
-    private static final String NAME = "ProjectsImportMenuProvider";
+    private static final String NAME = "ProjectImportsMenuProvider";
     private MenuEntryList list = null;
 
     public ProjectImportsMenuProvider() {
