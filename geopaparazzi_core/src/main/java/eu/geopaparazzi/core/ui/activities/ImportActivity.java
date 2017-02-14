@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
+import eu.geopaparazzi.library.plugin.ExtensionPoints;
 import eu.geopaparazzi.library.plugin.PluginLoaderListener;
 import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
 import eu.geopaparazzi.library.plugin.menu.MenuLoader;
@@ -56,7 +57,7 @@ public class ImportActivity extends AppCompatActivity implements IActivitySuppor
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        MenuLoader menuLoader = new MenuLoader(this, IMenuLoader.MENU_IMPORT_PROVIDER);
+        MenuLoader menuLoader = new MenuLoader(this, ExtensionPoints.MENU_IMPORT_PROVIDER);
         menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
             @Override
             public void pluginLoaded(MenuLoader loader) {

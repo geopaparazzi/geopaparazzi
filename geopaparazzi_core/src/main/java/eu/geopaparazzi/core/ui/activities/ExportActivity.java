@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.plugin.ExtensionPoints;
 import eu.geopaparazzi.library.plugin.PluginLoaderListener;
 import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
 import eu.geopaparazzi.library.plugin.menu.MenuLoader;
@@ -141,7 +142,7 @@ public class ExportActivity extends AppCompatActivity implements
 //            }
 //        });
 
-        MenuLoader menuLoader = new MenuLoader(this, IMenuLoader.MENU_EXPORT_PROVIDER);
+        MenuLoader menuLoader = new MenuLoader(this, ExtensionPoints.MENU_EXPORT_PROVIDER);
         menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
             @Override
             public void pluginLoaded(MenuLoader loader) {

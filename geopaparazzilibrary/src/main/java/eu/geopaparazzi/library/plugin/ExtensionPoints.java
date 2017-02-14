@@ -17,28 +17,11 @@
  */
 package eu.geopaparazzi.library.plugin;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.os.IBinder;
-
-
 /**
- * @author Cesar Martinez Izquierdo (www.scolab.es)
+ * Created by hydrologis on 14/02/17.
  */
-public abstract class PluginService extends IntentService {
 
-    /**
-     * @param name Service name
-     */
-    public PluginService(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-
-    }
-
-    @Override
-    public abstract IBinder onBind (Intent intent);
+public interface ExtensionPoints {
+    String MENU_IMPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER";
+    String MENU_EXPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.exporter.MENU_PROVIDER";
 }
