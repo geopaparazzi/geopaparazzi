@@ -1,4 +1,6 @@
-include ':geopaparazzi_core', ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib', ':geopaparazzi.app'
+include ':geopaparazzi.app'
+include ':geopaparazzi_core'
+include ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary', ':geopaparazzimarkerslib'
 include ':wms_nww'
 include ':geopaparazzi_default_import_plugins'
 project(':geopaparazzi_default_import_plugins').projectDir = new File('plugins/geopaparazzi_default_import_plugins/')
