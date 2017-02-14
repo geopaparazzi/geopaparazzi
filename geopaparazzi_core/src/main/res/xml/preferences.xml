@@ -144,11 +144,4 @@
             android:title="@string/geopapcloud_server_label" />
     </PreferenceScreen>
 
-    <EditTextPreference
-        android:defaultValue=""
-        android:key="ROUTING_API_KEY"
-        android:order="220"
-        android:summary="@string/routing_pref_summary"
-        android:title="@string/routing_pref_title" />
-
 </PreferenceScreen>

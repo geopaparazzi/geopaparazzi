@@ -56,7 +56,7 @@
     <string name="go_to_button">go to</string>
     <string name="route_to_button">route to</string>
     <string name="route_to">Route to: </string>
-    <string name="route_extraction_error">An error occurred during the route extraction.</string>
+    <string name="route_extraction_error">An error occurred during the route extraction. It is possible that the server is not available.</string>
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
     <string name="error_while_storing_form_data">An error occurred while storing the form data.</string>
     <string name="view_routing_url_in_browser">Do you want to open the used routing URL in a browser?</string>
@@ -115,5 +115,35 @@
     <string name="stroke_width_title">Stroke width</string>
     <string name="stroke_alpha_title">Stroke alpha</string>
     <string name="saving_to_database">Saving data to database...</string>
+    <string name="routing_failure_with_url">The route retrival failed. It might be an issue of the server. For the user to test (if it works from the browser, please report it), the following url has been used: </string>
 
+
+    <string name="osmbonuspack.directions.1">Continue[ on %s]</string>
+    <string name="osmbonuspack.directions.6">Turn slight right[ on %s]</string>
+    <string name="osmbonuspack.directions.7">Turn right[ on %s]</string>
+    <string name="osmbonuspack.directions.8">Turn sharp right[ on %s]</string>
+    <string name="osmbonuspack.directions.12">U-Turn[ on %s]</string>
+    <string name="osmbonuspack.directions.5">Turn sharp left[ on %s]</string>
+    <string name="osmbonuspack.directions.4">Turn left[ on %s]</string>
+    <string name="osmbonuspack.directions.3">Turn slight left[ on %s]</string>
+    <string name="osmbonuspack.directions.24">You have reached a waypoint of your trip</string>
+    <string name="osmbonuspack.directions.2">[Go on %s]</string>
+    <string name="osmbonuspack.directions.27">Enter roundabout and leave at first exit[ on %s]</string>
+    <string name="osmbonuspack.directions.28">Enter roundabout and leave at second exit[ on %s]</string>
+    <string name="osmbonuspack.directions.29">Enter roundabout and leave at third exit[ on %s]</string>
+    <string name="osmbonuspack.directions.30">Enter roundabout and leave at fourth exit[ on %s]</string>
+    <string name="osmbonuspack.directions.31">Enter roundabout and leave at fifth exit[ on %s]</string>
+    <string name="osmbonuspack.directions.32">Enter roundabout and leave at sixth exit[ on %s]</string>
+    <string name="osmbonuspack.directions.33">Enter roundabout and leave at seventh exit[ on %s]</string>
+    <string name="osmbonuspack.directions.34">Enter roundabout and leave at eighth exit[ on %s]</string>
+    <string name="osmbonuspack.directions.17">Take the ramp on the left[ on %s]</string>
+    <string name="osmbonuspack.directions.18">Take the ramp on the right[ on %s]</string>
+    <string name="osmbonuspack.directions.19">Take the ramp straight ahead[ on %s]</string>
+
+    <string name="osmbonuspack.format_distance_kilometers">%skm</string>
+    <string name="osmbonuspack.format_distance_meters">%sm</string>
+
+    <string name="osmbonuspack.format_hours">%sh</string>
+    <string name="osmbonuspack.format_minutes">%smin</string>
+    <string name="osmbonuspack.format_seconds">%ssec</string>
 </resources>

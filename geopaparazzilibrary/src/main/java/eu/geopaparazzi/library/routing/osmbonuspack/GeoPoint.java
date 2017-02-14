@@ -31,7 +31,7 @@ import android.os.Parcelable;
  * @author Theodore Hong
  *
  */
-public class GeoPoint implements  Parcelable, Serializable, Cloneable {
+public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable {
 
     public static final int RADIUS_EARTH_METERS = 6378137; // http://en.wikipedia.org/wiki/Earth_radius#Equatorial_radius
     public static final double METERS_PER_STATUTE_MILE = 1609.344; // http://en.wikipedia.org/wiki/Mile

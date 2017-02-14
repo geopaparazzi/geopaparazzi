@@ -17,145 +17,100 @@
  */
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
-
-import java.io.BufferedReader;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
-import eu.geopaparazzi.library.R;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
 
-/**
- * Useful functions and common constants.
- *
+/** Useful functions and common constants.
  * @author M.Kergall
  */
 public class BonusPackHelper {
 
-    /**
-     * Log tag.
-     */
+    /** Log tag. */
     public static final String LOG_TAG = "BONUSPACK";
 
-    /**
-     * resource id value meaning "undefined resource id"
-     */
+    /** resource id value meaning "undefined resource id" */
     public static final int UNDEFINED_RES_ID = 0;
 
-    /**
-     * User agent sent to services by default
-     */
+    /**	User agent sent to services by default */
     public static final String DEFAULT_USER_AGENT = "OsmBonusPack/1";
 
-    /**
-     * @return true if the device is the emulator, false if actual device.
+    /** @return true if the device is the emulator, false if actual device.
      */
-    public static boolean isEmulator() {
+    public static boolean isEmulator(){
         //return Build.MANUFACTURER.equals("unknown");
         return ("google_sdk".equals(Build.PRODUCT) || "sdk".equals(Build.PRODUCT));
     }
 
-    public static BoundingBoxE6 cloneBoundingBoxE6(BoundingBoxE6 bb) {
-        return new BoundingBoxE6(
-                bb.getLatNorthE6(),
-                bb.getLonEastE6(),
-                bb.getLatSouthE6(),
-                bb.getLonWestE6());
+    public static BoundingBox cloneBoundingBox(BoundingBox bb){
+        return new BoundingBox(
+                bb.getLatNorth(),
+                bb.getLonEast(),
+                bb.getLatSouth(),
+                bb.getLonWest());
     }
 
-    /**
-     * @return the BoundingBox enclosing bb1 and bb2 BoundingBoxes
-     */
-    public static BoundingBoxE6 concatBoundingBoxE6(BoundingBoxE6 bb1, BoundingBoxE6 bb2) {
-        return new BoundingBoxE6(
-                Math.max(bb1.getLatNorthE6(), bb2.getLatNorthE6()),
-                Math.max(bb1.getLonEastE6(), bb2.getLonEastE6()),
-                Math.min(bb1.getLatSouthE6(), bb2.getLatSouthE6()),
-                Math.min(bb1.getLonWestE6(), bb2.getLonWestE6()));
+    /** @return the BoundingBox enclosing bb1 and bb2 BoundingBoxes */
+    public static BoundingBox concatBoundingBox(BoundingBox bb1, BoundingBox bb2){
+        return new BoundingBox(
+                Math.max(bb1.getLatNorth(), bb2.getLatNorth()),
+                Math.max(bb1.getLonEast(), bb2.getLonEast()),
+                Math.min(bb1.getLatSouth(), bb2.getLatSouth()),
+                Math.min(bb1.getLonWest(), bb2.getLonWest()));
     }
 
     /**
      * @return the whole content of the http request, as a string
      */
-    private static String readStream(HttpConnection connection) {
+    private static String readStream(HttpConnection connection){
+        return connection.getContentAsString();
+    }
+
+    /** sends an http request, and returns the whole content result in a String
+     * @param url
+     * @param userAgent
+     * @return the whole content, or null if any issue.
+     */
+    public static String requestStringFromUrl(String url, String userAgent) {
+        HttpConnection connection = new HttpConnection();
+        if (userAgent != null)
+            connection.setUserAgent(userAgent);
+        connection.doGet(url);
         String result = connection.getContentAsString();
+        connection.close();
         return result;
     }
 
-    /**
-     * sends an http request, and returns the whole content result in a String.
-     *
+    /** sends an http request, and returns the whole content result in a String.
      * @param url
      * @return the whole content, or null if any issue.
      */
-    public static String requestStringFromUrl(Context context, String url) throws IOException {
-        HttpConnection connection = new HttpConnection();
-        int status = connection.doGet(url);
-        if (status != HttpStatus.SC_OK) {
-            if (status == HttpStatus.SC_UNAUTHORIZED || status == HttpStatus.SC_FORBIDDEN) {
-                throw new IOException(context.getString(R.string.unauthorized_api_key));
-            }
-        }
-        String result = readStream(connection);
-        connection.close();
-        return result;
-    }
-
-    /**
-     * requestStringFromPost: do a post request to a url with name-value pairs,
-     * and returns the whole content result in a String.
-     *
-     * @param url
-     * @param nameValuePairs
-     * @return the content, or null if any issue.
-     */
-    public static String requestStringFromPost(String url, List<NameValuePair> nameValuePairs) {
-        HttpConnection connection = new HttpConnection();
-        connection.doPost(url, nameValuePairs);
-        String result = readStream(connection);
-        connection.close();
-        return result;
-    }
-
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        reader.close();
-        return sb.toString();
+    public static String requestStringFromUrl(String url) {
+        return requestStringFromUrl(url, null);
     }
 
     /**
      * Loads a bitmap from a url.
-     *
      * @param url
      * @return the bitmap, or null if any issue.
      */
     public static Bitmap loadBitmap(String url) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         try {
             InputStream is = (InputStream) new URL(url).getContent();
             if (is == null)
                 return null;
             bitmap = BitmapFactory.decodeStream(new FlushedInputStream(is));
             //Alternative providing better handling on loading errors?
-            /*
-            Drawable d = Drawable.createFromStream(new FlushedInputStream(is), null);
+			/*
+			Drawable d = Drawable.createFromStream(new FlushedInputStream(is), null);
 			if (is != null)
 				is.close();
 			if (d != null)
@@ -170,7 +125,6 @@ public class BonusPackHelper {
 
     /**
      * Workaround on Android issue on bitmap loading
-     *
      * @see <a href="http://stackoverflow.com/questions/4601352/createfromstream-in-android-returning-null-for-certain-url">Issue</a>
      */
     static class FlushedInputStream extends FilterInputStream {
@@ -178,8 +132,7 @@ public class BonusPackHelper {
             super(inputStream);
         }
 
-        @Override
-        public long skip(long n) throws IOException {
+        @Override public long skip(long n) throws IOException {
             long totalBytesSkipped = 0L;
             while (totalBytesSkipped < n) {
                 long bytesSkipped = in.skip(n - totalBytesSkipped);
@@ -197,13 +150,12 @@ public class BonusPackHelper {
         }
     }
 
-    /**
-     * Parse a string-array resource with items like this: <item>key|value</item>
-     *
-     * @param ctx
-     * @param stringArrayResourceId
-     * @return the keys=>values as an HashMap
-     */
+    //	/**
+//	 * Parse a string-array resource with items like this: <item>key|value</item>
+//	 * @param ctx
+//	 * @param stringArrayResourceId
+//	 * @return the keys=>values as an HashMap
+//	 */
     public static HashMap<String, String> parseStringMapResource(Context ctx, int stringArrayResourceId) {
         String[] stringArray = ctx.getResources().getStringArray(stringArrayResourceId);
         HashMap<String, String> map = new HashMap<>(stringArray.length);

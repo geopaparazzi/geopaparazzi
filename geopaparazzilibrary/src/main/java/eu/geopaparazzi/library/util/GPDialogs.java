@@ -29,6 +29,9 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -84,6 +87,52 @@ public class GPDialogs {
                             });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute -- " + msg, e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }.execute((String) null);
+    }
+
+    /**
+     * Execute a message dialog with clickable links in an {@link AsyncTask}.
+     *
+     * @param context      the {@link Context} to use.
+     * @param msg          the message to show.
+     * @param iconResource the icon resource to use or -1 fro default.
+     * @param okRunnable   optional {@link Runnable} to trigger after ok was pressed.
+     */
+    public static void messageDialogWithLink(final Context context, final String msg, final int iconResource, final Runnable okRunnable) {
+
+        final SpannableString s = new SpannableString(msg);
+        Linkify.addLinks(s, Linkify.ALL);
+
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute(String response) {
+                try {
+                    int icon = iconResource;
+                    if (icon == -1) {
+                        icon = android.R.drawable.ic_dialog_info;
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder //
+                            .setMessage(s)
+                            .setIcon(icon).setCancelable(true)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    if (okRunnable != null) {
+                                        new Thread(okRunnable).start();
+                                    }
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                    ((TextView) alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute -- " + msg, e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -201,6 +250,19 @@ public class GPDialogs {
      */
     public static void warningDialog(final Context context, final String msg, final Runnable okRunnable) {
         messageDialog(context, msg, android.R.drawable.ic_dialog_alert, okRunnable);
+    }
+
+    /**
+     * A warning dialog with link.
+     * <p>
+     * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
+     *
+     * @param context    the context to use.
+     * @param msg        the message.
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
+     */
+    public static void warningDialogWithLink(final Context context, final String msg, final Runnable okRunnable) {
+        messageDialogWithLink(context, msg, android.R.drawable.ic_dialog_alert, okRunnable);
     }
 
     /**

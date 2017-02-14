@@ -44,11 +44,8 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.routing.osmbonuspack.GeoPoint;
-import eu.geopaparazzi.library.routing.osmbonuspack.GraphHopperRoadManager;
-import eu.geopaparazzi.library.routing.osmbonuspack.MapQuestRoadManager;
 import eu.geopaparazzi.library.routing.osmbonuspack.OSRMRoadManager;
 import eu.geopaparazzi.library.routing.osmbonuspack.Road;
-import eu.geopaparazzi.library.routing.osmbonuspack.RoadManager;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -61,9 +58,6 @@ import eu.geopaparazzi.library.util.PositionUtilities;
  */
 public class GeocodeActivity extends AppCompatActivity {
     private static final int MAX_ADDRESSES = 30;
-    public static final String OSRM = "OSRM";
-    public static final String MAPQUEST = "Mapquest";
-    public static final String GRAPHHOPPER = "Graphhopper";
 
     private String noValidItemSelectedMsg = null;
     private ProgressDialog orsProgressDialog;
@@ -200,103 +194,62 @@ public class GeocodeActivity extends AppCompatActivity {
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String routing_api_key = preferences.getString("ROUTING_API_KEY", "");
-        String[] items;
-        if (routing_api_key.length() > 0) {
-            items = new String[]{//
-                    OSRM, //
-                    MAPQUEST, //
-                    GRAPHHOPPER //
-            };
-        } else {
-            items = new String[]{//
-                    OSRM
-            };
-        }
 
-        new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    private RoadManager roadManager = null;
+        AddressWrapper addressWrapper = (AddressWrapper) mListView.getItemAtPosition(mListView
+                .getCheckedItemPosition());
+        final String featureName = addressWrapper.getAddress().getFeatureName();
+        final double latitude = addressWrapper.getAddress().getLatitude();
+        final double longitude = addressWrapper.getAddress().getLongitude();
 
-                    public void onClick(DialogInterface dialog, int whichButton) {
+        final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+        final Intent intent = getIntent();
 
-                        dialog.dismiss();
+        orsProgressDialog = ProgressDialog.show(GeocodeActivity.this, getString(R.string.routing_service),
+                getString(R.string.downloading_route), true, false);
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                try {
 
-                        ListView preferenceChoiceListView = ((AlertDialog) dialog).getListView();
-                        int selectedPosition = preferenceChoiceListView.getCheckedItemPosition();
-
-                        switch (selectedPosition) {
-                            case 1:
-                                roadManager = new MapQuestRoadManager(routing_api_key);
-                                break;
-                            case 2:
-                                roadManager = new GraphHopperRoadManager(routing_api_key);
-                                break;
-                            case 0:
-                            default:
-                                roadManager = new OSRMRoadManager();
-                                break;
-                        }
-
-                        if (mListView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
-                            AddressWrapper addressWrapper = (AddressWrapper) mListView.getItemAtPosition(mListView
-                                    .getCheckedItemPosition());
-                            final String featureName = addressWrapper.getAddress().getFeatureName();
-                            final double latitude = addressWrapper.getAddress().getLatitude();
-                            final double longitude = addressWrapper.getAddress().getLongitude();
-
-                            final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
-                            final Intent intent = getIntent();
-
-                            orsProgressDialog = ProgressDialog.show(GeocodeActivity.this, getString(R.string.routing_service),
-                                    getString(R.string.downloading_route), true, false);
-                            new AsyncTask<String, Void, String>() {
-                                protected String doInBackground(String... params) {
-                                    try {
-
-
-                                        ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
-                                        waypoints.add(new GeoPoint(lonLatZoom[1], lonLatZoom[0]));
-                                        waypoints.add(new GeoPoint(latitude, longitude));
-                                        Road road = null;
-                                        try {
-                                            road = roadManager.getRoad(GeocodeActivity.this, waypoints);
-                                        } catch (IOException e) {
-                                            return e.getMessage();
-                                        }
-                                        String distance = " (" + ((int) (road.mLength * 10)) / 10.0 + "km )";
-                                        ArrayList<GeoPoint> routeNodes = road.mRouteHigh;
-                                        float[] routePoints = new float[routeNodes.size() * 2];
-                                        int index = 0;
-                                        for (GeoPoint routeNode : routeNodes) {
-                                            routePoints[index++] = (float) routeNode.getLongitude();
-                                            routePoints[index++] = (float) routeNode.getLatitude();
-                                        }
-
-                                        intent.putExtra(LibraryConstants.ROUTE, routePoints);
-                                        String routeName = getString(R.string.route_to) + featureName + distance;
-                                        intent.putExtra(LibraryConstants.NAME, routeName);
-                                        return null;
-                                    } catch (Exception e) {
-                                        GPLog.error(this, null, e);
-                                        return getString(R.string.route_extraction_error);
-                                    }
-                                }
-
-                                protected void onPostExecute(String errorMessage) {
-                                    GPDialogs.dismissProgressDialog(orsProgressDialog);
-                                    if (errorMessage == null) {
-                                        GeocodeActivity.this.setResult(RESULT_OK, intent);
-                                        finish();
-                                    } else {
-                                        GPDialogs.warningDialog(GeocodeActivity.this, errorMessage, null);
-                                    }
-                                }
-
-                            }.execute((String) null);
-                        }
+                    OSRMRoadManager roadManager = new OSRMRoadManager(GeocodeActivity.this);
+                    ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
+                    waypoints.add(new GeoPoint(lonLatZoom[1], lonLatZoom[0]));
+                    waypoints.add(new GeoPoint(latitude, longitude));
+                    Road road = roadManager.getRoad(waypoints);
+                    if (road == null) {
+                        String url = roadManager.getUrl(waypoints, false);
+                        return getString(R.string.routing_failure_with_url) + "\n" + url;
                     }
-                }).show();
+
+                    String distance = " (" + ((int) (road.mLength * 10)) / 10.0 + "km )";
+                    ArrayList<GeoPoint> routeNodes = road.mRouteHigh;
+                    float[] routePoints = new float[routeNodes.size() * 2];
+                    int index = 0;
+                    for (GeoPoint routeNode : routeNodes) {
+                        routePoints[index++] = (float) routeNode.getLongitude();
+                        routePoints[index++] = (float) routeNode.getLatitude();
+                    }
+
+                    intent.putExtra(LibraryConstants.ROUTE, routePoints);
+                    String routeName = getString(R.string.route_to) + featureName + distance;
+                    intent.putExtra(LibraryConstants.NAME, routeName);
+                    return null;
+                } catch (Exception e) {
+                    GPLog.error(this, null, e);
+                    return getString(R.string.route_extraction_error);
+                }
+            }
+
+            protected void onPostExecute(String errorMessage) {
+                GPDialogs.dismissProgressDialog(orsProgressDialog);
+                if (errorMessage == null) {
+                    GeocodeActivity.this.setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    GPDialogs.warningDialogWithLink(GeocodeActivity.this, errorMessage, null);
+                }
+            }
+
+        }.execute((String) null);
 
     }
 
