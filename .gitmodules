@@ -1,0 +1,3 @@
+[submodule "wms_nww"]
+	path = wms_nww
+	url = https://github.com/geopaparazzi/wms_nww.git
