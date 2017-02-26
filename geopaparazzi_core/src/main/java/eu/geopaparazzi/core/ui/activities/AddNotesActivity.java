@@ -58,7 +58,7 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.markers.MarkersUtilities;
+import eu.geopaparazzi.library.sketch.SketchUtilities;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
@@ -269,7 +269,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 File newImageFile = new File(tempFolder, "SKETCH_" + currentDatestring + ".png");
 
                 double[] gpsLocation = new double[]{longitude, latitude, elevation};
-                MarkersUtilities.launchForResult(AddNotesActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
+                SketchUtilities.launchForResult(AddNotesActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
             } catch (Exception e) {
                 GPLog.error(AddNotesActivity.this, null, e);
             }

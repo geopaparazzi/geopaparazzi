@@ -123,7 +123,7 @@ public class GMapView extends View implements GView {
 //                        /*
 //                         * open in markers to edit it
 //                         */
-//                    MarkersUtilities.launchOnImage(context, image);
+//                    SketchUtilities.launchOnImage(context, image);
 
                     try {
                         Intent intent = new Intent();

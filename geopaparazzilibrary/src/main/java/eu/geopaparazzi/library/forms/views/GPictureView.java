@@ -206,7 +206,7 @@ public class GPictureView extends View implements GView {
                         /*
                          * open in markers to edit it
                          */
-                        // MarkersUtilities.launchOnImage(context, image);
+                        // SketchUtilities.launchOnImage(context, image);
                         try {
                             Intent intent = new Intent();
                             intent.setAction(Intent.ACTION_VIEW);

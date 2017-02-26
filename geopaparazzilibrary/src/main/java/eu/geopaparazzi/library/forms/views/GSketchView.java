@@ -49,11 +49,13 @@ import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.markers.MarkersUtilities;
+import eu.geopaparazzi.library.sketch.SketchUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.util.UrlUtilities;
 
 /**
  * A custom Sketch view.
@@ -140,7 +142,7 @@ public class GSketchView extends View implements GView {
                     /*
                      * open markers for new sketch
                      */
-                    MarkersUtilities.launch(fragmentDetail, sketchFile, gpsLocation, requestCode);
+                    SketchUtilities.launch(fragmentDetail, sketchFile, gpsLocation, requestCode);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
@@ -211,7 +213,7 @@ public class GSketchView extends View implements GView {
                         /*
                          * open in markers to edit it
                          */
-//                        MarkersUtilities.launchOnImage(context, image);
+//                        SketchUtilities.launchOnImage(context, image);
                         try {
                             Intent intent = new Intent();
                             intent.setAction(Intent.ACTION_VIEW);
@@ -224,8 +226,8 @@ public class GSketchView extends View implements GView {
                             byte[] imageData = imagesDbHelper.getImageData(image.getId());
                             ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
 
-                            intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
-                            context.startActivity(intent);
+
+                            AppsUtilities.showImage(imageFile, context);
                         } catch (Exception e) {
                             GPLog.error(this, null, e);
                         }
