@@ -22,5 +22,6 @@
   <string name="selected_file_no_vector_data">Wskazany plik nie zawiera żadnych danych wektorowych:</string>
   <string name="adding_new_source">Dodawanie nowego źródła...</string>
   <string name="select_spatialite_database">Wybierz którą bazę spatialite dodać</string>
+  <string name="select_spatialite_database_folder">Wybierz folder z bazą spatialite którą chcesz dodać</string>
   <string name="loading_databases">Wyczytuje bazy danych...</string>
 </resources>

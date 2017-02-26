@@ -34,9 +34,15 @@
   <string name="webprojects_list_title">Lista Remota de Projetos</string>
   <string name="downloading">A descarregar...</string>
   <string name="downloading_projects_list_from_server">A descarregar a lista de projetos do servidor.</string>
+  <string name="downloading_layers_list_from_server">A descarregar a lista de camadas do servidor.</string>
+  <string name="downloading_data_from_server">A descarregar dados do servidor.</string>
   <string name="error_projects_list">Ocorreu um erro ao tentar obter a lista de projetos.</string>
+  <string name="error_data_list">Ocorreu um erro ao obter a lista de camadas de dados.</string>
   <string name="downloading_project">A descarregar o projeto...</string>
+  <string name="downloading_data">A descarregar dados...</string>
+  <string name="downloading_data_to_the_device">A descarregar as camadas selecionadas como uma base de dados spatialite para o dispositivo.</string>
   <string name="project_successfully_downloaded">O projeto foi descarregado com sucesso.</string>
+  <string name="data_successfully_downloaded">Os dados foram descarregados com sucesso.</string>
   <string name="proximity_alert">Alerta de Proximidade!</string>
   <string name="approaching_poi">A chegar perto de um ponto de interesse.</string>
   <string name="form_field_check">Por favor confirme que o campo \"%1$s\" na secção \"%2$s\" é válido. Restrições não validadas: %3$s.</string>
@@ -99,10 +105,12 @@
   <string name="label_field">Campo da etiqueta</string>
   <string name="set_properties">Definir propriedades</string>
   <string name="set_dash">Definbir Tracejado</string>
+  <string name="unauthorized_api_key">Acesso não autorizado. Verifique a sua chave API.</string>
   <string name="fill_and_stroke_color_title">Cor da Linha e do Preenchimento</string>
   <string name="fill_color_title">Cor do Preenchimento</string>
   <string name="fill_alpha_title">Transparência do Preenchimento</string>
   <string name="stroke_color_title">Cor da Linha</string>
   <string name="stroke_width_title">Espessura da Linha</string>
   <string name="stroke_alpha_title">Transparência da Linha</string>
+  <string name="saving_to_database">A gravar os dados na base de dados...</string>
 </resources>

@@ -22,5 +22,6 @@
   <string name="selected_file_no_vector_data">O ficheiro selecionado não contém dados vetoriais:</string>
   <string name="adding_new_source">A adicionar uma nova fonte...</string>
   <string name="select_spatialite_database">Seleciona a base de dados SpatiaLite a adicionar</string>
+  <string name="select_spatialite_database_folder">Seleciona a pasta da base de dados SpatiaLite a adicionar</string>
   <string name="loading_databases">A carregar bases de dados...</string>
 </resources>
