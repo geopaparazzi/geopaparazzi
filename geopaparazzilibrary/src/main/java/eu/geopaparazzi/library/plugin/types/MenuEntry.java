@@ -24,7 +24,7 @@ import eu.geopaparazzi.library.util.IActivitySupporter;
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
-public class MenuEntry implements IMenuEntry {
+public abstract class MenuEntry implements IMenuEntry {
     private String label = null;
     private byte[] icon = null;
     protected int requestCode = -1;
@@ -45,31 +45,6 @@ public class MenuEntry implements IMenuEntry {
 
     public void setIcon(byte[] icon) {
         this.icon = icon;
-    }
-
-    @Override
-    public void onClick(IActivitySupporter clickActivityStarter) {
-        if (processOnClick(clickActivityStarter)) {
-            start(clickActivityStarter);
-        }
-    }
-
-    /**
-     * The start method called if the processOnCLick returns true.
-     * @param clickActivityStarter
-     */
-    protected void start(IActivitySupporter clickActivityStarter){};
-
-    /**
-     * This method is invoked when the entry is clicked, before the activity specified
-     * by the action is started. The activity execution can be cancelled if this
-     * method returns false
-     *
-     * @return false to cancel the execution of the action, true otherwise
-     * @param clickActivityStarter
-     */
-    protected boolean processOnClick(IActivitySupporter clickActivityStarter) {
-        return true;
     }
 
     @Override
