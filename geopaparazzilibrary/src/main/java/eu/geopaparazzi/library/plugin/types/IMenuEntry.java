@@ -39,9 +39,9 @@ public interface IMenuEntry {
     byte[] getIcon();
 
     /**
-     * This is invoked when the entry is clicked, before the activity specified
-     * by the action is started. The activity execution can be cancelled if this
-     * method returns false
+     * This is invoked when the entry is clicked. Use this method to
+     * implement the action to perform by the entry (e.g. opening an
+     * activity, showing a dialog, etc)
      */
     void onClick(IActivitySupporter clickActivityStarter);
 
