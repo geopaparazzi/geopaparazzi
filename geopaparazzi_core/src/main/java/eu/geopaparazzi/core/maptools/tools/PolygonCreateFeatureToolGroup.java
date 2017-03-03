@@ -64,7 +64,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
@@ -272,12 +271,12 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
                 }
 
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-                if (editLayer instanceof SpatialVectorTableLayer) {
-                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
+                if (editLayer instanceof SpatialVectorTable) {
+                    SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
                     try {
                         for (Geometry geometry : geomsList) {
                             DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
-                                    spatialVectorTableLayer.getSpatialVectorTable());
+                                    spatialVectorTable);
                         }
                         GPDialogs.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                         coordinatesList.clear();
@@ -335,9 +334,8 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
             polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
             if (!polygonGeometry.isValid() && firstInvalid) {
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-                if (editLayer instanceof SpatialVectorTableLayer) {
-                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
-                    SpatialVectorTable spatialVectorTable = spatialVectorTableLayer.getSpatialVectorTable();
+                if (editLayer instanceof SpatialVectorTable) {
+                    SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
                     int geomType = spatialVectorTable.getGeomType();
                     GeometryType geometryType = GeometryType.forValue(geomType);
                     if (!geometryType.isGeometryCompatible(polygonGeometry)) {

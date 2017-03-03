@@ -48,7 +48,6 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
@@ -142,9 +141,8 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
         final ILayer editLayer = EditManager.INSTANCE.getEditLayer();
 
 
-        if (editLayer instanceof SpatialVectorTableLayer) {
-            SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-            SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+        if (editLayer instanceof SpatialVectorTable) {
+            SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
 
             int tmpIndex = 0;
             for (Map.Entry<SpatialiteMap, SpatialVectorTable> entry : spatialVectorTables.entrySet()) {
@@ -183,8 +181,7 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
 
                             SpatialiteMap spatialiteMap = editableSpatialiteMaps.get(position);
                             SpatialVectorTable spatialVectorTable = spatialVectorTables.get(spatialiteMap);
-                            ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
-                            EditManager.INSTANCE.setEditLayer(layer);
+                            EditManager.INSTANCE.setEditLayer(spatialVectorTable);
 
 //                            finish();
                         }

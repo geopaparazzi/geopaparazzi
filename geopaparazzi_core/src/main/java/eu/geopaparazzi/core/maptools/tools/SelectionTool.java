@@ -44,7 +44,6 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.geopaparazzi.core.R;
@@ -179,8 +178,7 @@ public class SelectionTool extends MapTool {
     private void select(final double n, final double w, final double s, final double e) {
 
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-        SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-        final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+        final SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
 
         final Context context = EditManager.INSTANCE.getEditingView().getContext();
         infoProgressDialog = new ProgressDialog(context);

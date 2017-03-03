@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
@@ -41,7 +42,7 @@ import static eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtiliti
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialVectorTable extends AbstractSpatialTable implements Serializable {
+public class SpatialVectorTable extends AbstractSpatialTable implements Serializable, ILayer {
     private static final long serialVersionUID = 1L;
 
     private final String geometryColumn;

@@ -36,6 +36,7 @@ import java.util.Map;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
@@ -211,6 +212,10 @@ public enum SpatialiteSourcesManager {
      */
     public void removeSpatialiteMap(SpatialiteMap spatialiteMap) throws java.lang.Exception {
         mSpatialiteMaps.remove(spatialiteMap);
+        SpatialVectorTable table = mSpatialiteMaps2TablesMap.get(spatialiteMap);
+        if (EditManager.INSTANCE.getEditLayer()==table) {
+            EditManager.INSTANCE.setEditLayer(null);
+        }
         mSpatialiteMaps2TablesMap.remove(spatialiteMap);
         SpatialiteDatabaseHandler handler = mSpatialiteMaps2DbHandlersMap.remove(spatialiteMap);
         if (handler != null) {
@@ -231,6 +236,10 @@ public enum SpatialiteSourcesManager {
     public void removeSpatialiteMaps(List<SpatialiteMap> spatialiteMaps) throws java.lang.Exception {
         mSpatialiteMaps.removeAll(spatialiteMaps);
         for (SpatialiteMap spatialiteMap : spatialiteMaps) {
+            SpatialVectorTable table = mSpatialiteMaps2TablesMap.get(spatialiteMap);
+            if (EditManager.INSTANCE.getEditLayer()==table) {
+                EditManager.INSTANCE.setEditLayer(null);
+            }
             mSpatialiteMaps2TablesMap.remove(spatialiteMap);
             SpatialiteDatabaseHandler handler = mSpatialiteMaps2DbHandlersMap.remove(spatialiteMap);
             if (handler != null) {
