@@ -51,7 +51,6 @@ import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.geopaparazzi.core.R;
@@ -249,8 +248,7 @@ public class PolygonCutExtendTool extends MapTool {
                         final com.vividsolutions.jts.geom.Point startPoint, final com.vividsolutions.jts.geom.Point endPoint) {
 
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-        SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-        final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+        final SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
 
         final Context context = EditManager.INSTANCE.getEditingView().getContext();
         final ProgressDialog infoProgressDialog = new ProgressDialog(context);

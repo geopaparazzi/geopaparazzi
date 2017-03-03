@@ -65,7 +65,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
@@ -263,18 +263,18 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
                 geomsList.add(pointGeometry);
 
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-                if (editLayer instanceof SpatialVectorTableLayer) {
-                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
+                if (editLayer instanceof SpatialVectorTable) {
+                    SpatialVectorTable spatialVectorTable = (SpatialVectorTable) editLayer;
                     try {
                         if (this.featureToContinue == null) {
                             for (Geometry geometry : geomsList) {
                                 DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
-                                        spatialVectorTableLayer.getSpatialVectorTable());
+                                        spatialVectorTable);
                             }
                         } else {
                             DaoSpatialite.updateFeatureGeometry(
                                     featureToContinue.getId(),
-                                    pointGeometry, LibraryConstants.SRID_WGS84_4326, spatialVectorTableLayer.getSpatialVectorTable());
+                                    pointGeometry, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
                         }
                         GPDialogs.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                         coordinatesList.clear();
