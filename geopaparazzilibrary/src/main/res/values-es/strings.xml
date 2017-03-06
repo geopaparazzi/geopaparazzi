@@ -78,7 +78,7 @@
   <string name="point_size">Tamaño del punto</string>
   <string name="decimation">Reducción decimal</string>
   <string name="no_data">No hay datos disponibles</string>
-  <string name="file_upload_completed_properly">La descarga del fichero se realizó correctamente</string>
+  <string name="file_upload_completed_properly">La carga del fichero se realizó correctamente</string>
   <string name="http_forbidden_msg">El acceso al servidor ha sido denegado. Verifique por favor sus credenciales y la url de conexión.</string>
   <string name="http_not_found_msg">No ha sido posible localizar el recurso solicitado. Verifique por favor su URL de conexión.</string>
   <string name="http_not_implemented_code_msg">El código de mensaje devuelto se ha capturado (remítalo por favor al desarrollador):</string>
