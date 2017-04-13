@@ -1,0 +1,220 @@
+[
+
+    {
+        "sectionname": "WWT-plant",
+        "sectiondescription": "WWT-plant",
+        "forms": [
+
+        {
+            "formname": "General data",
+            "formitems": [
+
+        {
+             "key": "Plant name",
+             "value": "El Moufty Plant",
+             "islabel": "true",
+             "type": "string",
+             "mandatory": "yes"
+        }
+,
+        {
+             "key": "Local Responsible Admin",
+             "value": "Kafr el Sheikh",
+             "type": "string",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "District",
+             "value": "Sidi Salim",
+             "type": "string",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Village",
+             "value": "El Moufty",
+             "type": "string",
+             "mandatory": "no"
+        }
+             ]
+        }
+,
+        {
+            "formname": "Construction info",
+            "formitems": [
+
+        {
+             "key": "WWTP technology",
+             "values": {
+                 "items": [
+                     {"item": ""},
+                     {"item": "Stabilization ponds (GTZ model)"}                 ]
+             },
+             "value": "",
+             "type": "stringcombo",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Designed by",
+             "value": "Prof M.Abdel Azeem",
+             "type": "string",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Year of construction",
+             "value": "",
+             "type": "date",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Startup",
+             "value": "",
+             "type": "date",
+             "mandatory": "no"
+        }
+             ]
+        }
+,
+        {
+            "formname": "Technical data",
+            "formitems": [
+
+        {
+             "key": "Served population [inhab]",
+             "value": "3000.0",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Plant capacity [m3/d]",
+             "value": "450.0",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Surface [m2]",
+             "value": "6000.0",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Pro capita inflow [m3/inhab d]",
+             "value": "0.066",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Pro capita water use [l/inhab d]",
+             "value": "111.0",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Inflow [m3/d]",
+             "value": "200.0",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Outflow quality analysis",
+             "values": {
+                 "items": [
+                     {"item": ""},
+                     {"item": "monthly"},
+                     {"item": "yearly"}                 ]
+             },
+             "value": "",
+             "type": "stringcombo",
+             "mandatory": "no"
+        }
+             ]
+        }
+,
+        {
+            "formname": "Lab data",
+            "formitems": [
+
+        {
+             "key": "PH",
+             "values": {
+                 "items": [
+                     {"item": ""},
+                     {"item": "PH < 5"},
+                     {"item": "5 < PH < 7"},
+                     {"item": "PH > 7"}                 ]
+             },
+             "value": "PH < 5",
+             "type": "stringcombo",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "BOD in [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "BOD out [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Coliforms in [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Coliforms out [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "COD in [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "COD out [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Suspended solids in [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+,
+        {
+             "key": "Suspended solids out [mg/l]",
+             "value": "",
+             "type": "double",
+             "mandatory": "no"
+        }
+             ]
+        }
+         ]
+    }
+]
