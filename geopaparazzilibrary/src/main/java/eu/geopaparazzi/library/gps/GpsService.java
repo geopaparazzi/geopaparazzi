@@ -603,6 +603,9 @@ public class GpsService extends Service implements LocationListener, Listener {
     }
 
     public void onGpsStatusChanged(int event) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            throw new SecurityException();
+        }
         mStatus = locationManager.getGpsStatus(mStatus);
 
         // check fix
