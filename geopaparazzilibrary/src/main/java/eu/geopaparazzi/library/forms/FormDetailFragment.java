@@ -48,7 +48,6 @@ import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;

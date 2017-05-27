@@ -23,9 +23,9 @@ import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
@@ -37,177 +37,182 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A view that presents 2 connected {@link Spinner}s.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GTwoConnectedComboView extends View implements GView, OnItemSelectedListener {
 
-    private Spinner titleSpinner;
-    private Spinner valuesSpinner;
+    private Spinner combo1Spinner;
+    private Spinner combo2Spinner;
     private LinkedHashMap<String, List<String>> dataMap;
-    private LinearLayout textLayout;
-    private String value;
+    private LinearLayout combosLayout;
+    private String _combo1Value;
+    private String _combo2Value;
+
+    private String sep = "#";
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GTwoConnectedComboView( Context context, AttributeSet attrs, int defStyle ) {
+    public GTwoConnectedComboView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GTwoConnectedComboView( Context context, AttributeSet attrs ) {
+    public GTwoConnectedComboView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
-     * @param dataMap the map of the data.
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 _value
+     * @param dataMap               the map of the data.
      * @param constraintDescription constraints
      */
-    public GTwoConnectedComboView( Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
-            LinkedHashMap<String, List<String>> dataMap, String constraintDescription ) {
+    public GTwoConnectedComboView(Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
+                                  LinkedHashMap<String, List<String>> dataMap, String constraintDescription) {
         super(context, attrs);
-        this.value = value;
         this.dataMap = dataMap;
 
-        textLayout = new LinearLayout(context);
+        if (value == null)
+            value = "";
+
+        String[] valueSplit = value.split(sep);
+        if (valueSplit.length == 2) {
+            _combo1Value = valueSplit[0];
+            _combo2Value = valueSplit[1];
+        } else {
+            _combo1Value = "";
+            _combo2Value = "";
+        }
+
+        combosLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        parentView.addView(textLayout);
+        combosLayout.setLayoutParams(layoutParams);
+        combosLayout.setOrientation(LinearLayout.VERTICAL);
+        parentView.addView(combosLayout);
 
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(Compat.getColor(context, R.color.formcolor));
-        textLayout.addView(textView);
+        combosLayout.addView(textView);
 
-        titleSpinner = new Spinner(context);
-        titleSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        titleSpinner.setPadding(15, 5, 15, 5);
+        combo1Spinner = new Spinner(context);
+        LinearLayout.LayoutParams titleSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        titleSpinnerParams.setMargins(15, 25, 15, 15);
+        combo1Spinner.setLayoutParams(titleSpinnerParams);
         Set<String> titlesSet = dataMap.keySet();
-        String[] titlesArray = titlesSet.toArray(new String[titlesSet.size()]);
-        String[] titlesArray2 = new String[titlesArray.length + 1];
-        System.arraycopy(titlesArray, 0, titlesArray2, 1, titlesArray.length);
-        titlesArray2[0] = "";
-        ArrayAdapter<String> titleListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item,
-                titlesArray2);
+        ArrayList<String> combo1Items = new ArrayList<>(titlesSet);
+        combo1Items.add(0, "");
+        ArrayAdapter<String> titleListAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, combo1Items);
         titleListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        titleSpinner.setAdapter(titleListAdapter);
-        titleSpinner.setOnItemSelectedListener(this);
+        combo1Spinner.setAdapter(titleListAdapter);
+        combo1Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
+        combo1Spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        int minHeight = getMinComboHeight(context);
+        combo1Spinner.setMinimumHeight(minHeight);
 
-        List<String> valuesList = null;
-        if (value != null) {
-            String titleString = null;
-            if (value.length() == 0) {
-                titleString = "";
-            } else {
-                Set<Entry<String, List<String>>> entrySet = dataMap.entrySet();
-                for( Entry<String, List<String>> entry : entrySet ) {
-                    List<String> tmpValuesList = entry.getValue();
-                    if (tmpValuesList.contains(value.trim())) {
-                        titleString = entry.getKey();
-                        break;
-                    }
-                }
-            }
-            if (titleString != null) {
-                valuesList = dataMap.get(titleString);
-                for( int i = 0; i < titlesArray2.length; i++ ) {
-                    if (titlesArray2[i].equals(titleString.trim())) {
-                        titleSpinner.setSelection(i);
-                        break;
-                    }
-                }
+        combo2Spinner = new Spinner(context);
+        LinearLayout.LayoutParams valueSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        valueSpinnerParams.setMargins(15, 25, 15, 15);
+        combo2Spinner.setLayoutParams(valueSpinnerParams);
+        combo2Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
+        combo2Spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        combo2Spinner.setMinimumHeight(minHeight);
+
+        List<String> combo2ItemsList = new ArrayList<>();
+        if (_combo1Value.length() > 0) {
+            combo2ItemsList = dataMap.get(_combo1Value);
+            int indexOf = combo1Items.indexOf(_combo1Value.trim());
+            if (indexOf != -1) {
+                combo1Spinner.setSelection(indexOf, false);
             }
         }
+        ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, combo2ItemsList);
+        combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        combo2Spinner.setAdapter(combo2ListAdapter);
 
-        valuesSpinner = new Spinner(context);
-        valuesSpinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        valuesSpinner.setPadding(15, 5, 15, 5);
-        List<String> dummyValuesList = new ArrayList<String>();
-        if (valuesList != null) {
-            dummyValuesList = valuesList;
+        combosLayout.addView(combo1Spinner);
+        combosLayout.addView(combo2Spinner);
+
+        if (_combo2Value.length() > 0) {
+//            int indexOf = combo2ItemsList.indexOf(_combo2Value.trim());
+//            if (indexOf != -1) {
+//            }
+            int position = combo2ListAdapter.getPosition(_combo2Value);
+            combo2Spinner.setSelection(position, false);
         }
-        ArrayAdapter<String> valuesListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item,
-                dummyValuesList);
-        valuesListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        valuesSpinner.setAdapter(valuesListAdapter);
-        // valuesSpinner.setOnItemSelectedListener(this);
-        checkValueSpinnerSelection(valuesList);
-        textLayout.addView(titleSpinner);
-        textLayout.addView(valuesSpinner);
 
+        combo1Spinner.setOnItemSelectedListener(this);
     }
 
-    private void checkValueSpinnerSelection( List<String> valuesList ) {
-        if (valuesList != null) {
-            for( int i = 0; i < valuesList.size(); i++ ) {
-                if (valuesList.get(i).equals(value.trim())) {
-                    valuesSpinner.setSelection(i);
-                    break;
-                }
-            }
+    private int getMinComboHeight(Context context) {
+        int minHeight = 48;
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            android.util.TypedValue tv = new android.util.TypedValue();
+            activity.getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, tv, true);
+            android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            float ret = tv.getDimension(metrics);
+
+            minHeight = (int) (ret - 1 * metrics.density);
         }
+        return minHeight;
     }
+
 
     public String getValue() {
-        Object selectedItem = valuesSpinner.getSelectedItem();
-        if (selectedItem == null) {
-            return "";
-        }
-        return selectedItem.toString();
+        Object selected1Item = combo1Spinner.getSelectedItem();
+        Object selected2Item = combo2Spinner.getSelectedItem();
+        String result = selected1Item.toString() + sep + selected2Item.toString();
+        return result;
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // ignore
     }
 
     @Override
-    public void onItemSelected( AdapterView< ? > parent, View callingView, int pos, long arg3 ) {
-        if (parent == titleSpinner) {
-            String title = titleSpinner.getSelectedItem().toString();
-            List<String> valuesList;
-            if (title.length() == 0) {
-                // nothing selected yet
-                valuesList = new ArrayList<String>();
-            } else {
-                valuesList = dataMap.get(title);
+    public void onItemSelected(AdapterView<?> parent, View callingView, int pos, long arg3) {
+        if (parent == combo1Spinner) {
+            String combo1Item = combo1Spinner.getSelectedItem().toString();
+            List<String> valuesList = new ArrayList<>();
+            if (combo1Item.length() != 0) {
+                valuesList = dataMap.get(combo1Item);
             }
-            ArrayAdapter<String> valuesListAdapter = new ArrayAdapter<String>(parent.getContext(),
-                    android.R.layout.simple_spinner_item, valuesList);
+            ArrayAdapter<String> valuesListAdapter = new ArrayAdapter<>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, valuesList);
             valuesListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            valuesSpinner.setAdapter(valuesListAdapter);
-            checkValueSpinnerSelection(valuesList);
+            combo2Spinner.setAdapter(valuesListAdapter);
         }
     }
 
     @Override
-    public void onNothingSelected( AdapterView< ? > arg0 ) {
+    public void onNothingSelected(AdapterView<?> arg0) {
         // ignore
     }
 

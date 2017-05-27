@@ -19,6 +19,8 @@ package eu.geopaparazzi.library.forms.views;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
@@ -86,10 +88,25 @@ public class GComboView extends View implements GView {
         textLayout.addView(textView);
 
         spinner = new Spinner(context);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
+        LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        spinnerParams.setMargins(15,25, 15, 15);
+        spinner.setLayoutParams(spinnerParams);
+        spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
+        spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        int minHeight = 48;
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            android.util.TypedValue tv = new android.util.TypedValue();
+            activity.getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, tv, true);
+            android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            float ret = tv.getDimension(metrics);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, itemsArray);
+            minHeight = (int) (ret - 1 * metrics.density);
+        }
+        spinner.setMinimumHeight(minHeight);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, itemsArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         if (value != null) {
