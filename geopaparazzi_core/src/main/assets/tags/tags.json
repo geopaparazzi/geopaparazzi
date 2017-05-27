@@ -265,7 +265,7 @@
                                 {"item": "choice 5 of 2"}
                             ]
                         },
-                        "value": "choice 4 of 2",
+                        "value": "items 2#choice 4 of 2",
                         "type": "connectedstringcombo"
                     }
                 ]
