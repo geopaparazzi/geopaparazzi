@@ -154,6 +154,7 @@ public class KmzExportDialogFragment extends DialogFragment {
                         Long id = lineEntry.getKey();
                         Line line = lineEntry.getValue();
                         LogMapItem mapItem = mapitemsMap.get(id);
+                        if (mapItem == null) continue;
                         float width = mapItem.getWidth();
                         String color = mapItem.getColor();
                         line.setStyle(width, color);
