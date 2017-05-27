@@ -50,6 +50,7 @@ import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
+import eu.geopaparazzi.library.forms.views.GOneToManyConnectedComboView;
 import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -57,6 +58,7 @@ import eu.geopaparazzi.library.forms.views.GTimeView;
 import eu.geopaparazzi.library.forms.views.GTwoConnectedComboView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
+import eu.geopaparazzi.library.util.NamedList;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -136,6 +138,11 @@ public class FormUtilities {
      * Type for two connected {@link Spinner}.
      */
     public static final String TYPE_CONNECTEDSTRINGCOMBO = "connectedstringcombo";
+
+    /**
+     * Type for one to many connected {@link Spinner}.
+     */
+    public static final String TYPE_ONETOMANYSTRINGCOMBO = "onetomanystringcombo";
 
     /**
      * Type for a multi combo.
@@ -254,6 +261,7 @@ public class FormUtilities {
      *
      */
     public static final String TAG_ITEMS = "items";
+    public static final String TAG_ITEMNAME = "itemname";
     /**
      *
      */
@@ -403,6 +411,23 @@ public class FormUtilities {
     public static GView addConnectedComboView(Context context, LinearLayout mainView, String label, String value,
                                               LinkedHashMap<String, List<String>> valuesMap, String constraintDescription) {
         return new GTwoConnectedComboView(context, null, mainView, label, value, valuesMap,
+                constraintDescription);
+    }
+
+    /**
+     * Adds one to many connected {@link Spinner} to the supplied mainView.
+     *
+     * @param context               the context.
+     * @param mainView              the main view to which to add the new widget to.
+     * @param label                 the label of the widget.
+     * @param value                 the value to put in the widget.
+     * @param valuesMap             the map of connected strings to put in the spinners.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
+    public static GView addOneToManyConnectedComboView(Context context, LinearLayout mainView, String label, String value,
+                                                       LinkedHashMap<String, List<NamedList<String>>> valuesMap, String constraintDescription) {
+        return new GOneToManyConnectedComboView(context, null, mainView, label, value, valuesMap,
                 constraintDescription);
     }
 

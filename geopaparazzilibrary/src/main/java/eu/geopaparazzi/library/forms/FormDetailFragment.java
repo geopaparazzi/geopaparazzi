@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.NamedList;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LABEL;
@@ -67,6 +68,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_MAP;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_NFCUID;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_ONETOMANYSTRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
@@ -253,6 +255,11 @@ public class FormDetailFragment extends android.support.v4.app.Fragment {
                     case TYPE_CONNECTEDSTRINGCOMBO:
                         LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
                         addedView = FormUtilities.addConnectedComboView(activity, mainView, label, value, valuesMap,
+                                constraintDescription);
+                        break;
+                    case TYPE_ONETOMANYSTRINGCOMBO:
+                        LinkedHashMap<String, List<NamedList<String>>> oneToManyValuesMap = TagsManager.extractOneToManyComboValuesMap(jsonObject);
+                        addedView = FormUtilities.addOneToManyConnectedComboView(activity, mainView, label, value, oneToManyValuesMap,
                                 constraintDescription);
                         break;
                     case TYPE_STRINGMULTIPLECHOICE: {

@@ -36,6 +36,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.NamedList;
 import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMNAME;
@@ -44,6 +45,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMITEMS;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMS;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ITEM;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ITEMNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ITEMS;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SHORTNAME;
@@ -147,7 +149,7 @@ public class TagsManager {
         File tagsFile = null;
         if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
             Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-            if (activeProfile.tagsPath!=null) {
+            if (activeProfile.tagsPath != null) {
                 tagsFile = new File(activeProfile.tagsPath);
                 if (!tagsFile.exists())
                     tagsFile = null;
@@ -328,9 +330,7 @@ public class TagsManager {
      * @throws JSONException if something goes wrong.
      */
     public static LinkedHashMap<String, List<String>> extractComboValuesMap(JSONObject formItem) throws JSONException {
-
         LinkedHashMap<String, List<String>> valuesMap = new LinkedHashMap<String, List<String>>();
-
         if (formItem.has(TAG_VALUES)) {
             JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
 
@@ -355,6 +355,50 @@ public class TagsManager {
         }
         return valuesMap;
 
+    }
+
+    /**
+     * Extract the combo values map.
+     *
+     * @param formItem the json object.
+     * @return the map of combo items.
+     * @throws JSONException if something goes wrong.
+     */
+    public static LinkedHashMap<String, List<NamedList<String>>> extractOneToManyComboValuesMap(JSONObject formItem) throws JSONException {
+        LinkedHashMap<String, List<NamedList<String>>> valuesMap = new LinkedHashMap<>();
+        if (formItem.has(TAG_VALUES)) {
+            JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
+
+            JSONArray names = valuesObj.names();
+            int length = names.length();
+            for (int i = 0; i < length; i++) {
+                String name = names.getString(i);
+
+                List<NamedList<String>> valuesList = new ArrayList<>();
+                JSONArray itemsArray = valuesObj.getJSONArray(name);
+                int length2 = itemsArray.length();
+                for (int j = 0; j < length2; j++) {
+                    JSONObject itemObj = itemsArray.getJSONObject(j);
+
+                    String itemName = itemObj.getString(TAG_ITEMNAME);
+                    JSONArray itemsSubArray = itemObj.getJSONArray(TAG_ITEMS);
+                    NamedList<String> namedList = new NamedList<>();
+                    namedList.name = itemName;
+                    int length3 = itemsSubArray.length();
+                    for (int k = 0; k < length3; k++) {
+                        JSONObject subIemObj = itemsSubArray.getJSONObject(k);
+                        if (subIemObj.has(TAG_ITEM)) {
+                            namedList.items.add(subIemObj.getString(TAG_ITEM).trim());
+                        } else {
+                            namedList.items.add(" - ");
+                        }
+                    }
+                    valuesList.add(namedList);
+                }
+                valuesMap.put(name, valuesList);
+            }
+        }
+        return valuesMap;
     }
 
     /**

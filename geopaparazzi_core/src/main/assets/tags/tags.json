@@ -267,6 +267,58 @@
                         },
                         "value": "items 2#choice 4 of 2",
                         "type": "connectedstringcombo"
+                    },{
+                        "key": "a combo that is connected to two others",
+                        "values": {
+                            "items 1": [
+                                {
+                                    "itemname": "subitem 1 of item 1",
+                                    "items":[
+                                      {"item": ""},
+                                      {"item": "choice 1/sub 1/item 1"},
+                                      {"item": "choice 2/sub 1/item 1"},
+                                      {"item": "choice 3/sub 1/item 1"},
+                                      {"item": "choice 4/sub 1/item 1"},
+                                      {"item": "choice 5/sub 1/item 1"}
+                                    ]
+                                },{
+                                    "itemname": "subitem 2 of item 1",
+                                    "items":[
+                                      {"item": ""},
+                                      {"item": "choice 1/sub 2/item 1"},
+                                      {"item": "choice 2/sub 2/item 1"},
+                                      {"item": "choice 3/sub 2/item 1"},
+                                      {"item": "choice 4/sub 2/item 1"},
+                                      {"item": "choice 5/sub 2/item 1"}
+                                    ]
+                                }
+                            ],
+                            "items 2": [
+                              {
+                                "itemname": "subitem 1 of item 2",
+                                "items":[
+                                  {"item": ""},
+                                  {"item": "choice 1/sub 1/item 2"},
+                                  {"item": "choice 2/sub 1/item 2"},
+                                  {"item": "choice 3/sub 1/item 2"},
+                                  {"item": "choice 4/sub 1/item 2"},
+                                  {"item": "choice 5/sub 1/item 2"}
+                                ]
+                              },{
+                                "itemname": "subitem 2 of item 2",
+                                "items":[
+                                  {"item": ""},
+                                  {"item": "choice 1/sub 2/item 2"},
+                                  {"item": "choice 2/sub 2/item 2"},
+                                  {"item": "choice 3/sub 2/item 2"},
+                                  {"item": "choice 4/sub 2/item 2"},
+                                  {"item": "choice 5/sub 2/item 2"}
+                                ]
+                              }
+                            ]
+                        },
+                        "value": "items 2#choice 1/sub 1/item 2#choice 5/sub 2/item 2",
+                        "type": "onetomanystringcombo"
                     }
                 ]
             },{
