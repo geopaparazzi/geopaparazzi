@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import java.util.Map.Entry;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.mapsforge.R;
 
 /**
@@ -46,6 +49,8 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity activity;
     private List<String> folderList;
     private List<List<BaseMap>> tablesList;
+    private final BaseMap selectedBaseMap;
+    private final int selectionColorColor;
 
     /**
      * @param activity         activity to use.
@@ -53,6 +58,10 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
      */
     public SourcesExpandableListAdapter(Activity activity, LinkedHashMap<String, List<BaseMap>> folder2TablesMap) {
         this.activity = activity;
+
+        selectedBaseMap = BaseMapSourcesManager.INSTANCE.getSelectedBaseMap();
+        selectionColorColor = Compat.getColor(activity, R.color.main_selection);
+
         folderList = new ArrayList<>();
         tablesList = new ArrayList<>();
         for (Entry<String, List<BaseMap>> entry : folder2TablesMap.entrySet()) {
@@ -88,6 +97,10 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         tableTypeView.setText("[" + baseMap.mapType + "]");
+
+        if (selectedBaseMap!=null && selectedBaseMap.equals(baseMap)){
+            convertView.setBackgroundColor(selectionColorColor);
+        }
 
         return convertView;
     }

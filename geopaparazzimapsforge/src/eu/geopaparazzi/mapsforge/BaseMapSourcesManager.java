@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -370,6 +371,21 @@ public enum BaseMapSourcesManager {
             }
         }
         return selectedBaseMapTable;
+    }
+
+    /**
+     * Getter for the current selected basemap.
+     *
+     * @return the current selected basemap.
+     */
+    public BaseMap getSelectedBaseMap() {
+        AbstractSpatialTable selectedBaseMapTable = getSelectedBaseMapTable();
+        for (Map.Entry<BaseMap, AbstractSpatialTable> entry: mBaseMaps2TablesMap.entrySet()) {
+            if (entry.getValue().getDatabasePath().equals(selectedBaseMapTable.getDatabasePath())){
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     /**
