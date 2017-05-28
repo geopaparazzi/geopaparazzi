@@ -31,10 +31,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import eu.geopaparazzi.library.R;
@@ -42,6 +40,7 @@ import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.NamedList;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.SEP;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 /**
@@ -52,13 +51,8 @@ import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 public class GOneToManyConnectedComboView extends View implements GView, OnItemSelectedListener {
 
     private Spinner mainComboSpinner;
-    private ArrayList<Spinner> name2ComboMap;
+    private ArrayList<Spinner> orderedSubCombosList;
     private LinkedHashMap<String, List<NamedList<String>>> dataMap;
-    private LinearLayout combosLayout;
-    private String _mainComboValue;
-    private List<String> _comboValues = new ArrayList<>();
-
-    private String sep = "#";
 
     /**
      * @param context  the context to use.
@@ -94,7 +88,9 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         if (value == null)
             value = "";
 
-        String[] valueSplit = value.split(sep);
+        String[] valueSplit = value.split(SEP, -1);
+        String _mainComboValue;
+        List<String> _comboValues = new ArrayList<>();
         if (valueSplit.length > 1) {
             _mainComboValue = valueSplit[0];
             for (int i = 1; i < valueSplit.length; i++) {
@@ -107,7 +103,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             }
         }
 
-        combosLayout = new LinearLayout(context);
+        LinearLayout combosLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -137,9 +133,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         int minHeight = getMinComboHeight(context);
         mainComboSpinner.setMinimumHeight(minHeight);
 
-        List<NamedList<String>> otherComboItemsList = new ArrayList<>();
         if (_mainComboValue.length() > 0) {
-            otherComboItemsList = dataMap.get(_mainComboValue);
             int indexOf = mainComboItems.indexOf(_mainComboValue.trim());
             if (indexOf != -1) {
                 mainComboSpinner.setSelection(indexOf, false);
@@ -147,13 +141,17 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         }
         combosLayout.addView(mainComboSpinner);
 
-        name2ComboMap = new ArrayList<>();
+        orderedSubCombosList = new ArrayList<>();
 
         List<NamedList<String>> namedLists = dataMap.get(_mainComboValue);
         if (namedLists == null) {
             // use the first one for the names
             namedLists = dataMap.values().iterator().next();
         }
+        int subCombosNum = namedLists.size();
+        int subValuesSize = _comboValues.size();
+        boolean hasValues = subCombosNum == subValuesSize;
+        int index = 0;
         for (NamedList<String> namedList : namedLists) {
             TextView subTextView = new TextView(context);
             subTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -174,15 +172,16 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             subSpinner.setAdapter(combo2ListAdapter);
 
-            name2ComboMap.add(subSpinner);
+            orderedSubCombosList.add(subSpinner);
             combosLayout.addView(subSpinner);
-//            if (_combo2Value.length() > 0) {
-////            int indexOf = combo2ItemsList.indexOf(_combo2Value.trim());
-////            if (indexOf != -1) {
-////            }
-//                int position = combo2ListAdapter.getPosition(_combo2Value);
-//                combo2Spinner.setSelection(position, false);
-//            }
+
+
+            if (hasValues) {
+                String subValue = _comboValues.get(index);
+                index++;
+                int position = combo2ListAdapter.getPosition(subValue);
+                subSpinner.setSelection(position, false);
+            }
         }
 
 
@@ -207,10 +206,12 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
 
     public String getValue() {
         Object mainComboItem = mainComboSpinner.getSelectedItem();
+        if (mainComboItem == null) mainComboItem = "";
         String result = mainComboItem.toString();
-        for (Spinner spinner : name2ComboMap) {
+        for (Spinner spinner : orderedSubCombosList) {
             Object item = spinner.getSelectedItem();
-            result += sep + item;
+            if (item == null) item = "";
+            result += SEP + item;
         }
         return result;
     }
@@ -227,16 +228,21 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View callingView, int pos, long arg3) {
-//        if (parent == combo1Spinner) {
-//            String combo1Item = combo1Spinner.getSelectedItem().toString();
-//            List<String> valuesList = new ArrayList<>();
-//            if (combo1Item.length() != 0) {
-//                valuesList = dataMap.get(combo1Item);
-//            }
-//            ArrayAdapter<String> valuesListAdapter = new ArrayAdapter<>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, valuesList);
-//            valuesListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            combo2Spinner.setAdapter(valuesListAdapter);
-//        }
+        if (parent == mainComboSpinner) {
+            String mainComboItem = mainComboSpinner.getSelectedItem().toString();
+
+            List<NamedList<String>> namedLists = new ArrayList<>();
+            if (mainComboItem.length() != 0) {
+                namedLists = dataMap.get(mainComboItem);
+            }
+            for (int i = 0; i < namedLists.size(); i++) {
+                NamedList<String> namedList = namedLists.get(i);
+                Spinner subSpinner = orderedSubCombosList.get(i);
+                ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, namedList.items);
+                combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                subSpinner.setAdapter(combo2ListAdapter);
+            }
+        }
     }
 
     @Override

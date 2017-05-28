@@ -284,6 +284,11 @@ public class FormUtilities {
     public static final String TAG_URL = "url";
 
     /**
+     * Separator for multiple items in the form results.
+     */
+    public static String SEP = "#";
+
+    /**
      * Checks if the type is a special one.
      *
      * @param type the type string from the form.

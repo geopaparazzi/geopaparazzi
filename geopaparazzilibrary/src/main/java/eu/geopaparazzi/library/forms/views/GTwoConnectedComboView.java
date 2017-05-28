@@ -17,14 +17,6 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,8 +30,17 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Compat;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.SEP;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 /**
  * A view that presents 2 connected {@link Spinner}s.
@@ -51,11 +52,6 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
     private Spinner combo1Spinner;
     private Spinner combo2Spinner;
     private LinkedHashMap<String, List<String>> dataMap;
-    private LinearLayout combosLayout;
-    private String _combo1Value;
-    private String _combo2Value;
-
-    private String sep = "#";
 
     /**
      * @param context  the context to use.
@@ -91,7 +87,9 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         if (value == null)
             value = "";
 
-        String[] valueSplit = value.split(sep);
+        String[] valueSplit = value.split(SEP);
+        String _combo1Value;
+        String _combo2Value;
         if (valueSplit.length == 2) {
             _combo1Value = valueSplit[0];
             _combo2Value = valueSplit[1];
@@ -100,7 +98,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
             _combo2Value = "";
         }
 
-        combosLayout = new LinearLayout(context);
+        LinearLayout combosLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -146,7 +144,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
                 combo1Spinner.setSelection(indexOf, false);
             }
         }
-        ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, combo2ItemsList);
+        ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, combo2ItemsList);
         combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         combo2Spinner.setAdapter(combo2ListAdapter);
 
@@ -154,9 +152,6 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         combosLayout.addView(combo2Spinner);
 
         if (_combo2Value.length() > 0) {
-//            int indexOf = combo2ItemsList.indexOf(_combo2Value.trim());
-//            if (indexOf != -1) {
-//            }
             int position = combo2ListAdapter.getPosition(_combo2Value);
             combo2Spinner.setSelection(position, false);
         }
@@ -182,8 +177,10 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
 
     public String getValue() {
         Object selected1Item = combo1Spinner.getSelectedItem();
+        if (selected1Item == null) selected1Item = "";
         Object selected2Item = combo2Spinner.getSelectedItem();
-        String result = selected1Item.toString() + sep + selected2Item.toString();
+        if (selected2Item == null) selected2Item = "";
+        String result = selected1Item.toString() + SEP + selected2Item.toString();
         return result;
     }
 
