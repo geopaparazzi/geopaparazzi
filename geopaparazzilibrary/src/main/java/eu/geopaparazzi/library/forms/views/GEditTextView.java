@@ -90,8 +90,10 @@ public class GEditTextView extends View implements GView {
         textLayout.addView(textView);
 
         editView = new EditText(context);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(15, 5, 15, 5);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.setMargins(15, 25, 15, 15);
+        editView.setLayoutParams(params);
+//        editView.setPadding(15, 5, 15, 5);
         editView.setText(value);
         editView.setEnabled(!readonly);
 

@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.sketch.SketchUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
@@ -122,8 +123,7 @@ public class GSketchView extends View implements GView {
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
+        StyleHelper.styleButton(activity, button);
         button.setText(R.string.draw_sketch);
         textLayout.addView(button);
 

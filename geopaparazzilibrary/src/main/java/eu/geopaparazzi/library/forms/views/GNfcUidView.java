@@ -33,6 +33,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.nfc.NfcIdReaderActivity;
+import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -116,8 +117,7 @@ public class GNfcUidView extends View implements GView {
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
+        StyleHelper.styleButton(activity, button);
         button.setText(R.string.read_nfc_uid);
         textLayout.addView(button);
 

@@ -38,6 +38,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
+import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -98,8 +99,7 @@ public class GDateView extends View implements GView {
         textLayout.addView(textView);
 
         button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
+        StyleHelper.styleButton(context, button);
 
         final SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.DATEONLY_FORMATTER;
         if (value == null || value.length() == 0) {

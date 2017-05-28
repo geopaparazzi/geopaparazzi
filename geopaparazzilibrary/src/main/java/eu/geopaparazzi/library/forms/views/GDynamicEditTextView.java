@@ -81,7 +81,7 @@ public class GDynamicEditTextView extends View implements GView {
                                 String constraintDescription, final boolean readonly) {
         super(context, attrs);
 
-        editViewList = new ArrayList<EditText>();
+        editViewList = new ArrayList<>();
 
         mainLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -133,8 +133,9 @@ public class GDynamicEditTextView extends View implements GView {
 
     private void addSingleEditText(Context context, LinearLayout mainLayout, String singleValue, boolean readonly, int type) {
         EditText editView = new EditText(context);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(15, 5, 15, 5);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.setMargins(15, 25, 15, 15);
+        editView.setLayoutParams(params);
         editView.setText(singleValue);
         editView.setEnabled(!readonly);
 

@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 
@@ -88,8 +89,8 @@ public class GMultiComboView extends View implements GView {
         textLayout.addView(textView);
 
         button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
+        button.setTransformationMethod(null); // to avoid all caps
+        StyleHelper.styleButton(context, button);
 
         if (value == null || value.length() == 0) {
             button.setText("...");
