@@ -61,20 +61,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="160dp"
+        android:layout_marginEnd="@dimen/fab_margin"
         android:background="@color/transparent_white"
+        android:backgroundTint="@color/main_extra_color"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="add"
-        android:src="@drawable/ic_add_24dp" />
+        android:src="@drawable/ic_add_file_24dp"
+        android:visibility="invisible"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addSourceFolderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="90dp"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:background="@color/transparent_white"
+        android:backgroundTint="@color/main_extra_color"
+        android:cacheColorHint="@color/transparent_white"
+        android:onClick="addFolder"
+        android:src="@drawable/ic_add_folder_24dp"
+        android:visibility="invisible"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/transparent_white"
         android:cacheColorHint="@color/transparent_white"
-        android:onClick="addFolder"
-        android:src="@drawable/ic_add_folder_24dp" />
+        android:onClick="animateFAB"
+        android:src="@drawable/ic_add_24dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
+
+
 </android.support.design.widget.CoordinatorLayout>

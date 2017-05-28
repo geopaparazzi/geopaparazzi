@@ -15,6 +15,7 @@
     <color name="main_text_color_neutral">#000000</color>
     <color name="main_selection">#FF9933</color>
     <color name="main_selection_border">#993300</color>
+    <color name="main_extra_color">#009aff</color>
 
 
     <color name="main_disabled">#d7d7d7</color>

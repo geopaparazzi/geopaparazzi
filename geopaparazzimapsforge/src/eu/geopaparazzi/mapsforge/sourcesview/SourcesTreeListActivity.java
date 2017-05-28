@@ -38,6 +38,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -83,6 +85,10 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     private final LinkedHashMap<String, List<BaseMap>> newMap = new LinkedHashMap<>();
     private StringAsyncTask loadTask;
     private StringAsyncTask addNewSourcesTask;
+
+    private boolean isFabOpen = false;
+    private FloatingActionButton toggleButton,addSourceButton,addSourceFolderButton;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +159,33 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         loadTask.setProgressDialog("", getString(R.string.loading_sources), false, null);
         loadTask.execute();
 
+
+        toggleButton = (FloatingActionButton) findViewById(R.id.toggleButton);
+        addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
+        addSourceFolderButton = (FloatingActionButton) findViewById(R.id.addSourceFolderButton);
+
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+    }
+
+    public void animateFAB(View view) {
+        if(isFabOpen){
+            toggleButton.startAnimation(rotate_backward);
+            addSourceButton.startAnimation(fab_close);
+            addSourceFolderButton.startAnimation(fab_close);
+            addSourceButton.setClickable(false);
+            addSourceFolderButton.setClickable(false);
+            isFabOpen = false;
+        } else {
+            toggleButton.startAnimation(rotate_forward);
+            addSourceButton.startAnimation(fab_open);
+            addSourceFolderButton.startAnimation(fab_open);
+            addSourceButton.setClickable(true);
+            addSourceFolderButton.setClickable(true);
+            isFabOpen = true;
+        }
     }
 
     @Override
