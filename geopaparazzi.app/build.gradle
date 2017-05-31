@@ -53,8 +53,8 @@ android {
         applicationId "eu.hydrologis.geopaparazzi"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 80
-        versionName "5.3.0"
+        versionCode 81
+        versionName "5.3.1"
         signingConfig signingConfigs.config
         multiDexEnabled true
 
