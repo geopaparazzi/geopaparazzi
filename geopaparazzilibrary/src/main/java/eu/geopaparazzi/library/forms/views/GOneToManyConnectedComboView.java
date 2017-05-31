@@ -99,7 +99,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         } else {
             _mainComboValue = "";
             for (int i = 1; i < dataMap.size(); i++) {
-                _comboValues.add(valueSplit[i]);
+                _comboValues.add("");
             }
         }
 
