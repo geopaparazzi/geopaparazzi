@@ -91,8 +91,8 @@ public class GComboView extends View implements GView {
         LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         spinnerParams.setMargins(15,25, 15, 15);
         spinner.setLayoutParams(spinnerParams);
-        spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
-        spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
+        spinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         int minHeight = 48;
         if (context instanceof Activity) {
             Activity activity = (Activity) context;

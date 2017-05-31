@@ -98,20 +98,23 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
             _combo2Value = "";
         }
 
+        TextView textView = new TextView(context);
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(15, 25, 15, 15);
+        textView.setLayoutParams(textViewParams);
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
+        parentView.addView(textView);
+
         LinearLayout combosLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         combosLayout.setLayoutParams(layoutParams);
         combosLayout.setOrientation(LinearLayout.VERTICAL);
+        combosLayout.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         parentView.addView(combosLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
-        combosLayout.addView(textView);
 
         combo1Spinner = new Spinner(context);
         LinearLayout.LayoutParams titleSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -123,8 +126,8 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         ArrayAdapter<String> titleListAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, combo1Items);
         titleListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         combo1Spinner.setAdapter(titleListAdapter);
-        combo1Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
-        combo1Spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        combo1Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
+        combo1Spinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         int minHeight = getMinComboHeight(context);
         combo1Spinner.setMinimumHeight(minHeight);
 
@@ -132,8 +135,8 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         LinearLayout.LayoutParams valueSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         valueSpinnerParams.setMargins(15, 25, 15, 15);
         combo2Spinner.setLayoutParams(valueSpinnerParams);
-        combo2Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
-        combo2Spinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        combo2Spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
+        combo2Spinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         combo2Spinner.setMinimumHeight(minHeight);
 
         List<String> combo2ItemsList = new ArrayList<>();

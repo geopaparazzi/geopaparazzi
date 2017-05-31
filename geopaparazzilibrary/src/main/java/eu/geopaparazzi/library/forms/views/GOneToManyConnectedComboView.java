@@ -103,20 +103,23 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             }
         }
 
+        TextView textView = new TextView(context);
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(15, 25, 15, 15);
+        textView.setLayoutParams(textViewParams);
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
+        parentView.addView(textView);
+
         LinearLayout combosLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         combosLayout.setLayoutParams(layoutParams);
         combosLayout.setOrientation(LinearLayout.VERTICAL);
+        combosLayout.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         parentView.addView(combosLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(Compat.getColor(context, R.color.formcolor));
-        combosLayout.addView(textView);
 
         mainComboSpinner = new Spinner(context);
         LinearLayout.LayoutParams titleSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -128,8 +131,8 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         ArrayAdapter<String> titleListAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, mainComboItems);
         titleListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mainComboSpinner.setAdapter(titleListAdapter);
-        mainComboSpinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
-        mainComboSpinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+        mainComboSpinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
+        mainComboSpinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
         int minHeight = getMinComboHeight(context);
         mainComboSpinner.setMinimumHeight(minHeight);
 
@@ -154,7 +157,9 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         int index = 0;
         for (NamedList<String> namedList : namedLists) {
             TextView subTextView = new TextView(context);
-            subTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams subTextViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            subTextViewParams.setMargins(15, 25, 15, 15);
+            subTextView.setLayoutParams(subTextViewParams);
             subTextView.setPadding(2, 2, 2, 2);
             subTextView.setText(namedList.name);
             subTextView.setTextColor(Compat.getColor(context, R.color.formcolor));
@@ -164,8 +169,8 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             LinearLayout.LayoutParams valueSpinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             valueSpinnerParams.setMargins(15, 25, 15, 15);
             subSpinner.setLayoutParams(valueSpinnerParams);
-            subSpinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.background_spinner));
-            subSpinner.setBackground(Compat.getDrawable(context, R.drawable.background_spinner));
+            subSpinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
+            subSpinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
             subSpinner.setMinimumHeight(minHeight);
 
             ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, namedList.items);
