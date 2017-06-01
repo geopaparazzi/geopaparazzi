@@ -1,2 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources/>
+<resources>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="adding_new_source">Yeni kaynak ekleniyor...</string>
+  <string name="loading_databases">Veritabanları yükleniyor...</string>
+</resources>

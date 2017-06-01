@@ -85,4 +85,8 @@
   <string name="crash_toast_text">Bei der Anwendung kam es zu einem schwerwiegenden Fehler. Crash-Informationen werden gesammelt, die nützlich sind, um das Problem zu lösen. Bitte senden Sie diese, wenn möglich,  an das Entwicklungsteam.</string>
   <string name="share_current_position">Die aktuelle Position teilen</string>
   <string name="share_current_center">Den aktuellen Kartenmittelpunkt teilen</string>
+  <string name="label_red">Rot</string>
+  <string name="label_green">Grün</string>
+  <string name="label_blue">Blau</string>
+  <string name="fill_color_title">Füllfarbe </string>
 </resources>

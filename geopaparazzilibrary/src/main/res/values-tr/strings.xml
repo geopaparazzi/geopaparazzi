@@ -2,7 +2,16 @@
 <resources>
   <string name="yes">evet</string>
   <string name="no">hayır</string>
-  <string name="prompt_gpsenable">GPS iniz kapandı! Açmak ister misiniz?</string>
+  <string name="up">yukarı</string>
+  <string name="prompt_gpsenable">GPSiniz kapandı! Açmak ister misiniz?</string>
   <string name="message_sent">Mesaj gönderildi</string>
-  <string name="menu_settings">ayarlar</string>
+  <string name="select_dotdot">Seç...</string>
+  <string name="downloading">İndiriliyor...</string>
+  <string name="save">Kaydet</string>
+  <string name="cancel">İptal</string>
+  <string name="take_picture">Fotoğraf çek</string>
+  <string name="menu_settings">Ayarlar</string>
+  <string name="label_red">kırmızı</string>
+  <string name="label_green">yeşil</string>
+  <string name="label_blue">mavi</string>
 </resources>
