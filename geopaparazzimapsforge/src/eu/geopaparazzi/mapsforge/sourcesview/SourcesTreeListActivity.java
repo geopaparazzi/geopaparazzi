@@ -87,8 +87,8 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     private StringAsyncTask addNewSourcesTask;
 
     private boolean isFabOpen = false;
-    private FloatingActionButton toggleButton,addSourceButton,addSourceFolderButton;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,13 +165,13 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         addSourceFolderButton = (FloatingActionButton) findViewById(R.id.addSourceFolderButton);
 
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
     }
 
     public void animateFAB(View view) {
-        if(isFabOpen){
+        if (isFabOpen) {
             toggleButton.startAnimation(rotate_backward);
             addSourceButton.startAnimation(fab_close);
             addSourceFolderButton.startAnimation(fab_close);
@@ -249,10 +249,13 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
                                 protected String doBackgroundWork() {
                                     try {
                                         // add basemap to list and in mPreferences
-                                        if (BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(finalFile).size() != 0) {
-                                            baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
-                                        } else {
+                                        List<BaseMap> addedBaseMaps = BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(finalFile);
+                                        if (addedBaseMaps == null) {
                                             return getString(R.string.selected_file_no_basemap) + finalFile;
+                                        } else if (addedBaseMaps.size() == 0) {
+                                            return getString(R.string.selected_file_already_added) + "\n" + finalFile;
+                                        } else {
+                                            this.baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
                                         }
                                     } catch (Exception e) {
                                         GPLog.error(this, "Problem getting sources.", e);

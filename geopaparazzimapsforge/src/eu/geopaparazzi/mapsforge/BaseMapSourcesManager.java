@@ -206,6 +206,12 @@ public enum BaseMapSourcesManager {
         editor.apply();
     }
 
+    /**
+     * Add basemaps from a given file.
+     *
+     * @param file the file to get the maps from.
+     * @return the list of added basemaps or null if the map is not supported.
+     */
     public List<BaseMap> addBaseMapsFromFile(File file) {
         List<BaseMap> foundBaseMaps = new ArrayList<>();
         if (!file.getName().startsWith("_")) {
@@ -216,6 +222,7 @@ public enum BaseMapSourcesManager {
                 saveToBaseMap(collectedTables, foundBaseMaps);
             } catch (java.lang.Exception e) {
                 GPLog.error(this, null, e);
+                return null;
             }
         }
         return foundBaseMaps;
@@ -357,15 +364,16 @@ public enum BaseMapSourcesManager {
                 }
             }
             try {
-                BaseMap baseMap;
+                BaseMap baseMap = null;
                 if (mBaseMaps2TablesMap.size() > 0) {
                     baseMap = mBaseMaps2TablesMap.keySet().iterator().next();
                 } else {
                     List<BaseMap> baseMaps = addBaseMapsFromFile(mMapnikFile);
-                    baseMap = baseMaps.get(0);
+                    if (baseMaps != null && baseMaps.size() > 0)
+                        baseMap = baseMaps.get(0);
                 }
-
-                setSelectedBaseMap(baseMap);
+                if (baseMap != null)
+                    setSelectedBaseMap(baseMap);
             } catch (Exception e) {
                 GPLog.error(this, "Error on setting selected basemap", e);
             }
@@ -380,8 +388,8 @@ public enum BaseMapSourcesManager {
      */
     public BaseMap getSelectedBaseMap() {
         AbstractSpatialTable selectedBaseMapTable = getSelectedBaseMapTable();
-        for (Map.Entry<BaseMap, AbstractSpatialTable> entry: mBaseMaps2TablesMap.entrySet()) {
-            if (entry.getValue().getDatabasePath().equals(selectedBaseMapTable.getDatabasePath())){
+        for (Map.Entry<BaseMap, AbstractSpatialTable> entry : mBaseMaps2TablesMap.entrySet()) {
+            if (entry.getValue().getDatabasePath().equals(selectedBaseMapTable.getDatabasePath())) {
                 return entry.getKey();
             }
         }
@@ -404,7 +412,7 @@ public enum BaseMapSourcesManager {
             GPLog.error(this, null, e);
             // fallback on mapnik
             List<BaseMap> addedBaseMaps = addBaseMapsFromFile(mMapnikFile);
-            if (addedBaseMaps.size() > 0) {
+            if (addedBaseMaps != null && addedBaseMaps.size() > 0) {
                 BaseMap setBaseMap = addedBaseMaps.get(0);
                 selectedTileSourceType = setBaseMap.mapType;
                 selectedTableDatabasePath = setBaseMap.databasePath;
