@@ -807,7 +807,11 @@ public class MapDatabase {
 			// get the label position longitude offset (VBE-S)
 			float longitude = this.tileLongitude + this.readBuffer.readSignedInt();
 
-			return new GeoPoint(latitude, longitude);
+			try {
+				return new GeoPoint(latitude, longitude);
+			}catch (Exception e){
+				return null;
+			}
 		}
 
 		return null;
