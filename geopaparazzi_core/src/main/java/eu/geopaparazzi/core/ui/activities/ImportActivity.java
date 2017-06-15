@@ -78,6 +78,7 @@ public class ImportActivity extends AppCompatActivity implements IActivitySuppor
             button.setText(entry.getLabel());
             entry.setRequestCode(code);
             menuEntriesMap.put(code, entry);
+            code++;
             LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
             container.addView(button, lp);
             button.setOnClickListener(new Button.OnClickListener() {

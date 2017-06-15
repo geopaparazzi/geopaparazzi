@@ -162,6 +162,7 @@ public class ExportActivity extends AppCompatActivity implements
             button.setText(entry.getLabel());
             entry.setRequestCode(code);
             menuEntriesMap.put(code, entry);
+            code++;
             LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
             container.addView(button, lp);
             button.setOnClickListener(new Button.OnClickListener() {
