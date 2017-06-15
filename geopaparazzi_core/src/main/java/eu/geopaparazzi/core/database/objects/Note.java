@@ -119,6 +119,10 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
         return description;
     }
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
     /**
      * @return form json.
      */
