@@ -240,6 +240,7 @@ public class PdfExportDialogFragment extends DialogFragment {
 
                 PdfPTable currentTable = new PdfPTable(2);
                 currentTable.setHeaderRows(1);
+                currentTable.setWidthPercentage(90);
                 currentChapter.add(currentTable);
 
                 JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
