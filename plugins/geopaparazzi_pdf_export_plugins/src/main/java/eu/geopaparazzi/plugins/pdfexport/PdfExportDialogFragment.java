@@ -151,7 +151,7 @@ public class PdfExportDialogFragment extends DialogFragment {
                     if (isInterrupted) return INTERRUPTED;
 
                     File pdfExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".pdf";
+                    String filename = ResourcesManager.getInstance(getActivity()).getApplicationName() + "_projectexport_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".pdf";
                     pdfOutputFile = new File(pdfExportDir, filename);
                     if (exportPath != null) {
                         pdfOutputFile = new File(exportPath);
@@ -225,10 +225,14 @@ public class PdfExportDialogFragment extends DialogFragment {
             Chapter currentChapter = new Chapter(new Paragraph(anchor), count);
             addEmptyLine(currentChapter, 3);
 
-            Paragraph timeParagraph = new Paragraph("Timestamp: " + new Date(note.getTimeStamp()));
-            currentChapter.add(timeParagraph);
-            Paragraph descrParagraph = new Paragraph("Latitude: " + note.getLat() + " Longitude: " + note.getLon());
-            currentChapter.add(descrParagraph);
+            PdfPTable infoTable = new PdfPTable(2);
+            infoTable.setHeaderRows(0);
+            infoTable.setWidthPercentage(90);
+            currentChapter.add(infoTable);
+
+            addKeyValueToTableRow(infoTable, "Timestamp", new Date(note.getTimeStamp()).toString());
+            addKeyValueToTableRow(infoTable, "Latitude", note.getLat() + "");
+            addKeyValueToTableRow(infoTable, "Longitude", note.getLon() + "");
 
             addEmptyLine(currentChapter, 3);
 
@@ -268,59 +272,76 @@ public class PdfExportDialogFragment extends DialogFragment {
                         for (String imageId : imageIdsSplit) {
                             Image image = daoImages.getImage(Long.parseLong(imageId));
                             String imgName = image.getName();
+                            byte[] imageData = daoImages.getImageData(Long.parseLong(imageId));
+                            com.itextpdf.text.Image itextImage = com.itextpdf.text.Image.getInstance(imageData);
+                            Paragraph caption = new Paragraph(imgName);
+                            caption.setAlignment(Element.ALIGN_CENTER);
 
                             PdfPCell keyCell = new PdfPCell(new Phrase(label));
                             keyCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             keyCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             keyCell.setPadding(10);
                             currentTable.addCell(keyCell);
-                            PdfPCell valueCell = new PdfPCell(new Phrase(imgName));
+                            PdfPCell valueCell = new PdfPCell();
                             valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                             valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             valueCell.setPadding(10);
+                            valueCell.addElement(itextImage);
+                            valueCell.addElement(caption);
                             currentTable.addCell(valueCell);
                         }
                     } else if (type.equals(FormUtilities.TYPE_MAP)) {
-//                        if (value.trim().length() == 0) {
-//                            continue;
-//                        }
-//                        sB.append("<tr>");
-//                        // FIXME
-//                        String imageId = value.trim();
-//                        Image image = daoImages.getImage(Long.parseLong(imageId));
-//                        String imgName = image.getName();
-//                        sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-//                        sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
-//                        sB.append("</td>");
-//                        sB.append("</tr>");
-//                        images.add(imageId);
-                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
-//                        if (value.trim().length() == 0) {
-//                            continue;
-//                        }
-//                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
-//                        for (String imageId : imageIdsSplit) {
-//                            Image image = daoImages.getImage(Long.parseLong(imageId));
-//                            String imgName = image.getName();
-//                            sB.append("<tr>");
-//                            sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-//                            sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
-//                            sB.append("</td>");
-//                            sB.append("</tr>");
-//
-//                            images.add(imageId);
-//                        }
-                    } else {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String imageId = value.trim();
+                        Image image = daoImages.getImage(Long.parseLong(imageId));
+                        String imgName = image.getName();
+                        byte[] imageData = daoImages.getImageData(Long.parseLong(imageId));
+                        com.itextpdf.text.Image itextImage = com.itextpdf.text.Image.getInstance(imageData);
+                        Paragraph caption = new Paragraph(imgName);
+                        caption.setAlignment(Element.ALIGN_CENTER);
+
                         PdfPCell keyCell = new PdfPCell(new Phrase(label));
                         keyCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         keyCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         keyCell.setPadding(10);
                         currentTable.addCell(keyCell);
-                        PdfPCell valueCell = new PdfPCell(new Phrase(value));
+                        PdfPCell valueCell = new PdfPCell();
                         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         valueCell.setPadding(10);
+                        valueCell.addElement(itextImage);
+                        valueCell.addElement(caption);
                         currentTable.addCell(valueCell);
+                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageIdsSplit = value.split(Note.IMAGES_SEPARATOR);
+                        for (String imageId : imageIdsSplit) {
+                            Image image = daoImages.getImage(Long.parseLong(imageId));
+                            String imgName = image.getName();
+                            byte[] imageData = daoImages.getImageData(Long.parseLong(imageId));
+                            com.itextpdf.text.Image itextImage = com.itextpdf.text.Image.getInstance(imageData);
+                            Paragraph caption = new Paragraph(imgName);
+                            caption.setAlignment(Element.ALIGN_CENTER);
+
+                            PdfPCell keyCell = new PdfPCell(new Phrase(label));
+                            keyCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            keyCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            keyCell.setPadding(10);
+                            currentTable.addCell(keyCell);
+                            PdfPCell valueCell = new PdfPCell();
+                            valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                            valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            valueCell.setPadding(10);
+                            valueCell.addElement(itextImage);
+                            valueCell.addElement(caption);
+                            currentTable.addCell(valueCell);
+                        }
+                    } else {
+                        addKeyValueToTableRow(currentTable, label, value);
                     }
                 }
             }
@@ -328,19 +349,26 @@ public class PdfExportDialogFragment extends DialogFragment {
             document.add(currentChapter);
             document.newPage();
 
-//        } else {
-            // if not FORM
-//            String description = Utilities.makeXmlSafe(note.description);
-//            sB.append(description);
-//            sB.append("\n");
-//            sB.append(new Date(timeStamp));
         }
 
 
     }
 
-    public void addEmptyLine(Chapter element, int number ) throws DocumentException {
-        for( int i = 0; i < number; i++ ) {
+    private void addKeyValueToTableRow(PdfPTable table, String key, String value) {
+        PdfPCell keyCell = new PdfPCell(new Phrase(key));
+        keyCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        keyCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        keyCell.setPadding(10);
+        table.addCell(keyCell);
+        PdfPCell valueCell = new PdfPCell(new Phrase(value));
+        valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        valueCell.setPadding(10);
+        table.addCell(valueCell);
+    }
+
+    public void addEmptyLine(Chapter element, int number) throws DocumentException {
+        for (int i = 0; i < number; i++) {
             Paragraph p = new Paragraph(" ");
             element.add(p);
         }

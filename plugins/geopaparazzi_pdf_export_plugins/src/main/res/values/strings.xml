@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Geopaparazzi Projects Pdf Export Plugin</string>
-    <string name="label">Project to Pdf</string>
-    <string name="exporting_data_to_pdf">Exporting data to PDF</string>
+    <string name="label">Project Forms to Pdf</string>
+    <string name="exporting_data_to_pdf">Exporting form data to PDF</string>
 </resources>
