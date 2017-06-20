@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Boja poteza</string>
+  <string name="width">Širina poteza</string>
+  <string name="alpha">Prozirnost poteza</string>
+  <string name="fill_color">Boja ispune</string>
+  <string name="fill_alpha">Prozirnost ispune</string>
+  <string name="point_shape_">Oblik točke</string>
+  <string name="point_size">Veličina točke</string>
+  <string name="decimation">Broj decimala</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Min mjerilo</string>
+  <string name="max_zoom">Max mjerilo</string>
+  <string name="dash_pattern">Uzorak crica</string>
+  <string name="label_properties">Svojstva oznaka</string>
+  <string name="toggle_visibility">prikaz</string>
+  <string name="label_field">Polje oznake</string>
+  <string name="label_size">Veličina oznake</string>
+  <string name="select_table_types">Odaberi tipove</string>
+  <string name="select_type">Odaberi tip</string>
+  <string name="remove_from_list">Ukloni %s sa popisa?</string>
+  <string name="selected_file_no_vector_data">Odabrana datoteka ne sadrži vektorske podatke:</string>
+  <string name="adding_new_source">Dodavanje novog izvora...</string>
+  <string name="select_spatialite_database">Odaberi Spatialite bazu za dodavanje:</string>
+  <string name="select_spatialite_database_folder">Odaberi direktorij sa Spatialite bazama za dodavanje:</string>
+  <string name="loading_databases">Učitavanje baza...</string>
+</resources>

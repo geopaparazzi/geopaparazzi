@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Culoarea conturului</string>
+  <string name="width">Dimensiunea conturului</string>
+  <string name="alpha">Transparența conturului</string>
+  <string name="fill_color">Culoarea de umplere</string>
+  <string name="fill_alpha">Transparența umplerii</string>
+  <string name="point_shape_">Forma punctului</string>
+  <string name="point_size">Mărimea punctului</string>
+  <string name="decimation">Decimare</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Min transfocare</string>
+  <string name="max_zoom">Max transfocare</string>
+  <string name="dash_pattern">Modelul liniuțelor</string>
+  <string name="label_properties">Proprietățile etichetei</string>
+  <string name="toggle_visibility">inversează vizibilitatea</string>
+  <string name="label_field">câmpul etichetei</string>
+  <string name="label_size">dimensiunea etichetei</string>
+  <string name="select_table_types">Selectare tipuri</string>
+  <string name="select_type">Selectare tip</string>
+  <string name="remove_from_list">Se elimină %s din listă?</string>
+  <string name="selected_file_no_vector_data">Fișierul selectat nu conține date vectoriale:</string>
+  <string name="adding_new_source">Adăugare sursă nouă...</string>
+  <string name="select_spatialite_database">Selectați baza de date spatialite de adăugat</string>
+  <string name="select_spatialite_database_folder">Selectați folderul bazei de date spatialite de adăugat</string>
+  <string name="loading_databases">Se încarcă bazele de date...</string>
+</resources>

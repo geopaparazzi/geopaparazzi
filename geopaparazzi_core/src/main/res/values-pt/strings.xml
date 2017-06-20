@@ -130,11 +130,16 @@
   <string name="view_in_mixare">Visualizar em mixare</string>
   <string name="gps_use_coarse">Usar posicionamento baseado na rede em vez do GPS (necessário reiniciar)</string>
   <string name="type_to_filter">digite para filtrar</string>
+  <string name="geopapcloud_preferences">Configurações de sincronização dos projetos na nuvem</string>
+  <string name="geopapcloud_preferences_summary">Defina as credenciais de sincronização do servidor e as definições para serviços na nuvem.</string>
   <string name="geopapcloud_user_label">Nome de utilizador</string>
   <string name="geopapcloud_password_label">Palavra-chave</string>
   <string name="geopapcloud_server_label">Servidor ao qual ligar</string>
   <string name="exporting_data">A exportar dados</string>
+  <string name="error_set_cloud_settings">Os parâmetros de sincronização da nuvem não estão definidos corretamente. Por favor verifique as configurações.</string>
   <string name="exporting_data_to_the_cloud">A exportar dados para a nuvem.</string>
+  <string name="error_uploadig_project_to_cloud">Ocorreu um erro ao enviar o projeto para a nuvem</string>
+  <string name="project_succesfully_uploaded_to_cloud">O projeto foi enviado com sucesso para a nuvem</string>
   <string name="exporting_data_to_kmz">A exportar dados em KMZ.</string>
   <string name="exporting_data_to_gpx">A exportar dados em GPX</string>
   <string name="media_upload">ENVIO DE MEDIA</string>
@@ -204,6 +209,7 @@
   <string name="high_density_display">Ecrã de alta resolução</string>
   <string name="high_density_display_sum">Se ativado, as telas do mapa do OSM são redimensionadas para melhor legibilidade.</string>
   <string name="satellites">satélites</string>
+  <string name="accuracy_colon">precisão:</string>
   <string name="start">início</string>
   <string name="end">fim</string>
   <string name="other">outro</string>
@@ -285,6 +291,7 @@
   <string name="import_uc">IMPORTAR</string>
   <string name="mapurls">URLs de mapas</string>
   <string name="gpx">GPX</string>
+  <string name="geopap_browser">Projeto na Nuvem</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Base de Dados Padrão</string>
   <string name="kmz">KMZ</string>
@@ -380,4 +387,14 @@
   <string name="error_while_removing_notes">Ocorreu um erro ao eliminar as notas:</string>
   <string name="removing_notes">A remover notas...</string>
   <string name="interrupted_by_user">Interrompido pelo utilizador</string>
+  <string name="import_cloud_data">Dados da Nuvem</string>
+  <string name="browse_images">Navegar pelas imagens</string>
+  <string name="new_picture">Nova imagem</string>
+  <string name="Images">Imagens</string>
+  <string name="confirm_remove_image">Quer mesmo remover a imagem?</string>
+  <string name="upload_to_cloud_prompt">Enviar o projeto atual para a nuvem?</string>
+  <plurals name="n_images">
+    <item quantity="one">1 imagem</item>
+    <item quantity="other">%d imagens</item>
+  </plurals>
 </resources>

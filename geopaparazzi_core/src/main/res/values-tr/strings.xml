@@ -1,6 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">Ayarlar</string>
+  <string name="action_advanced_settings">Gelişmiş</string>
+  <string name="label_green">yeşil</string>
+  <string name="label_blue">mavi</string>
+  <string name="label_red">kırmızı</string>
   <!--old gpap-->
   <string name="yes">evet</string>
   <string name="no">hayır</string>

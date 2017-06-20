@@ -4,8 +4,8 @@ type = ANDROID
 lang_map = pt_BR: pt-rBR, zh_CN: zh-rCN, th_TH: th-rTH, sw_KE: sw-rKE
 
 [geopaparazzi.geopaparazzi-app-stringsxml]
-file_filter = geopaparazzi.app/src/main/res/values-<lang>/strings.xml
-source_file = geopaparazzi.app/src/main/res/values/strings.xml
+file_filter = geopaparazzi_core/src/main/res/values-<lang>/strings.xml
+source_file = geopaparazzi_core/src/main/res/values/strings.xml
 source_lang = en
 
 [geopaparazzi.geopaparazzi-library-stringsxml]
