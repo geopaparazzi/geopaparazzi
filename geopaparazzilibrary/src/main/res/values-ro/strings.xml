@@ -50,7 +50,6 @@
   <string name="geocodeErrorTitle">Eroare de Geocodificare</string>
   <string name="geocodeErrorMessage">Geocodificarea locației a eșuat. Încercați să retransmiteți locația.</string>
   <string name="downloading_route">Descărcare rută...</string>
-  <string name="route_extraction_error">A apărut o eroare pe durata extragerii rutei.</string>
   <string name="available_only_with_network">Această funcție este disponibilă numai cu o conexiune de rețea activă.</string>
   <string name="error_while_storing_form_data">A apărut o eroare pe durata stocării datelor formularului.</string>
   <string name="view_routing_url_in_browser">Doriți să deschideți adresa folosită pentru rută într-un browser?</string>

@@ -49,7 +49,6 @@
   <string name="go_to_button">Gehe zu</string>
   <string name="route_to_button">Weg zum</string>
   <string name="route_to">Weg zum:</string>
-  <string name="route_extraction_error">Ein Fehler ist bei der Routenberechnung aufgetreten.</string>
   <string name="available_only_with_network">Diese Funktion ist nur bei aktivierter Netzwerkverbindung verfügbar.</string>
   <string name="error_while_storing_form_data">Es ist ein Fehler beim Speichern von Inhalten der Eingabefelder aufgetreten. </string>
   <string name="view_routing_url_in_browser">Möchten Sie die verwendete Routing-URL in einem Browser verwenden?</string>

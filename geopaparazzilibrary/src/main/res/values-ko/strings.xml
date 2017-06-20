@@ -55,7 +55,6 @@
   <string name="go_to_button">이동</string>
   <string name="route_to_button">경로이동</string>
   <string name="route_to">경로이동:</string>
-  <string name="route_extraction_error">경로 추출 중 오류가 발생했습니다.</string>
   <string name="available_only_with_network">이 기능은 활성화된 네트워크 연결에만 사용가능합니다.</string>
   <string name="error_while_storing_form_data">데이터를 저장하는 동안 오류가 발생했습니다.</string>
   <string name="view_routing_url_in_browser">사용중인 경로탐색 URL을 브라우저에서 여시겠습니까?</string>

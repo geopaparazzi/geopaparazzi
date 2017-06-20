@@ -55,7 +55,6 @@
   <string name="go_to_button">Přejít do</string>
   <string name="route_to_button">Trasa do</string>
   <string name="route_to">Trasa do</string>
-  <string name="route_extraction_error">Při získávání trasy se vyskytla chyba.</string>
   <string name="available_only_with_network">Tato funkce je dostupná, jen když je v činnosti připojení k síti.</string>
   <string name="error_while_storing_form_data">Během ukládání formulářových dat se vyskytla chyba.</string>
   <string name="view_routing_url_in_browser">Chcete otevřít použitou URL adresu pro trasování v prohlížeči?</string>

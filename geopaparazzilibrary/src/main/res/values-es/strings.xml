@@ -55,7 +55,6 @@
   <string name="go_to_button">Ir a</string>
   <string name="route_to_button">ruta a</string>
   <string name="route_to">Ruta a:</string>
-  <string name="route_extraction_error">Se ha producido un error durante la extracción de la ruta</string>
   <string name="available_only_with_network">Esta función solo es operativa si existe una conexión de red activa</string>
   <string name="error_while_storing_form_data">Se ha producido un error al almacenar el formulario de datos</string>
   <string name="view_routing_url_in_browser">¿Desea abrir la URL de planificación de rutas en un visualizador?</string>

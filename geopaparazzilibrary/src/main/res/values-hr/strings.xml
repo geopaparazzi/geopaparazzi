@@ -50,7 +50,6 @@
   <string name="go_to_button">idi na</string>
   <string name="route_to_button">ruta na</string>
   <string name="route_to">Ruta na:</string>
-  <string name="route_extraction_error">Došlo je do greške prilikom izvlačenja rute.</string>
   <string name="available_only_with_network">Ova je funkcija dostupna samo uz aktivnu mrežnu vezu.</string>
   <string name="error_while_storing_form_data">Došlo je do greške prilikom spremanja podataka obrasca.</string>
   <string name="enter_geocode_string">Unesi mjesto ili adresu.</string>

@@ -55,7 +55,6 @@
   <string name="go_to_button">ir para</string>
   <string name="route_to_button">rota para</string>
   <string name="route_to">Rota para:</string>
-  <string name="route_extraction_error">Ocorreu um erro durante a extração da rota.</string>
   <string name="available_only_with_network">Esta função só está disponível com uma conexão de rede ativa.</string>
   <string name="error_while_storing_form_data">Ocorreu um erro ao armazenar os dados do formulário.</string>
   <string name="view_routing_url_in_browser">Você deseja abrir o URL de roteamento usado um navegador?</string>

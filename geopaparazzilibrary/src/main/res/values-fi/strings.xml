@@ -55,7 +55,6 @@
   <string name="go_to_button">Mene</string>
   <string name="route_to_button">Reitti</string>
   <string name="route_to">Reitti: </string>
-  <string name="route_extraction_error">Tapahtui virhe reitin purussa.</string>
   <string name="available_only_with_network">Tämä toimintoa voidaan käyttää vain verkkoyhteyden aikana.</string>
   <string name="error_while_storing_form_data">Lomaketietojen tallentamisessa tapahtui virhe.</string>
   <string name="view_routing_url_in_browser">Haluatko avata käytetyn reitin selaimessa?</string>

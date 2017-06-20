@@ -55,7 +55,6 @@
   <string name="go_to_button">目的地</string>
   <string name="route_to_button">ルート</string>
   <string name="route_to">ルート：</string>
-  <string name="route_extraction_error">ルートの抽出中にエラーが発生しました。</string>
   <string name="available_only_with_network">この機能はネットワークに接続されている場合のみ利用可能です。</string>
   <string name="error_while_storing_form_data">フォームデータ保存中にエラーが発生しました。</string>
   <string name="view_routing_url_in_browser">使用されたルートURLをブラウザで開きますか？</string>

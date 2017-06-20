@@ -49,7 +49,6 @@
   <string name="go_to_button">aller à</string>
   <string name="route_to_button">itinéraire vers</string>
   <string name="route_to">Itinéraire vers : </string>
-  <string name="route_extraction_error">Une erreur s\'est produite lors de l\'extraction de l\'itinéraire.</string>
   <string name="available_only_with_network">Cette fonction est disponible uniquement avec une connexion réseau active.</string>
   <string name="error_while_storing_form_data">Une erreur s\'est produite durant le stockage des données du formulaire.</string>
   <string name="view_routing_url_in_browser">Vous voulez ouvrir l\'URL utilisé dans un navigateur ?</string>

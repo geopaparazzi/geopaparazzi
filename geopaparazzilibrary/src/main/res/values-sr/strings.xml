@@ -48,7 +48,6 @@
   <string name="go_to_button">idi do</string>
   <string name="route_to_button">odredi put do:</string>
   <string name="route_to">Odredi put do:</string>
-  <string name="route_extraction_error">Pojavila se greška u toku raspakivanja rute</string>
   <string name="available_only_with_network">Ova funkcija je dostupna samo sa aktivnom mrežnom konekcijom </string>
   <string name="error_while_storing_form_data">Pojavila se greška u toku skladištenja podataka formulara.</string>
   <string name="view_routing_url_in_browser">Da li želite da otvorite već korišćenu adresu u pretraživaču?</string>

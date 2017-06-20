@@ -46,7 +46,6 @@
   <string name="go_to_button">идти к</string>
   <string name="route_to_button">маршрут к</string>
   <string name="route_to">Маршрут до:</string>
-  <string name="route_extraction_error">Ошибка при получении маршрута.</string>
   <string name="available_only_with_network">Функция доступна только при активном сетевом подключении.</string>
   <string name="view_routing_url_in_browser">Вы хотите открыть маршрут в браузере?</string>
   <string name="enter_geocode_string">введите место или адрес</string>

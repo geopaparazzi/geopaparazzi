@@ -49,7 +49,6 @@
   <string name="go_to_button">πήγαινε στο</string>
   <string name="route_to_button">διαδρομή προς</string>
   <string name="route_to">Διαδρομή προς:</string>
-  <string name="route_extraction_error">Ένα σφάλμα παρουσιάστηκε κατα την εξαγωγή της διαδρομής.</string>
   <string name="available_only_with_network">Η επιλογή είναι διαθέσιμη μόνο με μια ενεργή σύνδεση δικτύου.</string>
   <string name="error_while_storing_form_data">Ένα σφάλμα παρουσιάστηκε κατα την αποθήκευση των δεδομένων της φόρμας.</string>
   <string name="view_routing_url_in_browser">Θέλετε να ανοίξετε τη διεύθυνση δρομολόγησης URL σε έναν φυλλομετρητή;</string>

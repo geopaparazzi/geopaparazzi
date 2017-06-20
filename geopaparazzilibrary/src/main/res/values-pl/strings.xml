@@ -55,7 +55,6 @@
   <string name="go_to_button">idź do</string>
   <string name="route_to_button">prowadź do</string>
   <string name="route_to">Prowadź do:</string>
-  <string name="route_extraction_error">Wystąpił błąd podczas wybierania trasy.</string>
   <string name="available_only_with_network">Ta funkcja jest dostępna tylko przy aktywnym połączeniu sieciowym.</string>
   <string name="error_while_storing_form_data">Wystąpił błąd podczas magazynowania danych formularza.</string>
   <string name="view_routing_url_in_browser">Czy chcesz otworzyć użyty URL trasy w przeglądarce?</string>

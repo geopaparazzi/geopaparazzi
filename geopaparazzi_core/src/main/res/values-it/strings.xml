@@ -398,6 +398,8 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="Images">Immagini</string>
   <string name="confirm_remove_image">Sei sicuro di volere cancellare l\'immagine?</string>
   <string name="upload_to_cloud_prompt">Caricare il progetto corrente?</string>
+  <string name="data_to_pdf_label">Schede del Progetto a PDF</string>
+  <string name="exporting_data_to_pdf">Sto esportando le schede in formato PDF</string>
   <plurals name="n_images">
     <item quantity="one">1 immagine</item>
     <item quantity="other">%d immagini</item>

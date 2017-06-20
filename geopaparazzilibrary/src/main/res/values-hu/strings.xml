@@ -48,7 +48,6 @@
   <string name="go_to_button">menj oda</string>
   <string name="route_to_button">navigálj oda</string>
   <string name="route_to">Navigálj oda: </string>
-  <string name="route_extraction_error">Hiba történt az útvonal kinyerése során.</string>
   <string name="available_only_with_network">Ez a funkció csak aktív hálózati kapcsolat mellett érhető el.</string>
   <string name="error_while_storing_form_data">Hiba történt az űrlap adatainak mentése során.</string>
   <string name="view_routing_url_in_browser">Szeretné megnyitni a használt URL-t egy böngészőben?</string>

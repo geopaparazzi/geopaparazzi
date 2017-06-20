@@ -48,7 +48,6 @@
   <string name="go_to_button">gå til</string>
   <string name="route_to_button">rute til</string>
   <string name="route_to">Rute til: </string>
-  <string name="route_extraction_error">Det oppstod en feil under uthentingen av ruten.</string>
   <string name="available_only_with_network">Denne funksjonen er bare tilgjengelig med en aktiv nettverkstilkobling.</string>
   <string name="error_while_storing_form_data">Det oppstod en feil under lagring.</string>
   <string name="view_routing_url_in_browser">Vil du åpne URL for ruten i en en nettleser?</string>
