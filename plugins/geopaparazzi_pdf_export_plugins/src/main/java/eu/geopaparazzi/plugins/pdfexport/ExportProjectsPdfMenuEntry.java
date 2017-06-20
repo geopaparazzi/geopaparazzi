@@ -45,7 +45,7 @@ public class ExportProjectsPdfMenuEntry extends MenuEntry {
 
     @Override
     public String getLabel() {
-        return serviceContext.getString(R.string.label);
+        return serviceContext.getString(eu.geopaparazzi.core.R.string.data_to_pdf_label);
     }
 
     @Override

@@ -301,25 +301,29 @@ public class DaoMetadata {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Metadata> metadataList = new ArrayList<>();
 
-        String asColumnsToReturn[] = { //
-                MetadataTableFields.COLUMN_KEY.getFieldName(), //
-                MetadataTableFields.COLUMN_VALUE.getFieldName()
-        };// ,
-        Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            String key = c.getString(0);
-            String value = c.getString(1);
+        try {
+            String asColumnsToReturn[] = { //
+                    MetadataTableFields.COLUMN_KEY.getFieldName(), //
+                    MetadataTableFields.COLUMN_VALUE.getFieldName()
+            };// ,
+            Cursor c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, null, null, null, null, null);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                String key = c.getString(0);
+                String value = c.getString(1);
 
-            Metadata m = new Metadata();
-            m.key = key;
-            m.label = key;
-            m.value = value;
-            metadataList.add(m);
+                Metadata m = new Metadata();
+                m.key = key;
+                m.label = key;
+                m.value = value;
+                metadataList.add(m);
 
-            c.moveToNext();
+                c.moveToNext();
+            }
+            c.close();
+        } catch (Exception e) {
+            GPLog.error("DaoMetadata", null, e);
         }
-        c.close();
         return metadataList;
     }
 

@@ -54,7 +54,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 82
-        versionName "5.3.2"
+        versionName "5.4.0"
         signingConfig signingConfigs.config
         multiDexEnabled true
 
@@ -69,7 +69,8 @@ dependencies {
     compile 'com.android.support:preference-v7:25.3.1'
     compile project(':geopaparazzi_core')
     compile project(':geopaparazzi_default_import_plugins')
+    compile project(':geopaparazzi_default_export_plugins')
+    compile project(':geopaparazzi_pdf_export_plugins')
     compile project(':geopaparazzi_projects_import_plugins')
     compile project(':geopaparazzi_projects_export_plugins')
-    compile project(':geopaparazzi_default_export_plugins')
 }
