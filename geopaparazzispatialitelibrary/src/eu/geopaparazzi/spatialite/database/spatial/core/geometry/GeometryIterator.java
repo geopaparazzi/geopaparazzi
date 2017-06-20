@@ -23,7 +23,7 @@ import com.vividsolutions.jts.io.WKBReader;
 import java.util.Iterator;
 
 import eu.geopaparazzi.library.database.GPLog;
-import jsqlite.Constants;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -38,68 +38,81 @@ public class GeometryIterator implements Iterator<Geometry> {
     private WKBReader wkbReader = new WKBReader();
     private Stmt stmt;
     private String labelText = "";
+    private String themeFieldValue;
+
     /**
      * Returns Label String (if any)
      *
-     *  <p>
-     * - if any label is being supported, will build s_label from column 1 to end<br>
-     * -- each column (after 1) will have a ', ' inserted<br>
-     * -- s_label will be empty if no label was requested<br>
-     * @return s_label
-    */
+     * @return the label.
+     */
     public String getLabelText() {
         return labelText;
     }
+
+    /**
+     * Get the theme field unique value if available, or null.
+     *
+     * @return the value or null.
+     */
+    public String getThemeFieldValue(){
+        return themeFieldValue;
+    }
+
     /**
      * Builds Label String (if any)
+     * <p>
+     * Assumes that column 0 is a Geometry, 1 label, 2 theme. The keyword 'dummy' means no label/theme.
      *
-     *  <p>
-     * - assumes that column 0 is ALWAYS a Geometry<br>
-     * - if any label is being supported, will build s_label from column 1 to end<br>
-     * -- each column (after 1) will have a ', ' inserted<br>
-     * -- s_label will be set to blank before filling<br>
      * @param stmt statement being executed
      */
-    private void setLabelText( Stmt stmt ) {
+    private void setLabelAndThemeText(Stmt stmt) {
         labelText = "";
         int i = 1;
         int columnCount = 0;
         try {
-            if ((stmt != null) && (columnCount = stmt.column_count()) > 1) {
-                for( i = 1; i < columnCount; i++ ) {
-                    if (!labelText.equals("")) {
-                        labelText += ", ";
+            if (stmt != null) {
+                columnCount = stmt.column_count();
+                if (columnCount == 3) {
+                    // get the label
+                    String labelString = stmt.column_string(1);
+                    if (!labelString.equals(SpatialiteUtilities.DUMMY)) {
+                        labelText = labelString;
                     }
-                    switch( stmt.column_type(i) ) {
-                    case Constants.SQLITE_INTEGER: {
-                        labelText = labelText + stmt.column_int(i);
+                    String themeString = stmt.column_string(2);
+                    if (!themeString.equals(SpatialiteUtilities.DUMMY)) {
+                        themeFieldValue = themeString;
                     }
-                        break;
-                    case Constants.SQLITE_FLOAT: {
-                        labelText += String.format("%.5f", stmt.column_double(i));
-                    }
-                        break;
-                    case Constants.SQLITE_BLOB: { // not supported
-                    }
-                        break;
-                    case Constants.SQLITE3_TEXT: {
-                        labelText += stmt.column_string(i);
-                    }
-                        break;
-                    }
+//                        switch (stmt.column_type(1)) {
+//                            case Constants.SQLITE_INTEGER: {
+//                                labelText = labelText + stmt.column_int(1);
+//                            }
+//                            break;
+//                            case Constants.SQLITE_FLOAT: {
+//                                labelText += String.format("%.5f", stmt.column_double(i));
+//                            }
+//                            break;
+//                            case Constants.SQLITE_BLOB: { // not supported
+//                            }
+//                            break;
+//                            case Constants.SQLITE3_TEXT: {
+//                                labelText += stmt.column_string(1);
+//                            }
+//                            break;
+//                        }
                 }
             }
         } catch (Exception e) {
-            GPLog.error(this, "GeometryIterator.setLabelText column_count[" + columnCount + "] column[" + i + "]", e);
+            GPLog.error(this, "GeometryIterator.setLabelAndThemeText column_count[" + columnCount + "] column[" + i + "]", e);
         }
     }
+
     /**
      * Constructor.
      *
      * @param database the database to use.
-     * @param query the query to use.
+     * @param query    the query to use.
      */
-    public GeometryIterator( Database database, String query ) {
+    public GeometryIterator(Database database, String query) {
         try {
             stmt = database.prepare(query);
         } catch (Exception e) {
@@ -129,7 +142,7 @@ public class GeometryIterator implements Iterator<Geometry> {
         try {
             byte[] geomBytes = stmt.column_bytes(0);
             Geometry geometry = wkbReader.read(geomBytes);
-            setLabelText(stmt);
+            setLabelAndThemeText(stmt);
             return geometry;
         } catch (java.lang.Exception e) {
             GPLog.error(this, "GeometryIterator.next()[wkbReader.read() failed]", e);
@@ -145,7 +158,7 @@ public class GeometryIterator implements Iterator<Geometry> {
     /**
      * Reset the iterator.
      *
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
     public void reset() throws Exception {
         if (stmt != null)
@@ -155,7 +168,7 @@ public class GeometryIterator implements Iterator<Geometry> {
     /**
      * Close the iterator.
      *
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
     public void close() throws Exception {
         if (stmt != null)

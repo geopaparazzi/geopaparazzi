@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.style;
 import android.graphics.DashPathEffect;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -116,6 +117,14 @@ public class Style {
      * Decimation factor for geometries.
      */
     public float decimationFactor = 0.0f;
+
+    /**
+     * If a unique style is defined, the hashmap contains in key the unique value
+     * and in value the style to apply.
+     */
+    public HashMap<String, Style> themeMap;
+
+    public String themeField;
 
     /**
      * @return a string that can be used in a sql insert statement with

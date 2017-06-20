@@ -55,6 +55,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoImages;
+import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.core.database.objects.Note;
+import eu.geopaparazzi.core.database.objects.NoteOverlayItem;
+import eu.geopaparazzi.core.mapview.MapviewActivity;
+import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMapOrderComparator;
 import eu.geopaparazzi.library.database.GPLog;
@@ -64,6 +72,7 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsService;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.images.ImageUtilities;
+import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -73,15 +82,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.Spatial
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.library.style.Style;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoImages;
-import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.objects.Note;
-import eu.geopaparazzi.core.database.objects.NoteOverlayItem;
-import eu.geopaparazzi.core.mapview.MapviewActivity;
-import eu.geopaparazzi.core.utilities.Constants;
 import jsqlite.Exception;
 
 /**
@@ -655,16 +655,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     try {
                         Paint fill = null;
                         Paint stroke = null;
-                        if (style.fillcolor != null && style.fillcolor.trim().length() > 0)
-                            fill = spatialDatabaseHandler.getFillPaint4Style(style);
-                        if (style.strokecolor != null && style.strokecolor.trim().length() > 0)
-                            stroke = spatialDatabaseHandler.getStrokePaint4Style(style);
+                        if (style.themeField == null) {
+                            if (style.fillcolor != null && style.fillcolor.trim().length() > 0)
+                                fill = spatialTable.getFillPaint4Style(style);
+                            if (style.strokecolor != null && style.strokecolor.trim().length() > 0)
+                                stroke = spatialTable.getStrokePaint4Style(style);
+                        }
                         PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                                 drawZoomLevel);
                         ShapeWriter shapeWriter;
                         ShapeWriter shape_writer_point = null;
                         if (spatialTable.isPoint()) {
                             shapeWriter = new ShapeWriter(pointTransformer, style.shape,
+                                    style.size);
+                            shape_writer_point = new ShapeWriter(pointTransformer, style.shape,
                                     style.size);
                         } else {
                             shapeWriter = new ShapeWriter(pointTransformer);
@@ -681,29 +685,33 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             Geometry geom = geometryIterator.next();
                             if (geom != null) {
                                 if (!canvasEnvelope.intersects(geom.getEnvelopeInternal())) {
-                                    // TODO check the performance impact of this
                                     continue;
                                 }
-                                if (spatialTable.isGeometryCollection()) {
-                                    int geometriesCount = geom.getNumGeometries();
-                                    for (int j = 0; j < geometriesCount; j++) {
-                                        Geometry geom_collect = geom.getGeometryN(j);
-                                        if (geom_collect != null) {
-                                            String geometryType = geom_collect.getGeometryType();
-                                            if (geometryType.toUpperCase().contains("POINT")) {
-                                                drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
-                                            } else {
-                                                drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
-                                            }
-                                            if (stopDrawing()) { // stop working
-                                                return;
-                                            }
+
+                                if (style.themeField != null) {
+                                    // set paint
+                                    String themeFieldValue = geometryIterator.getThemeFieldValue();
+                                    Style themeStyle = style.themeMap.get(themeFieldValue);
+                                    if (themeStyle.fillcolor != null && themeStyle.fillcolor.trim().length() > 0)
+                                        fill = spatialTable.getFillPaint4Theme(themeFieldValue, themeStyle);
+                                    if (themeStyle.strokecolor != null && themeStyle.strokecolor.trim().length() > 0)
+                                        stroke = spatialTable.getStrokePaint4Theme(themeFieldValue, themeStyle);
+                                    if (spatialTable.isPoint())
+                                        shape_writer_point = new ShapeWriter(pointTransformer, themeStyle.shape, themeStyle.size);
+                                }
+                                int geometriesCount = geom.getNumGeometries();
+                                for (int j = 0; j < geometriesCount; j++) {
+                                    Geometry geom_collect = geom.getGeometryN(j);
+                                    if (geom_collect != null) {
+                                        String geometryType = geom_collect.getGeometryType();
+                                        if (geometryType.toUpperCase().contains("POINT")) {
+                                            drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
+                                        } else {
+                                            drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
                                         }
-                                    }
-                                } else {
-                                    drawGeometry(geom, canvas, shapeWriter, fill, stroke);
-                                    if (stopDrawing()) { // stop working
-                                        return;
+                                        if (stopDrawing()) { // stop working
+                                            return;
+                                        }
                                     }
                                 }
                             } else {
@@ -1113,7 +1121,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             String tempImageName = ImageUtilities.getTempImageName(ext);
             byte[] imageData = new DaoImages().getImageData(imageID);
 
-            AppsUtilities.showImage(imageData, tempImageName, context );
+            AppsUtilities.showImage(imageData, tempImageName, context);
         } catch (java.lang.Exception e) {
             GPLog.error(this, null, e);
         }

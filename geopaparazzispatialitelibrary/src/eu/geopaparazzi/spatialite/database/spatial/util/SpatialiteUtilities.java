@@ -30,7 +30,7 @@ import jsqlite.Stmt;
 
 /**
  * SpatialiteUtilities class.
-
+ *
  * @author Mark Johnson
  */
 @SuppressWarnings("nls")
@@ -50,15 +50,16 @@ public class SpatialiteUtilities {
      */
     public static final String UNIQUENAME_SEPARATOR = "#"; //$NON-NLS-1$
 
+    public static final String DUMMY = "dummy";
 
     /**
      * Checks if a field needs to be ignored.
-     * 
-     * @param field the field to check. 
+     *
+     * @param field the field to check.
      * @return <code>true</code> if the field needs to be ignored.
      */
-    public static boolean doIgnoreField( String field ) {
-        for( String ingoredField : SpatialiteUtilities.IGNORED_FIELDS ) {
+    public static boolean doIgnoreField(String field) {
+        for (String ingoredField : SpatialiteUtilities.IGNORED_FIELDS) {
             if (field.equals(ingoredField)) {
                 return true;
             }
@@ -69,15 +70,15 @@ public class SpatialiteUtilities {
     /**
      * Checks if a field needs to be ignored.
      *
-     * @param field the field to check.
+     * @param field   the field to check.
      * @param pkField a primary key field to be ignored. It can be null
      * @return <code>true</code> if the field needs to be ignored.
      */
-    public static boolean doIgnoreField( String field, String pkField) {
+    public static boolean doIgnoreField(String field, String pkField) {
         if (field.equals(pkField)) {
             return true;
         }
-        for( String ingoredField : SpatialiteUtilities.IGNORED_FIELDS ) {
+        for (String ingoredField : SpatialiteUtilities.IGNORED_FIELDS) {
             if (field.equals(ingoredField)) {
                 return true;
             }
@@ -88,13 +89,13 @@ public class SpatialiteUtilities {
 
     /**
      * Checks if a primary key field needs to be ignored.
-     *
+     * <p>
      * Primary keys formed by a single integer field are managed by Sqlite as an alias
      * of ROWID, and a unique value is assigned to this column if omitted on INSERT queries.
-     *
+     * <p>
      * These PK columns should be excluded when creating a new feature, so that the user
      * does not need to worry about assigning a unique ID.
-     *
+     * <p>
      * See http://sqlite.org/autoinc.html for more info.
      *
      * @param field the field to check.
@@ -107,25 +108,25 @@ public class SpatialiteUtilities {
                     (spatialVectorTable.getTableFieldType(fields) == EDataType.INTEGER)) {
                 return fields;
             }
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         return null;
     }
 
     /**
      * Build a query to retrieve geometries from a table in a given bound.
      *
-     * @param destSrid the destination srid.
+     * @param destSrid  the destination srid.
      * @param withRowId if <code>true</code>, the ROWID is added in position 0 of the query.
-     * @param table the table to use.
-     * @param n north bound.
-     * @param s south bound.
-     * @param e east bound.
-     * @param w west bound.
+     * @param table     the table to use.
+     * @param n         north bound.
+     * @param s         south bound.
+     * @param e         east bound.
+     * @param w         west bound.
      * @return the query.
      */
-    public static String buildGeometriesInBoundsQuery( String destSrid, boolean withRowId, SpatialVectorTable table, double n,
-            double s, double e, double w ) {
+    public static String buildGeometriesInBoundsQuery(String destSrid, boolean withRowId, SpatialVectorTable table, double n,
+                                                      double s, double e, double w) {
         boolean doTransform = false;
         if (!table.getSrid().equals(destSrid)) {
             doTransform = true;
@@ -167,6 +168,14 @@ public class SpatialiteUtilities {
         if (table.getStyle().labelvisible == 1) {
             qSb.append(",");
             qSb.append(table.getStyle().labelfield);
+        } else {
+            qSb.append(",'" + DUMMY + "'");
+        }
+        if (table.getStyle().themeField != null) {
+            qSb.append(",");
+            qSb.append(table.getStyle().themeField);
+        } else {
+            qSb.append(",'" + DUMMY + "'");
         }
         qSb.append(" FROM ");
         qSb.append("\"").append(table.getTableName()).append("\"");
@@ -197,26 +206,26 @@ public class SpatialiteUtilities {
 
     /**
      * Get the query to run for a bounding box intersection to retrieve features.
-     * 
+     * <p>
      * <p>This assures that the first element of the query is
      * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
      * and the last one the geometry.
-     * 
-     * @param boundsSrid the srid of the bounds requested.
+     *
+     * @param boundsSrid   the srid of the bounds requested.
      * @param spatialTable the {@link SpatialVectorTable} to query.
-     * @param n north bound.
-     * @param s south bound.
-     * @param e east bound.
-     * @param w west bound.
+     * @param n            north bound.
+     * @param s            south bound.
+     * @param e            east bound.
+     * @param w            west bound.
      * @return the query to run to get all fields.
      */
-    public static String getBboxIntersectingFeaturesQuery( String boundsSrid, SpatialVectorTable spatialTable, double n,
-            double s, double e, double w ) {
+    public static String getBboxIntersectingFeaturesQuery(String boundsSrid, SpatialVectorTable spatialTable, double n,
+                                                          double s, double e, double w) {
         String query = null;
         boolean doTransform = false;
         String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
-        for( String field : spatialTable.getTableFieldNamesList() ) {
+        for (String field : spatialTable.getTableFieldNamesList()) {
             boolean ignore = SpatialiteUtilities.doIgnoreField(field);
             if (!ignore)
                 fieldNamesList += "," + field;
@@ -265,21 +274,21 @@ public class SpatialiteUtilities {
 
     /**
      * Get the query to run for a bounding box intersection to retrieve features.
-     *
+     * <p>
      * <p>This assures that the first element of the query is
      * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
      * and the last one the geometry.
      *
-     * @param resultSrid the requested srid.
+     * @param resultSrid   the requested srid.
      * @param spatialTable the {@link SpatialVectorTable} to query.
      * @return the query to run to get the last inserted feature.
      */
-    public static String getLastInsertedFeatureQuery(String resultSrid, SpatialVectorTable spatialTable ) {
+    public static String getLastInsertedFeatureQuery(String resultSrid, SpatialVectorTable spatialTable) {
         String query = null;
         boolean doTransform = false;
         String fieldNamesList = SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
-        for( String field : spatialTable.getTableFieldNamesList() ) {
+        for (String field : spatialTable.getTableFieldNamesList()) {
             boolean ignore = doIgnoreField(field);
             if (!ignore)
                 fieldNamesList += "," + field;
@@ -313,12 +322,13 @@ public class SpatialiteUtilities {
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square
-     * @param srid the source srid.
-     * @param centerCoordinate the coordinate array to fill with the center.
+     *
+     * @param srid              the source srid.
+     * @param centerCoordinate  the coordinate array to fill with the center.
      * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
-    */
-    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate,
-            double[] boundsCoordinates ) {
+     */
+    public static void collectBoundsAndCenter(Database sqlite_db, String srid, double[] centerCoordinate,
+                                              double[] boundsCoordinates) {
         String centerQuery = "";
         try {
             Stmt centerStmt = null;
@@ -371,16 +381,15 @@ public class SpatialiteUtilities {
                     boundsCoordinates[3] = envelope.getMaxY();
                 }
             } catch (java.lang.Exception e) {
-                GPLog.error("SpatialiteUtilities",".collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
+                GPLog.error("SpatialiteUtilities", ".collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
             } finally {
                 if (centerStmt != null)
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            GPLog.error("SpatialiteUtilities","[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
+            GPLog.error("SpatialiteUtilities", "[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
         }
     }
-
 
 
 }

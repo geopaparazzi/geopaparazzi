@@ -18,8 +18,13 @@
 
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -60,6 +65,7 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         fieldsList.add(MINZOOM);
         fieldsList.add(MAXZOOM);
         fieldsList.add(DECIMATION);
+        fieldsList.add(THEME);
         PROPERTIESTABLE_FIELDS_LIST = Collections.unmodifiableList(fieldsList);
     }
 
@@ -92,7 +98,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         sb.append(DASH).append(" TEXT,");
         sb.append(MINZOOM).append(" INTEGER,");
         sb.append(MAXZOOM).append(" INTEGER,");
-        sb.append(DECIMATION).append(" REAL");
+        sb.append(DECIMATION).append(" REAL,");
+        sb.append(THEME).append(" TEXT");
         sb.append(" );");
         String query = sb.toString();
         database.exec(query, null);
@@ -220,6 +227,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         sbIn.append(style.name);
         sbIn.append("';");
 
+        // NOTE THAT THE THEME STYLE IS READONLY RIGHT NOW AND NOT UPDATED
+
         String updateQuery = sbIn.toString();
         database.exec(updateQuery, null);
     }
@@ -252,7 +261,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         sbSel.append(DASH).append(" , ");
         sbSel.append(MINZOOM).append(" , ");
         sbSel.append(MAXZOOM).append(" , ");
-        sbSel.append(DECIMATION);
+        sbSel.append(DECIMATION).append(" , ");
+        sbSel.append(THEME);
         sbSel.append(" from ");
         sbSel.append(PROPERTIESTABLE);
         sbSel.append(" where ");
@@ -282,6 +292,29 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
                 style.minZoom = stmt.column_int(14);
                 style.maxZoom = stmt.column_int(15);
                 style.decimationFactor = (float) stmt.column_double(16);
+
+                if (stmt.column_count() > 17) {
+                    String theme = stmt.column_string(17);
+                    if (theme != null && theme.trim().length() > 0) {
+                        try {
+                            JSONObject root = new JSONObject(theme);
+                            String fieldName = root.keys().next();
+                            style.themeField = fieldName;
+                            JSONObject fieldObject = root.getJSONObject(fieldName);
+                            style.themeMap = new HashMap<>();
+                            Iterator<String> keys = fieldObject.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                JSONObject styleObject = fieldObject.getJSONObject(key);
+
+                                Style themeStyle = getStyle(styleObject);
+                                style.themeMap.put(key, themeStyle);
+                            }
+                        } catch (JSONException e) {
+                            GPLog.error("GeopaparazziDatabaseProperties", null, e);
+                        }
+                    }
+                }
             }
         } finally {
             stmt.close();
@@ -291,6 +324,52 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
             style = createDefaultPropertiesForTable(database, spatialTableUniqueName, spatialTableLabelField);
         }
 
+        return style;
+    }
+
+    private static Style getStyle(JSONObject styleObject) throws JSONException {
+        Style style = new Style();
+
+        if (styleObject.has(ID))
+            style.id = styleObject.getLong(ID);
+        if (styleObject.has(NAME))
+            style.name = styleObject.getString(NAME);
+        if (styleObject.has(SIZE))
+            style.size = styleObject.getInt(SIZE);
+        if (styleObject.has(FILLCOLOR))
+            style.fillcolor = styleObject.getString(FILLCOLOR);
+        else
+            style.fillcolor = null;
+        if (styleObject.has(STROKECOLOR))
+            style.strokecolor = styleObject.getString(STROKECOLOR);
+        else
+            style.strokecolor = null;
+        if (styleObject.has(FILLALPHA))
+            style.fillalpha = (float) styleObject.getDouble(FILLALPHA);
+        if (styleObject.has(STROKEALPHA))
+            style.strokealpha = (float) styleObject.getDouble(STROKEALPHA);
+        if (styleObject.has(SHAPE))
+            style.shape = styleObject.getString(SHAPE);
+        if (styleObject.has(WIDTH))
+            style.width = (float) styleObject.getDouble(WIDTH);
+        if (styleObject.has(LABELSIZE))
+            style.labelsize = (float) styleObject.getDouble(LABELSIZE);
+        if (styleObject.has(LABELFIELD))
+            style.labelfield = styleObject.getString(LABELFIELD);
+        if (styleObject.has(LABELVISIBLE))
+            style.labelvisible = styleObject.getInt(LABELVISIBLE);
+        if (styleObject.has(ENABLED))
+            style.enabled = styleObject.getInt(ENABLED);
+        if (styleObject.has(ORDER))
+            style.order = styleObject.getInt(ORDER);
+        if (styleObject.has(DASH))
+            style.dashPattern = styleObject.getString(DASH);
+        if (styleObject.has(MINZOOM))
+            style.minZoom = styleObject.getInt(MINZOOM);
+        if (styleObject.has(MAXZOOM))
+            style.maxZoom = styleObject.getInt(MAXZOOM);
+        if (styleObject.has(DECIMATION))
+            style.decimationFactor = (float) styleObject.getDouble(DECIMATION);
         return style;
     }
 
@@ -365,8 +444,6 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
             }
         }
     }
-
-
 
 
 }

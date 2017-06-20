@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.tables;
 
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
@@ -63,6 +68,9 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * {@link HashMap} of non-geometry fields [name,type]
      */
     private HashMap<String, String> fields_list_non_vector = null;
+
+    private HashMap<String, Paint> fillPaints = new HashMap<String, Paint>();
+    private HashMap<String, Paint> strokePaints = new HashMap<String, Paint>();
 
     // only non-geometry fields [name]
     private List<String> labelList = null;
@@ -431,6 +439,122 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         style = new Style();
         style.name = getUniqueNameBasedOnDbFilePath();
     }
+
+
+    /**
+     * Get the fill {@link Paint} for a given style.
+     * <p/>
+     * <p>Paints are cached and reused.</p>
+     *
+     * @param style the {@link Style} to use.
+     * @return the paint.
+     */
+    public Paint getFillPaint4Style(Style style) {
+        Paint paint = fillPaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint();
+            fillPaints.put(style.name, paint);
+        }
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(ColorUtilities.toColor(style.fillcolor));
+        float alpha = style.fillalpha * 255f;
+        paint.setAlpha((int) alpha);
+        return paint;
+    }
+
+    /**
+     * Get the stroke {@link Paint} for a given style.
+     * <p/>
+     * <p>Paints are cached and reused.</p>
+     *
+     * @param style the {@link Style} to use.
+     * @return the paint.
+     */
+    public Paint getStrokePaint4Style(Style style) {
+        Paint paint = strokePaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint();
+            strokePaints.put(style.name, paint);
+        }
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setColor(ColorUtilities.toColor(style.strokecolor));
+        float alpha = style.strokealpha * 255f;
+        paint.setAlpha((int) alpha);
+        paint.setStrokeWidth(style.width);
+
+        try {
+            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+            if (shiftAndDash != null) {
+                float[] dash = Style.getDashOnly(shiftAndDash);
+                if (dash.length > 1)
+                    paint.setPathEffect(new DashPathEffect(dash, Style.getDashShift(shiftAndDash)));
+            }
+        } catch (java.lang.Exception e) {
+            GPLog.error(this, "Error on dash creation: " + style.dashPattern, e);
+        }
+
+        return paint;
+    }
+
+    /**
+     * Get the fill paint for a theme style. These are not editable and as such do not change.
+     *
+     * @param uniqueValue the theme unique value key.
+     * @param style the style to use for the paint.
+     * @return the generated paint.
+     */
+    public Paint getFillPaint4Theme(String uniqueValue, Style style) {
+        Paint paint = fillPaints.get(uniqueValue);
+        if (paint == null) {
+            paint = new Paint();
+            fillPaints.put(style.name, paint);
+            paint.setAntiAlias(true);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(ColorUtilities.toColor(style.fillcolor));
+            float alpha = style.fillalpha * 255f;
+            paint.setAlpha((int) alpha);
+        }
+        return paint;
+    }
+
+    /**
+     * Get the stroke paint for a theme style. These are not editable and as such do not change.
+     *
+     * @param uniqueValue the theme unique value key.
+     * @param style the style to use for the paint.
+     * @return the generated paint.
+     */
+    public Paint getStrokePaint4Theme(String uniqueValue , Style style) {
+        Paint paint = strokePaints.get(uniqueValue);
+        if (paint == null) {
+            paint = new Paint();
+            strokePaints.put(style.name, paint);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setAntiAlias(true);
+            paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setStrokeJoin(Paint.Join.ROUND);
+            paint.setColor(ColorUtilities.toColor(style.strokecolor));
+            float alpha = style.strokealpha * 255f;
+            paint.setAlpha((int) alpha);
+            paint.setStrokeWidth(style.width);
+            try {
+                float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+                if (shiftAndDash != null) {
+                    float[] dash = Style.getDashOnly(shiftAndDash);
+                    if (dash.length > 1)
+                        paint.setPathEffect(new DashPathEffect(dash, Style.getDashShift(shiftAndDash)));
+                }
+            } catch (java.lang.Exception e) {
+                GPLog.error(this, "Error on dash creation: " + style.dashPattern, e);
+            }
+        }
+        return paint;
+    }
+
 
     @Override
     public double[] longLat2Srid(double lon, double lat) {
