@@ -393,6 +393,8 @@
   <string name="Images">Obrázky</string>
   <string name="confirm_remove_image">Opravdu chcete odstranit obrázek?</string>
   <string name="upload_to_cloud_prompt">Nahrát nynější projekt na server?</string>
+  <string name="data_to_pdf_label">Projektové formuláře do PDF</string>
+  <string name="exporting_data_to_pdf">Data formuláře se ukládají do PDF</string>
   <plurals name="n_images">
     <item quantity="one">1 obrázek</item>
     <item quantity="few">%d obrázky</item>

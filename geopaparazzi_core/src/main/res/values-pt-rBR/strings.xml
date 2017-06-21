@@ -136,7 +136,10 @@
   <string name="geopapcloud_password_label">Senha</string>
   <string name="geopapcloud_server_label">Servidor para conectar-se</string>
   <string name="exporting_data">Exportando dados</string>
+  <string name="error_set_cloud_settings">Os preferências do cloud sync não foram definidas corretamente. Por favor verifique suas configurações.</string>
   <string name="exporting_data_to_the_cloud">Exportando dados à nuvem.</string>
+  <string name="error_uploadig_project_to_cloud">Um erro ocorreu ao enviar o projeto para núvem</string>
+  <string name="project_succesfully_uploaded_to_cloud">O projeto foi enviado para nuvem com sucesso</string>
   <string name="exporting_data_to_kmz">Exportando dados para KMZ.</string>
   <string name="exporting_data_to_gpx">Exportando dados para GPX</string>
   <string name="media_upload">ENVIO DE MÍDIA</string>
@@ -173,7 +176,9 @@
   <string name="start_">Início:</string>
   <string name="end_">Fim:</string>
   <string name="map_textsize_factor">Fator de tamanho de texto do mapa</string>
+  <string name="map_textsize_factor_summary">Fator de tamanho do texto para os arquivos do mapsforge</string>
   <string name="keep_screen_on">Manter a tela ligada</string>
+  <string name="keep_screen_on_summary">Mantenha a tela ligada quando no painel de controle e na visão do mapa</string>
   <string name="the_secret_view">A visão secreta</string>
   <string name="database_queries">Consultas de banco de dados</string>
   <string name="demo_mode">Modo demonstrativo</string>
@@ -262,6 +267,8 @@
   <string name="extracting_info">Extraindo informação...</string>
   <string name="geom_incompatible_with_layer">A geometria resultante não é compatível com a camada de destino.</string>
   <string name="selected_features_in_layer">Selecionado %1$d caracteristicas com %2$d poligonos.</string>
+  <string name="selected_line_features_in_layer">%1$dCaracterísticas selecionadas com %2$d linhas</string>
+  <string name="selected_point_features_in_layer">%1$dCaracterísticas selecionadas com %2$d pontos.</string>
   <string name="no_compatible_layers_found">Camadas compatíveis não encontradas</string>
   <string name="copied_features_to_layer">Copiada %1$d geometrias para a camada: %2$s</string>
   <string name="area_colon">Area:</string>
@@ -284,6 +291,7 @@
   <string name="import_uc">IMPORTAR</string>
   <string name="mapurls">Mapaurls</string>
   <string name="gpx">GPX</string>
+  <string name="geopap_browser">Projeto da Nuvem</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Banco de dados padrão</string>
   <string name="kmz">KMZ</string>
@@ -299,6 +307,7 @@
   <string name="name_new_teample_db">Digite um nome para o novo banco de dados</string>
   <string name="new_template_db_create">Banco de dados criado com sucesso.</string>
   <string name="extract_mapsforge_data">Extraindo dados do mapsforge...</string>
+  <string name="menu_extract_mapsforge_data">Extrair dados do mapsforge</string>
   <string name="extract_mapsforge_only_when_loaded">Essa ferramenta funciona apenas quando um mapa do mapsforge está carregado.</string>
   <string name="view">Visualizar</string>
   <string name="force_locale_title">Forçar localização</string>
@@ -309,6 +318,16 @@
   <string name="export_img_processing">Exportando imagens...</string>
   <string name="routing_pref_title">Chave da api de rotas</string>
   <string name="routing_pref_summary">Para usar os serviços de rota MapQuest e Graphhopper insira a ApiKey apropriada.</string>
+  <string name="gps_info_dialog_title">Informações do Map/Gps</string>
+  <string name="open_gps_settings">Abrir configurações do GPS</string>
+  <string name="dashboard_note_action_description">Inserir um texto, figura ou nota de rascunho</string>
+  <string name="dashboard_metadata_action_description">Visualizar informações do projeto</string>
+  <string name="dashboard_gpslog_action_description">Alternar log de gps</string>
+  <string name="dashboard_mapview_action_description">Abrir o map view</string>
+  <string name="dashboard_import_action_description">Abrir o import view</string>
+  <string name="dashboard_export_action_description">Abrir visão de exportação de texto</string>
+  <string name="add_new_metadata">Inserir entrada de metadados</string>
+  <string name="remove_selected_metadata">Remover os as entradas de metadados selecionadas</string>
   <string name="metadata_insert_key">Inserir uma chave</string>
   <string name="metadata_insert_label">Inserir um rótulo</string>
   <string name="metadata_insert_value">Inserir um valor</string>
@@ -327,6 +346,8 @@
   <string name="incoming_logs_added">Logs que chegaram carregados:</string>
   <string name="logs_sent">Logs enviados.</string>
   <string name="active_elevation_diff">Diferença da elevação ativa:</string>
+  <string name="selected_file_is_no_geopap_project">A seleção não parece ser de um banco de dados Geopaparazzi (*.gpap) válido.</string>
+  <string name="error_while_setting_project">Um erro ocorreu enquanto configurava o novo projeto</string>
   <string name="sort_notes">Ordenar Notas</string>
   <string name="path_lc">caminho</string>
   <string name="select_sort_mode">Selecionar modo de ordenação</string>
@@ -347,9 +368,15 @@
   <string name="menu_simple_note">Nota Simples</string>
   <string name="menu_simple_picture">Foto Simples</string>
   <string name="menu_simple_sketch">Esboço Simples</string>
+  <string name="warning_viewcone_gps">Essa ferramenta funciona somente se uma posição de GPS estiver disponível.</string>
+  <string name="import_bookmark_prompt">Deseja importar o link de dados como um marcador e visualiza-lo?</string>
+  <string name="premissions_cant_start">O Geopaparazi não pode ser inicializado pelas seguintes permissões não concedidas:</string>
   <string name="log_cleared">Log limpo</string>
   <string name="bookmarks_exported">Novo favorito adicionado ao arquivo existente:</string>
   <string name="bookmarks_exported_newfile">Favoritos exportados com sucesso:</string>
+  <string name="bookmarks_exported_error">Um erro ocorreu ao exportar os marcadores.</string>
+  <string name="bookmarks_import_error">Um erro ocorreu ao importar os marcadores.</string>
+  <string name="wms_mapurl_added">O arquivo de mapurl WMS foi adicionado com sucesso nas fontes de tile:\n</string>
   <string name="sortby_none">Nenhum</string>
   <string name="sortby_name">Por Nome</string>
   <string name="sortby_name_inverse">Por Nome Inverso</string>
@@ -366,4 +393,10 @@
   <string name="Images">Imagens</string>
   <string name="confirm_remove_image">Você realmente deseja remover a imagem?</string>
   <string name="upload_to_cloud_prompt">Enviar o projeto atual para a nuvem.</string>
+  <string name="data_to_pdf_label">Formulários do projeto para Pdf</string>
+  <string name="exporting_data_to_pdf">Exportar dados do formulário para PDF</string>
+  <plurals name="n_images">
+    <item quantity="one">1 imagem</item>
+    <item quantity="other">%d imagens</item>
+  </plurals>
 </resources>

@@ -398,6 +398,8 @@
   <string name="Images">画像</string>
   <string name="confirm_remove_image">本当に画像を削除しますか？</string>
   <string name="upload_to_cloud_prompt">現在のプロジェクトをクラウドにアップロードしますか？</string>
+  <string name="data_to_pdf_label">プロジェクトフォームをPDF出力</string>
+  <string name="exporting_data_to_pdf">フォームデータをPDFに出力する</string>
   <plurals name="n_images">
     <item quantity="other">%d 画像</item>
   </plurals>
