@@ -298,17 +298,20 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
                     if (theme != null && theme.trim().length() > 0) {
                         try {
                             JSONObject root = new JSONObject(theme);
-                            String fieldName = root.keys().next();
-                            style.themeField = fieldName;
-                            JSONObject fieldObject = root.getJSONObject(fieldName);
-                            style.themeMap = new HashMap<>();
-                            Iterator<String> keys = fieldObject.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                JSONObject styleObject = fieldObject.getJSONObject(key);
+                            if (root.has(UNIQUEVALUES)) {
+                                JSONObject sub = root.getJSONObject(UNIQUEVALUES);
+                                String fieldName = sub.keys().next();
+                                style.themeField = fieldName;
+                                JSONObject fieldObject = sub.getJSONObject(fieldName);
+                                style.themeMap = new HashMap<>();
+                                Iterator<String> keys = fieldObject.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    JSONObject styleObject = fieldObject.getJSONObject(key);
 
-                                Style themeStyle = getStyle(styleObject);
-                                style.themeMap.put(key, themeStyle);
+                                    Style themeStyle = getStyle(styleObject);
+                                    style.themeMap.put(key, themeStyle);
+                                }
                             }
                         } catch (JSONException e) {
                             GPLog.error("GeopaparazziDatabaseProperties", null, e);

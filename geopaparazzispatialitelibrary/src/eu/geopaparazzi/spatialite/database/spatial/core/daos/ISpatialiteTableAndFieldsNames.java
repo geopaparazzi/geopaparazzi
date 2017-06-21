@@ -124,4 +124,6 @@ public interface ISpatialiteTableAndFieldsNames {
     public static final String LABELVISIBLE = "labelvisible";
 
     public static final String THEME = "theme";
+
+    public static final String UNIQUEVALUES = "uniquevalues";
 }
