@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_weight=".50"
+                android:layout_weight="1.1"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="6dp"
                 card_view:cardUseCompatPadding="true">
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_weight=".50"
+                android:layout_weight="3"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="6dp"
                 card_view:cardUseCompatPadding="true">
