@@ -394,6 +394,8 @@
   <string name="Images">이미지</string>
   <string name="confirm_remove_image">정말로 이 이미지를 삭제하시겠습니까?</string>
   <string name="upload_to_cloud_prompt">현재 프로젝트를 클라우드에 업로드하시겠습니까?</string>
+  <string name="data_to_pdf_label">프로젝트 양식을 PDF로</string>
+  <string name="exporting_data_to_pdf">양식 데이터를 PDF로 변환합니다</string>
   <plurals name="n_images">
     <item quantity="other">%d 이미지</item>
   </plurals>

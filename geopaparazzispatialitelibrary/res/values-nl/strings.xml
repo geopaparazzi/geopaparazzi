@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Lijn kleur</string>
+  <string name="width">Lijn dikte</string>
+  <string name="alpha">Lijn alpha</string>
+  <string name="fill_color">Vul kleur</string>
+  <string name="fill_alpha">Vul alpha</string>
+  <string name="point_shape_">Punt vorm</string>
+  <string name="point_size">Punt grootte</string>
+  <string name="decimation">Afronden</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Min zoom</string>
+  <string name="max_zoom">Max zoom</string>
+  <string name="dash_pattern">Lijn patroon</string>
+  <string name="label_properties">Label eigenschappen</string>
+  <string name="toggle_visibility">zichtbaarheid</string>
+  <string name="label_field">label veld</string>
+  <string name="label_size">label grootte</string>
+  <string name="select_table_types">Selecteer Types</string>
+  <string name="select_type">Selecteer Type</string>
+  <string name="remove_from_list">Verwijder %s van de lijst</string>
+  <string name="selected_file_no_vector_data">Het geselecteerde bestand bevat geen vector data:</string>
+  <string name="adding_new_source">Voeg nieuwe bron toe...</string>
+  <string name="select_spatialite_database">Selecteer spatialite databank om toe te voegen</string>
+  <string name="select_spatialite_database_folder">Selecteer spatialite databank map om toe te voegen</string>
+  <string name="loading_databases">Laden databanken...</string>
+</resources>
