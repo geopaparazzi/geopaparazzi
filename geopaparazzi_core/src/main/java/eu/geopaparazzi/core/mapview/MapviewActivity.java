@@ -1308,14 +1308,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_on);
+                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_on_24dp);
                 toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                 TapMeasureTool measureTool = new TapMeasureTool(mMapView);
                 EditManager.INSTANCE.setActiveTool(measureTool);
             } else {
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
+                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_off_24dp);
 
                 EditManager.INSTANCE.setActiveTool(null);
             }
@@ -1327,7 +1327,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_on);
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
+                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_off_24dp);
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                 try {
