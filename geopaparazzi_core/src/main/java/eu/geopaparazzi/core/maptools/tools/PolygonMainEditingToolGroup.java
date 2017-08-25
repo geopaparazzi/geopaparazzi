@@ -103,7 +103,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (editLayer != null) {
             cutButton = new ImageButton(context);
             cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut));
+            cutButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_cut_24dp));
             cutButton.setPadding(0, padding, 0, padding);
             cutButton.setOnClickListener(this);
             cutButton.setOnTouchListener(this);
@@ -111,7 +111,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
             extendButton = new ImageButton(context);
             extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend));
+            extendButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_extend_24dp));
             extendButton.setPadding(0, padding, 0, padding);
             extendButton.setOnClickListener(this);
             extendButton.setOnTouchListener(this);
@@ -120,7 +120,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_create_polygon));
+            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_create_polygon_24dp));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -303,15 +303,15 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             }
         if (cutButton != null)
             if (currentTool != null && activeToolButton == cutButton) {
-                cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut_active));
+                cutButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_cut_active_24dp));
             } else {
-                cutButton.setBackground(Compat.getDrawable(context, R.drawable.editing_cut));
+                cutButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_cut_24dp));
             }
         if (extendButton != null)
             if (currentTool != null && activeToolButton == extendButton) {
-                extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend_active));
+                extendButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_extend_active_24dp));
             } else {
-                extendButton.setBackground(Compat.getDrawable(context, R.drawable.editing_extend));
+                extendButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_extend_24dp));
             }
 
     }
