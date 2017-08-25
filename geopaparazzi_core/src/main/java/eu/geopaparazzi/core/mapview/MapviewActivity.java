@@ -1104,15 +1104,15 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_red));
+            centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_red_24dp));
         } else {
             if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_blue));
+                centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_blue_24dp));
             } else {
                 if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_green));
+                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_green_24dp));
                 } else {
-                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.mapview_center_gps_orange));
+                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_orange_24dp));
                 }
             }
         }

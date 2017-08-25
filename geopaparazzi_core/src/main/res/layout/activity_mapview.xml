@@ -185,7 +185,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/mapview_bottom_space"
-                android:background="@drawable/mapview_center_gps_red"
+                android:background="@drawable/ic_mapview_center_gps_red_24dp"
                 android:padding="@dimen/mapview_sides_space" />
 
             <ImageButton

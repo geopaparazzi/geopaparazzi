@@ -83,7 +83,7 @@ public class NoEditableLayerToolGroup implements ToolGroup, OnClickListener, OnT
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
@@ -141,9 +141,9 @@ public class NoEditableLayerToolGroup implements ToolGroup, OnClickListener, OnT
         if (selectAllButton != null)
             if (currentTool != null && activeToolButton == selectAllButton) {
                 selectAllButton
-                        .setBackground(Compat.getDrawable(context, R.drawable.editing_select_all_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_active_24dp));
             } else {
-                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
             }
     }
 

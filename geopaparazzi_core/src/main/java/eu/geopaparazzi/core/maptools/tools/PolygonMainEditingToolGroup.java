@@ -129,7 +129,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             selectEditableButton = new ImageButton(context);
             selectEditableButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_editable));
+            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_editable_24dp));
             selectEditableButton.setPadding(0, padding, 0, padding);
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
@@ -138,7 +138,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
@@ -147,7 +147,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (editLayer != null) {
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_undo_24dp));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -288,18 +288,18 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
         if (selectEditableButton != null) {
             if (currentTool != null && activeToolButton == selectEditableButton) {
                 selectEditableButton.setBackground(Compat.getDrawable(context,
-                        R.drawable.editing_select_editable_active));
+                        R.drawable.ic_editing_select_editable_active_24dp));
             } else {
                 selectEditableButton.setBackground(Compat.getDrawable(context,
-                        R.drawable.editing_select_editable));
+                        R.drawable.ic_editing_select_editable_24dp));
             }
         }
         if (selectAllButton != null)
             if (currentTool != null && activeToolButton == selectAllButton) {
                 selectAllButton
-                        .setBackground(Compat.getDrawable(context, R.drawable.editing_select_all_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_active_24dp));
             } else {
-                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
             }
         if (cutButton != null)
             if (currentTool != null && activeToolButton == cutButton) {

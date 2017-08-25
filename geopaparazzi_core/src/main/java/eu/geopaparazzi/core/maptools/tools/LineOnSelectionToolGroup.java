@@ -181,7 +181,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.editing_view_attributes));
+            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_view_attributes_24dp));
             editAttributesButton.setPadding(0, padding, 0, padding);
             editAttributesButton.setOnTouchListener(this);
             editAttributesButton.setOnClickListener(this);
@@ -189,7 +189,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_undo_24dp));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
