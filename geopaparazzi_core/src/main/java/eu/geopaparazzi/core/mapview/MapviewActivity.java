@@ -363,7 +363,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // if after rotation a toolgroup is there, enable ti with its icons
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup != null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_on_24dp);
             activeToolGroup.initUI();
             setLeftButtoonsEnablement(true);
         }
@@ -1309,7 +1309,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_on_24dp);
-                toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_off_24dp);
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                 TapMeasureTool measureTool = new TapMeasureTool(mMapView);
@@ -1326,7 +1326,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
-                toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_on);
+                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_on_24dp);
                 toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_off_24dp);
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
@@ -1337,7 +1337,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     GPLog.error(this, null, e);
                 }
             } else {
-                toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
+                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_off_24dp);
                 EditManager.INSTANCE.setActiveTool(null);
             }
 
@@ -1379,7 +1379,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_on);
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_on_24dp);
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer == null) {
                 // if not layer is
@@ -1395,7 +1395,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {
-            toggleEditingButton.setBackgroundResource(R.drawable.mapview_toggle_editing_off);
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_off_24dp);
             EditManager.INSTANCE.setActiveTool(null);
             EditManager.INSTANCE.setActiveToolGroup(null);
             setLeftButtoonsEnablement(true);
