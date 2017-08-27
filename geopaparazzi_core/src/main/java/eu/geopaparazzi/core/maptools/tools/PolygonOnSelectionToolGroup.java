@@ -168,7 +168,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_feature));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_delete_feature_24dp));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
@@ -177,7 +177,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             copyFeatureButton = new ImageButton(context);
             copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_copy_geoms));
+            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_copy_geoms_24dp));
             copyFeatureButton.setPadding(0, padding, 0, padding);
             copyFeatureButton.setOnTouchListener(this);
             copyFeatureButton.setOnClickListener(this);
@@ -202,7 +202,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_commit_24dp));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
