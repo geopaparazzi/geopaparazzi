@@ -33,47 +33,47 @@ public class GpsData {
     /**
      * Geographical coordinate of the circle.
      */
-    protected GeoPoint center;
+    public GeoPoint center;
 
     /**
      * Paint which will be used to fill the circle.
      */
-    protected Paint paintFill;
+    public Paint paintFill;
 
     /**
      * Paint which will be used to draw the circle outline.
      */
-    protected Paint paintOutline;
+    public Paint paintOutline;
 
     /**
      * Radius of the circle in meters.
      */
-    protected float radius;
+    public float radius;
 
     /**
      * Title of the circle.
      */
-    protected String title;
+    public String title;
 
     /**
      * Cached position of the circle on the map.
      */
-    Point cachedCenterPosition;
+    public Point cachedCenterPosition;
 
     /**
      * Cached radius of the circle in pixels.
      */
-    float cachedRadius;
+    public float cachedRadius;
 
     /**
      * Zoom level of the cached circle position.
      */
-    byte cachedZoomLevel;
+    public byte cachedZoomLevel;
 
     /**
      * Flag to indicate if at least one paint is set for this circle.
      */
-    boolean hasPaint;
+    public boolean hasPaint;
 
     /**
      * Constructs a new GpsData.
@@ -83,18 +83,13 @@ public class GpsData {
     }
 
     /**
-     * @param center
-     *            the geographical coordinates of the center point.
-     * @param radius
-     *            the radius of the circle in meters.
-     * @param paintFill
-     *            the paint which will be used to fill the circle (may be null).
-     * @param paintOutline
-     *            the paint which will be used to draw the circle outline (may be null).
-     * @param title
-     *            the title of the circle (may be null).
+     * @param center       the geographical coordinates of the center point.
+     * @param radius       the radius of the circle in meters.
+     * @param paintFill    the paint which will be used to fill the circle (may be null).
+     * @param paintOutline the paint which will be used to draw the circle outline (may be null).
+     * @param title        the title of the circle (may be null).
      */
-    public GpsData( GeoPoint center, float radius, Paint paintFill, Paint paintOutline, String title ) {
+    public GpsData(GeoPoint center, float radius, Paint paintFill, Paint paintOutline, String title) {
         this.title = title;
         this.cachedCenterPosition = new Point();
         this.cachedZoomLevel = Byte.MIN_VALUE;
@@ -103,24 +98,19 @@ public class GpsData {
     }
 
     /**
-     * @param center
-     *            the geographical coordinates of the center point.
-     * @param radius
-     *            the radius of the circle in meters.
-     * @param title
-     *            the title of the circle (may be null).
+     * @param center the geographical coordinates of the center point.
+     * @param radius the radius of the circle in meters.
+     * @param title  the title of the circle (may be null).
      */
-    public GpsData( GeoPoint center, float radius, String title ) {
+    public GpsData(GeoPoint center, float radius, String title) {
         this(center, radius, null, null, title);
     }
 
     /**
-     * @param paintFill
-     *            the paint which will be used to fill the circle (may be null).
-     * @param paintOutline
-     *            the paint which will be used to draw the circle outline (may be null).
+     * @param paintFill    the paint which will be used to fill the circle (may be null).
+     * @param paintOutline the paint which will be used to draw the circle outline (may be null).
      */
-    public GpsData( Paint paintFill, Paint paintOutline ) {
+    public GpsData(Paint paintFill, Paint paintOutline) {
         this(null, 0, paintFill, paintOutline, null);
     }
 
@@ -135,13 +125,11 @@ public class GpsData {
      * Sets the parameters of the circle.
      * <p>
      * Changes might not become visible until {@link Overlay#requestRedraw()} is called.
-     * 
-     * @param center
-     *            the geographical coordinates of the center point.
-     * @param radius
-     *            the radius of the circle in meters.
+     *
+     * @param center the geographical coordinates of the center point.
+     * @param radius the radius of the circle in meters.
      */
-    public synchronized void setCircleData( GeoPoint center, float radius ) {
+    public synchronized void setCircleData(GeoPoint center, float radius) {
         setCircleDataInternal(center, radius);
     }
 
@@ -149,33 +137,30 @@ public class GpsData {
      * Sets the paints which will be used to draw the overlay.
      * <p>
      * Changes might not become visible until {@link Overlay#requestRedraw()} is called.
-     * 
-     * @param paintFill
-     *            the paint which will be used to fill the circle (may be null).
-     * @param paintOutline
-     *            the paint which will be used to draw the circle outline (may be null).
+     *
+     * @param paintFill    the paint which will be used to fill the circle (may be null).
+     * @param paintOutline the paint which will be used to draw the circle outline (may be null).
      */
-    public synchronized void setPaint( Paint paintFill, Paint paintOutline ) {
+    public synchronized void setPaint(Paint paintFill, Paint paintOutline) {
         setPaintInternal(paintFill, paintOutline);
     }
 
     /**
      * Sets the title of this circle.
-     * 
-     * @param title
-     *            the title of this circle (may be null).
+     *
+     * @param title the title of this circle (may be null).
      */
-    public synchronized void setTitle( String title ) {
+    public synchronized void setTitle(String title) {
         this.title = title;
     }
 
-    private void setCircleDataInternal( GeoPoint center, float radius ) {
+    private void setCircleDataInternal(GeoPoint center, float radius) {
         this.center = center;
         this.radius = radius;
         this.cachedZoomLevel = Byte.MIN_VALUE;
     }
 
-    private void setPaintInternal( Paint paintFill, Paint paintOutline ) {
+    private void setPaintInternal(Paint paintFill, Paint paintOutline) {
         this.paintFill = paintFill;
         this.paintOutline = paintOutline;
         this.hasPaint = paintFill != null || paintOutline != null;
