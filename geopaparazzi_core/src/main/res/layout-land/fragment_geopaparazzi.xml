@@ -30,7 +30,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_note_action_description"
-                android:src="@drawable/dashboard_notes" />
+                android:src="@drawable/ic_dashboard_notes_24dp" />
 
             <ImageButton
                 android:id="@+id/dashboardButtonMetadata"
@@ -41,7 +41,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_metadata_action_description"
-                android:src="@drawable/dashboard_metadata"
+                android:src="@drawable/ic_dashboard_metadata_24dp"
                 android:textColor="@color/main_text_color" />
 
             <ImageButton
@@ -53,7 +53,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_gpslog_action_description"
-                android:src="@drawable/dashboard_gpslog" />
+                android:src="@drawable/ic_dashboard_gpslog_24dp" />
         </TableRow>
 
         <TableRow
@@ -70,7 +70,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_mapview_action_description"
-                android:src="@drawable/dashboard_mapview" />
+                android:src="@drawable/ic_dashboard_mapview_24dp" />
 
             <ImageButton
                 android:id="@+id/dashboardButtonImport"
@@ -81,7 +81,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_import_action_description"
-                android:src="@drawable/dashboard_import" />
+                android:src="@drawable/ic_dashboard_import_24dp" />
 
             <ImageButton
                 android:id="@+id/dashboardButtonExport"
@@ -92,7 +92,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_export_action_description"
-                android:src="@drawable/dashboard_export" />
+                android:src="@drawable/ic_dashboard_export_24dp" />
         </TableRow>
 
     </TableLayout>
