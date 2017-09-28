@@ -28,22 +28,20 @@ import android.content.pm.PackageManager;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionRecieveSms extends AChainedPermissionHelper {
+public class PermissionGetAccounts extends AChainedPermissionHelper {
 
-    public static int RECIEVESMS_PERMISSION_REQUESTCODE = 4;
-
-    private AChainedPermissionHelper nextPermissionHelper;
+    public static int GET_ACCOUNTS_PERMISSION_REQUESTCODE = 5;
 
     @Override
     public String getDescription() {
-        return "Recieve SMS";
+        return "Get Accounts";
     }
 
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
             if (context.checkSelfPermission(
-                    Manifest.permission.RECEIVE_SMS) !=
+                    Manifest.permission.GET_ACCOUNTS) !=
                     PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
@@ -51,28 +49,27 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
         return true;
     }
 
-
     @Override
     public void requestPermission(final Activity activity) {
         if (canAskPermission) {
             if (activity.checkSelfPermission(
-                    Manifest.permission.RECEIVE_SMS) !=
+                    Manifest.permission.GET_ACCOUNTS) !=
                     PackageManager.PERMISSION_GRANTED) {
 
                 if (canAskPermission) {
                     if (activity.shouldShowRequestPermissionRationale(
-                            Manifest.permission.RECEIVE_SMS)) {
+                            Manifest.permission.GET_ACCOUNTS)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("Geopaparazzi needs to be able to recieve sms to enable certain functionalities.");
+                        builder.setMessage("The application needs to get account information from your device. To do so it needs the related permission granted.");
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (canAskPermission) {
                                             activity.requestPermissions(new String[]{
-                                                            Manifest.permission.RECEIVE_SMS},
-                                                    RECIEVESMS_PERMISSION_REQUESTCODE);
+                                                            Manifest.permission.GET_ACCOUNTS},
+                                                    GET_ACCOUNTS_PERMISSION_REQUESTCODE);
                                         }
                                     }
                                 }
@@ -83,8 +80,8 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
                         // request permission
                         if (canAskPermission) {
                             activity.requestPermissions(
-                                    new String[]{Manifest.permission.RECEIVE_SMS},
-                                    RECIEVESMS_PERMISSION_REQUESTCODE);
+                                    new String[]{Manifest.permission.GET_ACCOUNTS},
+                                    GET_ACCOUNTS_PERMISSION_REQUESTCODE);
                         }
                     }
                 }
@@ -94,8 +91,8 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == RECIEVESMS_PERMISSION_REQUESTCODE &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        if (requestCode == GET_ACCOUNTS_PERMISSION_REQUESTCODE &&
+                grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             return true;
         return false;
     }

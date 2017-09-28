@@ -26,15 +26,44 @@ import android.os.Build;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface IChainedPermissionHelper {
+public abstract class AChainedPermissionHelper {
     boolean canAskPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+
+    private AChainedPermissionHelper nextPermissionHelper;
+
+    /**
+     * Adds the next permission to ask and gets it back.
+     *
+     * @param permissionHelper the next to check.
+     * @return the added check.
+     */
+    public AChainedPermissionHelper add(AChainedPermissionHelper permissionHelper) {
+        nextPermissionHelper = permissionHelper;
+        return permissionHelper;
+    }
+
+    /**
+     * Get the next non granted permission in the chain.
+     *
+     * @param context the context to use.
+     * @return the next non granted permission or null if all are granted.
+     */
+    public AChainedPermissionHelper getNextWithoutPermission(Context context) {
+        if (nextPermissionHelper == null)
+            return null;
+        if (!nextPermissionHelper.hasPermission(context)) {
+            return nextPermissionHelper;
+        } else {
+            return nextPermissionHelper.getNextWithoutPermission(context);
+        }
+    }
 
     /**
      * Get a description of this permission helper.
      *
      * @return a string that can be used in dialogs.
      */
-    String getDescription();
+    public abstract String getDescription();
 
     /**
      * Checks if the permission is granted.
@@ -42,14 +71,14 @@ public interface IChainedPermissionHelper {
      * @param context the context to use.
      * @return true, if permission is granted.
      */
-    boolean hasPermission(Context context);
+    public abstract boolean hasPermission(Context context);
 
     /**
      * Request the permission.
      *
      * @param activity the asking activity.
      */
-    void requestPermission(Activity activity);
+    public abstract void requestPermission(Activity activity);
 
     /**
      * Checks if the permission has finally been granted.
@@ -60,13 +89,6 @@ public interface IChainedPermissionHelper {
      * @param grantResults the results array.
      * @return true if permission has been granted.
      */
-    boolean hasGainedPermission(int requestCode, int[] grantResults);
+    public abstract boolean hasGainedPermission(int requestCode, int[] grantResults);
 
-    /**
-     * Get the next non granted permission in the chain.
-     *
-     * @param context the context to use.
-     * @return the next non granted permission or null if all are granted.
-     */
-    IChainedPermissionHelper getNextWithoutPermission(Context context);
 }

@@ -24,12 +24,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionSendSms implements IChainedPermissionHelper {
+public class PermissionSendSms extends AChainedPermissionHelper {
 
     public static int SENDSMS_PERMISSION_REQUESTCODE = 3;
 
@@ -100,13 +99,4 @@ public class PermissionSendSms implements IChainedPermissionHelper {
         return false;
     }
 
-    @Override
-    public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionRecieveSms permissionRecieveSms = new PermissionRecieveSms();
-        if (!permissionRecieveSms.hasPermission(context)) {
-            return permissionRecieveSms;
-        } else {
-            return permissionRecieveSms.getNextWithoutPermission(context);
-        }
-    }
 }

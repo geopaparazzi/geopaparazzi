@@ -64,7 +64,7 @@ public class NewProjectDialogFragment extends DialogFragment {
             final File sdcardDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
             final String projectExistingString = getString(eu.geopaparazzi.core.R.string.chosen_project_exists);
 
-            final String newGeopaparazziProjectName = Constants.GEOPAPARAZZI
+            final String newGeopaparazziProjectName = ResourcesManager.getInstance(getContext()).getApplicationName()
                     + "_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
 

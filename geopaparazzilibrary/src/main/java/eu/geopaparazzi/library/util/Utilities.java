@@ -41,6 +41,7 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -103,14 +104,31 @@ public class Utilities {
      * @return the unique id.
      */
     public static String getUniqueDeviceId(Context context) {
-        // try to go for the imei
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String id = tm.getDeviceId();
-        if (id == null) {
-            // try the android id
-            id = android.provider.Settings.Secure.getString(context.getContentResolver(),
-                    android.provider.Settings.Secure.ANDROID_ID);
+        String id = null;
+
+
+        try {
+            // try to go for the imei
+            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            id = tm.getDeviceId();
+            if (id != null) {
+                return id;
+            }
+        } catch (Exception e) {
+            // ignore and try next
         }
+
+
+        try {
+            id = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            if (id != null) {
+                return id;
+            }
+        } catch (Exception e) {
+            // ignore and go on
+        }
+
         return id;
     }
 

@@ -24,12 +24,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionWriteStorage implements IChainedPermissionHelper {
+public class PermissionWriteStorage extends AChainedPermissionHelper {
 
     public static int WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE = 1;
 
@@ -98,14 +97,5 @@ public class PermissionWriteStorage implements IChainedPermissionHelper {
         return false;
     }
 
-    @Override
-    public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionFineLocation permissionFineLocation = new PermissionFineLocation();
-        if (!permissionFineLocation.hasPermission(context)) {
-            return permissionFineLocation;
-        } else {
-            return permissionFineLocation.getNextWithoutPermission(context);
-        }
-    }
 
 }
