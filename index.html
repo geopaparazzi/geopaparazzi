@@ -683,10 +683,38 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#_appendix">16. Appendix</a>
+<li><a href="#_a_small_handbook_for_developers">16. A small handbook for developers</a>
 <ul class="sectlevel2">
-<li><a href="#_the_finalized_tags_json_of_the_forms_section">16.1. The finalized tags.json of the Forms section</a></li>
-<li><a href="#_complete_tag_json_for_the_egypt_usecase">16.2. Complete tag.json for the Egypt usecase</a></li>
+<li><a href="#_introduction_2">16.1. Introduction</a>
+<ul class="sectlevel3">
+<li><a href="#_getting_the_code">16.1.1. Getting the code</a></li>
+<li><a href="#_building_and_developing_geopaparazzi">16.1.2. Building and developing Geopaparazzi</a></li>
+</ul>
+</li>
+<li><a href="#_description_of_the_geopaparazzi_architecture">16.2. Description of the Geopaparazzi Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_modules_dependencies_diagram">16.2.1. Modules dependencies diagram</a></li>
+<li><a href="#_geopaparazzilibrary">16.2.2. geopaparazzilibrary</a></li>
+<li><a href="#_geopaparazzi_core">16.2.3. geopaparazzi_core</a></li>
+<li><a href="#_geopaparazzi_app">16.2.4. geopaparazzi.app</a></li>
+<li><a href="#_geopaparazzimapsforge">16.2.5. geopaparazzimapsforge</a></li>
+<li><a href="#_geopaparazzispatialitelibrary">16.2.6. geopaparazzispatialitelibrary</a></li>
+<li><a href="#_geopaparazzi_acrylicpaint">16.2.7. geopaparazzi_acrylicpaint</a></li>
+<li><a href="#_wms_nww">16.2.8. wms_nww</a></li>
+<li><a href="#_plugins">16.2.9. plugins</a></li>
+</ul>
+</li>
+<li><a href="#_the_project_database">16.3. The Project Database</a>
+<ul class="sectlevel3">
+<li><a href="#_database_tables_described_2">16.3.1. Database tables described</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_appendix">17. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#_the_finalized_tags_json_of_the_forms_section">17.1. The finalized tags.json of the Forms section</a></li>
+<li><a href="#_complete_tag_json_for_the_egypt_usecase">17.2. Complete tag.json for the Egypt usecase</a></li>
 </ul>
 </li>
 </ul>
@@ -709,6 +737,18 @@ table.CodeRay td.code>pre{padding:0}
 </td>
 <td class="content">
 This manual is available also as PDF <a href="https://github.com/geopaparazzi/usermanual/releases/download/version_5.3.0/usermanual_geopaparazzi_5.3.0.pdf">at this link</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are looking for the source code of this project, <a href="https://github.com/geopaparazzi/geopaparazzi">jump right to this link</a>.
 </td>
 </tr>
 </table>
@@ -4356,13 +4396,757 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_appendix">16. Appendix</h2>
+<h2 id="_a_small_handbook_for_developers">16. A small handbook for developers</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_introduction_2">16.1. Introduction</h3>
+<div class="sect3">
+<h4 id="_getting_the_code">16.1.1. Getting the code</h4>
+<div class="paragraph">
+<p>The whole source code of the Geopaparazzi project is available at <a href="https://github.com/geopaparazzi/geopaparazzi">its github site</a>.</p>
+</div>
+<div class="paragraph">
+<p>It can be downloaded into a local git repository with the following command from commandline:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">git clone --recursive https://github.com/geopaparazzi/geopaparazzi.git</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_building_and_developing_geopaparazzi">16.1.2. Building and developing Geopaparazzi</h4>
+<div class="paragraph">
+<p>The authors suggest to use <a href="https://developer.android.com/studio/index.html">Android Studio</a> for the build and development of the application.</p>
+</div>
+<div class="paragraph">
+<p>Geopaparazzi is developed in pure java. The only native C libraries referenced in the project are th elibraries of spatialite. They are contained as libraries and therefore all development is done in pure java. Android currently supports all Java 7 language features and a subset of Java 8 language features that vary by platform version. At the time of writing the Geopaparazzi codebase only uses java 7 languagefeatures.</p>
+</div>
+<div class="paragraph">
+<p>The project uses <a href="https://gradle.org/">gradle</a> as its build tool. The commandline can be used to assemble an installation package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">./gradlew assemble</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the case of building from commandline, it is necessary to insert the keystore informations to sign the installation package in a file named:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">geopaparazzi.app/ant.properties</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The format is the one of a simple key-value properties file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>key.store=/path/to/the/keystore/file
+key.store.password=yourpassword
+key.alias=youralias
+key.alias.password=youraliaspassword</code></pre>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_description_of_the_geopaparazzi_architecture">16.2. Description of the Geopaparazzi Architecture</h3>
+<div class="paragraph">
+<p>The Geopaparazzi application has been split in different modules, that contain functionalities that have been isolated.</p>
+</div>
+<div class="paragraph">
+<p>The root source folder contains the main modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><span class="icon lime"><i class="fa fa-folder-open"></i></span> build/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> extras/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_acrylicpaint/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi.app/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_core/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzilibrary/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzimapsforge/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzispatialitelibrary/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> gradle/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> wms_nww/
+<span class="icon silver"><i class="fa fa-file"></i></span> build.gradle
+<span class="icon silver"><i class="fa fa-file"></i></span> geopaparazzi-git.iml
+<span class="icon silver"><i class="fa fa-file"></i></span> gradle.properties
+<span class="icon"><i class="fa fa-gears"></i></span> gradlew
+<span class="icon silver"><i class="fa fa-file"></i></span> gradlew.bat
+<span class="icon silver"><i class="fa fa-file"></i></span> local.properties
+<span class="icon silver"><i class="fa fa-file"></i></span> README.md
+<span class="icon silver"><i class="fa fa-file"></i></span> settings.gradle</pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Contents of Geopaparazzi git root folder</div>
+<p>While the folders <em>extra</em>, <em>build</em> and <em>gradle</em> are accessory folders, the other folders are all part of the application.</p>
+</div>
+<div class="sect3">
+<h4 id="_modules_dependencies_diagram">16.2.1. Modules dependencies diagram</h4>
+<div class="paragraph">
+<p>The diagram shows the dependencies of the various modules:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="development/modules_diagram.png" alt="Diagram of the main modules dependencies." width="868" height="350">
+</div>
+<div class="title">Figure 69. Diagram of the main modules dependencies.</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="development/plugins_diagram.png" alt="The official Geopaparazzi plugins" width="1180" height="154">
+</div>
+<div class="title">Figure 70. The official Geopaparazzi plugins</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzilibrary">16.2.2. geopaparazzilibrary</h4>
+<div class="paragraph">
+<p>The Geopaparazzi Library module contains all the code that can be reused across applications. The different packages contained have been named to explain their content.</p>
+</div>
+<div class="paragraph">
+<p>Many of the packages are not used in the geopaparazzi application, but have been contributed during several customizations that have been done during the years.</p>
+</div>
+<div class="paragraph">
+<p>Below a short description of the most important packages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>bluetooth</strong>: bluetooth pairing and data transfer classes</p>
+</li>
+<li>
+<p><strong>camera</strong>: classes for taking pictures</p>
+</li>
+<li>
+<p><strong>chart</strong>: charting utilities</p>
+</li>
+<li>
+<p><strong>core</strong>: main activities and fragments that can be reused in different contexts</p>
+</li>
+<li>
+<p><strong>database</strong>: database helper classes</p>
+</li>
+<li>
+<p><strong>features</strong>: classes related to the vector editing engine</p>
+</li>
+<li>
+<p><strong>forms</strong>: package containing the form based notes classes</p>
+</li>
+<li>
+<p><strong>gps</strong>: the gps service package</p>
+</li>
+<li>
+<p><strong>gps</strong>: conversion from and to gpx</p>
+</li>
+<li>
+<p><strong>images</strong>: image utilities</p>
+</li>
+<li>
+<p><strong>kml</strong>: conversion from and to kml/kmz</p>
+</li>
+<li>
+<p><strong>locale</strong>: utilities to handle locale switch</p>
+</li>
+<li>
+<p><strong>network</strong>: network related utilities</p>
+</li>
+<li>
+<p><strong>nfc</strong>: near field communication package</p>
+</li>
+<li>
+<p><strong>permissions</strong>: classes to help with the android &gt;6 permission system</p>
+</li>
+<li>
+<p><strong>plugin</strong>: package that contains the plugin engine classes</p>
+</li>
+<li>
+<p><strong>routing</strong>: classes that connect to online routing engines</p>
+</li>
+<li>
+<p><strong>sensors</strong>: utilities related to motion sensors</p>
+</li>
+<li>
+<p><strong>share</strong>: sharing utilities for social network or similar</p>
+</li>
+<li>
+<p><strong>sketch</strong>: outdated sketch support. Substituted by acrylicpaint</p>
+</li>
+<li>
+<p><strong>sms</strong>: utilities to send or intercept sms</p>
+</li>
+<li>
+<p><strong>style</strong>: style support classes</p>
+</li>
+<li>
+<p><strong>util</strong>: many utilities classes related to projection, debug, data types and similar</p>
+</li>
+<li>
+<p><strong>webproject</strong>: classes that support up/downloading geopaparazzi projects from and to a server</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzi_core">16.2.3. geopaparazzi_core</h4>
+<div class="paragraph">
+<p>The core module contains all that is visible in Geopaparazzi. All the activities, views and fragments and all logic behind the user interaction.</p>
+</div>
+<div class="paragraph">
+<p>This module is very specific to Geopaparazzi and us such contains the structure of the application, its preferences, the map view and database related code.</p>
+</div>
+<div class="paragraph">
+<p>The main packages are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>database</strong>: database management classes</p>
+</li>
+<li>
+<p><strong>maptools</strong>: tools to work with vector editing</p>
+</li>
+<li>
+<p><strong>mapview</strong>: the map view and all its functionalities and overlayes</p>
+</li>
+<li>
+<p><strong>preferences</strong>: the preferences system</p>
+</li>
+<li>
+<p><strong>ui</strong>: all the core activities and fragments</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This module is the visible heart of geopaparazzi. It makes large use of the geopaparazzi libraries as well as the other modules.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzi_app">16.2.4. geopaparazzi.app</h4>
+<div class="paragraph">
+<p>The geopaparazzi.app module has been created to create easily branded versions of Geopaparazzi. It is a thin wrapper around the Geopaparazzi Core module.</p>
+</div>
+<div class="paragraph">
+<p>In fact it simply extends the core module by defining an empty main activity in its release package (the one then used in google play for example):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">GeopaparazziActivity</span> <span class="directive">extends</span> GeopaparazziCoreActivity {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By doing this it is simple to change the style (speak color and appearence) and the name of the application by just changing/extending the xml files in the resources folder.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzimapsforge">16.2.5. geopaparazzimapsforge</h4>
+<div class="paragraph">
+<p><a href="https://github.com/mapsforge/mapsforge">Mapsforge</a> is the mapping engine used in Geopaparazzi. While the project is going towards the release of version 0.8.0 at the current time, Geopaparazzi still bases on a customized version of the 0.3.1 version of mapsforge. The reasons for the lack of update is both technical and due to missing resources dedicated to this activity. The upgrade to version 0.8.0 would take a significand amount of time and huge code refactoring.</p>
+</div>
+<div class="paragraph">
+<p>The module contains also the original mapsforge code on which several bug fixes have been backported and some customizations have been applied by HydroloGIS. As such this module is mandatory to allow Geopaparazzi to work with a map view.</p>
+</div>
+<div class="paragraph">
+<p>The module also contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the classes to handle tiles. This means reading and writing of mbtiles, online TMS services through mapurl files.</p>
+</li>
+<li>
+<p>the user interface classes to load mapsforge, mbtile, rasterlite2 and mapurl datasets. These are basically activities to browse the filesystem and load data and keep them ordered in a simple catalog.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzispatialitelibrary">16.2.6. geopaparazzispatialitelibrary</h4>
+<div class="paragraph">
+<p>The Spatialite Library module contains several important pieces necessary to the main application.</p>
+</div>
+<div class="paragraph">
+<p>As the name already describes, the spatialite vector part is handled in this module. It contains all the classes that define spatial tables and its geometries and attributes.</p>
+</div>
+<div class="paragraph">
+<p>Data Access Objects are present for the different tabel types, as normal spatialite vector tables but also rasterlite2 and geopackage tables.</p>
+</div>
+<div class="paragraph">
+<p>The same package also contains activities to browse and select spatialite databases and load them into the map view. Views are also available to change the order of the database layers visualized and change their properties in terms of style and labeling.</p>
+</div>
+<div class="paragraph">
+<p>The spatialite module contains also 2 very important projects: jsqlite and jts</p>
+</div>
+<div class="sect4">
+<h5 id="_android_spatialite_jsqlite">android-spatialite (jsqlite)</h5>
+<div class="paragraph">
+<p>The package jsqlite contains the <a href="https://github.com/atd-schubert/android-spatialite">android-spatialite</a> project, which exposes a simple API to load spatialite extensions and query a spatialite database using spatial queries.</p>
+</div>
+<div class="paragraph">
+<p>This API is used in geopaparazzi to access any spatialite/rasterlite2 database.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_jts">JTS</h5>
+<div class="paragraph">
+<p>The Java Topology Suite is a geometric java library very well known in the geospatial world. It could be said, that it is the first and only one used in the open source geospatial business, since the counterpart GEOS, which is used in most of the geospatial applications (gdal, postgis, spatialite), is an almost straight port from the java to the C++ language.</p>
+</div>
+<div class="paragraph">
+<p>The JTS package in this module has been adapted by HydroloGIS in order to be usable in android. In particular all the AWT related classes have been replaced or removed, depending on the needs.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzi_acrylicpaint">16.2.7. geopaparazzi_acrylicpaint</h4>
+<div class="paragraph">
+<p>Acrylic Paint is the new choice for the drawing of sketches in Geopaparazzi. It is a very nifty and tiny project, well written and maintained in few classes. It makes the perfect fit to be used in Geopaparazzi.</p>
+</div>
+<div class="paragraph">
+<p>This module contains the original classes of the <a href="https://github.com/valerio-bozzolan/AcrylicPaint">Acrylic Paint</a> project. They have been customized by HydroloGIS only to answer properly to the intent launched by Geopaparazzi and return the image drawn by the user the way Geopaparazzi needs it. Also teh style has been adapted to be aligned with the one of Geopaparazzi.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_wms_nww">16.2.8. wms_nww</h4>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Web_Map_Service">WMS</a> is a standard mapping service and is supported in Geopaparazzi using this module. The module is an adapted code from an older version of the <a href="https://github.com/NASAWorldWind/WorldWindAndroid">Nasa World Wind Android</a> application. It allows to query the <strong>getCapabilities</strong> of the Service and list the available layers, which allows th user to easily select a layer to visualize in Geopaparazzi.</p>
+</div>
+<div class="paragraph">
+<p>Since the original code is releasesd under the Apache License, this module has been kept outside of the Geopaparazzi codebase. That is also the reason the <strong>git clone --recursive</strong> is necessary when checking out the project&#8217;s source code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins">16.2.9. plugins</h4>
+<div class="paragraph">
+<p>It is now possible to use plugins with Geopaparazzi. They ar enot dynamic plugins that can be installed aside of Geopaparazzi and then loaded into it. But it is possible to compile an custom version of Geopaparazzi with certain plugins enabled.</p>
+</div>
+<div class="paragraph">
+<p>The official codebase of Geopaparazzi currently uses the plugins for all its import and export options.</p>
+</div>
+<div class="paragraph">
+<p>Inside the plugins folder, at the time of writing 4 plugins are available:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_default_export_plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_default_import_plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_pdf_export_plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_projects_export_plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_projects_import_plugins/</pre>
+</div>
+</div>
+<div class="ulist">
+<div class="title">Contents of plugins folder</div>
+<ul>
+<li>
+<p><strong>geopaparazzi_default_export_plugins</strong>: Contains the export actions (and menu entries of the export view) that take care of bookmarks, gps, images and kmz</p>
+</li>
+<li>
+<p><strong>geopaparazzi_default_import_plugins</strong>: Contains the import actions (and menu entries in the import view) that take care of bookmarks, default databases, gps, wms and mapurls</p>
+</li>
+<li>
+<p><strong>geopaparazzi_projects_export_plugins</strong>: Contains the export action that allows to upload the current geopaparazzi project to a serverside application</p>
+</li>
+<li>
+<p><strong>geopaparazzi_projects_import_plugins</strong>: Contains the import action that allows to list geopaparazzi projects available on a server and then download a selected project to the device</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The plugin system is very handy if, for example, it comes to data synchronization. A developer could implement his/her own version of data synchronization with an own servide application and create a set of plugins that take care of it inside geopaparazzi.</p>
+</div>
+<div class="paragraph">
+<p>That developer could then create a custom build of Geopaparazzi (or whatever the name would be), remove the projects import/export plugins and add instead his/her own. The custom version would then present in the import/export views the new actions to synchronize with the selected server application. This brings to a very smooth integration.</p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_project_database">16.3. The Project Database</h3>
+<div class="paragraph">
+<p>The Geopaparazzi project database is a plain sqlite database with the extension <strong>.gpap</strong>.</p>
+</div>
+<div class="paragraph">
+<p>All data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="_database_tables_described_2">16.3.1. Database tables described</h4>
+<div class="imageblock">
+<div class="content">
+<img src="development/database_diagram.png" alt="Overview diagram of database tables" width="862" height="595">
+</div>
+<div class="title">Figure 71. Overview diagram of database tables</div>
+</div>
+<div class="sect4">
+<h5 id="_the_metadata_table">The Metadata Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">key for the record</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value for the record</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_notes_table">The Notes Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the note</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the note</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">description of the note</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">form</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the form data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">style</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">style of the note</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Style and isdirty are currently unused.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_the_images_table">The Images Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the image</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the image</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azimuth</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">note_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an optional note id, to which it is bound to</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imagedate_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id of the connected image data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_imagedata_table">The Imagedata Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the image data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">thumbnail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the image thumbnail data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_bookmarks_table">The Bookmarks Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zoom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the zoom of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">north</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the north bound of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">south</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the south bound of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">west</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the west bound of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">east</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the east bound of the bookmark</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the name of the bookmark</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_gps_logs_table">The GPS logs Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">startts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log start timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">endts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log end timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lengthm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the length in meters</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the log</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_gps_logs_data_table">The GPS logs data Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the log point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the log point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation of the log point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp of the log point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log of which the point is part</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_gps_logs_properties_table">The GPS logs properties Table</h5>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Column name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log the properties are part of</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">color</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the color to use to draw the log</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">width</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the width to use to draw the log</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">visible</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">flag that defines if the log is visible at the time given</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_appendix">17. Appendix</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="appendix"></a></p>
 </div>
 <div class="sect2">
-<h3 id="_the_finalized_tags_json_of_the_forms_section">16.1. The finalized tags.json of the Forms section</h3>
+<h3 id="_the_finalized_tags_json_of_the_forms_section">17.1. The finalized tags.json of the Forms section</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
@@ -4495,7 +5279,7 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_complete_tag_json_for_the_egypt_usecase">16.2. Complete tag.json for the Egypt usecase</h3>
+<h3 id="_complete_tag_json_for_the_egypt_usecase">17.2. Complete tag.json for the Egypt usecase</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
