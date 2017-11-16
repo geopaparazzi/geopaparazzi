@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -29,7 +30,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public abstract class GPApplication extends Application {
+public abstract class GPApplication extends MultiDexApplication {
     private static GPApplication instance = null;
 
     @Override

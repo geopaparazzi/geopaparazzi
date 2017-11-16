@@ -23,53 +23,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.AndroidHttpClient;
 import android.util.Base64;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreProtocolPNames;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -86,6 +55,7 @@ public class NetworkUtilities {
      */
     public static final long maxBufferSize = 4096;
     public static final String SLASH = "/";
+    public static final int HTTP_OK = 200;
 
     /**
      * Read url to string.
@@ -107,7 +77,7 @@ public class NetworkUtilities {
         return sb.toString().trim();
     }
 
-    private static HttpURLConnection makeNewConnection(String fileUrl) throws Exception {
+    public static HttpURLConnection makeNewConnection(String fileUrl) throws Exception {
         URL url = new URL(normalizeUrl(fileUrl));
         return (HttpURLConnection) url.openConnection();
     }
@@ -117,7 +87,7 @@ public class NetworkUtilities {
     }
 
     private static String normalizeUrl(String url, boolean addSlash) {
-        if ( (!url.startsWith("http://")) && (!url.startsWith("https://"))) {
+        if ((!url.startsWith("http://")) && (!url.startsWith("https://"))) {
             url = "http://" + url;
         }
         if (addSlash && !url.endsWith(SLASH)) {
@@ -125,6 +95,7 @@ public class NetworkUtilities {
         }
         return url;
     }
+
     /**
      * Sends an HTTP GET request to a url
      *
@@ -363,56 +334,56 @@ public class NetworkUtilities {
         }
     }
 
-    /**
-     * Sends a {@link MultipartEntity} post with text and image files.
-     *
-     * @param url        the url to which to POST to.
-     * @param user       the user or <code>null</code>.
-     * @param pwd        the password or <code>null</code>.
-     * @param stringsMap the {@link HashMap} containing the key and string pairs to send.
-     * @param filesMap   the {@link HashMap} containing the key and image file paths
-     *                   (jpg, png supported) pairs to send.
-     * @throws Exception if something goes wrong.
-     */
-    public static void sentMultiPartPost(String url, String user, String pwd, HashMap<String, String> stringsMap,
-                                         HashMap<String, File> filesMap) throws Exception {
-        HttpClient httpclient = new DefaultHttpClient();
-        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        HttpPost httppost = new HttpPost(url);
-
-        if (user != null && pwd != null && user.trim().length() > 0 && pwd.trim().length() > 0) {
-            String ret = getB64Auth(user, pwd);
-            httppost.setHeader("Authorization", ret);
-        }
-
-        MultipartEntity mpEntity = new MultipartEntity();
-        Set<Entry<String, String>> stringsEntrySet = stringsMap.entrySet();
-        for (Entry<String, String> stringEntry : stringsEntrySet) {
-            ContentBody cbProperties = new StringBody(stringEntry.getValue());
-            mpEntity.addPart(stringEntry.getKey(), cbProperties);
-        }
-
-        Set<Entry<String, File>> filesEntrySet = filesMap.entrySet();
-        for (Entry<String, File> filesEntry : filesEntrySet) {
-            String propName = filesEntry.getKey();
-            File file = filesEntry.getValue();
-            if (file.exists()) {
-                String ext = file.getName().toLowerCase().endsWith("jpg") ? "jpeg" : "png";
-                ContentBody cbFile = new FileBody(file, "image/" + ext);
-                mpEntity.addPart(propName, cbFile);
-            }
-        }
-
-        httppost.setEntity(mpEntity);
-        HttpResponse response = httpclient.execute(httppost);
-        HttpEntity resEntity = response.getEntity();
-
-        if (resEntity != null) {
-            resEntity.consumeContent();
-        }
-
-        httpclient.getConnectionManager().shutdown();
-    }
+//    /**
+//     * Sends a {@link MultipartEntity} post with text and image files.
+//     *
+//     * @param url        the url to which to POST to.
+//     * @param user       the user or <code>null</code>.
+//     * @param pwd        the password or <code>null</code>.
+//     * @param stringsMap the {@link HashMap} containing the key and string pairs to send.
+//     * @param filesMap   the {@link HashMap} containing the key and image file paths
+//     *                   (jpg, png supported) pairs to send.
+//     * @throws Exception if something goes wrong.
+//     */
+//    public static void sentMultiPartPost(String url, String user, String pwd, HashMap<String, String> stringsMap,
+//                                         HashMap<String, File> filesMap) throws Exception {
+//        HttpClient httpclient = new DefaultHttpClient();
+//        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+//        HttpPost httppost = new HttpPost(url);
+//
+//        if (user != null && pwd != null && user.trim().length() > 0 && pwd.trim().length() > 0) {
+//            String ret = getB64Auth(user, pwd);
+//            httppost.setHeader("Authorization", ret);
+//        }
+//
+//        MultipartEntity mpEntity = new MultipartEntity();
+//        Set<Entry<String, String>> stringsEntrySet = stringsMap.entrySet();
+//        for (Entry<String, String> stringEntry : stringsEntrySet) {
+//            ContentBody cbProperties = new StringBody(stringEntry.getValue());
+//            mpEntity.addPart(stringEntry.getKey(), cbProperties);
+//        }
+//
+//        Set<Entry<String, File>> filesEntrySet = filesMap.entrySet();
+//        for (Entry<String, File> filesEntry : filesEntrySet) {
+//            String propName = filesEntry.getKey();
+//            File file = filesEntry.getValue();
+//            if (file.exists()) {
+//                String ext = file.getName().toLowerCase().endsWith("jpg") ? "jpeg" : "png";
+//                ContentBody cbFile = new FileBody(file, "image/" + ext);
+//                mpEntity.addPart(propName, cbFile);
+//            }
+//        }
+//
+//        httppost.setEntity(mpEntity);
+//        HttpResponse response = httpclient.execute(httppost);
+//        HttpEntity resEntity = response.getEntity();
+//
+//        if (resEntity != null) {
+//            resEntity.consumeContent();
+//        }
+//
+//        httpclient.getConnectionManager().shutdown();
+//    }
 
     public static String getB64Auth(String login, String pass) {
         String source = login + ":" + pass;
@@ -468,19 +439,19 @@ public class NetworkUtilities {
             urlStr += "?" + requestParameters;
         }
         StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(urlStr);
+
+
+        URL url = new URL(urlStr);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
-            httpGet.addHeader("Authorization", getB64Auth(user, password));
+            urlConnection.setRequestProperty ("Authorization", getB64Auth(user, password));
         }
-        HttpResponse response = client.execute(httpGet);
-        StatusLine statusLine = response.getStatusLine();
-        int statusCode = statusLine.getStatusCode();
-        if (statusCode == 200) {
-            HttpEntity entity = response.getEntity();
-            InputStream content = entity.getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+
+        int responseCode = urlConnection.getResponseCode();
+        if (responseCode == HTTP_OK) {
+            InputStream inputStream = urlConnection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
@@ -579,44 +550,21 @@ public class NetworkUtilities {
      * <p/>
      * http://android-developers.blogspot.it/2010/07/multithreading-for-performance.html
      *
-     * @param url the url.
+     * @param urlStr the url.
      * @return the downloaded bitmap or null.
      */
-    public static Bitmap downloadBitmap(String url) {
-        AndroidHttpClient client = null;
-        HttpGet getRequest = null;
+    public static Bitmap downloadBitmap(String urlStr) {
+        HttpURLConnection urlConnection = null;
         try {
-            client = AndroidHttpClient.newInstance("Android");
-            getRequest = new HttpGet(url);
-
-            HttpResponse response = client.execute(getRequest);
-            final int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                return null;
-            }
-            final HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                InputStream inputStream = null;
-                try {
-                    inputStream = entity.getContent();
-                    final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    return bitmap;
-                } finally {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                    entity.consumeContent();
-                }
-            }
+            URL url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = urlConnection.getInputStream();
+            return BitmapFactory.decodeStream(inputStream);
         } catch (Exception e) {
-            if (getRequest != null)
-                getRequest.abort();
+            e.printStackTrace();
         } finally {
-            if (client != null) {
-                client.close();
-            }
+            urlConnection.disconnect();
         }
-
         return null;
     }
 

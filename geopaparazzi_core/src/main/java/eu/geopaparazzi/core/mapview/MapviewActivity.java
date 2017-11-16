@@ -525,7 +525,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 }
             }
             // mDataOverlay.requestRedraw();
-        } catch (IOException e1) {
+        } catch (Exception e1) {
             GPLog.error(this, null, e1); //$NON-NLS-1$
         }
     }

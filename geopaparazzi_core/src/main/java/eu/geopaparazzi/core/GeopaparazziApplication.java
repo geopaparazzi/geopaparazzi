@@ -17,14 +17,16 @@
  */
 package eu.geopaparazzi.core;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.acra.ACRA;
-import org.acra.ACRAConfiguration;
-import org.acra.ACRAConfigurationException;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
+import org.acra.config.ACRAConfiguration;
+import org.acra.config.ACRAConfigurationException;
+import org.acra.config.ConfigurationBuilder;
 
 import java.io.IOException;
 
@@ -33,37 +35,41 @@ import eu.geopaparazzi.library.GPApplication;
 
 /**
  * Application singleton.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GeopaparazziApplication extends GPApplication {
 
     private static SQLiteDatabase database;
+    public static String mailTo = "feedback@geopaparazzi.eu";;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        try {
+
+            ACRAConfiguration config = new ConfigurationBuilder(this) //
+                    .setMailTo(mailTo)//
+                    .setCustomReportContent(//
+                            ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, //
+                            ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, //
+                            ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT) //
+                    .setResToastText(R.string.crash_toast_text)//
+                    .setLogcatArguments("-t", "400", "-v", "time", "GPLOG:I", "*:S") //
+                    .setReportingInteractionMode(ReportingInteractionMode.TOAST)//
+                    .build();
+
+
+            ACRA.init(this, config);
+        } catch (ACRAConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        ACRAConfiguration config = ACRA.getConfig();
-        config.setMailTo("feedback@geopaparazzi.eu");
-        config.setCustomReportContent(new ReportField[]{//
-/*    */ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, //
-                ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, //
-                ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT});
-        config.setResToastText(R.string.crash_toast_text);
-        config.setLogcatArguments(new String[]{"-t", "400", "-v", "time", "GPLOG:I", "*:S"});
-
-        try
-        {
-            config.setMode(ReportingInteractionMode.TOAST);
-        }
-        catch (ACRAConfigurationException e)
-        {
-            e.printStackTrace();
-            return;
-        }
-
-        ACRA.init(getInstance(), config);
 
         Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized."); //$NON-NLS-1$//$NON-NLS-2$
     }
@@ -85,7 +91,7 @@ public class GeopaparazziApplication extends GPApplication {
         database = null;
     }
 
-    public static void reset(){
+    public static void reset() {
         database = null;
     }
 }

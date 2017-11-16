@@ -229,9 +229,13 @@ public enum BaseMapSourcesManager {
     }
 
     public void removeBaseMap(BaseMap baseMap) throws JSONException {
-        mBaseMaps.remove(baseMap);
-        mBaseMaps2TablesMap.remove(baseMap);
-        saveBaseMapsToPreferences(mBaseMaps);
+        try {
+            mBaseMaps.remove(baseMap);
+            mBaseMaps2TablesMap.remove(baseMap);
+            saveBaseMapsToPreferences(mBaseMaps);
+        } catch (java.lang.Exception e) {
+            GPLog.error(this, "Unable to remove basemap " + baseMap, e);
+        }
     }
 
     @NonNull
