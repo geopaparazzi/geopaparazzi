@@ -60,14 +60,17 @@
   <string name="cancel">Renunțare</string>
   <string name="take_picture">Efectuați o poză</string>
   <string name="draw_sketch">Desenează o schiță</string>
+  <string name="hello_world">Hello world!</string>
   <string name="menu_settings">Setări</string>
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
+  <string name="activate_nfc">Activați NFC și apăsați Înapoi pentru a reveni în aplicație!</string>
   <string name="unable_to_read_tag_id">Nu se poate citi identificatorul etichetei</string>
   <string name="point_shape_">Forma punctului</string>
   <string name="point_size">Mărimea punctului</string>
   <string name="decimation">Decimare</string>
   <string name="no_data">Nu sunt disponibile date</string>
   <string name="file_upload_completed_properly">Încărcarea fișierului s-a încheiat în mod corespunzător.</string>
+  <string name="http_forbidden_msg">Accesul la server a fost blocat. Verificați acreditările și adresa de conectare.</string>
   <string name="post_completed_properly">Postarea s-a încheiat în mod corespunzător.</string>
   <string name="http_ok_msg">Cererea a fost procesată cu succes.</string>
   <string name="the_file_exists_wont_overwrite">Fisierul există. Nu se va suprascrie:</string>

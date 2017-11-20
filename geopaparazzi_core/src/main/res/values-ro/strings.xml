@@ -28,12 +28,15 @@
   <string name="color_label">culoare</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">import</string>
+  <string name="mainmenu_gpsdataselect">Lista datelor GPS</string>
   <string name="mainmenu_preferences">Setări</string>
   <string name="gpslog_name">Numele jurnalului</string>
   <string name="gpslog_chart">Diagramă</string>
   <string name="gpslog_delete">Ștergere</string>
   <string name="mapproperty">Proprietățile pentru:</string>
+  <string name="map_zoom">Zoom pe hartă</string>
   <string name="map_delete">Ștergere hartă</string>
+  <string name="gps_preferences">Setări GPS</string>
   <string name="sms_preferences">Setări SMS</string>
   <string name="gpx_import_processing">Importare gpx...</string>
   <string name="text_show_position_on_map">vizualizare hartă</string>
@@ -42,8 +45,12 @@
   <string name="gps_log">jurnal gps</string>
   <string name="audio_recording_stop">stop</string>
   <string name="message_sent">Mesaj transmis</string>
+  <string name="last_note_not_deleted">S-a șters ultima notă</string>
+  <string name="text_logging">înregistrare</string>
   <string name="text_gpson">gps activ</string>
   <string name="debug">Setări de depanare</string>
+  <string name="enable_debug">Activează jurnalul de depanare</string>
+  <string name="gpslogging_only">Această funcție este disponibilă numai atunci când GPS-ul este activ și este disponibil un semnal.</string>
   <!--added after 2.1.2-->
   <string name="reset">Creează un nou proiect</string>
   <string name="load">Încarcă un proiect existent</string>

@@ -71,7 +71,7 @@ public class MapWorker extends PausableThread {
 
         if (mapGeneratorJob == null)
             return;
-        
+
         if (inMemoryTileCache != null && inMemoryTileCache.containsKey(mapGeneratorJob)) {
             return;
         } else if (fileSystemTileCache != null && fileSystemTileCache.containsKey(mapGeneratorJob)) {

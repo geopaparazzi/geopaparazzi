@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/GeopapTheme"
         tools:replace="android:theme,android:label">
         <activity

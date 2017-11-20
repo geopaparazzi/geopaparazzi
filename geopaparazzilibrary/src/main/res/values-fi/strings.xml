@@ -112,4 +112,15 @@
   <string name="stroke_width_title">Vahvistuksen leveys</string>
   <string name="stroke_alpha_title">Alfavahvistus</string>
   <string name="saving_to_database">Talletetaan dataa tietokantaan...</string>
+  <string name="osmbonuspack.directions.1">Jatka[ käyttäen %s]</string>
+  <string name="osmbonuspack.directions.6">Käänny hieman oikealle[  %s]</string>
+  <string name="osmbonuspack.directions.7">Käänny oikealle[ tiellä %s]</string>
+  <string name="osmbonuspack.directions.8">Käänny tiukasti oikealle[ tiellä %s]</string>
+  <string name="osmbonuspack.directions.12">U-käännös[ tiellä %s]</string>
+  <string name="osmbonuspack.directions.2">[Mene %s]</string>
+  <string name="osmbonuspack.format_distance_kilometers">%skm</string>
+  <string name="osmbonuspack.format_distance_meters">%sm</string>
+  <string name="osmbonuspack.format_hours">%sh</string>
+  <string name="osmbonuspack.format_minutes">%smin</string>
+  <string name="osmbonuspack.format_seconds">%ssec</string>
 </resources>

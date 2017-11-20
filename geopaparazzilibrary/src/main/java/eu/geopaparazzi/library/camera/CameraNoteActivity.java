@@ -23,10 +23,14 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
+import org.acra.prefs.PrefUtils;
 
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
@@ -67,7 +71,7 @@ public class CameraNoteActivity extends AbstractCameraActivity {
     protected long noteId = -1;
     protected OrientationSensor orientationSensor;
 
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
 
         Bundle extras = getIntent().getExtras();
@@ -79,7 +83,19 @@ public class CameraNoteActivity extends AbstractCameraActivity {
         lat = extras.getDouble(LibraryConstants.LATITUDE);
         elevation = extras.getDouble(LibraryConstants.ELEVATION);
 
-        doTakePicture(icicle);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean warningAlreadyShown = preferences.getBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, false);
+        if (warningAlreadyShown) {
+            doTakePicture(icicle);
+        } else {
+            GPDialogs.infoDialog(this, "IMPORTANT README: If you experience crashes of the app while taking pictures try to lower the resolution of your camera in the settings.", new Runnable() {
+                @Override
+                public void run() {
+                    doTakePicture(icicle);
+                }
+            });
+        }
     }
 
     @Override

@@ -343,4 +343,6 @@ public interface LibraryConstants {
      * Key used to define the last picked path.
      */
     String PREFS_KEY_LASTPATH = "PREFS_KEY_LASTPATH";
+
+    String PREFS_KEY_CAMERA_WARNING_SHOWN = "PREFS_KEY_CAMERA_WARNING_SHOWN";
 }
