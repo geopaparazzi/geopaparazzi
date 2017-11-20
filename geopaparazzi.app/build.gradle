@@ -53,8 +53,8 @@ android {
         applicationId "eu.hydrologis.geopaparazzi"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 83
-        versionName "5.5.0"
+        versionCode 84
+        versionName "5.5.1"
         signingConfig signingConfigs.config
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
