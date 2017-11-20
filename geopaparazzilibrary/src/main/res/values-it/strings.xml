@@ -140,4 +140,5 @@
   <string name="osmbonuspack.format_hours">%sh</string>
   <string name="osmbonuspack.format_minutes">%smin</string>
   <string name="osmbonuspack.format_seconds">%ssec</string>
+  <string name="first_camera_open_warning">IMPORTANTE: Se dovessero avvenire arresti anomali dell\'applicazione mentre si scattano foto, si prega di abbassare la qualità delle immagini nei settaggi della macchina fotografica.\n\nÈ probabilmente dovuto all\'alto consumo di memoria durante l\'elaborazione dell\'immagine per l\'inserimento nel database.\n\nNel frattempo stiamo cercando una soluzione.</string>
 </resources>
