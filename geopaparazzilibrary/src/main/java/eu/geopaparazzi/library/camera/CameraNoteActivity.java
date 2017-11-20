@@ -32,6 +32,7 @@ import android.provider.MediaStore;
 
 import org.acra.prefs.PrefUtils;
 
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -84,15 +85,18 @@ public class CameraNoteActivity extends AbstractCameraActivity {
         elevation = extras.getDouble(LibraryConstants.ELEVATION);
 
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean warningAlreadyShown = preferences.getBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, false);
         if (warningAlreadyShown) {
             doTakePicture(icicle);
         } else {
-            GPDialogs.infoDialog(this, "IMPORTANT README: If you experience crashes of the app while taking pictures try to lower the resolution of your camera in the settings.", new Runnable() {
+            GPDialogs.infoDialog(this, getString(R.string.first_camera_open_warning), new Runnable() {
                 @Override
                 public void run() {
                     doTakePicture(icicle);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, true);
+                    editor.apply();
                 }
             });
         }
