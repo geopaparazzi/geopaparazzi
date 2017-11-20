@@ -254,6 +254,21 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 menu.getItem(2).setVisible(false);
             }
         }
+
+        boolean hasProfilesProvider = false;
+        for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+            ProviderInfo[] providers = pack.providers;
+            if (providers != null) {
+                for (ProviderInfo provider : providers) {
+                    String authority = provider.authority;
+                    if (authority.equals("eu.geopaparazzi.provider.profiles")) {
+                        hasProfilesProvider = true;
+                    }
+                }
+            }
+        }
+        if (!hasProfilesProvider)
+            menu.getItem(7).setVisible(false);
     }
 
     @Override
@@ -342,7 +357,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 if (resultCode == Activity.RESULT_OK) {
                     try {
                         boolean restart = data.getBooleanExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, false);
-                        if (restart){
+                        if (restart) {
                             FragmentActivity activity = getActivity();
                             if (activity instanceof GeopaparazziCoreActivity) {
                                 GeopaparazziCoreActivity geopaparazziCoreActivity = (GeopaparazziCoreActivity) activity;

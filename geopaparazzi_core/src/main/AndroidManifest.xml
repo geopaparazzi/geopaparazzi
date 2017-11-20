@@ -338,16 +338,10 @@
         </activity>
 
         <provider
-            android:name=".providers.ProfilesContentProvider"
-            android:authorities="eu.geopaparazzi.provider.profiles"
-            android:enabled="true"
-            android:exported="false" />
-
-        <provider
             android:name=".providers.AvailableDataContentProvider"
             android:authorities="${applicationId}.provider.availabledata"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
         <service android:name="eu.geopaparazzi.core.mapview.MapsSupportService" />

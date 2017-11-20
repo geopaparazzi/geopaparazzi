@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="eu.geopaparazzi.core.providers.ProfilesContentProvider"
+            android:authorities="eu.geopaparazzi.provider.profiles"
+            android:enabled="true"
+            android:exported="true" />
     </application>
+
+
 
 </manifest>

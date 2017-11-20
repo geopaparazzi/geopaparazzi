@@ -59,3 +59,7 @@ android {
         abortOnError false
     }
 }
+
+repositories {
+    google()
+}
