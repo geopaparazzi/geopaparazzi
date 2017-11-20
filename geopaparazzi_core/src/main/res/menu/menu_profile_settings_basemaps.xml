@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hydrologis.geoss2go.activities.ProfileSettingsActivity">
+    <item
+        android:id="@+id/action_addwms"
+        android:orderInCategory="100"
+        android:title="Add WMS"
+        app:showAsAction="always" />
+</menu>

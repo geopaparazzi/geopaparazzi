@@ -57,6 +57,7 @@ android {
         versionName "5.4.1"
         signingConfig signingConfigs.config
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
 
     }
 }

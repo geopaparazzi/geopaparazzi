@@ -53,6 +53,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_profiles"
+        android:orderInCategory="108"
+        android:title="@string/profiles_menu_entry"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_about"
         android:icon="@drawable/actionbar_about"
         android:orderInCategory="110"

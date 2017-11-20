@@ -406,5 +406,18 @@
         <item quantity="other">%d images</item>
     </plurals>
 
+    <!-- geoss2go profiles -->
+
+    <string name="profiles_action_settings">Settings</string>
+    <string name="profiles_action_import">Import Profiles</string>
+    <string name="profiles_action_export">Export profiles</string>
+    <string name="profiles_action_delete">Delete all Profiles</string>
+    <string name="profiles_title_activity_profile_settings">Profile Settings</string>
+    <string name="profiles_section_format">Hello World from section: %1$d</string>
+    <string name="profiles_deactivate_profile">Deactivate profile</string>
+    <string name="profiles_activate_profile">Activate profile</string>
+    <string name="profiles_menu_entry">Profiles</string>
+    <string name="profiles">Profiles</string>
+
 
 </resources>

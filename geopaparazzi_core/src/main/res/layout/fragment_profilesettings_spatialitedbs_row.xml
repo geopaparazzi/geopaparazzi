@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notesrowlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dip"
+    android:longClickable="true">
+
+    <TextView
+        android:id="@+id/spatialitedbName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="center_vertical"
+        android:padding="5dip"
+        android:text="asdasd"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+    <TextView
+        android:id="@+id/spatialitedbPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spatialitedbName"
+        android:layout_gravity="start"
+        android:gravity="center_vertical"
+        android:padding="5dip"
+        android:text="longlong path"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>

@@ -313,25 +313,50 @@
                 android:value="eu.geopaparazzi.core.ui.activities.AddNotesActivity" />
         </activity>
 
-        <activity android:name="com.google.android.apps.markers.MarkersActivity" />
         <activity android:name="eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity" />
         <activity android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
-        <activity android:name="eu.geopaparazzi.library.webproject.WebDataListActivity" />
-        <activity android:name="eu.geopaparazzi.library.webproject.WebDataUploadListActivity" />
 
         <activity
             android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
             android:label="@string/Images"
             android:theme="@style/GeopapTheme.NoActionBar"/>
 
+
+        <activity
+            android:name=".profiles.ProfilesActivity"
+            android:label="@string/profiles"
+            android:theme="@style/GeopapTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".profiles.gui.ProfileSettingsActivity"
+            android:label="@string/profiles_title_activity_profile_settings"
+            android:parentActivityName=".profiles.ProfilesActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".profiles.ProfilesActivity" />
+        </activity>
+
+        <provider
+            android:name=".providers.ProfilesContentProvider"
+            android:authorities="eu.geopaparazzi.provider.profiles"
+            android:enabled="true"
+            android:exported="false" />
+
         <provider
             android:name=".providers.AvailableDataContentProvider"
             android:authorities="${applicationId}.provider.availabledata"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
         <service android:name="eu.geopaparazzi.core.mapview.MapsSupportService" />
+
+
+
+
+
+
     </application>
 
 </manifest>

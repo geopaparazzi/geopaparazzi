@@ -53,10 +53,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_geopaparazzi);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         checkIncomingProject();
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -79,6 +75,10 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             checkIncomingUrl();
             checkAvailableProfiles();
         }
+
+        setContentView(R.layout.activity_geopaparazzi);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
     }
 

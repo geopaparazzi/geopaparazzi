@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziCoreActivity;
+import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DatabaseUtilities;
@@ -90,6 +93,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
 public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivitySupporter {
 
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
+    private final int RETURNCODE_PROFILES = 666;
 
     private ImageButton mNotesButton;
     private ImageButton mMetadataButton;
@@ -286,6 +290,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             Intent advancedSettingsIntent = new Intent(this.getActivity(), AdvancedSettingsActivity.class);
             startActivity(advancedSettingsIntent);
             return true;
+        } else if (i == R.id.action_profiles) {
+            Intent profilesIntent = new Intent(this.getActivity(), ProfilesActivity.class);
+            startActivityForResult(profilesIntent, RETURNCODE_PROFILES);
+            return true;
         } else if (i == R.id.action_about) {
             Intent intent = new Intent(getActivity(), AboutActivity.class);
             startActivity(intent);
@@ -324,6 +332,24 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                                 GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.error_while_setting_project), null);
                             }
                         }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(getActivity(), e, null);
+                    }
+                }
+                break;
+            }
+            case (RETURNCODE_PROFILES): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        boolean restart = data.getBooleanExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, false);
+                        if (restart){
+                            FragmentActivity activity = getActivity();
+                            if (activity instanceof GeopaparazziCoreActivity) {
+                                GeopaparazziCoreActivity geopaparazziCoreActivity = (GeopaparazziCoreActivity) activity;
+                                geopaparazziCoreActivity.onApplicationNeedsRestart();
+                            }
+                        }
+
                     } catch (Exception e) {
                         GPDialogs.errorDialog(getActivity(), e, null);
                     }
