@@ -27,6 +27,10 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.permissions.AChainedPermissionHelper;
+import eu.geopaparazzi.library.permissions.PermissionFineLocation;
+import eu.geopaparazzi.library.permissions.PermissionGetAccounts;
+import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
+import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -52,6 +56,9 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        permissionHelper = new PermissionWriteStorage();
+        permissionHelper.add(new PermissionFineLocation()).add(new PermissionSendSms()).add(new PermissionRecieveSms());
 
         checkIncomingProject();
 
