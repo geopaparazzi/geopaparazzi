@@ -201,11 +201,12 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private ImageButton centerOnGps;
-    private Button batteryButton;
+    private ImageButton batteryButton;
     private BroadcastReceiver mapsSupportBroadcastReceiver;
     private TextView coordView;
     private String latString;
     private String lonString;
+    private TextView batteryText;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -326,7 +327,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         zoomOutButton.setOnClickListener(this);
         zoomOutButton.setOnLongClickListener(this);
 
-        batteryButton = (Button) findViewById(R.id.battery);
+        batteryButton = (ImageButton) findViewById(R.id.battery);
+        batteryText = (TextView) findViewById(R.id.batterytext);
 
         centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
@@ -363,7 +365,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // if after rotation a toolgroup is there, enable ti with its icons
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup != null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_on_24dp);
+            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             activeToolGroup.initUI();
             setLeftButtoonsEnablement(true);
         }
@@ -1094,7 +1096,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (level < 100) {
             sb.append("%"); //$NON-NLS-1$
         }
-        batteryButton.setText(sb.toString());
+        batteryText.setText(sb.toString());
     }
 
     private void onGpsServiceUpdate(Intent intent) {
@@ -1104,15 +1106,15 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_red_24dp));
+            centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_red_24dp));
         } else {
             if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_blue_24dp));
+                centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_blue_24dp));
             } else {
                 if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_green_24dp));
+                    centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_green_24dp));
                 } else {
-                    centerOnGps.setBackground(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_orange_24dp));
+                    centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_orange_24dp));
                 }
             }
         }
@@ -1308,14 +1310,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_on_24dp);
-                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_off_24dp);
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                 TapMeasureTool measureTool = new TapMeasureTool(mMapView);
                 EditManager.INSTANCE.setActiveTool(measureTool);
             } else {
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_off_24dp);
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
 
                 EditManager.INSTANCE.setActiveTool(null);
             }
@@ -1326,8 +1328,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
-                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_on_24dp);
-                toggleMeasuremodeButton.setBackgroundResource(R.drawable.ic_mapview_measuremode_off_24dp);
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_on_24dp));
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
 //                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
                 try {
@@ -1337,7 +1339,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     GPLog.error(this, null, e);
                 }
             } else {
-                toggleLoginfoButton.setBackgroundResource(R.drawable.ic_mapview_loginfo_off_24dp);
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
                 EditManager.INSTANCE.setActiveTool(null);
             }
 
@@ -1371,7 +1373,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         } else if (i == R.id.toggleEditingButton) {
             toggleEditing();
 
-        } else {
         }
     }
 
@@ -1379,7 +1380,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_on_24dp);
+            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer == null) {
                 // if not layer is
@@ -1395,7 +1396,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {
-            toggleEditingButton.setBackgroundResource(R.drawable.ic_mapview_toggle_editing_off_24dp);
+            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
             EditManager.INSTANCE.setActiveTool(null);
             EditManager.INSTANCE.setActiveToolGroup(null);
             setLeftButtoonsEnablement(true);
