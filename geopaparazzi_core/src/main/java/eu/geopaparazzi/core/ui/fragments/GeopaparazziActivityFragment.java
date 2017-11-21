@@ -261,7 +261,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             if (providers != null) {
                 for (ProviderInfo provider : providers) {
                     String authority = provider.authority;
-                    if (authority.equals("eu.geopaparazzi.provider.profiles")) {
+                    if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {
                         hasProfilesProvider = true;
                     }
                 }
