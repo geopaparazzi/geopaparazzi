@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dip">
 
     <ListView
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_check_24dp" />
+        app:srcCompat="@drawable/ic_check_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/upbutton"
@@ -26,5 +27,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_up_24dp" />
+        app:srcCompat="@drawable/ic_up_24dp" />
 </FrameLayout>

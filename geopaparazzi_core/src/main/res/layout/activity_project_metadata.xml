@@ -85,6 +85,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="save"
-        android:src="@drawable/ic_save_24dp" />
+        app:srcCompat="@drawable/ic_save_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_refresh_primary_24dp" />
+        app:srcCompat="@drawable/ic_refresh_primary_24dp" />
 
     <LinearLayout
         android:id="@+id/info_text_layout"

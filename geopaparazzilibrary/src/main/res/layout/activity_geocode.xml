@@ -89,7 +89,7 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="goTo"
-        android:src="@drawable/ic_goto_24dp" />
+        app:srcCompat="@drawable/ic_goto_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/routeToButton"
@@ -98,5 +98,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="routeTo"
-        android:src="@drawable/ic_routeto_24dp" />
+        app:srcCompat="@drawable/ic_routeto_24dp" />
 </android.support.design.widget.CoordinatorLayout>

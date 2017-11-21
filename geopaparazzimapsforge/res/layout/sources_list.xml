@@ -67,7 +67,7 @@
         android:backgroundTint="@color/main_extra_color"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="add"
-        android:src="@drawable/ic_add_file_24dp"
+        app:srcCompat="@drawable/ic_add_file_24dp"
         android:visibility="invisible"
         app:pressedTranslationZ="12dp"
         app:borderWidth="0dp"
@@ -84,7 +84,7 @@
         android:backgroundTint="@color/main_extra_color"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="addFolder"
-        android:src="@drawable/ic_add_folder_24dp"
+        app:srcCompat="@drawable/ic_add_folder_24dp"
         android:visibility="invisible"
         app:pressedTranslationZ="12dp"
         app:borderWidth="0dp"
@@ -99,7 +99,7 @@
         android:background="@color/transparent_white"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="animateFAB"
-        android:src="@drawable/ic_add_24dp"
+        app:srcCompat="@drawable/ic_add_24dp"
         app:pressedTranslationZ="12dp"
         app:elevation="6dp"/>
 </android.support.design.widget.CoordinatorLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sessions_header_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -16,7 +17,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:src="@drawable/ic_folder_primary_24dp"/>
+        app:srcCompat="@drawable/ic_folder_primary_24dp"/>
 
     <TextView
         android:id="@+id/sources_header_descriptiontext"

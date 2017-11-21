@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/row_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5dp" >
+    android:padding="5dp">
 
     <CheckBox
         android:id="@+id/visible"
@@ -48,7 +49,7 @@
         android:layout_alignLeft="@+id/description"
         android:layout_below="@+id/description"
         android:layout_marginTop="10dp"
-        android:src="@drawable/properties" />
+        app:srcCompat="@drawable/properties" />
 
     <ImageButton
         android:id="@+id/labelsButton"
@@ -56,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/propertiesButton"
         android:layout_toRightOf="@+id/propertiesButton"
-        android:src="@drawable/list_labels" />
+        app:srcCompat="@drawable/list_labels" />
 
     <ImageButton
         android:id="@+id/zoomtoButton"
@@ -64,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/labelsButton"
         android:layout_toRightOf="@+id/labelsButton"
-        android:src="@drawable/list_zoomto" />
+        app:srcCompat="@drawable/list_zoomto" />
 
     <ImageButton
         android:id="@+id/upButton"
@@ -72,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/propertiesButton"
         android:layout_toRightOf="@+id/zoomtoButton"
-        android:src="@drawable/list_up" />
+        app:srcCompat="@drawable/list_up" />
 
     <ImageButton
         android:id="@+id/downButton"
@@ -80,6 +81,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/propertiesButton"
         android:layout_toRightOf="@+id/upButton"
-        android:src="@drawable/list_down" />
+        app:srcCompat="@drawable/list_down" />
 
 </RelativeLayout>

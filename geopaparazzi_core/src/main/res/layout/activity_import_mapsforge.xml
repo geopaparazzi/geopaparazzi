@@ -163,5 +163,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="startExtraction"
-        android:src="@drawable/ic_done_24dp" />
+        app:srcCompat="@drawable/ic_done_24dp" />
 </android.support.design.widget.CoordinatorLayout>

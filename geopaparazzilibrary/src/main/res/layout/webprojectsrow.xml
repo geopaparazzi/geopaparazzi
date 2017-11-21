@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/webprojectlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dip" >
+    android:padding="10dip">
 
     <ImageView
         android:id="@+id/downloadproject_image"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/package_download" />
+        app:srcCompat="@drawable/package_download" />
 
     <TextView
         android:id="@+id/titletext"
