@@ -22,6 +22,7 @@ import java.io.IOException;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -32,6 +33,10 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public abstract class GPApplication extends MultiDexApplication {
     private static GPApplication instance = null;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     public void onCreate() {

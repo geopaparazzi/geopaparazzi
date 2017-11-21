@@ -41,7 +41,7 @@ import eu.geopaparazzi.library.GPApplication;
 public class GeopaparazziApplication extends GPApplication {
 
     private static SQLiteDatabase database;
-    public static String mailTo = "feedback@geopaparazzi.eu";;
+    public static String mailTo = "feedback@geopaparazzi.eu";
 
     @Override
     protected void attachBaseContext(Context base) {
