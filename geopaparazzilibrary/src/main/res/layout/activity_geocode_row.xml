@@ -2,10 +2,10 @@
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
+    style="@style/GPTitleTextViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="6dip"
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
     android:gravity="center_vertical"
-    android:paddingLeft="6dip"
-    android:paddingRight="6dip"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:text="Checked Text View" />

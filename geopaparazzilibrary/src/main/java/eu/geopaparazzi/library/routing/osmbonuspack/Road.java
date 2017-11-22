@@ -27,8 +27,6 @@ import java.util.ArrayList;
 
 /** describes the way to go from a position to an other. 
  * Normally returned by a call to a Directions API (from MapQuest, GoogleMaps, OSRM or other)
- * @see MapQuestRoadManager
- * @see GoogleRoadManager
  * @see OSRMRoadManager
  * 
  * @author M.Kergall
