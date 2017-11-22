@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/row_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -41,12 +42,13 @@
         android:text=""
         android:textColor="@color/main_text_color_neutral" />
 
-    <Button
+    <ImageButton
         android:id="@+id/propertiesButton"
         android:layout_width="@dimen/min_touch_size"
         android:layout_height="@dimen/min_touch_size"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/ic_settings_primary_24dp" />
+        android:background="@null"
+        app:srcCompat="@drawable/ic_settings_primary_24dp" />
 
 </RelativeLayout>

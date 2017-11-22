@@ -61,15 +61,15 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geoss2_go);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        profilesContainer = (LinearLayout) findViewById(R.id.profiles_container);
-        emptyFiller = (LinearLayout) findViewById(R.id.empty_fillers);
+        profilesContainer = findViewById(R.id.profiles_container);
+        emptyFiller = findViewById(R.id.empty_fillers);
 
         mPeferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,12 +115,12 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
         for (final Profile profile : profileList) {
             final CardView newProjectCardView = (CardView) getLayoutInflater().inflate(R.layout.profile_cardlayout, null);
-            TextView profileNameText = (TextView) newProjectCardView.findViewById(R.id.profileNameText);
+            TextView profileNameText = newProjectCardView.findViewById(R.id.profileNameText);
             profileNameText.setText(profile.name);
-            TextView profileDescriptionText = (TextView) newProjectCardView.findViewById(R.id.profileDescriptionText);
+            TextView profileDescriptionText = newProjectCardView.findViewById(R.id.profileDescriptionText);
             profileDescriptionText.setText(profile.description);
 
-            TextView profilesummaryText = (TextView) newProjectCardView.findViewById(R.id.profileSummaryText);
+            TextView profilesummaryText = newProjectCardView.findViewById(R.id.profileSummaryText);
             StringBuilder sb = new StringBuilder();
             sb.append("Basemaps: ").append(profile.basemapsList.size()).append("\n");
             sb.append("Spatialite dbs: ").append(profile.spatialiteList.size()).append("\n");
@@ -140,7 +140,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             sb.append("Has project: ").append(profile.projectPath.length() == 0 ? "no" : "yes").append("\n");
             profilesummaryText.setText(sb.toString());
 
-            ImageButton settingsButton = (ImageButton) newProjectCardView.findViewById(R.id.settingsButton);
+            ImageButton settingsButton = newProjectCardView.findViewById(R.id.settingsButton);
             settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -149,7 +149,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                     startActivity(preferencesIntent);
                 }
             });
-            ImageButton deleteButton = (ImageButton) newProjectCardView.findViewById(R.id.deleteButton);
+            ImageButton deleteButton = newProjectCardView.findViewById(R.id.deleteButton);
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -170,7 +170,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
                 }
             });
-            ImageButton colorButton = (ImageButton) newProjectCardView.findViewById(R.id.colorButton);
+            ImageButton colorButton = newProjectCardView.findViewById(R.id.colorButton);
             colorButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,8 +192,8 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             setCardviewColor(newProjectCardView, color);
 //            newProjectCardView.setBackgroundColor(backgroundColor);
 
-            LinearLayout activeLayoutTop = (LinearLayout) newProjectCardView.findViewById(R.id.activeColorLayoutTop);
-            LinearLayout activeLayoutBottom = (LinearLayout) newProjectCardView.findViewById(R.id.activeColorLayoutBottom);
+            LinearLayout activeLayoutTop = newProjectCardView.findViewById(R.id.activeColorLayoutTop);
+            LinearLayout activeLayoutBottom = newProjectCardView.findViewById(R.id.activeColorLayoutBottom);
             if (profile.active) {
                 activeLayoutTop.setVisibility(View.VISIBLE);
                 activeLayoutTop.setBackgroundColor(Color.RED);

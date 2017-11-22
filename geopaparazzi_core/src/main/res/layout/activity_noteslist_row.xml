@@ -17,6 +17,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notesrowlayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -50,21 +51,23 @@
             android:text="" />
     </HorizontalScrollView>
 
-    <Button
+    <ImageButton
         android:id="@+id/morebutton"
         android:layout_width="@dimen/min_touch_size"
         android:layout_height="@dimen/min_touch_size"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/ic_menu_primary_24dp"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_menu_primary_24dp"
         android:padding="5dip" />
 
-    <Button
+    <ImageButton
         android:id="@+id/gobutton"
         android:layout_width="@dimen/min_touch_size"
         android:layout_height="@dimen/min_touch_size"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/morebutton"
-        android:background="@drawable/ic_goto_primary_24dp"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_goto_primary_24dp"
         android:padding="5dip" />
 </RelativeLayout>

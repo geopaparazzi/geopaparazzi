@@ -19,8 +19,10 @@ package eu.geopaparazzi.core.ui.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -101,7 +103,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             textInputLayout.setHint(metadata.label);
             textInputLayout.bringToFront();
 
-            final EditText editText = (EditText) view.findViewById(R.id.metadataEditText);
+            final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.metadataEditText);
             container.addView(view);
 
             if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){

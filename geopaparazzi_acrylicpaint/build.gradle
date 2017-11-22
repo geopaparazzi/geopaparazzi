@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion project.ext.mycompileSdkVersion
+    buildToolsVersion project.ext.mybuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 25
+        minSdkVersion project.ext.myminSdkVersion
+        targetSdkVersion project.ext.mytargetSdkVersion
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -25,9 +25,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:preference-v7:25.4.0'
+    compile 'com.android.support:appcompat-v7:27.0.1'
+    compile 'com.android.support:design:27.0.1'
+    compile 'com.android.support:preference-v7:27.0.1'
+    compile 'com.android.support:support-v4:27.0.1'
     compile project(':geopaparazzilibrary')
 }
 repositories {

@@ -118,7 +118,8 @@
                             android:layout_column="0"
                             android:layout_margin="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/ic_palette_primary_24dp" />
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_palette_primary_24dp" />
 
                         <Button
                             android:id="@+id/gpslog_zoom_start"
@@ -127,7 +128,8 @@
                             android:layout_column="0"
                             android:layout_margin="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/ic_start_primary_24dp" />
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_start_primary_24dp" />
 
                         <Button
                             android:id="@+id/gpslog_zoom_end"
@@ -136,7 +138,8 @@
                             android:layout_column="0"
                             android:layout_margin="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/ic_stop_primary_24dp" />
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_stop_primary_24dp" />
 
                         <Button
                             android:id="@+id/gpslog_chart"
@@ -145,7 +148,8 @@
                             android:layout_column="0"
                             android:layout_margin="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/ic_chart_primary_24dp" />
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_chart_primary_24dp" />
 
                         <Button
                             android:id="@+id/gpslog_delete"
@@ -154,7 +158,8 @@
                             android:layout_column="0"
                             android:layout_margin="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/ic_delete_primary_24dp" />
+                            android:background="@null"
+                            app:srcCompat="@drawable/ic_delete_primary_24dp" />
 
                     </TableRow>
                 </TableLayout>
@@ -166,7 +171,7 @@
                     android:layout_height="@dimen/min_touch_size"
                     android:layout_alignBottom="@+id/trackLength_label"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/ic_refresh_primary_24dp"
+                    app:srcCompat="@drawable/ic_refresh_primary_24dp"
                     android:padding="@dimen/button_indent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/main_text_color" />

@@ -319,6 +319,42 @@
                         },
                         "value": "items 2#choice 1/sub 1/item 2#choice 5/sub 2/item 2",
                         "type": "onetomanystringcombo"
+                    },{
+                        "key": "an autocomplete string combo",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "choice 1"},
+                                {"item": "choice 2"},
+                                {"item": "choice 3"},
+                                {"item": "choice 4"},
+                                {"item": "choice 5"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "autocompletestringcombo"
+                    },{
+                        "key": "two connected autocomplete combos",
+                        "values": {
+                            "items 1": [
+                                {"item": ""},
+                                {"item": "choice 1 of 1"},
+                                {"item": "choice 2 of 1"},
+                                {"item": "choice 3 of 1"},
+                                {"item": "choice 4 of 1"},
+                                {"item": "choice 5 of 1"}
+                            ],
+                            "items 2": [
+                                {"item": ""},
+                                {"item": "choice 1 of 2"},
+                                {"item": "choice 2 of 2"},
+                                {"item": "choice 3 of 2"},
+                                {"item": "choice 4 of 2"},
+                                {"item": "choice 5 of 2"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "autocompleteconnectedstringcombo"
                     }
                 ]
             },{

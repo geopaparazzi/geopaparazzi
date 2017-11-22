@@ -34,6 +34,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -138,7 +139,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         CheckBox isVibileCheckbox;
         TextView tableNameView;
         TextView tableTypeView;
-        Button moreButton;
+        ImageButton moreButton;
         View view;
     }
 
@@ -156,7 +157,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
         convertView = viewHolder.view;
 
-        viewHolder.orderSpinner = (Spinner) convertView.findViewById(R.id.orderSpinner);
+        viewHolder.orderSpinner = convertView.findViewById(R.id.orderSpinner);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this.activity, android.R.layout.simple_spinner_item, orderArray);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         viewHolder.orderSpinner.setAdapter(spinnerArrayAdapter);
@@ -212,7 +213,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         });
 
 
-        viewHolder.isVibileCheckbox = (CheckBox) convertView.findViewById(R.id.isVisibleCheckbox);
+        viewHolder.isVibileCheckbox = convertView.findViewById(R.id.isVisibleCheckbox);
         viewHolder.isVibileCheckbox.setChecked(spatialiteMap.isVisible);
         viewHolder.isVibileCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -220,12 +221,12 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
                 spatialiteMap.isVisible = isChecked;
             }
         });
-        viewHolder.tableNameView = (TextView) convertView.findViewById(R.id.source_header_titletext);
+        viewHolder.tableNameView = convertView.findViewById(R.id.source_header_titletext);
         viewHolder.tableNameView.setText(spatialiteMap.tableName);
-        viewHolder.tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
+        viewHolder.tableTypeView = convertView.findViewById(R.id.source_header_descriptiontext);
         viewHolder.tableTypeView.setText("[" + spatialiteMap.geometryType + "]");
 
-        viewHolder.moreButton = (Button) convertView.findViewById(R.id.moreButton);
+        viewHolder.moreButton = convertView.findViewById(R.id.moreButton);
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,7 +239,7 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
         return viewHolder.view;
     }
 
-    private void openMoreMenu(Button button, final SpatialiteMap spatialiteMap) {
+    private void openMoreMenu(ImageButton button, final SpatialiteMap spatialiteMap) {
 
         final String zoomToTitle = "Zoom to";
         final String labellingTitle = "Labelling";
@@ -493,10 +494,10 @@ public class SpatialiteDatabasesExpandableListAdapter extends BaseExpandableList
 
         File dbFile = new File(folder);
 
-        TextView dbName = (TextView) convertView.findViewById(R.id.sources_header_nametext);
+        TextView dbName = convertView.findViewById(R.id.sources_header_nametext);
         dbName.setTypeface(null, Typeface.BOLD);
         dbName.setText(dbFile.getName());
-        TextView folderName = (TextView) convertView.findViewById(R.id.sources_header_pathtext);
+        TextView folderName = convertView.findViewById(R.id.sources_header_pathtext);
         folderName.setText(dbFile.getParent());
 
         return convertView;

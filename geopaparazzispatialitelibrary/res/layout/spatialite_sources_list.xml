@@ -20,7 +20,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/sourceTypeToggleButtonsView"
@@ -38,7 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dip"
             android:layout_weight="1"
-            android:background="@drawable/button_background_drawable"
+            android:background="@null"
+            app:srcCompat="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
@@ -49,7 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dip"
             android:layout_weight="1"
-            android:background="@drawable/button_background_drawable"
+            android:background="@null"
+            app:srcCompat="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />

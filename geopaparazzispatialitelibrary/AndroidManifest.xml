@@ -3,9 +3,5 @@
     package="eu.geopaparazzi.spatialite"
     android:versionCode="48"
     android:versionName="3.8.0">
-    <!--
-    <application>
-        <activity android:name=".database.spatial.activities.resourceviews.ResourceBrowser"></activity>
-    </application> -->
 
 </manifest>

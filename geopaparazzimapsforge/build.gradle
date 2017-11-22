@@ -10,14 +10,13 @@ apply plugin: 'com.android.library'
 
 dependencies {
     compile project(':geopaparazzispatialitelibrary')
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:appcompat-v7:27.0.1'
+    compile 'com.android.support:design:27.0.1'
+    compile 'com.android.support:support-v4:27.0.1'
 }
 android {
-//        compileSdkVersion project.ext.myCompileSdkVersion
-//        buildToolsVersion project.ext.myBuildToolsVersion
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion project.ext.mycompileSdkVersion
+    buildToolsVersion project.ext.mybuildToolsVersion
     sourceSets {
         main {
             manifest {
@@ -45,8 +44,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 25
+        minSdkVersion project.ext.myminSdkVersion
+        targetSdkVersion project.ext.mytargetSdkVersion
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

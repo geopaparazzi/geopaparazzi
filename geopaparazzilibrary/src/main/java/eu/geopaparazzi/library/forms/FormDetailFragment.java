@@ -58,11 +58,14 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SIZE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_URL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_AUTOCOMPLETECONNECTEDSTRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_AUTOCOMPLETESTRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_CONNECTEDSTRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DYNAMICSTRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_HIDDEN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_INTEGER;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
@@ -252,11 +255,24 @@ public class FormDetailFragment extends android.support.v4.app.Fragment {
                         addedView = FormUtilities.addComboView(activity, mainView, label, value, itemsArray, constraintDescription);
                         break;
                     }
-                    case TYPE_CONNECTEDSTRINGCOMBO:
+                    case TYPE_AUTOCOMPLETESTRINGCOMBO: {
+                        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                        addedView = FormUtilities.addAutocompleteComboView(activity, mainView, label, value, itemsArray, constraintDescription);
+                        break;
+                    }
+                    case TYPE_CONNECTEDSTRINGCOMBO: {
                         LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
                         addedView = FormUtilities.addConnectedComboView(activity, mainView, label, value, valuesMap,
                                 constraintDescription);
                         break;
+                    }
+                    case TYPE_AUTOCOMPLETECONNECTEDSTRINGCOMBO: {
+                        LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
+                        addedView = FormUtilities.addAutoCompleteConnectedComboView(activity, mainView, label, value, valuesMap,
+                                constraintDescription);
+                        break;
+                    }
                     case TYPE_ONETOMANYSTRINGCOMBO:
                         LinkedHashMap<String, List<NamedList<String>>> oneToManyValuesMap = TagsManager.extractOneToManyComboValuesMap(jsonObject);
                         addedView = FormUtilities.addOneToManyConnectedComboView(activity, mainView, label, value, oneToManyValuesMap,
@@ -294,6 +310,8 @@ public class FormDetailFragment extends android.support.v4.app.Fragment {
                         break;
                     case TYPE_NFCUID:
                         addedView = new GNfcUidView(this, null, requestCode, mainView, label, value, constraintDescription);
+                        break;
+                    case TYPE_HIDDEN:
                         break;
                     default:
                         GPLog.addLogEntry(this, null, null, "Type non implemented yet: " + type);
