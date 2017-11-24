@@ -50,11 +50,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "eu.hydrologis.geopaparazzi"
+        applicationId project.ext.myApplicationId
         minSdkVersion project.ext.myminSdkVersion
         targetSdkVersion project.ext.mytargetSdkVersion
-        versionCode 87
-        versionName "5.5.4"
+        versionCode project.ext.myVersionCode
+        versionName project.ext.myVersionName
         signingConfig signingConfigs.config
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

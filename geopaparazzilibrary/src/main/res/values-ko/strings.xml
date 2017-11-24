@@ -140,4 +140,5 @@
   <string name="osmbonuspack.format_hours">%s시간</string>
   <string name="osmbonuspack.format_minutes">%s분</string>
   <string name="osmbonuspack.format_seconds">%s초</string>
+  <string name="first_camera_open_warning">중요한 정보 : 사진을 찍을 때 응용 프로그램의 충돌이 발생하면 설정에서 카메라의 해상도를 낮추십시오. \n\n데이터베이스에 삽입하기 위해 이미지를 처리하는 동안 메모리 사용량이 많습니다. \n\n현재 적절한 해결책을 찾고 있습니다.</string>
 </resources>

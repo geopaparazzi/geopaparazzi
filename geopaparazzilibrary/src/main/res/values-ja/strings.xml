@@ -140,4 +140,5 @@
   <string name="osmbonuspack.format_hours">%s時</string>
   <string name="osmbonuspack.format_minutes">%s分</string>
   <string name="osmbonuspack.format_seconds">%s秒</string>
+  <string name="first_camera_open_warning">重要事項：もしカメラで撮影中にアプリがクラッシュした場合は、カメラの設定で解像度を下げてみてください。\n\nこれはおそらくデータベースに画像を格納中にメモリ消費が高くなりすぎたために発生すると思われます。\n\nこれが実行可能な解決策です。</string>
 </resources>

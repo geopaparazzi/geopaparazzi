@@ -19,6 +19,10 @@ allprojects {
         google()
     }
     project.ext {
+        myApplicationId = "eu.hydrologis.geopaparazzi"
+        myVersionCode = 88
+        myVersionName = "5.5.5"
+
         mycompileSdkVersion = 27
         mybuildToolsVersion = "27.0.1"
         myminSdkVersion = 18
