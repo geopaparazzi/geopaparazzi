@@ -1,10 +1,10 @@
 [
     {
-        "sectionname": "image note",
+        "sectionname": "Image Note",
         "sectiondescription": "note with image",
         "forms": [
             {
-                "formname": "image note",
+                "formname": "Image Note",
                 "formitems": [
 					{
                         "key": "description",
@@ -22,11 +22,11 @@
             }
         ]
     },{
-        "sectionname": "sketch note",
+        "sectionname": "Sketch Note",
         "sectiondescription": "note with sketch",
         "forms": [
             {
-                "formname": "sketch note",
+                "formname": "Sketch Note",
                 "formitems": [
 					{
                         "key": "description",
@@ -44,11 +44,11 @@
             }
         ]
     },{
-        "sectionname": "map note",
+        "sectionname": "Map Note",
         "sectiondescription": "note with map image",
         "forms": [
             {
-                "formname": "map image note",
+                "formname": "Map Image Note",
                 "formitems": [
 					{
                         "key": "description",
@@ -66,11 +66,11 @@
             }
         ]
 	},{
-        "sectionname": "text note",
+        "sectionname": "Text Note",
         "sectiondescription": "a simple text note",
         "forms": [
             {
-                "formname": "text note",
+                "formname": "Text Note",
                 "formitems": [
                     {
                         "key": "title",
@@ -89,11 +89,11 @@
             }
         ]
 	},{
-        "sectionname": "examples",
+        "sectionname": "Examples",
         "sectiondescription": "examples of supported form widgets",
         "forms": [
             {
-                "formname": "text",
+                "formname": "Text",
                 "formitems": [
                     {
                         "key": "some text",
@@ -102,7 +102,7 @@
                     }
                 ]
             },{
-                "formname": "multiple text",
+                "formname": "Multiple Text",
                 "formitems": [
                     {
                         "key": "some text",
@@ -111,7 +111,7 @@
                     }
                 ]
             },{
-                "formname": "text example with key and label",
+                "formname": "Text example with key and label",
                 "formitems": [
                     {
                         "key": "the_key_used_to_index",
@@ -121,7 +121,7 @@
                     }
                 ]
             },{
-                "formname": "numeric text",
+                "formname": "Numeric Text",
                 "formitems": [
                     {
                         "key": "a number",
@@ -134,7 +134,7 @@
                     }
                 ]
             },{
-                "formname": "numeric text used as label in map",
+                "formname": "Numeric text used as label in map",
                 "formitems": [
                     {
                         "key": "a number",
@@ -148,7 +148,7 @@
                     }
                 ]
             },{
-                "formname": "date",
+                "formname": "Date",
                 "formitems": [
                     {
                         "key": "a date",
@@ -157,7 +157,7 @@
                     }
                 ]
             },{
-                "formname": "time",
+                "formname": "Time",
                 "formitems": [
                     {
                         "key": "a time",
@@ -166,7 +166,7 @@
                     }
                 ]
             },{
-                "formname": "labels",
+                "formname": "Labels",
                 "formitems": [
                     {
                         "value": "a simple label of size 20",
@@ -184,7 +184,7 @@
                     }
                 ]
             },{
-                "formname": "boolean",
+                "formname": "Boolean",
                 "formitems": [
                     {
                         "key": "a boolean choice",
@@ -193,7 +193,7 @@
                     }
                 ]
             },{
-                "formname": "combos",
+                "formname": "Combos",
                 "formitems": [
                     {
                         "key": "a single choice combo",
@@ -358,7 +358,7 @@
                     }
                 ]
             },{
-                "formname": "pictures",
+                "formname": "Pictures",
                 "formitems": [
                     {
                         "key": "a picture archive",
@@ -367,7 +367,7 @@
                     }
                 ]
             },{
-                "formname": "sketches",
+                "formname": "Sketches",
                 "formitems": [
                     {
                         "key": "a sketches archive",
@@ -376,7 +376,7 @@
                     }
                 ]
             },{
-                "formname": "map",
+                "formname": "Map",
                 "formitems": [
                     {
                         "key": "an image of the last seen map",

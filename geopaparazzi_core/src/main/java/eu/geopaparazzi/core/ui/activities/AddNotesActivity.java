@@ -174,7 +174,9 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 SpannableString spanString = new SpannableString(tagNamesArray[position]);
                 spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
                 // tagButton.setText(tagNamesArray[position]);
+                tagButton.setTransformationMethod(null);
                 tagButton.setText(spanString);
+                tagButton.setTextSize(42);
                 tagButton.setTextColor(buttonTextColor);
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;
