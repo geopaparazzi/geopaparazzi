@@ -70,7 +70,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:horizontalSpacing="5dp"
-                android:numColumns="3"
+                android:numColumns="1"
+                android:textSize="42sp"
                 android:verticalSpacing="5dp" />
 
         </LinearLayout>

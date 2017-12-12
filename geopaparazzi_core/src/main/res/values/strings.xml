@@ -419,5 +419,11 @@
     <string name="profiles_menu_entry">Profiles</string>
     <string name="profiles">Profiles</string>
 
+    <string name="layout_settings_title">Layout Settings</string>
+    <string name="layout_settings_summary">Various GUI Settings</string>
+    <string name="gui_textsize_factor_title">Text Size Factor</string>
+    <string name="gui_textsize_factor_summary">Resize factor for text</string>
+    <string name="gui_column_count_title">Number of Button Columns</string>
+    <string name="gui_column_count_summary">Number of Note Button Columns</string>
 
 </resources>
