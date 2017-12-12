@@ -46,6 +46,31 @@
             android:order="10"
             android:title="@string/panic_number" />
     </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="20"
+        android:title="@string/layout_settings_title"
+        android:summary="@string/layout_settings_summary">
+
+        <EditTextPreference
+            android:defaultValue="1"
+            android:inputType="numberDecimal"
+            android:key="PREFS_KEY_GUI_TEXTSIZE_FACTOR"
+            android:order="11"
+            android:title="@string/gui_textsize_factor_title"
+            android:summary="@string/gui_textsize_factor_summary"
+            />
+        <EditTextPreference
+            android:defaultValue="1"
+            android:inputType="numberSigned"
+            android:digits="0123456789"
+            android:key="PREFS_KEY_GUI_COLUMN_COUNT"
+            android:order="12"
+            android:title="@string/gui_column_count_title"
+            android:summary="@string/gui_column_count_summary"
+            />
+    </PreferenceScreen>
+
     <PreferenceScreen
         android:order="30"
         android:title="@string/screen_preferences"

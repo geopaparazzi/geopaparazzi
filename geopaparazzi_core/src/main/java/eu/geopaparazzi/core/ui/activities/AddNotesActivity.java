@@ -41,7 +41,7 @@ import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.Switch;
 import android.widget.Toast;
-
+import android.util.TypedValue;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -70,6 +70,12 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoImages;
 import eu.geopaparazzi.core.database.DaoNotes;
 
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GUICOLUMNCOUNT;
+import static eu.geopaparazzi.library.util.LibraryConstants.DEF_GUICOLUMNCOUNT;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GUITEXTSIZEFACTOR;
+import static eu.geopaparazzi.library.util.LibraryConstants.DEF_GUITEXTSIZEFACTOR;
+
 /**
  * Map tags adding activity.
  *
@@ -81,6 +87,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
     private static final int SKETCH_RETURN_CODE = 670;
+    private double textsizeFactor = 2.0;
     private double latitude;
     private double longitude;
     private double elevation;
@@ -164,6 +171,28 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             e1.printStackTrace();
         }
 
+        // Set the number of columns for the buttons
+        String gridColumnCountStr = preferences.getString(PREFS_KEY_GUICOLUMNCOUNT,
+                String.valueOf(DEF_GUICOLUMNCOUNT));
+        int gridColumnCount = 1;
+        try {
+            gridColumnCount = Integer.parseInt(gridColumnCountStr);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
+        buttonGridView.setNumColumns(gridColumnCount);
+
+
+        // Set the text size for the buttons
+        String textsizeFactorStr = preferences.getString(PREFS_KEY_GUITEXTSIZEFACTOR,
+                String.valueOf(DEF_GUITEXTSIZEFACTOR));
+        try {
+            textsizeFactor = Float.parseFloat(textsizeFactorStr);
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
+
+
         final int buttonTextColor = Compat.getColor(this, R.color.main_text_color);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tagNamesArray) {
             public View getView(final int position, View cView, ViewGroup parent) {
@@ -176,7 +205,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 // tagButton.setText(tagNamesArray[position]);
                 tagButton.setTransformationMethod(null);
                 tagButton.setText(spanString);
-                tagButton.setTextSize(42);
+                tagButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, tagButton.getTextSize()*(float)textsizeFactor);
                 tagButton.setTextColor(buttonTextColor);
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;

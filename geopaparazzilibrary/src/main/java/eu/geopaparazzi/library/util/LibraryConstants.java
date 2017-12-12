@@ -219,6 +219,16 @@ public interface LibraryConstants {
     String PREFS_KEY_SMSCATCHER = "PREFS_KEY_SMSCATCHER"; //$NON-NLS-1$
 
     /**
+     * Key used to store for scaling text.
+     */
+    String PREFS_KEY_GUITEXTSIZEFACTOR = "PREFS_KEY_GUI_TEXTSIZE_FACTOR"; //$NON-NLS-1$
+    double DEF_GUITEXTSIZEFACTOR = 2.0;
+    /**
+     * Key used to store for scaling text.
+     */
+    String PREFS_KEY_GUICOLUMNCOUNT = "PREFS_KEY_GUI_COLUMN_COUNT"; //$NON-NLS-1$
+    int DEF_GUICOLUMNCOUNT = 2;
+    /**
      * Key used to define a path that is passed through any workflow.
      */
     String PREFS_KEY_PATH = "PREFS_KEY_PATH"; //$NON-NLS-1$
