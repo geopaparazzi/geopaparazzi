@@ -138,7 +138,12 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool instanceof InfoTool) {
+            selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_active_24dp));
+        } else {
+            selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
+        }
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);

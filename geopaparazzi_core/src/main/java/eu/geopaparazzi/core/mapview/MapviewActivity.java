@@ -244,14 +244,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         mPeferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // COORDINATE TEXT VIEW
-        coordView = (TextView) findViewById(R.id.coordsText);
+        coordView = findViewById(R.id.coordsText);
         latString = getString(R.string.lat);
         lonString = getString(R.string.lon);
 
         // CENTER CROSS
         setCenterCross();
 
-        FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menu_map_button);
+        FloatingActionButton menuButton = findViewById(R.id.menu_map_button);
         menuButton.setOnClickListener(this);
         menuButton.setOnLongClickListener(this);
         registerForContextMenu(menuButton);
@@ -314,43 +314,43 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         setTextScale();
 
-        final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
+        final RelativeLayout rl = findViewById(R.id.innerlayout);
         rl.addView(mMapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        ImageButton zoomInButton = (ImageButton) findViewById(R.id.zoomin);
+        ImageButton zoomInButton = findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(this);
         zoomInButton.setOnLongClickListener(this);
 
-        zoomLevelText = (TextView) findViewById(R.id.zoomlevel);
+        zoomLevelText = findViewById(R.id.zoomlevel);
 
-        ImageButton zoomOutButton = (ImageButton) findViewById(R.id.zoomout);
+        ImageButton zoomOutButton = findViewById(R.id.zoomout);
         zoomOutButton.setOnClickListener(this);
         zoomOutButton.setOnLongClickListener(this);
 
-        batteryButton = (ImageButton) findViewById(R.id.battery);
-        batteryText = (TextView) findViewById(R.id.batterytext);
+        batteryButton = findViewById(R.id.battery);
+        batteryText = findViewById(R.id.batterytext);
 
-        centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        centerOnGps = findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
 
-        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
+        ImageButton addnotebytagButton = findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(this);
         addnotebytagButton.setOnLongClickListener(this);
 
-        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
+        ImageButton addBookmarkButton = findViewById(R.id.addbookmarkbutton);
         addBookmarkButton.setOnClickListener(this);
         addBookmarkButton.setOnLongClickListener(this);
 
-        final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        final ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(this);
 
-        final ImageButton toggleLogInfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
+        final ImageButton toggleLogInfoButton = findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
 
 //        final ImageButton toggleviewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
 //        toggleviewingconeButton.setOnClickListener(this);
 
-        final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
+        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
 
@@ -358,8 +358,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             setNewCenterAtZoom(mapCenterLocation[0], mapCenterLocation[1], (int) mapCenterLocation[2]);
 
         setAllButtoonsEnablement(areButtonsVisible);
-        EditingView editingView = (EditingView) findViewById(R.id.editingview);
-        LinearLayout editingToolsLayout = (LinearLayout) findViewById(R.id.editingToolsLayout);
+        EditingView editingView = findViewById(R.id.editingview);
+        LinearLayout editingToolsLayout = findViewById(R.id.editingToolsLayout);
         EditManager.INSTANCE.setEditingView(editingView, editingToolsLayout);
 
         // if after rotation a toolgroup is there, enable ti with its icons
@@ -367,7 +367,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (activeToolGroup != null) {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             activeToolGroup.initUI();
-            setLeftButtoonsEnablement(true);
+            setLeftButtoonsEnablement(false);
         }
 
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
@@ -391,8 +391,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         } catch (NumberFormatException e) {
             // ignore and use default
         }
-        FrameLayout crossHor = (FrameLayout) findViewById(R.id.centerCrossHorizontal);
-        FrameLayout crossVer = (FrameLayout) findViewById(R.id.centerCrossVertical);
+        FrameLayout crossHor = findViewById(R.id.centerCrossHorizontal);
+        FrameLayout crossVer = findViewById(R.id.centerCrossVertical);
         crossHor.setBackgroundColor(crossColor);
         ViewGroup.LayoutParams layHor = crossHor.getLayoutParams();
         layHor.width = crossLength;
@@ -1075,12 +1075,12 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (centerX != null) {
             cx = centerX.floatValue();
         } else {
-            cx = (float) (mapCenter.longitudeE6 / E6);
+            cx = mapCenter.longitudeE6 / E6;
         }
         if (centerY != null) {
             cy = centerY.floatValue();
         } else {
-            cy = (float) (mapCenter.latitudeE6 / E6);
+            cy = mapCenter.latitudeE6 / E6;
         }
         if (zoom != null) {
             zoomLevel = zoom;
@@ -1240,7 +1240,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 //        ImageButton toggleViewingconeButton;
         int i = v.getId();
         if (i == R.id.menu_map_button) {
-            FloatingActionButton menuButton = (FloatingActionButton) findViewById(R.id.menu_map_button);
+            FloatingActionButton menuButton = findViewById(R.id.menu_map_button);
             openContextMenu(menuButton);
 
         } else if (i == R.id.zoomin) {
@@ -1306,8 +1306,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         } else if (i == R.id.togglemeasuremodebutton) {
             isInNonClickableMode = !mMapView.isClickable();
-            toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-            toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
+            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
+            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
@@ -1324,8 +1324,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         } else if (i == R.id.toggleloginfobutton) {
             isInNonClickableMode = !mMapView.isClickable();
-            toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
-            toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
 //                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_on_24dp));
@@ -1377,7 +1377,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void toggleEditing() {
-        final ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
+        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
@@ -1404,10 +1404,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void setLeftButtoonsEnablement(boolean enable) {
-        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
-        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
-        ImageButton toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
-        ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        ImageButton addnotebytagButton = findViewById(R.id.addnotebytagbutton);
+        ImageButton addBookmarkButton = findViewById(R.id.addbookmarkbutton);
+        ImageButton toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+        ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
         if (enable) {
             addnotebytagButton.setVisibility(View.VISIBLE);
             addBookmarkButton.setVisibility(View.VISIBLE);
@@ -1422,14 +1422,14 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void setAllButtoonsEnablement(boolean enable) {
-        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
-        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
-        ImageButton toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
-        ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-        ImageButton zoomInButton = (ImageButton) findViewById(R.id.zoomin);
-        TextView zoomLevelTextview = (TextView) findViewById(R.id.zoomlevel);
-        ImageButton zoomOutButton = (ImageButton) findViewById(R.id.zoomout);
-        ImageButton toggleEditingButton = (ImageButton) findViewById(R.id.toggleEditingButton);
+        ImageButton addnotebytagButton = findViewById(R.id.addnotebytagbutton);
+        ImageButton addBookmarkButton = findViewById(R.id.addbookmarkbutton);
+        ImageButton toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+        ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
+        ImageButton zoomInButton = findViewById(R.id.zoomin);
+        TextView zoomLevelTextview = findViewById(R.id.zoomlevel);
+        ImageButton zoomOutButton = findViewById(R.id.zoomout);
+        ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
 
         int visibility = View.VISIBLE;
         if (!enable) {
