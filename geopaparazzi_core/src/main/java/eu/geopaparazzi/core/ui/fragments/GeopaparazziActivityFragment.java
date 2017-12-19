@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.core.GeopaparazziCoreActivity;
+import eu.geopaparazzi.core.database.DaoGpsLog;
+import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -399,6 +401,31 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             ImageButton imageButton = (ImageButton) v;
 
             String tooltip = imageButton.getContentDescription().toString();
+
+            if (imageButton == mNotesButton) {
+                try {
+                    int notesCount = DaoNotes.getNotesCount(false);
+                    tooltip += " (" + notesCount + ")";
+                } catch (IOException e) {
+                    // ignore
+                }
+            } else if (imageButton == mGpslogButton) {
+                try {
+                    int logsCount = DaoGpsLog.getGpslogsCount();
+                    tooltip += " (" + logsCount + ")";
+                } catch (IOException e) {
+                    // ignore
+                }
+            } else if (imageButton == mMetadataButton) {
+                try {
+                    String databaseName = ResourcesManager.getInstance(getContext()).getDatabaseFile().getName();
+                    tooltip += " (" + databaseName + ")";
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+
+
             Snackbar.make(v, tooltip, Snackbar.LENGTH_SHORT).show();
             return true;
         }

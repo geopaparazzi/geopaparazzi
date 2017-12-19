@@ -64,17 +64,17 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
         super.onCreate(icicle);
         setContentView(R.layout.activity_project_metadata);
         try {
-            Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.core.R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             String databaseName = ResourcesManager.getInstance(this).getDatabaseFile().getName();
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            TextView titleView = (TextView) findViewById(R.id.metadataTitle);
+            TextView titleView = findViewById(R.id.metadataTitle);
             titleView.setText(databaseName);
 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-            saveButton = (FloatingActionButton) findViewById(R.id.saveButton);
+            saveButton = findViewById(R.id.saveButton);
             saveButton.hide();
 
             refreshDataView();
@@ -93,17 +93,17 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
     }
 
     private void refreshDataView() throws IOException {
-        LinearLayout container = (LinearLayout) findViewById(R.id.metadataContainer);
+        LinearLayout container = findViewById(R.id.metadataContainer);
         container.removeAllViews();
 
         projectMetadata = DaoMetadata.getProjectMetadata();
         for (final Metadata metadata : projectMetadata) {
             final RelativeLayout view = (RelativeLayout) getLayoutInflater().inflate(R.layout.activity_project_metadata_row, null, false);
-            TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(R.id.metadataView);
+            TextInputLayout textInputLayout = view.findViewById(R.id.metadataView);
             textInputLayout.setHint(metadata.label);
             textInputLayout.bringToFront();
 
-            final TextInputEditText editText = (TextInputEditText) view.findViewById(R.id.metadataEditText);
+            final TextInputEditText editText = view.findViewById(R.id.metadataEditText);
             container.addView(view);
 
             if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){
