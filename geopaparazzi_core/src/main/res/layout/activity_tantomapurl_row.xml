@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@null"
-        app:srcCompat="@drawable/mapurls_download" />
+        android:src="@drawable/mapurls_download" />
 
     <TextView
         android:id="@+id/tantolayertitletext"
