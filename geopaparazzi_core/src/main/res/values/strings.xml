@@ -418,6 +418,9 @@
     <string name="profiles_activate_profile">Activate profile</string>
     <string name="profiles_menu_entry">Profiles</string>
     <string name="profiles">Profiles</string>
+    <string name="layout_settings">Layout Settings</string>
+    <string name="layout_columns">Layout Columns</string>
+    <string name="text_factor">Text Factor</string>
 
 
 </resources>

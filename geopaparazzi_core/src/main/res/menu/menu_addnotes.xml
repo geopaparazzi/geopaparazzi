@@ -41,4 +41,10 @@
         android:orderInCategory="20"
         android:title="@string/menu_simple_sketch"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_preferences"
+        android:icon="@drawable/actionbar_settings"
+        android:orderInCategory="30"
+        android:title="@string/layout_settings"
+        app:showAsAction="never" />
 </menu>
