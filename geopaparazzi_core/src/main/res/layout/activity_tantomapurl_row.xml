@@ -6,12 +6,13 @@
     android:layout_height="fill_parent"
     android:padding="10dip">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/downloadproject_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:background="@null"
         app:srcCompat="@drawable/mapurls_download" />
 
     <TextView

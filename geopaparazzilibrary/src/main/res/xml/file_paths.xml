@@ -1,4 +1,0 @@
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="sdcard" path="/" />
-    <external-path name="geopaparazzi_folder" path="geopaparazzi" />
-</paths>

@@ -212,6 +212,13 @@ public class ResourcesManager implements Serializable {
                 throw new IOException(msgFormat);
             }
 
+            // list of folders as a reminder:
+            // File dir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE); // /data/user/0/eu.hydrologis.geopaparazzi/app_geopaparazzi
+            // File filesDir = getFilesDir(); // /data/user/0/eu.hydrologis.geopaparazzi/files
+            // File cacheDir = getCacheDir(); // /data/user/0/eu.hydrologis.geopaparazzi/cache
+            // File externalStorageDirectory = Environment.getExternalStorageDirectory(); // /storage/emulated/0
+            // File externalFilesDir = getExternalFilesDir(null); // /storage/emulated/0/Android/data/eu.hydrologis.geopaparazzi/files
+            // File externalCacheDir = getExternalCacheDir(); // /storage/emulated/0/Android/data/eu.hydrologis.geopaparazzi/cache
 
         }
 

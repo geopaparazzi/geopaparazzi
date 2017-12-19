@@ -19,6 +19,7 @@ package eu.geopaparazzi.core;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import org.acra.ACRA;
@@ -28,6 +29,7 @@ import org.acra.config.ACRAConfiguration;
 import org.acra.config.ACRAConfigurationException;
 import org.acra.config.ConfigurationBuilder;
 
+import java.io.File;
 import java.io.IOException;
 
 import eu.geopaparazzi.core.database.DatabaseManager;
@@ -69,7 +71,6 @@ public class GeopaparazziApplication extends GPApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
 
         Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized."); //$NON-NLS-1$//$NON-NLS-2$
     }
