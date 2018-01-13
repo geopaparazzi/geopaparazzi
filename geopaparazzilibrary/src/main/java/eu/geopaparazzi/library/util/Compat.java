@@ -21,6 +21,7 @@ package eu.geopaparazzi.library.util;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +40,8 @@ public class Compat {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             drawable = context.getDrawable(id);
         } else {
-            drawable = context.getResources().getDrawable(id);
+            drawable = AppCompatResources.getDrawable(context, id);
+//            drawable = context.getResources().getDrawable(id);
         }
         return drawable;
     }

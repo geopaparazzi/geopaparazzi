@@ -58,7 +58,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/panic_upper"
             android:padding="50dip"
-            android:src="@drawable/ic_panic_icon" />
+            app:srcCompat="@drawable/ic_panic_icon" />
 
         <Button
             android:id="@+id/sendUpdateButton"

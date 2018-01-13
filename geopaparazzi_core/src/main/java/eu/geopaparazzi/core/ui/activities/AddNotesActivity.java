@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import eu.geopaparazzi.core.ui.dialogs.AddNoteLayoutDialogFragment;
 import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
@@ -76,7 +78,7 @@ import eu.geopaparazzi.core.database.DaoNotes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class AddNotesActivity extends AppCompatActivity implements NoteDialogFragment.IAddNote {
+public class AddNotesActivity extends AppCompatActivity implements NoteDialogFragment.IAddNote, AddNoteLayoutDialogFragment.IAddNotesLayoutChangeListener {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
@@ -92,11 +94,19 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private Switch togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
+    public static String PREFS_KEY_GUITEXTSIZEFACTOR = "PREFS_KEY_GUI_TEXTSIZE_FACTOR"; //$NON-NLS-1$
+    public static String PREFS_KEY_GUICOLUMNCOUNT = "PREFS_KEY_GUI_COLUMN_COUNT"; //$NON-NLS-1$
+    public static int DEFAULT_GUICOLUMNCOUNT = 2;
+    public static int DEFAULT_GUITEXTSIZEFACTOR = 1;
+    private int textsizeFactor = DEFAULT_GUITEXTSIZEFACTOR;
+    private ArrayAdapter<String> arrayAdapter;
+    private GridView buttonGridView;
+
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_addnotes);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -115,7 +125,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         }
 
 
-        togglePositionTypeButtonGps = (Switch) findViewById(R.id.togglePositionTypeGps);
+        togglePositionTypeButtonGps = findViewById(R.id.togglePositionTypeGps);
         togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor edit = preferences.edit();
@@ -154,7 +164,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         GpsServiceUtilities.registerForBroadcasts(this, broadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
 
-        GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
+        buttonGridView = findViewById(R.id.osmgridview);
         try {
             Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
             tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
@@ -165,7 +175,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         }
 
         final int buttonTextColor = Compat.getColor(this, R.color.main_text_color);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tagNamesArray) {
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tagNamesArray) {
             public View getView(final int position, View cView, ViewGroup parent) {
 
                 Button tagButton = new Button(AddNotesActivity.this);
@@ -174,7 +184,9 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 SpannableString spanString = new SpannableString(tagNamesArray[position]);
                 spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
                 // tagButton.setText(tagNamesArray[position]);
+                tagButton.setTransformationMethod(null);
                 tagButton.setText(spanString);
+                tagButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, tagButton.getTextSize() * textsizeFactor);
                 tagButton.setTextColor(buttonTextColor);
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;
@@ -226,7 +238,17 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             }
         };
 
-        // setListAdapter(arrayAdapter);
+
+        // Set the number of columns for the buttons
+        int gridColumnCount = preferences.getInt(PREFS_KEY_GUICOLUMNCOUNT,
+                DEFAULT_GUICOLUMNCOUNT);
+        buttonGridView.setNumColumns(gridColumnCount);
+
+
+        // Set the text size for the buttons
+        textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
+                DEFAULT_GUITEXTSIZEFACTOR);
+
         buttonGridView.setAdapter(arrayAdapter);
     }
 
@@ -273,6 +295,9 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             } catch (Exception e) {
                 GPLog.error(AddNotesActivity.this, null, e);
             }
+        } else if (item.getItemId() == R.id.action_preferences) {
+            AddNoteLayoutDialogFragment dialog = AddNoteLayoutDialogFragment.newInstance();
+            dialog.show(getSupportFragmentManager(), "layout");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -376,5 +401,16 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
             GPLog.error(this, null, e);
             GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
         }
+    }
+
+    @Override
+    public void onPropertiesChanged() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int gridColumnCount = preferences.getInt(PREFS_KEY_GUICOLUMNCOUNT,
+                DEFAULT_GUICOLUMNCOUNT);
+        buttonGridView.setNumColumns(gridColumnCount);
+        textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
+                DEFAULT_GUITEXTSIZEFACTOR);
+        buttonGridView.setAdapter(arrayAdapter);
     }
 }

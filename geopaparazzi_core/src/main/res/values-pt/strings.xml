@@ -393,6 +393,8 @@
   <string name="Images">Imagens</string>
   <string name="confirm_remove_image">Quer mesmo remover a imagem?</string>
   <string name="upload_to_cloud_prompt">Enviar o projeto atual para a nuvem?</string>
+  <string name="data_to_pdf_label">Formulários do Projeto para PDF</string>
+  <string name="exporting_data_to_pdf">A exportar dados de formulário para PDF</string>
   <plurals name="n_images">
     <item quantity="one">1 imagem</item>
     <item quantity="other">%d imagens</item>

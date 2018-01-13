@@ -18,25 +18,15 @@
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
 
+import android.util.Log;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
-
-import android.util.Log;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 
 /**
  * A "very very simple to use" class for performing http get and post requests.
@@ -54,29 +44,15 @@ import android.util.Log;
  */
 public class HttpConnection {
 
-    private DefaultHttpClient client;
     private InputStream stream;
-    private HttpEntity entity;
     private String mUserAgent;
 
     private final static int TIMEOUT_CONNECTION = 3000; //ms
     private final static int TIMEOUT_SOCKET = 10000; //ms
+    private HttpURLConnection httpURLConnection;
 
     public HttpConnection() {
         stream = null;
-        entity = null;
-        HttpParams httpParameters = new BasicHttpParams();
-        /* useful?
-		HttpProtocolParams.setContentCharset(httpParameters, "UTF-8"); 
-		HttpProtocolParams.setHttpElementCharset(httpParameters, "UTF-8");
-		*/
-        // Set the timeout in milliseconds until a connection is established.
-        HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT_CONNECTION);
-        // Set the default socket timeout (SO_TIMEOUT)
-        // in milliseconds which is the timeout for waiting for data.
-        HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT_SOCKET);
-        client = new DefaultHttpClient(httpParameters);
-        //TODO: created here. Reuse to do for better perfs???...
     }
 
     public void setUserAgent(String userAgent) {
@@ -88,53 +64,46 @@ public class HttpConnection {
      */
     public int doGet(String sUrl) {
         try {
-            HttpGet request = new HttpGet(sUrl);
+            httpURLConnection = NetworkUtilities.makeNewConnection(sUrl);
             if (mUserAgent != null)
-                request.setHeader("User-Agent", mUserAgent);
-            HttpResponse response = client.execute(request);
-            StatusLine status = response.getStatusLine();
-            if (status.getStatusCode() != HttpStatus.SC_OK) {
-                Log.e(BonusPackHelper.LOG_TAG, "Invalid response from server: " + status.toString());
-                return status.getStatusCode();
+                httpURLConnection.setRequestProperty("User-Agent", mUserAgent);
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode != NetworkUtilities.HTTP_OK) {
+                Log.e(BonusPackHelper.LOG_TAG, "Invalid response from server: " + httpURLConnection.getResponseMessage());
+                return responseCode;
             } else {
-                entity = response.getEntity();
+                stream = httpURLConnection.getInputStream();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return HttpStatus.SC_OK;
+        return NetworkUtilities.HTTP_OK;
     }
 
-    public int doPost(String sUrl, List<NameValuePair> nameValuePairs) {
-        try {
-            HttpPost request = new HttpPost(sUrl);
-            if (mUserAgent != null)
-                request.setHeader("User-Agent", mUserAgent);
-            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            HttpResponse response = client.execute(request);
-            StatusLine status = response.getStatusLine();
-            if (status.getStatusCode() != HttpStatus.SC_OK) {
-                Log.e(BonusPackHelper.LOG_TAG, "Invalid response from server: " + status.toString());
-                return status.getStatusCode();
-            } else {
-                entity = response.getEntity();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return HttpStatus.SC_OK;
-    }
+//    public int doPost(String sUrl, List<NameValuePair> nameValuePairs) {
+//        try {
+//            HttpPost request = new HttpPost(sUrl);
+//            if (mUserAgent != null)
+//                request.setHeader("User-Agent", mUserAgent);
+//            request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//            HttpResponse response = client.execute(request);
+//            StatusLine status = response.getStatusLine();
+//            if (status.getStatusCode() != HttpStatus.SC_OK) {
+//                Log.e(BonusPackHelper.LOG_TAG, "Invalid response from server: " + status.toString());
+//                return status.getStatusCode();
+//            } else {
+//                entity = response.getEntity();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return HttpStatus.SC_OK;
+//    }
 
     /**
      * @return the opened InputStream, or null if creation failed for any reason.
      */
     public InputStream getStream() {
-        try {
-            if (entity != null)
-                stream = entity.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return stream;
     }
 
@@ -143,9 +112,15 @@ public class HttpConnection {
      */
     public String getContentAsString() {
         try {
-            if (entity != null) {
-                return EntityUtils.toString(entity, "UTF-8");
-                //setting the charset is important if none found in the entity.
+            if (stream !=null){
+                BufferedReader bi = new BufferedReader(new InputStreamReader(stream));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = bi.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                stream.close();
+                return sb.toString().trim();
             } else
                 return null;
         } catch (IOException e) {
@@ -166,18 +141,8 @@ public class HttpConnection {
                 e.printStackTrace();
             }
         }
-        if (entity != null) {
-            try {
-                entity.consumeContent();
-                //"finish". Important if we want to reuse the client object one day...
-                entity = null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (client != null) {
-            client.getConnectionManager().shutdown();
-            client = null;
+        if (httpURLConnection!=null){
+            httpURLConnection.disconnect();
         }
     }
 

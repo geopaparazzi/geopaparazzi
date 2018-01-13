@@ -146,4 +146,5 @@
     <string name="osmbonuspack.format_hours">%sh</string>
     <string name="osmbonuspack.format_minutes">%smin</string>
     <string name="osmbonuspack.format_seconds">%ssec</string>
+    <string name="first_camera_open_warning">IMPORTANT README: If you experience crashes of the app while taking pictures try to lower the resolution of your camera in the settings.\n\nIt is most probably bound to high memory consumption while processing the image for insertion into the database.\n\nIn the meanwhile we are looking for a viable solution.</string>
 </resources>

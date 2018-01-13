@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hydrologis.geoss2go.Geoss2GoActivity">
+    <item
+        android:id="@+id/action_import"
+        android:orderInCategory="200"
+        android:title="@string/profiles_action_import"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_export"
+        android:orderInCategory="300"
+        android:title="@string/profiles_action_export"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete_all"
+        android:orderInCategory="400"
+        android:title="@string/profiles_action_delete"
+        app:showAsAction="never" />
+</menu>

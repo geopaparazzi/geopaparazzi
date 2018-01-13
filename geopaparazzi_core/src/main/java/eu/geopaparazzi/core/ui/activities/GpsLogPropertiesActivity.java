@@ -71,7 +71,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
 
         setContentView(R.layout.activity_gpsdataproperties);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -85,7 +85,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
         if (object instanceof LogMapItem) {
             item = (LogMapItem) object;
 
-            final TextView startTimeTextView = (TextView) findViewById(R.id.starttime_label);
+            final TextView startTimeTextView = findViewById(R.id.starttime_label);
             long startTime = item.getStartTime();
             String startTimeStr = " - ";
             try {
@@ -96,7 +96,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
             String startText = startTimeTextView.getText().toString();
             startTimeTextView.setText(startText + " " + startTimeStr);
 
-            final TextView endTimeTextView = (TextView) findViewById(R.id.endtime_label);
+            final TextView endTimeTextView = findViewById(R.id.endtime_label);
             long endTime = item.getEndTime();
             String endTimeStr = " - ";
             if (startTime != endTime) {
@@ -110,7 +110,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + " " + endTimeStr);
 
-            final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
+            final EditText lognameTextView = findViewById(R.id.gpslogname);
 
             lognameTextView.setText(item.getName());
             newText = item.getName();
@@ -130,13 +130,13 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
             });
 
             // log (track) length field
-            final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
+            final TextView trackLengthTextView = findViewById(R.id.trackLength_label);
             String lengthm = item.getLengthInM();
             final String lengthText = trackLengthTextView.getText().toString();
             trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
 
             // button to update the log (track) length field
-            final ImageButton refreshLogLenButton = (ImageButton) findViewById(R.id.gpslog_refreshLogLength);
+            final ImageButton refreshLogLenButton = findViewById(R.id.gpslog_refreshLogLength);
             refreshLogLenButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     final long logID = item.getLogID();
@@ -167,7 +167,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
 
             newColor = item.getColor();
             newWidth = item.getWidth();
-            final Button paletteButton = (Button) findViewById(R.id.gpslog_palette);
+            final ImageButton paletteButton = findViewById(R.id.gpslog_palette);
             paletteButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     int color = ColorUtilities.toColor(newColor);
@@ -186,7 +186,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                 }
             });
 
-            final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
+            final ImageButton chartButton = findViewById(R.id.gpslog_chart);
             chartButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     Intent intent = new Intent(GpsLogPropertiesActivity.this, ProfileChartActivity.class);
@@ -194,7 +194,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                     startActivity(intent);
                 }
             });
-            final Button zoomToStartButton = (Button) findViewById(R.id.gpslog_zoom_start);
+            final ImageButton zoomToStartButton = findViewById(R.id.gpslog_zoom_start);
             zoomToStartButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     try {
@@ -211,7 +211,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                     finish();
                 }
             });
-            final Button zoomToEndButton = (Button) findViewById(R.id.gpslog_zoom_end);
+            final ImageButton zoomToEndButton = findViewById(R.id.gpslog_zoom_end);
             zoomToEndButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
                     try {
@@ -229,7 +229,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                 }
             });
 
-            final Button deleteButton = (Button) findViewById(R.id.gpslog_delete);
+            final ImageButton deleteButton = findViewById(R.id.gpslog_delete);
             deleteButton.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
 

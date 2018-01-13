@@ -88,4 +88,5 @@
   <string name="label_green">Grün</string>
   <string name="label_blue">Blau</string>
   <string name="fill_color_title">Füllfarbe </string>
+  <string name="osmbonuspack.format_seconds">%ssek</string>
 </resources>

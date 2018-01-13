@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
+import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;

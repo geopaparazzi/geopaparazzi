@@ -36,3 +36,6 @@ build/
 *.iml
 
 ant.properties
+
+geopaparazzi.app/release/
+geopaparazzi.app/debug/

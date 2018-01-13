@@ -393,6 +393,8 @@
   <string name="Images">Kuvat</string>
   <string name="confirm_remove_image">Haluatko todella poistaa kuvan?</string>
   <string name="upload_to_cloud_prompt">Lataatko nykyisen projektin pilveen?</string>
+  <string name="data_to_pdf_label">Projektilomakkeet pdf:ksi</string>
+  <string name="exporting_data_to_pdf">Viedään lomakedatasta pdf:ksi</string>
   <plurals name="n_images">
     <item quantity="one">1 kuva</item>
     <item quantity="other">%d kuvaa</item>

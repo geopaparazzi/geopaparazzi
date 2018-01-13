@@ -43,6 +43,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -92,11 +93,11 @@ public class GpsDataListActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_gpsdatalist);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mListView = (ListView) findViewById(R.id.gpsdatalist);
+        mListView = findViewById(R.id.gpsdatalist);
 
         mPeferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -258,7 +259,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
                 TextView nameView;
                 CheckBox visibleView;
                 Button colorView;
-                Button propertiesButton;
+                ImageButton propertiesButton;
             }
 
             @Override
@@ -271,10 +272,10 @@ public class GpsDataListActivity extends AppCompatActivity implements
                     LayoutInflater inflater = getLayoutInflater();
                     rowView = inflater.inflate(R.layout.activity_gpsdatalist_row, parent, false);
                     holder = new ViewHolder();
-                    holder.nameView = (TextView) rowView.findViewById(R.id.filename);
-                    holder.visibleView = (CheckBox) rowView.findViewById(R.id.visible);
-                    holder.colorView = (Button) rowView.findViewById(R.id.colorButton);
-                    holder.propertiesButton = (Button) rowView.findViewById(R.id.propertiesButton);
+                    holder.nameView = rowView.findViewById(R.id.filename);
+                    holder.visibleView = rowView.findViewById(R.id.visible);
+                    holder.colorView = rowView.findViewById(R.id.colorButton);
+                    holder.propertiesButton = rowView.findViewById(R.id.propertiesButton);
                     rowView.setTag(holder);
                 } else {
                     holder = (ViewHolder) rowView.getTag();

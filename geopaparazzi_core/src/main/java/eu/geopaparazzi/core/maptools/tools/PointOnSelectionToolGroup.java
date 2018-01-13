@@ -169,7 +169,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_delete_point_feature));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_delete_point_feature_24dp));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
@@ -178,7 +178,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
             copyFeatureButton = new ImageButton(context);
             copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_copy_geoms));
+            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_copy_geoms_24dp));
             copyFeatureButton.setPadding(0, padding, 0, padding);
             copyFeatureButton.setOnTouchListener(this);
             copyFeatureButton.setOnClickListener(this);
@@ -187,7 +187,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.editing_view_attributes));
+            editAttributesButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_view_attributes_24dp));
             editAttributesButton.setPadding(0, padding, 0, padding);
             editAttributesButton.setOnTouchListener(this);
             editAttributesButton.setOnClickListener(this);
@@ -195,7 +195,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_undo_24dp));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -203,7 +203,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_commit_24dp));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);

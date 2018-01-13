@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -153,8 +154,8 @@ public class TantoMapurlsListActivity extends ListActivity {
                 serviceText.setText(tantoMapurl.service);
                 idText.setText(tantoMapurl.id + "");
 
-                ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
-                imageText.setOnClickListener(new View.OnClickListener() {
+                ImageButton imageButton =  rowView.findViewById(R.id.downloadproject_image);
+                imageButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         if (!NetworkUtilities.isNetworkAvailable(TantoMapurlsListActivity.this)) {
                             GPDialogs.infoDialog(TantoMapurlsListActivity.this, getString(R.string.available_only_with_network), null);

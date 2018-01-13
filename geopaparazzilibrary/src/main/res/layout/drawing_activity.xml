@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <eu.geopaparazzi.library.sketch.DrawingSurface
         android:id="@+id/drawingSurface"
@@ -40,7 +41,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@drawable/button_background_drawable"
+            app:srcCompat="@drawable/button_background_drawable"
             android:contentDescription="@string/redo"
             android:onClick="onClick"
             android:src="@android:drawable/ic_media_ff" />
@@ -56,7 +57,7 @@
             android:background="@drawable/button_background_drawable"
             android:contentDescription="@string/undo"
             android:onClick="onClick"
-            android:src="@android:drawable/ic_media_rew" />
+            app:srcCompat="@android:drawable/ic_media_rew" />
 
     </RelativeLayout>
 

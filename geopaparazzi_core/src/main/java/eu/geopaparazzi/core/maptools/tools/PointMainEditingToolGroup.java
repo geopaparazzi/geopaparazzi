@@ -90,7 +90,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
             createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_point));
+            createFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_add_point_24dp));
             createFeatureButton.setPadding(0, padding, 0, padding);
             createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
@@ -99,7 +99,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
             selectEditableButton = new ImageButton(context);
             selectEditableButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_editable));
+            selectEditableButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_editable_24dp));
             selectEditableButton.setPadding(0, padding, 0, padding);
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
@@ -108,7 +108,12 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
 
         selectAllButton = new ImageButton(context);
         selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool instanceof InfoTool) {
+            selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_active_24dp));
+        } else {
+            selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
+        }
         selectAllButton.setPadding(0, padding, 0, padding);
         selectAllButton.setOnClickListener(this);
         selectAllButton.setOnTouchListener(this);
@@ -117,7 +122,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
         if (editLayer != null) {
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_undo_24dp));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -126,7 +131,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_commit_24dp));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -205,18 +210,18 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
         if (selectEditableButton != null) {
             if (currentTool != null && activeToolButton == selectEditableButton) {
                 selectEditableButton.setBackground(Compat.getDrawable(context,
-                        R.drawable.editing_select_editable_active));
+                        R.drawable.ic_editing_select_editable_active_24dp));
             } else {
                 selectEditableButton.setBackground(Compat.getDrawable(context,
-                        R.drawable.editing_select_editable));
+                        R.drawable.ic_editing_select_editable_24dp));
             }
         }
         if (selectAllButton != null)
             if (currentTool != null && activeToolButton == selectAllButton) {
                 selectAllButton
-                        .setBackground(Compat.getDrawable(context, R.drawable.editing_select_all_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_active_24dp));
             } else {
-                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.editing_select_all));
+                selectAllButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_select_all_24dp));
             }
     }
 

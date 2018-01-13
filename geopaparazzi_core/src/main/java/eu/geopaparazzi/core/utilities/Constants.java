@@ -24,8 +24,6 @@ package eu.geopaparazzi.core.utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface Constants {
-    String GEOPAPARAZZI = "geopaparazzi";
-
     String ID = "ID";
 
     String PANICKEY = "panic_number";

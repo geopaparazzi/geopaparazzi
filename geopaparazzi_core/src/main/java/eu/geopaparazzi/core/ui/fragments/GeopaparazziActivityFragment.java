@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,10 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziCoreActivity;
+import eu.geopaparazzi.core.database.DaoGpsLog;
+import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DatabaseUtilities;
@@ -90,6 +95,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_
 public class GeopaparazziActivityFragment extends Fragment implements View.OnLongClickListener, View.OnClickListener, IActivitySupporter {
 
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
+    private final int RETURNCODE_PROFILES = 666;
 
     private ImageButton mNotesButton;
     private ImageButton mMetadataButton;
@@ -250,6 +256,21 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 menu.getItem(2).setVisible(false);
             }
         }
+
+        boolean hasProfilesProvider = false;
+        for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+            ProviderInfo[] providers = pack.providers;
+            if (providers != null) {
+                for (ProviderInfo provider : providers) {
+                    String authority = provider.authority;
+                    if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {
+                        hasProfilesProvider = true;
+                    }
+                }
+            }
+        }
+        if (!hasProfilesProvider)
+            menu.getItem(7).setVisible(false);
     }
 
     @Override
@@ -285,6 +306,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } else if (i == R.id.action_advanced_settings) {
             Intent advancedSettingsIntent = new Intent(this.getActivity(), AdvancedSettingsActivity.class);
             startActivity(advancedSettingsIntent);
+            return true;
+        } else if (i == R.id.action_profiles) {
+            Intent profilesIntent = new Intent(this.getActivity(), ProfilesActivity.class);
+            startActivityForResult(profilesIntent, RETURNCODE_PROFILES);
             return true;
         } else if (i == R.id.action_about) {
             Intent intent = new Intent(getActivity(), AboutActivity.class);
@@ -330,6 +355,24 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 }
                 break;
             }
+            case (RETURNCODE_PROFILES): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        boolean restart = data.getBooleanExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, false);
+                        if (restart) {
+                            FragmentActivity activity = getActivity();
+                            if (activity instanceof GeopaparazziCoreActivity) {
+                                GeopaparazziCoreActivity geopaparazziCoreActivity = (GeopaparazziCoreActivity) activity;
+                                geopaparazziCoreActivity.onApplicationNeedsRestart();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(getActivity(), e, null);
+                    }
+                }
+                break;
+            }
 //            case (RETURNCODE_NOTES): {
 //                if (resultCode == Activity.RESULT_OK) {
 //                    String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
@@ -358,6 +401,31 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             ImageButton imageButton = (ImageButton) v;
 
             String tooltip = imageButton.getContentDescription().toString();
+
+            if (imageButton == mNotesButton) {
+                try {
+                    int notesCount = DaoNotes.getNotesCount(false);
+                    tooltip += " (" + notesCount + ")";
+                } catch (IOException e) {
+                    // ignore
+                }
+            } else if (imageButton == mGpslogButton) {
+                try {
+                    int logsCount = DaoGpsLog.getGpslogsCount();
+                    tooltip += " (" + logsCount + ")";
+                } catch (IOException e) {
+                    // ignore
+                }
+            } else if (imageButton == mMetadataButton) {
+                try {
+                    String databaseName = ResourcesManager.getInstance(getContext()).getDatabaseFile().getName();
+                    tooltip += " (" + databaseName + ")";
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+
+
             Snackbar.make(v, tooltip, Snackbar.LENGTH_SHORT).show();
             return true;
         }

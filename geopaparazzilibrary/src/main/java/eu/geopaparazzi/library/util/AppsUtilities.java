@@ -19,6 +19,7 @@
 package eu.geopaparazzi.library.util;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -254,7 +255,7 @@ public class AppsUtilities {
      *
      * @param imageData the image data.
      * @param imageName the image name.
-     * @param context the context to use.
+     * @param context   the context to use.
      * @throws Exception
      */
     public static void showImage(byte[] imageData, String imageName, Context context) throws Exception {
@@ -273,7 +274,7 @@ public class AppsUtilities {
      * Show and image.
      *
      * @param imageFile the image file.
-     * @param context the context to use.
+     * @param context   the context to use.
      * @throws Exception
      */
     public static void showImage(File imageFile, Context context) throws Exception {
@@ -289,12 +290,12 @@ public class AppsUtilities {
 
     /**
      * Grant permission to access a file from another app.
-     *
+     * <p>
      * <p>This is necessary since Android 7.</p>
      *
      * @param context the context.
-     * @param intent the intent.
-     * @param uri the file uri.
+     * @param intent  the intent.
+     * @param uri     the file uri.
      */
     public static void grantPermission(Context context, Intent intent, Uri uri) {
         List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -303,5 +304,81 @@ public class AppsUtilities {
             context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
     }
+
+    /**
+     * Opens the comapss app.
+     *
+     * @param context the context to use.
+     */
+    public static void checkAndOpenGpsStatusNonFoss(final Context context) {
+        String GPS_STATUS_PACKAGE_NAME = "com.eclipsim.gpsstatus2";
+        String GPS_STATUS_CLASS_NAME = "com.eclipsim.gpsstatus2.GPSStatus";
+        boolean hasGpsStatus = false;
+        List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
+
+        { // try to get the installed packages list. Seems to have troubles over different
+            // versions, so trying them all
+            try {
+                installedPackages = context.getPackageManager().getInstalledPackages(0);
+            } catch (Exception e) {
+                // ignore
+            }
+            if (installedPackages.size() == 0)
+                try {
+                    installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+                } catch (Exception e) {
+                    // ignore
+                }
+        }
+
+        if (installedPackages.size() > 0) {
+            // if a list is available, check if the status gps is installed
+            for (PackageInfo packageInfo : installedPackages) {
+                String packageName = packageInfo.packageName;
+                if (packageName.startsWith(GPS_STATUS_PACKAGE_NAME)) {
+                    hasGpsStatus = true;
+                    break;
+                }
+            }
+        } else {
+            /*
+             * if no package list is available, for now try to fire it up anyways.
+             * This has been a problem for a user on droidx with android 2.2.1.
+             */
+            hasGpsStatus = true;
+        }
+
+        if (hasGpsStatus) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setComponent(new ComponentName(GPS_STATUS_PACKAGE_NAME, GPS_STATUS_CLASS_NAME));
+
+            context.startActivity(intent);
+        } else {
+            new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
+                    .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // ignore
+                        }
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));
+                    context.startActivity(intent);
+                }
+            }).show();
+        }
+    }
+
+    public static void openGoogleMapsBetween2Coordinates(final Context context, double x1, double y1, double x2, double y2) {
+        String uriString = "https://maps.google.com/maps?saddr=" + y1 + "," + x1 + "&daddr=" + y2 + "," + x2;
+
+//        String uriString = "https://www.google.com/maps/dir/?api=1&origin=" + x1 + "," + y1 + "&destination=" + x2 + "," + y2 + "&travelmode=driving";
+        Uri gmmIntentUri = Uri.parse(uriString);
+        Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        intent.setPackage("com.google.android.apps.maps");
+        context.startActivity(intent);
+    }
+
 
 }

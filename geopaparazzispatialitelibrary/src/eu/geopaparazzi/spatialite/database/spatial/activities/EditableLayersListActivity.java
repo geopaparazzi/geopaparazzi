@@ -20,6 +20,7 @@ package eu.geopaparazzi.spatialite.database.spatial.activities;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -56,7 +57,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class EditableLayersListActivity extends AppCompatActivity implements OnTouchListener {
+public class EditableLayersListActivity extends AppCompatActivity{
 
     private int index = 0;
 
@@ -68,11 +69,11 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
         super.onCreate(icicle);
         setContentView(R.layout.activity_editable_layers_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ListView mListView = (ListView) findViewById(R.id.editablelayerslist);
+        ListView mListView = findViewById(R.id.editablelayerslist);
 
         buttonSelectionColor = Compat.getColor(this, R.color.main_selection);
 
@@ -162,23 +163,24 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
                 editableSpatialiteMaps) {
             private ImageButton currentEditable = null;
 
+            @NonNull
             @Override
-            public View getView(final int position, View cView, ViewGroup parent) {
+            public View getView(final int position, View cView, @NonNull ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.editablelayers_row, null);
                 try {
                     final SpatialiteMap item = editableSpatialiteMaps.get(position);
 
-                    TextView nameView = (TextView) rowView.findViewById(R.id.name);
-                    TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
+                    TextView nameView = rowView.findViewById(R.id.name);
+                    TextView descriptionView = rowView.findViewById(R.id.description);
 
-                    final ImageButton editableButton = (ImageButton) rowView.findViewById(R.id.editableButton);
+                    final ImageButton editableButton = rowView.findViewById(R.id.editableButton);
                     editableButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             if (currentEditable != null) {
-                                currentEditable.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
+                                currentEditable.setImageDrawable(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                             }
-                            editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
+                            editableButton.setImageDrawable(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                             currentEditable = editableButton;
 
                             SpatialiteMap spatialiteMap = editableSpatialiteMaps.get(position);
@@ -189,13 +191,12 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
 //                            finish();
                         }
                     });
-                    editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
                     if (spatialiteMap != null && spatialiteMap == item) {
-                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
+                        editableButton.setImageDrawable(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_editable));
                         currentEditable = editableButton;
                     } else if (item.isVisible) {
-                        editableButton.setBackground(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
+                        editableButton.setImageDrawable(Compat.getDrawable(EditableLayersListActivity.this, R.drawable.ic_layer_visible));
                     } else {
                         editableButton.setEnabled(false);
                     }
@@ -224,20 +225,5 @@ public class EditableLayersListActivity extends AppCompatActivity implements OnT
 
     }
 
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_OVER);
-                v.invalidate();
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                v.getBackground().clearColorFilter();
-                v.invalidate();
-                break;
-            }
-        }
-        return false;
-    }
 
 }

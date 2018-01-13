@@ -24,15 +24,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionFineLocation implements IChainedPermissionHelper {
+public class PermissionFineLocation extends AChainedPermissionHelper {
 
     public static int FINE_LOCATION_PERMISSION_REQUESTCODE = 2;
-
 
     @Override
     public String getDescription() {
@@ -94,13 +92,5 @@ public class PermissionFineLocation implements IChainedPermissionHelper {
         return false;
     }
 
-    @Override
-    public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        PermissionSendSms permissionSendSms = new PermissionSendSms();
-        if (!permissionSendSms.hasPermission(context)) {
-            return permissionSendSms;
-        } else {
-            return permissionSendSms.getNextWithoutPermission(context);
-        }
-    }
+
 }

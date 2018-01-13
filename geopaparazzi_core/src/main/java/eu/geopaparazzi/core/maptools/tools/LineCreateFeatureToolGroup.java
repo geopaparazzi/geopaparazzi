@@ -51,7 +51,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.geopaparazzi.library.style.ToolColors;
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.maptools.FeatureUtilities;
+import eu.geopaparazzi.core.mapview.MapsSupportService;
+import eu.geopaparazzi.core.mapview.overlays.MapsforgePointTransformation;
+import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -60,6 +65,7 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -67,12 +73,6 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
-import eu.geopaparazzi.core.mapview.MapsSupportService;
-import eu.geopaparazzi.core.mapview.overlays.MapsforgePointTransformation;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
 
 import static java.lang.Math.round;
 
@@ -175,7 +175,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
         if (editLayer != null) {
             gpsStreamButton = new ImageButton(context);
             gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
+            gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_gps_stream_24dp));
             gpsStreamButton.setPadding(0, padding, 0, padding);
             gpsStreamButton.setOnTouchListener(this);
             gpsStreamButton.setOnLongClickListener(this);
@@ -184,7 +184,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
 
             addVertexButton = new ImageButton(context);
             addVertexButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            addVertexButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex));
+            addVertexButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_add_vertex_24dp));
             addVertexButton.setPadding(0, padding, 0, padding);
             addVertexButton.setOnTouchListener(this);
             addVertexButton.setOnClickListener(this);
@@ -193,7 +193,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
             addVertexByTapButton = new ImageButton(context);
             addVertexByTapButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap));
+            addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_add_vertex_tap_24dp));
             addVertexByTapButton.setPadding(0, padding, 0, padding);
             addVertexByTapButton.setOnTouchListener(this);
             addVertexByTapButton.setOnClickListener(this);
@@ -201,7 +201,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackground(Compat.getDrawable(context, R.drawable.editing_undo));
+            undoButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_undo_24dp));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
             undoButton.setOnClickListener(this);
@@ -209,7 +209,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
 
             commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackground(Compat.getDrawable(context, R.drawable.editing_commit));
+            commitButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_commit_24dp));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
@@ -341,16 +341,16 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
         if (gpsStreamButton != null)
             if (gpsStreamActive) {
                 gpsStreamButton
-                        .setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream_active));
+                        .setBackground(Compat.getDrawable(context, R.drawable.ic_editing_gps_stream_active_24dp));
             } else {
-                gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.editing_gps_stream));
+                gpsStreamButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_gps_stream_24dp));
                 gpsStreamButton.getBackground().clearColorFilter();
             }
         if (addVertexByTapButton != null)
             if (addVertexByTapActive) {
-                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap_active));
+                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_add_vertex_tap_active_24dp));
             } else {
-                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.editing_add_vertex_tap));
+                addVertexByTapButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_add_vertex_tap_24dp));
             }
 
     }

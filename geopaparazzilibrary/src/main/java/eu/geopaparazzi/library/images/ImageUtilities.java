@@ -152,8 +152,8 @@ public class ImageUtilities {
 
         // define sampling for thumbnail
         float sampleSizeF = (float) width / (float) THUMBNAILWIDTH;
-        float newHeight = height/sampleSizeF;
-        Bitmap thumbnail =  Bitmap.createScaledBitmap(image, THUMBNAILWIDTH, (int)newHeight, false);
+        float newHeight = height / sampleSizeF;
+        Bitmap thumbnail = Bitmap.createScaledBitmap(image, THUMBNAILWIDTH, (int) newHeight, false);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
@@ -246,8 +246,8 @@ public class ImageUtilities {
     /**
      * Loads a subsampled version of the image
      *
-     * @param imgPath The path to the image to load
-     * @param reqWidth The width required for the subsampled version
+     * @param imgPath   The path to the image to load
+     * @param reqWidth  The width required for the subsampled version
      * @param reqHeight The height required for the subsampled version
      * @return
      */
@@ -278,7 +278,8 @@ public class ImageUtilities {
             } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
                 return 270f;
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         return 0f;
     }
 }

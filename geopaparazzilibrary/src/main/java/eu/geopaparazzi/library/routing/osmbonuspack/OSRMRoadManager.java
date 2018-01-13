@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import eu.geopaparazzi.library.R;
 
@@ -160,6 +161,30 @@ public class OSRMRoadManager extends RoadManager {
         return urlString.toString();
     }
 
+
+    protected String getUrl(ArrayList<GeoPoint> waypoints){
+        StringBuffer urlString = new StringBuffer(mServiceUrl);
+        for (int i=0; i<waypoints.size(); i++){
+            if (i>0)
+                urlString.append(';');
+            GeoPoint p = waypoints.get(i);
+            urlString.append(Double.toString(p.getLongitude()) + "," + Double.toString(p.getLatitude()));
+        }
+        urlString.append("?overview=simplified&steps=true");
+        urlString.append(mOptions);
+        return urlString.toString();
+    }
+//    protected String getUrl(ArrayList<GeoPoint> waypoints){
+//        StringBuffer urlString = new StringBuffer(mServiceUrl);
+//        for (int i=0; i<waypoints.size(); i++){
+//            GeoPoint p = waypoints.get(i);
+//            urlString.append("&loc="+geoPointAsString(p));
+//        }
+//        urlString.append("&instructions=true&alt=false");
+//        urlString.append(mOptions);
+//        return urlString.toString();
+//    }
+
 	/*
 	protected void getInstructions(Road road, JSONArray jInstructions){
 		try {
@@ -192,7 +217,6 @@ public class OSRMRoadManager extends RoadManager {
 		}
 	}
 	*/
-
     protected Road[] defaultRoad(ArrayList<GeoPoint> waypoints){
         Road[] roads = new Road[1];
         roads[0] = new Road(waypoints);
@@ -206,7 +230,7 @@ public class OSRMRoadManager extends RoadManager {
         String jString = BonusPackHelper.requestStringFromUrl(url, mUserAgent);
         if (jString == null) {
             Log.e(BonusPackHelper.LOG_TAG, "OSRMRoadManager::getRoad: request failed.");
-            return null;
+            return defaultRoad(waypoints);
         }
 
         try {
@@ -258,7 +282,10 @@ public class OSRMRoadManager extends RoadManager {
                                 String modifier = jStepManeuver.getString("modifier");
                                 direction = direction + '-' + modifier;
                             } else if (direction.equals("roundabout")){
-                                int exit = jStepManeuver.getInt("exit");
+                                int exit = 0;
+                                if (jStepManeuver.has("exit")) {
+                                    exit = jStepManeuver.getInt("exit");
+                                }
                                 direction = direction + '-' + exit;
                             } else if (direction.equals("rotary")) {
                                 int exit = jStepManeuver.getInt("exit");
@@ -286,7 +313,7 @@ public class OSRMRoadManager extends RoadManager {
             } //if code is Ok
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            return defaultRoad(waypoints);
         }
     }
 
@@ -296,7 +323,6 @@ public class OSRMRoadManager extends RoadManager {
 
     @Override public Road getRoad(ArrayList<GeoPoint> waypoints) {
         Road[] roads = getRoads(waypoints, false);
-        if (roads == null) return null;
         return roads[0];
     }
 
@@ -320,6 +346,25 @@ public class OSRMRoadManager extends RoadManager {
         else {
             direction = direction.replace('[', ' ');
             direction = direction.replace(']', ' ');
+            instructions = String.format(direction, roadName);
+        }
+        return instructions;
+    }
+
+    protected String buildInstructions(String direction, String roadName,
+                                       HashMap<String, String> directions){
+        if (directions == null)
+            return null;
+        direction = directions.get(direction);
+        if (direction == null)
+            return null;
+        String instructions = null;
+        if (roadName.equals(""))
+            //remove "<*>"
+            instructions = direction.replaceFirst("<[^>]*>", "");
+        else {
+            direction = direction.replace('<', ' ');
+            direction = direction.replace('>', ' ');
             instructions = String.format(direction, roadName);
         }
         return instructions;

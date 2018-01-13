@@ -440,6 +440,26 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return logsList;
     }
 
+    public static int getGpslogsCount() throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+
+        String sql = "select count(*) from " + TABLE_GPSLOGS;
+
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.rawQuery(sql, null);
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                int count = c.getInt(0);
+                return count;
+            }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return -1;
+    }
+
     /**
      * Get the gps logs.
      *
@@ -1201,13 +1221,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public long getLastLogId() throws Exception {
         SQLiteDatabase database = getDatabase();
         String query = "select max(" + GpsLogsTableFields.COLUMN_ID.getFieldName() + ") from " + TableDescriptions.TABLE_GPSLOGS;
-       try( Cursor mCursor = database.rawQuery(query, null)) {
-           mCursor.moveToFirst();
-           if (!mCursor.isAfterLast()) {
-               long id = mCursor.getLong(0);
-               return id;
-           }
-       }
+        try (Cursor mCursor = database.rawQuery(query, null)) {
+            mCursor.moveToFirst();
+            if (!mCursor.isAfterLast()) {
+                long id = mCursor.getLong(0);
+                return id;
+            }
+        }
         throw new Exception();
     }
 

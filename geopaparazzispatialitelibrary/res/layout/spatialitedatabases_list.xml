@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".mapsdirmanager.sourcesview.SourcesTreeListActivity">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
         android:backgroundTint="@color/main_extra_color"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="add"
-        android:src="@drawable/ic_add_file_24dp"
+        app:srcCompat="@drawable/ic_add_file_24dp"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:elevation="6dp"
@@ -84,7 +84,7 @@
         android:backgroundTint="@color/main_extra_color"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="addFolder"
-        android:src="@drawable/ic_add_folder_24dp"
+        app:srcCompat="@drawable/ic_add_folder_24dp"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:elevation="6dp"
@@ -99,7 +99,7 @@
         android:background="@color/transparent_white"
         android:cacheColorHint="@color/transparent_white"
         android:onClick="animateFAB"
-        android:src="@drawable/ic_add_24dp"
+        app:srcCompat="@drawable/ic_add_24dp"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp" />
 

@@ -23,11 +23,16 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
+import org.acra.prefs.PrefUtils;
+
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -67,7 +72,7 @@ public class CameraNoteActivity extends AbstractCameraActivity {
     protected long noteId = -1;
     protected OrientationSensor orientationSensor;
 
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
 
         Bundle extras = getIntent().getExtras();
@@ -79,7 +84,22 @@ public class CameraNoteActivity extends AbstractCameraActivity {
         lat = extras.getDouble(LibraryConstants.LATITUDE);
         elevation = extras.getDouble(LibraryConstants.ELEVATION);
 
-        doTakePicture(icicle);
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean warningAlreadyShown = preferences.getBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, false);
+        if (warningAlreadyShown) {
+            doTakePicture(icicle);
+        } else {
+            GPDialogs.infoDialog(this, getString(R.string.first_camera_open_warning), new Runnable() {
+                @Override
+                public void run() {
+                    doTakePicture(icicle);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, true);
+                    editor.apply();
+                }
+            });
+        }
     }
 
     @Override

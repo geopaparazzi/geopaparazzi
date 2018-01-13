@@ -14,4 +14,5 @@ public class SettingsActivityFragment extends PreferenceFragment {
       super.onCreate(bundle);
       addPreferencesFromResource(R.xml.preferences); // load from XML
    }
+
 }

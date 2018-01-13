@@ -24,14 +24,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PermissionRecieveSms implements IChainedPermissionHelper {
+public class PermissionRecieveSms extends AChainedPermissionHelper {
 
     public static int RECIEVESMS_PERMISSION_REQUESTCODE = 4;
+
+    private AChainedPermissionHelper nextPermissionHelper;
 
     @Override
     public String getDescription() {
@@ -57,7 +58,7 @@ public class PermissionRecieveSms implements IChainedPermissionHelper {
             if (activity.checkSelfPermission(
                     Manifest.permission.RECEIVE_SMS) !=
                     PackageManager.PERMISSION_GRANTED) {
-    
+
                 if (canAskPermission) {
                     if (activity.shouldShowRequestPermissionRationale(
                             Manifest.permission.RECEIVE_SMS)) {
@@ -99,9 +100,5 @@ public class PermissionRecieveSms implements IChainedPermissionHelper {
         return false;
     }
 
-    @Override
-    public IChainedPermissionHelper getNextWithoutPermission(Context context) {
-        return null;
-    }
 
 }

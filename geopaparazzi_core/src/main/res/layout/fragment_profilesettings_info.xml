@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".profiles.gui.ProfileSettingsActivity">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/profileNameEditTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="15dp"
+        android:hint="Profile Name">
+
+        <EditText
+            android:id="@+id/profileNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/profileDescriptionEditTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileNameEditTextLayout"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="15dp"
+        android:hint="Profile Description">
+
+        <EditText
+            android:id="@+id/profileDescriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:singleLine="false"
+            android:text="" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/profileCreationdateEditTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileDescriptionEditTextLayout"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="15dp"
+        android:hint="Creation Date">
+
+        <EditText
+            android:id="@+id/profileCreationdateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:singleLine="true"
+            android:text="" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Switch
+        android:id="@+id/activeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileCreationdateEditTextLayout"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="45dp"
+        android:text="" />
+
+
+</RelativeLayout>

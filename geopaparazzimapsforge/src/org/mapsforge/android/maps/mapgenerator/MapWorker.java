@@ -26,86 +26,87 @@ import android.util.Log;
  * thread.
  */
 public class MapWorker extends PausableThread {
-	private static final String THREAD_NAME = "MapWorker";
+    private static final String THREAD_NAME = "MapWorker";
 
-	private TileCache fileSystemTileCache;
-	private TileCache inMemoryTileCache;
-	private JobQueue jobQueue;
-	private MapGenerator mapGenerator;
-	private MapView mapView;
-	private Bitmap tileBitmap;
+    private TileCache fileSystemTileCache;
+    private TileCache inMemoryTileCache;
+    private JobQueue jobQueue;
+    private MapGenerator mapGenerator;
+    private MapView mapView;
+    private Bitmap tileBitmap;
 
-	/**
-	 * @param mapView
-	 *            the MapView for which this MapWorker generates map tiles.
-	 */
-	public MapWorker(MapView mapView) {
-		super();
-		this.mapView = mapView;
-		this.jobQueue = mapView.getJobQueue();
-		this.inMemoryTileCache = mapView.getInMemoryTileCache();
-		this.fileSystemTileCache = mapView.getFileSystemTileCache();
-		this.tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
-	}
+    /**
+     * @param mapView the MapView for which this MapWorker generates map tiles.
+     */
+    public MapWorker(MapView mapView) {
+        super();
+        this.mapView = mapView;
+        this.jobQueue = mapView.getJobQueue();
+        this.inMemoryTileCache = mapView.getInMemoryTileCache();
+        this.fileSystemTileCache = mapView.getFileSystemTileCache();
+        this.tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
+    }
 
-	/**
-	 * @param mapGenerator
-	 *            the MapGenerator which this MapWorker should use.
-	 */
-	public void setMapGenerator(MapGenerator mapGenerator) {
-		this.mapGenerator = mapGenerator;
-	}
+    /**
+     * @param mapGenerator the MapGenerator which this MapWorker should use.
+     */
+    public void setMapGenerator(MapGenerator mapGenerator) {
+        this.mapGenerator = mapGenerator;
+    }
 
- 	@Override
- 	protected void afterRun() {
-		this.mapView = null;
-		this.mapGenerator = null;
-		this.fileSystemTileCache = null;
-		this.inMemoryTileCache = null;
-		this.jobQueue = null;
-		this.tileBitmap.recycle();
-		this.tileBitmap = null;
- 	}
+    @Override
+    protected void afterRun() {
+        this.mapView = null;
+        this.mapGenerator = null;
+        this.fileSystemTileCache = null;
+        this.inMemoryTileCache = null;
+        this.jobQueue = null;
+        this.tileBitmap.recycle();
+        this.tileBitmap = null;
+    }
 
-	@Override
-	protected void doWork() {
-		MapGeneratorJob mapGeneratorJob = this.jobQueue.poll();
+    @Override
+    protected void doWork() {
+        MapGeneratorJob mapGeneratorJob = this.jobQueue.poll();
 
-		if (this.inMemoryTileCache.containsKey(mapGeneratorJob)) {
-			return;
-		} else if (this.fileSystemTileCache.containsKey(mapGeneratorJob)) {
-			return;
-		}
+        if (mapGeneratorJob == null)
+            return;
 
-		boolean success;
-		try {
-			success = this.mapGenerator.executeJob(mapGeneratorJob, this.tileBitmap);
-		} catch (Exception e) {
-			Log.e(THREAD_NAME, "Error with tile: " + this.tileBitmap + ": " + e.getLocalizedMessage());
-			success = false;
-		}
+        if (inMemoryTileCache != null && inMemoryTileCache.containsKey(mapGeneratorJob)) {
+            return;
+        } else if (fileSystemTileCache != null && fileSystemTileCache.containsKey(mapGeneratorJob)) {
+            return;
+        }
 
-		if (!isInterrupted() && success) {
-			if (this.mapView.getFrameBuffer().drawBitmap(mapGeneratorJob.tile, this.tileBitmap)) {
-				this.inMemoryTileCache.put(mapGeneratorJob, this.tileBitmap);
-			}
-			this.mapView.postInvalidate();
-			this.fileSystemTileCache.put(mapGeneratorJob, this.tileBitmap);
-		}
-	}
+        boolean success;
+        try {
+            success = this.mapGenerator.executeJob(mapGeneratorJob, this.tileBitmap);
+        } catch (Exception e) {
+            Log.e(THREAD_NAME, "Error with tile: " + this.tileBitmap + ": " + e.getLocalizedMessage());
+            success = false;
+        }
 
-	@Override
-	protected String getThreadName() {
-		return THREAD_NAME;
-	}
+        if (!isInterrupted() && success) {
+            if (this.mapView.getFrameBuffer().drawBitmap(mapGeneratorJob.tile, this.tileBitmap)) {
+                this.inMemoryTileCache.put(mapGeneratorJob, this.tileBitmap);
+            }
+            this.mapView.postInvalidate();
+            this.fileSystemTileCache.put(mapGeneratorJob, this.tileBitmap);
+        }
+    }
 
-	@Override
-	protected int getThreadPriority() {
-		return (Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2;
-	}
+    @Override
+    protected String getThreadName() {
+        return THREAD_NAME;
+    }
 
-	@Override
-	protected boolean hasWork() {
-		return !this.jobQueue.isEmpty();
-	}
+    @Override
+    protected int getThreadPriority() {
+        return (Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2;
+    }
+
+    @Override
+    protected boolean hasWork() {
+        return !this.jobQueue.isEmpty();
+    }
 }

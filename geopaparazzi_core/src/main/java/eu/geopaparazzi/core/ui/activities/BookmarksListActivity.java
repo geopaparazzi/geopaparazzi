@@ -31,6 +31,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,18 +70,18 @@ public class BookmarksListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_bookmarkslist);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        listView = (ListView) findViewById(R.id.bookmarksList);
+        listView = findViewById(R.id.bookmarksList);
 
 
         refreshList();
 
-        filterText = (EditText) findViewById(R.id.search_box);
+        filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
     }
 
@@ -153,10 +154,10 @@ public class BookmarksListActivity extends AppCompatActivity {
             public View getView(int position, View cView, ViewGroup parent) {
                 final View rowView = getLayoutInflater().inflate(R.layout.activity_bookmarkslist_row, parent, false);
 
-                final TextView bookmarkText = (TextView) rowView.findViewById(R.id.bookmarkrowtext);
+                final TextView bookmarkText = rowView.findViewById(R.id.bookmarkrowtext);
                 bookmarkText.setText(bookmarksNames[position]);
 
-                final Button renameButton = (Button) rowView.findViewById(R.id.renamebutton);
+                final ImageButton renameButton = rowView.findViewById(R.id.renamebutton);
                 renameButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         final String name = bookmarkText.getText().toString();
@@ -197,7 +198,7 @@ public class BookmarksListActivity extends AppCompatActivity {
                     }
                 });
 
-                final Button deleteButton = (Button) rowView.findViewById(R.id.deletebutton);
+                final ImageButton deleteButton = rowView.findViewById(R.id.deletebutton);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         final String name = bookmarkText.getText().toString();
@@ -229,7 +230,7 @@ public class BookmarksListActivity extends AppCompatActivity {
                     }
                 });
 
-                final Button goButton = (Button) rowView.findViewById(R.id.gobutton);
+                final ImageButton goButton = rowView.findViewById(R.id.gobutton);
                 goButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());

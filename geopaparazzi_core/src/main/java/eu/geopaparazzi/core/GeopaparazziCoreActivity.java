@@ -26,7 +26,11 @@ import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
-import eu.geopaparazzi.library.permissions.IChainedPermissionHelper;
+import eu.geopaparazzi.library.permissions.AChainedPermissionHelper;
+import eu.geopaparazzi.library.permissions.PermissionFineLocation;
+import eu.geopaparazzi.library.permissions.PermissionGetAccounts;
+import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
+import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -36,7 +40,6 @@ import eu.geopaparazzi.library.util.SimplePosition;
 import eu.geopaparazzi.library.util.UrlUtilities;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
-import eu.geopaparazzi.core.R;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -46,7 +49,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_T
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GeopaparazziCoreActivity extends AppCompatActivity implements IApplicationChangeListener {
-    private IChainedPermissionHelper permissionHelper = new PermissionWriteStorage();
+    private AChainedPermissionHelper permissionHelper = new PermissionWriteStorage();
     private GeopaparazziActivityFragment geopaparazziActivityFragment;
 
     // configure the GeopaparazziCoreActivity
@@ -54,9 +57,8 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_geopaparazzi);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        permissionHelper = new PermissionWriteStorage();
+        permissionHelper.add(new PermissionFineLocation()).add(new PermissionSendSms()).add(new PermissionRecieveSms());
 
         checkIncomingProject();
 
@@ -80,6 +82,10 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             checkIncomingUrl();
             checkAvailableProfiles();
         }
+
+        setContentView(R.layout.activity_geopaparazzi);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
     }
 
@@ -156,7 +162,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         if (permissionHelper.hasGainedPermission(requestCode, grantResults)) {
-            IChainedPermissionHelper nextWithoutPermission = permissionHelper.getNextWithoutPermission(this);
+            AChainedPermissionHelper nextWithoutPermission = permissionHelper.getNextWithoutPermission(this);
             permissionHelper = nextWithoutPermission;
             if (permissionHelper == null) {
                 init();

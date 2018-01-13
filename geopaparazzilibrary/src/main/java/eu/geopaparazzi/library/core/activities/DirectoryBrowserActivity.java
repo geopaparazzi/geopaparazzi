@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +44,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.FileNameComparator;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -113,6 +115,8 @@ public class DirectoryBrowserActivity extends ListActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.browse);
 
         try {
@@ -297,12 +301,12 @@ public class DirectoryBrowserActivity extends ListActivity {
             String fileName = file.getName();
             holder.textView.setText(fileName);
             if (file.isDirectory()) {
-                holder.imageView.setImageResource(R.drawable.ic_folder_primary_24dp);
+                holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this, R.drawable.ic_folder_primary_24dp));
             } else {
                 if (endsWith(fileName, extentions)) {
-                    holder.imageView.setImageResource(R.drawable.ic_star_accent_24dp);
+                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this,R.drawable.ic_star_accent_24dp));
                 } else {
-                    holder.imageView.setImageResource(R.drawable.ic_file_primary_24dp);
+                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this,R.drawable.ic_file_primary_24dp));
                 }
             }
 

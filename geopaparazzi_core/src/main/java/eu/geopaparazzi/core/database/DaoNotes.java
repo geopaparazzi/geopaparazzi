@@ -325,6 +325,25 @@ public class DaoNotes {
         return notes;
     }
 
+    public static int getNotesCount(boolean onlyDirty) throws IOException {
+
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+
+        String query = "SELECT count(*) FROM " + TABLE_NOTES;
+        if (onlyDirty)
+            query = query + " where " + NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
+
+        Cursor c = sqliteDatabase.rawQuery(query, null);
+        List<Note> notes = new ArrayList<>();
+        c.moveToFirst();
+        int id = 0;
+        if (!c.isAfterLast()) {
+            id = c.getInt(0);
+        }
+        c.close();
+        return id;
+    }
+
     public static Note getNoteById(long checkId) throws IOException {
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();

@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -271,8 +272,8 @@ public class NotesListActivity extends AppCompatActivity {
             class ViewHolder {
                 CheckBox checkButton;
                 TextView notesText;
-                Button goButton;
-                Button moreButton;
+                ImageButton goButton;
+                ImageButton moreButton;
             }
 
             @Override
@@ -286,8 +287,8 @@ public class NotesListActivity extends AppCompatActivity {
                     holder = new ViewHolder();
                     holder.checkButton = (CheckBox) rowView.findViewById(R.id.selectedCheckBox);
                     holder.notesText = (TextView) rowView.findViewById(R.id.notesrowtext);
-                    holder.goButton = (Button) rowView.findViewById(R.id.gobutton);
-                    holder.moreButton = (Button) rowView.findViewById(R.id.morebutton);
+                    holder.goButton = rowView.findViewById(R.id.gobutton);
+                    holder.moreButton = rowView.findViewById(R.id.morebutton);
 
                     rowView.setTag(holder);
                 } else {
@@ -320,7 +321,7 @@ public class NotesListActivity extends AppCompatActivity {
                     }
                 });
 
-                final Button moreButton2 = holder.moreButton;
+                final ImageButton moreButton2 = holder.moreButton;
                 moreButton2.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         openMoreMenu(moreButton2, currentNote);
@@ -335,7 +336,7 @@ public class NotesListActivity extends AppCompatActivity {
         listView.setAdapter(arrayAdapter);
     }
 
-    private void openMoreMenu(Button button, final ANote currentNote) {
+    private void openMoreMenu(ImageButton button, final ANote currentNote) {
         String editLabel = null;
         if (currentNote instanceof Note) {
             Note note = (Note) currentNote;

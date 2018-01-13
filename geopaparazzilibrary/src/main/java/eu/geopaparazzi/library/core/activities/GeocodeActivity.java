@@ -72,18 +72,18 @@ public class GeocodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_geocode);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         noValidItemSelectedMsg = getString(R.string.no_valid_destination_selected);
 
-        gotoButton = (FloatingActionButton) findViewById(R.id.gotoButton);
-        routeToButton = (FloatingActionButton) findViewById(R.id.routeToButton);
+        gotoButton = findViewById(R.id.gotoButton);
+        routeToButton = findViewById(R.id.routeToButton);
         gotoButton.hide();
         routeToButton.hide();
 
-        mListView = (ListView) findViewById(R.id.resultslist);
+        mListView = findViewById(R.id.resultslist);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class GeocodeActivity extends AppCompatActivity {
         // TODO add it back when the version permits it
         // if (Geocoder.isPresent())
         // {
-        EditText addressText = (EditText) findViewById(R.id.enterLocationValue);
+        EditText addressText = findViewById(R.id.enterLocationValue);
 
 
         try {
@@ -263,15 +263,18 @@ public class GeocodeActivity extends AppCompatActivity {
         @Override
         public String toString() {
             StringBuilder stringBuilder = new StringBuilder();
+            int maxAddressLineIndex = address.getMaxAddressLineIndex();
+            if (maxAddressLineIndex == 0) {
+                stringBuilder.append(address.getAddressLine(0));
+            } else {
+                for (int i = 0; i < maxAddressLineIndex; i++) {
+                    stringBuilder.append(address.getAddressLine(i));
 
-            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                stringBuilder.append(address.getAddressLine(i));
-
-                if ((i + 1) < address.getMaxAddressLineIndex()) {
-                    stringBuilder.append(", "); //$NON-NLS-1$
+                    if ((i + 1) < maxAddressLineIndex) {
+                        stringBuilder.append(", "); //$NON-NLS-1$
+                    }
                 }
             }
-
             return stringBuilder.toString();
         }
 

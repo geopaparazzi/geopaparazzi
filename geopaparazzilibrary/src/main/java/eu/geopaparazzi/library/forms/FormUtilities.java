@@ -42,6 +42,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
+import eu.geopaparazzi.library.forms.views.GAutocompleteTextView;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GDateView;
@@ -55,6 +56,7 @@ import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.forms.views.GTimeView;
+import eu.geopaparazzi.library.forms.views.GTwoAutoCompleteConnectedTextView;
 import eu.geopaparazzi.library.forms.views.GTwoConnectedComboView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
@@ -133,6 +135,16 @@ public class FormUtilities {
      * Type for a {@link Spinner}.
      */
     public static final String TYPE_STRINGCOMBO = "stringcombo";
+
+    /**
+     * Type for an autocomplete combo.
+     */
+    public static final String TYPE_AUTOCOMPLETESTRINGCOMBO = "autocompletestringcombo";
+
+    /**
+     * Type for autocomplete connected combos.
+     */
+    public static final String TYPE_AUTOCOMPLETECONNECTEDSTRINGCOMBO = "autocompleteconnectedstringcombo";
 
     /**
      * Type for two connected {@link Spinner}.
@@ -403,6 +415,22 @@ public class FormUtilities {
     }
 
     /**
+     * Adds an autocomplete combo to the supplied mainView.
+     *
+     * @param context               the context.
+     * @param mainView              the main view to which to add the new widget to.
+     * @param label                 the label of the widget.
+     * @param value                 the value to put in the widget.
+     * @param itemsArray            the items to put in the spinner.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
+    public static GView addAutocompleteComboView(Context context, LinearLayout mainView, String label, String value, String[] itemsArray,
+                                     String constraintDescription) {
+        return new GAutocompleteTextView(context, null, mainView, label, value, itemsArray, constraintDescription);
+    }
+
+    /**
      * Adds two connected {@link Spinner} to the supplied mainView.
      *
      * @param context               the context.
@@ -416,6 +444,23 @@ public class FormUtilities {
     public static GView addConnectedComboView(Context context, LinearLayout mainView, String label, String value,
                                               LinkedHashMap<String, List<String>> valuesMap, String constraintDescription) {
         return new GTwoConnectedComboView(context, null, mainView, label, value, valuesMap,
+                constraintDescription);
+    }
+
+    /**
+     * Adds two connected autocomplete views to the supplied mainView.
+     *
+     * @param context               the context.
+     * @param mainView              the main view to which to add the new widget to.
+     * @param label                 the label of the widget.
+     * @param value                 the value to put in the widget.
+     * @param valuesMap             the map of connected strings to put in the spinners.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
+    public static GView addAutoCompleteConnectedComboView(Context context, LinearLayout mainView, String label, String value,
+                                              LinkedHashMap<String, List<String>> valuesMap, String constraintDescription) {
+        return new GTwoAutoCompleteConnectedTextView(context, null, mainView, label, value, valuesMap,
                 constraintDescription);
     }
 

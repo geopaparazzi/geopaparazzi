@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/card_view_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="30dip"
+    android:padding="20dip"
+    card_view:cardElevation="6dp"
+    card_view:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dip"
+        android:orientation="vertical"
+        android:padding="10dip">
+
+        <LinearLayout
+            android:id="@+id/activeColorLayoutTop"
+            android:layout_width="match_parent"
+            android:layout_height="5dip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="15dip"
+            android:background="#FF0000"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/profileNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_below="@+id/activeColorLayoutTop"
+            android:text="Profile Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/profileDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileNameText"
+            android:layout_marginBottom="20dip"
+            android:text="Profile Description"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/profileSummaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileDescriptionText"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="@dimen/min_touch_size"
+            android:layout_height="@dimen/min_touch_size"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/activeColorLayoutTop"
+            android:layout_marginBottom="10dip"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_settings_primary_24dp" />
+
+        <ImageButton
+            android:id="@+id/colorButton"
+            android:layout_width="@dimen/min_touch_size"
+            android:layout_height="@dimen/min_touch_size"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/settingsButton"
+            android:layout_marginBottom="10dip"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_palette_primary_24dp" />
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="@dimen/min_touch_size"
+            android:layout_height="@dimen/min_touch_size"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/colorButton"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_delete_primary_24dp" />
+
+        <LinearLayout
+            android:id="@+id/activeColorLayoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="5dip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dip"
+            android:background="#FF0000"
+            android:orientation="vertical" />
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

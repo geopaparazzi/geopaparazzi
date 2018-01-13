@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/enterLocationValueLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,21 +40,20 @@
                 android:layout_gravity="fill_horizontal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-
                 android:layout_toLeftOf="@+id/lookupLocationButton">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/enterLocationValue"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/enter_geocode_string"
                     android:inputType="text"
-                    android:layout_marginTop="20dp"
                     android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
+            <ImageButton
                 android:id="@+id/lookupLocationButton"
                 android:layout_width="@dimen/min_touch_size"
                 android:layout_height="@dimen/min_touch_size"
@@ -63,8 +62,9 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/ic_search_primary_24dp"
-                android:onClick="onLookupLocationClick" />
+                android:background="@null"
+                android:onClick="onLookupLocationClick"
+                app:srcCompat="@drawable/ic_search_primary_24dp" />
 
 
             <ListView
@@ -89,7 +89,7 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="goTo"
-        android:src="@drawable/ic_goto_24dp" />
+        app:srcCompat="@drawable/ic_goto_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/routeToButton"
@@ -98,5 +98,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="routeTo"
-        android:src="@drawable/ic_routeto_24dp" />
+        app:srcCompat="@drawable/ic_routeto_24dp" />
 </android.support.design.widget.CoordinatorLayout>

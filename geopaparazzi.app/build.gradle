@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion project.ext.mycompileSdkVersion
+    buildToolsVersion project.ext.mybuildToolsVersion
 
     buildTypes {
         release {
@@ -12,7 +12,7 @@ android {
                 variant.outputs.each { output ->
                     def file = output.outputFile
                     def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk");
-                    output.outputFile = new File(file.parentFile, fileName)
+                    output.outputFileName = new File(file.parentFile, fileName)
                 }
             }
         }
@@ -50,13 +50,14 @@ android {
     }
 
     defaultConfig {
-        applicationId "eu.hydrologis.geopaparazzi"
-        minSdkVersion 18
-        targetSdkVersion 25
-        versionCode 82
-        versionName "5.4.0"
+        applicationId project.ext.myApplicationId
+        minSdkVersion project.ext.myminSdkVersion
+        targetSdkVersion project.ext.mytargetSdkVersion
+        versionCode project.ext.myVersionCode
+        versionName project.ext.myVersionName
         signingConfig signingConfigs.config
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
 
     }
 }
@@ -64,9 +65,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:preference-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.0.1'
+    compile 'com.android.support:design:27.0.1'
+    compile 'com.android.support:preference-v7:27.0.1'
+    compile 'com.android.support:support-v4:27.0.1'
     compile project(':geopaparazzi_core')
     compile project(':geopaparazzi_default_import_plugins')
     compile project(':geopaparazzi_default_export_plugins')
