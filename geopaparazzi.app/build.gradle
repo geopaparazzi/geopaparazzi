@@ -10,9 +10,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
-                    def file = output.outputFile
-                    def fileName = file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk");
-                    output.outputFileName = new File(file.parentFile, fileName)
+                    output.outputFileName = "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk"
                 }
             }
         }
