@@ -73,4 +73,5 @@ dependencies {
     compile project(':geopaparazzi_pdf_export_plugins')
     compile project(':geopaparazzi_projects_import_plugins')
     compile project(':geopaparazzi_projects_export_plugins')
+    compile project(':geopaparazzi_profiles_import_plugins')
 }

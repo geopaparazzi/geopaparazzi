@@ -255,7 +255,6 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                     profile.correctPaths(sdcardDir.getAbsolutePath());
                 }
 
-
                 profileList.addAll(importedProfiles);
                 saveProfiles();
                 loadProfiles();

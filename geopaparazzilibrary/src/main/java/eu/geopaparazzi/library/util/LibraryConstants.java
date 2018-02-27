@@ -284,6 +284,11 @@ public interface LibraryConstants {
     String PREFS_KEY_URL = "PREFS_KEY_URL"; //$NON-NLS-1$
 
     /**
+     * Key used to define a profile url that is passed through any workflow.
+     */
+    String PREFS_KEY_PROFILE_URL = "PREFS_KEY_PROFILE_URL"; //$NON-NLS-1$
+
+    /**
      * Key used to define a text that is passed through the workflow. Generic.
      */
     String PREFS_KEY_TEXT = "PREFS_KEY_TEXT"; //$NON-NLS-1$
