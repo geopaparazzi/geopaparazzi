@@ -122,7 +122,11 @@ public class FeatureUtilities {
                     String cName = stmt.column_name(i);
                     String value = stmt.column_string(i);
                     EDataType type = spatialTable.getTableFieldType(cName);
-                    feature.addAttribute(cName, value, type.name());
+                    if (type == null) {
+                        GPLog.addLogEntry("Featureutilities#buildWithoutGeometry", "Unexpected type for column "
+                                + cName);
+                        continue;
+                    }
                 }
                 featuresList.add(feature);
             }
