@@ -127,6 +127,7 @@ public class FeatureUtilities {
                                 + cName);
                         continue;
                     }
+					feature.addAttribute(cName, value, type.name());
                 }
                 featuresList.add(feature);
             }
