@@ -49,6 +49,9 @@ import eu.geopaparazzi.library.util.FileNameComparator;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 /**
  * Folder browser activity.
  * <p/>
@@ -111,6 +114,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private String startFolder;
     private FileArrayAdapter fileListAdapter;
     private String preferencesKey;
+    private boolean atBaseDirs;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -231,13 +235,39 @@ public class DirectoryBrowserActivity extends ListActivity {
     private void goUp() {
         if (currentDir == null)
             currentDir = sdcardDir;
+        atBaseDirs = FALSE;
+        File[] extDirs = this.getExternalFilesDirs(null);
+        File[] extRootDirs = new File[extDirs.length];
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
+            //GPLog.addLogEntry("dirBrowse currentDir: ", currentDir.getAbsolutePath());
             if (tmpDir.canRead()) {
                 currentDir = tmpDir;
+            } else {
+                for (int i = 0; i < extDirs.length; i++) {
+                    //GPLog.addLogEntry("dirBrowse extDirs ", i + ": " + extDirs[i]);
+                    String regex = "/Android/data/eu.hydrologis.geopaparazzi/files";
+                    extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
+                    //GPLog.addLogEntry("dirBrowse extRootDirs ", i + ": " + extRootDirs[i]);
+                }
+                currentDir = extRootDirs[0];
+                atBaseDirs = TRUE;
             }
         }
-        getFiles(currentDir, currentDir.listFiles(fileFilter));
+        if (atBaseDirs) {
+            filesList.clear();
+            for (File file : extRootDirs) {
+                if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
+                    continue;
+                }
+                filesList.add(file);
+                Collections.sort(filesList, new FileNameComparator());
+            }
+            fileListAdapter = new FileArrayAdapter(this, filesList);
+            setListAdapter(fileListAdapter);
+        } else {
+            getFiles(currentDir, currentDir.listFiles(fileFilter));
+        }
     }
 
     private void getFiles(File parent, File[] files) {
@@ -299,6 +329,12 @@ public class DirectoryBrowserActivity extends ListActivity {
             }
             File file = files.get(position);
             String fileName = file.getName();
+            //make internal and external root names human-readable
+            if (fileName.equals("0")){
+                fileName = context.getString(R.string.internal_card_foldername);
+            } else if (fileName.equals("0000-0000")){
+                fileName = context.getString(R.string.sd_card_foldername);
+            }
             holder.textView.setText(fileName);
             if (file.isDirectory()) {
                 holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this, R.drawable.ic_folder_primary_24dp));
