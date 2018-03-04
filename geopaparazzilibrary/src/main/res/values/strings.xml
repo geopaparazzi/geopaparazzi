@@ -107,6 +107,8 @@
     <string name="set_properties">Set properties</string>
     <string name="set_dash">Set Dash</string>
     <string name="unauthorized_api_key">Unauthorized access. Check your API-key.</string>
+    <string name="sd_card_foldername">External SD Card</string>
+    <string name="internal_card_foldername">Internal Storage</string>
 
     <string name="fill_and_stroke_color_title">Fill and Stroke color</string>
     <string name="fill_color_title">Fill color</string>
