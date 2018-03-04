@@ -236,35 +236,16 @@ public class DirectoryBrowserActivity extends ListActivity {
         if (currentDir == null)
             currentDir = sdcardDir;
         atBaseDirs = FALSE;
-        File[] extDirs = this.getExternalFilesDirs(null);
-        File[] extRootDirs = new File[extDirs.length];
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
-            //GPLog.addLogEntry("dirBrowse currentDir: ", currentDir.getAbsolutePath());
             if (tmpDir.canRead()) {
                 currentDir = tmpDir;
             } else {
-                for (int i = 0; i < extDirs.length; i++) {
-                    //GPLog.addLogEntry("dirBrowse extDirs ", i + ": " + extDirs[i]);
-                    String regex = "/Android/data/eu.hydrologis.geopaparazzi/files";
-                    extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
-                    //GPLog.addLogEntry("dirBrowse extRootDirs ", i + ": " + extRootDirs[i]);
-                }
-                currentDir = extRootDirs[0];
                 atBaseDirs = TRUE;
             }
         }
         if (atBaseDirs) {
-            filesList.clear();
-            for (File file : extRootDirs) {
-                if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
-                    continue;
-                }
-                filesList.add(file);
-                Collections.sort(filesList, new FileNameComparator());
-            }
-            fileListAdapter = new FileArrayAdapter(this, filesList);
-            setListAdapter(fileListAdapter);
+            getBaseFiles();
         } else {
             getFiles(currentDir, currentDir.listFiles(fileFilter));
         }
@@ -290,6 +271,27 @@ public class DirectoryBrowserActivity extends ListActivity {
         } else {
             fileListAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void getBaseFiles(){
+        File[] extDirs = this.getExternalFilesDirs(null);
+        File[] extRootDirs = new File[extDirs.length];
+        // remove the portion of the path that getExternalFilesDirs returns
+        // that we don't want
+        for (int i = 0; i < extDirs.length; i++) {
+            String regex = "/Android/data/eu.hydrologis.geopaparazzi/files";
+            extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
+        }
+        filesList.clear();
+        for (File file : extRootDirs) {
+            if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
+                continue;
+            }
+            filesList.add(file);
+            Collections.sort(filesList, new FileNameComparator());
+        }
+        fileListAdapter = new FileArrayAdapter(this, filesList);
+        setListAdapter(fileListAdapter);
     }
 
     private class FileArrayAdapter extends ArrayAdapter<File> {
