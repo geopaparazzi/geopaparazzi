@@ -539,7 +539,7 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel3">
 <li><a href="#_notes">3.3.1. Notes</a></li>
 <li><a href="#_project_information">3.3.2. Project Information</a></li>
-<li><a href="#_gps_logging">3.3.3. Gps Logging</a></li>
+<li><a href="#_gps_logging">3.3.3. GPS Logging</a></li>
 <li><a href="#_map_view">3.3.4. Map View</a></li>
 <li><a href="#_import">3.3.5. Import</a></li>
 <li><a href="#_export">3.3.6. Export</a></li>
@@ -558,19 +558,19 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#_the_map_view">5. The Map View</a>
 <ul class="sectlevel2">
-<li><a href="#_map_view_tools">5.1. Map view tools</a></li>
+<li><a href="#_map_view_tools">5.1. Map View tools</a></li>
 <li><a href="#_map_navigation">5.2. Map navigation</a></li>
 <li><a href="#_add_notes">5.3. Add Notes</a></li>
 <li><a href="#_the_notes_list">5.4. The Notes List</a></li>
 <li><a href="#_add_bookmark">5.5. Add Bookmark</a></li>
 <li><a href="#_the_bookmarks_list">5.6. The Bookmarks List</a></li>
-<li><a href="#_gps_log_analysis_tool">5.7. Gps log analysis tool</a></li>
+<li><a href="#_gps_log_analysis_tool">5.7. GPS log analysis tool</a></li>
 <li><a href="#_measure_tool">5.8. Measure tool</a></li>
 </ul>
 </li>
 <li><a href="#_the_map_view_menu">6. The Map View Menu</a>
 <ul class="sectlevel2">
-<li><a href="#_gps_data_list">6.1. Gps data list</a></li>
+<li><a href="#_gps_data_list">6.1. GPS data list</a></li>
 <li><a href="#_spatialite_data_list">6.2. Spatialite data list</a></li>
 <li><a href="#_go_to">6.3. Go to</a></li>
 <li><a href="#_share_position">6.4. Share position</a></li>
@@ -585,26 +585,26 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_vector_editing">7. Vector Editing</a></li>
 <li><a href="#_settings_preferences">8. Settings &amp; Preferences</a>
 <ul class="sectlevel2">
-<li><a href="#_gps_settings">8.1. Gps Settings</a></li>
-<li><a href="#_sms_settings">8.2. Sms Settings</a></li>
+<li><a href="#_gps_settings">8.1. GPS Settings</a></li>
+<li><a href="#_sms_settings">8.2. SMS Settings</a></li>
 <li><a href="#_screen_settings">8.3. Screen Settings</a></li>
 <li><a href="#_spatialite_settings">8.4. Spatialite Settings</a></li>
-<li><a href="#_custom_sdcard_path">8.5. Custom sdcard path</a></li>
-<li><a href="#_force_locale">8.6. Force Locale</a></li>
-<li><a href="#_cloud_projects_sync_settings">8.7. Cloud Projects Sync Settings</a></li>
+<li><a href="#_force_locale">8.5. Force Locale</a></li>
+<li><a href="#_cloud_projects_sync_settings">8.6. Cloud Projects Sync Settings</a></li>
 </ul>
 </li>
 <li><a href="#_supported_datasets">9. Supported datasets</a>
 <ul class="sectlevel2">
-<li><a href="#_basemaps">9.1. Basemaps</a>
+<li><a href="#_a_word_about_external_storages">9.1. A word about "external" storages</a></li>
+<li><a href="#_basemaps">9.2. Basemaps</a>
 <ul class="sectlevel3">
-<li><a href="#_mapurls_custom_tiles_based_maps">9.1.1. Mapurls: Custom tiles based maps</a></li>
-<li><a href="#_mbtiles">9.1.2. MBTiles</a></li>
-<li><a href="#_mapsforge_maps">9.1.3. Mapsforge maps</a></li>
-<li><a href="#_rasterlite2">9.1.4. RasterLite2</a></li>
+<li><a href="#_mapurls_custom_tiles_based_maps">9.2.1. Mapurls: Custom tiles based maps</a></li>
+<li><a href="#_mbtiles">9.2.2. MBTiles</a></li>
+<li><a href="#_mapsforge_maps">9.2.3. Mapsforge maps</a></li>
+<li><a href="#_rasterlite2">9.2.4. RasterLite2</a></li>
 </ul>
 </li>
-<li><a href="#_overlay_maps">9.2. Overlay maps</a></li>
+<li><a href="#_overlay_maps">9.3. Overlay maps</a></li>
 </ul>
 </li>
 <li><a href="#_handling_datasets_from_and_for_geopaparazzi">10. Handling datasets from and for Geopaparazzi</a>
@@ -736,18 +736,6 @@ table.CodeRay td.code>pre{padding:0}
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This manual is available also as PDF <a href="https://github.com/geopaparazzi/usermanual/releases/download/version_5.3.0/usermanual_geopaparazzi_5.3.0.pdf">at this link</a>.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
 If you are looking for the source code of this project, <a href="https://github.com/geopaparazzi/geopaparazzi">jump right to this link</a>.
 </td>
 </tr>
@@ -776,12 +764,12 @@ want to keep a geo-diary.</p>
 <p>fits in any pocket and can be always at hand, when needed</p>
 </li>
 <li>
-<p>gives the possibility to take georeferenced and possibly orientated pictures
+<p>gives the possibility to take geo-referenced and possibly orientated pictures
 during a survey, with further possibility to import them into
 GIS applications like <a href="http://www.gvsig.org">gvSIG</a></p>
 </li>
 <li>
-<p>is able to easily exploit an internet connection, if available</p>
+<p>is able to easily exploit an Internet connection, if available</p>
 </li>
 <li>
 <p>is extremely easy to use and intuitive, providing just few important functionalities</p>
@@ -794,10 +782,10 @@ GIS applications like <a href="http://www.gvsig.org">gvSIG</a></p>
 <div class="ulist">
 <ul>
 <li>
-<p>georeferenced notes</p>
+<p>geo-referenced notes</p>
 </li>
 <li>
-<p>georeferenced and oriented pictures</p>
+<p>geo-referenced and oriented pictures</p>
 </li>
 <li>
 <p>gps track logging</p>
@@ -835,7 +823,7 @@ Geopaparazzi is available only for the Android Operating System.
 <div class="ulist">
 <ul>
 <li>
-<p>connect your Android device to internet</p>
+<p>connect your Android device to Internet</p>
 </li>
 <li>
 <p>open the <a href="https://play.google.com/store">Play Store</a></p>
@@ -1017,12 +1005,12 @@ on a map, are accessible from the dashboard.</p>
 <p>the general settings button</p>
 </li>
 <li>
-<p>the gps and map information button</p>
+<p>the GPS and map information button</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The info button shows information about the current selected map and the status of the gps. If the gps has acquired a fix, information about the position is given:</p>
+<p>The info button shows information about the current selected map and the status of the GPS. If the GPS has acquired a fix, information about the position is given:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1037,7 +1025,7 @@ on a map, are accessible from the dashboard.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The gps status icon can be of the following colors:
+The GPS status icon can be of the following colors:
 RED if the GPS is not switched on, ORANGE if the GPS is on but no fix was acquired,
 GREEN if the GPS is on and has fix, but no log is being recorded and BLUE
 if the GPS is logging.
@@ -1069,21 +1057,21 @@ leads to the <strong>panic!</strong> view, which presents two buttons:</p>
 <div class="title">Figure 11. The panic panel.</div>
 </div>
 <div class="paragraph">
-<p>The panic button sends a request for help sms with the last available GPS
+<p>The panic button sends a request for help SMS with the last available GPS
 position to a phone number that can be configured in the <a href="#settings">[settings]</a> of geopaparazzi.</p>
 </div>
 <div class="paragraph">
-<p>If no number is configured, the system sms dialog opens up with a precompiled message
+<p>If no number is configured, the system SMS dialog opens up with a precompiled message
 and the user will have to select the contact to which to send the message:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="02_dashboard/21_panic_sms.png" alt="21 panic sms" width="30%">
 </div>
-<div class="title">Figure 12. The system sms dialog</div>
+<div class="title">Figure 12. The system SMS dialog</div>
 </div>
 <div class="paragraph">
-<p>The <em>just send position</em> button opens up the sms dialog directly filling in the position without any request for help message. It is meant for quick sending the current position via sms so that it can be opened from Geopaparazzi.</p>
+<p>The <em>just send position</em> button opens up the SMS dialog directly filling in the position without any request for help message. It is meant for quick sending the current position via SMS so that it can be opened from Geopaparazzi.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1122,8 +1110,8 @@ appears:</p>
 </div>
 <div class="paragraph">
 <p>The switch button at the top of the view gives the possibility to
-choose whether the note will be inserted in the <strong>current gps position</strong>
-(in case gps is on) or in the the <strong>center of the map</strong> (the crossfade).</p>
+choose whether the note will be inserted in the <strong>current GPS position</strong>
+(in case GPS is on) or in the the <strong>center of the map</strong> (the crossfade).</p>
 </div>
 <div class="paragraph">
 <p>At the right end of the actionbar the quick note buttons are placed. From left to right:</p>
@@ -1195,7 +1183,7 @@ Once a simple note has been saved, it can&#8217;t be modified.
 <h5 id="_form_based_notes">Form based notes</h5>
 <div class="paragraph">
 <p>Form based notes are complex notes that allow for better surveys.
-Some examples are available in the base installation of geopaparazzi.</p>
+Some example forms are included in the base installation of geopaparazzi.</p>
 </div>
 <div class="paragraph">
 <p>The <strong>example</strong> button in particular shows all the possible form widgets available:</p>
@@ -1248,7 +1236,7 @@ Some examples are available in the base installation of geopaparazzi.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Apart of the dates, that are set by the system, all data can be changed and
+<p>Apart from the dates, that are set by the system, all data can be changed and
 saved through the save button.</p>
 </div>
 <div class="imageblock">
@@ -1258,7 +1246,7 @@ saved through the save button.</p>
 <div class="title">Figure 17. The project metadata view.</div>
 </div>
 <div class="paragraph">
-<p>It is also possible to add additional metadata to the project information. The plus button at the right side of the actionbar openes an input dialog that allows to define a key, a labell and a value for the new metadata entry:</p>
+<p>It is also possible to add additional metadata to the project information. The plus button at the right side of the actionbar opens an input dialog that allows the user to define a key, a label and a value for the new metadata entry:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1268,7 +1256,7 @@ saved through the save button.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gps_logging">3.3.3. Gps Logging</h4>
+<h4 id="_gps_logging">3.3.3. GPS Logging</h4>
 <div class="paragraph">
 <p>To start logging, the user simply has to push the <strong>logging</strong> button.</p>
 </div>
@@ -1289,7 +1277,7 @@ of the log (or any user inserted) is ignored, since no new log is created.</p>
 <div class="title">Figure 19. The new log dialog. From here it is possible to continue the last log.</div>
 </div>
 <div class="paragraph">
-<p>Once logging has started, the logging button will turn orange and the gps status icon blue.</p>
+<p>Once logging has started, the logging button will turn orange and the GPS status icon blue.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1330,7 +1318,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>gpx datasets</p>
+<p>GPX datasets</p>
 </li>
 <li>
 <p>bookmarks</p>
@@ -1342,7 +1330,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <p>mapurl configuration files for online tiles</p>
 </li>
 <li>
-<p>default spatialite databases</p>
+<p>default Spatialite databases</p>
 </li>
 <li>
 <p>geopaparazzi cloud projects</p>
@@ -1352,7 +1340,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <div class="sect4">
 <h5 id="_gpx">GPX</h5>
 <div class="paragraph">
-<p>By tabbing on the <strong>GPX</strong> icon, the user is taken to a simple file browser.</p>
+<p>By tapping on the <strong>GPX</strong> icon, the user is taken to a simple file browser.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1405,7 +1393,7 @@ Grassday Trieste,45.65844,13.79320</pre>
 <h5 id="_mapurls">Mapurls</h5>
 <div class="paragraph">
 <p>Since the creation of a mapurl configuration file for WMS services is complex,
-a small service has been created, that automatically generates mapurls for known services.</p>
+a small service has been created that automatically generates mapurls for known services.</p>
 </div>
 <div class="paragraph">
 <p>Once chosen the services query view appears:</p>
@@ -1417,11 +1405,11 @@ a small service has been created, that automatically generates mapurls for known
 <div class="title">Figure 25. The TANTO mapurl service view.</div>
 </div>
 <div class="paragraph">
-<p>If requested, the service will consider the device&#8217;s position to gather
-only dataset in that area. Also some minor text filters can be added.</p>
+<p>If requested, the service will use the device&#8217;s position to gather
+only datasets in that area. Also some minor text filters can be added.</p>
 </div>
 <div class="paragraph">
-<p>An example with the gps placed in Italy is the following:</p>
+<p>An example with the GPS placed in Italy is the following:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1447,7 +1435,7 @@ If you experience problems, please report them at
 <div class="sect4">
 <h5 id="_default_databases">Default databases</h5>
 <div class="paragraph">
-<p>When tapping the default database import button, the user is asked to name the new
+<p>When tapping the default database import button, the user is asked to name the new Spatialite
 database to create. Let&#8217;s use the default name proposed based on the current date and time:</p>
 </div>
 <div class="imageblock">
@@ -1456,7 +1444,7 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 </div>
 </div>
 <div class="paragraph">
-<p>The newly created database is <strong>editing ready</strong> and contains a layer of each type. Since it is a template db, the attributes table have been created as generic fields with names from <strong>field1 to field10</strong>. It is very generic and simple, but still of use when you have to quickly collect some data with attributes and have no database prepared..</p>
+<p>The newly created database is <strong>editing ready</strong> and contains a layer of each type geomotry type (points, lines, polygon). Since it is a template db, the attributes table have been created as generic fields with names from <strong>field1 to field20</strong>. It is very generic and simple, but still of use when you have to quickly collect some data with attributes and have no database prepared..</p>
 </div>
 </div>
 </div>
@@ -1474,10 +1462,10 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <div class="ulist">
 <ul>
 <li>
-<p>kmz</p>
+<p>KMZ</p>
 </li>
 <li>
-<p>gpx</p>
+<p>GPX</p>
 </li>
 <li>
 <p>bookmarks</p>
@@ -1493,7 +1481,7 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <div class="sect4">
 <h5 id="_kmz">KMZ</h5>
 <div class="paragraph">
-<p>It is possible to export all collected data to kmz format.</p>
+<p>It is possible to export all collected data to KMZ format.</p>
 </div>
 <div class="paragraph">
 <p>KMZ is well known as it can be visualized in the 3D viewer <a href="http://earth.google.com/">Google Earth</a>.</p>
@@ -1510,7 +1498,7 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <p>the images are placed as yellow pins</p>
 </li>
 <li>
-<p>the gps logs are visualized as tracks</p>
+<p>the GPS logs are visualized as tracks</p>
 </li>
 </ul>
 </div>
@@ -1518,14 +1506,14 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <div class="sect4">
 <h5 id="_gpx_2">GPX</h5>
 <div class="paragraph">
-<p>The lines and notes data are exported to gpx, creating tracks and waypoints.</p>
+<p>The lines and notes data are exported to GPX, creating tracks and waypoints.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_bookmarks_2">Bookmarks</h5>
 <div class="paragraph">
 <p>Bookmarks can be exported to a csv file that has to be called <strong>bookmarks.csv</strong> and
-must be placed in the root of the sdcard.</p>
+are placed in the root of the sdcard.</p>
 </div>
 <div class="paragraph">
 <p>Geopaparazzi will write to the file only those bookmarks that do not exist already in the csv.</p>
@@ -1546,30 +1534,30 @@ to use the images inside a different software. In this case all the images of th
 <h2 id="_the_main_view_menu">4. The Main View Menu</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The main presents the following options:</p>
+<p>The main view menu presents the following options:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#select_tiles">Select tile source</a>: allows the selection of a map tile source to be used as base map</p>
+<p><a href="#select_tiles">Select tile source</a>: allows the selection of a map tile source to be used as a basemap</p>
 </li>
 <li>
-<p><a href="#create_new_project">Create new project</a>: this will create a new project on the sdcard. A timestamp based name is proposed to the user</p>
+<p><a href="#create_new_project">Create new project</a>: creates a new project on the sdcard. A timestamp based name is proposed to the user</p>
 </li>
 <li>
-<p><a href="#load_project">Load existing project</a>: gives the possibility to browse the filesystem to select an existing geopaparazzi project folder (the one with the database in it) to load it</p>
+<p><a href="#load_project">Load existing project</a>: allows the browsing of the filesystem to select an existing geopaparazzi project file to load it</p>
 </li>
 <li>
-<p><a href="#gps_status">GPS Status</a>: opens a GPS status application to check on satellites visibility</p>
+<p><a href="#gps_status">GPS Status</a>: opens a GPS status application to check on satellite visibility</p>
 </li>
 <li>
 <p>Advanced: shows some advanced user options such as the application log or custom database queries</p>
 </li>
 <li>
-<p>About: visualises the about page, which contains infos, links and acknowledgements</p>
+<p>About: shows the about page, which contains info, links and acknowledgements</p>
 </li>
 <li>
-<p><a href="#exit">Exit</a>: shuts down geopaparazzi properly. This is important, because geopaparazzi is meant to continue logging also in background. Therefore, if one uses the android home button to exit the app, it will continue to work in background, most probably draining your battery through GPS use.</p>
+<p><a href="#exit">Exit</a>: shuts down geopaparazzi properly. This is important, because geopaparazzi is meant to continue logging also in background. Therefore, if one uses the android home button to exit the app, it will continue to work in background, most probably draining the battery through GPS use.</p>
 </li>
 </ul>
 </div>
@@ -1585,7 +1573,7 @@ to use the images inside a different software. In this case all the images of th
 <p><a id="select_tiles"></a></p>
 </div>
 <div class="paragraph">
-<p>From the main menu, when pushing the tile source button, the list of available tile sources are presented, divided by folder:</p>
+<p>From the main menu, when pushing the tile source button, the list of available tile sources are presented, organized by folder:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1597,12 +1585,12 @@ to use the images inside a different software. In this case all the images of th
 <p>Each map source has a name and a type description between brackets.</p>
 </div>
 <div class="paragraph">
-<p>At the current time 4 types are supported:</p>
+<p>At the current time four types are supported:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Map</p>
+<p>Mapsforge Map</p>
 </li>
 <li>
 <p>Mapurl</p>
@@ -1638,7 +1626,7 @@ types to show.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Basemaps can be loaded from the device storage through the two buttons at the bottom of the view. The right one allows to pick a single file to add it as a basemap, while the left one allows to bulk load a complete folder of maps.</p>
+<p>Basemaps can be added to the list from the device storage through the two buttons at the bottom of the view. The right one allows to pick a single file to add it as a basemap, while the left one allows to bulk load a complete folder of maps.  Once the basemap has been added to the list, tap the basemap on the list to use in the Map View.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1647,7 +1635,7 @@ types to show.</p>
 <p><a id="create_new_project"></a></p>
 </div>
 <div class="paragraph">
-<p>When a new project is created, the user is prompted to insert a name
+<p>When a new project is created, the user is prompted to give a file name
 for the new project file. This is the name that will be given to the
 database file that contains all data surveyed in Geopaparazzi.</p>
 </div>
@@ -1668,7 +1656,7 @@ restarted and opened loading the new created project.</p>
 <p><a id="load_project"></a></p>
 </div>
 <div class="paragraph">
-<p>Existing projects can be loaded using a simple file browser from within Geoapaparazzi. The Geopaparazzi project files are visualized with a different icon to help the user to choose the proper files.</p>
+<p>Existing projects can be loaded using a simple file browser from within Geoapaparazzi. The Geopaparazzi project files are shown with an icon to help the user to choose the proper files.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1686,7 +1674,7 @@ restarted and opened loading the new created project.</p>
 <p><a id="exit"></a></p>
 </div>
 <div class="paragraph">
-<p>The exit button closes Geopaparazzi and stoppes any ongoing logging and
+<p>The exit button closes Geopaparazzi and stops any ongoing logging and
 sensor activity.</p>
 </div>
 <div class="paragraph">
@@ -1705,7 +1693,7 @@ sensor activity.</p>
 <p><a id="mapview"></a></p>
 </div>
 <div class="paragraph">
-<p>The map view is the central view of the application. It can be used to view the current gps position overlayed on maps and vector datasets.</p>
+<p>The map view is the central view of the application. It can be used to view the current GPS position overlaid on maps and vector datasets.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1722,7 +1710,7 @@ sensor activity.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://www.openstreetmap.org/">OpenStreetMap</a> maps both when online (downloading new tiles) and offline (visualizing those that were cached during online mode)</p>
+<p><a href="http://www.openstreetmap.org/">OpenStreetMap</a> maps both when on-line (downloading new tiles) and off-line (visualizing those that were cached during online mode)</p>
 </li>
 <li>
 <p><a href="http://www.mapbox.com/developers/mbtiles/">mbtiles databases</a></p>
@@ -1736,12 +1724,12 @@ sensor activity.</p>
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_map_view_tools">5.1. Map view tools</h3>
+<h3 id="_map_view_tools">5.1. Map View tools</h3>
 <div class="paragraph">
-<p>The map view has a set of tools that can be exploited to interact with the map.</p>
+<p>The Map View has a set of tools that can be used to interact with the map.</p>
 </div>
 <div class="paragraph">
-<p>When first launched, the tools are already visible on the map. To have a cleaner mapview, the user can long-tap on the upper right menu button to toggle the visibility of the tools.</p>
+<p>When first launched, the tools are already visible on the map. To have a cleaner Map View, the user can long-tap on the upper right menu button to toggle the visibility of the tools.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1765,7 +1753,7 @@ sensor activity.</p>
 <p>add bookmark and list bookmarks (long tap)</p>
 </li>
 <li>
-<p>activate the gps log analizer</p>
+<p>activate the GPS log analyzer</p>
 </li>
 <li>
 <p>activate the measure tool</p>
@@ -1839,8 +1827,8 @@ possible to zoom in by double-tapping on the map. Zoom in and out can
 also be achived through <a href="https://en.wikipedia.org/wiki/Multi-touch">pinch-zoom gestures</a>.</p>
 </li>
 <li>
-<p><strong>center on gps</strong>: through the lower center button it is possible
-to center the map on the gps position. The button also shows the status of the GPS the same way as the icon <a href="#action_bar">on the main view&#8217;s action bar</a>.</p>
+<p><strong>center on GPS</strong>: through the lower center button it is possible
+to center the map on the GPS position. The button also shows the status of the GPS the same way as the icon <a href="#action_bar">on the main view&#8217;s action bar</a>.</p>
 </li>
 </ul>
 </div>
@@ -1854,10 +1842,10 @@ to center the map on the gps position. The button also shows the status of the G
 <div class="title">Figure 34. The view from which notes are taken.</div>
 </div>
 <div class="paragraph">
-<p>The add notes button opens the same notes view as the button on the dashboard. There is only once difference. Since notes can be added both in the gps position and in the middle of the map, to open the add note view from the dashboard, the GPS is required to have a fix.</p>
+<p>The add notes button opens the same notes view as the button on the dashboard. There is only once difference. Since notes can be added both in the GPS position and in the middle of the map, to open the add note view from the dashboard, the GPS is required to have a fix.</p>
 </div>
 <div class="paragraph">
-<p>Instead from the map view the user can open the add note view even without GPS signal, in which case he will be allowed to insert notes only in the map center position.</p>
+<p>From the map view the user can open the add note view even without GPS signal, in which case notes will only be inserted at the map center position.</p>
 </div>
 <div class="paragraph">
 <p>For further information about taking notes, visit the <a href="#notes">notes section</a>.</p>
@@ -1880,13 +1868,13 @@ to center the map on the gps position. The button also shows the status of the G
 <div class="ulist">
 <ul>
 <li>
-<p><strong>None</strong>: inertion order</p>
+<p><strong>None</strong>: insertion order</p>
 </li>
 <li>
 <p><strong>By Name</strong> and inverse: sorts the notes by their name</p>
 </li>
 <li>
-<p><strong>By Mapcenter distance</strong> and inverse: sorts the notes by the distance from the current mapcenter position</p>
+<p><strong>By Map center distance</strong> and inverse: sorts the notes by the distance from the current map center position</p>
 </li>
 </ul>
 </div>
@@ -1906,7 +1894,7 @@ to center the map on the gps position. The button also shows the status of the G
 <div class="title">Figure 37. Notes can be filtered by text.</div>
 </div>
 <div class="paragraph">
-<p>At the right side of the list 2 icon are available. The left one positions the map on the selected note&#8217;s position while the rigth one opens a menu:</p>
+<p>At the right side of the list two icons are available. The left one positions the map on the selected note&#8217;s position while the right one opens a menu:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2021,12 +2009,12 @@ that the bookmark represents in any moment.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gps_log_analysis_tool">5.7. Gps log analysis tool</h3>
+<h3 id="_gps_log_analysis_tool">5.7. GPS log analysis tool</h3>
 <div class="paragraph">
-<p>The log analysis tool allows to analyze the various positions of a gps log.</p>
+<p>The log analysis tool allows to analyze the various positions of a GPS log.</p>
 </div>
 <div class="paragraph">
-<p>Once enabled, one can simply touch the screen near a gps log and information about
+<p>Once enabled, one can simply touch the screen near a GPS log and information about
 the nearest log point will be shown. Also the color of the text will be the one of
 the currently queried log:</p>
 </div>
@@ -2040,7 +2028,7 @@ the currently queried log:</p>
 <div class="sect2">
 <h3 id="_measure_tool">5.8. Measure tool</h3>
 <div class="paragraph">
-<p>Activating the measure tool puts the app in measure mode. This mode disables the ability to pan the map while enabling the possibility to draw a line on the map and measure the line drawn.</p>
+<p>Activating the measure tool disables the ability to pan the map while enabling the possibility to draw a line on the map and measure the line drawn.</p>
 </div>
 <div class="paragraph">
 <p>The <strong>approximate</strong> (the distance is calculated without considering elevation deltas and with the coordinate picking precision of a finger on a screen) distance is shown in the upper part of the map view.</p>
@@ -2066,10 +2054,10 @@ the currently queried log:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>access the gps data list</p>
+<p>access the GPS data list</p>
 </li>
 <li>
-<p>access the spatialite data list.</p>
+<p>access the Spatialite data list.</p>
 </li>
 <li>
 <p>toggle the scalebar</p>
@@ -2078,7 +2066,7 @@ the currently queried log:</p>
 <p>open the compass</p>
 </li>
 <li>
-<p>toggle automatic centering on the gps position</p>
+<p>toggle automatic centering on the GPS position</p>
 </li>
 <li>
 <p>center the view on the current base map (if possible)</p>
@@ -2104,21 +2092,21 @@ the currently queried log:</p>
 <div class="title">Figure 45. The map menu.</div>
 </div>
 <div class="sect2">
-<h3 id="_gps_data_list">6.1. Gps data list</h3>
+<h3 id="_gps_data_list">6.1. GPS data list</h3>
 <div class="paragraph">
-<p>The gps data list shows the data surveyed, both points and tracks.</p>
+<p>The GPS data list shows the data surveyed, both points and tracks.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="03_mapview/14_gpsdatalist.png" alt="14 gpsdatalist" width="30%">
 </div>
-<div class="title">Figure 46. The gps data view.</div>
+<div class="title">Figure 46. The GPS data view.</div>
 </div>
 <div class="paragraph">
 <p>In the actionbar there are possibilities to <em>select all</em>, <em>unselect all</em> and <em>merge selected logs</em>. The first icon from left is the notes properties button. From there some properties of the notes can be set.</p>
 </div>
 <div class="paragraph">
-<p>Notes can be visualized as icons or as circular shapes. The size, color and opacity can be customized by the user. This can be usefull in those cases in which many notes have to coexist in a small space for better readability.</p>
+<p>Notes can be shown on the Map View as icons or as circular shapes. The size, color and opacity can be customized by the user. This can be useful in those cases in which many notes have to coexist in a small space for better readability.</p>
 </div>
 <div class="paragraph">
 <p>It is also possible to show the label for the note and customize its size and halo.</p>
@@ -2130,13 +2118,13 @@ the currently queried log:</p>
 <div class="title">Figure 47. The notes properties view.</div>
 </div>
 <div class="paragraph">
-<p>The <strong>list of gps logs</strong> gives the possibility to customize the logs. It is possible to change the visibility of the single track using the checkbox. The icon on the rigth side of each entry opens the gps log properties panel:</p>
+<p>The <strong>list of GPS logs</strong> gives the possibility to customize the logs. It is possible to change the visibility of the single track using the checkbox. The icon on the right side of each entry opens the GPS log properties panel:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="03_mapview/16_log_properties.png" alt="16 log properties" width="30%">
 </div>
-<div class="title">Figure 48. The gps log properties panel.</div>
+<div class="title">Figure 48. The GPS log properties panel.</div>
 </div>
 <div class="paragraph">
 <p>From the properties panel it is possible to:</p>
@@ -2183,13 +2171,13 @@ the currently queried log:</p>
 <p><a id="spatialitedatalist"></a></p>
 </div>
 <div class="paragraph">
-<p>The spatialite data list view holds the list of loaded spatialite databases. For each database its spatial tables are shown and each table can be made visible or hidden through the checkbox on each entry.</p>
+<p>The Spatialite data list view holds the list of loaded Spatialite databases. For each database its spatial tables are shown and each table can be made visible or hidden through the checkbox on each entry.</p>
 </div>
 <div class="paragraph">
 <p>The rendering order can be changed through a combobox at the left side of each entry.</p>
 </div>
 <div class="paragraph">
-<p>New databases can be added throught the 2 buttons at the bottom of the view, by single file or folder.</p>
+<p>New databases can be added through the 2 buttons at the bottom of the view, by single file or folder.</p>
 </div>
 <div class="paragraph">
 <p>To remove a database longtap on its entry.</p>
@@ -2201,7 +2189,7 @@ the currently queried log:</p>
 <div class="title">Figure 50. The list of spatialite based data.</div>
 </div>
 <div class="paragraph">
-<p>At the right part of each entry a menu is available, which allows the user to change the style and labelling of the features in the layer, as well as its stroke dash and zoomlevel visibility. It is also possible to zoom to a given layer extent.</p>
+<p>At the right part of each entry a menu is available, which allows the user to change the style and labeling of the features in the layer, as well as its stroke dash and zoom level visibility. It is also possible to zoom to a given layer extent.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2233,7 +2221,7 @@ the currently queried log:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Through geocoding it is possible to insert some address and find its location (uses google maps geocoding).</p>
+<p>Through geocoding it is possible to insert some address and find its location (uses Google Maps geocoding service).</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2247,9 +2235,9 @@ the currently queried log:</p>
 <p>The routing service used is <a href="http://project-osrm.org/">OSRM</a>.</p>
 </div>
 <div class="paragraph">
-<p>Once the OK button is tapped, the route is calculated by the service
+<p>Once the Routing button is tapped, the route is calculated by the service
 starting from the current map center to the destination point.
-The route is then downloaded and placed in the gps logs tracks.</p>
+The route is then downloaded and placed in the GPS logs tracks.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2282,7 +2270,7 @@ look like:</p>
 <p>But still it is possible to extract almost everything we see, which is nice.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s see how this works. <strong>For this to work it is mandatory that the loaded background map is of type "map"</strong>. Assume you have a job to do, are out in the field and want view information overlayed on the ortofoto pictures from the local WMS service.</p>
+<p>Let&#8217;s see how this works. <strong>For this to work it is mandatory that the loaded background map is of type "map"</strong>. Assume you have a job to do, are out in the field and want view information overlaid on the orthophoto images from the local WMS service.</p>
 </div>
 <div class="paragraph">
 <p>Well, the map file you get from mapsforge looks like the following:</p>
@@ -2312,7 +2300,7 @@ look like:</p>
 <p>You can add a filter text to import only tags containing a given text or exclude all those containing the text.</p>
 </div>
 <div class="paragraph">
-<p>Points are imported in the current projectdatabase and saved as forms notes containing all the values Openstreetmap has. As such they can also be edited.</p>
+<p>Points are imported in the current project database and saved as forms notes containing all the values Openstreetmap has. As such they can also be edited.</p>
 </div>
 <div class="paragraph">
 <p>All imported notes have a (MF) in their name. That is done so one can quickly select and remove them. Believe us, that is a feature you want to have since such imports can generate very crowded notes lists.</p>
@@ -2346,7 +2334,7 @@ look like:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Since these data are heavy, the data are imported into a dedicated spatialite database. A database for mapsforge extracted data is automatically created if there is none present. You will find a database named <strong>mapsforge_extracted.sqlite</strong> always present in your maps folder. And you will find 3 layers always present in the spatialite data layers: <strong>osm_waterlines, osm_roads and osm_contours</strong>.</p>
+<p>Since these data are large, the data are imported into a dedicated Spatialite database. A database for mapsforge extracted data is automatically created if there is none present. You will find a database named <strong>mapsforge_extracted.sqlite</strong> always present in your maps folder. And you will find 3 layers always present in the Spatialite data layers: <strong>osm_waterlines, osm_roads and osm_contours</strong>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2374,7 +2362,7 @@ import dialog like this:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Depending on what has been imported first, the labels might not be coming from the right osm field. In that case it can be simply changed in the spatialite layer settings. Refer to the <a href="#spatialitedatalist">spatialite data list section</a>.</p>
+<p>Depending on what has been imported first, the labels might not be coming from the right field. In that case it can be simply changed in the spatialite layer settings. Refer to the <a href="#spatialitedatalist">spatialite data list section</a>.</p>
 </div>
 </div>
 </div>
@@ -2404,15 +2392,15 @@ import dialog like this:</p>
 <div class="title">Figure 55. The settings view.</div>
 </div>
 <div class="sect2">
-<h3 id="_gps_settings">8.1. Gps Settings</h3>
+<h3 id="_gps_settings">8.1. GPS Settings</h3>
 <div class="imageblock">
 <div class="content">
 <img src="05_settings/02_gps.png" alt="02 gps" width="30%">
 </div>
-<div class="title">Figure 56. The gps settings view.</div>
+<div class="title">Figure 56. The GPS settings view.</div>
 </div>
 <div class="paragraph">
-<p>In the gps preferences it is possible to</p>
+<p>In the GPS preferences it is possible to</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2420,11 +2408,11 @@ import dialog like this:</p>
 <p>define the time interval for taking a point when in logging mode</p>
 </li>
 <li>
-<p>define the minimum distance in meters, within the taken gps point is not added to the gps log. This is useful for example in the case in which the user stops during logging and the gps continues to supply points (due to the inaccuracy), while instead the user stands still in a point.</p>
+<p>define the minimum distance in meters, within the taken GPS point is not added to the GPS log. This is useful for example in the case in which the user stops during logging and the GPS continues to supply points (due to the inaccuracy), while instead the user stands still in a point.</p>
 </li>
 <li>
-<p>have the mapview recentered on the gps position when the position
-reaces the screen border (usefull while driving)</p>
+<p>have the Map View re-centered on the GPS position when the position
+reaches the screen border (useful while driving)</p>
 </li>
 <li>
 <p>use network based position instead of GPS position. This can be useful
@@ -2434,12 +2422,12 @@ for testing purposes. The network based position is by no means precise!</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_sms_settings">8.2. Sms Settings</h3>
+<h3 id="_sms_settings">8.2. SMS Settings</h3>
 <div class="imageblock">
 <div class="content">
 <img src="05_settings/03_sms.png" alt="03 sms" width="30%">
 </div>
-<div class="title">Figure 57. The sms settings view.</div>
+<div class="title">Figure 57. The SMS settings view.</div>
 </div>
 <div class="paragraph">
 <p>It is possible to activate an SMS catcher. If activated, the phone listens
@@ -2476,7 +2464,7 @@ numbers to which a status update is sent when the panic button is pushed.</p>
 <p>change the map center cross properties (size, color, stroke width)</p>
 </li>
 <li>
-<p>change the mapsforge map text size factor (normal is 1. To make text bigger, increase the value)</p>
+<p>change the Mapsforge map text size factor (normal is 1. To make text bigger, increase the value)</p>
 </li>
 <li>
 <p>enable the always screen on mode</p>
@@ -2515,16 +2503,7 @@ switched off again.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_custom_sdcard_path">8.5. Custom sdcard path</h3>
-<div class="paragraph">
-<p>This can be used for those devices that have more than one external storage recognized by the device.</p>
-</div>
-<div class="paragraph">
-<p>Use it at your own risk. We use it regularly, but it needs to be done properly.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_force_locale">8.6. Force Locale</h3>
+<h3 id="_force_locale">8.5. Force Locale</h3>
 <div class="paragraph">
 <p>The locale of Geopaparazzi can be changed regardless of the locale used for
 Android.</p>
@@ -2543,12 +2522,12 @@ Android.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cloud_projects_sync_settings">8.7. Cloud Projects Sync Settings</h3>
+<h3 id="_cloud_projects_sync_settings">8.6. Cloud Projects Sync Settings</h3>
 <div class="paragraph">
 <p>This setting allows the user to set a server with user and password, to which upload and from which download geopaparazzi projects.</p>
 </div>
 <div class="paragraph">
-<p>Known projects that allow for such aconnection are:</p>
+<p>Known projects that allow for such a connection are:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2570,7 +2549,7 @@ Android.</p>
 <p><a id="supported_datasets"></a></p>
 </div>
 <div class="paragraph">
-<p>Geopaparazzi&#8217;s mapview supports several map-types: vector or raster, editable or static. Also, maps can be pulled live from an Internet server, or be generated locally from a map data file for offline operation. You can switch between these modes in settings.</p>
+<p>Geopaparazzi&#8217;s Map View supports several map types: vector or raster, editable or static. Also, maps can be pulled live from an Internet server, or be generated locally from a map data file for off-line operation. You can switch between these modes in settings.</p>
 </div>
 <div class="paragraph">
 <p>There are two types of maps in Geopaparazzi:</p>
@@ -2589,7 +2568,30 @@ Android.</p>
 <p>The following sections will detail various map source types. In case you want to prepare tailored map datasets as map sources in one of below map formats, please refer to the <a href="#datapreparation">data preparation section</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="_basemaps">9.1. Basemaps</h3>
+<h3 id="_a_word_about_external_storages">9.1. A word about "external" storages</h3>
+<div class="paragraph">
+<p>From Android version 4.4 (codename KitKat) it is no longer allowed for applications to write to userinstalled MicroSD cards. Instead applications can still write to internal memory (often seen as sdcard also).</p>
+</div>
+<div class="paragraph">
+<p>An external user-installed sdcard appears to geopaparazzi as readonly. Datasets copied on the sdcard on a pc can therefore only be accessed in readonly mode and will create crashes if the user tries for example to modify a feature attribute.</p>
+</div>
+<div class="paragraph">
+<p>One less known thing is that if the data are kept inside the application&#8217;s data folder, they can be accessed in read/write mode.</p>
+</div>
+<div class="paragraph">
+<p>So for example, if one puts the dataset in the folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/storage/YOUR-SDCARD/Android/data/eu.hydrologis.geopaparazzi/files</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>it will be handled as if it was in the internal memory.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basemaps">9.2. Basemaps</h3>
 <div class="paragraph">
 <p>Basemaps can be of 4 different types:</p>
 </div>
@@ -2602,7 +2604,7 @@ Android.</p>
 <p>mbtiles</p>
 </li>
 <li>
-<p>mapsforge maps</p>
+<p>Mapsforge maps</p>
 </li>
 <li>
 <p>rasterlite2</p>
@@ -2610,14 +2612,14 @@ Android.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_mapurls_custom_tiles_based_maps">9.1.1. Mapurls: Custom tiles based maps</h4>
+<h4 id="_mapurls_custom_tiles_based_maps">9.2.1. Mapurls: Custom tiles based maps</h4>
 <div class="paragraph">
-<p>Mapurl files are simple text files containing definitions of tile sources, either local or remote. A mapurl file must have the file extention/suffix <strong>.mapurl</strong> to be recognised by Geopaparazzi.</p>
+<p>Mapurl files are simple text files containing definitions of tile sources, either local or remote. A mapurl file must have the file extension/suffix <strong>.mapurl</strong> to be recognized by Geopaparazzi.</p>
 </div>
 <div class="sect4">
 <h5 id="_remote_tile_sources">Remote Tile sources</h5>
 <div class="paragraph">
-<p>By default, Geopaparazzi is configured to load map mapnik rendered tiles live from the Internet, from OpenStreetMap&#8217;s tile server. Compare the contents of the included mapnik.mapurl file for how this is done. You can exchange the OSM tile server with any other tile server as long as it adheres to the Mapurl URL conventions. The basics are:</p>
+<p>By default, Geopaparazzi is configured to load map Mapnik rendered tiles live from the Internet, from OpenStreetMap&#8217;s tile server. Compare the contents of the included mapnik.mapurl file for how this is done. You can exchange the OSM tile server with any other tile server as long as it adheres to the Mapurl URL conventions. The basics are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2679,7 +2681,7 @@ This information can be tested also in a browser <a href="http://tile.openstreet
 <p>the center of the tile source</p>
 </li>
 <li>
-<p>the type fo tile server. Currently both <a href="http://en.wikipedia.org/wiki/Tile_Map_Service">standard TMS</a> and google based numbering of the tiles is supported by the line:</p>
+<p>the type fo tile server. Currently both <a href="http://en.wikipedia.org/wiki/Tile_Map_Service">standard TMS</a> and Google Maps based numbering of the tiles is supported by the line:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -2702,7 +2704,7 @@ local mbtiles database</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">An example for the url part is</dt>
+<dt class="hdlist1">An example for the URL part is</dt>
 </dl>
 </div>
 <div class="listingblock">
@@ -2724,13 +2726,13 @@ local mbtiles database</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Geopaparazzi will cache/store downloaded Mapurl tiles in a local MBTiles SQLite file, so pre-fetched tiles will remain viewable when Geopaparazzi is operated disconnected from a remote Mapurl source (in offline operation).</p>
+<p>Geopaparazzi will cache/store downloaded Mapurl tiles in a local MBTiles SQLite file, so pre-fetched tiles will remain viewable when Geopaparazzi is operated disconnected from a remote Mapurl source (in off-line operation).</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_local_tile_sources">Local Tile sources</h5>
 <div class="paragraph">
-<p>Just like your mapurl configuration may reference an online/remote tile sources, your mapurl setting may reference a local tile source for offline use. This way it&#8217;s possible to load on any smarthphone complex maps as for example the following map that has a technical basemap with shapefiles overlayed in transparency</p>
+<p>Just like your mapurl configuration may reference an on-line/remote tile sources, your mapurl setting may reference a local tile source for off-line use. This way it&#8217;s possible to load on any smart phone complex maps as for example the following map that has a technical basemap with shapefiles overlaid in transparency</p>
 </div>
 <div class="paragraph">
 <p>To be able to load such maps, one needs to prepare the tiles properly. This can be done via in several ways as explained in the <a href="#datapreparation">data preparation section</a>.</p>
@@ -2748,7 +2750,7 @@ type=tms</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Nothing changes against the description for the remote source apart of the url. The url in this case represents the relative path of the tiles folder.</p>
+<p>Nothing changes against the description for the remote source apart of the URL. The URL in this case represents the relative path of the tiles folder.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -2757,7 +2759,7 @@ type=tms</pre>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Filesystems are know to have problems in handling large amounts of very small files. This the exact case of local tile sources. If the dataset is large, it gets very hard to move the data from and to the device. Therefore this method, even if still supported, is flagged as deprecated. The <strong>MBTiles</strong> datasource, explained in the next section, should be used instead.
+Filesystems are known to have problems in handling large amounts of very small files. This the exact case of local tile sources. If the dataset is large, it gets very hard to move the data from and to the device. Therefore this method, even if still supported, is flagged as deprecated. The <strong>MBTiles</strong> datasource, explained in the next section, should be used instead.
 </td>
 </tr>
 </table>
@@ -2765,18 +2767,18 @@ Filesystems are know to have problems in handling large amounts of very small fi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mbtiles">9.1.2. MBTiles</h4>
+<h4 id="_mbtiles">9.2.2. MBTiles</h4>
 <div class="paragraph">
 <p>MBTiles is a file format for storing map tiles in a single file. It is, technically, a SQLite database. See the <a href="http://wiki.openstreetmap.org/wiki/MBTiles">openstreetmap wiki</a> for more information.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mapsforge_maps">9.1.3. Mapsforge maps</h4>
+<h4 id="_mapsforge_maps">9.2.3. Mapsforge maps</h4>
 <div class="paragraph">
 <p>The mapsforge project provides free and open software for the rendering of maps based on OpenStreetMap. It developed an efficient binary format for storage of OSM map data (usually with file extension <strong>.map</strong>), and is offering country specific .map files for download. Geopaparazzi is able to render map tiles locally from .map files and will cache rendered tiles in a local MBTiles store.</p>
 </div>
 <div class="paragraph">
-<p>Apart from Mapsforge itself, openandmaps is also offering .map files but with a different data bias and different render theme.</p>
+<p>Apart from Mapsforge itself, openandromaps is also offering .map files but with a different data bias and different render theme.</p>
 </div>
 <div class="sect4">
 <h5 id="_mapsforge">mapsforge</h5>
@@ -2812,7 +2814,7 @@ theme, with isolines and more hiking related stuff. The map files are larger but
 <div class="sect4">
 <h5 id="_apply_a_render_theme">Apply a render theme</h5>
 <div class="paragraph">
-<p>When rendereing mapforge tiles locally, Geopaparazzi applies render themes if they are found on the disk. In order to be found, the render theme xml file needs to have the same name as the map file.
+<p>When rendering mapsforge tiles locally, Geopaparazzi applies render themes if they are found on the disk. In order to be found, the render theme XML file needs to have the same name as the map file.
 Ex, the above cycle map example has a:</p>
 </div>
 <div class="literalblock">
@@ -2834,7 +2836,7 @@ Ex, the above cycle map example has a:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rasterlite2">9.1.4. RasterLite2</h4>
+<h4 id="_rasterlite2">9.2.4. RasterLite2</h4>
 <div class="paragraph">
 <p><a href="https://www.gaia-gis.it/fossil/librasterlite2/wiki?name=librasterlite2">RasterLite2</a> is a raster format implemented in the <a href="https://www.gaia-gis.it/fossil/libspatialite/index">spatialite database</a>.</p>
 </div>
@@ -2844,9 +2846,9 @@ Ex, the above cycle map example has a:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_overlay_maps">9.2. Overlay maps</h3>
+<h3 id="_overlay_maps">9.3. Overlay maps</h3>
 <div class="paragraph">
-<p>The only datasets that can be overlayed on top of basemaps are vector maps
+<p>The only datasets that can be overlaid on top of basemaps are vector maps
 coming from a <a href="https://www.gaia-gis.it/fossil/libspatialite/index">spatialite database</a>.</p>
 </div>
 </div>
@@ -2914,13 +2916,13 @@ dedicated to spatial analyses.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>stage_0.7_win64.zip for 64 bits windows operating systems</p>
+<p>stage_0.7_win64.zip for 64 bits Windows operating systems</p>
 </li>
 <li>
-<p>stage_0.7_win32.zip for 32 bits windows operating systems</p>
+<p>stage_0.7_win32.zip for 32 bits Windows operating systems</p>
 </li>
 <li>
-<p>stage_0.7_lin64.zip for 64 bits linux operating systems</p>
+<p>stage_0.7_lin64.zip for 64 bits Linux operating systems</p>
 </li>
 </ul>
 </div>
@@ -3338,7 +3340,7 @@ y="46.39742402665929"</pre>
 <div class="sect3">
 <h4 id="_text_with_key_and_label">12.1.3. Text with key and label</h4>
 <div class="paragraph">
-<p>In simple forms the key element is also used as label for the widget (ex. <strong>some text</strong> in the text note). Some charactersets are not suitable to be used as keys for a database, so in that cases the user should consider to define both the key (ex. in English) and the label (in the own language). Here an example:</p>
+<p>In simple forms the key element is also used as label for the widget (ex. <strong>some text</strong> in the text note). Some character sets are not suitable to be used as keys for a database, so in that cases the user should consider to define both the key (ex. in English) and the label (in the own language). Here an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3641,7 +3643,7 @@ y="46.39742402665929"</pre>
 <div class="sect3">
 <h4 id="_hidden">12.2.1. hidden</h4>
 <div class="paragraph">
-<p>Not shown in the gui, but useful for the application to fill in infos like the GPS position:</p>
+<p>Not shown in the gui, but useful for the application to fill in info like the GPS position:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3652,7 +3654,7 @@ y="46.39742402665929"</pre>
 <div class="sect3">
 <h4 id="_primary_key">12.2.2. primary_key</h4>
 <div class="paragraph">
-<p>An item of particular importance, can be used by the application to link to particular infos:</p>
+<p>An item of particular importance, can be used by the application to link to particular info:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3663,7 +3665,7 @@ y="46.39742402665929"</pre>
 <div class="sect3">
 <h4 id="_constraints">12.2.3. Constraints</h4>
 <div class="paragraph">
-<p>Constraints are conditions that are checked when the ok button of the form is pushed.</p>
+<p>Constraints are conditions that are checked when the OK button of the form is pushed.</p>
 </div>
 <div class="sect4">
 <h5 id="_mandatory">mandatory</h5>
@@ -3695,7 +3697,7 @@ y="46.39742402665929"</pre>
 <div class="sect2">
 <h3 id="_create_a_simple_form_to_map_fountains">12.3. Create a simple form to map fountains</h3>
 <div class="paragraph">
-<p>As an excercise we will now create a simple form to map fountains.</p>
+<p>As an exercise we will now create a simple form to map fountains.</p>
 </div>
 <div class="sect3">
 <h4 id="_sections">12.3.1. Sections</h4>
@@ -3758,7 +3760,7 @@ is added.</p>
 <p>To add content to the sub-forms, any of the tags described <a href="#tags">in the supported tags section</a> can be used.</p>
 </div>
 <div class="paragraph">
-<p>For example lets add two textfields to prompt the user for a name and street. Also the name should then be the label rendered in the map view.</p>
+<p>For example lets add two text fields to prompt the user for a name and street. Also the name should then be the label rendered in the map view.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4111,7 +4113,7 @@ Style and isdirty are currently unused.
 issues. Experts in this field are well aware of that!</p>
 </div>
 <div class="paragraph">
-<p>When you think of a small village, a rural setting with a few houses and lots of animals, or a peri-urban area that grew quickly and without any planning or again neighboring communities linked by a waterway that carries waste from upstream to valley, it is not immediat to think that all these places (due to the presence of man and animal) are a source of biomass.
+<p>When you think of a small village, a rural setting with a few houses and lots of animals, or a peri-urban area that grew quickly and without any planning or again neighboring communities linked by a waterway that carries waste from upstream to valley, it is not immediate to think that all these places (due to the presence of man and animal) are a source of biomass.
 They are a sources of waste and organic material that often brings a high and invisible pathogenic charge.</p>
 </div>
 <div class="paragraph">
@@ -4317,7 +4319,7 @@ and modified at any time, the section has been added for further update</p>
 <div class="sect2">
 <h3 id="_gvsig_mobile">15.1. gvSIG Mobile</h3>
 <div class="paragraph">
-<p>gvSIG Mobile is completely based on geopaparazzi and extends its capabilities with enterprise level functionalities to connect to the services of gvSIG Online to allow syncronization of data between teams of surveyers.</p>
+<p>gvSIG Mobile is completely based on geopaparazzi and extends its capabilities with enterprise level functionalities to connect to the services of gvSIG Online to allow synchronization of data between teams of surveyors.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -4388,7 +4390,7 @@ Geopaparazzi. Kudos!</p>
 <div class="sect3">
 <h4 id="_your_app_here">15.3.3. Your app here</h4>
 <div class="paragraph">
-<p>If you are using Geopaparazzi in any flavour we would be happy to list
+<p>If you are using Geopaparazzi in any flavor we would be happy to list
 it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
@@ -4469,6 +4471,7 @@ key.alias.password=youraliaspassword</code></pre>
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_core/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzilibrary/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzimapsforge/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzimarkerslib/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzispatialitelibrary/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> gradle/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> plugins/
