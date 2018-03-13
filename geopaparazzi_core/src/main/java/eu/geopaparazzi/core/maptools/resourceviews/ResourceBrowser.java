@@ -134,13 +134,21 @@ public class ResourceBrowser extends AppCompatActivity {
                 // the item resource only contains the thumbnail,
                 // so we need to get the complete resource
                 BlobResource completeRes = storage.getBlobResource(res.getId());
-                AppsUtilities.showImage(completeRes.getBlob(), blobRes.getName(), this);
+                if (res.getType() == AbstractResource.ResourceType.BLOB_IMAGE) {
+                    AppsUtilities.showImage(completeRes.getBlob(), blobRes.getName(), this);
+                } else if (res.getType() == AbstractResource.ResourceType.BLOB_PDF) {
+                    AppsUtilities.showPDF(completeRes.getBlob(), blobRes.getName(), this);
+                }
+
             }
             else {
                 ExternalResource extRes = (ExternalResource) res;
                 File image = new File(imageSaveFolder, extRes.getPath());
-                AppsUtilities.showImage(image, this);
-
+                if (res.getType() == AbstractResource.ResourceType.BLOB_IMAGE) {
+                    AppsUtilities.showImage(image, this);
+                } else if (res.getType() == AbstractResource.ResourceType.BLOB_PDF) {
+                    AppsUtilities.showPDF(image, this);
+                }
             }
         } catch (Exception e) {
             GPLog.error(this, null, e);
@@ -187,7 +195,7 @@ public class ResourceBrowser extends AppCompatActivity {
 
     private ArrayList<ImageItem> refreshBlobThumbnails(ArrayList<ImageItem> imageItems) {
         imageItems.clear();
-        List<BlobResource> resources = storage.getBlobThumbnails(rowId, AbstractResource.ResourceType.BLOB_IMAGE);
+        List<BlobResource> resources = storage.getBlobThumbnails(rowId); //, AbstractResource.ResourceType.BLOB_IMAGE);
         int i=0;
         for (BlobResource r: resources) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);

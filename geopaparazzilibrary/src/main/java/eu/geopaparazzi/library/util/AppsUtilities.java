@@ -287,6 +287,33 @@ public class AppsUtilities {
         context.startActivity(intent);
     }
 
+    public static void showPDF(byte[] pdfData, String pdfName, Context context) throws Exception {
+        File tempDir = ResourcesManager.getInstance(context).getTempDir();
+        String ext = ".pdf";
+
+        File pdfFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
+        ImageUtilities.writeImageDataToFile(pdfData, pdfFile.getAbsolutePath());
+
+        showPDF(pdfFile, context);
+    }
+
+    /**
+     * Show PDF.
+     *
+     * @param pdfFile the image file.
+     * @param context   the context to use.
+     * @throws Exception
+     */
+    public static void showPDF(File pdfFile, Context context) throws Exception {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Utilities.getFileUriInApplicationFolder(context, pdfFile);
+        intent.setDataAndType(uri, "application/pdf"); //$NON-NLS-1$
+
+        grantPermission(context, intent, uri);
+        context.startActivity(intent);
+    }
+
 
     /**
      * Grant permission to access a file from another app.

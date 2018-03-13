@@ -7,6 +7,7 @@ public abstract class AbstractResource {
     private long id;
     private String name;
     private ResourceType type;
+    private Boolean isExternal;
 
     public enum ResourceType {
         EXTERNAL_IMAGE,
@@ -23,7 +24,14 @@ public abstract class AbstractResource {
         this.id = id;
         this.name = name;
         this.type = type;
+        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal() ) {
+            this.isExternal = true;
+        } else {
+            this.isExternal = false;
+        }
     }
+
+    public Boolean isExternal() { return this.isExternal; }
 
     /**
      * Gets the name of the resource (title or textual description)
@@ -60,6 +68,11 @@ public abstract class AbstractResource {
      */
     public void setType(ResourceType type) {
         this.type = type;
+        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal() ) {
+            this.isExternal = true;
+        } else {
+            this.isExternal = false;
+        }
     }
 
     /**

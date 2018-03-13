@@ -90,7 +90,6 @@ public class ResourceStorage {
 
         return result;
     }
-
     public ExternalResource getExternalResource(long id) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT ");
@@ -131,12 +130,12 @@ public class ResourceStorage {
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT ");
         buffer.append(ID_FIELD).append(", ").append(RESBLOB_FIELD).append(", ").append(RESNAME_FIELD);
-        buffer.append(", ").append(RESBLOBTHUMB_FIELD);
+        buffer.append(", ").append(RESBLOBTHUMB_FIELD).append(", ").append(RESTYPE_FIELD);
         buffer.append(" FROM ").append(AUX_TABLE_NAME);
         buffer.append(" WHERE ");
         buffer.append(RESTABLE_FIELD).append("='").append(this.tableName).append("' AND ");
-        buffer.append(ROWFK_FIELD).append("=").append(rowIdFk).append(" AND ");
-        buffer.append(RESTYPE_FIELD).append("='").append(type.toString()).append("'");
+        buffer.append(ROWFK_FIELD).append("=").append(rowIdFk); //.append(" AND ");
+//        buffer.append(RESTYPE_FIELD).append("='").append(type.toString()).append("'");
 
         String sqlCommand = buffer.toString();
         Stmt statement = null;
@@ -167,16 +166,15 @@ public class ResourceStorage {
 
         return result;
     }
-
-    public List<BlobResource> getBlobThumbnails(long rowIdFk, BlobResource.ResourceType type) {
+    public List<BlobResource> getBlobThumbnails(long rowIdFk) { //}, BlobResource.ResourceType type) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("SELECT ");
-        buffer.append(ID_FIELD).append(", ").append(RESBLOBTHUMB_FIELD).append(", ").append(RESNAME_FIELD);
+        buffer.append(ID_FIELD).append(", ").append(RESBLOBTHUMB_FIELD).append(", ").append(RESNAME_FIELD).append(", ").append(RESTYPE_FIELD);
         buffer.append(" FROM ").append(AUX_TABLE_NAME);
         buffer.append(" WHERE ");
         buffer.append(RESTABLE_FIELD).append("='").append(this.tableName).append("' AND ");
-        buffer.append(ROWFK_FIELD).append("=").append(rowIdFk).append(" AND ");
-        buffer.append(RESTYPE_FIELD).append("='").append(type.toString()).append("'");
+        buffer.append(ROWFK_FIELD).append("=").append(rowIdFk); //.append(" AND ");
+//        buffer.append(RESTYPE_FIELD).append("='").append(type.toString()).append("'");
 
         String sqlCommand = buffer.toString();
         Stmt statement = null;
@@ -187,6 +185,8 @@ public class ResourceStorage {
                 long id = statement.column_long(0);
                 byte[] thumbnail = statement.column_bytes(1);
                 String name = statement.column_string(2);
+                String typeStr = statement.column_string(3);
+                AbstractResource.ResourceType type = AbstractResource.ResourceType.valueOf(typeStr);
                 BlobResource res = new BlobResource(id, null, name, type);
                 res.setThumbnail(thumbnail);
                 result.add(res);
