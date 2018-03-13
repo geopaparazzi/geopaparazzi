@@ -24,8 +24,10 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Date;
 
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -76,43 +78,6 @@ public class ImageUtilities {
     }
 
     /**
-     * Get an image from a file by its path.
-     *
-     * @param imageFilePath the image path.
-     * @param tryCount      times to try in 300 millis loop, in case the image is
-     *                      not yet on disk. (ugly but no other way right now)
-     * @return the image data or null.
-     */
-    public static byte[] getImageFromPath(String imageFilePath, int tryCount) {
-        Bitmap image = BitmapFactory.decodeFile(imageFilePath);
-        int count = 0;
-        while (image == null && ++count < tryCount) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            image = BitmapFactory.decodeFile(imageFilePath);
-        }
-        if (image == null) return null;
-
-        // It is necessary to rotate the image before converting to bytes, as the exif information
-        // will be lost afterwards and the image will be incorrectly oriented in some devices
-        float orientation = getRotation(imageFilePath);
-        if (orientation > 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(orientation);
-
-            image = Bitmap.createBitmap(image, 0, 0, image.getWidth(),
-                    image.getHeight(), matrix, true);
-        }
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-        return stream.toByteArray();
-    }
-
-    /**
      * Get an image and thumbnail from a file by its path.
      *
      * @param imageFilePath the image path.
@@ -120,21 +85,25 @@ public class ImageUtilities {
      *                      not yet on disk. (ugly but no other way right now)
      * @return the image and thumbnail data or null.
      */
-    public static byte[][] getImageAndThumbnailFromPath(String imageFilePath, int tryCount) {
+    public static byte[][] getImageAndThumbnailFromPath(String imageFilePath, int tryCount) throws IOException {
         byte[][] imageAndThumbNail = new byte[2][];
 
+        RandomAccessFile f = new RandomAccessFile(imageFilePath, "r");
+        byte[] imageByteArray = new byte[(int)f.length()];
+        f.readFully(imageByteArray);
+
         // first read full image and check existence
-        Bitmap image = BitmapFactory.decodeFile(imageFilePath);
-        int count = 0;
-        while (image == null && ++count < tryCount) {
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            image = BitmapFactory.decodeFile(imageFilePath);
-        }
-        if (image == null) return null;
+        Bitmap image = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+//        int count = 0;
+//        while (image == null && ++count < tryCount) {
+//            try {
+//                Thread.sleep(300);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            image = BitmapFactory.decodeFile(imageFilePath);
+//        }
+//        if (image == null) return null;
 
         // It is necessary to rotate the image before converting to bytes, as the exif information
         // will be lost afterwards and the image will be incorrectly oriented in some devices
@@ -156,38 +125,12 @@ public class ImageUtilities {
         Bitmap thumbnail = Bitmap.createScaledBitmap(image, THUMBNAILWIDTH, (int) newHeight, false);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-        byte[] imageBytes = stream.toByteArray();
-
-        stream = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, stream);
         byte[] thumbnailBytes = stream.toByteArray();
 
-        imageAndThumbNail[0] = imageBytes;
+        imageAndThumbNail[0] = imageByteArray;
         imageAndThumbNail[1] = thumbnailBytes;
         return imageAndThumbNail;
-    }
-
-
-    public static Bitmap getScaledBitmap(int targetW, int targetH, String imagePath) {
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        return bitmap;
     }
 
     public static Bitmap getImageFromImageData(byte[] imageData) {
@@ -203,11 +146,8 @@ public class ImageUtilities {
      * @throws IOException
      */
     public static void writeImageDataToFile(byte[] imageData, String imagePath) throws IOException {
-        FileOutputStream fout = new FileOutputStream(imagePath);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(imagePath)) {
             fout.write(imageData);
-        } finally {
-            fout.close();
         }
     }
 
