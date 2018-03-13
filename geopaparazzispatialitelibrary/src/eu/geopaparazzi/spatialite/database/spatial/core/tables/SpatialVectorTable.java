@@ -164,6 +164,9 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         return uniqueNameBasedOnDbFilePath;
     }
 
+    public String getUniqueNameBasedOnTableName() {
+        return "/" + UNIQUENAME_SEPARATOR + tableName + UNIQUENAME_SEPARATOR + geometryColumn;
+    }
 
     /**
      * @return the geometry type.
@@ -437,7 +440,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      */
     public void makeDefaultStyle() {
         style = new Style();
-        style.name = getUniqueNameBasedOnDbFilePath();
+        style.name = getUniqueNameBasedOnTableName();
     }
 
 
