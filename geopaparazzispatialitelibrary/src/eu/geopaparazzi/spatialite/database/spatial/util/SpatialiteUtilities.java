@@ -22,6 +22,9 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import java.util.Arrays;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.types.EDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -45,6 +48,9 @@ public class SpatialiteUtilities {
      */
     public static String[] IGNORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
 
+
+    public static List<String> reserverSqlWords = Arrays.asList("ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ATTACH", "AUTOINCREMENT", "BEFORE", "BEGIN", "BETWEEN", "BY", "CASCADE", "CASE", "CAST", "CHECK", "COLLATE", "COLUMN", "COMMIT", "CONFLICT", "CONSTRAINT", "CREATE", "CROSS", "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATABASE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DESC", "DETACH", "DISTINCT", "DROP", "EACH", "ELSE", "END", "ESCAPE", "EXCEPT", "EXCLUSIVE", "EXISTS", "EXPLAIN", "FAIL", "FOR", "FOREIGN", "FROM", "FULL", "GLOB", "GROUP", "HAVING", "IF", "IGNORE", "IMMEDIATE", "IN", "INDEX", "INDEXED", "INITIALLY", "INNER", "INSERT", "INSTEAD", "INTERSECT", "INTO", "IS", "ISNULL", "JOIN", "KEY", "LEFT", "LIKE", "LIMIT", "MATCH", "NATURAL", "NO", "NOT", "NOTNULL", "NULL", "OF", "OFFSET", "ON", "OR", "ORDER", "OUTER", "PLAN", "PRAGMA", "PRIMARY", "QUERY", "RAISE", "RECURSIVE", "REFERENCES", "REGEXP", "REINDEX", "RELEASE", "RENAME", "REPLACE", "RESTRICT", "RIGHT", "ROLLBACK", "ROW", "SAVEPOINT", "SELECT", "SET", "TABLE", "TEMP", "TEMPORARY", "THEN", "TO", "TRANSACTION", "TRIGGER", "UNION", "UNIQUE", "UPDATE", "USING", "VACUUM", "VALUES", "VIEW", "VIRTUAL", "WHEN", "WHERE", "WITH", "WITHOUT");
+
     /**
      * Name/path separator for spatialite table names.
      */
@@ -63,6 +69,10 @@ public class SpatialiteUtilities {
             if (field.equals(ingoredField)) {
                 return true;
             }
+        }
+        field = field.toUpperCase();
+        if (reserverSqlWords.contains(field)) {
+            return true;
         }
         return false;
     }
@@ -98,7 +108,7 @@ public class SpatialiteUtilities {
      * <p>
      * See http://sqlite.org/autoinc.html for more info.
      *
-     * @param field the field to check.
+     * @param spatialVectorTable the spatialVectorTable to check.
      * @return The PK field to be ignored (or null if no PK field has to be ignored)
      */
     public static String getIgnoredPkField(SpatialVectorTable spatialVectorTable) {
