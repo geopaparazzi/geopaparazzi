@@ -110,13 +110,6 @@
             android:title="@string/spatialite_recovery_mode" />
     </PreferenceScreen>
 
-    <eu.geopaparazzi.core.preferences.CustomSdcardPathPreference
-        android:defaultValue=""
-        android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
-        android:order="100"
-        android:summary="@string/use_custom_sdcard_summary"
-        android:title="@string/custom_sdcard_path" />
-
     <eu.geopaparazzi.core.preferences.ForceLocalePreference
         android:defaultValue="en"
         android:key="PREFS_KEY_FORCELOCALE"
