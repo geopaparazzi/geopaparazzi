@@ -113,7 +113,7 @@ public enum WebProjectManager {
         String downloadedProjectFileName = "no information available";
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File sdcardDir = resourcesManager.getSdcardDir();
+            File sdcardDir = resourcesManager.getMainStorageDir();
             File downloadedProjectFile = new File(sdcardDir, webproject.id);
             if (downloadedProjectFile.exists()) {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();

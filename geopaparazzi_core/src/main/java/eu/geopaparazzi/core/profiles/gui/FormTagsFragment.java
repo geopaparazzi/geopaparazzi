@@ -72,7 +72,7 @@ public class FormTagsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
+                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
                     Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
                     browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"json"});
                     browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());

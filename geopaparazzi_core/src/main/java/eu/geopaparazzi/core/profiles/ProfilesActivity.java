@@ -4,16 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +31,6 @@ import eu.geopaparazzi.core.profiles.gui.NewProfileDialogFragment;
 import eu.geopaparazzi.core.profiles.gui.ProfileSettingsActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
-import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
@@ -243,7 +238,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
     private void importProfiles() {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(this);
-            File sdcardDir = resourcesManager.getSdcardDir();
+            File sdcardDir = resourcesManager.getMainStorageDir();
             File applicationSupporterDir = resourcesManager.getApplicationSupporterDir();
             File inputFile = new File(applicationSupporterDir, PROFILES_CONFIG_JSON);
             if (inputFile.exists()) {
@@ -291,7 +286,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
         p.description = description;
         p.creationdate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
         try {
-            p.sdcardPath = ResourcesManager.getInstance(this).getSdcardDir().getAbsolutePath();
+            p.sdcardPath = ResourcesManager.getInstance(this).getMainStorageDir().getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
         }

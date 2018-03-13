@@ -155,7 +155,7 @@ public class GpxExportDialogFragment extends DialogFragment {
                     }
 
                     if (isInterrupted) return INTERRUPTED;
-                    File gpxExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
+                    File gpxExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + "." + FileTypes.GPX.getExtension();
                     File gpxOutputFile = new File(gpxExportDir, filename);
                     if (exportPath != null) {

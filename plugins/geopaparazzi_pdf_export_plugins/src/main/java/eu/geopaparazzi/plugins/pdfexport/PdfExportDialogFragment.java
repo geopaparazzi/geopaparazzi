@@ -150,7 +150,7 @@ public class PdfExportDialogFragment extends DialogFragment {
                     }
                     if (isInterrupted) return INTERRUPTED;
 
-                    File pdfExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
+                    File pdfExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
                     String filename = ResourcesManager.getInstance(getActivity()).getApplicationName() + "_projectexport_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".pdf";
                     pdfOutputFile = new File(pdfExportDir, filename);
                     if (exportPath != null) {

@@ -68,7 +68,7 @@ public class ExportBookmarksMenuEntry extends MenuEntry {
 
             List<String> namesToNOTAdd = new ArrayList<>();
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File sdcardDir = resourcesManager.getSdcardDir();
+            File sdcardDir = resourcesManager.getMainStorageDir();
             File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$
             StringBuilder sb = new StringBuilder();
             if (bookmarksfile.exists()) {

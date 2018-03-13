@@ -199,7 +199,7 @@ public class CustomMapsPathPreference extends DialogPreference implements View.O
     @Override
     public void onClick(View view) {
         try {
-            File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
+            File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
             Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
             browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_MAPSFOLDER);
             browseIntent.putExtra(DirectoryBrowserActivity.DOFOLDER, true);

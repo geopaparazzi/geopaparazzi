@@ -42,7 +42,6 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
-import eu.geopaparazzi.core.utilities.Constants;
 
 /**
  * New project creation dialog.
@@ -61,7 +60,7 @@ public class NewProjectDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         try {
-            final File sdcardDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
+            final File sdcardDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
             final String projectExistingString = getString(eu.geopaparazzi.core.R.string.chosen_project_exists);
 
             final String newGeopaparazziProjectName = ResourcesManager.getInstance(getContext()).getApplicationName()

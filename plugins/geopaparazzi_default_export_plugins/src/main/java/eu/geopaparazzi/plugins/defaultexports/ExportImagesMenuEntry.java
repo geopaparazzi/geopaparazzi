@@ -18,7 +18,6 @@
 package eu.geopaparazzi.plugins.defaultexports;
 
 import android.content.Context;
-import android.content.Intent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,8 +27,6 @@ import java.util.List;
 
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.DaoImages;
-import eu.geopaparazzi.core.ui.activities.ExportActivity;
-import eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
@@ -64,7 +61,7 @@ public class ExportImagesMenuEntry extends MenuEntry {
 
     private void exportImages(final Context context) {
         try {
-            File sdcardDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getSdcardDir();
+            File sdcardDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getMainStorageDir();
             final File outFolder = new File(sdcardDir, "geopaparazzi_images_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()));
             if (!outFolder.mkdir()) {
                 GPDialogs.warningDialog(context, context.getString(eu.geopaparazzi.core.R.string.export_img_unable_to_create_folder) + outFolder, null);
