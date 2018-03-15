@@ -172,7 +172,7 @@ public class ResourceBrowser extends AppCompatActivity {
     private ArrayList<ImageItem> refreshExternalImages(ArrayList<ImageItem> imageItems) {
         imageItems.clear();
         List<ExternalResource> resources = storage.getExternalResources(rowId, AbstractResource.ResourceType.EXTERNAL_IMAGE);
-        int i=0;
+        int i=1;
         for (ExternalResource r: resources) {
             String imgPath = r.getPath();
             File imgFile = new File(imgPath);
@@ -185,7 +185,8 @@ public class ResourceBrowser extends AppCompatActivity {
             }
 
             Bitmap bitmap = ImageUtilities.decodeSampledBitmapFromFile(absPath, 100, 100);
-            imageItems.add(new ImageItem(bitmap, "Image#" + i++, r));
+            String title = getResources().getString(R.string.Image_title);
+            imageItems.add(new ImageItem(bitmap, title + i++, r));
         }
         String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
         numImagesView.setText(text);
@@ -196,10 +197,11 @@ public class ResourceBrowser extends AppCompatActivity {
     private ArrayList<ImageItem> refreshBlobThumbnails(ArrayList<ImageItem> imageItems) {
         imageItems.clear();
         List<BlobResource> resources = storage.getBlobThumbnails(rowId); //, AbstractResource.ResourceType.BLOB_IMAGE);
-        int i=0;
+        int i=1;
         for (BlobResource r: resources) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);
-            imageItems.add(new ImageItem(bitmap, "Image#" + i++, r));
+            String title = getResources().getString(R.string.Image_title);
+            imageItems.add(new ImageItem(bitmap, title + i++, r));
         }
         String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
         numImagesView.setText(text);
