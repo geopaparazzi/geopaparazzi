@@ -24,7 +24,7 @@ allprojects {
         myVersionName = "5.5.5"
 
         mycompileSdkVersion = 27
-        mybuildToolsVersion = "27.0.1"
+        mybuildToolsVersion = "28.0.0-rc1"
         myminSdkVersion = 19
         mytargetSdkVersion = 27
     }

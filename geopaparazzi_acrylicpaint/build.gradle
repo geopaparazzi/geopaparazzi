@@ -25,10 +25,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:27.0.1'
-    compile 'com.android.support:design:27.0.1'
-    compile 'com.android.support:preference-v7:27.0.1'
-    compile 'com.android.support:support-v4:27.0.1'
+    compile 'com.android.support:appcompat-v7:27.1.0'
+    compile 'com.android.support:design:27.1.0'
+    compile 'com.android.support:support-v4:27.1.0'
+    compile 'com.android.support:preference-v7:27.1.0'
     compile project(':geopaparazzilibrary')
 }
 repositories {

@@ -32,6 +32,10 @@ import static eu.geopaparazzi.library.gps.GpsService.*;
 
 import android.app.Activity;
 import android.app.AppOpsManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,10 +43,12 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v7.appcompat.BuildConfig;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import java.util.Date;
 
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -53,6 +59,8 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  */
 public class GpsServiceUtilities {
 
+
+
     /**
      * Start the service.
      *
@@ -60,7 +68,13 @@ public class GpsServiceUtilities {
      */
     public static void startGpsService(Activity activity) {
         Intent intent = new Intent(activity, GpsService.class);
-        activity.startService(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.startForegroundService(intent);
+        } else {
+            activity.startService(intent);
+        }
+
     }
 
     /**
