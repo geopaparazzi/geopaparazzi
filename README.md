@@ -1,5 +1,7 @@
 # Geopaparazzi 
 
+[![Join the chat at https://gitter.im/geopaparazzi/geopaparazzi](https://badges.gitter.im/geopaparazzi/geopaparazzi.svg)](https://gitter.im/geopaparazzi/geopaparazzi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repository contains the complete code of the android app geopaparazzi.
 
 ## Notes on the file structure
