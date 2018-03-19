@@ -169,13 +169,19 @@ public class ResourcesManager implements Serializable {
         // remove the portion of the path that getExternalFilesDirs returns
         // that we don't want
         for (int i = 0; i < extDirs.length; i++) {
-            String regex = "/Android/data/" + getPackageName() + "/files";
-            extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
+            if (extDirs[i] == null){
+                continue;
+            } else {
+                String regex = "/Android/data/" + getPackageName() + "/files";
+                extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
+            }
         }
 
         for (File file : extRootDirs) {
-            if (file.exists()) {
-                if (file.canWrite()) {
+            if (file == null){
+                continue;
+            } else if (file.exists()) {
+                if (file.canWrite() & mainStorageDir == null) {
                     mainStorageDir = file;
                 } else if (file.canRead()) {
                     otherStorageDirs.add(file);
