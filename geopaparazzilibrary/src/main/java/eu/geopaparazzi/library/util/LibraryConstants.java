@@ -62,6 +62,10 @@ public interface LibraryConstants {
      * Decimal formatter with 2 digits.
      */
     DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00"); //$NON-NLS-1$
+    /**
+     * Decimal formatter with 1 digits.
+     */
+    DecimalFormat DECIMAL_FORMATTER_1 = new DecimalFormat("0.0"); //$NON-NLS-1$
 
     /**
      * Key used by the gps logger to store the lat in the prefs.
