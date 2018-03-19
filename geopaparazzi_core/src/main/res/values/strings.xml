@@ -140,6 +140,7 @@
     <string name="geopapcloud_user_label">Username</string>
     <string name="geopapcloud_password_label">Password</string>
     <string name="geopapcloud_server_label">Server to connect to</string>
+    <string name="cloud_profile_url_label">Cloud Profiles URL</string>
     <string name="exporting_data">Exporting data</string>
     <string name="error_set_cloud_settings">The cloud sync parameters are not set properly. Please check your settings.</string>
     <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
@@ -297,6 +298,7 @@
     <string name="mapurls">Mapurls</string>
     <string name="gpx">GPX</string>
     <string name="geopap_browser">Cloud Project</string>
+    <string name="profiles_browser">Cloud Profiles</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="default_database">Default Database</string>
     <string name="kmz">KMZ</string>
@@ -409,6 +411,7 @@
     <!-- geoss2go profiles -->
 
     <string name="profiles_action_settings">Settings</string>
+    <string name="profiles_action_cloud_import">Import Cloud Profiles</string>
     <string name="profiles_action_import">Import Profiles</string>
     <string name="profiles_action_export">Export profiles</string>
     <string name="profiles_action_delete">Delete all Profiles</string>

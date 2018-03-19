@@ -135,6 +135,12 @@
             android:key="stage_server_key"
             android:order="214"
             android:title="@string/geopapcloud_server_label" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="cloud_profile_url"
+            android:order="215"
+            android:title="@string/cloud_profile_url_label" />
+
     </PreferenceScreen>
 
 </PreferenceScreen>

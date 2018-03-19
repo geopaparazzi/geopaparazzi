@@ -298,4 +298,11 @@ public enum ProfilesHandler {
         return baseMaps;
     }
 
+
+    public List<Profile> addJsonProfile(JSONObject profileObject, List<Profile> profileList) throws JSONException {
+        Profile newProfile = getProfileFromJson(profileObject);
+        profileList.add(newProfile);
+        return profileList;
+    }
+
 }
