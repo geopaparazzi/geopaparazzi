@@ -27,6 +27,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import gov.nasa.worldwind.AddWMSDialog;
@@ -36,7 +37,7 @@ public class BasemapsFragment extends Fragment {
     public static final int RETURNCODE_BROWSE = 666;
 
 
-    private List<String> mBasemapsList = new ArrayList<>();
+    private List<ProfileBasemaps> mBasemapsList = new ArrayList<>();
     private ListView listView;
 
     private String[] supportedExtensions = {"mapurl", "map", "sqlite", "mbtiles"};
@@ -89,9 +90,9 @@ public class BasemapsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profilesettings_basemaps, container, false);
 
-        listView = (ListView) rootView.findViewById(R.id.basemapsList);
+        listView = rootView.findViewById(R.id.basemapsList);
 
-        FloatingActionButton addFormButton = (FloatingActionButton) rootView.findViewById(R.id.addFormsjsonButton);
+        FloatingActionButton addFormButton = rootView.findViewById(R.id.addFormsjsonButton);
         addFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +123,9 @@ public class BasemapsFragment extends Fragment {
     }
 
     private void refreshList() {
-        ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_profilesettings_basemaps_row, mBasemapsList) {
+        final ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+        final Profile profile = activity.getSelectedProfile();
+        ArrayAdapter<ProfileBasemaps> mArrayAdapter = new ArrayAdapter<ProfileBasemaps>(activity, R.layout.fragment_profilesettings_basemaps_row, mBasemapsList) {
             class ViewHolder {
                 TextView nameView;
                 TextView pathView;
@@ -134,19 +137,19 @@ public class BasemapsFragment extends Fragment {
                 ViewHolder holder;
                 // Recycle existing view if passed as parameter
                 if (rowView == null) {
-                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    LayoutInflater inflater = activity.getLayoutInflater();
                     rowView = inflater.inflate(R.layout.fragment_profilesettings_basemaps_row, parent, false);
                     holder = new ViewHolder();
-                    holder.nameView = (TextView) rowView.findViewById(R.id.basemapName);
-                    holder.pathView = (TextView) rowView.findViewById(R.id.basemapPath);
+                    holder.nameView = rowView.findViewById(R.id.basemapName);
+                    holder.pathView = rowView.findViewById(R.id.basemapPath);
 
                     rowView.setTag(holder);
                 } else {
                     holder = (ViewHolder) rowView.getTag();
                 }
 
-                final String currentBasemap = mBasemapsList.get(position);
-                File basemapFile = new File(currentBasemap);
+                final ProfileBasemaps currentBasemap = mBasemapsList.get(position);
+                File basemapFile = profile.getFile(currentBasemap.getRelativePath());
 
                 holder.nameView.setText(basemapFile.getName());
                 holder.pathView.setText(basemapFile.getAbsolutePath());
@@ -165,16 +168,15 @@ public class BasemapsFragment extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final String path = mBasemapsList.get(position);
-                File file = new File(path);
+                final ProfileBasemaps baseMap = mBasemapsList.get(position);
+                File file = profile.getFile(baseMap.getRelativePath());
                 GPDialogs.yesNoMessageDialog(getActivity(), "Do you want to remove: " + file.getName() + "?", new Runnable() {
                     @Override
                     public void run() {
                         mBasemapsList.remove(position);
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onBasemapRemoved(path);
-
-                        getActivity().runOnUiThread(new Runnable() {
+                        activity.onBasemapRemoved(baseMap.getRelativePath());
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 refreshList();
@@ -198,10 +200,24 @@ public class BasemapsFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
-                        if (!mBasemapsList.contains(path)) {
-                            mBasemapsList.add(path);
-                            ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                            activity.onBasemapAdded(path);
+                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+                        final Profile profile = activity.getSelectedProfile();
+                        String sdcardPath = profile.getSdcardPath();
+
+                        String relativePath = path.replaceFirst(sdcardPath, "");
+                        boolean hasIt = false;
+                        for (ProfileBasemaps bm : mBasemapsList) {
+                            if (bm.getRelativePath().equals(relativePath)) {
+                                hasIt = true;
+                                break;
+                            }
+                        }
+
+                        if (!hasIt) {
+                            ProfileBasemaps basemaps = new ProfileBasemaps();
+                            basemaps.setRelativePath(relativePath);
+                            mBasemapsList.add(basemaps);
+                            activity.onBasemapAdded(relativePath);
                             refreshList();
                         }
                     }

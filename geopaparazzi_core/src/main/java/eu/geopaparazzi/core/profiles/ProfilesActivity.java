@@ -31,6 +31,7 @@ import eu.geopaparazzi.core.profiles.gui.NewProfileDialogFragment;
 import eu.geopaparazzi.core.profiles.gui.ProfileSettingsActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
@@ -120,8 +121,8 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             sb.append("Basemaps: ").append(profile.basemapsList.size()).append("\n");
             sb.append("Spatialite dbs: ").append(profile.spatialiteList.size()).append("\n");
             int formsCount = 0;
-            if (profile.tagsPath != null && profile.tagsPath.length() != 0) {
-                File tagsFile = new File(profile.tagsPath);
+            if (profile.profileTags != null && profile.profileTags.getRelativePath().length() != 0) {
+                File tagsFile = profile.getFile(profile.profileTags.getRelativePath());
                 if (tagsFile.exists()) {
                     try {
                         List<String> sections = FormTagsFragment.getSectionsFromTagsFile(tagsFile);
@@ -132,7 +133,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 }
             }
             sb.append("Forms: ").append(formsCount).append("\n");
-            sb.append("Has project: ").append(profile.projectPath.length() == 0 ? "no" : "yes").append("\n");
+            sb.append("Has project: ").append(profile.profileProject != null ? "no" : "yes").append("\n");
             profilesummaryText.setText(sb.toString());
 
             ImageButton settingsButton = newProjectCardView.findViewById(R.id.settingsButton);
@@ -246,9 +247,10 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 List<Profile> importedProfiles = ProfilesHandler.INSTANCE.getProfilesFromJson(profilesJson);
 
                 // substitute sdcard. In case it was exported from another device
-                for (Profile profile : importedProfiles) {
-                    profile.correctPaths(sdcardDir.getAbsolutePath());
-                }
+                // TODO check this out properly
+//                for (Profile profile : importedProfiles) {
+//                    profile.correctPaths(sdcardDir.getAbsolutePath());
+//                }
 
                 profileList.addAll(importedProfiles);
                 saveProfiles();
@@ -256,7 +258,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
                 GPDialogs.quickInfo(profilesContainer, "Profiles properly imported.");
             } else {
-                GPDialogs.warningDialog(this, "No profiles file exist in the path: " + inputFile.getAbsolutePath(), null);
+                GPDialogs.warningDialog(this, "No profiles file exist in the relativePath: " + inputFile.getAbsolutePath(), null);
             }
         } catch (Exception e) {
             GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
@@ -274,7 +276,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             GPDialogs.quickInfo(profilesContainer, "Profiles exported to: " + outFile);
         } catch (Exception e) {
             GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
-            Log.e("GEOS2GO", "", e);
+            GPLog.error(this, null, e);
         }
     }
 
@@ -285,9 +287,9 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
         p.description = description;
         p.creationdate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
         try {
-            p.sdcardPath = ResourcesManager.getInstance(this).getMainStorageDir().getAbsolutePath();
+            p.setSdcardPath(ResourcesManager.getInstance(this).getMainStorageDir().getAbsolutePath());
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
         }
         profileList.add(p);
         loadProfiles();

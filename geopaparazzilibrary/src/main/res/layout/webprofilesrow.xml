@@ -49,4 +49,16 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/main_text_color" />
 
+    <TextView
+        android:id="@+id/comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/datetext"
+        android:layout_toEndOf="@+id/downloadprofile_image"
+        android:text="Comments"
+        android:textAppearance="@style/GPTextViewStyle"
+        android:textColor="@color/main_selection_border"
+        android:textStyle="bold" />
+
 </RelativeLayout>

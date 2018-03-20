@@ -49,12 +49,12 @@ public enum WebProjectManager {
     INSTANCE;
 
     /**
-     * The relative path appended to the server url to compose the upload url.
+     * The relative relativePath appended to the server url to compose the upload url.
      */
     public static String UPLOADPATH = "stage_gpproject_upload";
 
     /**
-     * The relative path appended to the server url to compose the download projects list url.
+     * The relative relativePath appended to the server url to compose the download projects list url.
      */
     public static String DOWNLOADLISTPATH = "stage_gplist_download";
 

@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -31,6 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
@@ -38,7 +38,6 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
 /**
@@ -134,6 +133,7 @@ public class ResourcesManager implements Serializable {
     }
 
     private ResourcesManager(Context context) throws Exception {
+        if (context == null) context = GPApplication.getInstance();
         Context appContext = context.getApplicationContext();
         ApplicationInfo appInfo = appContext.getApplicationInfo();
 
@@ -166,7 +166,7 @@ public class ResourcesManager implements Serializable {
 
         File[] extDirs = context.getExternalFilesDirs(null);
         File[] extRootDirs = new File[extDirs.length];
-        // remove the portion of the path that getExternalFilesDirs returns
+        // remove the portion of the relativePath that getExternalFilesDirs returns
         // that we don't want
         for (int i = 0; i < extDirs.length; i++) {
             if (extDirs[i] != null) {
@@ -221,7 +221,7 @@ public class ResourcesManager implements Serializable {
          */
         String databasePath = null;
         if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
-            String projectPath = ProfilesHandler.INSTANCE.getActiveProfile().projectPath;
+            String projectPath = ProfilesHandler.INSTANCE.getActiveProfile().profileProject.getRelativePath();
             if (projectPath != null && new File(projectPath).exists()) {
                 databasePath = projectPath;
             }
@@ -288,7 +288,7 @@ public class ResourcesManager implements Serializable {
     /**
      * Get the file to a default database location for the app.
      * <p>
-     * <p>This path is generated with default values and can be
+     * <p>This relativePath is generated with default values and can be
      * exploited. It doesn't assure that in the location there really is a db.
      *
      * @return the {@link File} to the database.

@@ -23,6 +23,10 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
+import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileTags;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -112,34 +116,50 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         profile.description = description;
     }
 
-    public void onFormPathChanged(String path) {
+    public void onFormPathChanged(String relativePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.tagsPath = path;
+        if (profile.profileTags == null) {
+            profile.profileTags = new ProfileTags();
+        }
+        profile.profileTags.setRelativePath(relativePath);
     }
 
-    public void onProjectPathChanged(String path) {
+    public void onProjectPathChanged(String relatvePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.projectPath = path;
+        if (profile.profileProject == null) {
+            profile.profileProject = new ProfileProjects();
+        }
+        profile.profileProject.setRelativePath(relatvePath);
     }
 
-    public void onBasemapAdded(String path) {
+    public void onBasemapAdded(String relativePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.basemapsList.add(path);
+        ProfileBasemaps basemap = new ProfileBasemaps();
+        basemap.setRelativePath(relativePath);
+        if (!profile.basemapsList.contains(basemap))
+            profile.basemapsList.add(basemap);
     }
 
-    public void onBasemapRemoved(String path) {
+    public void onBasemapRemoved(String relativePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.basemapsList.remove(path);
+        ProfileBasemaps basemap = new ProfileBasemaps();
+        basemap.setRelativePath(relativePath);
+        profile.basemapsList.remove(basemap);
     }
 
-    public void onSpatialitedbRemoved(String path) {
+    public void onSpatialitedbAdded(String relativePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.spatialiteList.remove(path);
+        ProfileSpatialitemaps spatialitemap = new ProfileSpatialitemaps();
+        spatialitemap.setRelativePath(relativePath);
+        if (!profile.spatialiteList.contains(spatialitemap))
+            profile.spatialiteList.add(spatialitemap);
     }
 
-    public void onSpatialitedbAdded(String path) {
+    public void onSpatialitedbRemoved(String relativePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        profile.spatialiteList.add(path);
+        ProfileSpatialitemaps spatialitemap = new ProfileSpatialitemaps();
+        spatialitemap.setRelativePath(relativePath);
+        profile.spatialiteList.remove(spatialitemap);
     }
 
     @Override

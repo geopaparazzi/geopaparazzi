@@ -22,6 +22,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PROFILE_URL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -62,11 +63,11 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 public class WebProfilesListActivity extends ListActivity {
     private static final String ERROR = "error"; //$NON-NLS-1$
 
-    private ArrayAdapter<Webprofile> arrayAdapter;
+    private ArrayAdapter<Profile> arrayAdapter;
     private EditText filterText;
 
-    private List<Webprofile> profileList = new ArrayList<>();
-    private List<Webprofile> profileListToLoad = new ArrayList<>();
+    private List<Profile> profileList = new ArrayList<>();
+    private List<Profile> profileListToLoad = new ArrayList<>();
 
     private String user;
     private String pwd;
@@ -76,12 +77,22 @@ public class WebProfilesListActivity extends ListActivity {
     private ProgressDialog cloudProgressDialog;
 
     private SharedPreferences mPreferences;
+    private HashMap<String, Profile> existingProfileMap = new HashMap<>();
 
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        try {
+            List<Profile> existingProfileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
+            for (Profile p : existingProfileList) {
+                existingProfileMap.put(p.name, p);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         setContentView(R.layout.webprofilelist);
 
@@ -90,7 +101,7 @@ public class WebProfilesListActivity extends ListActivity {
         pwd = extras.getString(PREFS_KEY_PWD);
         url = extras.getString(PREFS_KEY_PROFILE_URL);
 
-        filterText = (EditText) findViewById(R.id.search_box);
+        filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
         downloadProfileListDialog = ProgressDialog.show(this, getString(R.string.downloading),
@@ -101,7 +112,7 @@ public class WebProfilesListActivity extends ListActivity {
                 WebProfilesListActivity context = WebProfilesListActivity.this;
                 try {
                     profileList = WebProfileManager.INSTANCE.downloadProfileList(context, url, user, pwd);
-                    for (Webprofile wp : profileList) {
+                    for (Profile wp : profileList) {
                         profileListToLoad.add(wp);
                     }
                     return ""; //$NON-NLS-1$
@@ -148,7 +159,7 @@ public class WebProfilesListActivity extends ListActivity {
             GPLog.addLogEntry(this, "filter profiles list"); //$NON-NLS-1$
 
         profileListToLoad.clear();
-        for (Webprofile profile : profileList) {
+        for (Profile profile : profileList) {
             if (profile.matches(filterText)) {
                 profileListToLoad.add(profile);
             }
@@ -157,10 +168,10 @@ public class WebProfilesListActivity extends ListActivity {
         refreshList();
     }
 
-    private void saveWebProfile(JSONObject oJson) {
+    private void saveWebProfile(Profile profile) {
         try {
             List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
-            profileList = ProfilesHandler.INSTANCE.addJsonProfile(oJson, profileList);
+            profileList.add(profile);
             ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
 
             Intent intent = new Intent((String) null);
@@ -174,36 +185,57 @@ public class WebProfilesListActivity extends ListActivity {
     private void refreshList() {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "refreshing profiles list"); //$NON-NLS-1$
-        arrayAdapter = new ArrayAdapter<Webprofile>(this, R.layout.webprofilesrow, profileListToLoad) {
+        arrayAdapter = new ArrayAdapter<Profile>(this, R.layout.webprofilesrow, profileListToLoad) {
             @Override
             public View getView(int position, View cView, ViewGroup parent) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.webprofilesrow, null);
-                final Webprofile webprofile = profileListToLoad.get(position);
+                final Profile webprofile = profileListToLoad.get(position);
 
-                TextView nameText =        (TextView) rowView.findViewById(R.id.nametext);
-                TextView descriptionText = (TextView) rowView.findViewById(R.id.descriptiontext);
-                TextView dateText =        (TextView) rowView.findViewById(R.id.datetext);
+                TextView nameText = rowView.findViewById(R.id.nametext);
+                TextView descriptionText = rowView.findViewById(R.id.descriptiontext);
+                TextView dateText = rowView.findViewById(R.id.datetext);
+                TextView commentsText = rowView.findViewById(R.id.comments);
 
-                nameText.setText(webprofile.name);
+                String wpName = webprofile.name;
+                nameText.setText(wpName);
                 descriptionText.setText(webprofile.description);
-                dateText.setText(webprofile.date);
+                dateText.setText(webprofile.creationdate);
 
-                ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadprofile_image);
-                imageText.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        downloadProfile(webprofile);
+                Profile profile = existingProfileMap.get(wpName);
+                boolean ignore = false;
+                if (profile == null) {
+                    // a new profile
+                    commentsText.setText("");
+                } else {
+                    String pName = profile.name;
+                    String pModifieddate = profile.modifieddate;
+                    String wpModifieddate = webprofile.modifieddate;
+                    if (pName.equals(wpName) && pModifieddate.equals(wpModifieddate)) {
+                        // and existing profile to be ignored
+                        commentsText.setText("IGNORED: the same profile exists already.");
+                        ignore = true;
+                    } else if (pName.equals(wpName)) {
+                        // a new profile is available
+                        commentsText.setText("UPDATES: will update existing.");
+                        ignore = true;
                     }
-                });
+                }
 
-                TextView titleText = (TextView) rowView.findViewById(R.id.nametext);
-                titleText.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        downloadProfile(webprofile);
-                    }
-                });
-
-
+                if (!ignore) {
+                    ImageView imageText = rowView.findViewById(R.id.downloadprofile_image);
+                    imageText.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            downloadProfile(webprofile);
+                        }
+                    });
+                    TextView titleText = rowView.findViewById(R.id.nametext);
+                    titleText.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            downloadProfile(webprofile);
+                        }
+                    });
+                }
                 return rowView;
             }
 
@@ -228,7 +260,7 @@ public class WebProfilesListActivity extends ListActivity {
         }
     };
 
-    private void downloadProfile(final Webprofile webprofile) {
+    private void downloadProfile(final Profile webprofile) {
         cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
                 getString(R.string.downloading_profile), true, false);
         new AsyncTask<String, Void, String>() {
@@ -236,7 +268,9 @@ public class WebProfilesListActivity extends ListActivity {
                 try {
                     String returnCode = WebProfileManager.INSTANCE.downloadProfileContent(WebProfilesListActivity.this, url, user, pwd,
                             webprofile);
-                    saveWebProfile(webprofile.oJson);
+
+                    if (returnCode.equals(getString(R.string.profile_successfully_downloaded)))
+                        saveWebProfile(webprofile);
                     return returnCode;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);

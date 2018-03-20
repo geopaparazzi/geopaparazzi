@@ -38,6 +38,7 @@ public class FormTagsFragment extends Fragment {
     private EditText nameEdittext;
     private EditText pathEdittext;
     private EditText formsEdittext;
+    private Profile profile;
 
     public FormTagsFragment() {
     }
@@ -59,15 +60,15 @@ public class FormTagsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profilesettings_forms, container, false);
 
-        Profile profile = getArguments().getParcelable(ARG_PROFILE);
+        profile = getArguments().getParcelable(ARG_PROFILE);
 
-        nameEdittext = (EditText) rootView.findViewById(R.id.formNameEditText);
-        pathEdittext = (EditText) rootView.findViewById(R.id.formPathEditText);
-        formsEdittext = (EditText) rootView.findViewById(R.id.sectionsEditText);
-        if (profile != null && profile.tagsPath != null && new File(profile.tagsPath).exists()) {
-            setFormData(profile.tagsPath);
+        nameEdittext = rootView.findViewById(R.id.formNameEditText);
+        pathEdittext = rootView.findViewById(R.id.formPathEditText);
+        formsEdittext = rootView.findViewById(R.id.sectionsEditText);
+        if (profile != null && profile.profileTags != null && profile.getFile(profile.profileTags.getRelativePath()).exists()) {
+            setFormData(profile.getFile(profile.profileTags.getRelativePath()));
         }
-        FloatingActionButton addFormButton = (FloatingActionButton) rootView.findViewById(R.id.addFormsjsonButton);
+        FloatingActionButton addFormButton = rootView.findViewById(R.id.addFormsjsonButton);
         addFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,12 +87,11 @@ public class FormTagsFragment extends Fragment {
         return rootView;
     }
 
-    private void setFormData(String tagsPath) {
+    private void setFormData(File tagsFile) {
         try {
-            File file = new File(tagsPath);
-            List<String> sectionsMap = getSectionsFromTagsFile(file);
-            nameEdittext.setText(file.getName());
-            pathEdittext.setText(file.getAbsolutePath());
+            List<String> sectionsMap = getSectionsFromTagsFile(tagsFile);
+            nameEdittext.setText(tagsFile.getName());
+            pathEdittext.setText(tagsFile.getAbsolutePath());
             formsEdittext.setText(Arrays.toString(sectionsMap.toArray()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,9 +122,12 @@ public class FormTagsFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
-                        setFormData(path);
+                        String sdcardPath = profile.getSdcardPath();
+                        String relativePath = path.replaceFirst(sdcardPath, "");
+
+                        setFormData(new File(path));
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onFormPathChanged(path);
+                        activity.onFormPathChanged(relativePath);
                     }
                 }
             }

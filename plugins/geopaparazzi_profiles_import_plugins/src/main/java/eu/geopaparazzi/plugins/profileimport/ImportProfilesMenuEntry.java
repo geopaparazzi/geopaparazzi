@@ -36,7 +36,6 @@ import eu.geopaparazzi.library.webprofile.WebProfilesListActivity;
 public class ImportProfilesMenuEntry extends MenuEntry {
 
     private final Context serviceContext;
-    private IActivitySupporter clickActivityStarter;
 
     public ImportProfilesMenuEntry(Context context) {
         this.serviceContext = context;
@@ -54,7 +53,6 @@ public class ImportProfilesMenuEntry extends MenuEntry {
 
     @Override
     public void onClick(IActivitySupporter clickActivityStarter) {
-        this.clickActivityStarter = clickActivityStarter;
         Context context = clickActivityStarter.getContext();
 
 

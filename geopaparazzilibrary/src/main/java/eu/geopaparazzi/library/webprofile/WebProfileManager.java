@@ -34,6 +34,8 @@ import android.content.res.AssetManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.core.ResourcesManager;
 
@@ -52,49 +54,50 @@ public enum WebProfileManager {
     /**
      * Downloads a profile from the given server via GET.
      *
-     * @param context    the {@link Context} to use.
-     * @param server     the server from which to download.
-     * @param user       the username for authentication.
-     * @param passwd     the password for authentication.
-     * @param webprofile the profile to download.
+     * @param context the {@link Context} to use.
+     * @param server  the server from which to download.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
+     * @param profile the profile to download.
      * @return the return code.
      */
-    public String downloadProfileContent(Context context, String server, String user, String passwd, Webprofile webprofile) throws JSONException {
+    public String downloadProfileContent(Context context, String server, String user, String passwd, Profile profile) throws JSONException {
 
-        //--- Download project file "projectPath": ---
-        String retVal = downloadFile(context, user, passwd, "projectPath",
-                                     webprofile.oJson.getString("projectURL"),webprofile.oJson );
-
-        //--- Download tags (AKA forms file) "tagsPath": ---
-        retVal = downloadFile(context, user, passwd, "tagsPath",
-                                     webprofile.oJson.getString("tagsURL"),webprofile.oJson );
-
-        //--- Download basemap file(s) "": ---
-        JSONObject jsonObject = webprofile.oJson;
-        JSONArray basemapsArray = jsonObject.getJSONArray("basemaps");
-        int basemapNum = basemapsArray.length();
-        for (int i = 0; i < basemapNum; i++) {
-            JSONObject basemapObject = basemapsArray.getJSONObject(i);
-            retVal = downloadFile(context, user, passwd, "path", basemapObject.getString("url"),basemapObject );
-        }
-
-        //--- Download overlay file(s): ---
-        JSONArray overlaysArray = jsonObject.getJSONArray("spatialitedbs");
-        int overlayNum = overlaysArray.length();
-        for (int i = 0; i < overlayNum; i++) {
-            JSONObject overlayObject = overlaysArray.getJSONObject(i);
-            retVal = downloadFile(context, user, passwd, "path", overlayObject.getString("url"),overlayObject );
-        }
+        // TODO needs to be implemented
+//        //--- Download project file "projectRelativePath": ---
+//        String retVal = downloadFile(context, user, passwd, "projectRelativePath",
+//                profile.oJson.getString("projectURL"), profile.oJson);
+//
+//        //--- Download tags (AKA forms file) "tagsRelativePath": ---
+//        retVal = downloadFile(context, user, passwd, "tagsRelativePath",
+//                profile.oJson.getString("tagsURL"), profile.oJson);
+//
+//        //--- Download basemap file(s) "": ---
+//        JSONObject jsonObject = profile.oJson;
+//        JSONArray basemapsArray = jsonObject.getJSONArray("basemaps");
+//        int basemapNum = basemapsArray.length();
+//        for (int i = 0; i < basemapNum; i++) {
+//            JSONObject basemapObject = basemapsArray.getJSONObject(i);
+//            retVal = downloadFile(context, user, passwd, "relativePath", basemapObject.getString("url"), basemapObject);
+//        }
+//
+//        //--- Download overlay file(s): ---
+//        JSONArray overlaysArray = jsonObject.getJSONArray("spatialitedbs");
+//        int overlayNum = overlaysArray.length();
+//        for (int i = 0; i < overlayNum; i++) {
+//            JSONObject overlayObject = overlaysArray.getJSONObject(i);
+//            retVal = downloadFile(context, user, passwd, "relativePath", overlayObject.getString("url"), overlayObject);
+//        }
 
         return context.getString(R.string.profile_successfully_downloaded);
     }
 
-    private String downloadFile(Context context, String user, String passwd, String sPath, String url, JSONObject oJson) throws JSONException {
+    public String downloadFile(Context context, String user, String passwd, String sPath, String url, JSONObject oJson) throws JSONException {
         File sdcardDir;
 
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            sdcardDir = resourcesManager.getSdcardDir();
+            sdcardDir = resourcesManager.getMainStorageDir();
         } catch (Exception e) {
             GPLog.error(this, null, e);
             return e.getLocalizedMessage();
@@ -103,11 +106,11 @@ public enum WebProfileManager {
         File fTargetFile = new File(sdcardDir, oJson.getString(sPath));
         String sTargetFile = fTargetFile.getAbsolutePath();
         oJson.remove(sPath);
-        oJson.put(sPath,sTargetFile);
+        oJson.put(sPath, sTargetFile);
 
         try {
-            String targetDir =  fTargetFile.getParent();
-            if ( targetDir != null && !targetDir.isEmpty()  ) {
+            String targetDir = fTargetFile.getParent();
+            if (targetDir != null && !targetDir.isEmpty()) {
                 File fTargetDir = new File(targetDir);
                 fTargetDir.mkdirs();
             }
@@ -115,7 +118,7 @@ public enum WebProfileManager {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + fTargetFile.getName();
                 return wontOverwrite;
             }
-            NetworkUtilities.sendGetRequest4File( url, fTargetFile, "", user, passwd);
+            NetworkUtilities.sendGetRequest4File(url, fTargetFile, "", user, passwd);
 
             return context.getString(R.string.profile_successfully_downloaded);
         } catch (Exception e) {
@@ -140,11 +143,11 @@ public enum WebProfileManager {
      * @return the profile list.
      * @throws Exception if something goes wrong.
      */
-    public List<Webprofile> downloadProfileList(Context context, String server, String user, String passwd) throws Exception {
+    public List<Profile> downloadProfileList(Context context, String server, String user, String passwd) throws Exception {
         String jsonString = "[]";
         if (server.equals("test")) {
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("tags/cloudprofiletest.json");
+            InputStream inputStream = assetManager.open("tags/profiletest.json");
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -156,7 +159,7 @@ public enum WebProfileManager {
 //            server = addActionPath(server, DOWNLOADLISTPATH);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
-        List<Webprofile> webprofilesList = json2WebprofilesList(jsonString);
+        List<Profile> webprofilesList = json2WebprofilesList(jsonString);
         return webprofilesList;
     }
 
@@ -164,30 +167,19 @@ public enum WebProfileManager {
      * Transform a json string to a list of profiles.
      *
      * @param json the json string.
-     * @return the list of {@link Webprofile}.
+     * @return the list of {@link Profile}.
      * @throws Exception if something goes wrong.
      */
-    public static List<Webprofile> json2WebprofilesList(String json) throws Exception {
-        List<Webprofile> wpList = new ArrayList<>();
+    public static List<Profile> json2WebprofilesList(String json) throws Exception {
+        List<Profile> wpList = new ArrayList<>();
 
         JSONObject jsonObject = new JSONObject(json);
-        JSONArray profilesArray = jsonObject.getJSONArray("profiles");
+        JSONArray profilesArray = jsonObject.getJSONArray(ProfilesHandler.PROFILES);
         int profileNum = profilesArray.length();
         for (int i = 0; i < profileNum; i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-			
-            String name = profileObject.getString("name");
-            String description = profileObject.getString("description");
-            String date = profileObject.getString("creationdate");
-			
-            Webprofile wprofile = new Webprofile();
-
-            wprofile.name = name;
-            wprofile.description = description;
-            wprofile.date = date;
-            wprofile.oJson = profileObject;
-
-            wpList.add(wprofile);
+            Profile profile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
+            wpList.add(profile);
         }
         return wpList;
     }

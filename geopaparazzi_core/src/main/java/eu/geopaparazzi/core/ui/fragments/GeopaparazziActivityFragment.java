@@ -129,7 +129,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
-            if (activeProfile.projectPath != null && new File(activeProfile.projectPath).exists()) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
                 View dashboardView = v.findViewById(R.id.dashboardLayout);
                 String color = activeProfile.color;
                 if (color != null) {
@@ -250,7 +250,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
-            if (activeProfile.projectPath != null && new File(activeProfile.projectPath).exists()) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
                 // hide new project and open project
                 menu.getItem(1).setVisible(false);
                 menu.getItem(2).setVisible(false);
