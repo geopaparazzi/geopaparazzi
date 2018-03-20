@@ -27,6 +27,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
@@ -123,6 +124,12 @@ public class FormTagsFragment extends Fragment {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
                         String sdcardPath = profile.getSdcardPath();
+
+                        if (!path.contains(sdcardPath)) {
+                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            return;
+                        }
+
                         String relativePath = path.replaceFirst(sdcardPath, "");
 
                         setFormData(new File(path));

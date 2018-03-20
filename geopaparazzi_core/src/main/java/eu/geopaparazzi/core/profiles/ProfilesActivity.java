@@ -133,7 +133,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 }
             }
             sb.append("Forms: ").append(formsCount).append("\n");
-            sb.append("Has project: ").append(profile.profileProject != null ? "no" : "yes").append("\n");
+            sb.append("Has project: ").append(profile.profileProject == null ? "no" : "yes").append("\n");
             profilesummaryText.setText(sb.toString());
 
             ImageButton settingsButton = newProjectCardView.findViewById(R.id.settingsButton);

@@ -204,6 +204,11 @@ public class BasemapsFragment extends Fragment {
                         final Profile profile = activity.getSelectedProfile();
                         String sdcardPath = profile.getSdcardPath();
 
+                        if (!path.contains(sdcardPath)) {
+                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            return;
+                        }
+
                         String relativePath = path.replaceFirst(sdcardPath, "");
                         boolean hasIt = false;
                         for (ProfileBasemaps bm : mBasemapsList) {

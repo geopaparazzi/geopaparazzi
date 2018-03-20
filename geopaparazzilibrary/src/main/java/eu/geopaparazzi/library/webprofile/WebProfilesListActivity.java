@@ -17,14 +17,6 @@
  */
 package eu.geopaparazzi.library.webprofile;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PROFILE_URL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -46,7 +38,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
@@ -54,6 +50,10 @@ import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PROFILE_URL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 
 /**
  * Web profiles listing activity.
@@ -168,19 +168,6 @@ public class WebProfilesListActivity extends ListActivity {
         refreshList();
     }
 
-    private void saveWebProfile(Profile profile) {
-        try {
-            List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
-            profileList.add(profile);
-            ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
-
-            Intent intent = new Intent((String) null);
-            intent.putExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, true);
-            setResult(Activity.RESULT_OK, intent);
-        } catch (JSONException e) {
-            Log.e("GEOS2GO", "Error saving profiles", e);
-        }
-    }
 
     private void refreshList() {
         if (GPLog.LOG)
@@ -263,32 +250,75 @@ public class WebProfilesListActivity extends ListActivity {
     private void downloadProfile(final Profile webprofile) {
         cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
                 getString(R.string.downloading_profile), true, false);
-        new AsyncTask<String, Void, String>() {
-            protected String doInBackground(String... params) {
-                try {
-                    String returnCode = WebProfileManager.INSTANCE.downloadProfileContent(WebProfilesListActivity.this, url, user, pwd,
-                            webprofile);
 
-                    if (returnCode.equals(getString(R.string.profile_successfully_downloaded)))
-                        saveWebProfile(webprofile);
-                    return returnCode;
-                } catch (Exception e) {
-                    GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                    return e.getMessage();
-                }
+        DownloadTask downloadTask = new DownloadTask(this, user, pwd, url, webprofile, cloudProgressDialog, mPreferences);
+        downloadTask.execute((String) null);
+    }
+
+    private static class DownloadTask extends AsyncTask<String, Void, String> {
+        private WeakReference<Activity> activityWeakReference;
+        private String user;
+        private String pwd;
+        private String url;
+        private Profile webprofile;
+        private ProgressDialog cloudProgressDialog;
+        private SharedPreferences mPreferences;
+        private String profileDownString;
+
+        DownloadTask(Activity activity, String user, String pwd, String url, Profile webprofile, ProgressDialog cloudProgressDialog, SharedPreferences mPreferences) {
+            activityWeakReference = new WeakReference<Activity>(activity);
+            this.user = user;
+            this.pwd = pwd;
+            this.url = url;
+            this.webprofile = webprofile;
+            this.cloudProgressDialog = cloudProgressDialog;
+            this.mPreferences = mPreferences;
+
+            profileDownString = activity.getString(R.string.profile_successfully_downloaded);
+        }
+
+        protected String doInBackground(String... params) {
+            try {
+                String returnCode = WebProfileManager.INSTANCE.downloadProfileContent(activityWeakReference.get(), url, user, pwd,
+                        webprofile);
+
+
+
+                if (returnCode.equals(profileDownString))
+                    saveWebProfile(webprofile);
+                return returnCode;
+            } catch (Exception e) {
+                GPLog.error(this, e.getLocalizedMessage(), e);
+                e.printStackTrace();
+                return e.getMessage();
+            }
+        }
+
+        protected void onPostExecute(String response) { // on UI thread!
+            GPDialogs.dismissProgressDialog(cloudProgressDialog);
+            Activity activity = activityWeakReference.get();
+            String okMsg = activity.getString(R.string.profile_successfully_downloaded);
+            if (response.equals(okMsg)) {
+                GPDialogs.infoDialog(activity, okMsg, null);
+            } else {
+                GPDialogs.warningDialog(activity, response, null);
             }
 
-            protected void onPostExecute(String response) { // on UI thread!
-                GPDialogs.dismissProgressDialog(cloudProgressDialog);
-                String okMsg = getString(R.string.profile_successfully_downloaded);
-                if (response.equals(okMsg)) {
-                    GPDialogs.infoDialog(WebProfilesListActivity.this, okMsg, null);
-                } else {
-                    GPDialogs.warningDialog(WebProfilesListActivity.this, response, null);
-                }
+        }
 
+        private void saveWebProfile(Profile profile) {
+            try {
+                List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
+                profileList.add(profile);
+                ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
+
+                Intent intent = new Intent((String) null);
+                intent.putExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, true);
+                Activity activity = activityWeakReference.get();
+                activity.setResult(Activity.RESULT_OK, intent);
+            } catch (JSONException e) {
+                Log.e("GEOS2GO", "Error saving profiles", e);
             }
-        }.execute((String) null);
+        }
     }
 }

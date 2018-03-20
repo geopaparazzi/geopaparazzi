@@ -166,6 +166,12 @@ public class SpatialiteDatabasesFragment extends Fragment {
                         ProfileSpatialitemaps spatialitemap = new ProfileSpatialitemaps();
 
                         String sdcardPath = profile.getSdcardPath();
+
+                        if (!path.contains(sdcardPath)) {
+                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            return;
+                        }
+
                         String relativePath = path.replaceFirst(sdcardPath, "");
                         spatialitemap.setRelativePath(relativePath);
 

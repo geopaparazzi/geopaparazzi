@@ -115,6 +115,12 @@ public class ProjectFragment extends Fragment {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
                         String sdcardPath = profile.getSdcardPath();
+
+                        if (!path.contains(sdcardPath)) {
+                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            return;
+                        }
+
                         String relativePath = path.replaceFirst(sdcardPath, "");
 
                         setProjectData(path);
