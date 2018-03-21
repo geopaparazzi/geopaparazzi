@@ -22,13 +22,6 @@
     tools:context=".ui.activities.ProjectMetadataActivity">
 
     <item
-        android:id="@+id/action_notesproperties"
-        android:icon="@drawable/ic_content_copy_24dp"
-        android:orderInCategory="9"
-        android:title="@string/notes_properties"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/action_selectall"
         android:icon="@drawable/ic_check_box_24dp"
         android:orderInCategory="10"
