@@ -53,7 +53,7 @@ public class NetworkUtilities {
     /**
      *
      */
-    public static final long maxBufferSize = 4096;
+    public static final long maxBufferSize = 8192;
     public static final String SLASH = "/";
     public static final int HTTP_OK = 200;
 

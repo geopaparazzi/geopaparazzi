@@ -18,23 +18,28 @@
 package eu.geopaparazzi.library.profiles.objects;
 
 import android.os.Parcel;
+import android.os.Parcelable;
+
+import eu.geopaparazzi.library.network.download.IDownloadable;
 
 /**
  * Created by hydrologis on 19/03/18.
  */
-public class ProfileOtherfiles extends ARelativePathResource {
+public class ProfileOtherfiles extends ARelativePathResource implements Parcelable, IDownloadable {
     public String url = "";
     public String modifiedDate = "";
     public long size = -1;
+    private String destinationPath = "";
 
     public ProfileOtherfiles(){
     }
 
+
     protected ProfileOtherfiles(Parcel in) {
-        relativePath = in.readString();
         url = in.readString();
         modifiedDate = in.readString();
         size = in.readLong();
+        destinationPath = in.readString();
     }
 
     public static final Creator<ProfileOtherfiles> CREATOR = new Creator<ProfileOtherfiles>() {
@@ -50,15 +55,35 @@ public class ProfileOtherfiles extends ARelativePathResource {
     };
 
     @Override
+    public long getSize() {
+        return size;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public String getDestinationPath() {
+        return destinationPath;
+    }
+
+    @Override
+    public void setDestinationPath(String path) {
+        destinationPath = path;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(relativePath);
         dest.writeString(url);
         dest.writeString(modifiedDate);
         dest.writeLong(size);
+        dest.writeString(destinationPath);
     }
 }

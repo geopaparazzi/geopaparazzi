@@ -18,23 +18,26 @@
 package eu.geopaparazzi.library.webprofile;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -45,9 +48,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.dialogs.ProgressBarDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileOtherfiles;
+import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -60,11 +67,11 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class WebProfilesListActivity extends ListActivity {
+public class WebProfilesListActivity extends AppCompatActivity implements ProgressBarDialogFragment.IProgressChangeListener {
     private static final String ERROR = "error"; //$NON-NLS-1$
 
-    private ArrayAdapter<Profile> arrayAdapter;
     private EditText filterText;
+    private ListView mListView;
 
     private List<Profile> profileList = new ArrayList<>();
     private List<Profile> profileListToLoad = new ArrayList<>();
@@ -73,15 +80,20 @@ public class WebProfilesListActivity extends ListActivity {
     private String pwd;
     private String url;
 
+
     private ProgressDialog downloadProfileListDialog;
-    private ProgressDialog cloudProgressDialog;
 
     private SharedPreferences mPreferences;
     private HashMap<String, Profile> existingProfileMap = new HashMap<>();
+    private ProgressBarDialogFragment progressBarDialogFragment;
+
+    private Profile downloadProfile;
 
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -103,6 +115,8 @@ public class WebProfilesListActivity extends ListActivity {
 
         filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
+
+        mListView = findViewById(R.id.list);
 
         downloadProfileListDialog = ProgressDialog.show(this, getString(R.string.downloading),
                 getString(R.string.downloading_profiles_list_from_server), true, false);
@@ -137,19 +151,18 @@ public class WebProfilesListActivity extends ListActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         refreshList();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         GPDialogs.dismissProgressDialog(downloadProfileListDialog);
-        GPDialogs.dismissProgressDialog(cloudProgressDialog);
         super.onPause();
     }
 
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         filterText.removeTextChangedListener(filterTextWatcher);
     }
@@ -172,22 +185,23 @@ public class WebProfilesListActivity extends ListActivity {
     private void refreshList() {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, "refreshing profiles list"); //$NON-NLS-1$
-        arrayAdapter = new ArrayAdapter<Profile>(this, R.layout.webprofilesrow, profileListToLoad) {
+        ArrayAdapter<Profile> arrayAdapter = new ArrayAdapter<Profile>(this, R.layout.webprofilesrow, profileListToLoad) {
             @Override
             public View getView(int position, View cView, ViewGroup parent) {
+
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.webprofilesrow, null);
-                final Profile webprofile = profileListToLoad.get(position);
+                final Profile selectedWebprofile = profileListToLoad.get(position);
 
                 TextView nameText = rowView.findViewById(R.id.nametext);
                 TextView descriptionText = rowView.findViewById(R.id.descriptiontext);
                 TextView dateText = rowView.findViewById(R.id.datetext);
                 TextView commentsText = rowView.findViewById(R.id.comments);
 
-                String wpName = webprofile.name;
+                String wpName = selectedWebprofile.name;
                 nameText.setText(wpName);
-                descriptionText.setText(webprofile.description);
-                dateText.setText(webprofile.creationdate);
+                descriptionText.setText(selectedWebprofile.description);
+                dateText.setText(selectedWebprofile.creationdate);
 
                 Profile profile = existingProfileMap.get(wpName);
                 boolean ignore = false;
@@ -197,7 +211,7 @@ public class WebProfilesListActivity extends ListActivity {
                 } else {
                     String pName = profile.name;
                     String pModifieddate = profile.modifieddate;
-                    String wpModifieddate = webprofile.modifieddate;
+                    String wpModifieddate = selectedWebprofile.modifieddate;
                     if (pName.equals(wpName) && pModifieddate.equals(wpModifieddate)) {
                         // and existing profile to be ignored
                         commentsText.setText("IGNORED: the same profile exists already.");
@@ -213,13 +227,13 @@ public class WebProfilesListActivity extends ListActivity {
                     ImageView imageText = rowView.findViewById(R.id.downloadprofile_image);
                     imageText.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            downloadProfile(webprofile);
+                            downloadProfile(selectedWebprofile);
                         }
                     });
                     TextView titleText = rowView.findViewById(R.id.nametext);
                     titleText.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            downloadProfile(webprofile);
+                            downloadProfile(selectedWebprofile);
                         }
                     });
                 }
@@ -228,7 +242,7 @@ public class WebProfilesListActivity extends ListActivity {
 
         };
 
-        setListAdapter(arrayAdapter);
+        mListView.setAdapter(arrayAdapter);
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -247,78 +261,62 @@ public class WebProfilesListActivity extends ListActivity {
         }
     };
 
-    private void downloadProfile(final Profile webprofile) {
-        cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
-                getString(R.string.downloading_profile), true, false);
+    private void downloadProfile(Profile selectedWebprofile) {
+        List<Parcelable> downloadables = new ArrayList<>();
+        selectedWebprofile.profileTags.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileTags.getRelativePath()).getAbsolutePath());
+        downloadables.add(selectedWebprofile.profileTags);
+        selectedWebprofile.profileProject.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileProject.getRelativePath()).getAbsolutePath());
+        downloadables.add(selectedWebprofile.profileProject);
+        for (ProfileBasemaps item : selectedWebprofile.basemapsList) {
+            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+        }
+        downloadables.addAll(selectedWebprofile.basemapsList);
+        for (ProfileOtherfiles item : selectedWebprofile.otherFilesList) {
+            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+        }
+        downloadables.addAll(selectedWebprofile.otherFilesList);
+        for (ProfileSpatialitemaps item : selectedWebprofile.spatialiteList) {
+            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+        }
+        downloadables.addAll(selectedWebprofile.spatialiteList);
 
-        DownloadTask downloadTask = new DownloadTask(this, user, pwd, url, webprofile, cloudProgressDialog, mPreferences);
-        downloadTask.execute((String) null);
+        downloadProfile = selectedWebprofile;
+        progressBarDialogFragment = ProgressBarDialogFragment.newInstance(downloadables.toArray(new Parcelable[downloadables.size()]));
+        progressBarDialogFragment.setCancelable(false);
+        progressBarDialogFragment.show(getSupportFragmentManager(), "Download files");
+
     }
 
-    private static class DownloadTask extends AsyncTask<String, Void, String> {
-        private WeakReference<Activity> activityWeakReference;
-        private String user;
-        private String pwd;
-        private String url;
-        private Profile webprofile;
-        private ProgressDialog cloudProgressDialog;
-        private SharedPreferences mPreferences;
-        private String profileDownString;
+    @Override
+    public void onProgressError(String errorMsg) {
+        if (progressBarDialogFragment != null)
+            progressBarDialogFragment.dismiss();
+        GPDialogs.warningDialog(this, errorMsg, null);
+    }
 
-        DownloadTask(Activity activity, String user, String pwd, String url, Profile webprofile, ProgressDialog cloudProgressDialog, SharedPreferences mPreferences) {
-            activityWeakReference = new WeakReference<Activity>(activity);
-            this.user = user;
-            this.pwd = pwd;
-            this.url = url;
-            this.webprofile = webprofile;
-            this.cloudProgressDialog = cloudProgressDialog;
-            this.mPreferences = mPreferences;
-
-            profileDownString = activity.getString(R.string.profile_successfully_downloaded);
+    @Override
+    public void onProgressDone(String msg) {
+        if (progressBarDialogFragment != null)
+            progressBarDialogFragment.dismiss();
+        if (downloadProfile != null) {
+            saveWebProfile(downloadProfile);
+            downloadProfile = null;
         }
+        if (msg != null && msg.trim().length() > 0)
+            GPDialogs.infoDialog(this, msg, null);
+    }
 
-        protected String doInBackground(String... params) {
-            try {
-                String returnCode = WebProfileManager.INSTANCE.downloadProfileContent(activityWeakReference.get(), url, user, pwd,
-                        webprofile);
+    private void saveWebProfile(Profile profile) {
+        try {
+            List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
+            profileList.add(profile);
+            ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
 
-
-
-                if (returnCode.equals(profileDownString))
-                    saveWebProfile(webprofile);
-                return returnCode;
-            } catch (Exception e) {
-                GPLog.error(this, e.getLocalizedMessage(), e);
-                e.printStackTrace();
-                return e.getMessage();
-            }
-        }
-
-        protected void onPostExecute(String response) { // on UI thread!
-            GPDialogs.dismissProgressDialog(cloudProgressDialog);
-            Activity activity = activityWeakReference.get();
-            String okMsg = activity.getString(R.string.profile_successfully_downloaded);
-            if (response.equals(okMsg)) {
-                GPDialogs.infoDialog(activity, okMsg, null);
-            } else {
-                GPDialogs.warningDialog(activity, response, null);
-            }
-
-        }
-
-        private void saveWebProfile(Profile profile) {
-            try {
-                List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
-                profileList.add(profile);
-                ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
-
-                Intent intent = new Intent((String) null);
-                intent.putExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, true);
-                Activity activity = activityWeakReference.get();
-                activity.setResult(Activity.RESULT_OK, intent);
-            } catch (JSONException e) {
-                Log.e("GEOS2GO", "Error saving profiles", e);
-            }
+            Intent intent = new Intent((String) null);
+            intent.putExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, true);
+            setResult(Activity.RESULT_OK, intent);
+        } catch (JSONException e) {
+            Log.e("GEOS2GO", "Error saving profiles", e);
         }
     }
 }

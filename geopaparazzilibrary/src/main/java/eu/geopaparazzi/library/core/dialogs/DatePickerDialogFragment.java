@@ -28,25 +28,25 @@ import android.widget.TextView;
 
 /**
  * A date picker fragment.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    private final int year;
-    private final int month;
-    private final int day;
-    private final TextView dateView;
+    private int year;
+    private int month;
+    private int day;
+    private TextView dateView;
 
     /**
-     * constructor
-     * 
-     * @param year the year as of Calendar.get(Calendar.YEAR).
-     * @param month the month as of Calendar.get(Calendar.MONTH).
-     * @param day the day as of Calendar.get(Calendar.DAY).
+     * Set attributes.
+     *
+     * @param year     the year as of Calendar.get(Calendar.YEAR).
+     * @param month    the month as of Calendar.get(Calendar.MONTH).
+     * @param day      the day as of Calendar.get(Calendar.DAY).
      * @param dateView the {@link TextView} to update.
      */
-    public DatePickerDialogFragment(int year, int month, int day, TextView dateView) {
+    public void setAttributes(int year, int month, int day, TextView dateView) {
         this.year = year;
         this.month = month;
         this.day = day;
@@ -54,12 +54,13 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
     }
 
     @Override
-    public Dialog onCreateDialog( Bundle savedInstanceState ) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
-    public void onDateSet( DatePicker view, int year, int month, int day ) {
-        DecimalFormat decimalFormatter = new DecimalFormat("00");; //$NON-NLS-1$
+    public void onDateSet(DatePicker view, int year, int month, int day) {
+        DecimalFormat decimalFormatter = new DecimalFormat("00");
+        ; //$NON-NLS-1$
 
         StringBuilder sb = new StringBuilder();
         sb.append(year);

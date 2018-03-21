@@ -18,24 +18,30 @@
 package eu.geopaparazzi.library.profiles.objects;
 
 import android.os.Parcel;
+import android.os.Parcelable;
+
+import eu.geopaparazzi.library.network.download.IDownloadable;
 
 /**
  * Created by hydrologis on 19/03/18.
  */
-public class ProfileProjects extends ARelativePathResource {
+public class ProfileProjects extends ARelativePathResource implements Parcelable, IDownloadable {
     public String projectUrl = "";
     public String projectUploadUrl = "";
     public String projectModifiedDate = "";
     public long projectSize = -1;
+    private String destinationPath = "";
 
-    public ProfileProjects(){}
+    public ProfileProjects() {
+    }
+
 
     protected ProfileProjects(Parcel in) {
-        relativePath = in.readString();
         projectUrl = in.readString();
         projectUploadUrl = in.readString();
         projectModifiedDate = in.readString();
         projectSize = in.readLong();
+        destinationPath = in.readString();
     }
 
     public static final Creator<ProfileProjects> CREATOR = new Creator<ProfileProjects>() {
@@ -49,20 +55,6 @@ public class ProfileProjects extends ARelativePathResource {
             return new ProfileProjects[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(relativePath);
-        dest.writeString(projectUrl);
-        dest.writeString(projectUploadUrl);
-        dest.writeString(projectModifiedDate);
-        dest.writeLong(projectSize);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -80,5 +72,39 @@ public class ProfileProjects extends ARelativePathResource {
         int result = relativePath.hashCode();
         result = 31 * result + (projectModifiedDate != null ? projectModifiedDate.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public long getSize() {
+        return projectSize;
+    }
+
+    @Override
+    public String getUrl() {
+        return projectUrl;
+    }
+
+    @Override
+    public String getDestinationPath() {
+        return destinationPath;
+    }
+
+    @Override
+    public void setDestinationPath(String path) {
+        destinationPath = path;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(projectUrl);
+        dest.writeString(projectUploadUrl);
+        dest.writeString(projectModifiedDate);
+        dest.writeLong(projectSize);
+        dest.writeString(destinationPath);
     }
 }
