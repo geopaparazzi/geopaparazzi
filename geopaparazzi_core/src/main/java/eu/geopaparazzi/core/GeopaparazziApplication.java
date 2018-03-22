@@ -35,6 +35,7 @@ import java.io.IOException;
 import eu.geopaparazzi.core.database.DatabaseManager;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 
 /**
  * Application singleton.
@@ -73,6 +74,12 @@ public class GeopaparazziApplication extends GPApplication {
     public void onCreate() {
         super.onCreate();
         ResourcesManager.resetManager();
+        try {
+            ResourcesManager.getInstance(this);
+            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized."); //$NON-NLS-1$//$NON-NLS-2$
     }
 

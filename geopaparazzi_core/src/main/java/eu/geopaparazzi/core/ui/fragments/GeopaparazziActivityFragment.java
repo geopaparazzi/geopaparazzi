@@ -132,20 +132,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // this fragment adds to the menu
         setHasOptionsMenu(true);
 
-        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
-                View view = getView();
-                if (view != null) {
-                    View dashboardView = view.findViewById(R.id.dashboardLayout);
-                    String color = activeProfile.color;
-                    if (color != null) {
-                        dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
-                    }
-                }
-            }
-        }
-
         try {
             initializeResourcesManager();
 
@@ -220,6 +206,20 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     @Override
     public void onResume() {
         super.onResume();
+
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
+                View view = getView();
+                if (view != null) {
+                    View dashboardView = view.findViewById(R.id.dashboardLayout);
+                    String color = activeProfile.color;
+                    if (color != null) {
+                        dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
+                    }
+                }
+            }
+        }
 
         GpsServiceUtilities.triggerBroadcast(getActivity());
     }
@@ -481,6 +481,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (v == mMapviewButton) {
+            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead(); // ugly, needs to be reviewed
             Intent importIntent = new Intent(getActivity(), MapviewActivity.class);
             startActivity(importIntent);
         } else if (v == mGpslogButton) {

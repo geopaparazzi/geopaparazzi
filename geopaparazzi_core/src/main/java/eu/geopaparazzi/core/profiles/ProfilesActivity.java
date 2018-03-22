@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
@@ -97,6 +98,11 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
         if (profileList != null) {
             saveProfiles();
+            try {
+                ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

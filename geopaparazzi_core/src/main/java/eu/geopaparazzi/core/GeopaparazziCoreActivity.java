@@ -92,13 +92,13 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     }
 
     private void checkAvailableProfiles() {
-        try {
-            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+//        try {
+//            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
             BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
             SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

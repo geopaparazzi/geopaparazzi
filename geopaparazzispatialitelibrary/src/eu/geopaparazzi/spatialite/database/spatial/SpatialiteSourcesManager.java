@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -135,6 +136,7 @@ public enum SpatialiteSourcesManager {
             for (ProfileSpatialitemaps db : dbs) {
                 collectTablesFromFile(activeProfile, db);
             }
+
             spatialiteMaps = new ArrayList<>();
             if (mSpatialiteMaps != null)
                 spatialiteMaps.addAll(mSpatialiteMaps);
@@ -298,9 +300,22 @@ public enum SpatialiteSourcesManager {
                     mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
                     mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
 
-                    if (layerNames.contains(tmpSpatialiteMap.tableName)){
+                    if (layerNames.contains(tmpSpatialiteMap.tableName)) {
                         tmpSpatialiteMap.isVisible = true;
+                        Style style = table.getStyle();
+                        if (style.enabled != 1) {
+                            style.enabled = 1;
+
+                            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(tmpSpatialiteMap);
+                            try {
+                                spatialiteDatabaseHandler.updateStyle(style);
+                            } catch (jsqlite.Exception e) {
+                                GPLog.error(this, null, e);
+                            }
+                        }
                     }
+
                     foundTables = true;
                 }
             }

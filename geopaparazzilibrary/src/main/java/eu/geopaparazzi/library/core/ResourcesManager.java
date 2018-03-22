@@ -24,6 +24,8 @@ import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -88,6 +90,7 @@ public class ResourcesManager implements Serializable {
     private File mainStorageDir;
     private List<File> otherStorageDirs = new ArrayList<>();
     private final String packageName;
+    private final String relativeAppDataFolder;
 
     /**
      * @param useInternalMemory if <code>true</code>, internal memory is used.
@@ -145,6 +148,7 @@ public class ResourcesManager implements Serializable {
             applicationLabel = packageName.substring(lastDot + 1, packageName.length());
         }
         applicationLabel = applicationLabel.toLowerCase();
+        relativeAppDataFolder = "/Android/data/" + packageName + "/files";
 
         /*
          * take care to create all the folders needed
@@ -171,8 +175,7 @@ public class ResourcesManager implements Serializable {
         // that we don't want
         for (int i = 0; i < extDirs.length; i++) {
             if (extDirs[i] != null) {
-                String regex = "/Android/data/" + getPackageName() + "/files";
-                extRootDirs[i] = new File(extDirs[i].toString().replaceAll(regex, ""));
+                extRootDirs[i] = new File(extDirs[i].toString().replaceAll(relativeAppDataFolder, ""));
             }
         }
 
@@ -220,16 +223,7 @@ public class ResourcesManager implements Serializable {
         /*
          * get the database file
          */
-        String databasePath = null;
-        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            String projectPath = activeProfile.profileProject.getRelativePath();
-            if (projectPath != null && activeProfile.getFile(projectPath).exists()) {
-                databasePath = activeProfile.getFile(projectPath).getAbsolutePath();
-            }
-        }
-        if (databasePath == null)
-            databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
+        String databasePath = preferences.getString(PREFS_KEY_DATABASE_TO_LOAD, "asdasdpoipoi");
         databaseFile = new File(databasePath);
         if (databaseFile.getParentFile() == null || !databaseFile.getParentFile().exists()) {
             // fallback on the default
@@ -287,15 +281,23 @@ public class ResourcesManager implements Serializable {
         return otherStorageDirs;
     }
 
+    public String getRelativeAppDataFolder() {
+        return relativeAppDataFolder;
+    }
+
     /**
      * Get the file to a default database location for the app.
-     * <p>
-     * <p>This relativePath is generated with default values and can be
-     * exploited. It doesn't assure that in the location there really is a db.
      *
      * @return the {@link File} to the database.
      */
     public File getDatabaseFile() {
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            String projectPath = activeProfile.profileProject.getRelativePath();
+            if (projectPath != null && activeProfile.getFile(projectPath).exists()) {
+                return activeProfile.getFile(projectPath);
+            }
+        }
         return databaseFile;
     }
 
