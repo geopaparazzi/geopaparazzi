@@ -24,6 +24,7 @@ import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -210,6 +211,8 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             GpsServiceUtilities.stopDatabaseLogging(this);
             GpsServiceUtilities.stopGpsService(this);
             GpsServiceUtilities.unregisterFromBroadcasts(this, geopaparazziActivityFragment.getGpsServiceBroadcastReceiver());
+            GeopaparazziApplication.getInstance().closeDatabase();
+            ResourcesManager.resetManager();
         }
 
         Handler handler = new Handler();

@@ -35,6 +35,7 @@ import java.io.IOException;
 import eu.geopaparazzi.core.database.DatabaseManager;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 
 /**
@@ -46,6 +47,8 @@ public class GeopaparazziApplication extends GPApplication {
 
     private static SQLiteDatabase database;
     public static String mailTo = "feedback@geopaparazzi.eu";
+    private DatabaseManager databaseManager;
+    private File databaseFile;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -86,8 +89,13 @@ public class GeopaparazziApplication extends GPApplication {
     @Override
     public synchronized SQLiteDatabase getDatabase() throws IOException {
         if (database == null) {
-            DatabaseManager databaseManager = new DatabaseManager();
-            database = databaseManager.getDatabase(getInstance());
+            databaseManager = new DatabaseManager();
+            try {
+                databaseFile = ResourcesManager.getInstance(this).getDatabaseFile();
+                database = databaseManager.getDatabase(getInstance(), databaseFile);
+            } catch (Exception e) {
+                throw new IOException(e.getLocalizedMessage());
+            }
         }
         return database;
     }
@@ -98,6 +106,7 @@ public class GeopaparazziApplication extends GPApplication {
             database.close();
         }
         database = null;
+        databaseFile = null;
     }
 
     public static void reset() {

@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.library;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.app.Application;

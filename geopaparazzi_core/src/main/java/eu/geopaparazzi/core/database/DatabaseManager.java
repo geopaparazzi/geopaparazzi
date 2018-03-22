@@ -63,6 +63,10 @@ public class DatabaseManager {
         } catch (Exception e) {
             throw new IOException(e.getLocalizedMessage());
         }
+        return getDatabase(context, databaseFile);
+    }
+
+    public SQLiteDatabase getDatabase(Context context, File databaseFile) throws IOException {
         if (databaseHelper == null || !databaseFile.exists()) {
 
             databaseHelper = new DatabaseOpenHelper(databaseFile);

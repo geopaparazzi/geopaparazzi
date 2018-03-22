@@ -300,21 +300,22 @@ public enum SpatialiteSourcesManager {
                     mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
                     mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
 
-                    if (layerNames.contains(tmpSpatialiteMap.tableName)) {
-                        tmpSpatialiteMap.isVisible = true;
-                        Style style = table.getStyle();
-                        if (style.enabled != 1) {
-                            style.enabled = 1;
-
-                            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
-                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(tmpSpatialiteMap);
-                            try {
-                                spatialiteDatabaseHandler.updateStyle(style);
-                            } catch (jsqlite.Exception e) {
-                                GPLog.error(this, null, e);
-                            }
-                        }
-                    }
+                    // FIXME this gets recursive and breaks
+                    //                    if (layerNames.contains(tmpSpatialiteMap.tableName)) {
+                    //                        tmpSpatialiteMap.isVisible = true;
+                    //                        Style style = table.getStyle();
+                    //                        if (style.enabled != 1) {
+                    //                            style.enabled = 1;
+                    //
+                    //                            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+                    //                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(tmpSpatialiteMap);
+                    //                            try {
+                    //                                spatialiteDatabaseHandler.updateStyle(style);
+                    //                            } catch (jsqlite.Exception e) {
+                    //                                GPLog.error(this, null, e);
+                    //                            }
+                    //                        }
+                    //                    }
 
                     foundTables = true;
                 }

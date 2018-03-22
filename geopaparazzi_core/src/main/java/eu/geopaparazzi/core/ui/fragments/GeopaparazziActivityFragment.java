@@ -32,8 +32,6 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,10 +39,28 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.GeopaparazziCoreActivity;
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
+import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.core.database.TableDescriptions;
+import eu.geopaparazzi.core.database.objects.Metadata;
+import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
+import eu.geopaparazzi.core.ui.activities.AboutActivity;
+import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
+import eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity;
+import eu.geopaparazzi.core.ui.activities.ExportActivity;
+import eu.geopaparazzi.core.ui.activities.ImportActivity;
+import eu.geopaparazzi.core.ui.activities.PanicActivity;
+import eu.geopaparazzi.core.ui.activities.ProjectMetadataActivity;
+import eu.geopaparazzi.core.ui.activities.SettingsActivity;
+import eu.geopaparazzi.core.ui.dialogs.GpsInfoDialogFragment;
+import eu.geopaparazzi.core.ui.dialogs.NewProjectDialogFragment;
+import eu.geopaparazzi.core.utilities.Constants;
+import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DatabaseUtilities;
@@ -59,6 +75,7 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -70,24 +87,6 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoMetadata;
-import eu.geopaparazzi.core.database.TableDescriptions;
-import eu.geopaparazzi.core.database.objects.Metadata;
-import eu.geopaparazzi.core.mapview.MapviewActivity;
-import eu.geopaparazzi.core.ui.activities.AboutActivity;
-import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
-import eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity;
-import eu.geopaparazzi.core.ui.activities.ExportActivity;
-import eu.geopaparazzi.core.ui.activities.ImportActivity;
-import eu.geopaparazzi.core.ui.activities.PanicActivity;
-import eu.geopaparazzi.core.ui.activities.ProjectMetadataActivity;
-import eu.geopaparazzi.core.ui.activities.SettingsActivity;
-import eu.geopaparazzi.core.ui.dialogs.GpsInfoDialogFragment;
-import eu.geopaparazzi.core.ui.dialogs.NewProjectDialogFragment;
-import eu.geopaparazzi.core.utilities.Constants;
-import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
@@ -140,7 +139,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         StringAsyncTask task = new StringAsyncTask(getActivity()) {
@@ -202,26 +200,32 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
 
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
-                View view = getView();
-                if (view != null) {
-                    View dashboardView = view.findViewById(R.id.dashboardLayout);
+        checkProfileColor(activeProfile);
+
+        GpsServiceUtilities.triggerBroadcast(getActivity());
+    }
+
+    private void checkProfileColor(Profile activeProfile) {
+        View view = getView();
+        if (view != null) {
+            View dashboardView = view.findViewById(R.id.dashboardLayout);
+            if (dashboardView != null) {
+                if (activeProfile != null && activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
                     String color = activeProfile.color;
                     if (color != null) {
                         dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
                     }
+                } else {
+                    int color = Compat.getColor(getActivity(), R.color.main_background);
+                    dashboardView.setBackgroundColor(color);
                 }
             }
         }
-
-        GpsServiceUtilities.triggerBroadcast(getActivity());
     }
 
     @Override

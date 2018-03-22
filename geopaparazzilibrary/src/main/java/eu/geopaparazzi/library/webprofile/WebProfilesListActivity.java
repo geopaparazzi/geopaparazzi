@@ -303,7 +303,14 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
             downloadProfile = null;
         }
         if (msg != null && msg.trim().length() > 0)
-            GPDialogs.infoDialog(this, msg, null);
+            GPDialogs.infoDialog(this, msg, new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+
+
     }
 
     private void saveWebProfile(Profile profile) {
@@ -312,7 +319,7 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
             for (Profile p : profileList) {
                 p.active = false;
             }
-            profile.active = true;
+            profile.active = false; // TODO now we can't activate from here, since we are not able to restart
             profileList.add(profile);
             ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
 

@@ -21,10 +21,12 @@ import android.widget.TextView;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.gui.FormTagsFragment;
 import eu.geopaparazzi.core.profiles.gui.NewProfileDialogFragment;
@@ -252,12 +254,6 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 String profilesJson = FileUtilities.readfile(inputFile);
                 List<Profile> importedProfiles = ProfilesHandler.INSTANCE.getProfilesFromJson(profilesJson);
 
-                // substitute sdcard. In case it was exported from another device
-                // TODO check this out properly
-//                for (Profile profile : importedProfiles) {
-//                    profile.correctPaths(sdcardDir.getAbsolutePath());
-//                }
-
                 profileList.addAll(importedProfiles);
                 saveProfiles();
                 loadProfiles();
@@ -324,4 +320,5 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             Log.e("GEOS2GO", "Error saving profiles", e);
         }
     }
+
 }
