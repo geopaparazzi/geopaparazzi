@@ -175,13 +175,15 @@ public class BasemapsFragment extends Fragment {
                     public void run() {
                         mBasemapsList.remove(position);
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onBasemapRemoved(baseMap.getRelativePath());
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshList();
-                            }
-                        });
+                        if (activity != null) {
+                            activity.onBasemapRemoved(baseMap.getRelativePath());
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    refreshList();
+                                }
+                            });
+                        }
 
                     }
                 }, null);
@@ -201,29 +203,31 @@ public class BasemapsFragment extends Fragment {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        final Profile profile = activity.getSelectedProfile();
-                        String sdcardPath = profile.getSdcardPath();
+                        if (activity != null) {
+                            final Profile profile = activity.getSelectedProfile();
+                            String sdcardPath = profile.getSdcardPath();
 
-                        if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
-                            return;
-                        }
-
-                        String relativePath = path.replaceFirst(sdcardPath, "");
-                        boolean hasIt = false;
-                        for (ProfileBasemaps bm : mBasemapsList) {
-                            if (bm.getRelativePath().equals(relativePath)) {
-                                hasIt = true;
-                                break;
+                            if (!path.contains(sdcardPath)) {
+                                GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                                return;
                             }
-                        }
 
-                        if (!hasIt) {
-                            ProfileBasemaps basemaps = new ProfileBasemaps();
-                            basemaps.setRelativePath(relativePath);
-                            mBasemapsList.add(basemaps);
-                            activity.onBasemapAdded(relativePath);
-                            refreshList();
+                            String relativePath = path.replaceFirst(sdcardPath, "");
+                            boolean hasIt = false;
+                            for (ProfileBasemaps bm : mBasemapsList) {
+                                if (bm.getRelativePath().equals(relativePath)) {
+                                    hasIt = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasIt) {
+                                ProfileBasemaps basemaps = new ProfileBasemaps();
+                                basemaps.setRelativePath(relativePath);
+                                mBasemapsList.add(basemaps);
+                                activity.onBasemapAdded(relativePath);
+                                refreshList();
+                            }
                         }
                     }
                 }

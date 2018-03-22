@@ -33,6 +33,7 @@ import java.util.List;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -220,10 +221,11 @@ public class ResourcesManager implements Serializable {
          * get the database file
          */
         String databasePath = null;
-        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
-            String projectPath = ProfilesHandler.INSTANCE.getActiveProfile().profileProject.getRelativePath();
-            if (projectPath != null && new File(projectPath).exists()) {
-                databasePath = projectPath;
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            String projectPath = activeProfile.profileProject.getRelativePath();
+            if (projectPath != null && activeProfile.getFile(projectPath).exists()) {
+                databasePath = activeProfile.getFile(projectPath).getAbsolutePath();
             }
         }
         if (databasePath == null)

@@ -497,7 +497,7 @@ public enum ProfilesHandler {
         if (activeProfile != null) {
             for (ProfileBasemaps baseMap : activeProfile.basemapsList) {
                 BaseMap map = new BaseMap();
-                File databaseFile = new File(baseMap.getRelativePath());
+                File databaseFile = activeProfile.getFile(baseMap.getRelativePath());
                 if (databaseFile.exists()) {
                     map.parentFolder = databaseFile.getParentFile().getAbsolutePath();
                     map.databasePath = databaseFile.getAbsolutePath();

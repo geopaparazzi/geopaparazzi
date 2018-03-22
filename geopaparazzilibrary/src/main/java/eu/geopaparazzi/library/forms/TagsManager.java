@@ -149,8 +149,9 @@ public class TagsManager {
         File tagsFile = null;
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
-            if (activeProfile.profileTags.getRelativePath() != null) {
-                tagsFile = activeProfile.getFile(activeProfile.profileTags.getRelativePath());
+            String relativePath = activeProfile.profileTags.getRelativePath();
+            if (relativePath != null) {
+                tagsFile = activeProfile.getFile(relativePath);
                 if (!tagsFile.exists())
                     tagsFile = null;
             }
