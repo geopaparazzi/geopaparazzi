@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,6 +87,7 @@ import eu.geopaparazzi.core.ui.dialogs.GpsInfoDialogFragment;
 import eu.geopaparazzi.core.ui.dialogs.NewProjectDialogFragment;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -127,66 +131,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // this fragment adds to the menu
         setHasOptionsMenu(true);
 
-        try {
-            initializeResourcesManager();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // start gps service
-        GpsServiceUtilities.startGpsService(getActivity());
-
-
-        // start map reading in background
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                BaseMapSourcesManager.INSTANCE.getBaseMaps();
-            }
-        }).start();
-        return v; // return the fragment's view for display
-    }
-
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mNotesButton = (ImageButton) view.findViewById(R.id.dashboardButtonNotes);
-        mNotesButton.setOnClickListener(this);
-        mNotesButton.setOnLongClickListener(this);
-
-        mMetadataButton = (ImageButton) view.findViewById(R.id.dashboardButtonMetadata);
-        mMetadataButton.setOnClickListener(this);
-        mMetadataButton.setOnLongClickListener(this);
-
-        mMapviewButton = (ImageButton) view.findViewById(R.id.dashboardButtonMapview);
-        mMapviewButton.setOnClickListener(this);
-        mMapviewButton.setOnLongClickListener(this);
-
-        mGpslogButton = (ImageButton) view.findViewById(R.id.dashboardButtonGpslog);
-        mGpslogButton.setOnClickListener(this);
-        mGpslogButton.setOnLongClickListener(this);
-
-        mImportButton = (ImageButton) view.findViewById(R.id.dashboardButtonImport);
-        mImportButton.setOnClickListener(this);
-        mImportButton.setOnLongClickListener(this);
-
-        mExportButton = (ImageButton) view.findViewById(R.id.dashboardButtonExport);
-        mExportButton.setOnClickListener(this);
-        mExportButton.setOnLongClickListener(this);
-
-        mPanicFAB = (FloatingActionButton) view.findViewById(R.id.panicActionButton);
-        mPanicFAB.setOnClickListener(this);
-        enablePanic(false);
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
             if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
@@ -200,6 +144,65 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 }
             }
         }
+        try {
+            initializeResourcesManager();
+
+            // start gps service
+            GpsServiceUtilities.startGpsService(getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // start map reading in background
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BaseMapSourcesManager.INSTANCE.getBaseMaps();
+            }
+        }).start();
+        return v; // return the fragment's view for display
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mNotesButton = view.findViewById(R.id.dashboardButtonNotes);
+        mNotesButton.setOnClickListener(this);
+        mNotesButton.setOnLongClickListener(this);
+
+        mMetadataButton = view.findViewById(R.id.dashboardButtonMetadata);
+        mMetadataButton.setOnClickListener(this);
+        mMetadataButton.setOnLongClickListener(this);
+
+        mMapviewButton = view.findViewById(R.id.dashboardButtonMapview);
+        mMapviewButton.setOnClickListener(this);
+        mMapviewButton.setOnLongClickListener(this);
+
+        mGpslogButton = view.findViewById(R.id.dashboardButtonGpslog);
+        mGpslogButton.setOnClickListener(this);
+        mGpslogButton.setOnLongClickListener(this);
+
+        mImportButton = view.findViewById(R.id.dashboardButtonImport);
+        mImportButton.setOnClickListener(this);
+        mImportButton.setOnLongClickListener(this);
+
+        mExportButton = view.findViewById(R.id.dashboardButtonExport);
+        mExportButton.setOnClickListener(this);
+        mExportButton.setOnLongClickListener(this);
+
+        mPanicFAB = view.findViewById(R.id.panicActionButton);
+        mPanicFAB.setOnClickListener(this);
+        enablePanic(false);
+
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         GpsServiceUtilities.triggerBroadcast(getActivity());
     }

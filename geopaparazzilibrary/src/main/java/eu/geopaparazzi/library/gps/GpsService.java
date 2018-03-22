@@ -192,6 +192,33 @@ public class GpsService extends Service implements LocationListener, Listener {
     public static final String CHANNEL_ID = "GeopaparazziGPSServiceChannel";
     private int notificationId = 666;
     private NotificationManager notificationManagerNative;
+    private String title;
+    private String text;
+    private String name;
+    private String description;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            title = "Geopap GPS Service";
+            text = "Geopapaparazzi is making use of the GPS.";
+            name = "Geopap Channel";
+            description = "Geopaparazzi GPS Service Channel";
+//
+//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+//                    "GPS Information",
+//                    NotificationManager.IMPORTANCE_DEFAULT);
+//
+//            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+//            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                    .setContentTitle(title)
+//                    .setContentText(text).build();
+//
+//            startForeground(notificationId, notification);
+//        }
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -735,8 +762,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             if (notificationManagerNative == null) {
                 // Create the NotificationChannel, but only on API 26+ because
                 // the NotificationChannel class is new and not in the support library
-                CharSequence name = "Geopap Channel";
-                String description = "Geopaparazzi GPS Service Channel";
+
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
                 channel.setDescription(description);
@@ -746,8 +772,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                     notificationManagerNative.createNotificationChannel(channel);
 
                     Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setContentTitle("Geopap GPS Service")
-                            .setContentText("Geopapaparazzi is making use of the GPS.")
+                            .setContentTitle(title)
+                            .setContentText(text)
                             .setSmallIcon(R.drawable.ic_stat_geopaparazzi_notification_icon)
                             .setContentIntent(pendingIntent)
                             .setStyle(messagingStyle)
@@ -761,8 +787,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                 }
             } else {
                 Notification update = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setContentTitle("Geopap GPS Service")
-                        .setContentText("Geopapaparazzi is making use of the GPS.")
+                        .setContentTitle(title)
+                        .setContentText(text)
                         .setSmallIcon(R.drawable.ic_stat_geopaparazzi_notification_icon)
                         .setContentIntent(pendingIntent)
                         .setStyle(messagingStyle)

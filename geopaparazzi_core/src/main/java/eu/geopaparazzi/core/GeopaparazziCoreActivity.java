@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.View;
 
 import org.json.JSONException;
 
@@ -32,7 +33,9 @@ import eu.geopaparazzi.library.permissions.PermissionGetAccounts;
 import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
 import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
+import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -68,6 +71,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                 init();
 
                 checkIncomingUrl();
+                checkAvailableProfiles();
             } else {
                 if (permissionHelper.hasPermission(this)) {
                     permissionHelper = permissionHelper.getNextWithoutPermission(this);
@@ -78,6 +82,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         } else {
             init();
             checkIncomingUrl();
+            checkAvailableProfiles();
         }
 
         setContentView(R.layout.activity_geopaparazzi);
@@ -86,11 +91,19 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
 
     }
 
+    private void checkAvailableProfiles() {
+        try {
+            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
+            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
-        checkAvailableProfiles();
     }
 
     private void init() {
@@ -115,17 +128,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                 editor.putString(PREFS_KEY_DATABASE_TO_LOAD, path);
                 editor.apply();
             }
-        }
-    }
-
-    private void checkAvailableProfiles() {
-        try {
-            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
-
-            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
