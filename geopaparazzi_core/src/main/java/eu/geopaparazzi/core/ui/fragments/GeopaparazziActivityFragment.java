@@ -145,6 +145,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 }
             }
         }
+
         try {
             initializeResourcesManager();
 
@@ -154,26 +155,28 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             e.printStackTrace();
         }
 
-//        StringAsyncTask task = new StringAsyncTask(getActivity()) {
-//            protected String doBackgroundWork() {
-//                try {
-//                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
-//                } catch (Exception e) {
-//                    return "ERROR: " + e.getLocalizedMessage();
-//                }
-//                return "";
-//            }
-//
-//            protected void doUiPostWork(String response) {
-//                dispose();
-//                if (response.length() != 0) {
-//                    GPDialogs.warningDialog(getActivity(), response, null);
-//                }
-//                // do UI stuff
-//            }
-//        };
-//        task.setProgressDialog("LOADING..", "Gathering basemaps...", false, null);
-//        task.execute();
+
+
+        StringAsyncTask task = new StringAsyncTask(getActivity()) {
+            protected String doBackgroundWork() {
+                try {
+                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
+                } catch (Exception e) {
+                    return "ERROR: " + e.getLocalizedMessage();
+                }
+                return "";
+            }
+
+            protected void doUiPostWork(String response) {
+                dispose();
+                if (response.length() != 0) {
+                    GPDialogs.warningDialog(getActivity(), response, null);
+                }
+                // do UI stuff
+            }
+        };
+        task.setProgressDialog("LOADING..", "Gathering basemaps...", false, null);
+        task.execute();
         return v; // return the fragment's view for display
     }
 
@@ -593,7 +596,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     }
 
     private void initializeResourcesManager() throws Exception {
-        ResourcesManager.resetManager();
         mResourcesManager = ResourcesManager.getInstance(getContext());
 
         if (mResourcesManager == null) {

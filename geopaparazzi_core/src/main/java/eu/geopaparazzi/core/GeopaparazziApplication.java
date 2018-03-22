@@ -34,6 +34,7 @@ import java.io.IOException;
 
 import eu.geopaparazzi.core.database.DatabaseManager;
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * Application singleton.
@@ -71,7 +72,7 @@ public class GeopaparazziApplication extends GPApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        ResourcesManager.resetManager();
         Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized."); //$NON-NLS-1$//$NON-NLS-2$
     }
 
