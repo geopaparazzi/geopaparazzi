@@ -69,13 +69,15 @@ public class DownloadFileIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         resultReceiver = intent.getParcelableExtra(DownloadResultReceiver.EXTRA_KEY);
 
+
         Parcelable[] downloadItems = intent.getParcelableArrayExtra(DownloadResultReceiver.EXTRA_FILES_KEY);
 
         String user = null;//intent.getStringExtra("user");
         String password = null;//intent.getStringExtra("pwd");
         try {
 
-            if (intent.getAction().equals(DownloadResultReceiver.DOWNLOAD_ACTION)) {
+            String action = intent.getAction();
+            if (action != null && action.equals(DownloadResultReceiver.DOWNLOAD_ACTION)) {
 
                 updateBundle = new Bundle();
                 for (Parcelable p : downloadItems) {
@@ -87,15 +89,18 @@ public class DownloadFileIntentService extends IntentService {
                         }
 
                         File destFile = new File(downloadable.getDestinationPath());
+                        if (destFile.exists()) {
+                            updateBundle.putString(PROGRESS_MESSAGE_KEY, "Not downloading existing: " + destFile.getName());
+                            resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
+                            pause();
+                            continue;
+                        }
+
                         File parentFile = destFile.getParentFile();
                         if (!parentFile.exists() && !parentFile.mkdirs()) {
                             // can't write on disk
                             sendError("Unable to write to file: " + destFile.getAbsolutePath());
-                            try {
-                                Thread.sleep(1000l);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
+                            pause();
                             return;
                         }
 
@@ -108,11 +113,7 @@ public class DownloadFileIntentService extends IntentService {
                             sendGetRequest4File(url, destFile, downloadable.getSize(), null, user, password);
                             updateBundle.putInt(PROGRESS_KEY, max);
                             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
-                            try {
-                                Thread.sleep(1000l);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
+                            pause();
                         } catch (Exception e) {
                             sendError("An error occurred: " + e.getLocalizedMessage());
 //                        e.printStackTrace();
@@ -125,6 +126,14 @@ public class DownloadFileIntentService extends IntentService {
             sendDone();
         } finally {
             isCancelled = false;
+        }
+    }
+
+    private void pause() {
+        try {
+            Thread.sleep(1000l);
+        } catch (InterruptedException e) {
+            // ignore
         }
     }
 

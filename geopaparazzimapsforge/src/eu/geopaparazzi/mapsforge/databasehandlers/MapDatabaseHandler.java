@@ -104,10 +104,10 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler  {
             if ((tableName == null) || (tableName.length() == 0)) {
                 tableName = this.databaseFile.getName().substring(0, this.databaseFile.getName().lastIndexOf("."));
             }
-            boundsWest = (double) (mapFileInfo.boundingBox.getMinLongitude());
-            boundsSouth = (double) (mapFileInfo.boundingBox.getMinLatitude());
-            boundsEast = (double) (mapFileInfo.boundingBox.getMaxLongitude());
-            boundsNorth = (double) (mapFileInfo.boundingBox.getMaxLatitude());
+            boundsWest = mapFileInfo.boundingBox.getMinLongitude();
+            boundsSouth = mapFileInfo.boundingBox.getMinLatitude();
+            boundsEast = mapFileInfo.boundingBox.getMaxLongitude();
+            boundsNorth = mapFileInfo.boundingBox.getMaxLatitude();
             GeoPoint startPosition = mapFileInfo.startPosition;
             // long_description[california bounds[-125.8935,32.48171,-114.1291,42.01618]
             // center[-120.0113,37.248945,14][-121.4944,38.58157]]

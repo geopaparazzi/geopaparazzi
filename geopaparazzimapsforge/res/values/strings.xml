@@ -33,4 +33,5 @@
  <string name="select_basemap_source">Select basemap source to add</string>
  <string name="select_basemap_source_folder">Select basemap source folder to add</string>
  <string name="loading_sources">Loading sources...</string>
+    <string name="remove_all">Remove all</string>
 </resources>

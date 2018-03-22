@@ -20,6 +20,7 @@ package eu.geopaparazzi.mapsforge.sourcesview;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -98,8 +99,10 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
         tableTypeView.setText("[" + baseMap.mapType + "]");
 
-        if (selectedBaseMap!=null && selectedBaseMap.equals(baseMap)){
-            convertView.setBackgroundColor(selectionColorColor);
+        if (selectedBaseMap != null && selectedBaseMap.equals(baseMap)) {
+            convertView.getBackground().setColorFilter(selectionColorColor, PorterDuff.Mode.MULTIPLY);
+        } else {
+            convertView.getBackground().clearColorFilter();
         }
 
         return convertView;

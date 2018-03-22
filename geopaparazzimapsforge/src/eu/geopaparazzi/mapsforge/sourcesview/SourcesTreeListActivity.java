@@ -364,7 +364,15 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         if (item.getItemId() == R.id.select_type_item) {
             MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
             dialog.open(getString(R.string.select_type), SourcesTreeListActivity.this, mTypeNames, mCheckedValues);
+        } else if (item.getItemId() == R.id.remove_all) {
+            try {
+                BaseMapSourcesManager.INSTANCE.removeAllBaseMaps();
+                refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 

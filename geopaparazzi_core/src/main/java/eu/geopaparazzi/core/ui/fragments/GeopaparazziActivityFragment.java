@@ -127,17 +127,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // this fragment adds to the menu
         setHasOptionsMenu(true);
 
-        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
-                View dashboardView = v.findViewById(R.id.dashboardLayout);
-                String color = activeProfile.color;
-                if (color != null) {
-                    dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
-                }
-            }
-        }
-
         try {
             initializeResourcesManager();
         } catch (Exception e) {
@@ -191,13 +180,26 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mPanicFAB.setOnClickListener(this);
         enablePanic(false);
 
-
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
+                View view = getView();
+                if (view != null) {
+                    View dashboardView = view.findViewById(R.id.dashboardLayout);
+                    String color = activeProfile.color;
+                    if (color != null) {
+                        dashboardView.setBackgroundColor(ColorUtilities.toColor(color));
+                    }
+                }
+            }
+        }
 
         GpsServiceUtilities.triggerBroadcast(getActivity());
     }

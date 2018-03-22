@@ -68,7 +68,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                 init();
 
                 checkIncomingUrl();
-                checkAvailableProfiles();
             } else {
                 if (permissionHelper.hasPermission(this)) {
                     permissionHelper = permissionHelper.getNextWithoutPermission(this);
@@ -78,15 +77,20 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             // PERMISSIONS STOP
         } else {
             init();
-
             checkIncomingUrl();
-            checkAvailableProfiles();
         }
 
         setContentView(R.layout.activity_geopaparazzi);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkAvailableProfiles();
     }
 
     private void init() {

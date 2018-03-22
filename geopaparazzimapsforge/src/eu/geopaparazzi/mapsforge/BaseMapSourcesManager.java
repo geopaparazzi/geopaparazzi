@@ -149,10 +149,10 @@ public enum BaseMapSourcesManager {
             if (mBaseMaps == null || mReReadBasemaps) {
                 mBaseMaps = getBaseMapsFromPreferences();
 
-                if (mBaseMaps.size() == 0) {
-                    addBaseMapsFromFile(mMapnikFile);
-                }
                 mReReadBasemaps = false;
+            }
+            if (mBaseMaps.size() == 0) {
+                addBaseMapsFromFile(mMapnikFile);
             }
             return mBaseMaps;
         } catch (java.lang.Exception e) {
@@ -235,6 +235,16 @@ public enum BaseMapSourcesManager {
             saveBaseMapsToPreferences(mBaseMaps);
         } catch (java.lang.Exception e) {
             GPLog.error(this, "Unable to remove basemap " + baseMap, e);
+        }
+    }
+
+    public void removeAllBaseMaps() throws JSONException {
+        try {
+            mBaseMaps.clear();
+            mBaseMaps2TablesMap.clear();
+            saveBaseMapsToPreferences(mBaseMaps);
+        } catch (java.lang.Exception e) {
+            GPLog.error(this, "Unable to remove all basemaps.", e);
         }
     }
 
@@ -348,7 +358,11 @@ public enum BaseMapSourcesManager {
         newBaseMap.parentFolder = databaseFile.getParent();
         newBaseMap.databasePath = table.getDatabasePath();
         newBaseMap.mapType = table.getMapType();
-        newBaseMap.title = table.getTitle();
+        String title = table.getTitle();
+        if (title == null) {
+            title = table.getFileName();
+        }
+        newBaseMap.title = title;
         return newBaseMap;
     }
 

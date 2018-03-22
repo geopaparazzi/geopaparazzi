@@ -309,6 +309,10 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
     private void saveWebProfile(Profile profile) {
         try {
             List<Profile> profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPreferences);
+            for (Profile p : profileList) {
+                p.active = false;
+            }
+            profile.active = true;
             profileList.add(profile);
             ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPreferences, profileList);
 
