@@ -69,11 +69,11 @@ public class GpsServiceUtilities {
     public static void startGpsService(Activity activity) {
         Intent intent = new Intent(activity, GpsService.class);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity.startForegroundService(intent);
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            activity.startForegroundService(intent);
+//        } else {
             activity.startService(intent);
-        }
+//        }
 
     }
 

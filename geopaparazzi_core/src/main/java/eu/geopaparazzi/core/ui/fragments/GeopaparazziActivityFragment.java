@@ -64,6 +64,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -153,13 +154,26 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             e.printStackTrace();
         }
 
-        // start map reading in background
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                BaseMapSourcesManager.INSTANCE.getBaseMaps();
-            }
-        }).start();
+//        StringAsyncTask task = new StringAsyncTask(getActivity()) {
+//            protected String doBackgroundWork() {
+//                try {
+//                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
+//                } catch (Exception e) {
+//                    return "ERROR: " + e.getLocalizedMessage();
+//                }
+//                return "";
+//            }
+//
+//            protected void doUiPostWork(String response) {
+//                dispose();
+//                if (response.length() != 0) {
+//                    GPDialogs.warningDialog(getActivity(), response, null);
+//                }
+//                // do UI stuff
+//            }
+//        };
+//        task.setProgressDialog("LOADING..", "Gathering basemaps...", false, null);
+//        task.execute();
         return v; // return the fragment's view for display
     }
 
