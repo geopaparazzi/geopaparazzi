@@ -41,6 +41,45 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
+/***
+ * CMI Notes about authentication, servers and networkmanager
+ *
+ * AbstractAuthenticator
+ - public String getName()
+ - protected void login(URL url, Map<String, String> authParams) throws
+ - protected boolean isLogged()
+ - Set<String> getParamNames()
+ - Connection conn = getConnection(URL url, Map<String, String> authParams)
+
+ ServerConnectionManager
+ - Set<String> getHandlerTypes()
+ - Set<String> getHandlerParamsName(String type)
+ - ServerHandler getHandler(String type, Map<String, String> serverParams)
+
+ AbstractServerHandler
+ - public String getTypeName()
+ - Set<String> getParamsNames()
+ - public Connection getConnection(String url)
+ - protected void login(URL url, Map<String, String> authParams) throws
+ - protected boolean isLogged()
+ - public void clear() // clears the map parameter and the session if any
+
+
+ RequestsManager
+ // mimic the python requests logic here, but taking AbstractServerHandler into account
+ - post(String url, HashMap<String, String> params, AbstractServerHandler serverHandler)
+ - get
+ - put
+ - ...
+
+
+ NetworkUtilities
+ - sendFilePost(String url, File file, AbstractServerHandler serverHandler)
+ - sendFile
+ *
+ */
+
+
 /**
  * Network utils methods.
  *

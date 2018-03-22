@@ -59,7 +59,6 @@ public interface Constants {
     String PREF_KEY_SERVER = "stage_server_key";//$NON-NLS-1$
     String PREF_KEY_PROFILE_URL = "cloud_profile_url";//$NON-NLS-1$
 
-
     /*
      * cross properties
      */

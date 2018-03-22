@@ -51,6 +51,8 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 public enum ProfilesHandler {
     INSTANCE;
 
+    public static final String PREF_KEY_SERVER_AUTH_PROVIDER = "key_profile_server_auth_provider_type";
+
     public static final String KEY_PROFILES_PREFERENCES = "KEY_PROFILES_PREFERENCES";
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";

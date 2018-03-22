@@ -10,16 +10,12 @@ import android.os.ResultReceiver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.util.Date;
 
 import eu.geopaparazzi.library.core.dialogs.ProgressBarDialogFragment;
-import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.network.requests.ProgressListener;
+import eu.geopaparazzi.library.network.requests.Requests;
+import eu.geopaparazzi.library.network.requests.ResponsePromise;
 
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PROGRESS_ENDED_KEY;
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PROGRESS_ERRORED_KEY;
@@ -27,10 +23,13 @@ import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PR
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PROGRESS_MESSAGE_KEY;
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.max;
 
-public class DownloadFileIntentService extends IntentService {
+public class DownloadFileIntentService extends IntentService implements ProgressListener {
     public static final int PERCENTAGE_UNIT = 5;
     ResultReceiver resultReceiver;
     private Bundle updateBundle;
+    private int previousPercentage;
+    private long totalSize;
+    private String message;
 
     /**
      * An ugly method to stop the service. To be changed.
@@ -109,8 +108,11 @@ public class DownloadFileIntentService extends IntentService {
                         updateBundle.putInt(PROGRESS_KEY, 0);
                         resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                         try {
-
-                            sendGetRequest4File(url, destFile, downloadable.getSize(), null, user, password);
+                            previousPercentage = 0;
+                            totalSize = downloadable.getSize();
+                            message = "Downloading: " + destFile.getName();
+                            ResponsePromise rp = Requests.get(url, null, null);
+                            rp.asFile(destFile, this);
                             updateBundle.putInt(PROGRESS_KEY, max);
                             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                             pause();
@@ -147,108 +149,21 @@ public class DownloadFileIntentService extends IntentService {
         resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
     }
 
-    /**
-     * Sends an HTTP GET request to a url
-     *
-     * @param urlStr            - The URL of the server. (Example: " http://www.yahoo.com/search")
-     * @param file              the output file. If it is a folder, it tries to get the file name from the header.
-     * @param size
-     * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2").
-     *                          Note: This method will add the question mark (?) to the request -
-     *                          DO NOT add it yourself
-     * @param user              user.
-     * @param password          password.    @return the file written.
-     * @throws Exception if something goes wrong.
-     */
-    public void sendGetRequest4File(String urlStr, File file, long size, String requestParameters, String user, String password)
-            throws Exception {
-        if (requestParameters != null && requestParameters.length() > 0) {
-            urlStr += "?" + requestParameters;
+    @Override
+    public void handleSizeProgress(long currentReadSize) {
+        if (totalSize>0) {
+            int percentage = (int) ((currentReadSize * 100) / totalSize);
+            handlePercentageProgress(percentage);
         }
-        HttpURLConnection conn = NetworkUtilities.makeNewConnection(urlStr);
-        conn.setRequestMethod("GET");
-        // conn.setDoOutput(true);
-        conn.setDoInput(true);
-        // conn.setChunkedStreamingMode(0);
-        conn.setUseCaches(false);
-
-        if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
-            conn.setRequestProperty("Authorization", NetworkUtilities.getB64Auth(user, password));
-        }
-        conn.connect();
-
-        if (file.isDirectory()) {
-            // try to get the header
-            String headerField = conn.getHeaderField("Content-Disposition");
-            String fileName = null;
-            if (headerField != null) {
-                String[] split = headerField.split(";");
-                for (String string : split) {
-                    String pattern = "filename=";
-                    if (string.toLowerCase().startsWith(pattern)) {
-                        fileName = string.replaceFirst(pattern, "");
-                        break;
-                    }
-                }
-            }
-            if (fileName == null) {
-                // give a name
-                fileName = "FILE_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
-            }
-            file = new File(file, fileName);
-        }
-
-        String msg = "Downloading: " + file.getName();
-
-        if (isCancelled) return;
-        InputStream in = null;
-        FileOutputStream out = null;
-        BufferedInputStream bis = null;
-        boolean deleteFile = false;
-        try {
-            in = conn.getInputStream();
-            bis = new BufferedInputStream(in);
-
-            if (size == -1)
-                size = conn.getContentLength();
-
-            out = new FileOutputStream(file);
-
-            byte[] buffer = new byte[8192];
-            long total = 0;
-            int count;
-
-            int prevPercentage = 0;
-            while ((count = bis.read(buffer)) != -1) {
-                total += count;
-
-                out.write(buffer, 0, count);
-
-                if (isCancelled) {
-                    deleteFile = true;
-                    return;
-                }
-
-                int percentage = (int) ((total * 100) / size);
-                prevPercentage = handlePercentage(percentage, prevPercentage, msg);
-            }
-            out.flush();
-        } finally {
-            if (bis != null)
-                bis.close();
-            if (in != null)
-                in.close();
-            if (out != null) {
-                out.close();
-            }
-            if (deleteFile) {
-                file.delete();
-            }
-            conn.disconnect();
+        else {
+            //FIXME: we should use an undeterminated progress bar
+            updateBundle.putString(DownloadResultReceiver.PROGRESS_MESSAGE_KEY, message + ": " + currentReadSize);
+            resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
         }
     }
 
-    private int handlePercentage(int percentage, int prevPercentage, String msg) {
+    @Override
+    public void handlePercentageProgress(int percentage) {
         if (percentage < PERCENTAGE_UNIT) {
             int p = 0;
             if (percentage < 1) p = 1;
@@ -256,17 +171,22 @@ public class DownloadFileIntentService extends IntentService {
             else if (percentage < 3) p = 3;
             else if (percentage < 4) p = 4;
             else p = PERCENTAGE_UNIT;
-            if (msg != null)
-                updateBundle.putString(PROGRESS_MESSAGE_KEY, msg);
+            if (message != null)
+                updateBundle.putString(PROGRESS_MESSAGE_KEY, message);
             updateBundle.putInt(PROGRESS_KEY, p);
             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
-        } else if (percentage - prevPercentage > PERCENTAGE_UNIT) {
-            if (msg != null)
-                updateBundle.putString(PROGRESS_MESSAGE_KEY, msg);
+        } else if (percentage - previousPercentage > PERCENTAGE_UNIT) {
+            if (message != null)
+                updateBundle.putString(PROGRESS_MESSAGE_KEY, message);
             updateBundle.putInt(PROGRESS_KEY, percentage);
             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
-            return percentage;
+            previousPercentage = percentage;
         }
-        return prevPercentage;
     }
+
+    @Override
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
 }

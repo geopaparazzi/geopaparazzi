@@ -26,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,8 +49,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.auth.ServerAuthManager;
 import eu.geopaparazzi.library.core.dialogs.ProgressBarDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.plugin.serverauth.IAuthProvider;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;

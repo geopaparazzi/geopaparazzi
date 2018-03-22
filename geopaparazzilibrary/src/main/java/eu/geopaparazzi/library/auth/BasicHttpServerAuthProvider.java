@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.plugins.projectimport;
+package eu.geopaparazzi.library.auth;
 
 import android.content.Intent;
 import android.os.IBinder;
 
 import eu.geopaparazzi.library.plugin.PluginService;
+import eu.geopaparazzi.library.plugin.serverauth.IAuthProvider;
 import eu.geopaparazzi.library.plugin.types.MenuEntryList;
 
 
@@ -29,20 +30,19 @@ import eu.geopaparazzi.library.plugin.types.MenuEntryList;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ProjectImportsMenuProvider extends PluginService {
+public class BasicHttpServerAuthProvider extends PluginService {
     private static final String NAME = "BasicHttpServerAuthProvider";
-    private MenuEntryList list = null;
+    private BasicHttpServerAuthHandler handler = null;
 
-    public ProjectImportsMenuProvider() {
+    public BasicHttpServerAuthProvider() {
         super(NAME);
     }
 
     public IBinder onBind(Intent intent) {
-        if (list == null) {
-            list = new MenuEntryList();
-            list.addEntry(new ImportProjectsMenuEntry(getApplicationContext()));
+        if (handler == null) {
+            handler = new BasicHttpServerAuthHandler();
         }
-        return list;
+        return handler;
     }
 
 

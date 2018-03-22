@@ -24,4 +24,5 @@ package eu.geopaparazzi.library.plugin;
 public interface ExtensionPoints {
     String MENU_IMPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER";
     String MENU_EXPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.exporter.MENU_PROVIDER";
+    String SERVER_AUTH_PROVIDER = "eu.geopaparazzi.core.extension.ep.server.AUTH_PROVIDER";
 }

@@ -17,6 +17,7 @@ abstract public class DownloadResultReceiver extends ResultReceiver {
     public static final String PROGRESS_ERRORED_KEY = "progress_errored";
     public static final String EXTRA_KEY = "download_reciever";
     public static final String EXTRA_FILES_KEY = "download_files";
+    public static final String PROGRESS_NOT_AVAILABLE_KEY = "no_progress_message"; //FIXME: we should use an undeterminated progress bar
     public static final int max = 100;
 
     public DownloadResultReceiver(Handler handler) {

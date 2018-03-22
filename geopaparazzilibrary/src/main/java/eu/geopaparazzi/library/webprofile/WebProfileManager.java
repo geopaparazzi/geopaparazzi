@@ -32,8 +32,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.auth.ServerAuthManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.plugin.serverauth.IAuthProvider;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.CompressionUtilities;
@@ -156,7 +158,8 @@ public enum WebProfileManager {
             }
             jsonString = sb.toString();
         } else {
-//            server = addActionPath(server, DOWNLOADLISTPATH);
+            IAuthProvider provider = ServerAuthManager.INSTANCE.getProvider(context);
+
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
         List<Profile> webprofilesList = json2WebprofilesList(jsonString);
