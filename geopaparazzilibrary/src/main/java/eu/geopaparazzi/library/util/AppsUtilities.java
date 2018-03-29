@@ -287,14 +287,56 @@ public class AppsUtilities {
         context.startActivity(intent);
     }
 
+
+    /**
+     * Show a pdf
+     *
+     * @param pdfData
+     * @param pdfName
+     * @param context
+     * @throws Exception
+     */
     public static void showPDF(byte[] pdfData, String pdfName, Context context) throws Exception {
+        showDocument(pdfData, "application/pdf", ".pdf", context); //$NON-NLS-1$
+    }
+
+    /**
+     * Shows a document using an ACTION_VIEW Intent, based on the provided mime type.
+     *
+     * @param docData The document to be shown, as a byte array
+     * @param mimeType The mime type of the document
+     * @param docName The document name
+     * @param context
+     * @throws Exception
+     */
+    public static void showDocument(byte[] docData, String mimeType, String docName, Context context) throws Exception {
         File tempDir = ResourcesManager.getInstance(context).getTempDir();
-        String ext = ".pdf";
+        String extension = ImageUtilities.getExtension(docName, mimeType);
+        if (extension.equals(".")) {
+            // assume .jpg
+            extension = ".jpg";
+        }
+        File docFile = new File(tempDir, ImageUtilities.getTempImageName(extension));
+        ImageUtilities.writeImageDataToFile(docData, docFile.getAbsolutePath());
+        showDocument(docFile, mimeType, context);
+    }
 
-        File pdfFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
-        ImageUtilities.writeImageDataToFile(pdfData, pdfFile.getAbsolutePath());
+    /**
+     * Show a document, using an intent based on the provided mime-type. Warning:
+     * this method will probably open a 3rd party application
+     *
+     * @param docFile the file containing the document to show
+     * @param context the context to use.
+     * @throws Exception
+     */
+    public static void showDocument(File docFile, String mimeType, Context context) throws Exception {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Utilities.getFileUriInApplicationFolder(context, docFile);
+        intent.setDataAndType(uri, mimeType);
 
-        showPDF(pdfFile, context);
+        grantPermission(context, intent, uri);
+        context.startActivity(intent);
     }
 
     /**
@@ -305,13 +347,7 @@ public class AppsUtilities {
      * @throws Exception
      */
     public static void showPDF(File pdfFile, Context context) throws Exception {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Utilities.getFileUriInApplicationFolder(context, pdfFile);
-        intent.setDataAndType(uri, "application/pdf"); //$NON-NLS-1$
-
-        grantPermission(context, intent, uri);
-        context.startActivity(intent);
+        showDocument(pdfFile, "application/pdf", context); //$NON-NLS-1$
     }
 
 

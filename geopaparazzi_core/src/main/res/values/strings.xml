@@ -393,11 +393,11 @@
     <string name="removing_notes">Removing notes...</string>
     <string name="interrupted_by_user">Interrupted by user</string>
     <string name="import_cloud_data">Cloud Data</string>
-    <string name="browse_images">Browse images</string>
+    <string name="browse_documents">Browse documents</string>
     <string name="new_picture">New picture</string>
-    <string name="Images">Documents</string>
-    <string name="Image_title">Document#</string>
-    <string name="confirm_remove_image">Do you really want to remove the document?</string>
+    <string name="Documents">Documents</string>
+    <string name="Document_title">Document#</string>
+    <string name="confirm_remove_document">Do you really want to remove the document?</string>
     <string name="upload_to_cloud_prompt">Upload the current project to the cloud?</string>
     <string name="data_to_pdf_label">Project Forms to Pdf</string>
     <string name="exporting_data_to_pdf">Exporting form data to PDF</string>

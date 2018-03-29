@@ -17,14 +17,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.activities.camera.CameraDbActivity;
-import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.AbstractResource;
+import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.Resource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.BlobResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ExternalResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ResourceStorage;
@@ -47,6 +47,7 @@ public class ResourceBrowser extends AppCompatActivity {
     private long rowId = -1;
     private TextView numImagesView;
     private File imageSaveFolder;
+    private boolean isReadOnly = true;
 
     public final static String TABLEVIEW_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.resourceviews.TABLEVIEW";
 
@@ -63,6 +64,8 @@ public class ResourceBrowser extends AppCompatActivity {
         String tableName = origIntent.getStringExtra(FeaturePagerActivity.TABLENAME_EXTRA_MESSAGE);
         String dbPath = origIntent.getStringExtra(FeaturePagerActivity.DBPATH_EXTRA_MESSAGE);
         String rowIdStr = origIntent.getStringExtra(FeaturePagerActivity.ROWID_EXTRA_MESSAGE);
+        isReadOnly = origIntent.getBooleanExtra(FeatureUtilities.KEY_READONLY, true);
+
         if (rowIdStr!=null) {
             try {
                 rowId = Long.parseLong(rowIdStr);
@@ -79,7 +82,7 @@ public class ResourceBrowser extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.resourcesGridView);
         numImagesView = (TextView) findViewById(R.id.numImages);
-        refreshBlobThumbnails(imageItems);
+        refreshThumbnails(imageItems);
         gridAdapter = new ImageGridViewAdapter<ImageItem>(this, R.layout.fragment_image_item, imageItems);
         gridView.setAdapter(gridAdapter);
 
@@ -97,7 +100,7 @@ public class ResourceBrowser extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-                showImage(item);
+                showDocument(item);
             }
 
         });
@@ -105,7 +108,7 @@ public class ResourceBrowser extends AppCompatActivity {
     }
 
     protected void removeImage(ImageItem item) {
-        final AbstractResource res = item.getResource();
+        final Resource res = item.getResource();
         final ImageItem theItem = item;
         GPDialogs.yesNoMessageDialog(ResourceBrowser.this, getString(R.string.confirm_remove_image), new Runnable() {
             @Override
@@ -126,28 +129,32 @@ public class ResourceBrowser extends AppCompatActivity {
         }, null);
     }
 
-    protected void showImage(ImageItem item) {
+    protected void showDocument(ImageItem item) {
         try {
-            final AbstractResource res = item.getResource();
+            long resId = item.getResource().getId();
+            // the item resource only contains the thumbnail,
+            // so we need to get the complete resource
+            final Resource res = storage.getResource(resId);
             if (res instanceof BlobResource) {
-                BlobResource blobRes = (BlobResource) res;
-                // the item resource only contains the thumbnail,
-                // so we need to get the complete resource
-                BlobResource completeRes = storage.getBlobResource(res.getId());
-                if (res.getType() == AbstractResource.ResourceType.BLOB_IMAGE) {
-                    AppsUtilities.showImage(completeRes.getBlob(), blobRes.getName(), this);
-                } else if (res.getType() == AbstractResource.ResourceType.BLOB_PDF) {
-                    AppsUtilities.showPDF(completeRes.getBlob(), blobRes.getName(), this);
+                BlobResource completeRes = (BlobResource) res;
+                if (res.getType() == Resource.ResourceType.BLOB_IMAGE) {
+                    AppsUtilities.showImage(completeRes.getBlob(), completeRes.getName(), this);
+                } else if (res.getType() == Resource.ResourceType.BLOB_PDF) {
+                    AppsUtilities.showPDF(completeRes.getBlob(), completeRes.getName(), this);
+                } else if (completeRes.getMimeType().contains("/")) { // assume it is a mime type
+                    AppsUtilities.showDocument(completeRes.getBlob(), completeRes.getMimeType(), completeRes.getName(), this);
                 }
 
             }
             else {
-                ExternalResource extRes = (ExternalResource) res;
-                File image = new File(imageSaveFolder, extRes.getPath());
-                if (res.getType() == AbstractResource.ResourceType.BLOB_IMAGE) {
+                ExternalResource completeRes = (ExternalResource) res;
+                File image = new File(imageSaveFolder, completeRes.getPath());
+                if (res.getType() == Resource.ResourceType.EXTERNAL_IMAGE) {
                     AppsUtilities.showImage(image, this);
-                } else if (res.getType() == AbstractResource.ResourceType.BLOB_PDF) {
+                } else if (res.getType() == Resource.ResourceType.EXTERNAL_PDF) {
                     AppsUtilities.showPDF(image, this);
+                } else if (completeRes.getMimeType().contains("/")) { // assume it is a mime type
+                    AppsUtilities.showDocument(image, completeRes.getMimeType(), this);
                 }
             }
         } catch (Exception e) {
@@ -169,38 +176,13 @@ public class ResourceBrowser extends AppCompatActivity {
 
     }
 
-    private ArrayList<ImageItem> refreshExternalImages(ArrayList<ImageItem> imageItems) {
+    private ArrayList<ImageItem> refreshThumbnails(ArrayList<ImageItem> imageItems) {
         imageItems.clear();
-        List<ExternalResource> resources = storage.getExternalResources(rowId, AbstractResource.ResourceType.EXTERNAL_IMAGE);
+        List<Resource> resources = storage.getThumbnails(rowId); //, Resource.ResourceType.BLOB_IMAGE);
         int i=1;
-        for (ExternalResource r: resources) {
-            String imgPath = r.getPath();
-            File imgFile = new File(imgPath);
-            String absPath;
-            if (imgFile.isAbsolute()) {
-                absPath = imgFile.getAbsolutePath();
-            }
-            else {
-                absPath = new File(imageSaveFolder, r.getPath()).getAbsolutePath();
-            }
-
-            Bitmap bitmap = ImageUtilities.decodeSampledBitmapFromFile(absPath, 100, 100);
-            String title = getResources().getString(R.string.Image_title);
-            imageItems.add(new ImageItem(bitmap, title + i++, r));
-        }
-        String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
-        numImagesView.setText(text);
-
-        return imageItems;
-    }
-
-    private ArrayList<ImageItem> refreshBlobThumbnails(ArrayList<ImageItem> imageItems) {
-        imageItems.clear();
-        List<BlobResource> resources = storage.getBlobThumbnails(rowId); //, AbstractResource.ResourceType.BLOB_IMAGE);
-        int i=1;
-        for (BlobResource r: resources) {
+        for (Resource r: resources) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);
-            String title = getResources().getString(R.string.Image_title);
+            String title = getResources().getString(R.string.Document_title);
             imageItems.add(new ImageItem(bitmap, title + i++, r));
         }
         String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
@@ -211,7 +193,9 @@ public class ResourceBrowser extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_capturepicture, menu);
+        if (!isReadOnly) {
+            getMenuInflater().inflate(R.menu.menu_capturepicture, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -232,7 +216,7 @@ public class ResourceBrowser extends AppCompatActivity {
         if (CAMERA_RETURN_CODE == requestCode) {
             if(resultCode == RESULT_OK){
                 if (data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false)) {
-                    refreshBlobThumbnails(imageItems);
+                    refreshThumbnails(imageItems);
                     gridAdapter.notifyDataSetChanged();
                 }
             }

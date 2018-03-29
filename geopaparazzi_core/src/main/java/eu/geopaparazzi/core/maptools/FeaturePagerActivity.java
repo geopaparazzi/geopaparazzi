@@ -106,10 +106,12 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!isReadOnly) {
+        if (isReadOnly) {
+            getMenuInflater().inflate(R.menu.menu_readonlyfeaturepager, menu);
+        }
+        else {
             getMenuInflater().inflate(R.menu.menu_featurepager, menu);
         }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -125,6 +127,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
             intent.putExtra(TABLENAME_EXTRA_MESSAGE, tableName);
             intent.putExtra(DBPATH_EXTRA_MESSAGE, selectedFeature.getDatabasePath());
             intent.putExtra(ROWID_EXTRA_MESSAGE, selectedFeature.getId());
+            intent.putExtra(FeatureUtilities.KEY_READONLY, isReadOnly);
             startActivity(intent);
         }
         else if (item.getItemId() == R.id.action_save) {

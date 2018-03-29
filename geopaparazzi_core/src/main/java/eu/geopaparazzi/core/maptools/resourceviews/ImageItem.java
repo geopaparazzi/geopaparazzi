@@ -2,7 +2,7 @@ package eu.geopaparazzi.core.maptools.resourceviews;
 
 import android.graphics.Bitmap;
 
-import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.AbstractResource;
+import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.Resource;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
@@ -10,9 +10,9 @@ import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.Abstract
 public class ImageItem {
     private Bitmap image;
     private String title;
-    private AbstractResource resource;
+    private Resource resource;
 
-    public ImageItem(Bitmap image, String title, AbstractResource res) {
+    public ImageItem(Bitmap image, String title, Resource res) {
         super();
         this.image = image;
         this.title = title;
@@ -35,11 +35,11 @@ public class ImageItem {
         this.title = title;
     }
 
-    public AbstractResource getResource() {
+    public Resource getResource() {
         return resource;
     }
 
-    public void setResource(AbstractResource resource) {
+    public void setResource(Resource resource) {
         this.resource = resource;
     }
 }

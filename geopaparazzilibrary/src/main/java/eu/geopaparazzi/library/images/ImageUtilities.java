@@ -76,6 +76,51 @@ public class ImageUtilities {
     }
 
     /**
+     * Gets the extension of the provided file name. For instance, if the string
+     * "test.jpg" is provided, ".jpg" is returned. Files having a single "." located
+     * in the first character (e.g. ".bashrc") are considered to have no extension
+     * (following Unix conventions), so an empty extension (".") is returned in these cases.
+     *
+     * @param fileName
+     */
+    public static String getExtension(String fileName) {
+        int pos = fileName.lastIndexOf(".");
+        if (pos>0) {
+            return fileName.substring(pos);
+        }
+        return ".";
+    }
+
+    /**
+     * Gets a suitable extension for the provided file name and mimeType.
+     * The extension is retrieved from the fileName if available, otherwise
+     * the extension is retrieved from the mime type. If no suitable extension
+     * is found, an empty extension (".") is returned.
+     *
+     * @param fileName
+     * @param mimeType
+     * @return
+     */
+    public static String getExtension(String fileName, String mimeType) {
+        // try to get extension from file name
+        if (fileName!=null && !fileName.equals("")) {
+            int pos = fileName.lastIndexOf(".");
+            if (pos>0) {
+                return fileName.substring(pos);
+            }
+        }
+
+        // try to get the extension from mimeType
+        int pos = mimeType.lastIndexOf("/");
+        if (pos>0) {
+            // get extension and remove non alphanumeric chars
+            return "." + mimeType.substring(pos+1).replaceAll("[^A-Za-z0-9]", "");
+        }
+        return ".";
+
+    }
+
+    /**
      * Get an image from a file by its path.
      *
      * @param imageFilePath the image path.
