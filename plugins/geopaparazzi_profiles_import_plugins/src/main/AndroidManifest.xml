@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eu.geopaparazzi.plugins.projectimport">
+    package="eu.geopaparazzi.plugins.profilesimport">
 
     <application
         android:allowBackup="true"
