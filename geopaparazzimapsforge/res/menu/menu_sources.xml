@@ -28,4 +28,11 @@
         android:title="@string/select_type"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/remove_all"
+        android:icon="@drawable/ic_delete_24dp"
+        android:orderInCategory="15"
+        android:title="@string/remove_all"
+        app:showAsAction="never" />
+
 </menu>

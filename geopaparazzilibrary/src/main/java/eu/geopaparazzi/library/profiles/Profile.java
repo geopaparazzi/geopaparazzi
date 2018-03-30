@@ -21,8 +21,18 @@ package eu.geopaparazzi.library.profiles;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileOtherfiles;
+import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
+import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileTags;
 
 /**
  * Class providing a wrapper for profile infos.
@@ -33,18 +43,109 @@ public class Profile implements Parcelable {
     public String name = "new profile";
     public String description = "new profile description";
     public String creationdate = "";
-    public boolean active = false;
+    public String modifieddate = "";
     public String color = "#FFFFFF";
-    public String tagsPath = "";
-    public String projectPath = "";
-    public String sdcardPath = "";
-    public List<String> basemapsList = new ArrayList<>();
-    public List<String> spatialiteList = new ArrayList<>();
+    public boolean active = false;
+    private String sdcardPath = "";
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public ProfileTags profileTags;
+    public ProfileProjects profileProject;
+
+    public List<ProfileBasemaps> basemapsList = new ArrayList<>();
+    public List<ProfileSpatialitemaps> spatialiteList = new ArrayList<>();
+    public List<ProfileOtherfiles> otherFilesList = new ArrayList<>();
+
+    public HashMap<String, String> vendorAttributes = new HashMap<>();
+
+    public Profile() {
     }
+
+    protected Profile(Parcel in) {
+        name = in.readString();
+        description = in.readString();
+        creationdate = in.readString();
+        modifieddate = in.readString();
+        color = in.readString();
+        active = in.readByte() != 0;
+        sdcardPath = in.readString();
+        profileTags = in.readParcelable(ProfileTags.class.getClassLoader());
+        profileProject = in.readParcelable(ProfileProjects.class.getClassLoader());
+        basemapsList = in.createTypedArrayList(ProfileBasemaps.CREATOR);
+        spatialiteList = in.createTypedArrayList(ProfileSpatialitemaps.CREATOR);
+        otherFilesList = in.createTypedArrayList(ProfileOtherfiles.CREATOR);
+        vendorAttributes = in.readHashMap(HashMap.class.getClassLoader());
+    }
+
+    /**
+     * @return the absolute path of the used sdcard.
+     */
+    public String getSdcardPath() {
+        try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(null);
+            if (sdcardPath.equals(ProfilesHandler.MAINSTORAGE)) {
+                return resourcesManager.getMainStorageDir().getAbsolutePath();
+            } else if (sdcardPath.equals(ProfilesHandler.SECONDARYSTORAGE)) {
+                List<File> otherStorageDirs = resourcesManager.getOtherStorageDirs();
+                for (File f : otherStorageDirs) {
+                    if (f != null && f.exists()) {
+                        return f.getAbsolutePath();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
+        return sdcardPath;
+    }
+
+    public String getSdcardPathRaw() {
+        return sdcardPath;
+    }
+
+    public void setSdcardPath(String absoluteSdcardPath) {
+        try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(null);
+            if (absoluteSdcardPath.equals(resourcesManager.getMainStorageDir().getAbsolutePath())) {
+                sdcardPath = ProfilesHandler.MAINSTORAGE;
+            } else {
+                List<File> otherStorageDirs = resourcesManager.getOtherStorageDirs();
+                for (File f : otherStorageDirs) {
+                    if (f != null && f.exists()) {
+                        String absolutePath = f.getAbsolutePath();
+                        if (absoluteSdcardPath.equals(absolutePath)) {
+                            sdcardPath = ProfilesHandler.SECONDARYSTORAGE;
+                            return;
+                        }
+                    }
+                }
+                sdcardPath = absoluteSdcardPath;
+            }
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+        }
+    }
+
+    /**
+     * Create a file basing on the sdcard path position.
+     *
+     * @param relativePath the relative path to add to the used sdcard path.
+     * @return the existing file.
+     */
+    public File getFile(String relativePath) {
+        return new File(getSdcardPath() + File.separator + relativePath);
+    }
+
+    public static final Creator<Profile> CREATOR = new Creator<Profile>() {
+        @Override
+        public Profile createFromParcel(Parcel in) {
+            return new Profile(in);
+        }
+
+        @Override
+        public Profile[] newArray(int size) {
+            return new Profile[size];
+        }
+    };
 
     @Override
     public boolean equals(Object o) {
@@ -65,88 +166,82 @@ public class Profile implements Parcelable {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(description);
         dest.writeString(creationdate);
-        dest.writeBooleanArray(new boolean[]{active});
+        dest.writeString(modifieddate);
         dest.writeString(color);
-        dest.writeString(tagsPath);
-        dest.writeString(projectPath);
+        dest.writeByte((byte) (active ? 1 : 0));
         dest.writeString(sdcardPath);
-        dest.writeList(basemapsList);
-        dest.writeList(spatialiteList);
+        dest.writeParcelable(profileTags, flags);
+        dest.writeParcelable(profileProject, flags);
+        dest.writeTypedList(basemapsList);
+        dest.writeTypedList(spatialiteList);
+        dest.writeTypedList(otherFilesList);
+        dest.writeMap(vendorAttributes);
     }
 
-
-    @SuppressWarnings("javadoc")
-    public static final Creator<Profile> CREATOR = new Creator<Profile>() {
-        @SuppressWarnings("unchecked")
-        public Profile createFromParcel(Parcel in) {
-            Profile profile = new Profile();
-            profile.name = in.readString();
-            profile.description = in.readString();
-            profile.creationdate = in.readString();
-
-            boolean[] activeArray = new boolean[1];
-            in.readBooleanArray(activeArray);
-            profile.active = activeArray[0];
-
-            profile.color = in.readString();
-            profile.tagsPath = in.readString();
-            profile.projectPath = in.readString();
-            profile.sdcardPath = in.readString();
-            profile.basemapsList = in.readArrayList(String.class.getClassLoader());
-            profile.spatialiteList = in.readArrayList(String.class.getClassLoader());
-
-            return profile;
+    public boolean matches(String filterText) {
+        filterText = filterText.toLowerCase();
+        if (name.toLowerCase().contains(filterText)) {
+            return true;
+        } else if (description.toLowerCase().contains(filterText)) {
+            return true;
+        } else if (creationdate.toLowerCase().contains(filterText)) {
+            return true;
+        } else if (modifieddate.toLowerCase().contains(filterText)) {
+            return true;
         }
+        return false;
+    }
 
-        public Profile[] newArray(int size) {
-            return new Profile[size];
-        }
-    };
 
     /**
      * Corrects the sdcard in all paths if necessary.
      *
      * @param newSdcard the current sdcard
      */
-    public void correctPaths(String newSdcard) {
-        boolean hasChanged = false;
-        if (projectPath.startsWith(sdcardPath)) {
-            projectPath = projectPath.replace(sdcardPath, newSdcard);
-            hasChanged = true;
-        }
-        if (tagsPath.startsWith(sdcardPath)) {
-            tagsPath = tagsPath.replace(sdcardPath, newSdcard);
-            hasChanged = true;
-        }
-
-        List<String> newBasemapsList = new ArrayList<>();
-        for (int i = 0; i < basemapsList.size(); i++) {
-            String basemap = basemapsList.get(i);
-            if (basemap.startsWith(sdcardPath)) {
-                basemap = basemap.replace(sdcardPath, newSdcard);
-                newBasemapsList.add(basemap);
-                hasChanged = true;
-            }
-        }
-        basemapsList.clear();
-        basemapsList.addAll(newBasemapsList);
-
-        List<String> newSpatialitedbList = new ArrayList<>();
-        for (String spatialitedb : spatialiteList) {
-            if (spatialitedb.startsWith(sdcardPath)) {
-                spatialitedb = spatialitedb.replace(sdcardPath, newSdcard);
-                newSpatialitedbList.add(spatialitedb);
-                hasChanged = true;
-            }
-        }
-        spatialiteList.clear();
-        spatialiteList.addAll(newSpatialitedbList);
-        if (hasChanged) {
-            sdcardPath = newSdcard;
-        }
-    }
+//    public void correctPaths(String newSdcard) {
+//        boolean hasChanged = false;
+//        if (projectRelativePath.startsWith(sdcardPath)) {
+//            projectRelativePath = projectRelativePath.replace(sdcardPath, newSdcard);
+//            hasChanged = true;
+//        }
+//        if (tagsRelativePath.startsWith(sdcardPath)) {
+//            tagsRelativePath = tagsRelativePath.replace(sdcardPath, newSdcard);
+//            hasChanged = true;
+//        }
+//
+//        List<String> newBasemapsList = new ArrayList<>();
+//        for (int i = 0; i < basemapsList.size(); i++) {
+//            String basemap = basemapsList.get(i);
+//            if (basemap.startsWith(sdcardPath)) {
+//                basemap = basemap.replace(sdcardPath, newSdcard);
+//                newBasemapsList.add(basemap);
+//                hasChanged = true;
+//            }
+//        }
+//        basemapsList.clear();
+//        basemapsList.addAll(newBasemapsList);
+//
+//        List<String> newSpatialitedbList = new ArrayList<>();
+//        for (String spatialitedb : spatialiteList) {
+//            if (spatialitedb.startsWith(sdcardPath)) {
+//                spatialitedb = spatialitedb.replace(sdcardPath, newSdcard);
+//                newSpatialitedbList.add(spatialitedb);
+//                hasChanged = true;
+//            }
+//        }
+//        spatialiteList.clear();
+//        spatialiteList.addAll(newSpatialitedbList);
+//        if (hasChanged) {
+//            sdcardPath = newSdcard;
+//        }
+//    }
 }

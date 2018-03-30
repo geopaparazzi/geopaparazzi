@@ -49,12 +49,12 @@ public enum WebProjectManager {
     INSTANCE;
 
     /**
-     * The relative path appended to the server url to compose the upload url.
+     * The relative relativePath appended to the server url to compose the upload url.
      */
     public static String UPLOADPATH = "stage_gpproject_upload";
 
     /**
-     * The relative path appended to the server url to compose the download projects list url.
+     * The relative relativePath appended to the server url to compose the download projects list url.
      */
     public static String DOWNLOADLISTPATH = "stage_gplist_download";
 
@@ -113,7 +113,7 @@ public enum WebProjectManager {
         String downloadedProjectFileName = "no information available";
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-            File sdcardDir = resourcesManager.getSdcardDir();
+            File sdcardDir = resourcesManager.getMainStorageDir();
             File downloadedProjectFile = new File(sdcardDir, webproject.id);
             if (downloadedProjectFile.exists()) {
                 String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();

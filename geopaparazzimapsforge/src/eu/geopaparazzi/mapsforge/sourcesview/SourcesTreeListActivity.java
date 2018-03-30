@@ -89,13 +89,14 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
     private boolean isFabOpen = false;
     private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
+    private boolean hasProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sources_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -104,7 +105,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        mFilterText = (EditText) findViewById(R.id.search_box);
+        mFilterText = findViewById(R.id.search_box);
         mFilterText.addTextChangedListener(filterTextWatcher);
 
         boolean showMaps = mPreferences.getBoolean(SHOW_MAPS, true);
@@ -128,14 +129,15 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         mCheckedValues[3] = showRasterLite2;
 
         // get the listview
-        mExpListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
+        mExpListView = findViewById(R.id.expandableSourceListView);
 
-        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
-            RelativeLayout mainView = (RelativeLayout) findViewById(R.id.sources_list_mainview);
+        hasProfile = ProfilesHandler.INSTANCE.getActiveProfile() != null;
+        if (hasProfile) {
+            RelativeLayout mainView = findViewById(R.id.sources_list_mainview);
             int color = ColorUtilities.toColor(ProfilesHandler.INSTANCE.getActiveProfile().color);
             mainView.setBackgroundColor(color);
 
-            FloatingActionButton addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
+            FloatingActionButton addSourceButton = findViewById(R.id.addSourceButton);
             addSourceButton.hide();
         }
 
@@ -160,9 +162,9 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         loadTask.execute();
 
 
-        toggleButton = (FloatingActionButton) findViewById(R.id.toggleButton);
-        addSourceButton = (FloatingActionButton) findViewById(R.id.addSourceButton);
-        addSourceFolderButton = (FloatingActionButton) findViewById(R.id.addSourceFolderButton);
+        toggleButton = findViewById(R.id.toggleButton);
+        addSourceButton = findViewById(R.id.addSourceButton);
+        addSourceFolderButton = findViewById(R.id.addSourceFolderButton);
 
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
@@ -364,7 +366,15 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
         if (item.getItemId() == R.id.select_type_item) {
             MapTypesChoiceDialog dialog = new MapTypesChoiceDialog();
             dialog.open(getString(R.string.select_type), SourcesTreeListActivity.this, mTypeNames, mCheckedValues);
+        } else if (item.getItemId() == R.id.remove_all) {
+            try {
+                BaseMapSourcesManager.INSTANCE.removeAllBaseMaps();
+                refreshData(BaseMapSourcesManager.INSTANCE.getBaseMaps());
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -458,7 +468,7 @@ public class SourcesTreeListActivity extends AppCompatActivity implements IActiv
             }
         });
 
-        if (ProfilesHandler.INSTANCE.getActiveProfile() == null)
+        if (!hasProfile)
             mExpListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

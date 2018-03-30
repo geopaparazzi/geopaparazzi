@@ -28,6 +28,7 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,10 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -121,17 +125,18 @@ public enum SpatialiteSourcesManager {
         clearHandlers();
 
         List<SpatialiteMap> spatialiteMaps;
-        if (ProfilesHandler.INSTANCE.getActiveProfile() == null) {
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile == null) {
             String baseMapsJson = mPreferences.getString(SpatialiteMap.SPATIALITEMAPS_PREF_KEY, "");
             spatialiteMaps = SpatialiteMap.fromJsonString(baseMapsJson);
         } else {
             if (mSpatialiteMaps != null)
                 mSpatialiteMaps.clear();
-            List<String> dbPaths = ProfilesHandler.INSTANCE.getActiveProfile().spatialiteList;
-            for (String path : dbPaths) {
-                File file = new File(path);
-                if (file.exists()) collectTablesFromFile(file);
+            List<ProfileSpatialitemaps> dbs = activeProfile.spatialiteList;
+            for (ProfileSpatialitemaps db : dbs) {
+                collectTablesFromFile(activeProfile, db);
             }
+
             spatialiteMaps = new ArrayList<>();
             if (mSpatialiteMaps != null)
                 spatialiteMaps.addAll(mSpatialiteMaps);
@@ -182,7 +187,7 @@ public enum SpatialiteSourcesManager {
     }
 
     /**
-     * Adds all SpatialiteMaps contained in the database in the given path.
+     * Adds all SpatialiteMaps contained in the database in the given file.
      * <p/>
      * <p>SpatialiteMaps and database tables/handlers are added to the lists/maps of this manager.</p>
      *
@@ -264,6 +269,54 @@ public enum SpatialiteSourcesManager {
                     mSpatialiteMaps.add(tmpSpatialiteMap);
                     mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
                     mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
+                    foundTables = true;
+                }
+            }
+        }
+        if (!foundTables && sdbHandler != null) {
+            // close this unused db connection
+            sdbHandler.close();
+        }
+        return foundTables;
+    }
+
+    private boolean collectTablesFromFile(Profile profile, ProfileSpatialitemaps profileSpatialitemap) throws java.lang.Exception {
+        if (mSpatialiteMaps == null) mSpatialiteMaps = new ArrayList<>();
+        /*
+         * SPATIALITE TABLES
+         */
+
+        List<String> layerNames = Arrays.asList(profileSpatialitemap.visibleLayerNames);
+        File file = profile.getFile(profileSpatialitemap.getRelativePath());
+
+        boolean foundTables = false;
+        SpatialiteDatabaseHandler sdbHandler = getDatabaseHandlerForFile(file);
+        if (sdbHandler != null) {
+            List<SpatialVectorTable> tables = sdbHandler.getSpatialVectorTables(false);
+            for (SpatialVectorTable table : tables) {
+                SpatialiteMap tmpSpatialiteMap = table2BaseMap(table);
+                if (!mSpatialiteMaps2TablesMap.containsKey(tmpSpatialiteMap)) {
+                    mSpatialiteMaps.add(tmpSpatialiteMap);
+                    mSpatialiteMaps2TablesMap.put(tmpSpatialiteMap, table);
+                    mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
+
+                    // FIXME this gets recursive and breaks
+                    //                    if (layerNames.contains(tmpSpatialiteMap.tableName)) {
+                    //                        tmpSpatialiteMap.isVisible = true;
+                    //                        Style style = table.getStyle();
+                    //                        if (style.enabled != 1) {
+                    //                            style.enabled = 1;
+                    //
+                    //                            HashMap<SpatialiteMap, SpatialiteDatabaseHandler> spatialiteMaps2DbHandlersMap = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap();
+                    //                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = spatialiteMaps2DbHandlersMap.get(tmpSpatialiteMap);
+                    //                            try {
+                    //                                spatialiteDatabaseHandler.updateStyle(style);
+                    //                            } catch (jsqlite.Exception e) {
+                    //                                GPLog.error(this, null, e);
+                    //                            }
+                    //                        }
+                    //                    }
+
                     foundTables = true;
                 }
             }

@@ -252,10 +252,9 @@ public class FeaturePageAdapter extends PagerAdapter {
         Date date = null;
         try {
             final SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.DATEONLY_FORMATTER;
-            if (dateStr!=null && dateStr.equals("")) {
+            if (dateStr != null && dateStr.equals("")) {
                 date = dateFormatter.parse(dateStr);
-            }
-            else {
+            } else {
                 date = new Date();
             }
         } catch (ParseException e) {
@@ -268,7 +267,8 @@ public class FeaturePageAdapter extends PagerAdapter {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialogFragment newFragment = new DatePickerDialogFragment(year, month, day, editView);
+        DatePickerDialogFragment newFragment = new DatePickerDialogFragment();
+        newFragment.setAttributes(year, month, day, editView);
         newFragment.show(this.fragmentManager, "datePicker");
     }
 }

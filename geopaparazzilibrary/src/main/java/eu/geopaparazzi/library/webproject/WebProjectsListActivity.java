@@ -73,7 +73,7 @@ public class WebProjectsListActivity extends ListActivity {
         pwd = extras.getString(PREFS_KEY_PWD);
         url = extras.getString(PREFS_KEY_URL);
 
-        filterText = (EditText) findViewById(R.id.search_box);
+        filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
         downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
@@ -149,10 +149,10 @@ public class WebProjectsListActivity extends ListActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.webprojectsrow, null);
 
-                TextView titleText = (TextView) rowView.findViewById(R.id.titletext);
-                TextView descriptionText = (TextView) rowView.findViewById(R.id.descriptiontext);
-                TextView authorText = (TextView) rowView.findViewById(R.id.authortext);
-                TextView dateText = (TextView) rowView.findViewById(R.id.datetext);
+                TextView titleText = rowView.findViewById(R.id.titletext);
+                TextView descriptionText = rowView.findViewById(R.id.descriptiontext);
+                TextView authorText = rowView.findViewById(R.id.authortext);
+                TextView dateText = rowView.findViewById(R.id.datetext);
                 // TextView sizeText = (TextView) rowView.findViewById(R.id.sizetext);
 
                 final Webproject webproject = projectListToLoad.get(position);
@@ -163,8 +163,8 @@ public class WebProjectsListActivity extends ListActivity {
                 // int kbSize = (int) (webproject.size / 1024.0);
                 // sizeText.setText(kbSize + "Kb");
 
-                ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
-                imageText.setOnClickListener(new View.OnClickListener() {
+                ImageView imageView = rowView.findViewById(R.id.downloadproject_image);
+                imageView.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         downloadProject(webproject);
                     }

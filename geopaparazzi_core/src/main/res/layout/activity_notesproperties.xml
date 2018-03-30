@@ -105,31 +105,27 @@
                     android:id="@+id/sizeSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/sizeLabel"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_toStartOf="@+id/gpslog_palette" />
+                    android:layout_above="@+id/labels_title"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/sizeLabel" />
 
                 <!--sss -->
-                <Button
+                <ImageButton
                     android:id="@+id/gpslog_palette"
                     android:layout_width="@dimen/min_touch_size"
                     android:layout_height="@dimen/min_touch_size"
-                    android:background="@null"
-                    app:srcCompat="@drawable/ic_palette_primary_24dp"
+                    android:layout_below="@+id/sizeLabel"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignTop="@+id/sizeSpinner"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_toEndOf="@+id/sizeSpinner"
+                    android:background="@null"
+                    app:srcCompat="@drawable/ic_palette_primary_24dp" />
 
                 <TextView
                     android:id="@+id/labels_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@+id/sizeSpinner"
+                    android:layout_below="@+id/gpslog_palette"
                     android:layout_marginTop="15dp"
                     android:text="@string/labels"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -156,7 +152,7 @@
 
                 <Spinner
                     android:id="@+id/fontSizeSpinner"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/fontSizeLabel"
                     android:layout_margin="5dp" />

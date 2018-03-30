@@ -72,7 +72,7 @@ public class ImportDefaultDatabaseMenuEntry extends MenuEntry {
             public void run() {
 
                 try {
-                    File sdcardDir = ResourcesManager.getInstance(_activity).getSdcardDir();
+                    File sdcardDir = ResourcesManager.getInstance(_activity).getMainStorageDir();
                     File newDbFile = new File(sdcardDir, theTextToRunOn);
 
                     AssetManager assetManager = _activity.getAssets();

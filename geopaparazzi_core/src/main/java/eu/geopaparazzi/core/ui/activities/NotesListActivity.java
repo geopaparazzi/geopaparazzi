@@ -213,6 +213,9 @@ public class NotesListActivity extends AppCompatActivity {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+        } else if (item.getItemId() == R.id.action_notesproperties) {
+            Intent intent = new Intent(this, NotesPropertiesActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

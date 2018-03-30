@@ -20,7 +20,9 @@ package eu.geopaparazzi.core.providers;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
+import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -30,7 +32,6 @@ import android.util.SparseArray;
 import java.io.File;
 import java.util.List;
 
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
@@ -76,7 +77,11 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         try {
-            String packageName = ResourcesManager.getInstance(getContext()).getPackageName();
+            Context appContext = getContext().getApplicationContext();
+            ApplicationInfo appInfo = appContext.getApplicationInfo();
+            String packageName = appInfo.packageName;
+
+
             AUTHORITY = packageName + ".provider.availabledata";
             BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 

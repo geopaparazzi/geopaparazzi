@@ -59,7 +59,7 @@ public class ImportBookmarksMenuEntry extends MenuEntry {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
 
-            final File sdcardDir = resourcesManager.getSdcardDir();
+            final File sdcardDir = resourcesManager.getMainStorageDir();
             File[] bookmarksfileList = sdcardDir.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String filename) {
                     return filename.startsWith("bookmarks") && filename.endsWith(".csv");

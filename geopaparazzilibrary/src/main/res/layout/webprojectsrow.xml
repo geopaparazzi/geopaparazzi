@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:contentDescription="@string/download_icon_description"
+        android:src="@drawable/package_download"
         app:srcCompat="@drawable/package_download" />
 
     <TextView

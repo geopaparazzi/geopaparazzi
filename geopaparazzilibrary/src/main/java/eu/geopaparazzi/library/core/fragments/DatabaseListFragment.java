@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DbCursorAdapter;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.RawSqlCursorLoader;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -75,7 +76,9 @@ public class DatabaseListFragment extends ListFragment implements LoaderManager.
                 loaderManager.initLoader(LOADER_ID, null, this);
             }
         } catch (SQLException e) {
-            GPDialogs.warningDialog(getActivity(), "An error occurred while launching the query: " + e.getLocalizedMessage(),
+            String msg = "An error occurred while launching the query: " + mSql;
+            GPLog.error(this, msg, e);
+            GPDialogs.warningDialog(getActivity(), msg,
                     new Runnable() {
                         public void run() {
                             getActivity().finish();

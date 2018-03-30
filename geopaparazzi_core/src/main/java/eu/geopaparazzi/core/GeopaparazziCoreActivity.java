@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.View;
 
 import org.json.JSONException;
 
@@ -23,6 +24,7 @@ import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.ui.fragments.GeopaparazziActivityFragment;
 import eu.geopaparazzi.core.utilities.IApplicationChangeListener;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -32,7 +34,9 @@ import eu.geopaparazzi.library.permissions.PermissionGetAccounts;
 import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
 import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
+import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -78,15 +82,29 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             // PERMISSIONS STOP
         } else {
             init();
-
             checkIncomingUrl();
             checkAvailableProfiles();
         }
 
         setContentView(R.layout.activity_geopaparazzi);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+    }
+
+    private void checkAvailableProfiles() {
+//        try {
+//            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
+            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void init() {
@@ -111,17 +129,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                 editor.putString(PREFS_KEY_DATABASE_TO_LOAD, path);
                 editor.apply();
             }
-        }
-    }
-
-    private void checkAvailableProfiles() {
-        try {
-            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
-
-            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -204,23 +211,15 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             GpsServiceUtilities.stopDatabaseLogging(this);
             GpsServiceUtilities.stopGpsService(this);
             GpsServiceUtilities.unregisterFromBroadcasts(this, geopaparazziActivityFragment.getGpsServiceBroadcastReceiver());
+            GeopaparazziApplication.getInstance().closeDatabase();
+            ResourcesManager.resetManager();
         }
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (Build.VERSION.SDK_INT >= 11) {
-                    recreate();
-                } else {
-                    Intent intent = getIntent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    finish();
-                    overridePendingTransition(0, 0);
-
-                    startActivity(intent);
-                    overridePendingTransition(0, 0);
-                }
+                recreate();
             }
         }, 10);
     }

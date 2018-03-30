@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
@@ -58,7 +59,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         super.onCreate(icicle);
         setContentView(R.layout.activity_notesproperties);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,7 +67,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
 
         // notes selection
         boolean notesVisible = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, true);
-        CheckBox notesVisibilityCheckbox = (CheckBox) findViewById(R.id.checkVisibility);
+        CheckBox notesVisibilityCheckbox = findViewById(R.id.checkVisibility);
         notesVisibilityCheckbox.setChecked(notesVisible);
         notesVisibilityCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -78,7 +79,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
 
 
         // images selection
-        CheckBox imagesView = (CheckBox) findViewById(R.id.imagesvisible);
+        CheckBox imagesView = findViewById(R.id.imagesvisible);
 
         boolean imagesVisible = mPreferences.getBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, true);
         imagesView.setChecked(imagesVisible);
@@ -91,7 +92,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         });
 
         // use custom
-        final CheckBox useCustomCheckbox = (CheckBox) findViewById(R.id.checkUseCustom);
+        final CheckBox useCustomCheckbox = findViewById(R.id.checkUseCustom);
         boolean doCustom = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
         useCustomCheckbox.setChecked(doCustom);
         useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -118,7 +119,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         notesColorStrokeObject.fillColor = initColor;
         notesColorStrokeObject.fillAlpha = opacity;
 
-        final Button paletteButton = (Button) findViewById(R.id.gpslog_palette);
+        final ImageButton paletteButton = findViewById(R.id.gpslog_palette);
         paletteButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(notesColorStrokeObject);
@@ -127,7 +128,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         });
 
         // show labels
-        final CheckBox showLabelsCheckbox = (CheckBox) findViewById(R.id.checkShowLabels);
+        final CheckBox showLabelsCheckbox = findViewById(R.id.checkShowLabels);
         boolean showLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         showLabelsCheckbox.setChecked(showLabels);
         showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -143,7 +144,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
 
-        final CheckBox haloCheckbox = (CheckBox) findViewById(R.id.checkHalo);
+        final CheckBox haloCheckbox = findViewById(R.id.checkHalo);
         boolean doHalo = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, true);
         haloCheckbox.setChecked(doHalo);
         haloCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -165,7 +166,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
                 break;
             }
         }
-        final Spinner sizeSpinner = (Spinner) findViewById(sizespinnerId);
+        final Spinner sizeSpinner = findViewById(sizespinnerId);
         ArrayAdapter<?> sizeSpinnerAdapter = ArrayAdapter.createFromResource(this, arraySizeId,
                 android.R.layout.simple_spinner_item);
         sizeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -25,6 +25,7 @@ public class ProjectFragment extends Fragment {
 
     private EditText nameEdittext;
     private EditText pathEdittext;
+    private Profile profile;
 
     public ProjectFragment() {
     }
@@ -46,9 +47,9 @@ public class ProjectFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profilesettings_project, container, false);
 
-        Profile profile = getArguments().getParcelable(ARG_PROFILE);
+        profile = getArguments().getParcelable(ARG_PROFILE);
 
-        nameEdittext = (EditText) rootView.findViewById(R.id.projectNameEditText);
+        nameEdittext = rootView.findViewById(R.id.projectNameEditText);
         nameEdittext.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -72,16 +73,16 @@ public class ProjectFragment extends Fragment {
             }
         });
 
-        pathEdittext = (EditText) rootView.findViewById(R.id.projectPathEditText);
-        if (profile != null && profile.projectPath != null && new File(profile.projectPath).exists()) {
-            setProjectData(profile.projectPath);
+        pathEdittext = rootView.findViewById(R.id.projectPathEditText);
+        if (profile != null && profile.profileProject != null && profile.getFile(profile.profileProject.getRelativePath()).exists()) {
+            setProjectData(profile.getFile(profile.profileProject.getRelativePath()).getAbsolutePath());
         }
-        FloatingActionButton addFormButton = (FloatingActionButton) rootView.findViewById(R.id.addProjectButton);
+        FloatingActionButton addFormButton = rootView.findViewById(R.id.addProjectButton);
         addFormButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
+                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
                     Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
                     browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"gpap"});
                     browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
@@ -113,9 +114,18 @@ public class ProjectFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
+                        String sdcardPath = profile.getSdcardPath();
+
+                        if (!path.contains(sdcardPath)) {
+                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            return;
+                        }
+
+                        String relativePath = path.replaceFirst(sdcardPath, "");
+
                         setProjectData(path);
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onProjectPathChanged(path);
+                        activity.onProjectPathChanged(relativePath);
                     }
                 }
             }

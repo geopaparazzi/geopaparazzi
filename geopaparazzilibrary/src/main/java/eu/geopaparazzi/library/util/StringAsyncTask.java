@@ -53,7 +53,7 @@ import android.view.Window;
  * task.setProgressDialog("TITLE", "Process...", false, progressCount);
  * task.execute();
  * </pre>
- *
+ * <p>
  * <p>Remember to dispose the progressdialog in the activity destroy method.</p>
  *
  * @author Andrea Antonello (www.hydrologis.com)
@@ -143,7 +143,7 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
     private void dismissProgressDialog() {
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
-            if (activity.isDestroyed()){
+            if (activity.isDestroyed()) {
                 return;
             }
         }
@@ -173,4 +173,5 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
      * @param response the response coming from the {@link #doBackgroundWork()}.
      */
     protected abstract void doUiPostWork(String response);
+
 }

@@ -48,6 +48,7 @@ import static eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtiliti
 @SuppressWarnings("nls")
 public class SpatialVectorTable extends AbstractSpatialTable implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String TABLENAMEPRE = "/";
 
     private final String geometryColumn;
     private final int geomType;
@@ -164,6 +165,9 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         return uniqueNameBasedOnDbFilePath;
     }
 
+    public String getUniqueNameBasedOnTableName() {
+        return TABLENAMEPRE + UNIQUENAME_SEPARATOR + tableName + UNIQUENAME_SEPARATOR + geometryColumn;
+    }
 
     /**
      * @return the geometry type.
@@ -437,7 +441,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      */
     public void makeDefaultStyle() {
         style = new Style();
-        style.name = getUniqueNameBasedOnDbFilePath();
+        style.name = getUniqueNameBasedOnTableName();
     }
 
 

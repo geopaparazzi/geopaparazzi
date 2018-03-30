@@ -195,7 +195,7 @@ public class KmzExportDialogFragment extends DialogFragment {
                     }
                     if (isInterrupted) return INTERRUPTED;
 
-                    File kmlExportDir = ResourcesManager.getInstance(getActivity()).getSdcardDir();
+                    File kmlExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     if (exportPath != null) {

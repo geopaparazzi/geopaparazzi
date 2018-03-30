@@ -53,12 +53,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.DynamicDoubleArray;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
@@ -69,6 +63,12 @@ import eu.geopaparazzi.core.database.objects.MapItem;
 import eu.geopaparazzi.core.database.objects.SerializableLogs;
 import eu.geopaparazzi.core.mapview.MapsSupportService;
 import eu.geopaparazzi.core.utilities.Constants;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Gpx listing activity.
@@ -371,9 +371,6 @@ public class GpsDataListActivity extends AppCompatActivity implements
             } catch (IOException e) {
                 GPLog.error(this, e.getLocalizedMessage(), e);
             }
-        } else if (item.getItemId() == R.id.action_notesproperties) {
-            Intent intent = new Intent(GpsDataListActivity.this, NotesPropertiesActivity.class);
-            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -33,16 +33,22 @@
     <string name="select_dotdot">Select…</string>
     <string name="type_to_filter">type to filter</string>
     <string name="webprojects_list_title">Remote Projects List</string>
+    <string name="webprofiles_list_title">Cloud Profiles List</string>
     <string name="downloading">Downloading…</string>
     <string name="downloading_projects_list_from_server">Downloading projects list from server.</string>
+    <string name="downloading_profiles_list_from_server">Downloading profiles list from server.</string>
+    <string name="download_icon_description">Select to download from server.</string>
     <string name="downloading_layers_list_from_server">Downloading layers list from server.</string>
     <string name="downloading_data_from_server">Downloading data from server.</string>
     <string name="error_projects_list">An error occurred while retrieving the projects list.</string>
+    <string name="error_profiles_list">An error occurred while retrieving the profiles list.</string>
     <string name="error_data_list">An error occurred while retrieving the data layers list.</string>
     <string name="downloading_project">Downloading project…</string>
+    <string name="downloading_profile">Downloading profile…</string>
     <string name="downloading_data">Downloading data…</string>
     <string name="downloading_data_to_the_device">Downloading selected layers as spatialite database to the device.</string>
     <string name="project_successfully_downloaded">The project has been successfully downloaded.</string>
+    <string name="profile_successfully_downloaded">The profile has been successfully downloaded.</string>
     <string name="data_successfully_downloaded">The data have been successfully downloaded.</string>
     <string name="proximity_alert">Proximity Alert!</string>
     <string name="approaching_poi">Approaching a point of interest.</string>
@@ -107,6 +113,8 @@
     <string name="set_properties">Set properties</string>
     <string name="set_dash">Set Dash</string>
     <string name="unauthorized_api_key">Unauthorized access. Check your API-key.</string>
+    <string name="sd_card_foldername">External SD Card</string>
+    <string name="internal_card_foldername">Internal Storage</string>
 
     <string name="fill_and_stroke_color_title">Fill and Stroke color</string>
     <string name="fill_color_title">Fill color</string>
@@ -147,4 +155,9 @@
     <string name="osmbonuspack.format_minutes">%smin</string>
     <string name="osmbonuspack.format_seconds">%ssec</string>
     <string name="first_camera_open_warning">IMPORTANT README: If you experience crashes of the app while taking pictures try to lower the resolution of your camera in the settings.\n\nIt is most probably bound to high memory consumption while processing the image for insertion into the database.\n\nIn the meanwhile we are looking for a viable solution.</string>
+    <string name="gps_status_unknown">GPS status unknown</string>
+    <string name="gps_status_off">GPS switched off</string>
+    <string name="gps_status_notregistered">GPS on but not registered to updates</string>
+    <string name="gps_status_no_fix">GPS registered to updates but no fix</string>
+    <string name="gps_status_fix">GPS has fix</string>
 </resources>

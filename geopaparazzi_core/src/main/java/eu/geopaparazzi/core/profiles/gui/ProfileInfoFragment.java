@@ -43,19 +43,19 @@ public class ProfileInfoFragment extends Fragment implements TextWatcher, Compou
 
         Profile profile = getArguments().getParcelable(ARG_PROFILE);
 
-        nameEdittext = (EditText) rootView.findViewById(R.id.profileNameEditText);
+        nameEdittext = rootView.findViewById(R.id.profileNameEditText);
         nameEdittext.setText(profile.name);
         nameEdittext.addTextChangedListener(this);
 
-        descriptionEdittext = (EditText) rootView.findViewById(R.id.profileDescriptionEditText);
+        descriptionEdittext = rootView.findViewById(R.id.profileDescriptionEditText);
         descriptionEdittext.setText(profile.description);
         descriptionEdittext.addTextChangedListener(this);
 
-        creationdateEdittext = (EditText) rootView.findViewById(R.id.profileCreationdateEditText);
+        creationdateEdittext = rootView.findViewById(R.id.profileCreationdateEditText);
         creationdateEdittext.setText(profile.creationdate);
         creationdateEdittext.addTextChangedListener(this);
 
-        final Switch activeSwitch = (Switch) rootView.findViewById(R.id.activeSwitch);
+        final Switch activeSwitch = rootView.findViewById(R.id.activeSwitch);
         activeSwitch.setChecked(profile.active);
         activeSwitch.setOnCheckedChangeListener(this);
         if (profile.active) {

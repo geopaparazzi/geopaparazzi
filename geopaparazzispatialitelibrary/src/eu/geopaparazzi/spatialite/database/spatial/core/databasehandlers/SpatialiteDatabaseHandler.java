@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -209,11 +210,11 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             createPropertiesTable(dbJava);
         } else {
             for (Style style : allStyles) {
-                if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
+                if (!style.name.startsWith(SpatialVectorTable.TABLENAMEPRE + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
                     // need to update the name in the style and also in the database
                     String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
                     if (split.length == 3) {
-                        String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
+                        String newName = SpatialVectorTable.TABLENAMEPRE + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
                                 + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
                         style.name = newName;
                         updateStyleName(dbJava, newName, style.id);
@@ -233,7 +234,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
         if (propertiesTableColumnCount == 0) {
             createPropertiesTable(dbJava);
             for (SpatialVectorTable spatialTable : vectorTableList) {
-                createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+                createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnTableName(),
                         spatialTable.getLabelField());
             }
         }
@@ -776,12 +777,17 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                 // assign the styles
                 for (SpatialVectorTable spatialTable : vectorTableList) {
                     Style style4Table = null;
+
+                    File parentFile = spatialTable.getDatabaseFile().getParentFile();
+                    boolean canWrite = parentFile.canWrite();
                     try {
-                        style4Table = getStyle4Table(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+                        style4Table = getStyle4Table(dbJava, spatialTable.getUniqueNameBasedOnTableName(),
                                 spatialTable.getLabelField());
                     } catch (java.lang.Exception e) {
-                        deleteStyleTable(dbJava);
-                        checkPropertiesTable();
+                        if (canWrite) {
+                            deleteStyleTable(dbJava);
+                            checkPropertiesTable();
+                        }
                     }
                     if (style4Table == null) {
                         spatialTable.makeDefaultStyle();
@@ -814,7 +820,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
         deleteStyleTable(dbJava);
         createPropertiesTable(dbJava);
         for (SpatialVectorTable spatialTable : vectorTableList) {
-            createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+            createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnTableName(),
                     spatialTable.getLabelField());
         }
     }

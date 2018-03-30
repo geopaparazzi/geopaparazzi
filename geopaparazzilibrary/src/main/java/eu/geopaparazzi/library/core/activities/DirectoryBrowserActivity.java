@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,11 +50,14 @@ import eu.geopaparazzi.library.util.FileNameComparator;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 /**
  * Folder browser activity.
  * <p/>
  * <p>Example usage:</p>
- * File sdcardDir = ResourcesManager.getInstance(getContext()).getSdcardDir();
+ * File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
  * Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
  * browseIntent.putExtra(DirectoryBrowserActivity.PUT_PATH_PREFERENCE, PREFS_KEY_CUSTOM_EXTERNALSTORAGE);
  * browseIntent.putExtra(DirectoryBrowserActivity.EXTENTIONS, new String[]{ DirectoryBrowserActivity.DOFOLDER});
@@ -111,6 +115,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private String startFolder;
     private FileArrayAdapter fileListAdapter;
     private String preferencesKey;
+    private boolean atBaseDirs;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -120,7 +125,7 @@ public class DirectoryBrowserActivity extends ListActivity {
         setContentView(R.layout.browse);
 
         try {
-            sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
+            sdcardDir = ResourcesManager.getInstance(this).getMainStorageDir();
             currentDir = sdcardDir;
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,14 +139,14 @@ public class DirectoryBrowserActivity extends ListActivity {
             startFolder = extras.getString(STARTFOLDERPATH);
             doHidden = extras.getBoolean(SHOWHIDDEN, false);
             preferencesKey = extras.getString(PUT_PATH_PREFERENCE);
-            doFolder=  extras.getBoolean(DOFOLDER, false);
+            doFolder = extras.getBoolean(DOFOLDER, false);
 
             fileFilter = new FileFilter() {
                 public boolean accept(File file) {
                     if (file.isDirectory()) {
                         return true;
                     }
-                    if(extentions!=null && extentions.length>0) {
+                    if (extentions != null && extentions.length > 0) {
                         String name = file.getName();
                         return endsWith(name, extentions);
                     }
@@ -180,7 +185,7 @@ public class DirectoryBrowserActivity extends ListActivity {
         startFolderFile = new File(startFolder);
         if (!startFolderFile.exists()) {
             try {
-                startFolderFile = ResourcesManager.getInstance(this).getSdcardDir();
+                startFolderFile = ResourcesManager.getInstance(this).getMainStorageDir();
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }
@@ -220,7 +225,7 @@ public class DirectoryBrowserActivity extends ListActivity {
                 getFiles(currentDir, filesArray);
             }
         } else {
-            if(!doFolder) {
+            if (!doFolder) {
                 String absolutePath = file.getAbsolutePath();
                 handleIntent(absolutePath);
                 finish();
@@ -231,28 +236,40 @@ public class DirectoryBrowserActivity extends ListActivity {
     private void goUp() {
         if (currentDir == null)
             currentDir = sdcardDir;
+        atBaseDirs = false;
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
             if (tmpDir.canRead()) {
                 currentDir = tmpDir;
+            } else {
+                atBaseDirs = true;
             }
         }
-        getFiles(currentDir, currentDir.listFiles(fileFilter));
+        if (atBaseDirs) {
+            try {
+                getBaseFiles();
+            } catch (Exception e) {
+                e.printStackTrace();
+                getFiles(currentDir, currentDir.listFiles(fileFilter));
+            }
+        } else {
+            getFiles(currentDir, currentDir.listFiles(fileFilter));
+        }
     }
 
     private void getFiles(File parent, File[] files) {
         if (files == null || files.length == 0 || files[0] == null) return;
-        Arrays.sort(files);
         currentDir = parent;
         filesList.clear();
         for (File file : files) {
+            if (!file.canRead()) continue;
             if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
                 continue;
             }
             filesList.add(file);
 
-            Collections.sort(filesList, new FileNameComparator());
         }
+        Collections.sort(filesList, new FileNameComparator());
 
         if (fileListAdapter == null) {
             fileListAdapter = new FileArrayAdapter(this, filesList);
@@ -262,12 +279,29 @@ public class DirectoryBrowserActivity extends ListActivity {
         }
     }
 
+    private void getBaseFiles() throws Exception {
+        File mainStorageDir = ResourcesManager.getInstance(this).getMainStorageDir();
+        List<File> otherStorageDirs = ResourcesManager.getInstance(this).getOtherStorageDirs();
+
+        filesList.clear();
+        filesList.add(mainStorageDir);
+        for (File file : otherStorageDirs) {
+            if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
+                continue;
+            }
+            filesList.add(file);
+        }
+        Collections.sort(filesList, new FileNameComparator());
+        fileListAdapter = new FileArrayAdapter(this, filesList);
+        setListAdapter(fileListAdapter);
+    }
+
     private class FileArrayAdapter extends ArrayAdapter<File> {
         private final Activity context;
         private final List<File> files;
 
         public FileArrayAdapter(Activity context, List<File> files) {
-            super(context, R.id.browselist_text, files);
+            super(context, R.layout.browse_file_row, files);
             this.context = context;
             this.files = files;
         }
@@ -299,14 +333,20 @@ public class DirectoryBrowserActivity extends ListActivity {
             }
             File file = files.get(position);
             String fileName = file.getName();
+            //make internal and external root names human-readable
+            if (fileName.equals("0")) {
+                fileName = context.getString(R.string.internal_card_foldername);
+            } else if (fileName.equals("0000-0000")) {
+                fileName = context.getString(R.string.sd_card_foldername);
+            }
             holder.textView.setText(fileName);
             if (file.isDirectory()) {
                 holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this, R.drawable.ic_folder_primary_24dp));
             } else {
                 if (endsWith(fileName, extentions)) {
-                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this,R.drawable.ic_star_accent_24dp));
+                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this, R.drawable.ic_star_accent_24dp));
                 } else {
-                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this,R.drawable.ic_file_primary_24dp));
+                    holder.imageView.setImageDrawable(Compat.getDrawable(DirectoryBrowserActivity.this, R.drawable.ic_file_primary_24dp));
                 }
             }
 

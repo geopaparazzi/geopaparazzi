@@ -147,10 +147,11 @@ public class TagsManager {
             sectionsMap = new LinkedHashMap<String, JSONObject>();
         }
         File tagsFile = null;
-        if (ProfilesHandler.INSTANCE.getActiveProfile() != null) {
-            Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-            if (activeProfile.tagsPath != null) {
-                tagsFile = new File(activeProfile.tagsPath);
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            String relativePath = activeProfile.profileTags.getRelativePath();
+            if (relativePath != null) {
+                tagsFile = activeProfile.getFile(relativePath);
                 if (!tagsFile.exists())
                     tagsFile = null;
             }
