@@ -289,6 +289,69 @@ public class AppsUtilities {
 
 
     /**
+     * Show a pdf
+     *
+     * @param pdfData
+     * @param pdfName
+     * @param context
+     * @throws Exception
+     */
+    public static void showPDF(byte[] pdfData, String pdfName, Context context) throws Exception {
+        showDocument(pdfData, "application/pdf", ".pdf", context); //$NON-NLS-1$
+    }
+
+    /**
+     * Shows a document using an ACTION_VIEW Intent, based on the provided mime type.
+     *
+     * @param docData The document to be shown, as a byte array
+     * @param mimeType The mime type of the document
+     * @param docName The document name
+     * @param context
+     * @throws Exception
+     */
+    public static void showDocument(byte[] docData, String mimeType, String docName, Context context) throws Exception {
+        File tempDir = ResourcesManager.getInstance(context).getTempDir();
+        String extension = ImageUtilities.getExtension(docName, mimeType);
+        if (extension.equals(".")) {
+            // assume .jpg
+            extension = ".jpg";
+        }
+        File docFile = new File(tempDir, ImageUtilities.getTempImageName(extension));
+        ImageUtilities.writeImageDataToFile(docData, docFile.getAbsolutePath());
+        showDocument(docFile, mimeType, context);
+    }
+
+    /**
+     * Show a document, using an intent based on the provided mime-type. Warning:
+     * this method will probably open a 3rd party application
+     *
+     * @param docFile the file containing the document to show
+     * @param context the context to use.
+     * @throws Exception
+     */
+    public static void showDocument(File docFile, String mimeType, Context context) throws Exception {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Utilities.getFileUriInApplicationFolder(context, docFile);
+        intent.setDataAndType(uri, mimeType);
+
+        grantPermission(context, intent, uri);
+        context.startActivity(intent);
+    }
+
+    /**
+     * Show PDF.
+     *
+     * @param pdfFile the image file.
+     * @param context   the context to use.
+     * @throws Exception
+     */
+    public static void showPDF(File pdfFile, Context context) throws Exception {
+        showDocument(pdfFile, "application/pdf", context); //$NON-NLS-1$
+    }
+
+
+    /**
      * Grant permission to access a file from another app.
      * <p>
      * <p>This is necessary since Android 7.</p>

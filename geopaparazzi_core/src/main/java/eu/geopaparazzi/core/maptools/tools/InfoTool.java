@@ -251,7 +251,7 @@ public class InfoTool extends MapTool {
                             Intent intent = new Intent(context, FeaturePagerActivity.class);
                             intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
                                     (ArrayList<? extends Parcelable>) features);
-                            intent.putExtra(FeatureUtilities.KEY_READONLY, true);
+                            intent.putExtra(FeatureUtilities.KEY_READONLY, true ); //true);
                             context.startActivity(intent);
                         }
                     }

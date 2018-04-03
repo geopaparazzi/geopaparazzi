@@ -78,6 +78,88 @@ public class ImageUtilities {
     }
 
     /**
+     * Gets the extension of the provided file name. For instance, if the string
+     * "test.jpg" is provided, ".jpg" is returned. Files having a single "." located
+     * in the first character (e.g. ".bashrc") are considered to have no extension
+     * (following Unix conventions), so an empty extension (".") is returned in these cases.
+     *
+     * @param fileName
+     */
+    public static String getExtension(String fileName) {
+        int pos = fileName.lastIndexOf(".");
+        if (pos>0) {
+            return fileName.substring(pos);
+        }
+        return ".";
+    }
+
+    /**
+     * Gets a suitable extension for the provided file name and mimeType.
+     * The extension is retrieved from the fileName if available, otherwise
+     * the extension is retrieved from the mime type. If no suitable extension
+     * is found, an empty extension (".") is returned.
+     *
+     * @param fileName
+     * @param mimeType
+     * @return
+     */
+    public static String getExtension(String fileName, String mimeType) {
+        // try to get extension from file name
+        if (fileName!=null && !fileName.equals("")) {
+            int pos = fileName.lastIndexOf(".");
+            if (pos>0) {
+                return fileName.substring(pos);
+            }
+        }
+
+        // try to get the extension from mimeType
+        int pos = mimeType.lastIndexOf("/");
+        if (pos>0) {
+            // get extension and remove non alphanumeric chars
+            return "." + mimeType.substring(pos+1).replaceAll("[^A-Za-z0-9]", "");
+        }
+        return ".";
+
+    }
+
+    /**
+     * Get an image from a file by its path.
+     *
+     * @param imageFilePath the image path.
+     * @param tryCount      times to try in 300 millis loop, in case the image is
+     *                      not yet on disk. (ugly but no other way right now)
+     * @return the image data or null.
+     */
+    public static byte[] getImageFromPath(String imageFilePath, int tryCount) {
+        Bitmap image = BitmapFactory.decodeFile(imageFilePath);
+        int count = 0;
+        while (image == null && ++count < tryCount) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            image = BitmapFactory.decodeFile(imageFilePath);
+        }
+        if (image == null) return null;
+
+        // It is necessary to rotate the image before converting to bytes, as the exif information
+        // will be lost afterwards and the image will be incorrectly oriented in some devices
+        float orientation = getRotation(imageFilePath);
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            image = Bitmap.createBitmap(image, 0, 0, image.getWidth(),
+                    image.getHeight(), matrix, true);
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        return stream.toByteArray();
+    }
+
+    /**
      * Get an image and thumbnail from a file by its path.
      *
      * @param imageFilePath the image path.

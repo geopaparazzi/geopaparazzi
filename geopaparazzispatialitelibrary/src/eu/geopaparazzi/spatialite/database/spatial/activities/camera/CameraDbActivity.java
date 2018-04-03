@@ -18,23 +18,16 @@
 
 package eu.geopaparazzi.spatialite.database.spatial.activities.camera;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
 import java.io.File;
 
 import eu.geopaparazzi.library.camera.AbstractCameraActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.spatialite.R;
-import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.AbstractResource;
+import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.Resource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.BlobResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ExternalResource;
 import eu.geopaparazzi.spatialite.database.spatial.core.resourcestorage.ResourceStorage;
@@ -122,7 +115,7 @@ public class CameraDbActivity extends AbstractCameraActivity {
             // get relative path
             imgPath = imageSaveFolder.toURI().relativize(new File(imgPath).toURI()).getPath();
         } catch (Exception e) {}
-        ExternalResource res = new ExternalResource(imgPath, "", AbstractResource.ResourceType.EXTERNAL_IMAGE);
+        ExternalResource res = new ExternalResource(imgPath, "", Resource.ResourceType.EXTERNAL_IMAGE);
         storage.insertResource(rowId, res);
     }
 
@@ -133,7 +126,7 @@ public class CameraDbActivity extends AbstractCameraActivity {
     protected void storeImageBlob(String imgPath) {
         try{
             byte[][] imageAndThumb = ImageUtilities.getImageAndThumbnailFromPath(imgPath, 10);
-            BlobResource res = new BlobResource(imageAndThumb[0], "", AbstractResource.ResourceType.BLOB_IMAGE);
+            BlobResource res = new BlobResource(imageAndThumb[0], "", Resource.ResourceType.BLOB_IMAGE);
             res.setThumbnail(imageAndThumb[1]);
             storage.insertResource(rowId, res);
         } catch (Exception e) {
