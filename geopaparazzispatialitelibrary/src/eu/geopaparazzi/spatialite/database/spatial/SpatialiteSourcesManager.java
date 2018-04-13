@@ -301,8 +301,8 @@ public enum SpatialiteSourcesManager {
                     mSpatialiteMaps2DbHandlersMap.put(tmpSpatialiteMap, sdbHandler);
 
                     // FIXME this gets recursive and breaks
-                    //                    if (layerNames.contains(tmpSpatialiteMap.tableName)) {
-                    //                        tmpSpatialiteMap.isVisible = true;
+                                        if (layerNames.contains(tmpSpatialiteMap.tableName)) {
+                                            tmpSpatialiteMap.isVisible = true;
                     //                        Style style = table.getStyle();
                     //                        if (style.enabled != 1) {
                     //                            style.enabled = 1;
@@ -315,7 +315,7 @@ public enum SpatialiteSourcesManager {
                     //                                GPLog.error(this, null, e);
                     //                            }
                     //                        }
-                    //                    }
+                                        }
 
                     foundTables = true;
                 }
