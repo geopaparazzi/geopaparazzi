@@ -265,8 +265,10 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
         List<Parcelable> downloadables = new ArrayList<>();
         selectedWebprofile.profileTags.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileTags.getRelativePath()).getAbsolutePath());
         downloadables.add(selectedWebprofile.profileTags);
-        selectedWebprofile.profileProject.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileProject.getRelativePath()).getAbsolutePath());
-        downloadables.add(selectedWebprofile.profileProject);
+        if (selectedWebprofile.profileProject != null) {
+            selectedWebprofile.profileProject.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileProject.getRelativePath()).getAbsolutePath());
+            downloadables.add(selectedWebprofile.profileProject);
+        }
         for (ProfileBasemaps item : selectedWebprofile.basemapsList) {
             item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
         }

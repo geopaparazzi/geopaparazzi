@@ -45,6 +45,7 @@ public class Profile implements Parcelable {
     public String creationdate = "";
     public String modifieddate = "";
     public String color = "#FFFFFF";
+    public String mapView = "";
     public boolean active = false;
     private String sdcardPath = "";
 
@@ -66,6 +67,7 @@ public class Profile implements Parcelable {
         creationdate = in.readString();
         modifieddate = in.readString();
         color = in.readString();
+        mapView = in.readString();
         active = in.readByte() != 0;
         sdcardPath = in.readString();
         profileTags = in.readParcelable(ProfileTags.class.getClassLoader());
@@ -177,6 +179,7 @@ public class Profile implements Parcelable {
         dest.writeString(creationdate);
         dest.writeString(modifieddate);
         dest.writeString(color);
+        dest.writeString(mapView);
         dest.writeByte((byte) (active ? 1 : 0));
         dest.writeString(sdcardPath);
         dest.writeParcelable(profileTags, flags);

@@ -64,6 +64,7 @@ public enum ProfilesHandler {
 
     public static final String ACTIVE = "active";
     public static final String COLOR = "color";
+    public static final String MAPVIEW = "mapView";
     public static final String TAGS = "tags";
     public static final String PROJECT = "project";
     public static final String SDCARD_PATH = "sdcardPath";
@@ -158,6 +159,8 @@ public enum ProfilesHandler {
                 profile.modifieddate = profileObject.getString(MODIFIEDDATE);
             } else if (attributeName.equals(COLOR)) {
                 profile.color = profileObject.getString(COLOR);
+            } else if (attributeName.equals(MAPVIEW)) {
+                profile.mapView = profileObject.getString(MAPVIEW);
             } else if (attributeName.equals(ACTIVE)) {
                 profile.active = profileObject.getBoolean(ACTIVE);
             } else if (attributeName.equals(SDCARD_PATH)) {
@@ -342,6 +345,7 @@ public enum ProfilesHandler {
         profileObject.put(CREATIONDATE, profile.creationdate);
         profileObject.put(MODIFIEDDATE, profile.modifieddate);
         profileObject.put(COLOR, profile.color);
+        profileObject.put(MAPVIEW, profile.mapView);
         profileObject.put(ACTIVE, profile.active);
         profileObject.put(SDCARD_PATH, profile.getSdcardPathRaw());
 
