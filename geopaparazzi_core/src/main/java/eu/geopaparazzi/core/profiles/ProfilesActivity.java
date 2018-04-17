@@ -223,16 +223,6 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 activeLayoutTop.setBackgroundColor(Color.RED);
                 activeLayoutBottom.setVisibility(View.VISIBLE);
                 activeLayoutBottom.setBackgroundColor(Color.RED);
-
-                String mapViewJson = profile.mapView;
-                String [] coordinates = mapViewJson.split(",");
-                if (coordinates.length == 3) {
-                    double lat = Double.parseDouble(coordinates[0]);
-                    double lon = Double.parseDouble(coordinates[1]);
-                    float zoom = Float.parseFloat(coordinates[2]);
-                    PositionUtilities.putMapCenterInPreferences(mPeferences, lat, lon, zoom);
-                }
-
             } else {
                 activeLayoutTop.setVisibility(View.INVISIBLE);
                 activeLayoutTop.setBackgroundColor(Color.WHITE);
