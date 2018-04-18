@@ -44,6 +44,8 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
+import eu.geopaparazzi.library.util.PositionUtilities;
+
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
     public static final String PROFILES_CONFIG_JSON = "profiles_config.json";
@@ -55,6 +57,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
     private List<Profile> profileList = new ArrayList<>();
     private CardView currentColorCardView;
     private Profile currentProfile;
+    private Profile previousActiveProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             }
         });
 
+        previousActiveProfile = ProfilesHandler.INSTANCE.getActiveProfile();
     }
 
 
@@ -102,6 +106,22 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             saveProfiles();
             try {
                 ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+                Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+                if (!previousActiveProfile.name.equals(activeProfile.name) ) {
+                    if (activeProfile != null) {
+                        String mapViewJson = activeProfile.mapView;
+                        String [] coordinates = mapViewJson.split(",");
+                        if (coordinates.length == 3) {
+                            double lat = Double.parseDouble(coordinates[0]);
+                            double lon = Double.parseDouble(coordinates[1]);
+                            float zoom = Float.parseFloat(coordinates[2]);
+                            PositionUtilities.putMapCenterInPreferences(mPeferences,lon, lat, zoom);
+                        }
+                    }
+                }
+
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
