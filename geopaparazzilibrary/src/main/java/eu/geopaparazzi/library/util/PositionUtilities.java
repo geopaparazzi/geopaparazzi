@@ -137,7 +137,7 @@ public class PositionUtilities {
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
         if (GPLog.LOG_ABSURD) {
-            GPLog.addLogEntry(LOG_TAG, "putMapCenter: " + longFloat + "/" + latFloat);
+            GPLog.addLogEntry(LOG_TAG, "putMapCenter (lon/lat): " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
         editor.putFloat(PREFS_KEY_MAPCENTER_LAT, latFloat);
