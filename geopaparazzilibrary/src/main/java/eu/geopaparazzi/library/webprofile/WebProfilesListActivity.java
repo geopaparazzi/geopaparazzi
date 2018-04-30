@@ -214,11 +214,11 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
                     String wpModifieddate = selectedWebprofile.modifieddate;
                     if (pName.equals(wpName) && pModifieddate.equals(wpModifieddate)) {
                         // and existing profile to be ignored
-                        commentsText.setText("IGNORED: the same profile exists already.");
+                        commentsText.setText(R.string.profile_status_exists);
                         ignore = true;
                     } else if (pName.equals(wpName)) {
                         // a new profile is available
-                        commentsText.setText("UPDATES: will update existing.");
+                        commentsText.setText(R.string.profile_status_update);
                         ignore = true;
                     }
                 }

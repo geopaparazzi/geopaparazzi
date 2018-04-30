@@ -50,6 +50,8 @@
     <string name="project_successfully_downloaded">The project has been successfully downloaded.</string>
     <string name="profile_successfully_downloaded">The profile has been successfully downloaded.</string>
     <string name="data_successfully_downloaded">The data have been successfully downloaded.</string>
+    <string name="profile_status_exists">(Already downloaded)</string>
+    <string name="profile_status_update">(Will update your existing profile)</string>
     <string name="proximity_alert">Proximity Alert!</string>
     <string name="approaching_poi">Approaching a point of interest.</string>
     <string name="form_field_check">Please check that the field \"%1$s\" in section \"%2$s\" is valid. Not validated constraints: %3$s.</string>
