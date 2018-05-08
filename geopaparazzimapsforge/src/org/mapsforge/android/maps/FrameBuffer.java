@@ -161,7 +161,7 @@ public class FrameBuffer {
 				Log.e("MAPSFORGE.FRAMEBUFFER.clear", "Found that mapViewBitmap1 has been recycled, creating a new one.");
 				this.width = this.mapView.getWidth();
 				this.height = this.mapView.getHeight();
-				this.mapViewBitmap1 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.RGB_565);
+				this.mapViewBitmap1 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888);
 				this.mapViewCanvas.setBitmap(this.mapViewBitmap1);
 			}
 			this.mapViewBitmap1.eraseColor(MAP_VIEW_BACKGROUND);
@@ -175,7 +175,7 @@ public class FrameBuffer {
 				Log.e("MAPSFORGE.FRAMEBUFFER.clear", "Found that mapViewBitmap2 has been recycled, creating a new one.");
 				this.width = this.mapView.getWidth();
 				this.height = this.mapView.getHeight();
-				this.mapViewBitmap2 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.RGB_565);
+				this.mapViewBitmap2 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888);
 			}
 			this.mapViewBitmap2.eraseColor(MAP_VIEW_BACKGROUND);
 		}
@@ -210,8 +210,8 @@ public class FrameBuffer {
 	synchronized void onSizeChanged() {
 		this.width = this.mapView.getWidth();
 		this.height = this.mapView.getHeight();
-		this.mapViewBitmap1 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.RGB_565);
-		this.mapViewBitmap2 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.RGB_565);
+		this.mapViewBitmap1 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888);
+		this.mapViewBitmap2 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888);
 		clear();
 		this.mapViewCanvas.setBitmap(this.mapViewBitmap1);
 	}

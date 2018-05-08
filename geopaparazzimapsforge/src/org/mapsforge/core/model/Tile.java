@@ -26,7 +26,7 @@ public class Tile implements Serializable {
 	/**
 	 * Bytes per pixel required in a map tile bitmap.
 	 */
-	public static final byte TILE_BYTES_PER_PIXEL = 2;
+	public static final byte TILE_BYTES_PER_PIXEL = 4;
 
 	/**
 	 * Width and height of a map tile in pixel.

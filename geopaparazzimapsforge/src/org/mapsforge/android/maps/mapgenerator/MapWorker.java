@@ -44,7 +44,7 @@ public class MapWorker extends PausableThread {
         this.jobQueue = mapView.getJobQueue();
         this.inMemoryTileCache = mapView.getInMemoryTileCache();
         this.fileSystemTileCache = mapView.getFileSystemTileCache();
-        this.tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
+        this.tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.ARGB_8888);
     }
 
     /**

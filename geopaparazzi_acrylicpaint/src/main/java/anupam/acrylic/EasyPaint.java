@@ -172,7 +172,7 @@ public class EasyPaint extends GraphicsActivity implements
             View v = findViewById(R.id.CanvasId);
             v.setDrawingCacheEnabled(true);
             Bitmap cachedBitmap = v.getDrawingCache();
-            Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.RGB_565, true);
+            Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.ARGB_8888, true);
             v.destroyDrawingCache();
             FileOutputStream output = null;
             File file = null;
@@ -611,7 +611,7 @@ public class EasyPaint extends GraphicsActivity implements
         View v = findViewById(R.id.CanvasId);
         v.setDrawingCacheEnabled(true);
         Bitmap cachedBitmap = v.getDrawingCache();
-        Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.RGB_565, true);
+        Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.ARGB_8888, true);
         v.destroyDrawingCache();
         FileOutputStream output = null;
         File file = null;
