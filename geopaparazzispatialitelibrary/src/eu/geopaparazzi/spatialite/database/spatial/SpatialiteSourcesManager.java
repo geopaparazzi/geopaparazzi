@@ -285,8 +285,10 @@ public enum SpatialiteSourcesManager {
         /*
          * SPATIALITE TABLES
          */
-
-        List<String> layerNames = Arrays.asList(profileSpatialitemap.visibleLayerNames);
+        List<String> layerNames = Arrays.asList();
+        if (profileSpatialitemap.visibleLayerNames != null) {
+            layerNames = Arrays.asList(profileSpatialitemap.visibleLayerNames);
+        }
         File file = profile.getFile(profileSpatialitemap.getRelativePath());
 
         boolean foundTables = false;

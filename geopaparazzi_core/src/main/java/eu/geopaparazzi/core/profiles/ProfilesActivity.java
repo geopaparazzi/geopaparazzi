@@ -107,21 +107,18 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             try {
                 ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
                 Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-                if (!previousActiveProfile.name.equals(activeProfile.name) ) {
-                    if (activeProfile != null) {
+                if (activeProfile != null) {
+                    if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {
                         String mapViewJson = activeProfile.mapView;
-                        String [] coordinates = mapViewJson.split(",");
+                        String[] coordinates = mapViewJson.split(",");
                         if (coordinates.length == 3) {
                             double lat = Double.parseDouble(coordinates[0]);
                             double lon = Double.parseDouble(coordinates[1]);
                             float zoom = Float.parseFloat(coordinates[2]);
-                            PositionUtilities.putMapCenterInPreferences(mPeferences,lon, lat, zoom);
+                            PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoom);
                         }
                     }
                 }
-
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
