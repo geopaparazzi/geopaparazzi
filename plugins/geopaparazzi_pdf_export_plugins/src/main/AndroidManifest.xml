@@ -13,6 +13,19 @@
                 <category android:name="androidsrc.intent.category.MENU_PROVIDER" />
             </intent-filter>
         </service>
+
+
+        <activity
+            android:name=".PdfExportNotesListActivity"
+            android:label="@string/notes_list_label"
+            android:parentActivityName="eu.geopaparazzi.core.ui.activities.ExportActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="eu.geopaparazzi.core.ui.activities.ExportActivity" />
+        </activity>
+
     </application>
+
 
 </manifest>
