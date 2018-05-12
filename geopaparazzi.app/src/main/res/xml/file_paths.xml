@@ -5,4 +5,7 @@
     <external-path
         name="geopaparazzi_folder"
         path="geopaparazzi" />
+    <external-path
+        name="external_files"
+        path="." />
 </paths>
