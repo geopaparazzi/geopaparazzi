@@ -224,7 +224,7 @@ public class DaoImages implements IImagesDbHelper {
 
             // delete images
             String query = "delete from " + TABLE_IMAGES + " where " + imageIdsWhereStr;
-            SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
+                SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
             deleteStmt.execute();
 
             // delete images data

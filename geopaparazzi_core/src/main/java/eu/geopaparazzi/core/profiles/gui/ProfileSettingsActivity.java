@@ -24,6 +24,7 @@ import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
@@ -124,6 +125,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
             profile.profileTags = new ProfileTags();
         }
         profile.profileTags.setRelativePath(relativePath);
+        TagsManager.reset();
     }
 
     public void onProjectPathChanged(String relatvePath) {

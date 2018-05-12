@@ -144,7 +144,7 @@ public class TagsManager {
      */
     private void getFileTags(Context context) throws Exception {
         if (sectionsMap == null) {
-            sectionsMap = new LinkedHashMap<String, JSONObject>();
+            sectionsMap = new LinkedHashMap<>();
         }
         File tagsFile = null;
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();

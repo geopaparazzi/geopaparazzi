@@ -222,11 +222,13 @@ public class DaoNotes {
         String form = note.getForm();
         if (form != null && form.length() > 0) {
             List<String> imageIds = note.getImageIds();
-            long[] ids = new long[imageIds.size()];
-            for (int i = 0; i < ids.length; i++) {
-                ids[i] = Long.parseLong(imageIds.get(i));
+            if (imageIds.size() > 0) {
+                long[] ids = new long[imageIds.size()];
+                for (int i = 0; i < ids.length; i++) {
+                    ids[i] = Long.parseLong(imageIds.get(i));
+                }
+                DaoImages.deleteImages(ids);
             }
-            DaoImages.deleteImages(ids);
         }
         deleteNote(note.getId());
     }
