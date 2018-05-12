@@ -192,11 +192,11 @@ public class ResourcesManager implements Serializable {
         if (mainStorageDir != null) {
             applicationSupportFolder = new File(mainStorageDir, applicationLabel);
         } else if (useInternalMemory) {
-                /*
-                 * no external storage available:
-                 * - use internal memory
-                 * - set sdcard for maps inside the space
-                 */
+            /*
+             * no external storage available:
+             * - use internal memory
+             * - set sdcard for maps inside the space
+             */
             applicationSupportFolder = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
             mainStorageDir = applicationSupportFolder;
         } else {
@@ -292,7 +292,7 @@ public class ResourcesManager implements Serializable {
      */
     public File getDatabaseFile() {
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
+        if (activeProfile != null && activeProfile.profileProject != null) {
             String projectPath = activeProfile.profileProject.getRelativePath();
             if (projectPath != null && activeProfile.getFile(projectPath).exists()) {
                 return activeProfile.getFile(projectPath);

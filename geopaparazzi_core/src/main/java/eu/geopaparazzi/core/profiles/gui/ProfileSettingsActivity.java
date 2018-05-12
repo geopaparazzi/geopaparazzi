@@ -128,10 +128,14 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
 
     public void onProjectPathChanged(String relatvePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        if (profile.profileProject == null) {
-            profile.profileProject = new ProfileProjects();
+        if (relatvePath == null || relatvePath.length() == 0) {
+            profile.profileProject = null;
+        } else {
+            if (profile.profileProject == null) {
+                profile.profileProject = new ProfileProjects();
+            }
+            profile.profileProject.setRelativePath(relatvePath);
         }
-        profile.profileProject.setRelativePath(relatvePath);
     }
 
     public void onBasemapAdded(String relativePath) {
