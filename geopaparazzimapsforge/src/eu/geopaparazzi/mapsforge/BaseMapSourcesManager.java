@@ -90,7 +90,7 @@ public enum BaseMapSourcesManager {
              * if they do not exist add two mapurl based mapnik and opencycle
              * tile sources as default ones. They will automatically
              * be backed into a mbtiles db.
-            */
+             */
             File applicationSupporterDir = ResourcesManager.getInstance(gpApplication).getApplicationSupporterDir();
             mMapnikFile = new File(applicationSupporterDir, DefaultMapurls.Mapurls.mapnik.toString() + DefaultMapurls.MAPURL_EXTENSION);
             DefaultMapurls.checkAllSourcesExistence(gpApplication, applicationSupporterDir);
@@ -192,6 +192,12 @@ public enum BaseMapSourcesManager {
                     mBaseMaps2TablesMap.put(tmpBaseMap, table);
             }
         }
+
+        if (ProfilesHandler.INSTANCE.getActiveProfile() == null) {
+            if (selectedBaseMapTable == null && baseMaps.size() > 0) {
+                setSelectedBaseMap(baseMaps.get(0));
+            }
+        }
         return baseMaps;
     }
 
@@ -252,9 +258,9 @@ public enum BaseMapSourcesManager {
     private List<AbstractSpatialTable> collectTablesFromFile(File file) throws IOException, Exception {
 //        GPLog.addLogEntry(this, "Processing file: " + file);
         List<AbstractSpatialTable> collectedTables = new ArrayList<>();
-            /*
-             * add MAPURL TABLES
-             */
+        /*
+         * add MAPURL TABLES
+         */
         try {
             CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file);
             if (customTileDatabaseHandler != null) {
@@ -421,6 +427,10 @@ public enum BaseMapSourcesManager {
      * @throws jsqlite.Exception
      */
     public void setSelectedBaseMap(BaseMap baseMap) throws Exception {
+        if (baseMap == null) {
+            selectedBaseMapTable = null;
+            return;
+        }
         try {
             selectedTileSourceType = baseMap.mapType;
             selectedTableDatabasePath = baseMap.databasePath;

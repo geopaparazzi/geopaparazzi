@@ -34,10 +34,12 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import gov.nasa.worldwind.AddWMSDialog;
 import gov.nasa.worldwind.ogc.OGCBoundingBox;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
 import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
+import jsqlite.Exception;
 
 public class ProfileSettingsActivity extends AppCompatActivity implements AddWMSDialog.OnWMSLayersAddedListener {
 
@@ -262,6 +264,8 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
                 GPDialogs.quickInfo(mViewPager, "WMS mapurl file successfully added to the basemaps and saved in: " + newMapurl.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
+            } catch (java.lang.Exception e) {
+                e.printStackTrace();
             }
 
             break;
@@ -277,7 +281,15 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
     public void onActiveProfileChanged(boolean isChecked) {
         for (int i = 0; i < mProfileList.size(); i++) {
             Profile profile = mProfileList.get(i);
-            profile.active = i == mSelectedProfileIndex && isChecked;
+            boolean active = i == mSelectedProfileIndex && isChecked;
+            if (profile.active != active && profile.basemapsList.size() > 0) {
+                profile.active = active;
+                try {
+                    BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
+                } catch (Exception e) {
+                    // can be ignored
+                }
+            }
         }
     }
 
