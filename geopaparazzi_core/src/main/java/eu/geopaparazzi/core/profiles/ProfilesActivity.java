@@ -112,13 +112,13 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
                 if (activeProfile != null) {
                     if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {
-                        if(activeProfile.basemapsList.size() > 0 ){
+                        if (activeProfile.basemapsList.size() > 0) {
                             try {
                                 GPApplication gpApplication = GPApplication.getInstance();
                                 ResourcesManager resourcesManager = ResourcesManager.getInstance(gpApplication);
                                 File sdcardDir = resourcesManager.getMainStorageDir();
 
-                                for (ProfileBasemaps currentBasemap: activeProfile.basemapsList ) {
+                                for (ProfileBasemaps currentBasemap : activeProfile.basemapsList) {
                                     String filePath = currentBasemap.getRelativePath();
                                     File basemap = new File(sdcardDir, filePath);
                                     BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(basemap);
@@ -283,14 +283,18 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
     private void importProfiles() {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(this);
-            File sdcardDir = resourcesManager.getMainStorageDir();
             File applicationSupporterDir = resourcesManager.getApplicationSupporterDir();
             File inputFile = new File(applicationSupporterDir, PROFILES_CONFIG_JSON);
             if (inputFile.exists()) {
                 String profilesJson = FileUtilities.readfile(inputFile);
                 List<Profile> importedProfiles = ProfilesHandler.INSTANCE.getProfilesFromJson(profilesJson);
 
-                profileList.addAll(importedProfiles);
+                for (Profile profile : importedProfiles) {
+                    if (!profileList.contains(profile)) {
+                        profileList.add(profile);
+                    }
+                }
+
                 saveProfiles();
                 loadProfiles();
 
