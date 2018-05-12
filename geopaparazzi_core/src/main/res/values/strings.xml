@@ -432,10 +432,6 @@
     <string name="contained_forms">Contained forms</string>
     <string name="map_center">map center</string>
     <string name="gps_position">gps position</string>
-    <string name="name">Name</string>
-    <string name="path">Path</string>
-    <string name="profile_name">Profile Name</string>
-    <string name="profile_description">Profile Description</string>
     <string name="set_line_width">Set line width</string>
     <string name="profile_name">Profile Name</string>
     <string name="profile_description">Profile Description</string>

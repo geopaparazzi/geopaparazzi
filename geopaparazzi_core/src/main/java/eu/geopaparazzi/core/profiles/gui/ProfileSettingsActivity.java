@@ -79,7 +79,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         mSelectedProfileIndex = mProfileList.indexOf(selectedProfile);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
@@ -87,13 +87,13 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         int color = ColorUtilities.toColor(selectedProfile.color);
         mViewPager.setBackgroundColor(color);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
     }
@@ -271,11 +271,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
     public void onActiveProfileChanged(boolean isChecked) {
         for (int i = 0; i < mProfileList.size(); i++) {
             Profile profile = mProfileList.get(i);
-            if (i == mSelectedProfileIndex && isChecked) {
-                profile.active = true;
-            } else {
-                profile.active = false;
-            }
+            profile.active = i == mSelectedProfileIndex && isChecked;
         }
     }
 
