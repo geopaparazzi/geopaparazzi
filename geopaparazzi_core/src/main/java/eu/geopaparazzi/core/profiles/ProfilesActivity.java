@@ -31,11 +31,13 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.gui.FormTagsFragment;
 import eu.geopaparazzi.core.profiles.gui.NewProfileDialogFragment;
 import eu.geopaparazzi.core.profiles.gui.ProfileSettingsActivity;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -43,7 +45,8 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
-
+import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.library.util.PositionUtilities;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
@@ -109,6 +112,22 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
                 if (activeProfile != null) {
                     if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {
+                        if(activeProfile.basemapsList.size() > 0 ){
+                            try {
+                                GPApplication gpApplication = GPApplication.getInstance();
+                                ResourcesManager resourcesManager = ResourcesManager.getInstance(gpApplication);
+                                File sdcardDir = resourcesManager.getMainStorageDir();
+
+                                for (ProfileBasemaps currentBasemap: activeProfile.basemapsList ) {
+                                    String filePath = currentBasemap.getRelativePath();
+                                    File basemap = new File(sdcardDir, filePath);
+                                    BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(basemap);
+                                }
+                            } catch (Exception e) {
+                                GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
+                                Log.e("Profiles", "", e);
+                            }
+                        }
                         String mapViewJson = activeProfile.mapView;
                         String[] coordinates = mapViewJson.split(",");
                         if (coordinates.length == 3) {
