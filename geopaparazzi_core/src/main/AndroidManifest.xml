@@ -245,7 +245,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
-        GeopaparazziActivity
 
         <activity
             android:name="eu.geopaparazzi.core.ui.activities.AddNotesActivity"

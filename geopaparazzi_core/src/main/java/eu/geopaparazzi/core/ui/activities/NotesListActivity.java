@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -523,7 +522,7 @@ public class NotesListActivity extends AppCompatActivity {
                             protected void onPostExecute(String response) {
                                 try {
                                     if (currentNote instanceof Note) {
-                                        DaoNotes.deleteNote(currentNote.getId());
+                                        DaoNotes.deleteComplexNote((Note) currentNote);
                                     } else if (currentNote instanceof Image) {
                                         DaoImages.deleteImages(currentNote.getId());
                                     }
@@ -564,7 +563,7 @@ public class NotesListActivity extends AppCompatActivity {
                                             for (ANote aNote : visibleNotesList) {
                                                 if (aNote.isChecked()) {
                                                     if (aNote instanceof Note) {
-                                                        DaoNotes.deleteNote(aNote.getId());
+                                                        DaoNotes.deleteComplexNote((Note) aNote);
                                                     } else if (aNote instanceof Image) {
                                                         DaoImages.deleteImages(aNote.getId());
                                                     }
