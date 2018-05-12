@@ -23,7 +23,7 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="15dp"
-            android:hint="Name">
+            android:hint="@string/name">
 
             <EditText
                 android:id="@+id/projectNameEditText"
@@ -42,7 +42,7 @@
             android:layout_below="@+id/projectNameLayout"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="15dp"
-            android:hint="Path">
+            android:hint="@string/path">
 
             <EditText
                 android:id="@+id/projectPathEditText"

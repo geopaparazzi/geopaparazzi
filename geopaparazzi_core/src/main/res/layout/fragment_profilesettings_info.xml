@@ -18,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_gravity="fill_horizontal"
         android:layout_margin="15dp"
-        android:hint="Profile Name">
+        android:hint="@string/profile_name">
 
         <EditText
             android:id="@+id/profileNameEditText"
@@ -36,7 +36,7 @@
         android:layout_below="@+id/profileNameEditTextLayout"
         android:layout_gravity="fill_horizontal"
         android:layout_margin="15dp"
-        android:hint="Profile Description">
+        android:hint="@string/profile_description">
 
         <EditText
             android:id="@+id/profileDescriptionEditText"
@@ -55,7 +55,7 @@
         android:layout_below="@+id/profileDescriptionEditTextLayout"
         android:layout_gravity="fill_horizontal"
         android:layout_margin="15dp"
-        android:hint="Creation Date">
+        android:hint="@string/creation_date">
 
         <EditText
             android:id="@+id/profileCreationdateEditText"

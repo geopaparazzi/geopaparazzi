@@ -23,7 +23,7 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="15dp"
-            android:hint="Name">
+            android:hint="@string/name">
 
             <EditText
                 android:id="@+id/formNameEditText"
@@ -42,7 +42,7 @@
             android:layout_below="@+id/formNameLayout"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="15dp"
-            android:hint="Path">
+            android:hint="@string/path">
 
             <EditText
                 android:id="@+id/formPathEditText"
@@ -61,7 +61,7 @@
             android:layout_below="@+id/formPathLayout"
             android:layout_gravity="fill_horizontal"
             android:layout_margin="15dp"
-            android:hint="Contained forms">
+            android:hint="@string/contained_forms">
 
             <EditText
                 android:id="@+id/sectionsEditText"

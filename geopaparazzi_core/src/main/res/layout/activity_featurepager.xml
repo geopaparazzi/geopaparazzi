@@ -62,7 +62,8 @@
                 android:background="@drawable/button_background_drawable"
                 android:padding="@dimen/button_indent"
                 android:text="0/0"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:id="@+id/spacer"

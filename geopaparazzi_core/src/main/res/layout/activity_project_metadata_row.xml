@@ -32,7 +32,7 @@
             android:id="@+id/metadataEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="test"
+            android:hint=""
             android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>

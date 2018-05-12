@@ -29,7 +29,7 @@
             android:id="@+id/bookmarkrowtext"
             style="@style/GPTitleTextViewStyle"
             android:padding="5dip"
-            android:text="asd"
+            android:text=""
             android:layout_gravity="start"
             android:gravity="center_vertical" />
     </HorizontalScrollView>
