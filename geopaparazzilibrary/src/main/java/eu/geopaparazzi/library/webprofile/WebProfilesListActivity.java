@@ -286,7 +286,7 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
 
         downloadProfile = selectedWebprofile;
         progressBarDialogFragment = ProgressBarDialogFragment.newInstance(downloadables.toArray(new Parcelable[downloadables.size()]));
-        progressBarDialogFragment.setCancelable(false);
+        progressBarDialogFragment.setCancelable(true);
         progressBarDialogFragment.show(getSupportFragmentManager(), "Download files");
 
     }
