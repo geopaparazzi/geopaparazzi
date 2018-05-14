@@ -399,6 +399,7 @@
     <string name="new_picture">New picture</string>
     <string name="Documents">Documents</string>
     <string name="Document_title">Document#</string>
+    <string name="Images">Images</string>
     <string name="confirm_remove_document">Do you really want to remove the document?</string>
     <string name="upload_to_cloud_prompt">Upload the current project to the cloud?</string>
     <string name="data_to_pdf_label">Project Forms to Pdf</string>
