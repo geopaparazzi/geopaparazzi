@@ -19,17 +19,9 @@ package eu.geopaparazzi.plugins.pdfexport;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
-import eu.geopaparazzi.core.ui.dialogs.StageExportDialogFragment;
-import eu.geopaparazzi.core.utilities.Constants;
-import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -57,8 +49,11 @@ public class ExportProjectsPdfMenuEntry extends MenuEntry {
     public void onClick(final IActivitySupporter clickActivityStarter) {
         this.clickActivityStarter = clickActivityStarter;
 
-        PdfExportDialogFragment pdfExportDialogFragment = PdfExportDialogFragment.newInstance(null);
-        pdfExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "pdf export");
+        Intent preferencesIntent = new Intent(clickActivityStarter.getContext(), PdfExportNotesListActivity.class);
+        clickActivityStarter.startActivity(preferencesIntent);
+
+//        PdfExportDialogFragment pdfExportDialogFragment = PdfExportDialogFragment.newInstance(null, exportIds);
+//        pdfExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "pdf export");
     }
 
 }

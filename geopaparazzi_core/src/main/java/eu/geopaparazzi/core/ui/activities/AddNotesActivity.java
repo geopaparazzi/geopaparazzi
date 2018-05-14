@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.core.ui.dialogs.AddNoteLayoutDialogFragment;
 import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -324,7 +325,8 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 // this note needs to be removed, since is was created but then
                 // cancel was pressed
                 try {
-                    DaoNotes.deleteNote(noteId);
+                    Note note = DaoNotes.getNoteById(noteId);
+                    DaoNotes.deleteComplexNote(note);
                     return;
                 } catch (IOException e) {
                     GPLog.error(this, null, e);

@@ -24,6 +24,7 @@ import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
@@ -33,10 +34,12 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import gov.nasa.worldwind.AddWMSDialog;
 import gov.nasa.worldwind.ogc.OGCBoundingBox;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
 import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
+import jsqlite.Exception;
 
 public class ProfileSettingsActivity extends AppCompatActivity implements AddWMSDialog.OnWMSLayersAddedListener {
 
@@ -79,7 +82,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         mSelectedProfileIndex = mProfileList.indexOf(selectedProfile);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
@@ -87,13 +90,13 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         int color = ColorUtilities.toColor(selectedProfile.color);
         mViewPager.setBackgroundColor(color);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
     }
@@ -124,14 +127,19 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
             profile.profileTags = new ProfileTags();
         }
         profile.profileTags.setRelativePath(relativePath);
+        TagsManager.reset();
     }
 
     public void onProjectPathChanged(String relatvePath) {
         Profile profile = mProfileList.get(mSelectedProfileIndex);
-        if (profile.profileProject == null) {
-            profile.profileProject = new ProfileProjects();
+        if (relatvePath == null || relatvePath.length() == 0) {
+            profile.profileProject = null;
+        } else {
+            if (profile.profileProject == null) {
+                profile.profileProject = new ProfileProjects();
+            }
+            profile.profileProject.setRelativePath(relatvePath);
         }
-        profile.profileProject.setRelativePath(relatvePath);
     }
 
     public void onBasemapAdded(String relativePath) {
@@ -256,6 +264,8 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
                 GPDialogs.quickInfo(mViewPager, "WMS mapurl file successfully added to the basemaps and saved in: " + newMapurl.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
+            } catch (java.lang.Exception e) {
+                e.printStackTrace();
             }
 
             break;
@@ -271,10 +281,14 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
     public void onActiveProfileChanged(boolean isChecked) {
         for (int i = 0; i < mProfileList.size(); i++) {
             Profile profile = mProfileList.get(i);
-            if (i == mSelectedProfileIndex && isChecked) {
-                profile.active = true;
-            } else {
-                profile.active = false;
+            boolean active = i == mSelectedProfileIndex && isChecked;
+            if (profile.active != active && profile.basemapsList.size() > 0) {
+                profile.active = active;
+                try {
+                    BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
+                } catch (Exception e) {
+                    // can be ignored
+                }
             }
         }
     }

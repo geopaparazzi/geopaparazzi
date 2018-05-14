@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_addwms"
         android:orderInCategory="100"
-        android:title="Add WMS"
+        android:title="@string/add_wms"
         app:showAsAction="always" />
 </menu>

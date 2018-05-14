@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
             android:layout_below="@+id/activeColorLayoutTop"
-            android:text="Profile Name"
+            android:text="@string/profile_name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/profileNameText"
             android:layout_marginBottom="20dip"
-            android:text="Profile Description"
+            android:text="@string/profile_description"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView

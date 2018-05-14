@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -219,7 +220,9 @@ public class GPictureView extends View implements GView {
                             byte[] imageData = imagesDbHelper.getImageData(image.getId());
                             ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());
 
-                            intent.setDataAndType(Uri.fromFile(imageFile), "image/*"); //$NON-NLS-1$
+                            Uri imageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".library.fileprovider", imageFile);
+                            intent.setDataAndType(imageUri, "image/*"); //$NON-NLS-1$
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             context.startActivity(intent);
                         } catch (Exception e) {
                             GPLog.error(this, null, e);

@@ -49,7 +49,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/sqlButton"
                 android:onClick="analyzeLog"
-                android:text="Analyze log" />
+                android:text="Analyze log"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/resetStyleTablesButton"
@@ -88,7 +89,8 @@
                 android:layout_below="@+id/logTitleText"
                 android:layout_marginLeft="10dp"
                 android:text="log"
-                android:textColor="@color/main_text_color" />
+                android:textColor="@color/main_text_color"
+                tools:ignore="HardcodedText" />
 
             <CheckBox
                 android:id="@+id/logHeavyCheckbox"

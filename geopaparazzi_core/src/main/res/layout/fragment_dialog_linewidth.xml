@@ -16,7 +16,7 @@
         android:layout_height="70dp"
         android:id="@+id/widthImageView"
         android:layout_gravity="fill_horizontal"
-        android:contentDescription="Set line width"
+        android:contentDescription="@string/set_line_width"
         android:layout_column="0"
         android:layout_row="0" />
 

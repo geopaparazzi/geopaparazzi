@@ -153,13 +153,6 @@
         </activity>
 
         <activity
-            android:name="eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsActivity"
-            android:theme="@style/GeopapTheme.NoActionBar" />
-        <activity
-            android:name="eu.geopaparazzi.core.ui.activities.tantomapurls.TantoMapurlsListActivity"
-            android:theme="@style/GeopapTheme.NoActionBar" />
-
-        <activity
             android:name="eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity"
             android:label="@string/basemaps"
             android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
@@ -245,7 +238,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
         </activity>
-        GeopaparazziActivity
 
         <activity
             android:name="eu.geopaparazzi.core.ui.activities.AddNotesActivity"

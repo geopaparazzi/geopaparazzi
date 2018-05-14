@@ -148,7 +148,8 @@ public class ResourceBrowser extends AppCompatActivity {
             }
             else {
                 ExternalResource completeRes = (ExternalResource) res;
-                File image = new File(imageSaveFolder, completeRes.getPath());
+                //ToDo: the "getMainStorageDir" needs to be from the profile in case it is set to SECONDARYSTORAGE
+                File image  = new File(ResourcesManager.getInstance(this).getMainStorageDir(), completeRes.getPath());
                 if (res.getType() == Resource.ResourceType.EXTERNAL_IMAGE) {
                     AppsUtilities.showImage(image, this);
                 } else if (res.getType() == Resource.ResourceType.EXTERNAL_PDF) {
@@ -183,7 +184,7 @@ public class ResourceBrowser extends AppCompatActivity {
         for (Resource r: resources) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);
             String title = getResources().getString(R.string.Document_title);
-            imageItems.add(new ImageItem(bitmap, title + i++, r));
+            imageItems.add(new ImageItem(bitmap, r.getName(), r));
         }
         String text = getResources().getQuantityString(R.plurals.n_images, imageItems.size(), imageItems.size());
         numImagesView.setText(text);

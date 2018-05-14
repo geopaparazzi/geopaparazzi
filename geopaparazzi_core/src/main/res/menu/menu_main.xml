@@ -28,7 +28,7 @@
         android:id="@+id/action_gps"
         android:icon="@drawable/actionbar_gps_off"
         android:orderInCategory="80"
-        android:title="GPS"
+        android:title="@string/GPS"
         app:showAsAction="always" />
 
     <item

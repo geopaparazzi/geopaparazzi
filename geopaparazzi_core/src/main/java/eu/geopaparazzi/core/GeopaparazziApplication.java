@@ -43,6 +43,7 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GeopaparazziApplication extends GPApplication {
 
     private static SQLiteDatabase database;

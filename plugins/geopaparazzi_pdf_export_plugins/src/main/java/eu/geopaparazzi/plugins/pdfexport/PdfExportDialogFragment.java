@@ -45,6 +45,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +71,7 @@ import eu.geopaparazzi.library.util.Utilities;
 public class PdfExportDialogFragment extends DialogFragment {
     public static final String NODATA = "NODATA";
     public static final String PDF_PATH = "exportPath";
+    public static final String EXPORTIDS = "exportids";
     public static final String INTERRUPTED = "INTERRUPTED";
     private ProgressBar progressBar;
     private String exportPath;
@@ -76,18 +79,21 @@ public class PdfExportDialogFragment extends DialogFragment {
     private boolean isInterrupted = false;
     private AlertDialog alertDialog;
     private Button positiveButton;
+    private long[] exportIds;
 
 
     /**
      * Create a dialog instance.
      *
      * @param exportPath an optional path to which to export the kmz to. If null, a default path is chosen.
+     * @param exportIds
      * @return the instance.
      */
-    public static PdfExportDialogFragment newInstance(String exportPath) {
+    public static PdfExportDialogFragment newInstance(String exportPath, long[] exportIds) {
         PdfExportDialogFragment f = new PdfExportDialogFragment();
         Bundle args = new Bundle();
         args.putString(PDF_PATH, exportPath);
+        args.putLongArray(EXPORTIDS, exportIds);
         f.setArguments(args);
         return f;
     }
@@ -97,6 +103,7 @@ public class PdfExportDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         exportPath = getArguments().getString(PDF_PATH);
+        exportIds = getArguments().getLongArray(EXPORTIDS);
     }
 
     @Override
@@ -144,6 +151,7 @@ public class PdfExportDialogFragment extends DialogFragment {
                     /*
                      * get notes
                      */
+
                     List<Note> notesList = DaoNotes.getNotesList(null, false);
                     if (notesList.size() == 0) {
                         return NODATA;
@@ -169,9 +177,15 @@ public class PdfExportDialogFragment extends DialogFragment {
                     document.addAuthor("Geopaparazzi User");
                     document.addCreator("Geopaparazzi - http://www.geopaparazzi.eu");
 
+                    List<Long> idsToExport = new ArrayList<>();
+                    for (int i = 0; i < exportIds.length; i++) {
+                        idsToExport.add(exportIds[i]);
+                    }
                     int index = 1;
                     for (Note note : notesList) {
-                        processNote(document, note, index++);
+                        if (idsToExport.contains(note.getId())) {
+                            processNote(document, note, index++);
+                        }
                     }
 
                     document.close();

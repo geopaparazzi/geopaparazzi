@@ -263,8 +263,10 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
 
     private void downloadProfile(Profile selectedWebprofile) {
         List<Parcelable> downloadables = new ArrayList<>();
-        selectedWebprofile.profileTags.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileTags.getRelativePath()).getAbsolutePath());
-        downloadables.add(selectedWebprofile.profileTags);
+        if (selectedWebprofile.profileTags != null) {
+            selectedWebprofile.profileTags.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileTags.getRelativePath()).getAbsolutePath());
+            downloadables.add(selectedWebprofile.profileTags);
+        }
         if (selectedWebprofile.profileProject != null) {
             selectedWebprofile.profileProject.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileProject.getRelativePath()).getAbsolutePath());
             downloadables.add(selectedWebprofile.profileProject);
@@ -305,12 +307,7 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
             downloadProfile = null;
         }
         if (msg != null && msg.trim().length() > 0)
-            GPDialogs.infoDialog(this, msg, new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.infoDialog(this, msg, null);
 
 
     }

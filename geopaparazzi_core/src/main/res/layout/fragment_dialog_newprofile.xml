@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
         android:layout_margin="10dp"
-        android:hint="Name of the new profile">
+        android:hint="@string/name_of_the_new_profile">
 
         <EditText
             android:id="@+id/profileNameEditText"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
         android:layout_margin="10dp"
-        android:hint="Description of the new profile">
+        android:hint="@string/description_of_the_new_profile">
 
         <EditText
             android:id="@+id/profileDescriptionEditText"

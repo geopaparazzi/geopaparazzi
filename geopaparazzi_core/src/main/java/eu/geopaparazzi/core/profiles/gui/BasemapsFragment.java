@@ -25,11 +25,13 @@ import java.util.List;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import gov.nasa.worldwind.AddWMSDialog;
 
 public class BasemapsFragment extends Fragment {
@@ -97,10 +99,11 @@ public class BasemapsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
                     Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
                     browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, supportedExtensions);
-                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
+
+                    String lastPath = Utilities.getLastFilePath(getContext());
+                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, lastPath);
                     startActivityForResult(browseIntent, RETURNCODE_BROWSE);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -202,6 +205,11 @@ public class BasemapsFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                     if (path != null && new File(path).exists()) {
+                        try {
+                            Utilities.setLastFilePath(getContext(), path);
+                        } catch (Exception e) {
+                            GPLog.error(this, null, e);
+                        }
                         ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
                         if (activity != null) {
                             final Profile profile = activity.getSelectedProfile();

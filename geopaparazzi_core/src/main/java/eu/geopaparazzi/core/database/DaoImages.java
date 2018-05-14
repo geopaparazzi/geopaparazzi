@@ -200,7 +200,7 @@ public class DaoImages implements IImagesDbHelper {
             int count = 0;
             for (long id : ids) {
                 if (count > 0) {
-                    imageIdsWhereStr = imageIdsWhereStr + " || ";
+                    imageIdsWhereStr = imageIdsWhereStr + " or ";
                 }
                 imageIdsWhereStr = imageIdsWhereStr + ImageTableFields.COLUMN_ID.getFieldName() + " = " + id;
                 count++;
@@ -213,7 +213,7 @@ public class DaoImages implements IImagesDbHelper {
                 long imageDataId = c.getLong(0);
                 c.moveToNext();
                 if (count > 0) {
-                    imageDataIdsWhereStr = imageDataIdsWhereStr + " || ";
+                    imageDataIdsWhereStr = imageDataIdsWhereStr + " or ";
                 }
                 imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
                 count++;
@@ -224,7 +224,7 @@ public class DaoImages implements IImagesDbHelper {
 
             // delete images
             String query = "delete from " + TABLE_IMAGES + " where " + imageIdsWhereStr;
-            SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
+                SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
             deleteStmt.execute();
 
             // delete images data

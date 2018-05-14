@@ -19,6 +19,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="25dp">
@@ -38,5 +39,6 @@
         android:layout_alignBottom="@+id/customsdcardPathsSpinner"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:text="    ...    " />
+        android:text="    ...    "
+        tools:ignore="HardcodedText" />
 </RelativeLayout>

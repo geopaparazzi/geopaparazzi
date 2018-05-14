@@ -144,7 +144,7 @@ public class TagsManager {
      */
     private void getFileTags(Context context) throws Exception {
         if (sectionsMap == null) {
-            sectionsMap = new LinkedHashMap<String, JSONObject>();
+            sectionsMap = new LinkedHashMap<>();
         }
         File tagsFile = null;
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
@@ -282,9 +282,23 @@ public class TagsManager {
      */
     public static JSONArray getFormItems(JSONObject formObj) throws JSONException {
         if (formObj.has(TAG_FORMITEMS)) {
-            return formObj.getJSONArray(TAG_FORMITEMS);
+            JSONArray formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
+            int emptyIndex = -1;
+            while ((emptyIndex = hasEmpty(formItemsArray)) >= 0) {
+                formItemsArray.remove(emptyIndex);
+            }
+            return formItemsArray;
         }
         return new JSONArray();
+    }
+
+    private static int hasEmpty(JSONArray formItemsArray) throws JSONException {
+        for (int i = 0; i < formItemsArray.length(); i++) {
+            JSONObject formItem = formItemsArray.getJSONObject(i);
+            if (formItem.length() == 0)
+                return i;
+        }
+        return -1;
     }
 
     /**

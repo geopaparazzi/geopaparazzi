@@ -213,6 +213,27 @@ public class DaoNotes {
     }
 
     /**
+     * Delete a note that also has form and images.
+     *
+     * @param note the note.
+     * @throws IOException if something goes wrong.
+     */
+    public static void deleteComplexNote(Note note) throws IOException {
+        String form = note.getForm();
+        if (form != null && form.length() > 0) {
+            List<String> imageIds = note.getImageIds();
+            if (imageIds.size() > 0) {
+                long[] ids = new long[imageIds.size()];
+                for (int i = 0; i < ids.length; i++) {
+                    ids[i] = Long.parseLong(imageIds.get(i));
+                }
+                DaoImages.deleteImages(ids);
+            }
+        }
+        deleteNote(note.getId());
+    }
+
+    /**
      * Delete all OSM type notes.
      *
      * @throws IOException if something goes wrong.
@@ -419,7 +440,7 @@ public class DaoNotes {
             double lat = c.getDouble(1);
 
 
-            if(!PositionUtilities.isValidCoordinateLL(lon, lat)){
+            if (!PositionUtilities.isValidCoordinateLL(lon, lat)) {
                 continue;
             }
 

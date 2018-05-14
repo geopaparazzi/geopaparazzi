@@ -12,7 +12,7 @@
         android:layout_gravity="start"
         android:gravity="center_vertical"
         android:padding="5dip"
-        android:text="asdasd"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
@@ -24,7 +24,7 @@
         android:layout_gravity="start"
         android:gravity="center_vertical"
         android:padding="5dip"
-        android:text="longlong path"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
