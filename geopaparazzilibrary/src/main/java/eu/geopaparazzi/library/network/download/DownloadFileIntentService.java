@@ -27,6 +27,11 @@ import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PR
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.PROGRESS_MESSAGE_KEY;
 import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.max;
 
+/**
+ * A service to download files.
+ *
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class DownloadFileIntentService extends IntentService {
     public static final int PERCENTAGE_UNIT = 5;
     ResultReceiver resultReceiver;

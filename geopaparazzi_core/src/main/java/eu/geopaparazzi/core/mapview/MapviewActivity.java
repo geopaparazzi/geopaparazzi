@@ -372,6 +372,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
+
     }
 
     private void setCenterCross() {
@@ -480,7 +481,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 mapGenerator.cleanup();
             }
         }
-
         super.onDestroy();
     }
 
