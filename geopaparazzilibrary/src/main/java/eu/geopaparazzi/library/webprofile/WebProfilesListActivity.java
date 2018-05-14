@@ -307,12 +307,7 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
             downloadProfile = null;
         }
         if (msg != null && msg.trim().length() > 0)
-            GPDialogs.infoDialog(this, msg, new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.infoDialog(this, msg, null);
 
 
     }
