@@ -217,7 +217,7 @@ public class FileSystemTileCache implements TileCache {
 			this.map = deserializedMap;
 		}
 		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE_IN_BYTES);
-		this.bitmapGet = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.RGB_565);
+		this.bitmapGet = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.ARGB_8888);
 	}
 
 	@Override

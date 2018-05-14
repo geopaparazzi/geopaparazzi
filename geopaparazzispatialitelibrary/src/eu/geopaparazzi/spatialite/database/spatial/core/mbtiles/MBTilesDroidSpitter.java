@@ -296,7 +296,7 @@ public class MBTilesDroidSpitter {
         String s_tile_id = get_pixel_rgb_toString(tile_bitmap, 1);
         ByteArrayOutputStream ba_stream = new ByteArrayOutputStream();
         try {
-            if (this.mbtiles_metadata.get("format") == "png") { // 'png' should be avoided, can
+            if (this.metadata.format.equals("png")) { // 'png' should be avoided, can
                 // create very big databases
                 tile_bitmap.compress(Bitmap.CompressFormat.PNG, 100, ba_stream);
             } else { // 'jpg' should be used where possible
