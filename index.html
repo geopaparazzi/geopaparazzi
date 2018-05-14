@@ -553,7 +553,18 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_create_a_new_project">4.2. Create a new project</a></li>
 <li><a href="#_load_an_existing_project">4.3. Load an existing project</a></li>
 <li><a href="#_gps_status">4.4. GPS Status</a></li>
-<li><a href="#_exit">4.5. Exit</a></li>
+<li><a href="#_advanced">4.5. Advanced</a></li>
+<li><a href="#_profiles">4.6. Profiles</a>
+<ul class="sectlevel3">
+<li><a href="#_creating_a_profile">4.6.1. Creating a Profile</a></li>
+<li><a href="#_deleting_a_profile">4.6.2. Deleting a Profile</a></li>
+<li><a href="#_styling_a_profile">4.6.3. Styling a Profile</a></li>
+<li><a href="#_adding_data_to_a_profile">4.6.4. Adding data to a Profile</a></li>
+<li><a href="#_importing_exporting_and_deleting_profiles">4.6.5. Importing, Exporting and Deleting Profiles</a></li>
+<li><a href="#_importing_cloud_profiles">4.6.6. Importing Cloud Profiles</a></li>
+</ul>
+</li>
+<li><a href="#_exit">4.7. Exit</a></li>
 </ul>
 </li>
 <li><a href="#_the_map_view">5. The Map View</a>
@@ -582,7 +593,16 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#_vector_editing">7. Vector Editing</a></li>
+<li><a href="#_vector_editing">7. Vector Editing</a>
+<ul class="sectlevel2">
+<li><a href="#_viewing_feature_attributes">7.1. Viewing Feature Attributes</a></li>
+<li><a href="#_editing_features">7.2. Editing Features</a>
+<ul class="sectlevel3">
+<li><a href="#_select_a_layer_for_editing">7.2.1. Select a Layer for Editing</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#_settings_preferences">8. Settings &amp; Preferences</a>
 <ul class="sectlevel2">
 <li><a href="#_gps_settings">8.1. GPS Settings</a></li>
@@ -590,13 +610,13 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_screen_settings">8.3. Screen Settings</a></li>
 <li><a href="#_spatialite_settings">8.4. Spatialite Settings</a></li>
 <li><a href="#_force_locale">8.5. Force Locale</a></li>
-<li><a href="#_cloud_projects_sync_settings">8.6. Cloud Projects Sync Settings</a></li>
+<li><a href="#_cloud_server_settings">8.6. Cloud server Settings</a></li>
 </ul>
 </li>
 <li><a href="#_supported_datasets">9. Supported datasets</a>
 <ul class="sectlevel2">
 <li><a href="#_a_word_about_external_storages">9.1. A word about "external" storages</a></li>
-<li><a href="#_basemaps">9.2. Basemaps</a>
+<li><a href="#_basemaps_2">9.2. Basemaps</a>
 <ul class="sectlevel3">
 <li><a href="#_mapurls_custom_tiles_based_maps">9.2.1. Mapurls: Custom tiles based maps</a></li>
 <li><a href="#_mbtiles">9.2.2. MBTiles</a></li>
@@ -621,100 +641,110 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_gdal">10.4. GDAL</a></li>
 </ul>
 </li>
-<li><a href="#_geopaparazzi_gvsig">11. Geopaparazzi &amp; gvSIG</a></li>
-<li><a href="#_using_form_based_notes">12. Using form based notes</a>
+<li><a href="#_geopaparazzi_cloud_server">11. Geopaparazzi Cloud Server</a>
 <ul class="sectlevel2">
-<li><a href="#_supported_tags_via_the_example_form">12.1. Supported tags (via the example form)</a>
+<li><a href="#_cloud_profiles_2">11.1. Cloud Profiles</a>
 <ul class="sectlevel3">
-<li><a href="#_text">12.1.1. Text</a></li>
-<li><a href="#_multiple_text">12.1.2. Multiple Text</a></li>
-<li><a href="#_text_with_key_and_label">12.1.3. Text with key and label</a></li>
-<li><a href="#_numbers">12.1.4. Numbers</a></li>
-<li><a href="#_date">12.1.5. Date</a></li>
-<li><a href="#_time">12.1.6. Time</a></li>
-<li><a href="#_labels">12.1.7. Labels</a></li>
-<li><a href="#_checkbox">12.1.8. Checkbox</a></li>
-<li><a href="#_combos">12.1.9. Combos</a></li>
-<li><a href="#_pictures">12.1.10. Pictures</a></li>
-<li><a href="#_sketches">12.1.11. Sketches</a></li>
-<li><a href="#_map_screenshot">12.1.12. Map screenshot</a></li>
-</ul>
-</li>
-<li><a href="#_other_supported_tags">12.2. Other supported tags</a>
-<ul class="sectlevel3">
-<li><a href="#_hidden">12.2.1. hidden</a></li>
-<li><a href="#_primary_key">12.2.2. primary_key</a></li>
-<li><a href="#_constraints">12.2.3. Constraints</a></li>
-</ul>
-</li>
-<li><a href="#_create_a_simple_form_to_map_fountains">12.3. Create a simple form to map fountains</a>
-<ul class="sectlevel3">
-<li><a href="#_sections">12.3.1. Sections</a></li>
-<li><a href="#_form_subsections">12.3.2. Form subsections</a></li>
-<li><a href="#_form_elements">12.3.3. Form elements</a></li>
-<li><a href="#_finalize_the_form">12.3.4. Finalize the form</a></li>
+<li><a href="#_cloud_profile_json">11.1.1. Cloud Profile JSON</a></li>
+<li><a href="#_cloud_profile_server">11.1.2. Cloud Profile Server</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_the_geopaparazzi_database">13. The Geopaparazzi Database</a>
+<li><a href="#_geopaparazzi_gvsig">12. Geopaparazzi &amp; gvSIG</a></li>
+<li><a href="#_using_form_based_notes">13. Using form based notes</a>
 <ul class="sectlevel2">
-<li><a href="#_database_tables_described">13.1. Database tables described</a></li>
-</ul>
-</li>
-<li><a href="#_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">14. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a>
-<ul class="sectlevel2">
-<li><a href="#_introduction">14.1. Introduction</a></li>
-<li><a href="#_monitoring_activities">14.2. Monitoring activities</a></li>
-<li><a href="#_technical_background">14.3. Technical background</a></li>
-<li><a href="#_acknowledgement">14.4. Acknowledgement</a></li>
-</ul>
-</li>
-<li><a href="#_projects_that_base_on_geopaparazzi">15. Projects that base on Geopaparazzi</a>
-<ul class="sectlevel2">
-<li><a href="#_gvsig_mobile">15.1. gvSIG Mobile</a></li>
-<li><a href="#_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">15.2. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</a></li>
-<li><a href="#_disaster_management_information_system">15.3. Disaster Management Information System</a>
+<li><a href="#_supported_tags_via_the_example_form">13.1. Supported tags (via the example form)</a>
 <ul class="sectlevel3">
-<li><a href="#_trashmapper">15.3.1. TrashMapper</a></li>
-<li><a href="#_trackoid">15.3.2. Trackoid</a></li>
-<li><a href="#_your_app_here">15.3.3. Your app here</a></li>
+<li><a href="#_text">13.1.1. Text</a></li>
+<li><a href="#_multiple_text">13.1.2. Multiple Text</a></li>
+<li><a href="#_text_with_key_and_label">13.1.3. Text with key and label</a></li>
+<li><a href="#_numbers">13.1.4. Numbers</a></li>
+<li><a href="#_date">13.1.5. Date</a></li>
+<li><a href="#_time">13.1.6. Time</a></li>
+<li><a href="#_labels">13.1.7. Labels</a></li>
+<li><a href="#_checkbox">13.1.8. Checkbox</a></li>
+<li><a href="#_combos">13.1.9. Combos</a></li>
+<li><a href="#_pictures">13.1.10. Pictures</a></li>
+<li><a href="#_sketches">13.1.11. Sketches</a></li>
+<li><a href="#_map_screenshot">13.1.12. Map screenshot</a></li>
+</ul>
+</li>
+<li><a href="#_other_supported_tags">13.2. Other supported tags</a>
+<ul class="sectlevel3">
+<li><a href="#_hidden">13.2.1. hidden</a></li>
+<li><a href="#_primary_key">13.2.2. primary_key</a></li>
+<li><a href="#_constraints">13.2.3. Constraints</a></li>
+</ul>
+</li>
+<li><a href="#_create_a_simple_form_to_map_fountains">13.3. Create a simple form to map fountains</a>
+<ul class="sectlevel3">
+<li><a href="#_sections">13.3.1. Sections</a></li>
+<li><a href="#_form_subsections">13.3.2. Form subsections</a></li>
+<li><a href="#_form_elements">13.3.3. Form elements</a></li>
+<li><a href="#_finalize_the_form">13.3.4. Finalize the form</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_a_small_handbook_for_developers">16. A small handbook for developers</a>
+<li><a href="#_the_geopaparazzi_database">14. The Geopaparazzi Database</a>
 <ul class="sectlevel2">
-<li><a href="#_introduction_2">16.1. Introduction</a>
-<ul class="sectlevel3">
-<li><a href="#_getting_the_code">16.1.1. Getting the code</a></li>
-<li><a href="#_building_and_developing_geopaparazzi">16.1.2. Building and developing Geopaparazzi</a></li>
+<li><a href="#_database_tables_described">14.1. Database tables described</a></li>
 </ul>
 </li>
-<li><a href="#_description_of_the_geopaparazzi_architecture">16.2. Description of the Geopaparazzi Architecture</a>
-<ul class="sectlevel3">
-<li><a href="#_modules_dependencies_diagram">16.2.1. Modules dependencies diagram</a></li>
-<li><a href="#_geopaparazzilibrary">16.2.2. geopaparazzilibrary</a></li>
-<li><a href="#_geopaparazzi_core">16.2.3. geopaparazzi_core</a></li>
-<li><a href="#_geopaparazzi_app">16.2.4. geopaparazzi.app</a></li>
-<li><a href="#_geopaparazzimapsforge">16.2.5. geopaparazzimapsforge</a></li>
-<li><a href="#_geopaparazzispatialitelibrary">16.2.6. geopaparazzispatialitelibrary</a></li>
-<li><a href="#_geopaparazzi_acrylicpaint">16.2.7. geopaparazzi_acrylicpaint</a></li>
-<li><a href="#_wms_nww">16.2.8. wms_nww</a></li>
-<li><a href="#_plugins">16.2.9. plugins</a></li>
-</ul>
-</li>
-<li><a href="#_the_project_database">16.3. The Project Database</a>
-<ul class="sectlevel3">
-<li><a href="#_database_tables_described_2">16.3.1. Database tables described</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_appendix">17. Appendix</a>
+<li><a href="#_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">15. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a>
 <ul class="sectlevel2">
-<li><a href="#_the_finalized_tags_json_of_the_forms_section">17.1. The finalized tags.json of the Forms section</a></li>
-<li><a href="#_complete_tag_json_for_the_egypt_usecase">17.2. Complete tag.json for the Egypt usecase</a></li>
+<li><a href="#_introduction">15.1. Introduction</a></li>
+<li><a href="#_monitoring_activities">15.2. Monitoring activities</a></li>
+<li><a href="#_technical_background">15.3. Technical background</a></li>
+<li><a href="#_acknowledgement">15.4. Acknowledgement</a></li>
+</ul>
+</li>
+<li><a href="#_projects_that_base_on_geopaparazzi">16. Projects that base on Geopaparazzi</a>
+<ul class="sectlevel2">
+<li><a href="#_gvsig_mobile">16.1. gvSIG Mobile</a></li>
+<li><a href="#_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">16.2. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</a></li>
+<li><a href="#_disaster_management_information_system">16.3. Disaster Management Information System</a>
+<ul class="sectlevel3">
+<li><a href="#_trashmapper">16.3.1. TrashMapper</a></li>
+<li><a href="#_trackoid">16.3.2. Trackoid</a></li>
+<li><a href="#_your_app_here">16.3.3. Your app here</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_a_small_handbook_for_developers">17. A small handbook for developers</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction_2">17.1. Introduction</a>
+<ul class="sectlevel3">
+<li><a href="#_getting_the_code">17.1.1. Getting the code</a></li>
+<li><a href="#_building_and_developing_geopaparazzi">17.1.2. Building and developing Geopaparazzi</a></li>
+</ul>
+</li>
+<li><a href="#_description_of_the_geopaparazzi_architecture">17.2. Description of the Geopaparazzi Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_modules_dependencies_diagram">17.2.1. Modules dependencies diagram</a></li>
+<li><a href="#_geopaparazzilibrary">17.2.2. geopaparazzilibrary</a></li>
+<li><a href="#_geopaparazzi_core">17.2.3. geopaparazzi_core</a></li>
+<li><a href="#_geopaparazzi_app">17.2.4. geopaparazzi.app</a></li>
+<li><a href="#_geopaparazzimapsforge">17.2.5. geopaparazzimapsforge</a></li>
+<li><a href="#_geopaparazzispatialitelibrary">17.2.6. geopaparazzispatialitelibrary</a></li>
+<li><a href="#_geopaparazzi_acrylicpaint">17.2.7. geopaparazzi_acrylicpaint</a></li>
+<li><a href="#_wms_nww">17.2.8. wms_nww</a></li>
+<li><a href="#_plugins">17.2.9. plugins</a></li>
+</ul>
+</li>
+<li><a href="#_the_project_database">17.3. The Project Database</a>
+<ul class="sectlevel3">
+<li><a href="#_database_tables_described_2">17.3.1. Database tables described</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_appendix">18. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#_the_finalized_tags_json_of_the_forms_section">18.1. The finalized tags.json of the Forms section</a></li>
+<li><a href="#_complete_tag_json_for_the_egypt_usecase">18.2. Complete tag.json for the Egypt usecase</a></li>
 </ul>
 </li>
 </ul>
@@ -742,10 +772,10 @@ If you are looking for the source code of this project, <a href="https://github.
 </table>
 </div>
 <div class="paragraph">
-<p>Geopaparazzi is a tool developed to do <strong>very fast qualitative</strong> engineering/geologic surveys.</p>
+<p>Geopaparazzi is a tool developed to do <strong>very fast qualitative</strong> engineering/geologic surveys and GIS data collection.</p>
 </div>
 <div class="paragraph">
-<p>Even if the main aim is in the field of surveying, it contains tools that can be
+<p>Even if the main aim is in the field of GIS data collection, it contains tools that can be
 of great use also to <a href="http://www.osm.org">OpenStreetMappers</a> as well as tourists that
 want to keep a geo-diary.</p>
 </div>
@@ -772,7 +802,7 @@ GIS applications like <a href="http://www.gvsig.org">gvSIG</a></p>
 <p>is able to easily exploit an Internet connection, if available</p>
 </li>
 <li>
-<p>is extremely easy to use and intuitive, providing just few important functionalities</p>
+<p>is extremely easy to use and intuitive, providing just few important functions</p>
 </li>
 </ul>
 </div>
@@ -1110,8 +1140,8 @@ appears:</p>
 </div>
 <div class="paragraph">
 <p>The switch button at the top of the view gives the possibility to
-choose whether the note will be inserted in the <strong>current GPS position</strong>
-(in case GPS is on) or in the the <strong>center of the map</strong> (the crossfade).</p>
+choose whether the note will be recorded with the <strong>current GPS position</strong>
+(in case GPS is on) or at the <strong>current center of the Map View</strong> (the crosshair).</p>
 </div>
 <div class="paragraph">
 <p>At the right end of the actionbar the quick note buttons are placed. From left to right:</p>
@@ -1157,15 +1187,24 @@ and stay with the device in the same position of the snapshot until
 you have closed the camera app.</p>
 </li>
 <li>
-<p>The <strong>Quick sketch note</strong> button, which allows you to draw on a small panel and save your sketch. One can change stroke style, color, and width. The  sketch panel comes from the open source app <a href="https://github.com/valerio-bozzolan/AcrylicPaint">Acrylic Paint</a>.</p>
+<p>The <strong>Menu</strong> button, which allows you to select <strong>Simple Sketch</strong> to draw on a small panel or select <strong>Layout Settings</strong> to change the Notes button layout and text size.</p>
 </li>
 </ul>
 </div>
 <div class="imageblock">
 <div class="content">
+<img src="02_dashboard/05_note_menu.png" alt="05 note menu" width="30%">
+</div>
+<div class="title">Figure 15. The simple text note dialog.</div>
+</div>
+<div class="paragraph">
+<p>Selecting <strong>Simple Sketch</strong>, you can change stroke style, color, and width. The  sketch panel comes from the open source app <a href="https://github.com/valerio-bozzolan/AcrylicPaint">Acrylic Paint</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
 <img src="02_dashboard/05_sketchnotes.png" alt="05 sketchnotes" width="30%">
 </div>
-<div class="title">Figure 15. An example of taking sketch note.</div>
+<div class="title">Figure 16. An example of taking sketch note.</div>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1178,6 +1217,15 @@ Once a simple note has been saved, it can&#8217;t be modified.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Selecting <strong>Layout Settings</strong> allows you to change the text size on the Note buttons and the number of columns.  This can be useful to make the dialog easy to read while in the field.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="02_dashboard/05_note_large.png" alt="05 note large" width="30%">
+</div>
+<div class="title">Figure 17. The Notes List with one column and large text.</div>
 </div>
 <div class="sect4">
 <h5 id="_form_based_notes">Form based notes</h5>
@@ -1192,7 +1240,7 @@ Some example forms are included in the base installation of geopaparazzi.</p>
 <div class="content">
 <img src="02_dashboard/06_form_based_notes.png" alt="06 form based notes" width="40%">
 </div>
-<div class="title">Figure 16. An example of form based notes.</div>
+<div class="title">Figure 18. An example of form based notes.</div>
 </div>
 <div class="paragraph">
 <p>The notes can be saved and modified at any time.</p>
@@ -1243,7 +1291,7 @@ saved through the save button.</p>
 <div class="content">
 <img src="02_dashboard/07_project_info.png" alt="07 project info" width="30%">
 </div>
-<div class="title">Figure 17. The project metadata view.</div>
+<div class="title">Figure 19. The project metadata view.</div>
 </div>
 <div class="paragraph">
 <p>It is also possible to add additional metadata to the project information. The plus button at the right side of the actionbar opens an input dialog that allows the user to define a key, a label and a value for the new metadata entry:</p>
@@ -1252,7 +1300,7 @@ saved through the save button.</p>
 <div class="content">
 <img src="02_dashboard/07_project_info_plus.png" alt="07 project info plus" width="30%">
 </div>
-<div class="title">Figure 18. The new metadata entry dialog.</div>
+<div class="title">Figure 20. The new metadata entry dialog.</div>
 </div>
 </div>
 <div class="sect3">
@@ -1274,7 +1322,7 @@ of the log (or any user inserted) is ignored, since no new log is created.</p>
 <div class="content">
 <img src="02_dashboard/08_start_logging.png" alt="08 start logging" width="30%">
 </div>
-<div class="title">Figure 19. The new log dialog. From here it is possible to continue the last log.</div>
+<div class="title">Figure 21. The new log dialog. From here it is possible to continue the last log.</div>
 </div>
 <div class="paragraph">
 <p>Once logging has started, the logging button will turn orange and the GPS status icon blue.</p>
@@ -1283,7 +1331,7 @@ of the log (or any user inserted) is ignored, since no new log is created.</p>
 <div class="content">
 <img src="02_dashboard/09_logging_on.png" alt="09 logging on" width="30%">
 </div>
-<div class="title">Figure 20. The stop logging button with its red sign.</div>
+<div class="title">Figure 22. The stop logging button with its orange color.</div>
 </div>
 <div class="paragraph">
 <p>To stop logging, the same button is used. Once tapped, the user is prompted
@@ -1301,7 +1349,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <div class="content">
 <img src="02_dashboard/12_map_view.png" alt="12 map view" width="30%">
 </div>
-<div class="title">Figure 21. The map view.</div>
+<div class="title">Figure 23. The map view.</div>
 </div>
 </div>
 <div class="sect3">
@@ -1310,7 +1358,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <div class="content">
 <img src="02_dashboard/13_import.png" alt="13 import" width="30%">
 </div>
-<div class="title">Figure 22. The import view.</div>
+<div class="title">Figure 24. The import view.</div>
 </div>
 <div class="paragraph">
 <p>Geopaparazzi supports the import of:</p>
@@ -1327,13 +1375,13 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <p>WMS</p>
 </li>
 <li>
-<p>mapurl configuration files for online tiles</p>
-</li>
-<li>
 <p>default Spatialite databases</p>
 </li>
 <li>
 <p>geopaparazzi cloud projects</p>
+</li>
+<li>
+<p>geopaparazzi Cloud Profiles</p>
 </li>
 </ul>
 </div>
@@ -1346,7 +1394,7 @@ in the section dedicated to the <a href="#_map_view">Map View</a>.</p>
 <div class="content">
 <img src="02_dashboard/16_import_gpx.png" alt="16 import gpx" width="30%">
 </div>
-<div class="title">Figure 23. The simple geopaparazzi file browser.</div>
+<div class="title">Figure 25. The simple geopaparazzi file browser.</div>
 </div>
 <div class="paragraph">
 <p>The browser only shows folders and files with gpx extensions. On selection, the
@@ -1383,53 +1431,10 @@ Grassday Trieste,45.65844,13.79320</pre>
 <div class="content">
 <img src="02_dashboard/16_import_wms.png" alt="16 import wms" width="30%">
 </div>
-<div class="title">Figure 24. The WMS dialog.</div>
+<div class="title">Figure 26. The WMS dialog.</div>
 </div>
 <div class="paragraph">
 <p>Once the <em>getCapabilities</em> URL is inserted and the refresh button is tapped, the list of available layers is presented. The selected layer is then imported in the list of available tile sources.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_mapurls">Mapurls</h5>
-<div class="paragraph">
-<p>Since the creation of a mapurl configuration file for WMS services is complex,
-a small service has been created that automatically generates mapurls for known services.</p>
-</div>
-<div class="paragraph">
-<p>Once chosen the services query view appears:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="02_dashboard/14_mapurls.png" alt="14 mapurls" width="30%">
-</div>
-<div class="title">Figure 25. The TANTO mapurl service view.</div>
-</div>
-<div class="paragraph">
-<p>If requested, the service will use the device&#8217;s position to gather
-only datasets in that area. Also some minor text filters can be added.</p>
-</div>
-<div class="paragraph">
-<p>An example with the GPS placed in Italy is the following:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="02_dashboard/15_mapurls.png" alt="15 mapurls" width="30%">
-</div>
-</div>
-<div class="paragraph">
-<p>The service can then simply be downloaded. It will install the mapurl
-inside your system. The user is prompted for a custom name to name
-the service after, else the original name will be used. Since the
-original name could be duplicated in different services, the
-prefix <strong>tanto_</strong> will be added in that case.</p>
-</div>
-<div class="paragraph">
-<p>This service is in an experimental state right now, but it works fairly well.
-If you experience problems, please report them at
-<a href="http://tanto.github.io/geopapurls/">the homepage of the service</a>.</p>
-</div>
-<div class="paragraph">
-<p>The same link also contains instruction about how to suggest to suggest new WMS services.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1442,9 +1447,42 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <div class="content">
 <img src="02_dashboard/19_mapsforge.png" alt="19 mapsforge" width="30%">
 </div>
+<div class="title">Figure 27. Creating A Default Spatialite Database</div>
 </div>
 <div class="paragraph">
 <p>The newly created database is <strong>editing ready</strong> and contains a layer of each type geomotry type (points, lines, polygon). Since it is a template db, the attributes table have been created as generic fields with names from <strong>field1 to field20</strong>. It is very generic and simple, but still of use when you have to quickly collect some data with attributes and have no database prepared..</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_cloud_projects">Cloud Projects</h5>
+<div class="paragraph">
+<p>Geopaparazzi Project files can be downloaded from a Geopaparazzi Project server.  To enable the import of projects from the Cloud, make sure you enter the settings in the <a href="#Cloud Projects Sync Settings">Cloud Projects Sync Settings</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_cloud_profiles">Cloud Profiles</h5>
+<div class="paragraph">
+<p>Profiles are a convenient way to group basemaps, overlays, note forms, and a project file.  Geopaparazzi Cloud Profiles must be downloaded from a Geopaparazzi Profile server (standard <a href="#_profiles">Profiles</a> can be created on your device).  To enable the import of Profiles from the Cloud, make sure you enter the settings in the <a href="#_cloud_server_settings">Cloud server Settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once your Cloud server Settings are set, and you press the Cloud Profiles button on the Import view, the server will send a list of Profiles available for download.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="02_dashboard/22_import_profiles1.png" alt="22 import profiles1" width="30%">
+</div>
+<div class="title">Figure 28. Cloud Profiles List</div>
+</div>
+<div class="imageblock" style="float: left">
+<div class="content">
+<img src="02_dashboard/package_download.png" alt="package download">
+</div>
+</div>
+<div class="paragraph">
+<p>Select a Profile for download by pressing on the icon of the Profile.  This will start the download of the Profile and the files associated with the Profile.  The download may take some time depening on the size of the files.</p>
+</div>
+<div class="paragraph">
+<p>When the download is completed, you can activate the Profile by using the Profile view from the Main View menu, selecting the <a href="#_adding_data_to_a_profile">Profile Info</a> tab, and sliding the Activate profile switch.</p>
 </div>
 </div>
 </div>
@@ -1454,7 +1492,7 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 <div class="content">
 <img src="02_dashboard/18_export.png" alt="18 export" width="30%">
 </div>
-<div class="title">Figure 26. The export view.</div>
+<div class="title">Figure 29. The export view.</div>
 </div>
 <div class="paragraph">
 <p>Geopaparazzi supports the export to the following formats:</p>
@@ -1472,6 +1510,9 @@ database to create. Let&#8217;s use the default name proposed based on the curre
 </li>
 <li>
 <p>images</p>
+</li>
+<li>
+<p>Project Forms to PDF</p>
 </li>
 <li>
 <p>geopaparazzi cloud projects</p>
@@ -1526,6 +1567,18 @@ are placed in the root of the sdcard.</p>
 to use the images inside a different software. In this case all the images of the project are exported inside a folder and a popup message shows the folder path.</p>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_project_forms_to_pdf">Project Forms to PDF</h5>
+<div class="paragraph">
+<p>You can export your notes to a simple PDF document.  After pressing the "Project Forms to PDF" button you can select which notes you would like to include in the PDF file.  The PDF file created will be a the root of the device&#8217;s file system and named "geopaparazzi_projectexport_" with a timestamp and a .pdf extension in the file name.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_cloud_projects_2">Cloud Projects</h5>
+<div class="paragraph">
+<p>Geopaparazzi Project files can be uploaded to a Geopaparazzi Project server.  To enable the upload of projects to the Cloud, make sure you enter the settings in the <a href="#Cloud Projects Sync Settings">Cloud Projects Sync Settings</a>.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1554,7 +1607,10 @@ to use the images inside a different software. In this case all the images of th
 <p>Advanced: shows some advanced user options such as the application log or custom database queries</p>
 </li>
 <li>
-<p>About: shows the about page, which contains info, links and acknowledgements</p>
+<p><a href="#_profiles">Profiles</a>: allow creation and editing of Profiles.</p>
+</li>
+<li>
+<p>About: shows the about page, which contains info, links and acknowledgments</p>
 </li>
 <li>
 <p><a href="#exit">Exit</a>: shuts down geopaparazzi properly. This is important, because geopaparazzi is meant to continue logging also in background. Therefore, if one uses the android home button to exit the app, it will continue to work in background, most probably draining the battery through GPS use.</p>
@@ -1565,7 +1621,7 @@ to use the images inside a different software. In this case all the images of th
 <div class="content">
 <img src="04_mapviewmenu/01_menu.png" alt="01 menu" width="30%">
 </div>
-<div class="title">Figure 27. The main view menu.</div>
+<div class="title">Figure 30. The main view menu.</div>
 </div>
 <div class="sect2">
 <h3 id="_select_tile_source">4.1. Select tile source</h3>
@@ -1573,13 +1629,13 @@ to use the images inside a different software. In this case all the images of th
 <p><a id="select_tiles"></a></p>
 </div>
 <div class="paragraph">
-<p>From the main menu, when pushing the tile source button, the list of available tile sources are presented, organized by folder:</p>
+<p>From the main menu, when pushing the tile source button, the list of available tile sources (and other types of Basemaps) are presented, organized by folder:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="04_mapviewmenu/02_select_tiles.png" alt="02 select tiles" width="30%">
 </div>
-<div class="title">Figure 28. The basemaps view.</div>
+<div class="title">Figure 31. The basemaps view.</div>
 </div>
 <div class="paragraph">
 <p>Each map source has a name and a type description between brackets.</p>
@@ -1615,7 +1671,7 @@ types to show.</p>
 <div class="content">
 <img src="04_mapviewmenu/03_select_tiles.png" alt="03 select tiles" width="30%">
 </div>
-<div class="title">Figure 29. The map type filter dialog, set to only show MBTiles sources.</div>
+<div class="title">Figure 32. The map type filter dialog, set to only show MBTiles sources.</div>
 </div>
 <div class="paragraph">
 <p>which makes searching simpler when a lot of sources are present on the device.</p>
@@ -1624,6 +1680,7 @@ types to show.</p>
 <div class="content">
 <img src="04_mapviewmenu/04_select_tiles.png" alt="04 select tiles" width="30%">
 </div>
+<div class="title">Figure 33. List of Available Basemaps</div>
 </div>
 <div class="paragraph">
 <p>Basemaps can be added to the list from the device storage through the two buttons at the bottom of the view. The right one allows to pick a single file to add it as a basemap, while the left one allows to bulk load a complete folder of maps.  Once the basemap has been added to the list, tap the basemap on the list to use in the Map View.</p>
@@ -1637,13 +1694,13 @@ types to show.</p>
 <div class="paragraph">
 <p>When a new project is created, the user is prompted to give a file name
 for the new project file. This is the name that will be given to the
-database file that contains all data surveyed in Geopaparazzi.</p>
+database file that contains all data collected in Geopaparazzi.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="04_mapviewmenu/05_new_project.png" alt="05 new project" width="30%">
 </div>
-<div class="title">Figure 30. The new project input dialog.</div>
+<div class="title">Figure 34. The new project input dialog.</div>
 </div>
 <div class="paragraph">
 <p>Once the name is defined, an new empty database is created and Geopaparazzi is
@@ -1656,7 +1713,7 @@ restarted and opened loading the new created project.</p>
 <p><a id="load_project"></a></p>
 </div>
 <div class="paragraph">
-<p>Existing projects can be loaded using a simple file browser from within Geoapaparazzi. The Geopaparazzi project files are shown with an icon to help the user to choose the proper files.</p>
+<p>Existing projects can be loaded using a simple file browser from within Geopaparazzi. The Geopaparazzi project files are shown with an icon to help the user to choose the proper files.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1669,7 +1726,363 @@ restarted and opened loading the new created project.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_exit">4.5. Exit</h3>
+<h3 id="_advanced">4.5. Advanced</h3>
+<div class="paragraph">
+<p>(ToDo)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_profiles">4.6. Profiles</h3>
+<div class="paragraph">
+<p>Profiles enable you to configure the Geopaparazzi environment by grouping specific basemaps, overlays, a notes form, and a project file into a Profile.  You can configure many different profiles and easily switch between them in Geopaparazzi.</p>
+</div>
+<div class="sect3">
+<h4 id="_creating_a_profile">4.6.1. Creating a Profile</h4>
+<div class="paragraph">
+<p>To create a new profile simply push the orange button on the lower right of the view.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/08_profiles.png" alt="08 profiles" width="30%">
+</div>
+<div class="title">Figure 35. An Empty Profile List</div>
+</div>
+<div class="paragraph">
+<p>Once pushed, the main profile info dialog will pop-up. There you can insert a profile name and some description about the profile:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/09_profiles_new.png" alt="09 profiles new" width="30%">
+</div>
+<div class="title">Figure 36. Creating a Profile</div>
+</div>
+<div class="paragraph">
+<p>Once OK is pressed, an empty profile is created:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/09_profiles_new2.png" alt="09 profiles new2" width="30%">
+</div>
+<div class="title">Figure 37. Profile List</div>
+</div>
+<div class="paragraph">
+<p>The profile&#8217;s cardview gives information about its content, listing the number of basemaps, spatialite database overlays, Note forms, and project file.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deleting_a_profile">4.6.2. Deleting a Profile</h4>
+<div class="paragraph">
+<p>Pressing the Profile&#8217;s Trashcan icon will delete the Profile.  You will be prompted to make sure the Profile is not deleted by error:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/10_profiles_delete.png" alt="10 profiles delete" width="30%">
+</div>
+<div class="title">Figure 38. Deleting a Profile</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_styling_a_profile">4.6.3. Styling a Profile</h4>
+<div class="paragraph">
+<p>It is possible to apply a color to the Profile cardview.  Setting a color uniquely identifies a Profile  while running Geopaparazzi.  If a Profile has  aproject attached, you will know a particular Profile is active because it uses the color to set the background color in the Main View.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/11_profiles_color.png" alt="11 profiles color" width="30%">
+</div>
+<div class="title">Figure 39. Profile Style</div>
+</div>
+<div class="paragraph">
+<p>Once you press the OK button, the profile cardview will appear colored with the color you selected:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/12_profiles_new.png" alt="12 profiles new" width="30%">
+</div>
+<div class="title">Figure 40. Profile List</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_adding_data_to_a_profile">4.6.4. Adding data to a Profile</h4>
+<div class="paragraph">
+<p>To add data to a profile, press the settings icon (gear-like icon in the upper right of the Profile&#8217;s cardview).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/13_profiles_info.png" alt="13 profiles info" width="30%">
+</div>
+<div class="title">Figure 41. Profile Settings</div>
+</div>
+<div class="paragraph">
+<p>The view the opens is divided in different tabs, namely:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>PROFILE INFO</p>
+</li>
+<li>
+<p>BASEMAPS</p>
+</li>
+<li>
+<p>SPATIALITE DATABASES</p>
+</li>
+<li>
+<p>FORMS</p>
+</li>
+<li>
+<p>PROJECT</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="_profile_info">Profile Info</h5>
+<div class="paragraph">
+<p>The Profile Info tab shows the main information about the Profile:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Profile Name</p>
+</li>
+<li>
+<p>Profile Description</p>
+</li>
+<li>
+<p>Creation Date</p>
+</li>
+<li>
+<p>Activate Profile</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/13_profiles_info2.png" alt="13 profiles info2" width="60%">
+</div>
+<div class="title">Figure 42. A Profile&#8217;s Information</div>
+</div>
+<div class="paragraph">
+<p>Name and description can be modified from this view, while the creation date is read-only.</p>
+</div>
+<div class="paragraph">
+<p>From this view it is also possible to activate the profile through the switch at the bottom of the view.  Activating the Profile means the various files will be automatically attached to Geopaparazzi.  Since only one Profile can be active at a time, the activation of a Profile automatically disables the previously active Profile, if there had been one.</p>
+</div>
+<div class="paragraph">
+<p>Once a Profile is active, in the Profiles view it is marked with two red lines in the top and bottom part of the Profile&#8217;s card:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/13_profiles_active.png" alt="13 profiles active" width="30%">
+</div>
+<div class="title">Figure 43. An Active Profile</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_basemaps">Basemaps</h5>
+<div class="paragraph">
+<p>The Basemaps tab allows you to add background basemaps to the Profile configuration. Currently supported extensions are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>map: mapsforge maps</p>
+</li>
+<li>
+<p>mbtiles</p>
+</li>
+<li>
+<p>sqlite: sqlite databases containing rasterlite2 data</p>
+</li>
+<li>
+<p>mapurl: mapurl files that can contain configurations for local or on-line (TMS or WMS) mapping services.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Press the orange plus button on the top right part of the view to browse the device&#8217;s filesystem and select the basemap files to add.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/14_profiles_base1.png" alt="14 profiles base1" width="60%">
+</div>
+<div class="title">Figure 44. Adding A Basemap</div>
+</div>
+<div class="sect5">
+<h6 id="_importing_basemaps_from_wms">Importing Basemaps from WMS</h6>
+<div class="paragraph">
+<p>It is possible to import mapurl definitions directly from WMS GetCapabilities URL.  When the Basemaps tab is selected, "ADD WMS" text appears on the right side of the Profiles Settings action bar.</p>
+</div>
+<div class="paragraph">
+<p>Then:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>copy your WMS URL to your device clipboard</p>
+</li>
+<li>
+<p>press the ADD WMS button on the right side of the action bar</p>
+</li>
+<li>
+<p>a dialog will open. Paste the URL into the text field</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/15_profiles_base_wms2.png" alt="15 profiles base wms2" width="60%">
+</div>
+<div class="title">Figure 45. Adding a Basemap from a WMS Server</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>push the refresh button at the left of the text field to retrieve the available layers</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/15_profiles_base_wms3.png" alt="15 profiles base wms3" width="60%">
+</div>
+<div class="title">Figure 46. Selecting Layers from a WMS Server</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>select the desired layer and press OK. The mapurl file will be created and added directly to the list of basemaps</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/16_profiles_base.png" alt="16 profiles base" width="60%">
+</div>
+<div class="title">Figure 47. A Basemap Added to a Profile</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_spatialite_databases">Spatialite Databases</h5>
+<div class="paragraph">
+<p>The Spatialite Databases tab allows you to add Spatialite vector databases to the Profile configuration.</p>
+</div>
+<div class="paragraph">
+<p>The database has to be a valid spatialite database with the extension sqlite.</p>
+</div>
+<div class="paragraph">
+<p>Press the orange plus button on the top right part of the view to browse the device&#8217;s filesystem and select the Spatialite databases to add.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/17_profiles_spatial1.png" alt="17 profiles spatial1" width="60%">
+</div>
+<div class="title">Figure 48. Adding a Spatialite Database</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/17_profiles_spatial2.png" alt="17 profiles spatial2" width="60%">
+</div>
+<div class="title">Figure 49. A Spatialite Database Added to a Profile</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_forms">Forms</h5>
+<div class="paragraph">
+<p>The Forms tab allows you to add a JSON file of forms definitions to use in the Profile.</p>
+</div>
+<div class="paragraph">
+<p>Once the file is added (through the upper right plus button), basic information and the names of the forms contained in the file are shown:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/18_profiles_forms.png" alt="18 profiles forms" width="30%">
+</div>
+<div class="title">Figure 50. A Form Added to a Profile</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_project">Project</h5>
+<div class="paragraph">
+<p>It is also possible to bind a single Geopaparazzi project file to a Profile. In that case, from within geopaparazzi it will no longer be possible to open an existing project or create a new one.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/19_profiles_project.png" alt="19 profiles project" width="30%">
+</div>
+<div class="title">Figure 51. A Project Added to a Profile</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_importing_exporting_and_deleting_profiles">4.6.5. Importing, Exporting and Deleting Profiles</h4>
+<div class="paragraph">
+<p>It is possible to import, export, and delete all Profiles. The menu in the main Profiles view allows access to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Import Profiles</p>
+</li>
+<li>
+<p>Export Profiles</p>
+</li>
+<li>
+<p>Delete all Profiles</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/20_profiles_menu.png" alt="20 profiles menu" width="30%">
+</div>
+<div class="title">Figure 52. The Profile Menu</div>
+</div>
+<div class="sect4">
+<h5 id="_export_2">Export</h5>
+<div class="paragraph">
+<p>When you press the Export Profiles menu entry, the Profile definitions are exported into a file in the path:</p>
+</div>
+<div class="paragraph">
+<p>/SDCARD_PATH/geopaparazzi/profiles_config.json</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/21_profiles_export.png" alt="21 profiles export" width="30%">
+</div>
+<div class="title">Figure 53. Exporting A Profile List</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_import_2">Import</h5>
+<div class="paragraph">
+<p>When you press the Import Profiles menu entry, the Profile definitions are imported from the fixed file in the path:</p>
+</div>
+<div class="paragraph">
+<p>/SDCARD_PATH/geopaparazzi/profiles_config.json</p>
+</div>
+<div class="paragraph">
+<p>The imported profiles are added to the profiles already present in Geopaparazzi.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="04_mapviewmenu/22_profiles_import.png" alt="22 profiles import" width="30%">
+</div>
+<div class="title">Figure 54. Importing A Profile List</div>
+</div>
+<div class="paragraph">
+<p>In order to support sharing of data and profile configurations, the path of the data contained in the imported files are adapted to the sdcard path of the current device. This way relative paths in the sdcard are maintained and datasets can be loaded.  In that case you download and import data that someone else prepared, but they will work in your device, even if the paths of the data refer to a different sdcard path.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_importing_cloud_profiles">4.6.6. Importing Cloud Profiles</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exit">4.7. Exit</h3>
 <div class="paragraph">
 <p><a id="exit"></a></p>
 </div>
@@ -1699,7 +2112,7 @@ sensor activity.</p>
 <div class="content">
 <img src="03_mapview/01_mapview.png" alt="01 mapview" width="30%">
 </div>
-<div class="title">Figure 31. The map view.</div>
+<div class="title">Figure 55. The map view.</div>
 </div>
 <div class="paragraph">
 <p>The map engine comes from the <a href="http://code.google.com/p/mapsforge/">mapsforge</a> project.</p>
@@ -1710,7 +2123,7 @@ sensor activity.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://www.openstreetmap.org/">OpenStreetMap</a> maps both when on-line (downloading new tiles) and off-line (visualizing those that were cached during online mode)</p>
+<p><a href="http://www.openstreetmap.org/">OpenStreetMap</a> raster tile maps both when on-line (downloading new tiles) and off-line (visualizing those that were cached during online mode)</p>
 </li>
 <li>
 <p><a href="http://www.mapbox.com/developers/mbtiles/">mbtiles databases</a></p>
@@ -1735,7 +2148,7 @@ sensor activity.</p>
 <div class="content">
 <img src="03_mapview/02_mapview_tools_off.png" alt="02 mapview tools off" width="30%">
 </div>
-<div class="title">Figure 32. The map view with disabled tools.</div>
+<div class="title">Figure 56. The map view with disabled tools.</div>
 </div>
 <div class="paragraph">
 <p>Available tools are:</p>
@@ -1796,7 +2209,7 @@ sensor activity.</p>
 <div class="content">
 <img src="03_mapview/01_mapview.png" alt="01 mapview" width="30%">
 </div>
-<div class="title">Figure 33. The map view with all map tools visible.</div>
+<div class="title">Figure 57. The map view with all map tools visible.</div>
 </div>
 </div>
 <div class="sect2">
@@ -1839,7 +2252,7 @@ to center the map on the GPS position. The button also shows the status of the G
 <div class="content">
 <img src="02_dashboard/03_notes.png" alt="03 notes" width="30%">
 </div>
-<div class="title">Figure 34. The view from which notes are taken.</div>
+<div class="title">Figure 58. The view from which notes are taken.</div>
 </div>
 <div class="paragraph">
 <p>The add notes button opens the same notes view as the button on the dashboard. There is only once difference. Since notes can be added both in the GPS position and in the middle of the map, to open the add note view from the dashboard, the GPS is required to have a fix.</p>
@@ -1848,19 +2261,19 @@ to center the map on the GPS position. The button also shows the status of the G
 <p>From the map view the user can open the add note view even without GPS signal, in which case notes will only be inserted at the map center position.</p>
 </div>
 <div class="paragraph">
-<p>For further information about taking notes, visit the <a href="#notes">notes section</a>.</p>
+<p>For further information about taking notes, visit the <a href="#_notes">notes section</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_the_notes_list">5.4. The Notes List</h3>
 <div class="paragraph">
-<p>The notes list shows all the available notes, both text and image notes.</p>
+<p>A long press on the Notes icon will show the Notes List.  The notes list shows all the available notes, both text and image notes.</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="03_mapview/03_noteslist1.png" alt="03 noteslist1" width="30%">
 </div>
-<div class="title">Figure 35. The notes list view.</div>
+<div class="title">Figure 59. The notes list view.</div>
 </div>
 <div class="paragraph">
 <p>The icon on the right side of the actionbar allows the user to sort the notes by different modes:</p>
@@ -1882,7 +2295,7 @@ to center the map on the GPS position. The button also shows the status of the G
 <div class="content">
 <img src="03_mapview/04_noteslist_sortorder.png" alt="04 noteslist sortorder" width="30%">
 </div>
-<div class="title">Figure 36. The notes sort order dialog.</div>
+<div class="title">Figure 60. The notes sort order dialog.</div>
 </div>
 <div class="paragraph">
 <p>In the upper part of the view there is a textbox that helps to filter out a particular note based on its name.</p>
@@ -1891,7 +2304,7 @@ to center the map on the GPS position. The button also shows the status of the G
 <div class="content">
 <img src="03_mapview/04_noteslist_filter.png" alt="04 noteslist filter" width="30%">
 </div>
-<div class="title">Figure 37. Notes can be filtered by text.</div>
+<div class="title">Figure 61. Notes can be filtered by text.</div>
 </div>
 <div class="paragraph">
 <p>At the right side of the list two icons are available. The left one positions the map on the selected note&#8217;s position while the right one opens a menu:</p>
@@ -1900,7 +2313,7 @@ to center the map on the GPS position. The button also shows the status of the G
 <div class="content">
 <img src="03_mapview/05_note_menu.png" alt="05 note menu" width="30%">
 </div>
-<div class="title">Figure 38. The note menu.</div>
+<div class="title">Figure 62. The note menu.</div>
 </div>
 <div class="paragraph">
 <p>From the note menu the user is able to:</p>
@@ -1928,7 +2341,7 @@ to center the map on the GPS position. The button also shows the status of the G
 <div class="content">
 <img src="03_mapview/07_notes_all_menu.png" alt="07 notes all menu" width="30%">
 </div>
-<div class="title">Figure 39. The submenu that considers all notes.</div>
+<div class="title">Figure 63. The submenu that considers all notes.</div>
 </div>
 <div class="paragraph">
 <p>From the all-notes submenu the user can:</p>
@@ -1946,6 +2359,15 @@ to center the map on the GPS position. The button also shows the status of the G
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>The pallet icon on the Notes List view allows you to change the graphic properties of the notes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="03_mapview/07_notes_properties.png" alt="07 notes properties" width="30%">
+</div>
+<div class="title">Figure 64. The Notes Properties.</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_add_bookmark">5.5. Add Bookmark</h3>
@@ -1958,7 +2380,7 @@ or leave the generated name based on the current time and date.</p>
 <div class="content">
 <img src="03_mapview/08_add_bookmark.png" alt="08 add bookmark" width="30%">
 </div>
-<div class="title">Figure 40. The add bookmark dialog.</div>
+<div class="title">Figure 65. The add bookmark dialog.</div>
 </div>
 <div class="paragraph">
 <p>When a bookmark is added, a small star is added on the map in the center of the screen.</p>
@@ -1974,7 +2396,7 @@ that the bookmark represents in any moment.</p>
 <div class="content">
 <img src="03_mapview/10_bookmark_open.png" alt="10 bookmark open" width="30%">
 </div>
-<div class="title">Figure 41. A tapped bookmark.</div>
+<div class="title">Figure 66. A tapped bookmark.</div>
 </div>
 </div>
 <div class="sect2">
@@ -2005,7 +2427,7 @@ that the bookmark represents in any moment.</p>
 <div class="content">
 <img src="03_mapview/11_bookmarks_list.png" alt="11 bookmarks list" width="30%">
 </div>
-<div class="title">Figure 42. The list of bookmarks.</div>
+<div class="title">Figure 67. The list of bookmarks.</div>
 </div>
 </div>
 <div class="sect2">
@@ -2022,7 +2444,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/28_gps_log_analysis.png" alt="28 gps log analysis" width="30%">
 </div>
-<div class="title">Figure 43. The GPS log analysis tool.</div>
+<div class="title">Figure 68. The GPS log analysis tool.</div>
 </div>
 </div>
 <div class="sect2">
@@ -2040,7 +2462,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/12_measure_tool.png" alt="12 measure tool" width="30%">
 </div>
-<div class="title">Figure 44. An example of qualitative measurement on the map.</div>
+<div class="title">Figure 69. An example of qualitative measurement on the map.</div>
 </div>
 </div>
 </div>
@@ -2089,7 +2511,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/13_map_menu.png" alt="13 map menu" width="30%">
 </div>
-<div class="title">Figure 45. The map menu.</div>
+<div class="title">Figure 70. The map menu.</div>
 </div>
 <div class="sect2">
 <h3 id="_gps_data_list">6.1. GPS data list</h3>
@@ -2100,7 +2522,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/14_gpsdatalist.png" alt="14 gpsdatalist" width="30%">
 </div>
-<div class="title">Figure 46. The GPS data view.</div>
+<div class="title">Figure 71. The GPS data view.</div>
 </div>
 <div class="paragraph">
 <p>In the actionbar there are possibilities to <em>select all</em>, <em>unselect all</em> and <em>merge selected logs</em>. The first icon from left is the notes properties button. From there some properties of the notes can be set.</p>
@@ -2115,7 +2537,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/15_notes_properties.png" alt="15 notes properties" width="30%">
 </div>
-<div class="title">Figure 47. The notes properties view.</div>
+<div class="title">Figure 72. The notes properties view.</div>
 </div>
 <div class="paragraph">
 <p>The <strong>list of GPS logs</strong> gives the possibility to customize the logs. It is possible to change the visibility of the single track using the checkbox. The icon on the right side of each entry opens the GPS log properties panel:</p>
@@ -2124,7 +2546,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/16_log_properties.png" alt="16 log properties" width="30%">
 </div>
-<div class="title">Figure 48. The GPS log properties panel.</div>
+<div class="title">Figure 73. The GPS log properties panel.</div>
 </div>
 <div class="paragraph">
 <p>From the properties panel it is possible to:</p>
@@ -2155,7 +2577,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/17_chart_log.png" alt="17 chart log" width="30%">
 </div>
-<div class="title">Figure 49. The GPS log chart.</div>
+<div class="title">Figure 74. The GPS log chart.</div>
 </div>
 <div class="ulist">
 <ul>
@@ -2186,7 +2608,7 @@ the currently queried log:</p>
 <div class="content">
 <img src="03_mapview/18_spatialite_data_list.png" alt="18 spatialite data list" width="30%">
 </div>
-<div class="title">Figure 50. The list of spatialite based data.</div>
+<div class="title">Figure 75. The list of spatialite based data.</div>
 </div>
 <div class="paragraph">
 <p>At the right part of each entry a menu is available, which allows the user to change the style and labeling of the features in the layer, as well as its stroke dash and zoom level visibility. It is also possible to zoom to a given layer extent.</p>
@@ -2243,7 +2665,7 @@ The route is then downloaded and placed in the GPS logs tracks.</p>
 <div class="content">
 <img src="03_mapview/24_route_rome.png" alt="24 route rome" width="30%">
 </div>
-<div class="title">Figure 51. The fresh downloaded route from Bolzano to Rome.</div>
+<div class="title">Figure 76. The fresh downloaded route from Bolzano to Rome.</div>
 </div>
 </div>
 <div class="sect2">
@@ -2309,7 +2731,7 @@ look like:</p>
 <div class="content">
 <img src="03_mapview/27_mapsforge10.png" alt="27 mapsforge10" width="30%">
 </div>
-<div class="title">Figure 52. The notes list after a mapsforge import.</div>
+<div class="title">Figure 77. The notes list after a mapsforge import.</div>
 </div>
 </div>
 <div class="sect3">
@@ -2340,7 +2762,7 @@ look like:</p>
 <div class="content">
 <img src="03_mapview/27_mapsforge3.png" alt="27 mapsforge3" width="30%">
 </div>
-<div class="title">Figure 53. The mapsforge database and layer that host imported data.</div>
+<div class="title">Figure 78. The mapsforge database and layer that host imported data.</div>
 </div>
 <div class="paragraph">
 <p>Just select the data you want to import and push the start button.
@@ -2351,7 +2773,7 @@ import dialog like this:</p>
 <div class="content">
 <img src="03_mapview/27_mapsforge4.png" alt="27 mapsforge4" width="30%">
 </div>
-<div class="title">Figure 54. The mapsforge import dialog.</div>
+<div class="title">Figure 79. The mapsforge import dialog.</div>
 </div>
 <div class="paragraph">
 <p>and then something like this:</p>
@@ -2371,8 +2793,104 @@ import dialog like this:</p>
 <div class="sect1">
 <h2 id="_vector_editing">7. Vector Editing</h2>
 <div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_03_box.png" alt="03 03 box" width="30%">
+</div>
+<div class="title">Figure 80. Vector Editing with Geopaparazzi</div>
+</div>
 <div class="paragraph">
-<p>to be done</p>
+<p>In the Map View you can create, view, and edit the geometry and attributes of point, line and polygon features held in a Spatialite database.  You cannot edit geographic features in a Basemap.  Editing a Project&#8217;s Notes, Bookmarks, and GPS logs are covered elsewhere in this manual.</p>
+</div>
+<div class="paragraph">
+<p>If you need to create a Spatialite database, press the Import button on the Main View dashboard, and press <a href="#_default_databases">Default Database</a> (take note of the file name of your new database).</p>
+</div>
+<div class="paragraph">
+<p>You can use your existing Spatialite databases by attaching them to the Map View by using the Map View menu item <a href="#_spatialite_data_list">Spatialite data list</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_viewing_feature_attributes">7.1. Viewing Feature Attributes</h3>
+<div class="paragraph">
+<p>After attaching a Spatialite database in the Map View, turn on the viewing of layers by checking the box next to the layer name.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/02_spatialite.png" alt="02 spatialite" width="30%">
+</div>
+<div class="title">Figure 81. Displaying a layer</div>
+</div>
+<div class="paragraph">
+<p>Back on the Map View, you will see the features (you may need to pan and zoom to them).  To view the attribute values of features, press the Edit Tool button (it looks like a pencil) on the lower right of the Map View.  That will cause the Feature Select button to appear on the lower left.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_01_view.png" alt="03 01 view" width="30%">
+</div>
+<div class="title">Figure 82. Feature Select Tool</div>
+</div>
+<div class="paragraph">
+<p>Press the Select button then press and drag on the Map View to make a box surrounding the features you are interested in.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_03_box.png" alt="03 03 box" width="30%">
+</div>
+<div class="title">Figure 83. Selecting a Feature</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+To exit the Map View the Edit Tool button must be un-selected.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If there are any features in the box a Features dialog will appear showing the attribute names and values.  If you&#8217;ve selected more than one feature, you can show their attributes by swiping on the Features dialog.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_04_features.png" alt="03 04 features" width="30%">
+</div>
+<div class="title">Figure 84. Feature Attributes</div>
+</div>
+<div class="paragraph">
+<p>If there are any resource files (for example, images, PDFs ) associated with the feature, a camera icon will appear in the left of the Features Action Bar.  Pressing on the camera icon will show a list of resources.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_05_resources.png" alt="03 05 resources" width="30%">
+</div>
+<div class="title">Figure 85. Feature Resources</div>
+</div>
+<div class="paragraph">
+<p>Pressing on the resource thumbnail image will show the full resolution of the resource.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="09_vector_editing/03_06_photo.png" alt="03 06 photo" width="30%">
+</div>
+<div class="title">Figure 86. File Viewing</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_editing_features">7.2. Editing Features</h3>
+<div class="paragraph">
+<p>In addition to just viewing the features, you can edit the geometry and attribute values of features stored in a Spatialite database.</p>
+</div>
+<div class="sect3">
+<h4 id="_select_a_layer_for_editing">7.2.1. Select a Layer for Editing</h4>
+<div class="paragraph">
+<p>To edit, attach a Spatialite database in the Map View and turn on the layer for viewing.  Back at the Map View screen, do a long tap on edit button to show the list of layers available.  Note if the layer is not turned on for viewing, the [pencil] edit button on the layer list will be black and unavailable to select for editing.  Select the green edit button to indicate which layer you want to edit.  The pencil icon will turn red showing the layer is ready for editing.  Return to the Map View to start editing features.</p>
+</div>
+<div class="paragraph">
+<p>Back on the Map View press the edit tool button.  Depending on the geometry type of the editing layer various editing buttons will appear.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2389,7 +2907,7 @@ import dialog like this:</p>
 <div class="content">
 <img src="05_settings/01_settings.png" alt="01 settings" width="30%">
 </div>
-<div class="title">Figure 55. The settings view.</div>
+<div class="title">Figure 87. The settings view.</div>
 </div>
 <div class="sect2">
 <h3 id="_gps_settings">8.1. GPS Settings</h3>
@@ -2397,7 +2915,7 @@ import dialog like this:</p>
 <div class="content">
 <img src="05_settings/02_gps.png" alt="02 gps" width="30%">
 </div>
-<div class="title">Figure 56. The GPS settings view.</div>
+<div class="title">Figure 88. The GPS settings view.</div>
 </div>
 <div class="paragraph">
 <p>In the GPS preferences it is possible to</p>
@@ -2427,7 +2945,7 @@ for testing purposes. The network based position is by no means precise!</p>
 <div class="content">
 <img src="05_settings/03_sms.png" alt="03 sms" width="30%">
 </div>
-<div class="title">Figure 57. The SMS settings view.</div>
+<div class="title">Figure 89. The SMS settings view.</div>
 </div>
 <div class="paragraph">
 <p>It is possible to activate an SMS catcher. If activated, the phone listens
@@ -2453,7 +2971,7 @@ numbers to which a status update is sent when the panic button is pushed.</p>
 <div class="content">
 <img src="05_settings/04_screen.png" alt="04 screen" width="30%">
 </div>
-<div class="title">Figure 58. The screen settings view.</div>
+<div class="title">Figure 90. The screen settings view.</div>
 </div>
 <div class="paragraph">
 <p>In the screen preferences it is possible to</p>
@@ -2484,7 +3002,7 @@ numbers to which a status update is sent when the panic button is pushed.</p>
 <div class="content">
 <img src="05_settings/05_spl_recovery.png" alt="05 spl recovery" width="30%">
 </div>
-<div class="title">Figure 59. The Spatialite settings view.</div>
+<div class="title">Figure 91. The Spatialite settings view.</div>
 </div>
 <div class="paragraph">
 <p>In the Spatialite preferences it is possible to enable the <strong>Spatialite Recovery Mode</strong></p>
@@ -2515,19 +3033,19 @@ Android.</p>
 <div class="content">
 <img src="05_settings/06_locale.png" alt="06 locale" width="30%">
 </div>
-<div class="title">Figure 60. The force locale dialog.</div>
+<div class="title">Figure 92. The force locale dialog.</div>
 </div>
 <div class="paragraph">
 <p>After that, each newly loaded view will be in the new locale.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cloud_projects_sync_settings">8.6. Cloud Projects Sync Settings</h3>
+<h3 id="_cloud_server_settings">8.6. Cloud server Settings</h3>
 <div class="paragraph">
-<p>This setting allows the user to set a server with user and password, to which upload and from which download geopaparazzi projects.</p>
+<p>These settings allows you to set a Geopaparazzi Cloud Project server URL, Cloud Profile server URL, and optionally add a username and password.  A Geopaparazzi Cloud Project server allows you to download and upload Geopaparazzi projects.  A Geopaparazzi Cloud <strong>Profile</strong> server allows you to download Profiles along with the file they reference such as basemaps, Spatialite overlays, and project files.</p>
 </div>
 <div class="paragraph">
-<p>Known projects that allow for such a connection are:</p>
+<p>Known Geopaparazzi Cloud Project servers are:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2536,6 +3054,16 @@ Android.</p>
 </li>
 <li>
 <p>gvSIG Online</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Known Geopaparazzi Cloud Profile servers are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/geoanalytic/cookiecutter-geopaparazzi-server">Geopaparazzi Server</a></p>
 </li>
 </ul>
 </div>
@@ -2594,7 +3122,7 @@ Android.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_basemaps">9.2. Basemaps</h3>
+<h3 id="_basemaps_2">9.2. Basemaps</h3>
 <div class="paragraph">
 <p>Basemaps can be of 4 different types:</p>
 </div>
@@ -2684,7 +3212,7 @@ This information can be tested also in a browser <a href="http://tile.openstreet
 <p>the center of the tile source</p>
 </li>
 <li>
-<p>the type fo tile server. Currently both <a href="http://en.wikipedia.org/wiki/Tile_Map_Service">standard TMS</a> and Google Maps based numbering of the tiles is supported by the line:</p>
+<p>the type of tile server. Currently both <a href="http://en.wikipedia.org/wiki/Tile_Map_Service">standard TMS</a> and Google Maps based numbering of the tiles is supported by the line:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -2807,7 +3335,7 @@ Filesystems are known to have problems in handling large amounts of very small f
 <div class="content">
 <img src="06_maps/01_mapsforge_maps.png" alt="01 mapsforge maps" width="30%">
 </div>
-<div class="title">Figure 61. The standard mapsforge map.</div>
+<div class="title">Figure 93. The standard mapsforge map.</div>
 </div>
 </div>
 <div class="sect4">
@@ -2823,7 +3351,7 @@ theme, with isolines and more hiking related stuff. The map files are larger but
 <div class="content">
 <img src="06_maps/02_cycle_maps.png" alt="02 cycle maps" width="30%">
 </div>
-<div class="title">Figure 62. The openandro styled mapsforge map.</div>
+<div class="title">Figure 94. The openandro styled mapsforge map.</div>
 </div>
 </div>
 <div class="sect4">
@@ -2957,7 +3485,7 @@ dedicated to spatial analyses.</p>
 <div class="content">
 <img src="07_maps_handling/01_stage.png" alt="01 stage">
 </div>
-<div class="title">Figure 63. The Stage application on windows.</div>
+<div class="title">Figure 95. The Stage application on windows.</div>
 </div>
 <div class="paragraph">
 <p>The <strong>mobile</strong> section contains modules related to Geopaparazzi.</p>
@@ -2966,7 +3494,7 @@ dedicated to spatial analyses.</p>
 <div class="content">
 <img src="07_maps_handling/02_stage.png" alt="02 stage">
 </div>
-<div class="title">Figure 64. The mobiles section.</div>
+<div class="title">Figure 96. The mobiles section.</div>
 </div>
 </div>
 <div class="sect3">
@@ -3280,15 +3808,156 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_geopaparazzi_gvsig">11. Geopaparazzi &amp; gvSIG</h2>
+<h2 id="_geopaparazzi_cloud_server">11. Geopaparazzi Cloud Server</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_cloud_profiles_2">11.1. Cloud Profiles</h3>
 <div class="paragraph">
-<p>to be done</p>
+<p>Cloud Profiles are a great way of easing Geopaparazzi&#8217;s data handling tasks.  When a web server is configured to serve Cloud Profiles, Geopaparazzi can automatically download Projects, Basemaps, Spatialite Overlays, forms for Notes, and other files.  When a user activates a downloaded Profile, Basemaps are made available, Overlays are attached to the Map View and layers are set to display.</p>
+</div>
+<div class="paragraph">
+<p>The Geopaparazzi workflow is:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#_cloud_server_settings">Configure the Cloud server Settings</a></p>
+</li>
+<li>
+<p><a href="#_cloud_profiles">Import a Cloud Profile</a></p>
+</li>
+<li>
+<p><a href="#_profile_info">Activate a Cloud Profile</a></p>
+</li>
+<li>
+<p>Restart Geopaparazzi</p>
+</li>
+<li>
+<p>Start using Notes and the Map View!</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_cloud_profile_json">11.1.1. Cloud Profile JSON</h4>
+<div class="paragraph">
+<p>Shown below is a sample Cloud Profile JSON file containing two Profiles: Vienna and Bolzano.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{"formatVersion": 1.1,
+  "profiles": [
+    {
+      "name": "Vienna",
+      "description": "Map Demo",
+      "creationdate": "2017-07-24 14:16:28",
+      "modifieddate": "2018-04-09 13:00:00",
+      "color": "#FBC02D",
+      "active": true,
+      "sdcardPath": "MAINSTORAGE",
+      "mapView": "48.2129,16.3663,15.0",
+      "project": {
+        "path": "/geopaparazzi/data/demo/vienna/geopaparazzi_trip_vienna.gpap",
+        "modifieddate": "2018-01-24 13:00:00",
+        "url":       "http://MyServer/download/geopaparazzi/data/demo/vienna/geopaparazzi_trip_vienna.gpap",
+      },
+      "basemaps": [
+        {
+          "path": "/geopaparazzi/data/demo/vienna/orthofoto_vienna.mapurl",
+          "modifieddate": "2018-01-24 13:00:00",
+          "size": "267"
+        }
+      ],
+      "spatialitedbs": [
+        {
+          "path": "/geopaparazzi/data/demo/vienna/wfs_vienna_db_3857.sqlite",
+          "modifieddate": "2018-04-09 13:00:00",
+          "url":       "http://MyServer/download/geopaparazzi/data/demo/vienna/wfs_vienna_db_3857.sqlite",
+          "size": "9797632",
+          "visible": ["monumfountain"]
+        }
+      ],
+      "otherfiles": [
+        {
+          "path": "/geopaparazzi/data/demo/vienna/Josefstadt_isis_brunnen.JPG",
+          "modifieddate": "2018-01-24 13:00:00",
+          "url": "http://MyServer/download/geopaparazzi/data/demo/vienna/Josefstadt_isis_brunnen.JPG"
+        }
+      ]
+    },
+    {
+      "name": "Bolzano",
+      "description": "Notes Demo",
+      "creationdate": "2017-07-24 14:16:28",
+      "modifieddate": "2018-04-09 13:00:00",
+      "color": "#296139",
+      "active": false,
+      "sdcardPath": "MAINSTORAGE",
+      "mapView": "46.661,11.437,9.0",
+      "project": {
+        "path": "/geopaparazzi/data/demo/bolzano/geopaparazzi_trip_bolzano.gpap",
+        "modifieddate": "2018-01-24 13:00:00",
+        "url":       "http://MyServer/download/geopaparazzi/data/demo/bolzano/geopaparazzi_trip_bolzano.gpap",
+      },
+      "tags": {
+        "path": "/geopaparazzi/data/demo/bolzano/bolzano_field_survey_en.json",
+        "modifieddate": "2018-01-24 13:00:00",
+        "url": "http://MyServer/download/geopaparazzi/data/demo/bolzano/bolzano_field_survey_en.json"
+      },
+      "basemaps": [
+        {
+          "path": "/geopaparazzi/data/demo/bolzano/mapnik.mapurl",
+          "modifieddate": "2018-01-24 13:00:00",
+          "url": "http://MyServer/download/geopaparazzi/data/demo/bolzano/mapnik.mapurl"
+        }
+      ],
+      "spatialitedbs": [
+        {
+          "path": "/geopaparazzi/data/demo/bolzano/wfs_bz_db.sqlite",
+          "modifieddate": "2018-01-24 13:00:00",
+          "url": "http://MyServer/download/geopaparazzi/data/demo/bolzano/wfs_bz_db.sqlite",
+          "visible": ["administrativeunit"]
+        }
+      ]
+    }
+  ]
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cloud_profile_server">11.1.2. Cloud Profile Server</h4>
+<div class="paragraph">
+<p>If you look at the sample Cloud Profiles in the previous section, you will see that the URLs for the files are fairly simple.  This allow the Cloud Profile server to a generic files server or your own web server with more sophisticated features such as username/pasword access, URL re-writing, spatial database creation and more.</p>
+</div>
+<div class="sect4">
+<h5 id="_using_generic_cloud_servers">Using Generic Cloud Servers</h5>
+<div class="paragraph">
+<p>You can set up your own Cloud Profile server by putting your files on a generic cloud file server like Dropbox or Google Drive, and editing a Cloud Profiles list like the one above and putting it on the cloud file server as well.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_geopaparazzi_cloud_server_2">Geopaparazzi Cloud Server</h5>
+<div class="paragraph">
+<p>A pre-configured Open Source Geopaparazzi Cloud Server is available.  Have a look at <a href="https://geoanalytic.github.io/a-reference-server-for-geopaparazzi-cloud-profiles/">A reference server for geopaparazzi cloud profiles</a></p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_using_form_based_notes">12. Using form based notes</h2>
+<h2 id="_geopaparazzi_gvsig">12. Geopaparazzi &amp; gvSIG</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The most updated tools for geopaparazzi inside a GIS are the ones that are found in <a href="http://www.gvsig.org">the open source GIS gvSIG</a>, since they are maintained by the same team that develops geopaparazzi.</p>
+</div>
+<div class="paragraph">
+<p>A quickstartguide about teh installation of the right plugins and the available functionalities can be found <a href="http://www.hortonmachine.org/hydrologis4gvsig_quickstart/hydrologis4gvsig_quickstart.html#_the_geopaparazzi_plugins">on the plugin&#8217;s website</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_form_based_notes">13. Using form based notes</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Geopaparazzi supports complex notes called <strong>form based notes</strong>. To use them, a <strong>tags.json</strong> file needs to be created and placed inside the geopaparazzi folder inside the sdcard. In that file a <a href="http://en.wikipedia.org/wiki/JSON">json format</a> description of the wanted tags and forms needs to be placed.</p>
@@ -3308,12 +3977,12 @@ y="46.39742402665929"</pre>
 <p>A good online tool to at least validate your json form is the <a href="http://www.jsonlint.com/">Json Lint Validator</a>. Make sure it passes that test before putting it on the device and test it in geopaparazzi.</p>
 </div>
 <div class="sect2">
-<h3 id="_supported_tags_via_the_example_form">12.1. Supported tags (via the example form)</h3>
+<h3 id="_supported_tags_via_the_example_form">13.1. Supported tags (via the example form)</h3>
 <div class="paragraph">
 <p>The example form that is available by default shows all the possible options available.</p>
 </div>
 <div class="sect3">
-<h4 id="_text">12.1.1. Text</h4>
+<h4 id="_text">13.1.1. Text</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">      <span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span>,
@@ -3333,7 +4002,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_multiple_text">12.1.2. Multiple Text</h4>
+<h4 id="_multiple_text">13.1.2. Multiple Text</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">      <span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">multiple text</span><span class="delimiter">&quot;</span></span>,
@@ -3353,7 +4022,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_text_with_key_and_label">12.1.3. Text with key and label</h4>
+<h4 id="_text_with_key_and_label">13.1.3. Text with key and label</h4>
 <div class="paragraph">
 <p>In simple forms the key element is also used as label for the widget (ex. <strong>some text</strong> in the text note). Some character sets are not suitable to be used as keys for a database, so in that cases the user should consider to define both the key (ex. in English) and the label (in the own language). Here an example:</p>
 </div>
@@ -3377,7 +4046,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_numbers">12.1.4. Numbers</h4>
+<h4 id="_numbers">13.1.4. Numbers</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">numeric text</span><span class="delimiter">&quot;</span></span>,
@@ -3421,7 +4090,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_date">12.1.5. Date</h4>
+<h4 id="_date">13.1.5. Date</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">date</span><span class="delimiter">&quot;</span></span>,
@@ -3441,7 +4110,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_time">12.1.6. Time</h4>
+<h4 id="_time">13.1.6. Time</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">time</span><span class="delimiter">&quot;</span></span>,
@@ -3461,7 +4130,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_labels">12.1.7. Labels</h4>
+<h4 id="_labels">13.1.7. Labels</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">labels</span><span class="delimiter">&quot;</span></span>,
@@ -3490,7 +4159,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_checkbox">12.1.8. Checkbox</h4>
+<h4 id="_checkbox">13.1.8. Checkbox</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">boolean</span><span class="delimiter">&quot;</span></span>,
@@ -3510,7 +4179,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_combos">12.1.9. Combos</h4>
+<h4 id="_combos">13.1.9. Combos</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">combos</span><span class="delimiter">&quot;</span></span>,
@@ -3598,7 +4267,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pictures">12.1.10. Pictures</h4>
+<h4 id="_pictures">13.1.10. Pictures</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">pictures</span><span class="delimiter">&quot;</span></span>,
@@ -3618,7 +4287,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_sketches">12.1.11. Sketches</h4>
+<h4 id="_sketches">13.1.11. Sketches</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">sketches</span><span class="delimiter">&quot;</span></span>,
@@ -3638,7 +4307,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_map_screenshot">12.1.12. Map screenshot</h4>
+<h4 id="_map_screenshot">13.1.12. Map screenshot</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json"><span class="key"><span class="delimiter">&quot;</span><span class="content">formname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">map</span><span class="delimiter">&quot;</span></span>,
@@ -3654,9 +4323,9 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_other_supported_tags">12.2. Other supported tags</h3>
+<h3 id="_other_supported_tags">13.2. Other supported tags</h3>
 <div class="sect3">
-<h4 id="_hidden">12.2.1. hidden</h4>
+<h4 id="_hidden">13.2.1. hidden</h4>
 <div class="paragraph">
 <p>Not shown in the gui, but useful for the application to fill in info like the GPS position:</p>
 </div>
@@ -3667,7 +4336,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_primary_key">12.2.2. primary_key</h4>
+<h4 id="_primary_key">13.2.2. primary_key</h4>
 <div class="paragraph">
 <p>An item of particular importance, can be used by the application to link to particular info:</p>
 </div>
@@ -3678,7 +4347,7 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_constraints">12.2.3. Constraints</h4>
+<h4 id="_constraints">13.2.3. Constraints</h4>
 <div class="paragraph">
 <p>Constraints are conditions that are checked when the OK button of the form is pushed.</p>
 </div>
@@ -3710,12 +4379,12 @@ y="46.39742402665929"</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_a_simple_form_to_map_fountains">12.3. Create a simple form to map fountains</h3>
+<h3 id="_create_a_simple_form_to_map_fountains">13.3. Create a simple form to map fountains</h3>
 <div class="paragraph">
 <p>As an exercise we will now create a simple form to map fountains.</p>
 </div>
 <div class="sect3">
-<h4 id="_sections">12.3.1. Sections</h4>
+<h4 id="_sections">13.3.1. Sections</h4>
 <div class="paragraph">
 <p>Every form is composed of sections, each of which create a button in the add notes view.
 We want to create a form for a fountain, so one section is enough. The blueprint for such a form, i.e. the empty button shell starts with:</p>
@@ -3741,7 +4410,7 @@ We want to create a form for a fountain, so one section is enough. The blueprint
 </div>
 </div>
 <div class="sect3">
-<h4 id="_form_subsections">12.3.2. Form subsections</h4>
+<h4 id="_form_subsections">13.3.2. Form subsections</h4>
 <div class="paragraph">
 <p>Each section can contain several sub-forms, that will create a tab each.</p>
 </div>
@@ -3770,7 +4439,7 @@ is added.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_form_elements">12.3.3. Form elements</h4>
+<h4 id="_form_elements">13.3.3. Form elements</h4>
 <div class="paragraph">
 <p>To add content to the sub-forms, any of the tags described <a href="#tags">in the supported tags section</a> can be used.</p>
 </div>
@@ -3796,7 +4465,7 @@ is added.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_finalize_the_form">12.3.4. Finalize the form</h4>
+<h4 id="_finalize_the_form">13.3.4. Finalize the form</h4>
 <div class="paragraph">
 <p>This is everything that needs to be done. Let&#8217;s also add some technical data in a dedicated tab and also a tab for media, inside which it is possible to take pictures.</p>
 </div>
@@ -3811,7 +4480,7 @@ is added.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_geopaparazzi_database">13. The Geopaparazzi Database</h2>
+<h2 id="_the_geopaparazzi_database">14. The Geopaparazzi Database</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Geopaparazzi project database is a plain sqlite database with the extension <strong>.gpap</strong>.</p>
@@ -3820,7 +4489,7 @@ is added.</p>
 <p>All data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="_database_tables_described">13.1. Database tables described</h3>
+<h3 id="_database_tables_described">14.1. Database tables described</h3>
 <table class="tableblock frame-all grid-all" style="width: 50%;">
 <caption class="title">Table 1. The Metadata Table</caption>
 <colgroup>
@@ -4113,10 +4782,10 @@ Style and isdirty are currently unused.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">14. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</h2>
+<h2 id="_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">15. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_introduction">14.1. Introduction</h3>
+<h3 id="_introduction">15.1. Introduction</h3>
 <div class="paragraph">
 <p>Have you ever tried to type in google: <strong>sanitation maps, sanitation coverage, sanitation or inventory tracking</strong>?</p>
 </div>
@@ -4199,7 +4868,7 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 </div>
 </div>
 <div class="sect2">
-<h3 id="_monitoring_activities">14.2. Monitoring activities</h3>
+<h3 id="_monitoring_activities">15.2. Monitoring activities</h3>
 <div class="paragraph">
 <p>During fall of 2010 Geopaparazzi has been used in the monitoring of <strong>small waste water treatment plants in decentralized communities</strong> of the Nile Delta, in a thesis project in Environmental Engineering within a larger project of technical development cooperation (<a href="http://www.eawag.ch/forschung/sandec/gruppen/sesp/esriss/index_EN">ESRISS project</a>).</p>
 </div>
@@ -4216,23 +4885,23 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 <div class="content">
 <img src="usecase/07_plant1.png" alt="07 plant1">
 </div>
-<div class="title">Figure 65. The El Moufty plant, the one with most available information.</div>
+<div class="title">Figure 97. The El Moufty plant, the one with most available information.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="usecase/08_plant2.png" alt="08 plant2">
 </div>
-<div class="title">Figure 66. The OM SEN plant, with no lab information available and some general information missing.</div>
+<div class="title">Figure 98. The OM SEN plant, with no lab information available and some general information missing.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="usecase/09_plant3.png" alt="09 plant3">
 </div>
-<div class="title">Figure 67. The EL KOLEAAH plant, with no lab information available and some general information missing.</div>
+<div class="title">Figure 99. The EL KOLEAAH plant, with no lab information available and some general information missing.</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_technical_background">14.3. Technical background</h3>
+<h3 id="_technical_background">15.3. Technical background</h3>
 <div class="paragraph">
 <p>Based on the available data a dedicated form has been designed to collect in a standardized way as much data as possible.</p>
 </div>
@@ -4243,7 +4912,7 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 <div class="content">
 <img src="usecase/01_tags.png" alt="01 tags">
 </div>
-<div class="title">Figure 68. The add noves view, in an older version of geopaparazzi.</div>
+<div class="title">Figure 100. The add noves view, in an older version of geopaparazzi.</div>
 </div>
 <div class="paragraph">
 <p>The form has been divided into 5 main sections to make it easier to read:</p>
@@ -4315,7 +4984,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_acknowledgement">14.4. Acknowledgement</h3>
+<h3 id="_acknowledgement">15.4. Acknowledgement</h3>
 <div class="paragraph">
 <p>This usecase is a very small and superficial extract of the Geopaparazzi related part from the master thesis of Vania Zillante: <strong>ANALISI DI TECNOLOGIE PER LA DEPURAZIONE DEI REFLUI DOMESTICI IN COMUNITÀ DECENTRATE DEL DELTA DEL NILO E PROPOSTA PER IL TRATTAMENTO DELLA FRAZIONE ORGANICA. APPLICAZIONE DI UN SOFTWARE OPEN SOURCE PER LA GEOREFERENZIAZIONE DEGLI IMPIANTI ESISTENTI.</strong>.</p>
 </div>
@@ -4329,10 +4998,10 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_projects_that_base_on_geopaparazzi">15. Projects that base on Geopaparazzi</h2>
+<h2 id="_projects_that_base_on_geopaparazzi">16. Projects that base on Geopaparazzi</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_gvsig_mobile">15.1. gvSIG Mobile</h3>
+<h3 id="_gvsig_mobile">16.1. gvSIG Mobile</h3>
 <div class="paragraph">
 <p>gvSIG Mobile is completely based on geopaparazzi and extends its capabilities with enterprise level functionalities to connect to the services of gvSIG Online to allow synchronization of data between teams of surveyors.</p>
 </div>
@@ -4343,7 +5012,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">15.2. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</h3>
+<h3 id="_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">16.2. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</h3>
 <div class="paragraph">
 <p>Checkout the homepage <a href="https://bitbucket.org/moovida/gasdroide">here</a></p>
 </div>
@@ -4354,7 +5023,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_disaster_management_information_system">15.3. Disaster Management Information System</h3>
+<h3 id="_disaster_management_information_system">16.3. Disaster Management Information System</h3>
 <div class="paragraph">
 <p>The Disaster Management Information System of the city of Osaka is
 mainly meant for collecting information about water-supply infrastructure
@@ -4370,7 +5039,7 @@ to promote post-disaster recovery for water supply.</p>
 Geopaparazzi. Kudos!</p>
 </div>
 <div class="sect3">
-<h4 id="_trashmapper">15.3.1. TrashMapper</h4>
+<h4 id="_trashmapper">16.3.1. TrashMapper</h4>
 <div class="paragraph">
 <p>The TrashMapper is a tool used to keep information about the waste management of a town. Through it it is possible to sample and update information out in the field and then syncronize the data with a central database/webgis.</p>
 </div>
@@ -4381,7 +5050,7 @@ Geopaparazzi. Kudos!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_trackoid">15.3.2. Trackoid</h4>
+<h4 id="_trackoid">16.3.2. Trackoid</h4>
 <div class="paragraph">
 <p>Trackoid is a mobile system for the geolocalization of small/medium fleets and teams of people (rescue). It is a realtime system with a mobile and server side.</p>
 </div>
@@ -4403,7 +5072,7 @@ Geopaparazzi. Kudos!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_your_app_here">15.3.3. Your app here</h4>
+<h4 id="_your_app_here">16.3.3. Your app here</h4>
 <div class="paragraph">
 <p>If you are using Geopaparazzi in any flavor we would be happy to list
 it here with some screenshot. Just drop us a note!</p>
@@ -4413,12 +5082,12 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_a_small_handbook_for_developers">16. A small handbook for developers</h2>
+<h2 id="_a_small_handbook_for_developers">17. A small handbook for developers</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_introduction_2">16.1. Introduction</h3>
+<h3 id="_introduction_2">17.1. Introduction</h3>
 <div class="sect3">
-<h4 id="_getting_the_code">16.1.1. Getting the code</h4>
+<h4 id="_getting_the_code">17.1.1. Getting the code</h4>
 <div class="paragraph">
 <p>The whole source code of the Geopaparazzi project is available at <a href="https://github.com/geopaparazzi/geopaparazzi">its github site</a>.</p>
 </div>
@@ -4432,7 +5101,7 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_building_and_developing_geopaparazzi">16.1.2. Building and developing Geopaparazzi</h4>
+<h4 id="_building_and_developing_geopaparazzi">17.1.2. Building and developing Geopaparazzi</h4>
 <div class="paragraph">
 <p>The authors suggest to use <a href="https://developer.android.com/studio/index.html">Android Studio</a> for the build and development of the application.</p>
 </div>
@@ -4470,7 +5139,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_description_of_the_geopaparazzi_architecture">16.2. Description of the Geopaparazzi Architecture</h3>
+<h3 id="_description_of_the_geopaparazzi_architecture">17.2. Description of the Geopaparazzi Architecture</h3>
 <div class="paragraph">
 <p>The Geopaparazzi application has been split in different modules, that contain functionalities that have been isolated.</p>
 </div>
@@ -4479,8 +5148,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre><span class="icon lime"><i class="fa fa-folder-open"></i></span> build/
-<span class="icon lime"><i class="fa fa-folder-open"></i></span> extras/
+<pre><span class="icon lime"><i class="fa fa-folder-open"></i></span> extras/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_acrylicpaint/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi.app/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_core/
@@ -4506,7 +5174,7 @@ key.alias.password=youraliaspassword</code></pre>
 <p>While the folders <em>extra</em>, <em>build</em> and <em>gradle</em> are accessory folders, the other folders are all part of the application.</p>
 </div>
 <div class="sect3">
-<h4 id="_modules_dependencies_diagram">16.2.1. Modules dependencies diagram</h4>
+<h4 id="_modules_dependencies_diagram">17.2.1. Modules dependencies diagram</h4>
 <div class="paragraph">
 <p>The diagram shows the dependencies of the various modules:</p>
 </div>
@@ -4514,17 +5182,17 @@ key.alias.password=youraliaspassword</code></pre>
 <div class="content">
 <img src="development/modules_diagram.png" alt="Diagram of the main modules dependencies." width="868" height="350">
 </div>
-<div class="title">Figure 69. Diagram of the main modules dependencies.</div>
+<div class="title">Figure 101. Diagram of the main modules dependencies.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="development/plugins_diagram.png" alt="The official Geopaparazzi plugins" width="1180" height="154">
 </div>
-<div class="title">Figure 70. The official Geopaparazzi plugins</div>
+<div class="title">Figure 102. The official Geopaparazzi plugins</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzilibrary">16.2.2. geopaparazzilibrary</h4>
+<h4 id="_geopaparazzilibrary">17.2.2. geopaparazzilibrary</h4>
 <div class="paragraph">
 <p>The Geopaparazzi Library module contains all the code that can be reused across applications. The different packages contained have been named to explain their content.</p>
 </div>
@@ -4612,7 +5280,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_core">16.2.3. geopaparazzi_core</h4>
+<h4 id="_geopaparazzi_core">17.2.3. geopaparazzi_core</h4>
 <div class="paragraph">
 <p>The core module contains all that is visible in Geopaparazzi. All the activities, views and fragments and all logic behind the user interaction.</p>
 </div>
@@ -4646,7 +5314,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_app">16.2.4. geopaparazzi.app</h4>
+<h4 id="_geopaparazzi_app">17.2.4. geopaparazzi.app</h4>
 <div class="paragraph">
 <p>The geopaparazzi.app module has been created to create easily branded versions of Geopaparazzi. It is a thin wrapper around the Geopaparazzi Core module.</p>
 </div>
@@ -4664,7 +5332,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzimapsforge">16.2.5. geopaparazzimapsforge</h4>
+<h4 id="_geopaparazzimapsforge">17.2.5. geopaparazzimapsforge</h4>
 <div class="paragraph">
 <p><a href="https://github.com/mapsforge/mapsforge">Mapsforge</a> is the mapping engine used in Geopaparazzi. While the project is going towards the release of version 0.8.0 at the current time, Geopaparazzi still bases on a customized version of the 0.3.1 version of mapsforge. The reasons for the lack of update is both technical and due to missing resources dedicated to this activity. The upgrade to version 0.8.0 would take a significand amount of time and huge code refactoring.</p>
 </div>
@@ -4686,7 +5354,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzispatialitelibrary">16.2.6. geopaparazzispatialitelibrary</h4>
+<h4 id="_geopaparazzispatialitelibrary">17.2.6. geopaparazzispatialitelibrary</h4>
 <div class="paragraph">
 <p>The Spatialite Library module contains several important pieces necessary to the main application.</p>
 </div>
@@ -4722,7 +5390,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_acrylicpaint">16.2.7. geopaparazzi_acrylicpaint</h4>
+<h4 id="_geopaparazzi_acrylicpaint">17.2.7. geopaparazzi_acrylicpaint</h4>
 <div class="paragraph">
 <p>Acrylic Paint is the new choice for the drawing of sketches in Geopaparazzi. It is a very nifty and tiny project, well written and maintained in few classes. It makes the perfect fit to be used in Geopaparazzi.</p>
 </div>
@@ -4731,7 +5399,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_wms_nww">16.2.8. wms_nww</h4>
+<h4 id="_wms_nww">17.2.8. wms_nww</h4>
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Web_Map_Service">WMS</a> is a standard mapping service and is supported in Geopaparazzi using this module. The module is an adapted code from an older version of the <a href="https://github.com/NASAWorldWind/WorldWindAndroid">Nasa World Wind Android</a> application. It allows to query the <strong>getCapabilities</strong> of the Service and list the available layers, which allows th user to easily select a layer to visualize in Geopaparazzi.</p>
 </div>
@@ -4740,7 +5408,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_plugins">16.2.9. plugins</h4>
+<h4 id="_plugins">17.2.9. plugins</h4>
 <div class="paragraph">
 <p>It is now possible to use plugins with Geopaparazzi. They ar enot dynamic plugins that can be installed aside of Geopaparazzi and then loaded into it. But it is possible to compile an custom version of Geopaparazzi with certain plugins enabled.</p>
 </div>
@@ -4755,6 +5423,7 @@ key.alias.password=youraliaspassword</code></pre>
 <pre><span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_default_export_plugins/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_default_import_plugins/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_pdf_export_plugins/
+<span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_profiles_import_plugins/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_projects_export_plugins/
 <span class="icon lime"><i class="fa fa-folder-open"></i></span> geopaparazzi_projects_import_plugins/</pre>
 </div>
@@ -4786,7 +5455,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_project_database">16.3. The Project Database</h3>
+<h3 id="_the_project_database">17.3. The Project Database</h3>
 <div class="paragraph">
 <p>The Geopaparazzi project database is a plain sqlite database with the extension <strong>.gpap</strong>.</p>
 </div>
@@ -4794,12 +5463,12 @@ key.alias.password=youraliaspassword</code></pre>
 <p>All data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="_database_tables_described_2">16.3.1. Database tables described</h4>
+<h4 id="_database_tables_described_2">17.3.1. Database tables described</h4>
 <div class="imageblock">
 <div class="content">
 <img src="development/database_diagram.png" alt="Overview diagram of database tables" width="862" height="595">
 </div>
-<div class="title">Figure 71. Overview diagram of database tables</div>
+<div class="title">Figure 103. Overview diagram of database tables</div>
 </div>
 <div class="sect4">
 <h5 id="_the_metadata_table">The Metadata Table</h5>
@@ -5158,13 +5827,13 @@ Style and isdirty are currently unused.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_appendix">17. Appendix</h2>
+<h2 id="_appendix">18. Appendix</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="appendix"></a></p>
 </div>
 <div class="sect2">
-<h3 id="_the_finalized_tags_json_of_the_forms_section">17.1. The finalized tags.json of the Forms section</h3>
+<h3 id="_the_finalized_tags_json_of_the_forms_section">18.1. The finalized tags.json of the Forms section</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
@@ -5297,7 +5966,7 @@ Style and isdirty are currently unused.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_complete_tag_json_for_the_egypt_usecase">17.2. Complete tag.json for the Egypt usecase</h3>
+<h3 id="_complete_tag_json_for_the_egypt_usecase">18.2. Complete tag.json for the Egypt usecase</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
