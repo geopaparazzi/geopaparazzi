@@ -426,7 +426,7 @@ public class FormUtilities {
      * @return the added view.
      */
     public static GView addAutocompleteComboView(Context context, LinearLayout mainView, String label, String value, String[] itemsArray,
-                                     String constraintDescription) {
+                                                 String constraintDescription) {
         return new GAutocompleteTextView(context, null, mainView, label, value, itemsArray, constraintDescription);
     }
 
@@ -459,7 +459,7 @@ public class FormUtilities {
      * @return the added view.
      */
     public static GView addAutoCompleteConnectedComboView(Context context, LinearLayout mainView, String label, String value,
-                                              LinkedHashMap<String, List<String>> valuesMap, String constraintDescription) {
+                                                          LinkedHashMap<String, List<String>> valuesMap, String constraintDescription) {
         return new GTwoAutoCompleteConnectedTextView(context, null, mainView, label, value, valuesMap,
                 constraintDescription);
     }
@@ -772,7 +772,9 @@ public class FormUtilities {
                     }
 
                     String type = formItem.getString(FormUtilities.TAG_TYPE);
-                    String value = formItem.getString(FormUtilities.TAG_VALUE);
+                    String value = "";
+                    if (formItem.has(FormUtilities.TAG_VALUE))
+                        value = formItem.getString(FormUtilities.TAG_VALUE);
 
                     if (type.equals(FormUtilities.TYPE_PICTURES)) {
                         if (value.trim().length() == 0) {
