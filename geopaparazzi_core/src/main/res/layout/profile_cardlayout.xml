@@ -55,6 +55,18 @@
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+
+
+        <Switch
+            android:id="@+id/activeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileSummaryText"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="" />
+
         <ImageButton
             android:id="@+id/settingsButton"
             android:layout_width="@dimen/min_touch_size"
