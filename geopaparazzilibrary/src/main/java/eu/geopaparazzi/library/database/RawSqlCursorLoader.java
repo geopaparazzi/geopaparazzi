@@ -56,7 +56,13 @@ public class RawSqlCursorLoader extends CursorLoader {
             mCancellationSignal = new CancellationSignal();
         }
         try {
-            Cursor cursor = mDatabase.rawQuery(mSql, null);
+            Cursor cursor = null;
+            String errorMsg = null;
+            try {
+                cursor = mDatabase.rawQuery(mSql, null);
+            } catch (Exception e) {
+                errorMsg = "cannot run query: " + mSql;
+            }
             if (cursor != null) {
                 try {
                     // Ensure the cursor window is filled.
@@ -66,6 +72,9 @@ public class RawSqlCursorLoader extends CursorLoader {
                     cursor.close();
                     throw ex;
                 }
+            }
+            if (cursor == null && errorMsg != null) {
+                cursor = mDatabase.rawQuery("select 'asd' as _id, '" + errorMsg + "' as ERROR", null);
             }
             return cursor;
         } finally {
