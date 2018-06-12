@@ -128,7 +128,6 @@ public enum BaseMapSourcesManager {
             } else {
 
                 for (BaseMap baseMap : baseMaps) {
-                    Log.d("GPAP", "baseMap.databasePath: " + baseMap.databasePath);
                     if (baseMap.databasePath.equals(selectedTableDatabasePath)) {
                         selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
                         break;
