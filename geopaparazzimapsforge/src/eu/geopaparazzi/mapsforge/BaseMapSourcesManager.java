@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.mapsforge.android.maps.MapView;
@@ -125,7 +126,9 @@ public enum BaseMapSourcesManager {
                     }
                 }
             } else {
+
                 for (BaseMap baseMap : baseMaps) {
+                    Log.d("GPAP", "baseMap.databasePath: " + baseMap.databasePath);
                     if (baseMap.databasePath.equals(selectedTableDatabasePath)) {
                         selectedBaseMapTable = mBaseMaps2TablesMap.get(baseMap);
                         break;
@@ -194,7 +197,7 @@ public enum BaseMapSourcesManager {
         }
 
         if (ProfilesHandler.INSTANCE.getActiveProfile() == null) {
-            if (selectedBaseMapTable == null && baseMaps.size() > 0) {
+            if ((selectedTableDatabasePath == null || selectedTableDatabasePath.length() == 0 || !new File(selectedTableDatabasePath).exists()) && baseMaps.size() > 0) {
                 setSelectedBaseMap(baseMaps.get(0));
             }
         }
