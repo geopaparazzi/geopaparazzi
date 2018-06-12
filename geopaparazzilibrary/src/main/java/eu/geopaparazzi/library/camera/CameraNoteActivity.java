@@ -104,6 +104,7 @@ public class CameraNoteActivity extends AbstractCameraActivity {
 
     @Override
     public void doSaveData() {
+        StringBuilder infoBuilder = new StringBuilder();
         try {
             Intent intent = getIntent();
             byte[][] imageAndThumbnailArray = ImageUtilities.getImageAndThumbnailFromPath(imageFilePath, 5);
@@ -113,6 +114,19 @@ public class CameraNoteActivity extends AbstractCameraActivity {
 
             double azimuth = orientationSensor.getAzimuthDegrees();
 
+            infoBuilder.append("doSaveData - INFO\n");
+            infoBuilder.append("lon: ").append(lon).append("\n");
+            infoBuilder.append("lat: ").append(lat).append("\n");
+            infoBuilder.append("elevation: ").append(elevation).append("\n");
+            infoBuilder.append("azimuth: ").append(azimuth).append("\n");
+            infoBuilder.append("currentDate: ").append(currentDate).append("\n");
+            infoBuilder.append("imageFile: ").append(imageFile).append("\n");
+            infoBuilder.append("noteId: ").append(noteId).append("\n");
+            if (imageAndThumbnailArray[0] != null)
+                infoBuilder.append("imageAndThumbnailArray[1] size: ").append(imageAndThumbnailArray[1].length).append("\n");
+            if (imageAndThumbnailArray[1] != null)
+                infoBuilder.append("imageAndThumbnailArray[0] size: ").append(imageAndThumbnailArray[0].length).append("\n");
+
             long imageId = imagesDbHelper.addImage(lon, lat, elevation, azimuth, currentDate.getTime(), imageFile.getName(),
                     imageAndThumbnailArray[0], imageAndThumbnailArray[1], noteId);
             intent.putExtra(LibraryConstants.DATABASE_ID, imageId);
@@ -121,7 +135,7 @@ public class CameraNoteActivity extends AbstractCameraActivity {
             // delete the file after insertion in db
             imageFile.delete();
         } catch (Exception e) {
-            GPLog.error(this, null, e);
+            GPLog.error(this, infoBuilder.toString(), e);
             GPDialogs.errorDialog(this, e, null);
         }
 
