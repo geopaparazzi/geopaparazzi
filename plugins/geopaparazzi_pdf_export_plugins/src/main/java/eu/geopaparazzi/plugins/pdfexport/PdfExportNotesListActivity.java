@@ -298,7 +298,6 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
         PdfExportDialogFragment pdfExportDialogFragment = PdfExportDialogFragment.newInstance(null, ids);
         pdfExportDialogFragment.show(getSupportFragmentManager(), "pdf export");
 
-        finish();
     }
 
     private TextWatcher filterTextWatcher = new TextWatcher() {
