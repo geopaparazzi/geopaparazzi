@@ -235,12 +235,30 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     @Override
     public void onBackPressed() {
-        if (noteIsNew) {
-            Intent intent = getIntent();
-            intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
-            setResult(Activity.RESULT_CANCELED, intent);
-        }
-        super.onBackPressed();
+        GPDialogs.yesNoMessageDialog(this, "Are you sure you want to exit. Unsaved changes will be lost",
+                new Runnable() {
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (noteIsNew) {
+                                    cancelResult();
+                                }
+                                FormActivity.super.onBackPressed();
+                            }
+                        });
+
+                    }
+                }, null
+        );
+    }
+
+    private void cancelResult() {
+        Intent intent = getIntent();
+        intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+        setResult(Activity.RESULT_CANCELED, intent);
     }
 
     private void shareAction() throws Exception {
