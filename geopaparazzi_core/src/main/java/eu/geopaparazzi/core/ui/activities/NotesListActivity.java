@@ -109,18 +109,24 @@ public class NotesListActivity extends AppCompatActivity {
     private int currentComparatorIndex = 0;
     private SharedPreferences mPreferences;
     private StringAsyncTask deletionTask;
+    private boolean showZoomTo;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.activity_noteslist);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            showZoomTo = extras.getBoolean(LibraryConstants.PREFS_KEY_MAP_ZOOM);
+
+        }
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         double[] mapCenterFromPreferences = PositionUtilities.getMapCenterFromPreferences(mPreferences, true, true);
@@ -144,7 +150,7 @@ public class NotesListActivity extends AppCompatActivity {
                 new ItemComparators.NotesDistanceFromPointComparator(lon, lat, true),//
         };
 
-        listView = (ListView) findViewById(R.id.notesList);
+        listView = findViewById(R.id.notesList);
 
         SHARE_NOTE_WITH = getString(eu.geopaparazzi.library.R.string.share_note_with);
         share = getString(R.string.share);
@@ -159,7 +165,7 @@ public class NotesListActivity extends AppCompatActivity {
 
         refreshList();
 
-        filterText = (EditText) findViewById(R.id.search_box);
+        filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
     }
 
@@ -287,9 +293,11 @@ public class NotesListActivity extends AppCompatActivity {
                     LayoutInflater inflater = getLayoutInflater();
                     rowView = inflater.inflate(R.layout.activity_noteslist_row, parent, false);
                     holder = new ViewHolder();
-                    holder.checkButton = (CheckBox) rowView.findViewById(R.id.selectedCheckBox);
-                    holder.notesText = (TextView) rowView.findViewById(R.id.notesrowtext);
+                    holder.checkButton = rowView.findViewById(R.id.selectedCheckBox);
+                    holder.notesText = rowView.findViewById(R.id.notesrowtext);
                     holder.goButton = rowView.findViewById(R.id.gobutton);
+                    if (!showZoomTo)
+                        holder.goButton.setVisibility(View.GONE);
                     holder.moreButton = rowView.findViewById(R.id.morebutton);
 
                     rowView.setTag(holder);

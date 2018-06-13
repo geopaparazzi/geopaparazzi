@@ -715,7 +715,7 @@ public class FormUtilities {
             JSONArray formItems = TagsManager.getFormItems(form4Name);
             for (int i = 0; i < formItems.length(); i++) {
                 JSONObject formItem = formItems.getJSONObject(i);
-                if (!formItem.has(FormUtilities.TAG_KEY)) {
+                if (!formItem.has(FormUtilities.TAG_KEY) || !formItem.has(FormUtilities.TAG_VALUE) || !formItem.has(FormUtilities.TAG_TYPE)) {
                     continue;
                 }
 
