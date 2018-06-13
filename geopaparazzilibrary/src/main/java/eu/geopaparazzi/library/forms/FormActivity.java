@@ -235,7 +235,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     @Override
     public void onBackPressed() {
-        GPDialogs.yesNoMessageDialog(this, "Are you sure you want to exit. Unsaved changes will be lost",
+        GPDialogs.yesNoMessageDialog(this, getString(R.string.form_exit_prompt),
                 new Runnable() {
                     @Override
                     public void run() {
