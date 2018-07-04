@@ -438,7 +438,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>The Geopaparazzi Survey Server</h1>
 <div class="details">
 <span id="author" class="author">HydroloGIS S.r.l.</span><br>
-<span id="revnumber">version 1.01,</span>
+<span id="revnumber">version 1.02,</span>
 <span id="revdate">2017-07-03</span>
 </div>
 <div id="toc" class="toc2">
@@ -518,7 +518,7 @@ documentation. Many tutorials are available in the net to install docker.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v0.1.0</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v1.02</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -556,16 +556,26 @@ documentation. Many tutorials are available in the net to install docker.</p>
 <div class="sect2">
 <h3 id="_preparing_the_data_folder">2.2. Preparing the data folder</h3>
 <div class="paragraph">
-<p>To run GSS you need to prepare the data folder for the server, which will contain
+<p>To run GSS you can prepare the data folder for the server, which will contain
 the database (if it doesn&#8217;t exist, it is created from scratch), some styling
 components and optional mapsforge *.map files for local tiles generation.</p>
 </div>
-<div class="paragraph">
-<p>Also, the folder will contain the configuration file for the server, <strong>gss.properties</strong>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can just start with an empty folder, which will be filled with the bare minimum necessary
+to run GSS.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s assume the data folder is named TESTGSS, then the folder structure needs contain at least
-the following:</p>
+<p>Let&#8217;s assume you are a heavy lifter and want to do things on your own, and that the data folder
+is named TESTGSS, then the folder structure needs contain at least the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -573,26 +583,12 @@ the following:</p>
 |-- DATA    &lt;-- folder
 |   |-- images.png
 |   `-- notes.png
-|-- WORKSPACE    &lt;-- folder
-`-- gss.properties</pre>
+`-- WORKSPACE    &lt;-- folder</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Where <strong>images.png</strong> and <strong>notes.png</strong> are the images that will be used in the map view to style
 geopaparazzi notes and media notes.</p>
-</div>
-<div class="paragraph">
-<p>The file gss.properties instead has to contain the references to the DATA and WORKSPACE path. In our
-testcase the properties file will contain:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>stage.workspace=/media/hydrologis/Samsung_T3/TESTGSS/WORKSPACE/
-stage.datafolder=/media/hydrologis/Samsung_T3/TESTGSS/DATA</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Adapt it to you your needs.</p>
 </div>
 </div>
 <div class="sect2">
@@ -619,7 +615,7 @@ the command to run the application is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -p 8080:8080 moovida/gss:v0.1.0</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -p 8080:8080 moovida/gss:v1.02</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -970,7 +966,7 @@ the selected data to the server. At the end</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.01<br>
+Version 1.02<br>
 </div>
 </div>
 <script type="text/x-mathjax-config">
