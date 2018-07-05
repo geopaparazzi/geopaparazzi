@@ -264,6 +264,21 @@ public class ResourcesManager implements Serializable {
     }
 
     /**
+     * Get the file of the export folder.
+     *
+     * @return the export folder.
+     */
+    public File getApplicationExportDir() {
+        File exportFolder = new File(applicationSupportFolder, "export");
+        if (!exportFolder.exists()) {
+            if (!exportFolder.mkdir()) {
+                return applicationSupportFolder;
+            }
+        }
+        return exportFolder;
+    }
+
+    /**
      * Get the main writable storage dir.
      *
      * @return the writable storage dir.

@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
@@ -195,9 +197,14 @@ public class KmzExportDialogFragment extends DialogFragment {
                     }
                     if (isInterrupted) return INTERRUPTED;
 
-                    File kmlExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
-                    kmlOutputFile = new File(kmlExportDir, filename);
+                    String projectName = DaoMetadata.getProjectName();
+                    if (projectName == null) {
+                        projectName = "geopaparazzi_kmz_";
+                    } else {
+                        projectName += "_kmz_";
+                    }
+                    File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
+                    kmlOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz");
                     if (exportPath != null) {
                         kmlOutputFile = new File(exportPath);
                     }
@@ -231,7 +238,7 @@ public class KmzExportDialogFragment extends DialogFragment {
                     String msg = context.getString(R.string.data_nonsaved);
                     alertDialog.setMessage(msg);
                 }
-                if(positiveButton!=null)positiveButton.setEnabled(true);
+                if (positiveButton != null) positiveButton.setEnabled(true);
 
             }
         }.execute((String) null);

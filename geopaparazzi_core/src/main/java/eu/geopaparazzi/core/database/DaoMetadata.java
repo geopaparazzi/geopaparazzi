@@ -45,6 +45,7 @@ public class DaoMetadata {
 
     private static SimpleDateFormat datesFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL;
     public static final String EMPTY_VALUE = " - ";
+    private static String projectName;
 
     /**
      * Create the notes tables.
@@ -328,4 +329,25 @@ public class DaoMetadata {
     }
 
 
+    public static String getProjectName() throws IOException {
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+
+        Cursor c = null;
+        try {
+            String asColumnsToReturn[] = { //
+                    MetadataTableFields.COLUMN_VALUE.getFieldName()
+            };// ,
+            c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, MetadataTableFields.COLUMN_KEY.getFieldName() + "='" + MetadataTableDefaultValues.KEY_NAME.getFieldName() + "'", null, null, null, null);
+            c.moveToFirst();
+            if (!c.isAfterLast()) {
+                String value = c.getString(0);
+                return value;
+            }
+            return null;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+
+    }
 }

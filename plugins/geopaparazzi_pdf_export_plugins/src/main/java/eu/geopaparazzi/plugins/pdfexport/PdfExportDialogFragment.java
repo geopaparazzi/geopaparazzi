@@ -50,8 +50,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoImages;
+import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -158,9 +160,14 @@ public class PdfExportDialogFragment extends DialogFragment {
                     }
                     if (isInterrupted) return INTERRUPTED;
 
-                    File pdfExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
-                    String filename = ResourcesManager.getInstance(getActivity()).getApplicationName() + "_projectexport_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".pdf";
-                    pdfOutputFile = new File(pdfExportDir, filename);
+                    String projectName = DaoMetadata.getProjectName();
+                    if (projectName == null) {
+                        projectName = "geopaparazzi_pdf_";
+                    } else {
+                        projectName += "_pdf_";
+                    }
+                    File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
+                    pdfOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".pdf");
                     if (exportPath != null) {
                         pdfOutputFile = new File(exportPath);
                     }

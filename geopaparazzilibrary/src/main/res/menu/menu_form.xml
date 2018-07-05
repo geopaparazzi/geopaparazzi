@@ -22,13 +22,6 @@
     tools:context=".ui.activities.ProjectMetadataActivity">
 
     <item
-        android:id="@+id/action_save"
-        android:icon="@drawable/ic_save_24dp"
-        android:orderInCategory="5"
-        android:title="@string/save_note"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_share_24dp"
         android:orderInCategory="10"
