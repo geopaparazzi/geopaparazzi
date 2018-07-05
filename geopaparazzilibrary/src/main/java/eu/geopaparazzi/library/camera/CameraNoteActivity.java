@@ -113,6 +113,9 @@ public class CameraNoteActivity extends AbstractCameraActivity {
             IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
 
             double azimuth = orientationSensor.getAzimuthDegrees();
+            if (Double.isNaN(azimuth)) {
+                azimuth = -1;
+            }
 
             infoBuilder.append("doSaveData - INFO\n");
             infoBuilder.append("lon: ").append(lon).append("\n");
