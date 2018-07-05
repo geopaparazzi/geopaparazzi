@@ -436,4 +436,5 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="name_of_the_new_profile">Nome del nuovo Profilo</string>
   <string name="description_of_the_new_profile">Descrizione del nuovo Profilo</string>
   <string name="browse_images">Sfoglia immagini</string>
+  <string name="confirm_remove_image">Rimuovere l\'immagine?</string>
 </resources>
