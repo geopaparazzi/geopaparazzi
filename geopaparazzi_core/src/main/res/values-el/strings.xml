@@ -116,9 +116,7 @@
   <string name="type_to_filter">Πληκτρολογήστε το φίλτρο</string>
   <string name="geopapcloud_user_label">Όνομα χρήστη</string>
   <string name="geopapcloud_password_label">Κωδικός</string>
-  <string name="geopapcloud_server_label">Εξυπηρετητής προς σύνδεση</string>
   <string name="exporting_data">Εξαγωγή δεδομένων</string>
-  <string name="exporting_data_to_the_cloud">Εξαγωγή δεδομένων στο cloud.</string>
   <string name="exporting_data_to_kmz">Εξαγωγή δεδομένων σε KMZ.</string>
   <string name="exporting_data_to_gpx">Εξαγωγή δεδομένων σε GPX</string>
   <string name="media_upload">ΜΕΤΑΦΟΡΤΩΣΗ MEDIA</string>
@@ -135,7 +133,6 @@
   <string name="select_map_to_use">Επιλέξτε χάρτη προς χρήση</string>
   <string name="no_map_file_found_going_to_mapnik">Αδυναμία εύρεσης αρχείου χάρτη, μετάβαση σε πηγή MAPNIK.</string>
   <string name="enter_project_description">Εισάγετε μια περιγραφή για το έργο</string>
-  <string name="no_images">Δεν υπάρχουν εικόνες</string>
   <string name="with_images">Με Εικόνες</string>
   <string name="successfully_imported_bookmarks">Εισαγωγή σελιδοδεικτών επιτυχής:</string>
   <string name="error_bookmarks_import">Ένα σφάλμα προέκυψε κατα την εισαγωγή σελιδοδεικτών.</string>
@@ -284,4 +281,5 @@
   <string name="export_img_processing">Εξαγωγή εικόνων...</string>
   <string name="routing_pref_title">Δρομολόγηση κλειδιου API</string>
   <string name="routing_pref_summary">Για να χρησιμοποιήσετε τις MapQuest και Graphhopper υπηρεσίες δρομολόγησης εισάγετε το σωστο ApiKey.</string>
+  <!--geoss2go profiles-->
 </resources>

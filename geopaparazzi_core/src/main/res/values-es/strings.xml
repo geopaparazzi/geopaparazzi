@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Visualizar en mixware</string>
   <string name="gps_use_coarse">Utilizar la posición basada en red, en lugar de la posición gps (necesita reiniciar)</string>
   <string name="type_to_filter">Escribir para filtrar</string>
-  <string name="geopapcloud_preferences">Configuración de sincronización de proyectos en la nube</string>
-  <string name="geopapcloud_preferences_summary">Establecer credenciales de sincronización con el servidor y la configuración para servicios en la nube</string>
   <string name="geopapcloud_user_label">Nombre de usuario</string>
   <string name="geopapcloud_password_label">Contraseña</string>
-  <string name="geopapcloud_server_label">Servidor al que conectarse</string>
   <string name="exporting_data">Exportando datos</string>
-  <string name="error_set_cloud_settings">Los parámetros de sincronización en la nube no se han establecido correctamente. Verifique la configuración.</string>
-  <string name="exporting_data_to_the_cloud">Exportando datos a la nube.</string>
-  <string name="error_uploadig_project_to_cloud">Se ha producido un error en la transferencia del proyecto a la nube</string>
-  <string name="project_succesfully_uploaded_to_cloud">El proyecto ha sido correctamente transferido a la nube</string>
   <string name="exporting_data_to_kmz">Exportando datos a KMZ.</string>
   <string name="exporting_data_to_gpx">Exportando datos a GPX</string>
   <string name="media_upload">FICHEROS DE MEDIOS TRANSFERIDOS</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Seleccionar mapa a utilizar</string>
   <string name="no_map_file_found_going_to_mapnik">No se ha podido encontrar el fichero mapa, cambiando a origen de teselas MAPNIK.</string>
   <string name="enter_project_description">Introducir una descripción para el proyecto</string>
-  <string name="no_images">Sin imágenes</string>
   <string name="with_images">Con imágenes</string>
   <string name="successfully_imported_bookmarks">Marcadores importados correctamente:</string>
   <string name="error_bookmarks_import">Se ha producido un error en la importación de marcadores.</string>
@@ -388,15 +380,10 @@
   <string name="removing_notes">Borrando notas...</string>
   <string name="interrupted_by_user">Interrumpido por el usuario</string>
   <string name="import_cloud_data">Datos en la nube</string>
-  <string name="browse_images">Mostrar imágenes</string>
   <string name="new_picture">Nueva imagen</string>
   <string name="Images">Imágenes</string>
-  <string name="confirm_remove_image">¿Realmente quiere borrar la imagen?</string>
   <string name="upload_to_cloud_prompt">¿Subir el proyecto actual a la nube?</string>
   <string name="data_to_pdf_label">Formularios de proyecto a Pdf</string>
   <string name="exporting_data_to_pdf">Exportando los datos de formulario a PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 imagen</item>
-    <item quantity="other">%d imágenes</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

@@ -41,4 +41,5 @@
   <string name="export_img_unable_to_create_folder">Kunne ikke oprette folder på SDkort:</string>
   <string name="export_img_ok_exported">Billeder eksporteret til folder:</string>
   <string name="export_img_processing">eksporterer billeder...</string>
+  <!--geoss2go profiles-->
 </resources>

@@ -131,16 +131,9 @@
   <string name="view_in_mixare">MixAre에서 보기</string>
   <string name="gps_use_coarse">GPS 대신 네트워크 기반 위치 사용 (재시작 필요)</string>
   <string name="type_to_filter">필터 입력</string>
-  <string name="geopapcloud_preferences">클라우드 프로젝트 동기화 설정</string>
-  <string name="geopapcloud_preferences_summary">클라우드 서비스의 서버 동기화 자격증명과 환경을 설정합니다.</string>
   <string name="geopapcloud_user_label">이름</string>
   <string name="geopapcloud_password_label">암호</string>
-  <string name="geopapcloud_server_label">연결할 서버</string>
   <string name="exporting_data">데이터 내보내기</string>
-  <string name="error_set_cloud_settings">클라우드 동기화 파라미터가 적절하지 않습니다. 설정을 확인하십시오.</string>
-  <string name="exporting_data_to_the_cloud">클라우드에 데이터 내보내는 중.</string>
-  <string name="error_uploadig_project_to_cloud">클라우드에 프로젝트 업로드 중 오류가 발생했습니다</string>
-  <string name="project_succesfully_uploaded_to_cloud">클라우드에 프로젝트를 성공적으로 업로드했습니다</string>
   <string name="exporting_data_to_kmz">데이터를 KMZ로 내보내기.</string>
   <string name="exporting_data_to_gpx">데이터를 GPX로 내보내기.</string>
   <string name="media_upload">미디어 업로드</string>
@@ -157,7 +150,6 @@
   <string name="select_map_to_use">사용할 지도 선택</string>
   <string name="no_map_file_found_going_to_mapnik">지도 파일을 찾을 수 없습니다, MAPNIK 타일 소스로 전환합니다.</string>
   <string name="enter_project_description">프로젝트 설명 입력</string>
-  <string name="no_images">이미지 없음</string>
   <string name="with_images">이미지 첨부</string>
   <string name="successfully_imported_bookmarks">북마크를 성공적으로 불러왔습니다:</string>
   <string name="error_bookmarks_import">북마크를 불러오는 중 오류가 발생했습니다.</string>
@@ -389,14 +381,10 @@
   <string name="removing_notes">메모를 제거하는 중...</string>
   <string name="interrupted_by_user">사용자에 의해 중단됨</string>
   <string name="import_cloud_data">클라우드 데이터</string>
-  <string name="browse_images">이미지 탐색</string>
   <string name="new_picture">새 사진</string>
   <string name="Images">이미지</string>
-  <string name="confirm_remove_image">정말로 이 이미지를 삭제하시겠습니까?</string>
   <string name="upload_to_cloud_prompt">현재 프로젝트를 클라우드에 업로드하시겠습니까?</string>
   <string name="data_to_pdf_label">프로젝트 양식을 PDF로</string>
   <string name="exporting_data_to_pdf">양식 데이터를 PDF로 변환합니다</string>
-  <plurals name="n_images">
-    <item quantity="other">%d 이미지</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

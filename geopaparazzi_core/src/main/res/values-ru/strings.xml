@@ -1,6 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geopaparazzi</string>
+  <string name="action_settings">Настройки</string>
+  <string name="action_advanced_settings">Дополнительно</string>
+  <string name="label_green">зелёный</string>
+  <string name="label_blue">синий</string>
+  <string name="label_alpha">прозрачность</string>
+  <string name="label_red">красный</string>
   <!--old gpap-->
   <string name="yes">да</string>
   <string name="no">нет</string>
@@ -26,14 +32,17 @@
   <string name="mainmenu_preferences">Настройки</string>
   <string name="mainmenu_merge">объединить выбранные журналы</string>
   <string name="gpslogproperty">Настройки для:</string>
+  <string name="gpslog_name">Название журнала</string>
   <string name="gpslog_chart">График</string>
   <string name="gpslog_zoom">масштабировать к</string>
   <string name="gpslog_delete">Удалить</string>
   <string name="mapproperty">Настройки для:</string>
   <string name="map_zoom">Масштабировать к карте</string>
   <string name="map_delete">Удалить карту</string>
+  <string name="gps_preferences">Настройки gps</string>
   <string name="gps_logging_distance">Минимальное записываемое расстояние GPS</string>
   <string name="gps_logging_interval">Минимальный записываемый интервал GPS</string>
+  <string name="sms_preferences">Настройки sms</string>
   <string name="sms_catcher">Разрешить ловлю SMS</string>
   <string name="databaseError">При соединении с базой данных произошла ошибка</string>
   <string name="chart_profile_view">Просмотр профиля</string>
@@ -56,6 +65,7 @@
   <string name="last_note_not_deleted">Не могу удалить последнюю заметку</string>
   <string name="text_logging">журналирование</string>
   <string name="text_gpson">GPS вкл.</string>
+  <string name="debug">Настройки отладки</string>
   <string name="enable_debug">Включить журнал отладки</string>
   <string name="gpslogging_only">Данная функция доступна только когда GPS активен и есть сигнал</string>
   <string name="remove_last_note_prompt">Вы действительно хотите безвозвратно удалить последнюю заметку?</string>
@@ -89,6 +99,7 @@
   <string name="formnotes">ФОРМЫ ДЛЯ ЗАМЕТОК</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">При создании графика произошла ошибка.</string>
+  <string name="osm_preferences">Настройки OpenStreetMap</string>
   <string name="osm_do_it">Включить инструменты OSM</string>
   <string name="osm_user_label">Имя пользователя</string>
   <string name="osm_password_label">Пароль</string>
@@ -108,9 +119,7 @@
   <string name="type_to_filter">введите для фильтрации</string>
   <string name="geopapcloud_user_label">Имя пользователя</string>
   <string name="geopapcloud_password_label">Пароль</string>
-  <string name="geopapcloud_server_label">Сервер для соединения</string>
   <string name="exporting_data">Экспорт данных</string>
-  <string name="exporting_data_to_the_cloud">Экспорт данных в облако.</string>
   <string name="exporting_data_to_kmz">Экспорт данных в KMZ.</string>
   <string name="exporting_data_to_gpx">Экспорт данных в GPX</string>
   <string name="media_upload">ЗАГРУЗКА МЕДИА</string>
@@ -119,11 +128,11 @@
   <string name="loaded_project_in">Проект загружен в:</string>
   <string name="add_message">ДОБАВИТЬ СООБЩЕНИЕ</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Добавьте текст, отправляемый вместе с GeoSMS</string>
+  <string name="enter_a_name_for_the_new_project">Введите имя файла для нового проекта</string>
   <string name="chosen_project_exists">Такой проект уже существует, выберите другое имя</string>
   <string name="select_map_to_use">Выберите карту для использования</string>
   <string name="no_map_file_found_going_to_mapnik">Не найден .map файл, используются тайлы Mapnik</string>
   <string name="enter_project_description">Введите описание проекта</string>
-  <string name="no_images">Нет изображений</string>
   <string name="with_images">С изображениями</string>
   <string name="successfully_imported_bookmarks">Успешно импортированные закладки:</string>
   <string name="error_bookmarks_import">При импорте закладок произошла ошибка.</string>
@@ -137,6 +146,8 @@
   <string name="no_message_sent">Сообщение не отправлено.</string>
   <string name="distance">Расстояние:</string>
   <string name="imported_notes_and_bookmarks">Импортировано {0} заметок и {1} закладок.</string>
+  <string name="start_">Начало:</string>
+  <string name="end_">Конец:</string>
   <string name="keep_screen_on">Не выключать экран</string>
   <string name="the_secret_view">Секретный вид</string>
   <string name="database_queries">Запросы к БД</string>
@@ -146,6 +157,7 @@
   <string name="custom_sdcard_path">Свой путь к sdcard</string>
   <string name="opacity">прозрачность</string>
   <string name="size">Размер</string>
+  <string name="size_color">Размер и цвета</string>
   <string name="notes_properties">Настройки заметок</string>
   <string name="visibility">Видимость</string>
   <string name="custom_icon_properties">Свои настройки иконок</string>
@@ -153,6 +165,7 @@
   <string name="labels">Подписи</string>
   <string name="show_labels">подписывать заметки на карте</string>
   <string name="halo">ореол</string>
+  <string name="screen_preferences">Настройки экрана:</string>
   <string name="cross_properties_summary">Настройки креста, используемого для размещения заметок.</string>
   <string name="cross_properties">Центральный крест</string>
   <string name="color">Цвет</string>
@@ -162,6 +175,7 @@
   <string name="keep_use_imperial">Использовать английскую систему мер</string>
   <string name="keep_use_imperial_sum">Использовать английскую систему мер вместо метрической там, где это возможно.</string>
   <string name="satellites">спутники</string>
+  <string name="accuracy_colon">точность:</string>
   <string name="start">начало</string>
   <string name="end">конец</string>
   <string name="other">другое</string>
@@ -178,12 +192,14 @@
   <string name="gpslog_updateLogLength">Обновить</string>
   <string name="do_you_want_to_stop_logging">Вы хотите остановить gps-логгирование?</string>
   <string name="use_map_center_coordinate_to_filter_results">использовать координаты центра карты для фильтрации результатов</string>
+  <string name="tanto_service_query">запрос</string>
   <string name="info">ИНФОРМАЦИЯ</string>
   <string name="calculate_length">Подсчёт длинны...</string>
   <string name="spatialite_recovery_mode">Режим восстановления</string>
   <string name="spatialite_recover_mode_tooltip">Провести проверку таблиц при следущем запуске программы</string>
   <string name="map">Карта</string>
   <string name="name_lc">имя</string>
+  <string name="name_uc">Название проекта</string>
   <string name="bounds">охват</string>
   <string name="maps_loading_not_finished_yet">Загрузка карты не удалась, попробуйте позже.</string>
   <string name="save">сохранить</string>
@@ -216,6 +232,7 @@
   <string name="all_notes_submenu">Все заметки</string>
   <string name="invert_selection">Обратить выделение</string>
   <string name="delete_selected">Удалить выделенные</string>
+  <string name="share">Поделиться</string>
   <string name="import_uc">Импорт</string>
   <string name="gpx">GPX</string>
   <string name="bookmarks">Закладки</string>
@@ -234,4 +251,11 @@
   <string name="new_template_db_create">База данных создана.</string>
   <string name="extract_mapsforge_data">Извлечение данных mapsforge...</string>
   <string name="extract_mapsforge_only_when_loaded">Этот инструмент работает только с картами mapsforge.</string>
+  <string name="export_images">Изображения</string>
+  <string name="table_name">Название таблицы</string>
+  <string name="db_name">Название БД</string>
+  <string name="path_lc">путь</string>
+  <string name="sortby_name">По имени</string>
+  <string name="Images">Изображения</string>
+  <!--geoss2go profiles-->
 </resources>

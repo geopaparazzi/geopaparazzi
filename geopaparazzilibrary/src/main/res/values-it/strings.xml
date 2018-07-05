@@ -32,17 +32,25 @@
   <string name="select_dotdot">Selezionare...</string>
   <string name="type_to_filter">tipo da filtrare</string>
   <string name="webprojects_list_title">Elenco progetti remoto</string>
+  <string name="webprofiles_list_title">Lista Profili Cloud</string>
   <string name="downloading">Download in corso...</string>
   <string name="downloading_projects_list_from_server">Download elenco progetti dal server.</string>
+  <string name="downloading_profiles_list_from_server">Download elenco Profili dal server.</string>
+  <string name="download_icon_description">Scaricamento dati dal server.</string>
   <string name="downloading_layers_list_from_server">Scaricamento elenco piani dal server.</string>
   <string name="downloading_data_from_server">Scaricamento dati dal server.</string>
   <string name="error_projects_list">Errore durante il recupero dell\'elenco di progetti.</string>
+  <string name="error_profiles_list">Errore durante il recupero dell\'elenco dei Profili.</string>
   <string name="error_data_list">Si è verificato un errore durante lo scaricamento della lista dei piani.</string>
   <string name="downloading_project">Download progetto...</string>
+  <string name="downloading_profile">Download profilo...</string>
   <string name="downloading_data">Scaricamento dati...</string>
   <string name="downloading_data_to_the_device">Scaricamento dei piani selezionato come database spatialite nel dispositivo.</string>
   <string name="project_successfully_downloaded">Il progetto è stato scaricato con successo.</string>
+  <string name="profile_successfully_downloaded">Il Profilo è stato scaricato con successo.</string>
   <string name="data_successfully_downloaded">I dati sono stati scaricati con successo.</string>
+  <string name="profile_status_exists">(gia\' scaricato)</string>
+  <string name="profile_status_update">(questo aggiorna il tuo profilo esistente)</string>
   <string name="proximity_alert">Allarme di prossimità!</string>
   <string name="approaching_poi">Avvicinamento di un punto di interesse.</string>
   <string name="form_field_check">Verifica che il campo \"%1$s\" nella sezione \"%2$s\" sia valido. Non convalidati i vincoli: %3$s.</string>
@@ -106,6 +114,8 @@
   <string name="set_properties">Imposta opzioni</string>
   <string name="set_dash">Setta tratteggio</string>
   <string name="unauthorized_api_key">Accesso non autorizzato. Controlla la tua API-key.</string>
+  <string name="sd_card_foldername">SD Card esterna</string>
+  <string name="internal_card_foldername">Spazio di memoria interna</string>
   <string name="fill_and_stroke_color_title">Colore del bordo e del riempimento</string>
   <string name="fill_color_title">Colore riempimento</string>
   <string name="fill_alpha_title">Trasparenza riempimento</string>
@@ -141,4 +151,12 @@
   <string name="osmbonuspack.format_minutes">%smin</string>
   <string name="osmbonuspack.format_seconds">%ssec</string>
   <string name="first_camera_open_warning">IMPORTANTE: Se dovessero avvenire arresti anomali dell\'applicazione mentre si scattano foto, si prega di abbassare la qualità delle immagini nei settaggi della macchina fotografica.\n\nÈ probabilmente dovuto all\'alto consumo di memoria durante l\'elaborazione dell\'immagine per l\'inserimento nel database.\n\nNel frattempo stiamo cercando una soluzione.</string>
+  <string name="gps_status_unknown">Stato del GPS ignoto</string>
+  <string name="gps_status_off">GPS spento</string>
+  <string name="gps_status_notregistered">GPS acceso, ma non registra aggiornamenti</string>
+  <string name="gps_status_no_fix">GPS registrato, ma non ha connessione valida</string>
+  <string name="gps_status_fix">GPS ha connessione valida</string>
+  <string name="form_exit_prompt">Sei sicuro di che voler uscire? Le modifiche non salvate anrdanno perse.</string>
+  <string name="note_in_map_center">Centro Mappa</string>
+  <string name="note_in_gps">GPS</string>
 </resources>

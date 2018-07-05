@@ -148,9 +148,9 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
             if (mSectionName != null && mSectionName.length() > 0)
                 titleString = mSectionName;
             if (useMapCenterPosition) {
-                titleString += " (" + "Map Center" + ")";
+                titleString += " (" + getString(R.string.note_in_map_center) + ")";
             } else {
-                titleString += " (" + "GPS" + ")";
+                titleString += " (" + getString(R.string.note_in_gps) + ")";
             }
             getSupportActionBar().setTitle(titleString);
         } catch (Exception e) {

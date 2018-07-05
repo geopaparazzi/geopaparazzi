@@ -132,16 +132,9 @@
   <string name="view_in_mixare">mixare で表示</string>
   <string name="gps_use_coarse">ネットワーク位置使用(再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
-  <string name="geopapcloud_preferences">クラウドプロジェクト同期設定</string>
-  <string name="geopapcloud_preferences_summary">クラウドサービスのサーバ同期権限と設定を行います。</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
   <string name="geopapcloud_password_label">パスワード</string>
-  <string name="geopapcloud_server_label">接続サーバ</string>
   <string name="exporting_data">データのエクスポート</string>
-  <string name="error_set_cloud_settings">クラウド同期パラメータが正しく設定されていません。 設定を確認してください。</string>
-  <string name="exporting_data_to_the_cloud">クラウドにデータをエクスポートします。</string>
-  <string name="error_uploadig_project_to_cloud">プロジェクトをクラウドにアップロード中にエラーが発生しました。</string>
-  <string name="project_succesfully_uploaded_to_cloud">プロジェクトがクラウドに正常にアップロードされました</string>
   <string name="exporting_data_to_kmz">KMZ へのデータのエクスポート</string>
   <string name="exporting_data_to_gpx">GPX へのデータのエクスポート</string>
   <string name="media_upload">メディアアップロード</string>
@@ -159,7 +152,6 @@
   <string name="select_map_to_use">使用するマップを選択します。</string>
   <string name="no_map_file_found_going_to_mapnik">マップ ファイルが見つかりませんでした。MAPNIK タイル ソースを切替えます。</string>
   <string name="enter_project_description">プロジェクトの説明を入力します</string>
-  <string name="no_images">画像なし</string>
   <string name="with_images">画像付き</string>
   <string name="successfully_imported_bookmarks">ブックマークインポート正常終了: </string>
   <string name="error_bookmarks_import">ブックマークのインポート中にエラーが発生しました。</string>
@@ -393,14 +385,10 @@
   <string name="removing_notes">ノート削除中...</string>
   <string name="interrupted_by_user">ユーザーによる中断</string>
   <string name="import_cloud_data">クラウドデータ</string>
-  <string name="browse_images">画像参照</string>
   <string name="new_picture">新規画像</string>
   <string name="Images">画像</string>
-  <string name="confirm_remove_image">本当に画像を削除しますか？</string>
   <string name="upload_to_cloud_prompt">現在のプロジェクトをクラウドにアップロードしますか？</string>
   <string name="data_to_pdf_label">プロジェクトフォームをPDF出力</string>
   <string name="exporting_data_to_pdf">フォームデータをPDFに出力する</string>
-  <plurals name="n_images">
-    <item quantity="other">%d 画像</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

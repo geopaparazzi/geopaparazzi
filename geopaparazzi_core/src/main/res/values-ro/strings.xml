@@ -23,34 +23,46 @@
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">azimut: </string>
+  <string name="go_to">Mergi la</string>
+  <string name="goto_coordinate">mergi la coordonate</string>
   <string name="geocoding">geocodificare</string>
+  <string name="prompt_gpsenable">GPS-ul dvs. este dezactivat! Doriți să-l activați?</string>
   <string name="width_label">lățime</string>
   <string name="color_label">culoare</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">import</string>
   <string name="mainmenu_gpsdataselect">Lista datelor GPS</string>
   <string name="mainmenu_preferences">Setări</string>
+  <string name="mainmenu_merge">îmbină jurnalele selectate</string>
+  <string name="gpslogproperty">Proprietățile pentru:</string>
   <string name="gpslog_name">Numele jurnalului</string>
   <string name="gpslog_chart">Diagramă</string>
+  <string name="gpslog_zoom">zoom pe</string>
   <string name="gpslog_delete">Ștergere</string>
   <string name="mapproperty">Proprietățile pentru:</string>
   <string name="map_zoom">Zoom pe hartă</string>
   <string name="map_delete">Ștergere hartă</string>
   <string name="gps_preferences">Setări GPS</string>
+  <string name="gps_use_android_level">Utilizare la nivelul android (economisire baterie, necesită restart)</string>
   <string name="sms_preferences">Setări SMS</string>
+  <string name="chart_profile_view">Vizualizare Profil</string>
   <string name="gpx_import_processing">Importare gpx...</string>
+  <string name="osm_additionalinfo">Adaugă informația etichetei</string>
+  <string name="osm_tagsgrid">Alegeți o etichetă de inserat</string>
   <string name="text_show_position_on_map">vizualizare hartă</string>
   <string name="text_take_a_gps_note">înregistrează o notă</string>
   <string name="text_undo_a_gps_note">anulează nota</string>
   <string name="gps_log">jurnal gps</string>
   <string name="audio_recording_stop">stop</string>
   <string name="message_sent">Mesaj transmis</string>
-  <string name="last_note_not_deleted">S-a șters ultima notă</string>
+  <string name="last_note_deleted">S-a șters ultima notă</string>
+  <string name="last_note_not_deleted">Nu s-a putut șterge ultima notă</string>
   <string name="text_logging">înregistrare</string>
   <string name="text_gpson">gps activ</string>
   <string name="debug">Setări de depanare</string>
   <string name="enable_debug">Activează jurnalul de depanare</string>
   <string name="gpslogging_only">Această funcție este disponibilă numai atunci când GPS-ul este activ și este disponibil un semnal.</string>
+  <string name="remove_last_note_prompt">Sigur doriți să ștergeți ultima notiță? Acest lucru nu poate fi anulat.</string>
   <!--added after 2.1.2-->
   <string name="reset">Creează un nou proiect</string>
   <string name="load">Încarcă un proiect existent</string>
@@ -60,9 +72,16 @@
   <string name="select_all">Selectează tot</string>
   <string name="unselect_all">Deselectează tot</string>
   <string name="delete_visible_notes_title">ȘTERGERE NOTE</string>
+  <string name="delete_visible_notes_prompt">Sigur doriți să ștergeți toate notițele vizibile? Acest lucru nu poate fi anulat.</string>
   <string name="delete_visible_bookmarks_title">ȘTERGERE SEMNE DE CARTE</string>
+  <string name="delete_visible_bookmarks_prompt">Sigur doriți să ștergeți toate semnele de carte vizibile? Acest lucru nu poate fi anulat.</string>
+  <string name="gps_searching_fix">GPS-ul încearcă să obțină o actualizare.</string>
+  <string name="bookmarks_list_rename">Redenumește semnul de carte</string>
+  <string name="mapsactivity_menu_tilesource">Selectați sursa plăcuței </string>
   <string name="mapsactivity_delete_bookmarks">Se șterg {0} semne de carte...</string>
   <string name="mapsactivity_delete_notes">Se șterg {0} note...</string>
+  <string name="mapsactivity_new_bookmark">Semn de carte nou</string>
+  <string name="maptagsactivity_error_reading_tags">Eroare la citirea etichetelor</string>
   <!--added after 2.3.1-->
   <string name="mapsactivity_menu_toggle_compass">Deschidere busolă</string>
   <!--added after 2.4.3-->
@@ -75,6 +94,7 @@
   <string name="osm_do_it">Activează instrumentele OSM</string>
   <string name="osm_user_label">Numele utilizatorului</string>
   <string name="osm_password_label">Parola</string>
+  <string name="an_error_occurred_while_uploading_osm_tags">A apărut o eroare pe durata actualizării etichetelor OSM:</string>
   <string name="enable_automatic_center_on_gps">Centrare automată pe GPS</string>
   <string name="enable_center_on_gps">Activează centrarea automată pe GPS</string>
   <string name="disable_center_on_gps">Dezactivează centrarea pe GPS</string>
@@ -82,12 +102,12 @@
   <string name="loading_data">Încărcare date...</string>
   <string name="profilelable_distance">distanța [m]</string>
   <string name="profilelable_elevation">elevația [m]</string>
+  <string name="available_only_with_network">Această funcție este disponibilă numai cu o conexiune de rețea activă.</string>
   <string name="view_in_mixare">Vedeți în mixare</string>
   <string name="type_to_filter">tipul de filtrat</string>
   <string name="geopapcloud_user_label">Numele utilizatorului</string>
   <string name="geopapcloud_password_label">Parola</string>
   <string name="exporting_data">Exportare date</string>
-  <string name="exporting_data_to_the_cloud">Exportare date în cloud.</string>
   <string name="exporting_data_to_kmz">Exportare date în KMZ.</string>
   <string name="exporting_data_to_gpx">Exportare date în  KMZ.</string>
   <string name="media_upload">ÎNCĂRCARE MEDIA</string>
@@ -98,11 +118,13 @@
   <string name="enter_a_name_for_the_new_project">Introduceți un nume de fișier pentru noul proiect</string>
   <string name="chosen_project_exists">Numele ales pentru proiect există deja, vă rugăm să alegeți un alt nume</string>
   <string name="no_external_sdcard_for_db_renderer">Randarea bazei de date este permisă numai de pe un dispozitiv extern de stocare. Acest dispozitiv nu poate fi găsit; există unul disponibil?</string>
-  <string name="no_images">Fără imagini</string>
+  <string name="enter_project_description">Introduceți o descriere proiectului</string>
   <string name="with_images">Cu imagini</string>
   <string name="successfully_imported_bookmarks">Marcajele au fost importate cu succes:</string>
   <string name="error_bookmarks_import">A apărut o eroare pe durata importării marcajelor.</string>
   <string name="center_on_map">Centrează pe harta de bază</string>
+  <string name="proximity_radius">Rază de Proximitate</string>
+  <string name="add_proximity_radius">Adăugați raza alertei de proximitate, în metri.</string>
   <string name="sent_sms">Trimitere sms :</string>
   <string name="share_position">Partajează poziția</string>
   <string name="no_message_sent">Nu s-a transmis nici un mesaj.</string>
@@ -121,6 +143,8 @@
   <string name="show_labels">arată etichete</string>
   <string name="screen_preferences">Setările ecranului</string>
   <string name="color">Culoare</string>
+  <string name="prompt_delete_note">Sigur doriți să ștergeți nota? Acest lucru nu poate fi anulat.</string>
+  <string name="prompt_delete_selected_notes">Sigur doriți să ștergeți toate notele selectate? Acest lucru nu poate fi anulat.</string>
   <string name="satellites">sateliți</string>
   <string name="accuracy_colon">acuratețe:</string>
   <string name="start">start</string>
@@ -165,9 +189,5 @@
   <string name="export_images">Imagini</string>
   <string name="path_lc">cale</string>
   <string name="Images">Imagini</string>
-  <plurals name="n_images">
-    <item quantity="one">1 imagine</item>
-    <item quantity="few">%d imagini</item>
-    <item quantity="other">%d imagini</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

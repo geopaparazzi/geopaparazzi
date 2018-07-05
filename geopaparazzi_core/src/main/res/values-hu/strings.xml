@@ -129,16 +129,9 @@
   <string name="view_in_mixare">Mixare nézet</string>
   <string name="gps_use_coarse">Mobilhálózati pozíció a GPS helyett (újra kell indítani)</string>
   <string name="type_to_filter">szűrendő típus</string>
-  <string name="geopapcloud_preferences">Felhő projekt szinkronizálási beállítások</string>
-  <string name="geopapcloud_preferences_summary">Felhő szerver szinkronizálási jogosultságok és beállítások</string>
   <string name="geopapcloud_user_label">Felhasználó</string>
   <string name="geopapcloud_password_label">Jelszó</string>
-  <string name="geopapcloud_server_label">Elérendő szerver</string>
   <string name="exporting_data">Adatok exportálása</string>
-  <string name="error_set_cloud_settings">A felhő sszinkronizálási paraméterei nincsenek jól beállítva. Ellenőrizze!</string>
-  <string name="exporting_data_to_the_cloud">Adatok exportálása a felhőbe.</string>
-  <string name="error_uploadig_project_to_cloud">Hiba történt a projekt felhőbe töltése során.</string>
-  <string name="project_succesfully_uploaded_to_cloud">A projekt megfelelően feltöltésre került a felhőbe.</string>
   <string name="exporting_data_to_kmz">Adatok exportálása KMZ-be.</string>
   <string name="exporting_data_to_gpx">Adatok exportálása GPX-be</string>
   <string name="media_upload">MÉDIA FELTÖLTÉS</string>
@@ -155,7 +148,6 @@
   <string name="select_map_to_use">Válasszon térképet</string>
   <string name="no_map_file_found_going_to_mapnik">Nem található térkép fájl, átkapcsolás MAPNIK forrásra.</string>
   <string name="enter_project_description">Adjon meg leírást a projekthez</string>
-  <string name="no_images">Nincs kép</string>
   <string name="with_images">Képekkel</string>
   <string name="successfully_imported_bookmarks">Megfelelően importált könyvjelzők:</string>
   <string name="error_bookmarks_import">Hiba történt a könyvjelzők importálása során.</string>
@@ -261,4 +253,5 @@
   <string name="logs_sent">Naplózás elküldve.</string>
   <string name="gps_log_properties_label">GPS naplózás beállításai</string>
   <string name="log_cleared">Naplózás törölve</string>
+  <!--geoss2go profiles-->
 </resources>

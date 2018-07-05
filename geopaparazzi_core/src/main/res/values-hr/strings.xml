@@ -121,14 +121,9 @@
   <string name="view_in_mixare">Pogledaj u mixare-u</string>
   <string name="gps_use_coarse">Koristi mrežom temeljeno pozicioniranje umjesto GPS-a (potreban restart)</string>
   <string name="type_to_filter">upiši za filtriranje</string>
-  <string name="geopapcloud_preferences">Postavke sinkronizacije projekta u oblaku</string>
   <string name="geopapcloud_user_label">Korisničko ime</string>
   <string name="geopapcloud_password_label">Zaporka</string>
-  <string name="geopapcloud_server_label">Poslužitelj za prijavu</string>
   <string name="exporting_data">Izvoz podataka</string>
-  <string name="exporting_data_to_the_cloud">Izvoz podataka u oblak.</string>
-  <string name="error_uploadig_project_to_cloud">Došlo je do greške prilikom prijenosa projekta u oblak</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt je uspješno prenesen u oblak</string>
   <string name="exporting_data_to_kmz">Izvoz podataka u KMZ.</string>
   <string name="exporting_data_to_gpx">Izvoz podataka u GPX.</string>
   <string name="set_description">Postavi opis</string>
@@ -136,7 +131,6 @@
   <string name="add_message">DODAJ PORUKU</string>
   <string name="no_map_file_found_going_to_mapnik">Nije pronađena datoteka podloge, prebacivanje na MAPNIK.</string>
   <string name="enter_project_description">Unesi opis projekta</string>
-  <string name="no_images">Nema slika</string>
   <string name="with_images">Sa slikama</string>
   <string name="successfully_imported_bookmarks">Uspješno uvezene oznake:</string>
   <string name="error_bookmarks_import">Došlo je do greške prilikom uvoza oznaka.</string>
@@ -302,14 +296,8 @@
   <string name="removing_notes">Uklanjanje bilješki...</string>
   <string name="interrupted_by_user">Prekinuto od korisnika</string>
   <string name="import_cloud_data">Podaci u oblaku</string>
-  <string name="browse_images">Pregledaj slike</string>
   <string name="new_picture">Nova slika</string>
   <string name="Images">Slike</string>
-  <string name="confirm_remove_image">Želiš li zaista izbrisati sliku?</string>
   <string name="upload_to_cloud_prompt">Prijenos trenutnog projekta u oblak?</string>
-  <plurals name="n_images">
-    <item quantity="one">1 slika</item>
-    <item quantity="few">%d slika</item>
-    <item quantity="other">%d slika</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

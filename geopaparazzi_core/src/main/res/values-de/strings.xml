@@ -116,9 +116,7 @@
   <string name="type_to_filter">Eingeben, um zu filtern.</string>
   <string name="geopapcloud_user_label">Benutzername</string>
   <string name="geopapcloud_password_label">Kennwort</string>
-  <string name="geopapcloud_server_label">Server verbunden zu</string>
   <string name="exporting_data">Exportieren von Daten</string>
-  <string name="exporting_data_to_the_cloud">Exportieren von Daten in die Cloud.</string>
   <string name="exporting_data_to_kmz">Exportieren von Daten als KMZ</string>
   <string name="exporting_data_to_gpx">Exportieren von Daten als GPX</string>
   <string name="media_upload">MEDIEN UPLOAD</string>
@@ -135,7 +133,6 @@
   <string name="select_map_to_use">Wählen Sie eine Karte aus</string>
   <string name="no_map_file_found_going_to_mapnik">Ein \"map file\" konnte nicht gefunden werden, schalte auf MAPNIK als Tile-Quelle um.</string>
   <string name="enter_project_description">Geben Sie eine Beschreibung für das Projekt</string>
-  <string name="no_images">Keine Bilder</string>
   <string name="with_images">Mit Bildern</string>
   <string name="successfully_imported_bookmarks">Lesezeichen erfolgreich exportiert: </string>
   <string name="error_bookmarks_import">Ein Fehler ist während des Imports der Lesezeichen aufgetreten!</string>
@@ -284,4 +281,5 @@
   <string name="export_img_processing">Bilder werden exportiert...</string>
   <string name="routing_pref_title">Routing-API-Schlüssel</string>
   <string name="routing_pref_summary">Zur Nutzung der MapQuest und Graphhopper Routing-Dienste fügen Sie die richtige apikey hinzu.</string>
+  <!--geoss2go profiles-->
 </resources>

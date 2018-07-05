@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Bekijk in mixare</string>
   <string name="gps_use_coarse">Gebruik de positie op basis van het netwerk in plaats van GPS ( herstart nodig)</string>
   <string name="type_to_filter">Type om te filteren</string>
-  <string name="geopapcloud_preferences">Cloud projecten synchronisatie instelling</string>
-  <string name="geopapcloud_preferences_summary">Stel de server synchronisatie toegangcodes en instellingen voor de cloud diensten in.</string>
   <string name="geopapcloud_user_label">Gebruikersnaam</string>
   <string name="geopapcloud_password_label">Wachtwoord</string>
-  <string name="geopapcloud_server_label">Server om verbinding te maken</string>
   <string name="exporting_data">Exporteer data</string>
-  <string name="error_set_cloud_settings">De cloud synchronisatie parameters zijn niet juist. Controleer a.u.b. de instelling.</string>
-  <string name="exporting_data_to_the_cloud">Export de data naar de cloud.</string>
-  <string name="error_uploadig_project_to_cloud">Er is een fout opgetreden tijdens het uploaden van het project naar de cloud. </string>
-  <string name="project_succesfully_uploaded_to_cloud">Het project is succesvol geuploaded naar de cloud.</string>
   <string name="exporting_data_to_kmz">Exporteer data naar KMZ</string>
   <string name="exporting_data_to_gpx">Exporteer data naar GPX</string>
   <string name="media_upload">MEDIA UPLOAD</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Selecteer de kaart</string>
   <string name="no_map_file_found_going_to_mapnik">Kon de kaart niet vinden, overgegaan op MAPNIK tile bron.</string>
   <string name="enter_project_description">Voer de beschrijving in van het project</string>
-  <string name="no_images">Geen afbeeldingen</string>
   <string name="with_images">Met afbeeldingen</string>
   <string name="successfully_imported_bookmarks">Kaartenlocaties succesvol geïmporteerd </string>
   <string name="error_bookmarks_import">Er is een fout opgetreden bij het importeren van de kaartlocaties.</string>
@@ -389,15 +381,10 @@
   <string name="removing_notes">Notities aan het verwijderen...</string>
   <string name="interrupted_by_user">Onderbroken door de gebruiker</string>
   <string name="import_cloud_data">Cloud data</string>
-  <string name="browse_images">Blader door de afbeeldingen</string>
   <string name="new_picture">Nieuwe foto</string>
   <string name="Images">Afbeeldingen</string>
-  <string name="confirm_remove_image">Wil je inderdaad de afbeelding verwijderen? </string>
   <string name="upload_to_cloud_prompt">Het huidige project uploaden naar de cloud?</string>
   <string name="data_to_pdf_label">Project formulieren omzetten naar PDF</string>
   <string name="exporting_data_to_pdf">Exporteren formulier data naar PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 image</item>
-    <item quantity="other">%d afbeeldingen</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

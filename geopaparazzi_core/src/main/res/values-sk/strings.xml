@@ -114,9 +114,7 @@
   <string name="type_to_filter">filter</string>
   <string name="geopapcloud_user_label">Užívateľské meno</string>
   <string name="geopapcloud_password_label">Heslo</string>
-  <string name="geopapcloud_server_label">Pripojiť sa k serveru</string>
   <string name="exporting_data">Export údsajov</string>
-  <string name="exporting_data_to_the_cloud">Export údajov do cloudu.</string>
   <string name="exporting_data_to_kmz">Export údajov do KMZ.</string>
   <string name="exporting_data_to_gpx">Export do GPX</string>
   <string name="media_upload">NAHRANIE MÉDIÍ</string>
@@ -132,7 +130,6 @@
   <string name="select_map_to_use">Vyberte mapu</string>
   <string name="no_map_file_found_going_to_mapnik">Nemôžem nájsť mapový súbor, prepínam na zdroj MAPNIK</string>
   <string name="enter_project_description">Vložte popis projektu</string>
-  <string name="no_images">Žiadne obrázky</string>
   <string name="with_images">S obrázkymi</string>
   <string name="successfully_imported_bookmarks">Úspešne importované záložky:</string>
   <string name="error_bookmarks_import">Pri importovaní záložiek sa vyskytla chyba.</string>
@@ -238,4 +235,5 @@
   <string name="saving_to_database">Ukladanie údajov do databázy...</string>
   <string name="downloading">Sťahovanie...</string>
   <string name="requesting_available_services">Zisťovanie dostupných služieb</string>
+  <!--geoss2go profiles-->
 </resources>
