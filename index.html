@@ -648,9 +648,17 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_converstion_of_geopaparazzi_data_to_gis_data">10.1.3. Converstion of Geopaparazzi data to GIS data</a></li>
 </ul>
 </li>
-<li><a href="#_spatialite_gui">10.2. Spatialite GUI</a></li>
-<li><a href="#_ogr">10.3. OGR</a></li>
-<li><a href="#_gdal">10.4. GDAL</a></li>
+<li><a href="#_qgis">10.2. QGIS</a>
+<ul class="sectlevel3">
+<li><a href="#_importing_data_with_qgis_2">10.2.1. Importing Data with QGIS 2</a></li>
+<li><a href="#_viewing_data_in_qgis_3">10.2.2. Viewing Data in QGIS 3</a></li>
+<li><a href="#_other_alternative_import_methods">10.2.3. Other Alternative Import Methods</a></li>
+<li><a href="#_making_base_maps_in_qgis">10.2.4. Making Base Maps in QGIS</a></li>
+</ul>
+</li>
+<li><a href="#_spatialite_gui">10.3. Spatialite GUI</a></li>
+<li><a href="#_ogr">10.4. OGR</a></li>
+<li><a href="#_gdal">10.5. GDAL</a></li>
 </ul>
 </li>
 <li><a href="#_synchronization_of_geopaparazzi_datasets_in_the_cloud">11. Synchronization of Geopaparazzi datasets in the cloud</a>
@@ -700,9 +708,15 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#_the_geopaparazzi_database">14. The Geopaparazzi Database</a>
+<li><a href="#_geopaparazzi_tables">14. Geopaparazzi Tables</a>
 <ul class="sectlevel2">
-<li><a href="#_database_tables_described">14.1. Database tables described</a></li>
+<li><a href="#_geopaparazzi_project_database_tables">14.1. Geopaparazzi Project Database Tables</a>
+<ul class="sectlevel3">
+<li><a href="#_using_geopaparazzi_timestamps">14.1.1. Using Geopaparazzi Timestamps</a></li>
+<li><a href="#_geopaparazzi_table_descriptions">14.1.2. Geopaparazzi Table Descriptions</a></li>
+</ul>
+</li>
+<li><a href="#_additional_geopaparazzi_tables_in_spatialite_databases">14.2. Additional Geopaparazzi tables in Spatialite Databases</a></li>
 </ul>
 </li>
 <li><a href="#_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">15. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a>
@@ -745,11 +759,6 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_geopaparazzi_acrylicpaint">17.2.7. geopaparazzi_acrylicpaint</a></li>
 <li><a href="#_wms_nww">17.2.8. wms_nww</a></li>
 <li><a href="#_plugins">17.2.9. plugins</a></li>
-</ul>
-</li>
-<li><a href="#_the_project_database">17.3. The Project Database</a>
-<ul class="sectlevel3">
-<li><a href="#_database_tables_described_2">17.3.1. Database tables described</a></li>
 </ul>
 </li>
 </ul>
@@ -2890,7 +2899,7 @@ To exit the Map View the Edit Tool button must be un-selected.
 <div class="paragraph">
 <p>If there are any resource files (for example, images, PDFs ) associated with the feature, a camera icon will appear in the left of the Features Action Bar.  Pressing on the camera icon will show a list of resources.</p>
 </div>
-<div class="imageblock">
+<div id="Feature_Resources" class="imageblock">
 <div class="content">
 <img src="09_vector_editing/03_05_resources.png" alt="03 05 resources" width="30%">
 </div>
@@ -3444,6 +3453,9 @@ coming from a <a href="https://www.gaia-gis.it/fossil/libspatialite/index">spati
 <p>STAGE</p>
 </li>
 <li>
+<p>QGIS</p>
+</li>
+<li>
 <p>Spatialite GUI</p>
 </li>
 <li>
@@ -3632,7 +3644,62 @@ The following is created:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spatialite_gui">10.2. Spatialite GUI</h3>
+<h3 id="_qgis">10.2. QGIS</h3>
+<div class="paragraph">
+<p>Using plugins, QGIS can import Geopaparazzi databases and create mbtile base maps.  At the time of writing (July 2018), QGIS 3 is newly released and most of the plugins that work with Geopaparazzi files have not been ported over from QGIS 2.</p>
+</div>
+<div class="sect3">
+<h4 id="_importing_data_with_qgis_2">10.2.1. Importing Data with QGIS 2</h4>
+<div class="sect4">
+<h5 id="_exportgeopaparazzi_plugin">ExportGeopaparazzi Plugin</h5>
+<div class="paragraph">
+<p>Install the ExportGeopaparazzi plugin from the QGIS repository. As this plugin is experimental, go to <strong>Settings</strong> in the <strong>Manage and Install Plugins</strong> dialog and check the <strong>Show also experimental plugins</strong> checkbox, or the plugin will not be displayed in the list of available plugins. The plugin actually mainly imports data from gpap files and displays the data in memory layers.  Separate layers are created for bookmarks, gpslogs, image positions and notes. Memory layers are not saved by default when the project closes so important data will need to be saved as another format. Additionally the notes layer includes all types of note. A single SVG symbol is used for all types of note. To generate different symbols for different types of note, the symbol type will need to be changed as the SVG symbol used comes in only one color. As all types of note are listed in the same layer, the attribute table does not have separate columns for each form field. All form data is presented in the style column in JSON format. Information imported this was is only useful for viewing.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_gpap_to_vector_files_process">GPAP to Vector Files Process</h5>
+<div class="paragraph">
+<p>Algorithms for importing or export to Geopaparazzi can be added to the processing toolbox. The <strong>GPAP to Vector Files</strong> algorithm creates separate layers for each type of note, and creates layers for bookmarks, image positions and tracklogs. The algorith also saves images embedded in the gpap file to disk. Attribute tables for each type of note have columns for each data field collected by the note. If these layers are persisted, by saving them or dragging into a database (or saving as a shapefile), they can be used for GIS mapping and analysis. <strong>Geopackages</strong> are the current standard data format for QGIS and have the advantage of not truncating the names of forms or form fields, so save in this format if possible. The algorithms are installed with the <strong>ExportGeopaparazzi plugin</strong>, however the algorithms are not made visible by default. To make the tools visible, open the <strong>Procession\Options</strong> menu, click <strong>providers</strong> option and then open the <strong>Import/Export to/from Geopaparazzi</strong> option and activate the algorithms.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="07_maps_handling/01_QGIS.png" alt="01 QGIS">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_viewing_data_in_qgis_3">10.2.2. Viewing Data in QGIS 3</h4>
+<div class="paragraph">
+<p>QGIS 3 does not at the time of writing (July 2018) have any gpap file importers. A workaround is to change the extension of the gpap file to <strong>sqlite3</strong>. The sqlite file can then be dragged and dropped onto the map window. The ‘Select Vector Layers to Add’ dialog will appear and all of the data tables will be displayed, including tables that are irrelevant from a GIS perspective such as the raw photo data table. Only the bookmarks, gpslogsdata, images and notes table contain data with coordinates. Select these tables and <strong>OK</strong> the dialog to add them to the Layers pane as non-spatial tables. Non-spatial tables can only be viewed as attribute tables and cannot be used as map layers.</p>
+</div>
+<div class="paragraph">
+<p>To convert non-spatial tables to GIS layers, use the <strong>Create Points Layer from Table</strong> tool in the <strong>processing toolbox</strong>. Even the gpslogsdata must first be converted to points. To create a gps trail, the point layer created from the gpslogsdata can be processed with the <strong>Points to Paths</strong> algorithm. Currently, there are no tools for creating separate layers for each form type. Form data, is encoded in json format in the Forms field and there is no way to format the data to make it easily readable. However the various types of form can be symbolised differently using the form name, which is stored in the ‘text’ field. This method is useful for seeing gps trails and where various form notes were created.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="07_maps_handling/02_qgis.png" alt="02 qgis">
+</div>
+</div>
+<div class="paragraph">
+<p>QGIS 3 can also be used as viewer for kmz files produced by Geopaparazzi although is it not quite as good as GoogleEarth. Add the kmz file to QGIS 3 and use <strong>map tips</strong> to display the data associated with each point in a popup. If the map tips are based on the <strong>description</strong> field, which contains html, then the map tips will render the html and present a formatted report for the current data point.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_other_alternative_import_methods">10.2.3. Other Alternative Import Methods</h4>
+<div class="paragraph">
+<p>QGIS users can also install GV-SIG and use the Horton Machine spatial toolbox to convert gpap files to shapefiles which can be used in QGIS.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_making_base_maps_in_qgis">10.2.4. Making Base Maps in QGIS</h4>
+<div class="paragraph">
+<p>The <strong>QTiles</strong> plugin in QGIS 2 can be used to create base maps in mbtiles format. Base maps with as many as 30 000 tiles (~3 GB file size) work well in Geopaparazzi.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spatialite_gui">10.3. Spatialite GUI</h3>
 <div class="paragraph">
 <p>The Spatialite GUI can be used to create spatialite databases from shapefiles.</p>
 </div>
@@ -3746,7 +3813,7 @@ go directly to the <a href="#spatialitedatalist">spatialite data view</a> and lo
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ogr">10.3. OGR</h3>
+<h3 id="_ogr">10.4. OGR</h3>
 <div class="paragraph">
 <p><a href="http://www.gdal.org/ogr2ogr.html">OGR2OGR</a> can be used to create Spatialite databases supported by geopaparazzi using different datasources.</p>
 </div>
@@ -3772,7 +3839,7 @@ More info available <a href="https://trac.osgeo.org/gdal/changeset/37715">here</
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gdal">10.4. GDAL</h3>
+<h3 id="_gdal">10.5. GDAL</h3>
 <div class="paragraph">
 <p>Geopaparazzi does not support reprojecting raster data sources on-the-fly, so the file must be warped to the proper projection before using it. To do it you can use
 <a href="http://www.gdal.org/gdalwarp.html">gdalwarp</a> command.</p>
@@ -4528,21 +4595,106 @@ is added.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_geopaparazzi_database">14. The Geopaparazzi Database</h2>
+<h2 id="_geopaparazzi_tables">14. Geopaparazzi Tables</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The Geopaparazzi project database is a plain sqlite database with the extension <strong>.gpap</strong>.</p>
-</div>
-<div class="paragraph">
-<p>All data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a>.</p>
-</div>
 <div class="sect2">
-<h3 id="_database_tables_described">14.1. Database tables described</h3>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 1. The Metadata Table</caption>
+<h3 id="_geopaparazzi_project_database_tables">14.1. Geopaparazzi Project Database Tables</h3>
+<div class="paragraph">
+<p>The Geopaparazzi Project Database is a plain SQLite v3 database with the extension <strong>.gpap</strong>.  It contains all the data collected during a Geopaparazzi session, such as GPS tracks, notes (including images), and bookmarks.</p>
+</div>
+<div class="paragraph">
+<p>All coordinate data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a> horizontal spatial reference system.  The elevation data saved by Geopaparazzi is as reported by the GPS library for the device and is likely the height relative to the WGS84 ellipsoid and not a vertical datum or some other spatially varying surface like Mean Sea Level.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="10_database/database_diagram.png" alt="database diagram" width="977" height="594">
+</div>
+<div class="title">Figure 97. Overview diagram of database tables</div>
+</div>
+<div class="sect3">
+<h4 id="_using_geopaparazzi_timestamps">14.1.1. Using Geopaparazzi Timestamps</h4>
+<div class="paragraph">
+<p>Geopaparazzi stores timestamps (e.g. columns named "ts" in the tables below) as long integers and represent <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch</a>, but instead of seconds the value is in milliseconds.</p>
+</div>
+<div class="paragraph">
+<p>To make the values more readable, they can be decoded in SQLite like so (note the dividing by 1000 to change the milliseconds into seconds):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  SELECT _id, ts, datetime("ts"/1000, "unixepoch") timestamp FROM notes;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>results in:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 75%;">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 11.1111%;">
+<col style="width: 33.3333%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1419293026593</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-12-23 00:03:46</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Typically the values must be decoded into a standard format like <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> to be used in other applications.  The values can be decoded in SQLite like so (note the dividing by 1000 to change the milliseconds into seconds):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SELECT ROWID, ts, strftime( '%Y-%m-%dT%H:%M:%SZ',datetime("ts"/1000, 'unixepoch')) timestamp FROM notes;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>results in:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 75%;">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 33.3333%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1419293026593</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2014-12-23T00:03:46Z</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can also create <a href="https://www.w3resource.com/sqlite/sqlite-create-drop-views.php">SQL Views</a> to persist the above query in the database.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>CREATE VIEW v_notes AS
+  SELECT *, strftime( '%Y-%m-%dT%H:%M:%SZ',datetime("ts"/1000, 'unixepoch')) timestamp FROM notes;
+
+SELECT * FROM v_notes;</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_geopaparazzi_table_descriptions">14.1.2. Geopaparazzi Table Descriptions</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. The metadata Table</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4550,16 +4702,23 @@ is added.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">key for the record</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text for dialog label</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">value for the record</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 2. The Notes Table</caption>
+<div class="paragraph">
+<p>This table holds 7 standard rows of the various Project information such as the Project name.  You can add your own metadata rows using the Project Info dialog in Geopaparazzi or using SQL.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. The notes Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4568,19 +4727,19 @@ is added.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the note</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the note, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the note</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the note, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation, meters</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp, "unixepoch" in milliseconds</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">description</p></td>
@@ -4588,19 +4747,19 @@ is added.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text/type of the note</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">form</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the form data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the form data, JSON</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true) (not used)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">style</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">style of the note</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">style of the note (not used)</p></td>
 </tr>
 </tbody>
 </table>
@@ -4616,11 +4775,11 @@ Style and isdirty are currently unused.
 </tr>
 </table>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 3. The Images Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. The images Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4629,47 +4788,47 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the image, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the image, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation, meters</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azimuth</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azimuth, decimal degrees</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">imagedata_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foreign key to _id of the imagedata table</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp, "unixepoch" in milliseconds</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file name of the image</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">note_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">optional foreign key to _id of the notes table</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">note_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">an optional note id, to which it is bound to</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">imagedate_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the connected image data</p></td>
-</tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 4. The Imagedata Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. The imagedata Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4678,19 +4837,19 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">data</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the image data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the image data as a BLOB containing an JPEG image</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">thumbnail</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the image thumbnail data</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the image thumbnail data as a BLOB containing an JPEG image</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 5. The Bookmarks Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. The bookmarks Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4699,31 +4858,31 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">zoom</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the zoom of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the zoom of the bookmark, <a href="https://wiki.openstreetmap.org/wiki/Zoom_levels">Tile zoom levels</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">north</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the north bound of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the north bound of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">south</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the south bound of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the south bound of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">west</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the west bound of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the west bound of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">east</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the east bound of the bookmark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the east bound of the bookmark, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
@@ -4731,11 +4890,11 @@ Style and isdirty are currently unused.
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 6. The GPS logs Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. The gpslogs Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4744,11 +4903,11 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">startts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">log start timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log start timestamp, "unixepoch" in milliseconds</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">endts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">log end timestamp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log end timestamp , "unixepoch" in milliseconds</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lengthm</p></td>
@@ -4764,11 +4923,11 @@ Style and isdirty are currently unused.
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 7. The GPS logs data Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. The gpslogsdata Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4777,31 +4936,31 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the log point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the log point, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the log point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the log point, decimal degrees</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation of the log point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">elevation of the log point, meters</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp of the log point</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp of the log point, "unixepoch" in milliseconds</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log of which the point is part</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foreign key to _id of the gpslogs table</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<caption class="title">Table 8. The GPS logs properties Table</caption>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. The gpslogsproperties Table</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4810,15 +4969,15 @@ Style and isdirty are currently unused.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log the properties are part of</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foreign key to _id of the gpslogs table</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">color</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the color to use to draw the log</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the color to use to draw the log, text like "red", etc</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">width</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the width to use to draw the log</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the width to use to draw the log, in pixels</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">visible</p></td>
@@ -4826,6 +4985,177 @@ Style and isdirty are currently unused.
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. The log Table</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dataora</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">row timestamp in milliseconds</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">logmsg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">log message</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>log</code> table contains rows created by Geopaparazzi as you use its various functions, primarily for troubleshooting any problems.  You can view the log table in Geopaparazzi by selecting the menu in the main dashboard view and selecting Advanced, the select "Analyze log".  By default it shows the "Error" class messages.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_additional_geopaparazzi_tables_in_spatialite_databases">14.2. Additional Geopaparazzi tables in Spatialite Databases</h3>
+<div class="paragraph">
+<p>If these tables are present in a Spatialite database used as a map overlay, they can supply additional properties to the Spatialite data.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. The dataproperties Table</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">source of the geometry, format: <code>database_path#table#column</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">size</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fillcolor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fill color in HTML-friendly form: e.g. red, #FBC02D, etc</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">strokecolor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">outline color</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fillalpha</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0 to 1.0 value of opacity (0=fully transparent, 1=not transparent)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">strokealpha</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.0 to 1.0 value of opacity (0=fully transparent, 1=not transparent)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">shape</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allowed values: "square","cross",triangle","circle","star","X"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">width</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">width of line</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelsize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">size of label in scaled pixels</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelfield</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">field in feature table to get label text</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">labelvisible</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is the label shown? 0=no, 1=yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">layerorder</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dashpattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dashWidth, dashGap, dashWidth2, dashGap2, &#8230;&#8203; in scaled pixels, e.g. <code>10,20</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">minzoom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">don&#8217;t show if current zoom level is less than this (see  <a href="https://wiki.openstreetmap.org/wiki/Zoom_levels">Tile zoom levels</a> for values)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxzoom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">don&#8217;t show if current zoom level is greater than this</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">decimationfactor</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">theme</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>dataproperties</code> table is useful for providing persistent styling of features stored in the Spatialite database.</p>
+</div>
+<div class="paragraph">
+<p>An example of a "name" value in the <code>dataproperties</code> table:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/storage/emulated/0/rigstreet_v1.sqlite#sites_gate#geometry</pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. The geopap_resource Table</caption>
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">restable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">feature table name containing the feature</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rowidfk</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">foreign key value of the row in the feature table</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Geopaparazzi data type of resource (e.g. BLOB_IMAGE, EXTERNAL_IMAGE, BLOB_PDF, EXTERNAL_PDF)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file name of resource.  For labeling if resource is "BLOB_*"</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">respath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path of resource file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resblob</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">if resource is "BLOB_*", contains the resource data as binary</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resthumb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contains a BLOB of a thumbnail of the resource to use as an icon</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>geopap_resource</code> table is used to relate resources like images, PDFs, etc to records in the Spatialite tables.  See <a href="#Feature_Resources">Viewing Feature Attributes</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -4933,19 +5263,19 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 <div class="content">
 <img src="usecase/07_plant1.png" alt="07 plant1">
 </div>
-<div class="title">Figure 97. The El Moufty plant, the one with most available information.</div>
+<div class="title">Figure 98. The El Moufty plant, the one with most available information.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="usecase/08_plant2.png" alt="08 plant2">
 </div>
-<div class="title">Figure 98. The OM SEN plant, with no lab information available and some general information missing.</div>
+<div class="title">Figure 99. The OM SEN plant, with no lab information available and some general information missing.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="usecase/09_plant3.png" alt="09 plant3">
 </div>
-<div class="title">Figure 99. The EL KOLEAAH plant, with no lab information available and some general information missing.</div>
+<div class="title">Figure 100. The EL KOLEAAH plant, with no lab information available and some general information missing.</div>
 </div>
 </div>
 <div class="sect2">
@@ -4960,7 +5290,7 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 <div class="content">
 <img src="usecase/01_tags.png" alt="01 tags">
 </div>
-<div class="title">Figure 100. The add noves view, in an older version of geopaparazzi.</div>
+<div class="title">Figure 101. The add noves view, in an older version of geopaparazzi.</div>
 </div>
 <div class="paragraph">
 <p>The form has been divided into 5 main sections to make it easier to read:</p>
@@ -5230,13 +5560,13 @@ key.alias.password=youraliaspassword</code></pre>
 <div class="content">
 <img src="development/modules_diagram.png" alt="modules diagram" width="867" height="349">
 </div>
-<div class="title">Figure 101. Diagram of the main modules dependencies.</div>
+<div class="title">Figure 102. Diagram of the main modules dependencies.</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="development/plugins_diagram.png" alt="plugins diagram" width="1179" height="153">
 </div>
-<div class="title">Figure 102. The official Geopaparazzi plugins</div>
+<div class="title">Figure 103. The official Geopaparazzi plugins</div>
 </div>
 </div>
 <div class="sect3">
@@ -5500,376 +5830,6 @@ key.alias.password=youraliaspassword</code></pre>
 <p>That developer could then create a custom build of Geopaparazzi (or whatever the name would be), remove the projects import/export plugins and add instead his/her own. The custom version would then present in the import/export views the new actions to synchronize with the selected server application. This brings to a very smooth integration.</p>
 </div>
 <div style="page-break-after: always;"></div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_project_database">17.3. The Project Database</h3>
-<div class="paragraph">
-<p>The Geopaparazzi project database is a plain sqlite database with the extension <strong>.gpap</strong>.</p>
-</div>
-<div class="paragraph">
-<p>All data are saved in <a href="http://gisgeography.com/wgs84-world-geodetic-system/">WGS84</a>.</p>
-</div>
-<div class="sect3">
-<h4 id="_database_tables_described_2">17.3.1. Database tables described</h4>
-<div class="imageblock">
-<div class="content">
-<img src="development/database_diagram.png" alt="database diagram" width="862" height="594">
-</div>
-<div class="title">Figure 103. Overview diagram of database tables</div>
-</div>
-<div class="sect4">
-<h5 id="_the_metadata_table">The Metadata Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">key for the record</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">value for the record</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_notes_table">The Notes Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the note</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the note</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">description</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">description of the note</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">form</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the form data</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">style</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">style of the note</p></td>
-</tr>
-</tbody>
-</table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Style and isdirty are currently unused.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_the_images_table">The Images Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the image</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the image</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azimuth</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text of the note</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">note_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">an optional note id, to which it is bound to</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">imagedate_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the connected image data</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_imagedata_table">The Imagedata Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">data</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the image data</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">thumbnail</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the image thumbnail data</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_bookmarks_table">The Bookmarks Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">zoom</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the zoom of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">north</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the north bound of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">south</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the south bound of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">west</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the west bound of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">east</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the east bound of the bookmark</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the name of the bookmark</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_gps_logs_table">The GPS logs Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">startts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">log start timestamp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">endts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">log end timestamp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lengthm</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the length in meters</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">isdirty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">is dirty field (0 = false, 1 = true)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name of the log</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_gps_logs_data_table">The GPS logs data Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">longitude of the log point</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">latitude of the log point</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">altim</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">elevation of the log point</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp of the log point</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log of which the point is part</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_the_gps_logs_properties_table">The GPS logs properties Table</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">_id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unique id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">logid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">id of the log the properties are part of</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">color</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the color to use to draw the log</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">width</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the width to use to draw the log</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">visible</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">flag that defines if the log is visible at the time given</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </div>
 </div>
