@@ -140,4 +140,5 @@
   <string name="osmbonuspack.format_hours">%sh</string>
   <string name="osmbonuspack.format_minutes">%smin</string>
   <string name="osmbonuspack.format_seconds">%sseg</string>
+  <string name="first_camera_open_warning">IMPORTANTE: se a app bloquear ao tentar tirar fotografias, tente baixar a resolução das imagens nas definições da câmara.\n\nProvavelmente este problema está relacionado com a utilização alta de memória ao processar a imagem para ser inserida na base de dados.\n\nEstamos a procurar uma solução viável para este problema.</string>
 </resources>

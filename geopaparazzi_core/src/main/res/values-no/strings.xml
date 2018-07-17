@@ -97,9 +97,7 @@
   <string name="type_to_filter">tast inn for å filtrere</string>
   <string name="geopapcloud_user_label">Brukernavn</string>
   <string name="geopapcloud_password_label">Passord</string>
-  <string name="geopapcloud_server_label">Server for tilkobling</string>
   <string name="exporting_data">Eksporterer data</string>
-  <string name="exporting_data_to_the_cloud">Eksporterer data til Cloud.</string>
   <string name="exporting_data_to_kmz">Eksporterer data til KMZ.</string>
   <string name="exporting_data_to_gpx">Eksporterer data til GPX</string>
   <string name="media_upload">LASTE OPP MEDIA</string>
@@ -114,7 +112,6 @@
   <string name="select_map_to_use">Velg kart</string>
   <string name="no_map_file_found_going_to_mapnik">Kunne ikke finne kart-filen, bytter til MAPNIK-kilde.</string>
   <string name="enter_project_description">Angi en beskrivelse for prosjektet</string>
-  <string name="no_images">Ingen bilder</string>
   <string name="with_images">Med bilder</string>
   <string name="successfully_imported_bookmarks">Importerte bokmerker:</string>
   <string name="error_bookmarks_import">Det oppstod en feil under import av bokmerkene.</string>
@@ -151,4 +148,5 @@
   <string name="prompt_delete_note">Er du sikker på at du vil slette notatet? Dette kan ikke angres.</string>
   <string name="prompt_delete_bookmark">Er du sikker på at du vil slette bokmerket? Dette kan ikke angres.</string>
   <!--ellipsis character instead of three dots-->
+  <!--geoss2go profiles-->
 </resources>

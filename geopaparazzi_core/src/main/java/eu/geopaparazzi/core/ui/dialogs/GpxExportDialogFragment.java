@@ -37,6 +37,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxExport;
@@ -155,9 +157,14 @@ public class GpxExportDialogFragment extends DialogFragment {
                     }
 
                     if (isInterrupted) return INTERRUPTED;
-                    File gpxExportDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
-                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + "." + FileTypes.GPX.getExtension();
-                    File gpxOutputFile = new File(gpxExportDir, filename);
+                    String projectName = DaoMetadata.getProjectName();
+                    if (projectName == null) {
+                        projectName = "geopaparazzi_gpx_";
+                    } else {
+                        projectName += "_gpx_";
+                    }
+                    File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
+                    File gpxOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx");
                     if (exportPath != null) {
                         gpxOutputFile = new File(exportPath);
                     }

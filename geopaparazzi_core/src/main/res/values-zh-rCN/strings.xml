@@ -79,16 +79,13 @@
   <string name="profilelable_distance">距离[m]</string>
   <string name="geopapcloud_user_label">用户名</string>
   <string name="geopapcloud_password_label">密码</string>
-  <string name="geopapcloud_server_label">服务器连接</string>
   <string name="exporting_data">输出数据</string>
-  <string name="exporting_data_to_the_cloud">输出数据到云存储</string>
   <string name="exporting_data_to_kmz">输出数据用KMZ格式</string>
   <string name="exporting_data_to_gpx">输出数据用KMZ格式</string>
   <string name="media_upload">上传媒体</string>
   <string name="add_message">添加信息</string>
   <string name="select_map_to_use">选择要使用的地图</string>
   <string name="enter_project_description">为项目输入一个描写</string>
-  <string name="no_images">没有图片</string>
   <string name="with_images">使用图片</string>
   <string name="successfully_imported_bookmarks">成功读入书签</string>
   <string name="error_bookmarks_import">加载书签时有错误发生</string>
@@ -109,4 +106,5 @@
   <string name="maps_manager">地图管理器</string>
   <!--ellipsis character instead of three dots-->
   <string name="project">项目</string>
+  <!--geoss2go profiles-->
 </resources>

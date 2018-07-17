@@ -438,6 +438,8 @@
     <string name="profile_description">Profile Description</string>
     <string name="name_of_the_new_profile">Name of the new profile</string>
     <string name="description_of_the_new_profile">Description of the new profile</string>
+    <string name="browse_images" >Browse images</string>
+    <string name="confirm_remove_image" >Remove image?</string>
 
 
 </resources>

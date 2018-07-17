@@ -1191,6 +1191,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             return true;
         } else if (i == R.id.addnotebytagbutton) {
             Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
+            intent.putExtra(LibraryConstants.PREFS_KEY_MAP_ZOOM, true);
             startActivityForResult(intent, ZOOM_RETURN_CODE);
 
         } else if (i == R.id.addbookmarkbutton) {

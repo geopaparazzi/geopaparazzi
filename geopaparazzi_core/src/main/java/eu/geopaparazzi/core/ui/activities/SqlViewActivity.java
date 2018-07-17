@@ -98,9 +98,11 @@ public class SqlViewActivity extends AppCompatActivity {
     public void launchOwnQuery(View view) throws Exception {
         String customQuery = customQueryText.getText().toString();
 
-        Intent dbViewIntent = new Intent(this, DatabaseListActivity.class);
-        dbViewIntent.putExtra(LibraryConstants.PREFS_KEY_QUERY, customQuery);
-        startActivity(dbViewIntent);
+        if (customQuery.trim().length()>0) {
+            Intent dbViewIntent = new Intent(this, DatabaseListActivity.class);
+            dbViewIntent.putExtra(LibraryConstants.PREFS_KEY_QUERY, customQuery);
+            startActivity(dbViewIntent);
+        }
     }
 
     private List<String> createQueries() throws Exception {

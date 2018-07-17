@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Zobrazit v aplikaci mixare</string>
   <string name="gps_use_coarse">Použít polohu založenou na síti místo GPS (vyžaduje opětovné spuštění)</string>
   <string name="type_to_filter">Zadejte text pro filtrování</string>
-  <string name="geopapcloud_preferences">Nastavení synchronizace pro serverové projekty</string>
-  <string name="geopapcloud_preferences_summary">Nastavit přihlašovací údaje pro synchronizaci serveru a nastavení pro serverové služby.</string>
   <string name="geopapcloud_user_label">Uživatelské jméno</string>
   <string name="geopapcloud_password_label">Heslo</string>
-  <string name="geopapcloud_server_label">Server, ke kterému se připojit</string>
   <string name="exporting_data">Exportují se data</string>
-  <string name="error_set_cloud_settings">Parametry synchronizace serveru nejsou nastaveny správně. Prověřte, prosím, svá nastavení.</string>
-  <string name="exporting_data_to_the_cloud">Vyvádí se data do internetového úložiště.</string>
-  <string name="error_uploadig_project_to_cloud">Během nahrávání projektu na server se vyskytla chyba.</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt byl úspěšně nahrán na server.</string>
   <string name="exporting_data_to_kmz">Exportují se data do KMZ.</string>
   <string name="exporting_data_to_gpx">Exportují se data do GPX.</string>
   <string name="media_upload">Nahrávání médií</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Vyberte mapu k použití</string>
   <string name="no_map_file_found_going_to_mapnik">Nepodařilo se najít soubor s mapou, použije se dlaždicový zdroj MAPNIK.</string>
   <string name="enter_project_description">Zadejte popis projektu</string>
-  <string name="no_images">Žádné obrázky</string>
   <string name="with_images">S obrázky</string>
   <string name="successfully_imported_bookmarks">Úspěšně načtené záložky:</string>
   <string name="error_bookmarks_import">Při načtení záložek se vyskytla chyba.</string>
@@ -388,16 +380,10 @@
   <string name="removing_notes">Odstraňují se poznámky...</string>
   <string name="interrupted_by_user">Přerušeno uživatelem</string>
   <string name="import_cloud_data">Serverová data</string>
-  <string name="browse_images">Procházet obrázky</string>
   <string name="new_picture">Nový obrázek</string>
   <string name="Images">Obrázky</string>
-  <string name="confirm_remove_image">Opravdu chcete odstranit obrázek?</string>
   <string name="upload_to_cloud_prompt">Nahrát nynější projekt na server?</string>
   <string name="data_to_pdf_label">Projektové formuláře do PDF</string>
   <string name="exporting_data_to_pdf">Data formuláře se ukládají do PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 obrázek</item>
-    <item quantity="few">%d obrázky</item>
-    <item quantity="other">%d obrázků</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

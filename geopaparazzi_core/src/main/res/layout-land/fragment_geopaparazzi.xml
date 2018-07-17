@@ -22,39 +22,71 @@
             android:layout_gravity="center"
             android:layout_weight="1">
 
-            <ImageButton
-                android:id="@+id/dashboardButtonNotes"
-                style="@style/GeopapTheme.Button.Colored"
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="0"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/dashboard_note_action_description"
-                app:srcCompat="@drawable/ic_dashboard_notes_24dp" />
+                android:layout_weight="1">
 
-            <ImageButton
-                android:id="@+id/dashboardButtonMetadata"
-                style="@style/GeopapTheme.Button.Colored"
+                <ImageButton
+                    android:id="@+id/dashboardButtonNotes"
+                    style="@style/GeopapTheme.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:contentDescription="@string/dashboard_note_action_description"
+                    android:stateListAnimator="@null"
+                    app:srcCompat="@drawable/ic_dashboard_notes_24dp" />
+
+                <TextView
+                    android:id="@+id/dashboardTextNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="14dp"
+                    android:textColor="@color/main_background"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="1"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/dashboard_metadata_action_description"
-                app:srcCompat="@drawable/ic_dashboard_metadata_24dp"
-                android:textColor="@color/main_text_color" />
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/dashboardButtonGpslog"
+                    style="@style/GeopapTheme.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:contentDescription="@string/dashboard_gpslog_action_description"
+                    android:stateListAnimator="@null"
+                    app:srcCompat="@drawable/ic_dashboard_gpslog_24dp" />
+
+                <TextView
+                    android:id="@+id/dashboardTextGpslog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="14dp"
+                    android:textColor="@color/main_background"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
             <ImageButton
-                android:id="@+id/dashboardButtonGpslog"
+                android:id="@+id/dashboardButtonMapview"
                 style="@style/GeopapTheme.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="2"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:contentDescription="@string/dashboard_gpslog_action_description"
-                app:srcCompat="@drawable/ic_dashboard_gpslog_24dp" />
+                android:contentDescription="@string/dashboard_mapview_action_description"
+                app:srcCompat="@drawable/ic_dashboard_mapview_24dp" />
         </TableRow>
 
         <TableRow
@@ -63,15 +95,16 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/dashboardButtonMapview"
+                android:id="@+id/dashboardButtonMetadata"
                 style="@style/GeopapTheme.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="0"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:contentDescription="@string/dashboard_mapview_action_description"
-                app:srcCompat="@drawable/ic_dashboard_mapview_24dp" />
+                android:contentDescription="@string/dashboard_metadata_action_description"
+                android:textColor="@color/main_text_color"
+                app:srcCompat="@drawable/ic_dashboard_metadata_24dp" />
 
             <ImageButton
                 android:id="@+id/dashboardButtonImport"

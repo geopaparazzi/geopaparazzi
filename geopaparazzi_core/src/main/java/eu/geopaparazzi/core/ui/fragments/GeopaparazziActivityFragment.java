@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -54,6 +55,7 @@ import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.AdvancedSettingsActivity;
 import eu.geopaparazzi.core.ui.activities.ExportActivity;
 import eu.geopaparazzi.core.ui.activities.ImportActivity;
+import eu.geopaparazzi.core.ui.activities.NotesListActivity;
 import eu.geopaparazzi.core.ui.activities.PanicActivity;
 import eu.geopaparazzi.core.ui.activities.ProjectMetadataActivity;
 import eu.geopaparazzi.core.ui.activities.SettingsActivity;
@@ -196,6 +198,29 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mPanicFAB = view.findViewById(R.id.panicActionButton);
         mPanicFAB.setOnClickListener(this);
         enablePanic(false);
+
+        try {
+            int notesCount = DaoNotes.getNotesCount(false);
+            int dirtyNotesCount = DaoNotes.getNotesCount(true);
+            int logsCount = DaoGpsLog.getGpslogsCount();
+
+            TextView notesTextView = view.findViewById(R.id.dashboardTextNotes);
+            TextView logsTextView = view.findViewById(R.id.dashboardTextGpslog);
+
+            if (notesCount > 0) {
+                String notesText = String.valueOf(notesCount);
+                if (dirtyNotesCount > 0 && dirtyNotesCount != notesCount) {
+                    notesText += "/" + dirtyNotesCount;
+                }
+                notesTextView.setText(notesText);
+            }
+            if (logsCount > 0) {
+                logsTextView.setText(String.valueOf(logsCount));
+            }
+
+        } catch (IOException e) {
+            GPLog.error(this, null, e);
+        }
 
     }
 
@@ -427,21 +452,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             ImageButton imageButton = (ImageButton) v;
 
             String tooltip = imageButton.getContentDescription().toString();
-
             if (imageButton == mNotesButton) {
-                try {
-                    int notesCount = DaoNotes.getNotesCount(false);
-                    tooltip += " (" + notesCount + ")";
-                } catch (IOException e) {
-                    // ignore
-                }
-            } else if (imageButton == mGpslogButton) {
-                try {
-                    int logsCount = DaoGpsLog.getGpslogsCount();
-                    tooltip += " (" + logsCount + ")";
-                } catch (IOException e) {
-                    // ignore
-                }
+                Intent intent = new Intent(getActivity(), NotesListActivity.class);
+                intent.putExtra(LibraryConstants.PREFS_KEY_MAP_ZOOM, false);
+                startActivity(intent);
             } else if (imageButton == mMetadataButton) {
                 try {
                     String databaseName = ResourcesManager.getInstance(getContext()).getDatabaseFile().getName();

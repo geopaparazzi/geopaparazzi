@@ -50,6 +50,7 @@
   <string name="geocodeErrorTitle">Eroare de Geocodificare</string>
   <string name="geocodeErrorMessage">Geocodificarea locației a eșuat. Încercați să retransmiteți locația.</string>
   <string name="downloading_route">Descărcare rută...</string>
+  <string name="route_extraction_error">A apărut o eroare pe durata extragerii rutei. Este posibil ca serverul să nu fie disponibil.</string>
   <string name="available_only_with_network">Această funcție este disponibilă numai cu o conexiune de rețea activă.</string>
   <string name="error_while_storing_form_data">A apărut o eroare pe durata stocării datelor formularului.</string>
   <string name="view_routing_url_in_browser">Doriți să deschideți adresa folosită pentru rută într-un browser?</string>
@@ -59,7 +60,10 @@
   <string name="save">Salvare</string>
   <string name="cancel">Renunțare</string>
   <string name="take_picture">Efectuați o poză</string>
+  <string name="read_nfc_uid">Citește identificatorul etichetei</string>
   <string name="draw_sketch">Desenează o schiță</string>
+  <string name="undo">anulare</string>
+  <string name="redo">refacere</string>
   <string name="hello_world">Hello world!</string>
   <string name="menu_settings">Setări</string>
   <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
@@ -71,6 +75,8 @@
   <string name="no_data">Nu sunt disponibile date</string>
   <string name="file_upload_completed_properly">Încărcarea fișierului s-a încheiat în mod corespunzător.</string>
   <string name="http_forbidden_msg">Accesul la server a fost blocat. Verificați acreditările și adresa de conectare.</string>
+  <string name="http_not_found_msg">Resursa solicitată nu a putut fi găsită. Verificați adresa de conectare.</string>
+  <string name="http_not_implemented_code_msg">A fost returnat următorul cod (vă rugăm să îl trimiteți dezvoltatorului):</string>
   <string name="post_completed_properly">Postarea s-a încheiat în mod corespunzător.</string>
   <string name="http_ok_msg">Cererea a fost procesată cu succes.</string>
   <string name="the_file_exists_wont_overwrite">Fisierul există. Nu se va suprascrie:</string>
@@ -87,8 +93,29 @@
   <string name="label_red">roșu</string>
   <string name="label_green">verde</string>
   <string name="label_blue">albastru</string>
+  <string name="label_size">Dimensiunea etichetei</string>
+  <string name="set_properties">Setare proprietăți</string>
+  <string name="unauthorized_api_key">Acces neautorizat. Verificați-vă cheia API.</string>
   <string name="fill_and_stroke_color_title">Culoarea Umplerii și a Conturului</string>
   <string name="fill_color_title">Culoarea de umplere</string>
   <string name="fill_alpha_title">Transparența umplerii</string>
+  <string name="stroke_color_title">Culoarea conturului</string>
+  <string name="stroke_width_title">Lățimea conturului</string>
+  <string name="stroke_alpha_title">Transparența conturului</string>
   <string name="saving_to_database">Se salvează datele în bazele de date...</string>
+  <string name="osmbonuspack.directions.1">Continuă[ pe %s]</string>
+  <string name="osmbonuspack.directions.27">Intrați în sensul giratoriu, apoi părăsiți-l la prima ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.28">Intrați în sensul giratoriu, apoi părăsiți-l la a doua ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.29">Intrați în sensul giratoriu, apoi părăsiți-l la a treia ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.30">Intrați în sensul giratoriu, apoi părăsiți-l la a patra ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.31">Intrați în sensul giratoriu, apoi părăsiți-l la a cincea ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.32">Intrați în sensul giratoriu, apoi părăsiți-l la a șasea ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.33">Intrați în sensul giratoriu, apoi părăsiți-l la a șaptea ieșire[ pe %s]</string>
+  <string name="osmbonuspack.directions.34">Intrați în sensul giratoriu, apoi părăsiți-l la a opta ieșire[ pe %s]</string>
+  <string name="osmbonuspack.format_distance_kilometers">%skm</string>
+  <string name="osmbonuspack.format_distance_meters">%sm</string>
+  <string name="osmbonuspack.format_hours">%sh</string>
+  <string name="osmbonuspack.format_minutes">%smin</string>
+  <string name="osmbonuspack.format_seconds">%ssec</string>
+  <string name="first_camera_open_warning">IMPORTANT: Dacă întâmpinați erori ale aplicației pe durata fotografierii, încercați să reduceți rezoluția din setările aparatului foto.\n\nErorile se datorează probabil unui consum ridicat de memorie la momentul procesării imaginii, pentru a o insera în baza de date.\n\nÎntre timp, căutăm o soluție viabilă.</string>
 </resources>

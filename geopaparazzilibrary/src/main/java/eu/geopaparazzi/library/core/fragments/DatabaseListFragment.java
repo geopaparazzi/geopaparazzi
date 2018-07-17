@@ -75,7 +75,7 @@ public class DatabaseListFragment extends ListFragment implements LoaderManager.
                 LoaderManager loaderManager = getLoaderManager();
                 loaderManager.initLoader(LOADER_ID, null, this);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             String msg = "An error occurred while launching the query: " + mSql;
             GPLog.error(this, msg, e);
             GPDialogs.warningDialog(getActivity(), msg,

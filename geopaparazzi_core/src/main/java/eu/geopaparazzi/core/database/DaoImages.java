@@ -482,7 +482,8 @@ public class DaoImages implements IImagesDbHelper {
                 imageData = c.getBlob(0);
             }
         } catch (Exception ex) {
-            if (ex.getLocalizedMessage().contains("Couldn't read row")) {
+//            if (ex.getLocalizedMessage().contains("Couldn't read row")) {
+              try{
                 String sizeQuery = "SELECT " + ImageDataTableFields.COLUMN_ID.getFieldName() +//
                         ", length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") " +//
                         "FROM " + TABLE_IMAGE_DATA +//
@@ -521,8 +522,9 @@ public class DaoImages implements IImagesDbHelper {
                     imageData = bout.toByteArray();
                     bout.close();
                 }
-            } else {
-                GPLog.error(this, null, ex);
+            } catch (Exception e){
+                  Throwable throwable = e.initCause(ex);
+                  GPLog.error(this, null, throwable);
             }
 
         } finally {

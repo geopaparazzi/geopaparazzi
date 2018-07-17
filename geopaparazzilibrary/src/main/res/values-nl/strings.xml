@@ -140,4 +140,5 @@
   <string name="osmbonuspack.format_hours">%suur</string>
   <string name="osmbonuspack.format_minutes">%smin</string>
   <string name="osmbonuspack.format_seconds">%ssec</string>
+  <string name="first_camera_open_warning">Belangrijk Item; Als je wordt geconfronteerd met het crashen van de app bij het maken van foto\'s, probeer dan de resolutie van de camera lager te zetten. Waarschijnlijk is de reden voor het crashen het hoge intern geheugen  gebruik vóór het opslaan in de database.  Er wordt intussen naar een mogelijke oplossing gezocht.</string>
 </resources>

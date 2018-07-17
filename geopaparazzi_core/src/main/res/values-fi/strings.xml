@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Katso Mixaressa</string>
   <string name="gps_use_coarse">Käytä verkkopaikannusta GPS:n sijaan. Vaatii uudelleen käynnistyksen.</string>
   <string name="type_to_filter">Kirjoita valitaksesi</string>
-  <string name="geopapcloud_preferences">Pilviprojektin synkronoinnin asetukset</string>
-  <string name="geopapcloud_preferences_summary">Aseta palvelimen synkronoinnin käyttäjätiedot ja asetukset pilvipalveluille.</string>
   <string name="geopapcloud_user_label">Käyttäjänimi</string>
   <string name="geopapcloud_password_label">Salasana</string>
-  <string name="geopapcloud_server_label">Yhdistettävä palvelin</string>
   <string name="exporting_data">Vie tiedot</string>
-  <string name="error_set_cloud_settings">Pilven synkronointi parametreja ei ole asetettu oikein. Ole hyvä ja tarkasta asetuksesi.</string>
-  <string name="exporting_data_to_the_cloud">Viedään tiedot pilveen.</string>
-  <string name="error_uploadig_project_to_cloud">Virhe ladattaessa projektia pilveen</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekti on onnistuneesti ladattu pilveen</string>
   <string name="exporting_data_to_kmz">Viedään KMZ-tiedostoksi</string>
   <string name="exporting_data_to_gpx">Viedään GPX-tiedostoksi</string>
   <string name="media_upload">Median lataus</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Valitse kartta</string>
   <string name="no_map_file_found_going_to_mapnik">Karttatiedostoa ei löytynyt, käytetään MAPNIK-karttaa</string>
   <string name="enter_project_description">Projektin kuvaus</string>
-  <string name="no_images">Ei kuvia</string>
   <string name="with_images">Kuvien kanssa</string>
   <string name="successfully_imported_bookmarks">Kirjanmerkkien tuonti onnistui:</string>
   <string name="error_bookmarks_import">Virhe tuotaessa kirjanmerkit.</string>
@@ -388,15 +380,10 @@
   <string name="removing_notes">Poistetaan huomautuksia...</string>
   <string name="interrupted_by_user">Käyttäjän keskeyttämä</string>
   <string name="import_cloud_data">Pilvidata</string>
-  <string name="browse_images">Selaa kuvia</string>
   <string name="new_picture">Uusi kuva</string>
   <string name="Images">Kuvat</string>
-  <string name="confirm_remove_image">Haluatko todella poistaa kuvan?</string>
   <string name="upload_to_cloud_prompt">Lataatko nykyisen projektin pilveen?</string>
   <string name="data_to_pdf_label">Projektilomakkeet pdf:ksi</string>
   <string name="exporting_data_to_pdf">Viedään lomakedatasta pdf:ksi</string>
-  <plurals name="n_images">
-    <item quantity="one">1 kuva</item>
-    <item quantity="other">%d kuvaa</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

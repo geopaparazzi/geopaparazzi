@@ -114,9 +114,7 @@
   <string name="type_to_filter">Ukucajte tekst za filtriranje</string>
   <string name="geopapcloud_user_label">Korisničko ime</string>
   <string name="geopapcloud_password_label">Šifra</string>
-  <string name="geopapcloud_server_label">Server na koji se povezujete</string>
   <string name="exporting_data">Podaci se izvoze</string>
-  <string name="exporting_data_to_the_cloud">Podaci se izvoze u Cloud server.</string>
   <string name="exporting_data_to_kmz">Podaci se izvoze u KMZ.</string>
   <string name="exporting_data_to_gpx">Podaci se izvoze u GPX</string>
   <string name="media_upload">UČITAVANJE MEDIJA</string>
@@ -132,7 +130,6 @@
   <string name="select_map_to_use">Izaberite mapu koju želite da koristite</string>
   <string name="no_map_file_found_going_to_mapnik">Neuspešno je pronadjena datoteka sa mapom, preusmerava se na MAPNIK izvor mapa</string>
   <string name="enter_project_description">Unesite opis projekta</string>
-  <string name="no_images">Bez fotografija</string>
   <string name="with_images">Sa fotografijama</string>
   <string name="successfully_imported_bookmarks">Uspešno uvezen obeleživač</string>
   <string name="error_bookmarks_import">Pojavila se greška u toku uvoza obeleživača</string>
@@ -238,4 +235,5 @@
   <string name="saving_to_database">Čuvanje podataka u bazu podataka...</string>
   <string name="downloading">Preuzimanje...</string>
   <string name="requesting_available_services">Zahtevanje dostupne usluge</string>
+  <!--geoss2go profiles-->
 </resources>

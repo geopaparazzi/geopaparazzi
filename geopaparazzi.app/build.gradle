@@ -61,17 +61,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
-    compile 'com.android.support:preference-v7:27.1.0'
-    compile 'com.android.support:support-v4:27.1.0'
-    compile project(':geopaparazzi_core')
-    compile project(':geopaparazzi_default_import_plugins')
-    compile project(':geopaparazzi_default_export_plugins')
-    compile project(':geopaparazzi_pdf_export_plugins')
-    compile project(':geopaparazzi_projects_import_plugins')
-    compile project(':geopaparazzi_projects_export_plugins')
-    compile project(':geopaparazzi_profiles_import_plugins')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    api 'com.android.support:appcompat-v7:27.1.0'
+    api 'com.android.support:design:27.1.0'
+    api 'com.android.support:preference-v7:27.1.0'
+    api 'com.android.support:support-v4:27.1.0'
+    implementation project(':geopaparazzi_core')
+    implementation project(':geopaparazzi_default_import_plugins')
+    implementation project(':geopaparazzi_default_export_plugins')
+    implementation project(':geopaparazzi_pdf_export_plugins')
+    implementation project(':geopaparazzi_projects_import_plugins')
+    implementation project(':geopaparazzi_projects_export_plugins')
+    implementation project(':geopaparazzi_profiles_import_plugins')
 }

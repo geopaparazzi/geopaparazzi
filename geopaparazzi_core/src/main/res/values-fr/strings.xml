@@ -132,9 +132,7 @@
   <string name="type_to_filter">type de filtre</string>
   <string name="geopapcloud_user_label">Nom d\'utilisateur</string>
   <string name="geopapcloud_password_label">Mot de passe</string>
-  <string name="geopapcloud_server_label">Se connecter au serveur</string>
   <string name="exporting_data">Export de données</string>
-  <string name="exporting_data_to_the_cloud">Export de données vers le cloud.</string>
   <string name="exporting_data_to_kmz">Export des données en KMZ.</string>
   <string name="exporting_data_to_gpx">Export des données vers GPX</string>
   <string name="media_upload">ENVOYER UN MEDIA</string>
@@ -151,7 +149,6 @@
   <string name="select_map_to_use">Sélectionnez la carte à utiliser</string>
   <string name="no_map_file_found_going_to_mapnik">Impossible de trouver le fichier carte, activation de la source de tuiles MAPNIK.</string>
   <string name="enter_project_description">Entrer une description pour le projet</string>
-  <string name="no_images">Sans images</string>
   <string name="with_images">Avec images</string>
   <string name="successfully_imported_bookmarks"> Signets importés avec succès:</string>
   <string name="error_bookmarks_import">Une erreur s\'est produite lors de l\'importation des signets.</string>
@@ -307,4 +304,5 @@
   <string name="force_locale_summary">Force language sans tenir compte de ce qui est courant dans Android</string>
   <string name="export_images">Images</string>
   <string name="export_img_unable_to_create_folder">Impossible de créer dossier sur sdcard:</string>
+  <!--geoss2go profiles-->
 </resources>

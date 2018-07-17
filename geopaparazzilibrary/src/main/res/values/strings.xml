@@ -162,4 +162,7 @@
     <string name="gps_status_notregistered">GPS on but not registered to updates</string>
     <string name="gps_status_no_fix">GPS registered to updates but no fix</string>
     <string name="gps_status_fix">GPS has fix</string>
+    <string name="form_exit_prompt">Are you sure you want to exit? Unsaved changes will be lost.</string>
+    <string name="note_in_map_center">Map Center</string>
+    <string name="note_in_gps">GPS</string>
 </resources>

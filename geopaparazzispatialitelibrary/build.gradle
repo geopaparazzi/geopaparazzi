@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 dependencies {
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
-    compile 'com.android.support:support-v4:27.1.0'
-    compile project(':geopaparazzilibrary')
+    api 'com.android.support:appcompat-v7:27.1.0'
+    api 'com.android.support:design:27.1.0'
+    api 'com.android.support:support-v4:27.1.0'
+    api project(':geopaparazzilibrary')
 }
 android {
     compileSdkVersion project.ext.mycompileSdkVersion

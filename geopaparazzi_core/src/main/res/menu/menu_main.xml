@@ -8,7 +8,7 @@
         android:icon="@drawable/actionbar_tilesource"
         android:orderInCategory="50"
         android:title="@string/mapsactivity_menu_tilesource"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_new"
@@ -43,7 +43,7 @@
         android:icon="@drawable/actionbar_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_advanced_settings"

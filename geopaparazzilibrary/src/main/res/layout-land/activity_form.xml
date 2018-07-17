@@ -73,4 +73,13 @@
         </LinearLayout>
     </LinearLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:onClick="save"
+        app:srcCompat="@drawable/ic_save_24dp" />
+
 </android.support.design.widget.CoordinatorLayout>

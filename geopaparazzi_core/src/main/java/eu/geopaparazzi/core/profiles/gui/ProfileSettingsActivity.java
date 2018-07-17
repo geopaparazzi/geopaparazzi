@@ -278,22 +278,6 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         return mProfileList.get(mSelectedProfileIndex);
     }
 
-    public void onActiveProfileChanged(boolean isChecked) {
-        for (int i = 0; i < mProfileList.size(); i++) {
-            Profile profile = mProfileList.get(i);
-            boolean active = i == mSelectedProfileIndex && isChecked;
-            if (profile.active != active && profile.basemapsList.size() > 0) {
-                profile.active = active;
-                try {
-                    BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
-                } catch (Exception e) {
-                    // can be ignored
-                }
-            }
-        }
-    }
-
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.

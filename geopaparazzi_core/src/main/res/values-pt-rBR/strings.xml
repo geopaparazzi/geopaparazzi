@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Ver no mixare</string>
   <string name="gps_use_coarse">Use posição baseada em rede, em vez de gps (precisa reiniciar)</string>
   <string name="type_to_filter">tipo a se filtrar</string>
-  <string name="geopapcloud_preferences">Configurações de sincronização de projetos da nuvem</string>
-  <string name="geopapcloud_preferences_summary">Configurar credenciais de servidor de sincronização e configurações para serviços de nuvem.</string>
   <string name="geopapcloud_user_label">Usuário</string>
   <string name="geopapcloud_password_label">Senha</string>
-  <string name="geopapcloud_server_label">Servidor para conectar-se</string>
   <string name="exporting_data">Exportando dados</string>
-  <string name="error_set_cloud_settings">Os preferências do cloud sync não foram definidas corretamente. Por favor verifique suas configurações.</string>
-  <string name="exporting_data_to_the_cloud">Exportando dados à nuvem.</string>
-  <string name="error_uploadig_project_to_cloud">Um erro ocorreu ao enviar o projeto para núvem</string>
-  <string name="project_succesfully_uploaded_to_cloud">O projeto foi enviado para nuvem com sucesso</string>
   <string name="exporting_data_to_kmz">Exportando dados para KMZ.</string>
   <string name="exporting_data_to_gpx">Exportando dados para GPX</string>
   <string name="media_upload">ENVIO DE MÍDIA</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Selecione o mapa para usar</string>
   <string name="no_map_file_found_going_to_mapnik">Não foi possível localizar o arquivo de mapa, alternando para a fonte de ladrilho MAPNIK.</string>
   <string name="enter_project_description">Digite uma descrição para o projeto</string>
-  <string name="no_images">Sem imagens</string>
   <string name="with_images">Largura das Imagens</string>
   <string name="successfully_imported_bookmarks">Marcadores importados com sucesso: </string>
   <string name="error_bookmarks_import">Ocorreu um erro ao importar os marcadores.</string>
@@ -388,15 +380,10 @@
   <string name="removing_notes">Removendo notas...</string>
   <string name="interrupted_by_user">Interrompido pelo usuário</string>
   <string name="import_cloud_data">Dados da Nuvem</string>
-  <string name="browse_images">Explorar Imagens</string>
   <string name="new_picture">Nova Foto</string>
   <string name="Images">Imagens</string>
-  <string name="confirm_remove_image">Você realmente deseja remover a imagem?</string>
   <string name="upload_to_cloud_prompt">Enviar o projeto atual para a nuvem.</string>
   <string name="data_to_pdf_label">Formulários do projeto para Pdf</string>
   <string name="exporting_data_to_pdf">Exportar dados do formulário para PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 imagem</item>
-    <item quantity="other">%d imagens</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

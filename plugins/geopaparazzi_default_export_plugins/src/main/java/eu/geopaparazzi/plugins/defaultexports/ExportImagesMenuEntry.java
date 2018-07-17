@@ -27,6 +27,8 @@ import java.util.List;
 
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.DaoImages;
+import eu.geopaparazzi.core.database.DaoMetadata;
+import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
@@ -61,8 +63,14 @@ public class ExportImagesMenuEntry extends MenuEntry {
 
     private void exportImages(final Context context) {
         try {
-            File sdcardDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getMainStorageDir();
-            final File outFolder = new File(sdcardDir, "geopaparazzi_images_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()));
+            String projectName = DaoMetadata.getProjectName();
+            if (projectName == null) {
+                projectName = "geopaparazzi_images_";
+            } else {
+                projectName += "_images_";
+            }
+            File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
+            final File outFolder = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()));
             if (!outFolder.mkdir()) {
                 GPDialogs.warningDialog(context, context.getString(eu.geopaparazzi.core.R.string.export_img_unable_to_create_folder) + outFolder, null);
                 return;
@@ -82,11 +90,13 @@ public class ExportImagesMenuEntry extends MenuEntry {
                             Image image = imagesList.get(i);
                             try {
                                 byte[] imageData = imageHelper.getImageData(image.getId());
-                                File imageFile = new File(outFolder, image.getName());
+                                if (imageData != null) {
+                                    File imageFile = new File(outFolder, image.getName());
 
-                                FileOutputStream fos = new FileOutputStream(imageFile);
-                                fos.write(imageData);
-                                fos.close();
+                                    FileOutputStream fos = new FileOutputStream(imageFile);
+                                    fos.write(imageData);
+                                    fos.close();
+                                }
                             } catch (IOException e) {
                                 GPLog.error(this, "For file: " + image.getName(), e);
                             } finally {

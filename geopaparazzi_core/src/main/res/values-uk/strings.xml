@@ -131,9 +131,7 @@
   <string name="type_to_filter">напишіть для фільтрування</string>
   <string name="geopapcloud_user_label">Користувач</string>
   <string name="geopapcloud_password_label">Пароль</string>
-  <string name="geopapcloud_server_label">Сервер для з’єднання</string>
   <string name="exporting_data">Експорт даних</string>
-  <string name="exporting_data_to_the_cloud">Експорт даних до хмари.</string>
   <string name="exporting_data_to_kmz">Експорт даних до KMZ.</string>
   <string name="exporting_data_to_gpx">Експорт даних до GPX</string>
   <string name="media_upload">ЗАВАНТАЖЕННЯ МЕДІА</string>
@@ -150,7 +148,6 @@
   <string name="select_map_to_use">Виберіть мапу для використання</string>
   <string name="no_map_file_found_going_to_mapnik">Неможливо знайти файл мапи, перемикання до MAPNIK як джерела.</string>
   <string name="enter_project_description">Введіть опис проекту</string>
-  <string name="no_images">Без зображень</string>
   <string name="with_images">З зображеннями</string>
   <string name="successfully_imported_bookmarks">Успішно імпортовано закладки:</string>
   <string name="error_bookmarks_import">Сталася помилка при імпортуванні закладок.</string>
@@ -360,4 +357,5 @@
   <string name="error_while_removing_notes">Сталася помилка під час вилучення нотаток:</string>
   <string name="removing_notes">Вилучення нотаток...</string>
   <string name="interrupted_by_user">Перервано користувачем</string>
+  <!--geoss2go profiles-->
 </resources>

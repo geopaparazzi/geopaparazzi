@@ -130,16 +130,9 @@
   <string name="view_in_mixare">Pokaż w mixare</string>
   <string name="gps_use_coarse">Użyj pozycji opartej o sieć zamiast GPS (wymaga restartu)</string>
   <string name="type_to_filter">wpisz aby przefiltrować</string>
-  <string name="geopapcloud_preferences">Ustawienia synchronizacji projektów z chmurą</string>
-  <string name="geopapcloud_preferences_summary">Ustaw poświadczenia i ustawienia dla serwerów synchronizacji z chmurą.</string>
   <string name="geopapcloud_user_label">Użytkownik</string>
   <string name="geopapcloud_password_label">Hasło</string>
-  <string name="geopapcloud_server_label">Serwer do podłączenia</string>
   <string name="exporting_data">Eksportowanie danych</string>
-  <string name="error_set_cloud_settings">Preferencje synchronizacji z chmurą nie zostały ustawione poprawnie. Proszę sprawdzić swoje ustawienia.</string>
-  <string name="exporting_data_to_the_cloud">Eksportowanie danych do chmury.</string>
-  <string name="error_uploadig_project_to_cloud">Wystąpił błąd podczas wysyłania danych do chmury</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projekt został poprawnie przesłany do chmury</string>
   <string name="exporting_data_to_kmz">Eksport danych do KMZ.</string>
   <string name="exporting_data_to_gpx">Eksport danych do GPX</string>
   <string name="media_upload">PRZESYŁANIE MEDIÓW</string>
@@ -156,7 +149,6 @@
   <string name="select_map_to_use">Wskaż mapę do użycia</string>
   <string name="no_map_file_found_going_to_mapnik">Nie mogę znaleźć pliku map, przełączam się na źródło kafelków MAPNIK.</string>
   <string name="enter_project_description">Podaj opis dla projektu</string>
-  <string name="no_images">Bez obrazków</string>
   <string name="with_images">Z obrazkami</string>
   <string name="successfully_imported_bookmarks">Poprawnie zaimportowano zakładki:</string>
   <string name="error_bookmarks_import">Wystąpił błąd podczas importowania zakładek.</string>
@@ -388,17 +380,10 @@
   <string name="removing_notes">Usuwanie notatek...</string>
   <string name="interrupted_by_user">Przerwane przez użytkownika</string>
   <string name="import_cloud_data">Dane w chmurze</string>
-  <string name="browse_images">Przeglądanie obrazków</string>
   <string name="new_picture">Nowy obrazek</string>
   <string name="Images">Obrazki</string>
-  <string name="confirm_remove_image">Czy naprawdę chcesz usunąć obrazek?</string>
   <string name="upload_to_cloud_prompt">Przesłać aktywny projekt do chmury?</string>
   <string name="data_to_pdf_label">Formularze projektu do PDF</string>
   <string name="exporting_data_to_pdf">Eksportuje formularz danych do PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 obrazek</item>
-    <item quantity="few">%d obrazków</item>
-    <item quantity="many"></item>
-    <item quantity="other">%d obrazków</item>
-  </plurals>
+  <!--geoss2go profiles-->
 </resources>

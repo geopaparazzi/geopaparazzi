@@ -16,22 +16,39 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1">
 
-            <ImageButton
-                android:id="@+id/dashboardButtonNotes"
-                style="@style/GeopapTheme.Button.Colored"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="0"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/dashboard_note_action_description"
-                app:srcCompat="@drawable/ic_dashboard_notes_24dp" />
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/dashboardButtonNotes"
+                    style="@style/GeopapTheme.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:contentDescription="@string/dashboard_note_action_description"
+                    app:srcCompat="@drawable/ic_dashboard_notes_24dp"
+                    android:stateListAnimator="@null"/>
+
+                <TextView
+                    android:id="@+id/dashboardTextNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="14dp"
+                    android:textColor="@color/main_background"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/dashboardButtonMetadata"
@@ -42,9 +59,10 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/dashboard_metadata_action_description"
-                app:srcCompat="@drawable/ic_dashboard_metadata_24dp"
-                android:textColor="@color/main_text_color" />
+                android:textColor="@color/main_text_color"
+                app:srcCompat="@drawable/ic_dashboard_metadata_24dp" />
         </TableRow>
+
 
         <TableRow
             android:layout_width="match_parent"
@@ -52,16 +70,33 @@
             android:layout_gravity="center"
             android:layout_weight="1">
 
-            <ImageButton
-                android:id="@+id/dashboardButtonGpslog"
-                style="@style/GeopapTheme.Button.Colored"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_column="0"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/dashboard_gpslog_action_description"
-                app:srcCompat="@drawable/ic_dashboard_gpslog_24dp" />
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/dashboardButtonGpslog"
+                    style="@style/GeopapTheme.Button.Colored"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:contentDescription="@string/dashboard_gpslog_action_description"
+                    app:srcCompat="@drawable/ic_dashboard_gpslog_24dp"
+                    android:stateListAnimator="@null"/>
+
+                <TextView
+                    android:id="@+id/dashboardTextGpslog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginStart="14dp"
+                    android:textColor="@color/main_background"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
 
             <ImageButton
                 android:id="@+id/dashboardButtonMapview"
@@ -111,5 +146,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_panic_24dp"/>
+        app:srcCompat="@drawable/ic_panic_24dp" />
 </FrameLayout>

@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -276,6 +277,9 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }
+        }
+        if (images == null) {
+            return Collections.emptyList();
         }
         return images;
     }

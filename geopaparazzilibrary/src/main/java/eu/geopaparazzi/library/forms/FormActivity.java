@@ -19,7 +19,9 @@ package eu.geopaparazzi.library.forms;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -33,6 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +77,8 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
  */
 @SuppressWarnings("nls")
 public class FormActivity extends AppCompatActivity implements IFragmentListSupporter {
-//    private final int RETURNCODE_DETAILACTIVITY = 665;
+    //    private final int RETURNCODE_DETAILACTIVITY = 665;
+    public static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
 
     private double latitude = -9999.0;
     private double longitude = -9999.0;
@@ -90,8 +94,9 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         try {
             Bundle extras = getIntent().getExtras();
@@ -121,6 +126,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                     FormInfoHolder formInfoHolder = new FormInfoHolder();
                     if (formInfoHolder.formName == null)
                         formInfoHolder.formName = formNames4Section.get(0);
+                    mFormName = formInfoHolder.formName;
                     formInfoHolder.noteId = noteId;
                     formInfoHolder.longitude = longitude;
                     formInfoHolder.latitude = latitude;
@@ -134,6 +140,19 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                 }
 
             }
+
+
+            String titleString = toolbar.getTitle().toString();
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
+            if (mSectionName != null && mSectionName.length() > 0)
+                titleString = mSectionName;
+            if (useMapCenterPosition) {
+                titleString += " (" + getString(R.string.note_in_map_center) + ")";
+            } else {
+                titleString += " (" + getString(R.string.note_in_gps) + ")";
+            }
+            getSupportActionBar().setTitle(titleString);
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
@@ -222,25 +241,45 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                 GPLog.error(this, null, e);
                 GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
             }
-        } else if (id == R.id.action_save) {
-            try {
-                saveAction();
-            } catch (Exception e) {
-                GPLog.error(this, null, e);
-                GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
-            }
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void save(View view) {
+        try {
+            saveAction();
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            GPDialogs.warningDialog(this, e.getLocalizedMessage(), null);
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        if (noteIsNew) {
-            Intent intent = getIntent();
-            intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
-            setResult(Activity.RESULT_CANCELED, intent);
-        }
-        super.onBackPressed();
+        GPDialogs.yesNoMessageDialog(this, getString(R.string.form_exit_prompt),
+                new Runnable() {
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (noteIsNew) {
+                                    cancelResult();
+                                }
+                                FormActivity.super.onBackPressed();
+                            }
+                        });
+
+                    }
+                }, null
+        );
+    }
+
+    private void cancelResult() {
+        Intent intent = getIntent();
+        intent.putExtra(LibraryConstants.DATABASE_ID, noteId);
+        setResult(Activity.RESULT_CANCELED, intent);
     }
 
     private void shareAction() throws Exception {
