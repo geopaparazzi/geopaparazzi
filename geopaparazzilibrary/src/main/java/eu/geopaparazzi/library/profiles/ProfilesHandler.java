@@ -95,7 +95,11 @@ public enum ProfilesHandler {
      */
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
-        return getProfilesFromJson(profilesJson);
+        return getProfilesFromJson(profilesJson, false);
+    }
+    public List<Profile> getProfilesFromPreferences(SharedPreferences preferences, boolean bWebOnly) throws JSONException {
+        String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
+        return getProfilesFromJson(profilesJson, bWebOnly);
     }
 
     /**
@@ -119,7 +123,7 @@ public enum ProfilesHandler {
      * @throws JSONException
      */
     @NonNull
-    public List<Profile> getProfilesFromJson(String profilesJson) throws JSONException {
+    public List<Profile> getProfilesFromJson(String profilesJson, boolean bWebOnly) throws JSONException {
         List<Profile> profilesList = new ArrayList<>();
 
         if (profilesJson.trim().length() == 0)
@@ -129,8 +133,8 @@ public enum ProfilesHandler {
         JSONArray profilesArray = root.getJSONArray(PROFILES);
         for (int i = 0; i < profilesArray.length(); i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-            Profile profile = getProfileFromJson(profileObject);
-            profilesList.add(profile);
+            Profile profile = getProfileFromJson(profileObject, bWebOnly);
+            if (profile != null) profilesList.add(profile);
         }
         return profilesList;
     }
@@ -142,8 +146,13 @@ public enum ProfilesHandler {
      * @return the profile.
      * @throws JSONException
      */
-    public Profile getProfileFromJson(JSONObject profileObject) throws JSONException {
+    public Profile getProfileFromJson(JSONObject profileObject)throws JSONException{
+        return getProfileFromJson( profileObject,false);
+    }
+
+    public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly) throws JSONException {
         Profile profile = new Profile();
+        boolean isWebProfile = false;
 
         Iterator<String> attributesNameIterator = profileObject.keys();
         while (attributesNameIterator.hasNext()) {
@@ -202,6 +211,7 @@ public enum ProfilesHandler {
                     if (projectObject.has(UPLOADURL)) {
                         String uploadurl = projectObject.getString(UPLOADURL);
                         profileProject.projectUploadUrl = uploadurl;
+                        if ( uploadurl != null && !uploadurl.isEmpty() ) isWebProfile = true;
                     }
                     if (projectObject.has(SIZE)) {
                         long size = projectObject.getLong(SIZE);
@@ -298,12 +308,17 @@ public enum ProfilesHandler {
                 Object object = profileObject.get(attributeName);
                 profile.vendorAttributes.put(attributeName, object.toString());
             }
-
-
         }
 
-
-        return profile;
+        if (bWebOnly) {
+            if (isWebProfile){
+                return profile;
+            } else {
+                return null;
+            }
+        } else {
+            return profile;
+        }
     }
 
 

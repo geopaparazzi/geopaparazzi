@@ -51,6 +51,43 @@ public enum WebProfileManager {
      */
     INSTANCE;
 
+    public static String UPLOADPATH = "";
+
+    /**
+     * Uploads a project folder as zip to the given server via POST.
+     *
+     * @param context the {@link Context} to use.
+     * @param server  the server to which to upload.
+     * @param user    the username for authentication.
+     * @param passwd  the password for authentication.
+     * @return the return message.
+     */
+    public String uploadProfile(Context context, String server, String user, String passwd) {
+        try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+            File databaseFile = resourcesManager.getDatabaseFile();
+
+            server = addActionPath(server, UPLOADPATH);
+            String result = NetworkUtilities.sendFilePost(context, server, databaseFile, user, passwd);
+            if (GPLog.LOG) {
+                GPLog.addLogEntry(this, result);
+            }
+            return result;
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            return e.getLocalizedMessage();
+        }
+    }
+
+    private String addActionPath(String server, String path) {
+        if (server.endsWith("/")) {
+            return server + path;
+        } else {
+            return server + "/" + path;
+        }
+    }
+
+
     /**
      * Downloads the profile list from the given server via GET.
      *

@@ -263,26 +263,38 @@ public class WebProfilesListActivity extends AppCompatActivity implements Progre
 
     private void downloadProfile(Profile selectedWebprofile) {
         List<Parcelable> downloadables = new ArrayList<>();
+
         if (selectedWebprofile.profileTags != null) {
             selectedWebprofile.profileTags.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileTags.getRelativePath()).getAbsolutePath());
             downloadables.add(selectedWebprofile.profileTags);
         }
+
         if (selectedWebprofile.profileProject != null) {
             selectedWebprofile.profileProject.setDestinationPath(selectedWebprofile.getFile(selectedWebprofile.profileProject.getRelativePath()).getAbsolutePath());
             downloadables.add(selectedWebprofile.profileProject);
         }
-        for (ProfileBasemaps item : selectedWebprofile.basemapsList) {
-            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+
+        if (selectedWebprofile.basemapsList != null) {
+            for (ProfileBasemaps item : selectedWebprofile.basemapsList) {
+                item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+            }
+            downloadables.addAll(selectedWebprofile.basemapsList);
         }
-        downloadables.addAll(selectedWebprofile.basemapsList);
-        for (ProfileOtherfiles item : selectedWebprofile.otherFilesList) {
-            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+
+        if (selectedWebprofile.otherFilesList != null) {
+            for (ProfileOtherfiles item : selectedWebprofile.otherFilesList) {
+                item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+            }
+            downloadables.addAll(selectedWebprofile.otherFilesList);
         }
-        downloadables.addAll(selectedWebprofile.otherFilesList);
-        for (ProfileSpatialitemaps item : selectedWebprofile.spatialiteList) {
-            item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+
+        if (selectedWebprofile.spatialiteList != null) {
+            for (ProfileSpatialitemaps item : selectedWebprofile.spatialiteList) {
+                item.setDestinationPath(selectedWebprofile.getFile(item.getRelativePath()).getAbsolutePath());
+            }
+            downloadables.addAll(selectedWebprofile.spatialiteList);
         }
-        downloadables.addAll(selectedWebprofile.spatialiteList);
+
 
         downloadProfile = selectedWebprofile;
         progressBarDialogFragment = ProgressBarDialogFragment.newInstance(downloadables.toArray(new Parcelable[downloadables.size()]));

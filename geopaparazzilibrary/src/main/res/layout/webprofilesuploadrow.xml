@@ -7,22 +7,22 @@
     android:padding="10dip">
 
     <ImageView
-        android:id="@+id/downloadprofile_image"
+        android:id="@+id/cloud_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/download_icon_description"
-        android:src="@drawable/ic_download_from_cloud"
-        app:srcCompat="@drawable/ic_download_from_cloud" />
+        android:src="@drawable/ic_cloud_upload"
+        app:srcCompat="@drawable/ic_cloud_upload" />
 
     <TextView
         android:id="@+id/nametext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/downloadprofile_image"
-        android:layout_toRightOf="@+id/downloadprofile_image"
+        android:layout_alignTop="@+id/cloud_image"
+        android:layout_toRightOf="@+id/cloud_image"
         android:text="Title"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/datetext"
-        android:layout_toEndOf="@+id/downloadprofile_image"
+        android:layout_toEndOf="@+id/cloud_image"
         android:text="Comments"
         android:textAppearance="@style/GPTextViewStyle"
         android:textColor="@color/main_selection_border"

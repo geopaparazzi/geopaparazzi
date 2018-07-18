@@ -74,4 +74,5 @@ dependencies {
     implementation project(':geopaparazzi_projects_import_plugins')
     implementation project(':geopaparazzi_projects_export_plugins')
     implementation project(':geopaparazzi_profiles_import_plugins')
+    implementation project(':geopaparazzi_profiles_export_plugins')
 }
