@@ -34,17 +34,17 @@
             android:padding="10dip">
 
             <LinearLayout
+                android:id="@+id/positionType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:padding="10dip">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/centerText"
                     style="@style/GPTextViewStyle"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="5dip"
                     android:text="@string/map_center"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -54,13 +54,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_horizontal"
+                    android:scaleX="1"
+                    android:scaleY="1"
                     android:text="" />
 
                 <TextView
                     android:id="@+id/gpsText"
                     style="@style/GPTextViewStyle"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="5dip"
                     android:text="@string/gps_position"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
