@@ -94,8 +94,6 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private double mapCenterElevation;
     private String[] tagNamesArray;
     private double[] gpsLocation;
-    private TextView textCenterText;
-    private TextView textGpsText;
     private Switch togglePositionTypeButtonGps;
     private BroadcastReceiver broadcastReceiver;
 
@@ -426,6 +424,8 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     }
 
     private void setToggleSize() {
+        TextView textCenterText;
+        TextView textGpsText;
 
         int topMargin   = 50 + textsizeFactor * 20;
         int leftMargin  = 10 + textsizeFactor * 30;
