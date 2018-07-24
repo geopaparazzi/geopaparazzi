@@ -54,6 +54,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_horizontal"
+                    android:scaleX="1"
+                    android:scaleY="1"
                     android:text="" />
 
                 <TextView

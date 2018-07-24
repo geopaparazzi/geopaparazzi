@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -134,6 +135,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 edit.apply();
             }
         });
+
+        textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
+                DEFAULT_GUITEXTSIZEFACTOR);
+        setToggleSize();
 
         double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         if (mapCenter != null) {
@@ -413,6 +418,25 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         buttonGridView.setNumColumns(gridColumnCount);
         textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
                 DEFAULT_GUITEXTSIZEFACTOR);
+        setToggleSize();
         buttonGridView.setAdapter(arrayAdapter);
+    }
+
+    private void setToggleSize() {
+        TextView textCenterText;
+        TextView textGpsText;
+
+        int topMargin   = 50 + textsizeFactor * 20;
+        int leftMargin  = 10 + textsizeFactor * 30;
+        int rightMargin = 10 + textsizeFactor * 50;
+
+        textCenterText = findViewById(R.id.centerText);
+        textCenterText.setPadding(0,topMargin,rightMargin,topMargin);  // left,top,right,bottom
+
+        textGpsText = findViewById(R.id.gpsText);
+        textGpsText.setPadding(leftMargin,topMargin,0,topMargin);
+
+        togglePositionTypeButtonGps.setScaleX(textsizeFactor);
+        togglePositionTypeButtonGps.setScaleY(textsizeFactor);
     }
 }
