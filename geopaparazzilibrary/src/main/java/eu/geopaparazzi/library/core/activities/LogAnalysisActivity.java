@@ -232,7 +232,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
     private boolean messageOk(String logMessage) {
         boolean allFalse = //
-                !showError && //
+                        !showError && //
                         !showSession && //
                         !showEvento && //
                         !showSendCleanup && //
@@ -240,31 +240,31 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
                         !showMemory;
         String logMessageLC = logMessage.toLowerCase();
         if (isGps(logMessageLC)) {
-            if (!allFalse && !showSession) {
+            if (allFalse || !showSession) {
                 return false;
             }
-        } else if (isInfo(logMessageLC)) {
-            if (!allFalse && !showEvento) {
+        } else if (isInfo(logMessageLC, logMessage)) {
+            if (allFalse || !showEvento) {
                 return false;
             }
         } else if (isCheck(logMessageLC)) {
-            if (!allFalse && !showSendCleanup) {
+            if (allFalse || !showSendCleanup) {
                 return false;
             }
         } else if (isError(logMessageLC, logMessage)) {
-            if (!allFalse && !showError) {
+            if (allFalse || !showError) {
                 return false;
             }
         } else if (isAnomaly(logMessageLC)) {
-            if (!allFalse && !showAnomalie) {
+            if (allFalse || !showAnomalie) {
                 return false;
             }
         } else if (isMemory(logMessageLC)) {
-            if (!allFalse && !showMemory) {
+            if (allFalse || !showMemory) {
                 return false;
             }
         } else {
-            if (!allFalse) {
+            if (allFalse) {
                 return false;
             }
         }
@@ -278,7 +278,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
             color = COLOR_ERROR;
         } else if (isGps(logMessageLC)) {
             color = COLOR_GPS;
-        } else if (isInfo(logMessageLC)) {
+        } else if (isInfo(logMessageLC, logMessage)) {
             color = COLOR_INFO;
         } else if (isCheck(logMessageLC)) {
             color = COLOR_CHECK;
@@ -291,7 +291,8 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
     }
 
     private static boolean isGps(String logMessageLC) {
-        return logMessageLC.contains("gps");
+        return logMessageLC.contains("gps") ||
+               logMessageLC.contains("satellites") ;
     }
 
     private static boolean isMemory(String logMessageLC) {
@@ -300,14 +301,16 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
                 ;
     }
 
-    private static boolean isInfo(String logMessageLC) {
-        return logMessageLC.contains("daotrackoid: evento aggiunto") || //
-                logMessageLC.contains("daotrackoid: eventi made clean") || //
-                logMessageLC.contains("daotrackoid: closed evento");
+    private static boolean isInfo(String logMessageLC, String logMessage) {
+        return  !isError(logMessageLC,logMessage)  &&
+                !isGps(logMessageLC)    &&
+                !isMemory(logMessageLC) &&
+                !isCheck(logMessageLC);
+
     }
 
     private static boolean isCheck(String logMessageLC) {
-        return logMessageLC.contains("customtiledownloader called with");
+        return logMessageLC.contains("customtiledownloader");
     }
 
     private static boolean isError(String logMessageLC, String logMessage) {
@@ -344,7 +347,6 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
             setButtonColor(toggleButton);
         }
-
     }
 
     private void setButtonColor(ToggleButton toggleButton) {
