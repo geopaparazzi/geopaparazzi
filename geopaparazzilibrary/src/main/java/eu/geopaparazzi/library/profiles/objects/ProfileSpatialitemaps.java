@@ -21,11 +21,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import eu.geopaparazzi.library.network.download.IDownloadable;
+import eu.geopaparazzi.library.network.upload.IUploadable;
 
 /**
  * Created by hydrologis on 19/03/18.
  */
-public class ProfileSpatialitemaps extends ARelativePathResource implements Parcelable, IDownloadable {
+public class ProfileSpatialitemaps extends ARelativePathResource implements Parcelable, IDownloadable, IUploadable {
     public String url = "";
     public String uploadUrl = "";
     public String modifiedDate = "";
@@ -84,6 +85,11 @@ public class ProfileSpatialitemaps extends ARelativePathResource implements Parc
     @Override
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public String getUploadUrl() {
+        return uploadUrl;
     }
 
     @Override

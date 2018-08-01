@@ -1,4 +1,4 @@
-include ':geopaparazzi.app'
+include ':geopaparazzi.app', ':geopaparazzi_profiles_export_plugins'
 include ':geopaparazzi_core'
 include ':geopaparazzispatialitelibrary', ':geopaparazzimapsforge', ':geopaparazzilibrary'
 include ':wms_nww'
@@ -15,3 +15,5 @@ include ':geopaparazzi_projects_export_plugins'
 project(':geopaparazzi_projects_export_plugins').projectDir = new File('plugins/geopaparazzi_projects_export_plugins/')
 include ':geopaparazzi_profiles_import_plugins'
 project(':geopaparazzi_profiles_import_plugins').projectDir = new File('plugins/geopaparazzi_profiles_import_plugins/')
+include ':geopaparazzi_profiles_export_plugins'
+project(':geopaparazzi_profiles_export_plugins').projectDir = new File('plugins/geopaparazzi_profiles_export_plugins/')
