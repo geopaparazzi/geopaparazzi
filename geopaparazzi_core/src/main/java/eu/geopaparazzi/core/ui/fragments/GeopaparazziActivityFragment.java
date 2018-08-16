@@ -212,7 +212,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 if (dirtyNotesCount > 0 && dirtyNotesCount != notesCount) {
                     notesText += "/" + dirtyNotesCount;
                 }
-                notesTextView.setText(notesText);
+//bwf                notesTextView.setText(notesText);
             }
             if (logsCount > 0) {
                 logsTextView.setText(String.valueOf(logsCount));
