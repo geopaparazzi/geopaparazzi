@@ -438,8 +438,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>The Geopaparazzi Survey Server</h1>
 <div class="details">
 <span id="author" class="author">HydroloGIS S.r.l.</span><br>
-<span id="revnumber">version 1.03,</span>
-<span id="revdate">2018-07-09</span>
+<span id="revnumber">version 2.10,</span>
+<span id="revdate">2018-08-23</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -454,7 +454,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_the_dashboard">2.4.1. The dashboard</a></li>
 <li><a href="#_the_mapview">2.4.2. The mapview</a></li>
-<li><a href="#_the_settings_view">2.4.3. The Settings View</a></li>
+<li><a href="#_the_settings_views">2.4.3. The Settings Views</a></li>
+<li><a href="#_the_export_views">2.4.4. The Export Views</a></li>
 </ul>
 </li>
 </ul>
@@ -476,7 +477,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_the_geopaparazzi_survey_server_friends">1. The Geopaparazzi Survey Server &amp; Friends</h2>
 <div class="sectionbody">
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="logo.png" alt="logo" width="30%">
 </div>
@@ -511,7 +512,7 @@ mobile app is available under GPL v3.0.</p>
 it works only on linux systems that have docker installed. Describing the installation of docker goes beyond this
 documentation. Many tutorials are available in the net to install docker.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/01_hub.png" alt="01 hub" width="70%">
 </div>
@@ -522,7 +523,7 @@ documentation. Many tutorials are available in the net to install docker.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v1.03</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v2.10</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -531,7 +532,7 @@ documentation. Many tutorials are available in the net to install docker.</p>
 <div class="paragraph">
 <p>The installation process should reveal something similar to the following (the version number will most probably be different):</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/02_install.png" alt="02 install" width="70%">
 </div>
@@ -619,7 +620,7 @@ the command to run the application is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -p 8080:8080 moovida/gss:v1.03</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -p 8080:8080 moovida/gss:v2.10</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -633,9 +634,9 @@ the command to run the application is:</p>
 <div class="paragraph">
 <p>You should get the following login screen:</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/03_login.png" alt="03 login" width="70%">
+<img src="images/03_login.png" alt="03 login" width="100%">
 </div>
 <div class="title">Figure 3. The GSS login screen.</div>
 </div>
@@ -668,13 +669,50 @@ the command to run the application is:</p>
 <p>The GSS views are organized as follows:</p>
 </div>
 <div class="paragraph">
-<p>The upper toolbar contains, starting from left, the GSS icon, then tools
-that are dedicated to the currently opened view and at the very right
-the about and logout buttons.</p>
+<p>The upper toolbar features the menu button on the left, through which the side toolbar can be hidden. At the very right
+of the toolbar the currently logged user is shown.</p>
 </div>
 <div class="paragraph">
-<p>The left toolbar contains at the top the buttons to switch between availabel views
-and at the bottom the settings button.</p>
+<p>The left toolbar contains buttons to access the available views:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Dashboard</p>
+</li>
+<li>
+<p>Map View</p>
+</li>
+<li>
+<p>Settings</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Surveyors</p>
+</li>
+<li>
+<p>Web Users</p>
+</li>
+<li>
+<p>Map Chooser</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Export</p>
+<div class="ulist">
+<ul>
+<li>
+<p>PDF</p>
+</li>
+<li>
+<p>KMZ</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 <div class="sect3">
 <h4 id="_the_dashboard">2.4.1. The dashboard</h4>
@@ -684,55 +722,57 @@ and at the bottom the settings button.</p>
 <div class="paragraph">
 <p>If no data are available, as in our inizial case, the folloing will be shown:</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/04_dashboard.png" alt="04 dashboard" width="70%">
+<img src="images/04_dashboard.png" alt="04 dashboard" width="100%">
 </div>
-<div class="title">Figure 4. The dashboard.</div>
+<div class="title">Figure 4. The empty dashboard.</div>
+</div>
+<div class="paragraph">
+<p>If instead data are available, the dashboard will give some information about the work in progress:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/04_dashboard2.png" alt="04 dashboard2" width="100%">
+</div>
+<div class="title">Figure 5. The dashboard.</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_the_mapview">2.4.2. The mapview</h4>
 <div class="paragraph">
-<p>From the mapview it is possible to access the Surveyor list from the first button in the top
-toolbar.</p>
+<p>The mapview features the Surveyor list and a map panel.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/05_mapview.png" alt="05 mapview" width="70%">
+<img src="images/05_mapview.png" alt="05 mapview" width="100%">
 </div>
-<div class="title">Figure 5. The mapview with the surveyors list.</div>
+<div class="title">Figure 6. The mapview with the surveyors list.</div>
 </div>
 <div class="paragraph">
-<p>In the combobox the currently available surveyors are listed. To add the data of a
-surveyor to the map, select the surveyor and push the add button at the right of the combobox.</p>
+<p>The surveyor can be actived by selecting the checkbox in the table. Once the data of the
+surveyor are loaded, through the zoom button on top of the table it is possible to zoom to
+the surveyor&#8217;s data extent.</p>
 </div>
-<div class="paragraph">
-<p>Then double-click on the added surveyor. The map will be zoomed to the data of the surveyor.</p>
-</div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/06_surveyor.png" alt="06 surveyor" width="70%">
+<img src="images/06_surveyor.png" alt="06 surveyor" width="100%">
 </div>
-<div class="title">Figure 6. The mapview zoomed on the data of a surveyor.</div>
+<div class="title">Figure 7. The mapview zoomed on the data of a surveyor.</div>
 </div>
 <div class="paragraph">
 <p>If data are uploaded while on the map view, one can either reload the view by refreshing the page
-or use the button to refresh the surveyors list.</p>
+or:</p>
 </div>
-<div class="paragraph">
-<p>The data of a surveyor can be reloaded using the context menu on the surveyors list. It can be accessed
-through right-click:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/07_surveyor_menu.png" alt="07 surveyor menu" width="40%">
-</div>
-<div class="title">Figure 7. The menu on the surveyors table.</div>
-</div>
-<div class="paragraph">
-<p>From the same menu it is also possible to zoom to the data of a surveyor or remove the data
-of a surveyor from the map.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>using the first button to reload the data of the currently loaded surveyor</p>
+</li>
+<li>
+<p>using the last button to reload all the available surveyors</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The data can be queried by clicking on them. Simple information is shown as described below.</p>
@@ -741,7 +781,7 @@ of a surveyor from the map.</p>
 <p>In the case of notes, the main note text, the elevation and the timestamp are shown. Note that
 or notes that have forms, the complex form is not visualized in the information box.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/08_notes.png" alt="08 notes" width="25%">
 </div>
@@ -750,7 +790,7 @@ or notes that have forms, the complex form is not visualized in the information 
 <div class="paragraph">
 <p>For GPS logs the name of the log and the start and end timestamp are shown.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/09_logs.png" alt="09 logs" width="30%">
 </div>
@@ -759,7 +799,7 @@ or notes that have forms, the complex form is not visualized in the information 
 <div class="paragraph">
 <p>For media notes it is possible to visualize the images, by clicking on the image icon.</p>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/10_media.png" alt="10 media" width="70%">
 </div>
@@ -767,9 +807,24 @@ or notes that have forms, the complex form is not visualized in the information 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_settings_view">2.4.3. The Settings View</h4>
+<h4 id="_the_settings_views">2.4.3. The Settings Views</h4>
 <div class="paragraph">
-<p>In the settings view it is possible to:</p>
+<p>Selecting the proper action from the settings menu it is possible to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configure surveyors. New devices that connect and upload are automatically added.
+The name of the surveyor by default is the id of the device. This can be changed
+by double-clicking on the surveyor.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/12_surveyors.png" alt="12 surveyors" width="100%">
+</div>
+<div class="title">Figure 11. Surveyor configuration.</div>
 </div>
 <div class="ulist">
 <ul>
@@ -778,26 +833,11 @@ or notes that have forms, the complex form is not visualized in the information 
 </li>
 </ul>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/11_users.png" alt="11 users" width="70%">
+<img src="images/11_users.png" alt="11 users" width="100%">
 </div>
-<div class="title">Figure 11. Web users configuration.</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Configure surveyors. New devices that connect and upload are automatically added.
-The name of the surveyor by default is the id of the device. This can be changed
-by right-clicking on the surveyor.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/12_surveyors.png" alt="12 surveyors" width="70%">
-</div>
-<div class="title">Figure 12. Surveyor configuration.</div>
+<div class="title">Figure 12. Web users configuration.</div>
 </div>
 <div class="ulist">
 <ul>
@@ -807,25 +847,11 @@ maps that can then be selected in the mapview.</p>
 </li>
 </ul>
 </div>
-<div class="imageblock">
+<div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/13_maps.png" alt="13 maps" width="70%">
+<img src="images/13_maps.png" alt="13 maps" width="100%">
 </div>
 <div class="title">Figure 13. The background maps configuration.</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>In the 'other configurations' part, it is possible to define to which pages
-the normal user has access to.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/14_other_configs.png" alt="14 other configs" width="70%">
-</div>
-<div class="title">Figure 14. Other configurations.</div>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -842,6 +868,38 @@ rights to use the maps you select.
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_the_export_views">2.4.4. The Export Views</h4>
+<div class="paragraph">
+<p>Selecting the proper action from the export menu it is possible to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Export the data of one or more surveyors as PDF:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/14_export_pdf.png" alt="14 export pdf" width="100%">
+</div>
+<div class="title">Figure 14. The PDF export view</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Export the data of one or more surveyors as KMZ:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/15_export_kmz.png" alt="15 export kmz" width="100%">
+</div>
+<div class="title">Figure 15. The KMZ export view</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -855,7 +913,7 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/16_mobile_install.png" alt="16 mobile install" width="70%">
 </div>
-<div class="title">Figure 15. GSSS on play store.</div>
+<div class="title">Figure 16. GSSS on play store.</div>
 </div>
 <div class="paragraph">
 <p>Once installed and launched it will complain about the fact that no project database has been chosen yet:</p>
@@ -864,7 +922,7 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/16_mobile_start.png" alt="16 mobile start" width="30%">
 </div>
-<div class="title">Figure 16. First start of GSSS.</div>
+<div class="title">Figure 17. First start of GSSS.</div>
 </div>
 <div class="paragraph">
 <p>In the side menu it is possible to access several features.</p>
@@ -873,7 +931,7 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/17_mobile_menu.png" alt="17 mobile menu" width="30%">
 </div>
-<div class="title">Figure 17. The main menu.</div>
+<div class="title">Figure 18. The main menu.</div>
 </div>
 <div class="paragraph">
 <p>The first thing to do is to check if the device has an own unique device id. If it
@@ -883,7 +941,7 @@ has one, the following screen will be shown:</p>
 <div class="content">
 <img src="images/17_mobile_menu_id.png" alt="17 mobile menu id" width="30%">
 </div>
-<div class="title">Figure 18. The device id.</div>
+<div class="title">Figure 19. The device id.</div>
 </div>
 <div class="paragraph">
 <p>This is also the id that the server part uses as device identifier.</p>
@@ -899,7 +957,7 @@ The url has to end with <strong>upload</strong>:</p>
 <div class="content">
 <img src="images/17_mobile_menu_url.png" alt="17 mobile menu url" width="30%">
 </div>
-<div class="title">Figure 19. The upload URL of the server.</div>
+<div class="title">Figure 20. The upload URL of the server.</div>
 </div>
 <div class="paragraph">
 <p>From the side menu it is also possible to access some basic settings:</p>
@@ -922,7 +980,7 @@ will be uploaded again.</p>
 <div class="content">
 <img src="images/18_mobile_settings.png" alt="18 mobile settings" width="30%">
 </div>
-<div class="title">Figure 20. The settings dialog.</div>
+<div class="title">Figure 21. The settings dialog.</div>
 </div>
 <div class="paragraph">
 <p>Once the app is configured, it is possible to load a project (first entry
@@ -934,7 +992,7 @@ are shown in the tabbed view:</p>
 <div class="content">
 <img src="images/19_mobile_load.png" alt="19 mobile load" width="30%">
 </div>
-<div class="title">Figure 21. The content of the database that can be synchronized.</div>
+<div class="title">Figure 22. The content of the database that can be synchronized.</div>
 </div>
 <div class="paragraph">
 <p>Also, at the bottom of the main menu, the path and name of the database are shown:</p>
@@ -943,7 +1001,7 @@ are shown in the tabbed view:</p>
 <div class="content">
 <img src="images/19_mobile_menu_loaded.png" alt="19 mobile menu loaded" width="30%">
 </div>
-<div class="title">Figure 22. The path and name of the connected database.</div>
+<div class="title">Figure 23. The path and name of the connected database.</div>
 </div>
 <div class="paragraph">
 <p>To synchronize, the floating action button at the bottom right part can
@@ -953,7 +1011,7 @@ be used. It is possible to synchronize everything or just a part.</p>
 <div class="content">
 <img src="images/20_mobile_syncfab.png" alt="20 mobile syncfab" width="30%">
 </div>
-<div class="title">Figure 23. The action button that allows to upload notes, logs, media or everything.</div>
+<div class="title">Figure 24. The action button that allows to upload notes, logs, media or everything.</div>
 </div>
 <div class="paragraph">
 <p>Once the button is pushed, the app connects to the GSS server and sends
@@ -963,7 +1021,7 @@ the selected data to the server. At the end</p>
 <div class="content">
 <img src="images/21_mobile_syncdone.png" alt="21 mobile syncdone" width="30%">
 </div>
-<div class="title">Figure 24. The dialog of a successful sync.</div>
+<div class="title">Figure 25. The dialog of a successful sync.</div>
 </div>
 <div class="sect2">
 <h3 id="_troubleshooting">3.1. Troubleshooting</h3>
@@ -976,7 +1034,7 @@ to solve the issue and create a new release.</p>
 <div class="content">
 <img src="images/22_send_log.png" alt="22 send log" width="30%">
 </div>
-<div class="title">Figure 25. The send log button.</div>
+<div class="title">Figure 26. The send log button.</div>
 </div>
 </div>
 </div>
@@ -984,7 +1042,7 @@ to solve the issue and create a new release.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.03<br>
+Version 2.10<br>
 </div>
 </div>
 <script type="text/x-mathjax-config">
