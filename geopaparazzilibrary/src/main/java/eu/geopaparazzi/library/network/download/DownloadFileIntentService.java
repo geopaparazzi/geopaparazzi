@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Date;
 
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.dialogs.ProgressBarDialogFragment;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
@@ -89,13 +90,13 @@ public class DownloadFileIntentService extends IntentService {
                     if (p instanceof IDownloadable) {
                         IDownloadable downloadable = (IDownloadable) p;
                         if (isCancelled) {
-                            sendError("Download cancelled by user.");
+                            sendError(getString(R.string.download_Canceled));
                             return;
                         }
 
                         File destFile = new File(downloadable.getDestinationPath());
                         if (destFile.exists()) {
-                            updateBundle.putString(PROGRESS_MESSAGE_KEY, "Not downloading existing: " + destFile.getName());
+                            updateBundle.putString(PROGRESS_MESSAGE_KEY,getString(R.string.download_Exists) + destFile.getName());
                             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                             pause();
                             continue;
@@ -104,13 +105,13 @@ public class DownloadFileIntentService extends IntentService {
                         File parentFile = destFile.getParentFile();
                         if (!parentFile.exists() && !parentFile.mkdirs()) {
                             // can't write on disk
-                            sendError("Unable to write to file: " + destFile.getAbsolutePath());
+                            sendError(getString(R.string.download_CannotWrite) + destFile.getAbsolutePath());
                             pause();
                             return;
                         }
 
                         String url = downloadable.getUrl();
-                        updateBundle.putString(PROGRESS_MESSAGE_KEY, "Downloading: " + destFile.getName());
+                        updateBundle.putString(PROGRESS_MESSAGE_KEY, getString(R.string.download_Downloading) + destFile.getName());
                         updateBundle.putInt(PROGRESS_KEY, 0);
                         resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                         try {
@@ -120,7 +121,7 @@ public class DownloadFileIntentService extends IntentService {
                             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                             pause();
                         } catch (Exception e) {
-                            sendError("An error occurred: " + e.getLocalizedMessage());
+                            sendError(getString(R.string.download_Error) + e.getLocalizedMessage());
 //                        e.printStackTrace();
                             return;
                         }
@@ -148,7 +149,7 @@ public class DownloadFileIntentService extends IntentService {
     }
 
     private void sendDone() {
-        updateBundle.putString(PROGRESS_ENDED_KEY, "Data properly downloaded.");
+        updateBundle.putString(PROGRESS_ENDED_KEY, getString(R.string.download_Downloaded));
         resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
     }
 
@@ -203,7 +204,7 @@ public class DownloadFileIntentService extends IntentService {
             file = new File(file, fileName);
         }
 
-        String msg = "Downloading: " + file.getName();
+        String msg = getString(R.string.download_Downloading) + file.getName();
 
         if (isCancelled) return;
         InputStream in = null;
@@ -235,7 +236,7 @@ public class DownloadFileIntentService extends IntentService {
                 }
 
                 int percentage = (int) ((total * 100) / size);
-                prevPercentage = handlePercentage(percentage, prevPercentage, msg);
+                prevPercentage = handlePercentage(percentage, prevPercentage, msg + " ("+ String.valueOf(percentage) + "%)");
             }
             out.flush();
         } finally {
