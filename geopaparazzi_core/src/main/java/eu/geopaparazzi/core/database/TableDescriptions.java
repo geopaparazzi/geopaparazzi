@@ -112,7 +112,11 @@ public class TableDescriptions {
         /**
          * The last user working on the project key to use.
          */
-        KEY_LASTUSER("lastuser", "Last working user", String.class);
+        KEY_LASTUSER("lastuser", "Last working user", String.class),
+        /**
+         * Teh device id if available.
+         */
+        KEY_DEVICEID("deviceid", "Device Id", String.class);
 
         private String fieldLabel;
         private String fieldName;
