@@ -127,6 +127,7 @@ public final class PathText implements RenderInstruction {
 		if (caption == null) {
 			return;
 		}
+		caption = caption.split(" - ")[0]; // antonello for backward compatibility of version 4
 		renderCallback.renderWayText(caption, this.paint, this.stroke);
 	}
 

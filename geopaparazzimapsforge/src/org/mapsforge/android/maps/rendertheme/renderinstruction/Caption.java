@@ -128,6 +128,7 @@ public final class Caption implements RenderInstruction {
 		if (caption == null) {
 			return;
 		}
+		caption = caption.split(" - ")[0]; // antonello for backward compatibility of version 4
 		renderCallback.renderPointOfInterestCaption(caption, this.dy, this.paint, this.stroke);
 	}
 
@@ -137,6 +138,7 @@ public final class Caption implements RenderInstruction {
 		if (caption == null) {
 			return;
 		}
+		caption = caption.split(" - ")[0]; // antonello for backward compatibility of version 4
 		renderCallback.renderAreaCaption(caption, this.dy, this.paint, this.stroke);
 	}
 

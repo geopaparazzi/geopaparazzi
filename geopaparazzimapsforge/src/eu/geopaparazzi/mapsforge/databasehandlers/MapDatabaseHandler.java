@@ -47,7 +47,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler  {
+public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
     private List<MapTable> mapTableList;
     private FileOpenResult fileOpenResult;
     private MapDatabase mapDatabase = null;
@@ -99,10 +99,12 @@ public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler  {
                 throw new IOException("Could not open the map database: " + databasePath);
             }
             mapFileInfo = mapDatabase.getMapFileInfo();
-            tableName = mapFileInfo.comment;
             databaseFileName = databaseFile.getName();
-            if ((tableName == null) || (tableName.length() == 0)) {
+            try {
                 tableName = this.databaseFile.getName().substring(0, this.databaseFile.getName().lastIndexOf("."));
+            } catch (java.lang.Exception ex) {
+                // try comment tag
+                tableName = mapFileInfo.comment;
             }
             boundsWest = mapFileInfo.boundingBox.getMinLongitude();
             boundsSouth = mapFileInfo.boundingBox.getMinLatitude();
