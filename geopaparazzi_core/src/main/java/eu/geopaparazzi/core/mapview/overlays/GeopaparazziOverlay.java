@@ -259,7 +259,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      */
     public abstract int itemSize();
 
-    private void drawWayPathOnCanvas(Canvas canvas, Point drawPosition, OverlayWay overlayWay) {
+    private void drawWayPathOnCanvas(Canvas canvas, Point drawPosition, OverlayWay overlayWay, boolean isLastAndLogging) {
         // assemble the ways
         this.wayPath.reset();
         for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
@@ -294,7 +294,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
             size = size * 2;
-            canvas.drawCircle(lastX, lastY, size, wayStartPaintFill);
+            if (!isLastAndLogging)
+                canvas.drawCircle(lastX, lastY, size, wayStartPaintFill);
             canvas.drawRect(x - size, y - size, x + size, y + size, wayStartPaintFill);
         }
 
@@ -382,6 +383,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          */
         drawFromSpatialite(canvas, drawPosition, projection, drawZoomLevel);
 
+        boolean isLogging = gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON;
         /*
          * WAYS
          */
@@ -414,7 +416,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 overlayWay.cachedZoomLevel = drawZoomLevel;
             }
 
-            drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
+            boolean isLastAndLogging = isLogging && wayIndex == numberOfWays - 1;
+            drawWayPathOnCanvas(canvas, drawPosition, overlayWay, isLastAndLogging);
         }
 
         /*
@@ -519,7 +522,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         /*
          * gps logging track
          */
-        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+        if (isLogging) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
