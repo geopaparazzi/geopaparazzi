@@ -440,6 +440,7 @@
     <string name="description_of_the_new_profile">Description of the new profile</string>
     <string name="browse_images" >Browse images</string>
     <string name="confirm_remove_image" >Remove image?</string>
+    <string name="return_to_view_after_note">Return to view after note</string>
 
 
 </resources>

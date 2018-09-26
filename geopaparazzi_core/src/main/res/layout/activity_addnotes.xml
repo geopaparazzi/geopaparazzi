@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 style="@style/GPTextViewStyle"
-                android:text="Return to view after note" />
+                android:text="@string/return_to_view_after_note" />
 
             <GridView
                 android:id="@+id/osmgridview"
