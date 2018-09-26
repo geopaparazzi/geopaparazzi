@@ -130,8 +130,11 @@
   <string name="view_in_mixare">Bekijk in mixare</string>
   <string name="gps_use_coarse">Gebruik de positie op basis van het netwerk in plaats van GPS ( herstart nodig)</string>
   <string name="type_to_filter">Type om te filteren</string>
+  <string name="geopapcloud_preferences">Cloud server instellingen</string>
   <string name="geopapcloud_user_label">Gebruikersnaam</string>
   <string name="geopapcloud_password_label">Wachtwoord</string>
+  <string name="geopapcloud_server_label">Cloud Project server</string>
+  <string name="cloud_profile_url_label">Cloud Profiel URL</string>
   <string name="exporting_data">Exporteer data</string>
   <string name="exporting_data_to_kmz">Exporteer data naar KMZ</string>
   <string name="exporting_data_to_gpx">Exporteer data naar GPX</string>
@@ -149,6 +152,7 @@
   <string name="select_map_to_use">Selecteer de kaart</string>
   <string name="no_map_file_found_going_to_mapnik">Kon de kaart niet vinden, overgegaan op MAPNIK tile bron.</string>
   <string name="enter_project_description">Voer de beschrijving in van het project</string>
+  <string name="no_images">Cloud Profiel</string>
   <string name="with_images">Met afbeeldingen</string>
   <string name="successfully_imported_bookmarks">Kaartenlocaties succesvol geïmporteerd </string>
   <string name="error_bookmarks_import">Er is een fout opgetreden bij het importeren van de kaartlocaties.</string>
@@ -382,9 +386,16 @@
   <string name="interrupted_by_user">Onderbroken door de gebruiker</string>
   <string name="import_cloud_data">Cloud data</string>
   <string name="new_picture">Nieuwe foto</string>
+  <string name="Documents">Dokumenten</string>
+  <string name="Document_title">Dokument#</string>
   <string name="Images">Afbeeldingen</string>
   <string name="upload_to_cloud_prompt">Het huidige project uploaden naar de cloud?</string>
   <string name="data_to_pdf_label">Project formulieren omzetten naar PDF</string>
   <string name="exporting_data_to_pdf">Exporteren formulier data naar PDF</string>
   <!--geoss2go profiles-->
+  <string name="profiles_action_settings">Instellingen</string>
+  <string name="profiles_action_cloud_import">Importeer Cloud Profielen</string>
+  <string name="profiles_action_import">Importeer Profielen</string>
+  <string name="profiles_action_export">Exporteer Profielen</string>
+  <string name="profiles_action_delete">Verwijder alle Profielen</string>
 </resources>
