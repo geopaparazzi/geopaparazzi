@@ -106,6 +106,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private ArrayAdapter<String> arrayAdapter;
     private GridView buttonGridView;
     private CheckBox returnToViewAfterNoteCheckBox;
+    private TagsManager tagsManager;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -187,7 +188,8 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
 
         buttonGridView = findViewById(R.id.osmgridview);
         try {
-            Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
+            tagsManager = TagsManager.getInstance(this);
+            Set<String> sectionNames = tagsManager.getSectionNames();
             tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
@@ -209,6 +211,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 tagButton.setText(spanString);
                 tagButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, tagButton.getTextSize() * textsizeFactor);
                 tagButton.setTextColor(buttonTextColor);
+                String description = tagsManager.getSectionDescriptionByName(tagNamesArray[position]);
+                if (description != null) {
+                    Compat.addTooltip(tagButton, description);
+                }
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;
                 tagButton.setPadding(0, ind, 0, ind);
@@ -421,7 +427,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         try {
             DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "",
                     null);
-            finish();
+            boolean returnToViewAfterNote = returnToViewAfterNoteCheckBox.isChecked();
+            if (!returnToViewAfterNote) {
+                finish();
+            }
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);

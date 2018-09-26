@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONDESCRIPTION;
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMITEMS;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMS;
@@ -112,6 +114,7 @@ public class TagsManager {
     public static String TAGSFILENAME_ENDPATTERN = "tags.json";
 
     private LinkedHashMap<String, JSONObject> sectionsMap = null;
+    private HashMap<String, String> sectionsDescriptionMap = null;
 
     private static TagsManager tagsManager;
 
@@ -146,6 +149,7 @@ public class TagsManager {
     private void getFileTags(Context context) throws Exception {
         if (sectionsMap == null) {
             sectionsMap = new LinkedHashMap<>();
+            sectionsDescriptionMap = new HashMap<>();
         }
         File[] tagsFileArray = null;
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
@@ -183,6 +187,7 @@ public class TagsManager {
         }
 
         sectionsMap.clear();
+        sectionsDescriptionMap.clear();
         for (File tagsFile : tagsFileArray) {
             if (!tagsFile.exists()) continue;
             String tagsFileString = FileUtilities.readfile(tagsFile);
@@ -191,8 +196,12 @@ public class TagsManager {
             for (int i = 0; i < tagsNum; i++) {
                 JSONObject jsonObject = sectionsArrayObj.getJSONObject(i);
                 if (jsonObject.has(ATTR_SECTIONNAME)) {
-                    String sectionName = jsonObject.get(ATTR_SECTIONNAME).toString();
+                    String sectionName = jsonObject.getString(ATTR_SECTIONNAME);
                     sectionsMap.put(sectionName, jsonObject);
+                    if (jsonObject.has(ATTR_SECTIONDESCRIPTION)){
+                        String descr = jsonObject.getString(ATTR_SECTIONDESCRIPTION);
+                        sectionsDescriptionMap.put(sectionName, descr);
+                    }
                 }
             }
         }
@@ -213,6 +222,10 @@ public class TagsManager {
      */
     public JSONObject getSectionByName(String name) {
         return sectionsMap.get(name);
+    }
+
+    public String getSectionDescriptionByName(String sectionName) {
+        return sectionsDescriptionMap.get(sectionName);
     }
 
     /**

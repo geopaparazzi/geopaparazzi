@@ -71,4 +71,10 @@ public class Compat {
             button.setTextAppearance(context, type);
         }
     }
+
+    public static void addTooltip(Button button, String tooltip) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            button.setTooltipText(tooltip);
+        }
+    }
 }
