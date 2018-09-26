@@ -437,4 +437,5 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="description_of_the_new_profile">Descrizione del nuovo Profilo</string>
   <string name="browse_images">Sfoglia immagini</string>
   <string name="confirm_remove_image">Rimuovere l\'immagine?</string>
+  <string name="return_to_view_after_note">Torna alla vista dopo inserimento nota</string>
 </resources>
