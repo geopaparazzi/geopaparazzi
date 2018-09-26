@@ -303,8 +303,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         if (activeProfile != null) {
             if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
                 // hide new project and open project
-                menu.getItem(1).setVisible(false);
-                menu.getItem(2).setVisible(false);
+                menu.getItem(1).setEnabled(false);
+                menu.getItem(2).setEnabled(false);
             }
         }
 
