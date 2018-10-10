@@ -299,6 +299,15 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         mGpsMenuItem = menu.getItem(3);
 
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
+                // hide new project and open project
+                menu.getItem(1).setEnabled(false);
+                menu.getItem(2).setEnabled(false);
+            }
+        }
+
         boolean hasProfilesProvider = false;
         for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
             ProviderInfo[] providers = pack.providers;
