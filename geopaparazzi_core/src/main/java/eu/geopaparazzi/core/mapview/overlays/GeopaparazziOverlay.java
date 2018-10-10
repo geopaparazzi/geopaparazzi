@@ -337,9 +337,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     private void drawLoggingPathOnCanvas(Canvas canvas, Paint fillPaint) {
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
-        if(fillPaint!=null){
+        if (fillPaint != null) {
             canvas.drawPath(this.gpsPath, fillPaint);
-        }else {
+        } else {
             canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
         }
     }
