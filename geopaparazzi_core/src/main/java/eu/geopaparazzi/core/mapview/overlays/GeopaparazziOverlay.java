@@ -259,7 +259,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      */
     public abstract int itemSize();
 
-    private void drawWayPathOnCanvas(Canvas canvas, Point drawPosition, OverlayWay overlayWay, boolean isLastAndLogging) {
+    private Paint drawWayPathOnCanvas(Canvas canvas, Point drawPosition, OverlayWay overlayWay, boolean isLastAndLogging) {
         // assemble the ways
         this.wayPath.reset();
         for (int i = 0; i < overlayWay.cachedWayPositions.length; ++i) {
@@ -300,6 +300,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
 
         // draw them
+        Paint paintFill = null;
         if (overlayWay.hasPaint) {
             // use the paints from the current way
             if (overlayWay.paintOutline != null) {
@@ -307,6 +308,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             }
             if (overlayWay.paintFill != null) {
                 canvas.drawPath(this.wayPath, overlayWay.paintFill);
+                paintFill = overlayWay.paintFill;
             }
         } else {
             // use the default paint objects
@@ -315,8 +317,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
             }
             if (this.defaultWayPaintFill != null) {
                 canvas.drawPath(this.wayPath, this.defaultWayPaintFill);
+                paintFill = defaultWayPaintFill;
             }
         }
+        return paintFill;
     }
 
     private void assembleGpsWayPath(Point drawPosition, OverlayWay overlayWay) {
@@ -331,9 +335,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void drawGpsWayPathOnCanvas(Canvas canvas) {
+    private void drawLoggingPathOnCanvas(Canvas canvas, Paint fillPaint) {
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
-        canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
+        if(fillPaint!=null){
+            canvas.drawPath(this.gpsPath, fillPaint);
+        }else {
+            canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
+        }
     }
 
     private void drawGpsOnCanvas(Canvas canvas) {
@@ -388,6 +396,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          * WAYS
          */
         int numberOfWays = waySize();
+        Paint loggingPaint = null;
         for (int wayIndex = 0; wayIndex < numberOfWays; ++wayIndex) {
             if (stopDrawing()) {
                 // stop working
@@ -417,7 +426,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
             }
 
             boolean isLastAndLogging = isLogging && wayIndex == numberOfWays - 1;
-            drawWayPathOnCanvas(canvas, drawPosition, overlayWay, isLastAndLogging);
+            Paint paint = drawWayPathOnCanvas(canvas, drawPosition, overlayWay, isLastAndLogging);
+            if (isLastAndLogging)
+                loggingPaint = paint;
         }
 
         /*
@@ -543,7 +554,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         }
 
                         assembleGpsWayPath(drawPosition, gpslogOverlay);
-                        drawGpsWayPathOnCanvas(canvas);
+                        drawLoggingPathOnCanvas(canvas, loggingPaint);
                     }
                 }
             }
