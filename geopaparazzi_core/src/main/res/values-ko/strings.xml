@@ -432,4 +432,5 @@
   <string name="description_of_the_new_profile">새로운 프로필 설명</string>
   <string name="browse_images">이미지 탐색</string>
   <string name="confirm_remove_image">이미지를 삭제하시겠습니까?</string>
+  <string name="return_to_view_after_note">메모 후 뷰로 돌아가기</string>
 </resources>

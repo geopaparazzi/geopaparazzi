@@ -159,4 +159,16 @@
   <string name="form_exit_prompt">Tem a certeza que quer sair? As alterações por gravar serão perdidas.</string>
   <string name="note_in_map_center">Centro do Mapa</string>
   <string name="note_in_gps">GPS</string>
+  <string name="download_Canceled">Descarregamento cancelado pelo utilizador.</string>
+  <string name="download_Exists">A não descarregar o existente: </string>
+  <string name="download_CannotWrite">Não é possível gravar no ficheiro: </string>
+  <string name="download_Downloading">A descarregar: </string>
+  <string name="download_Error">Ocorreu um erro: </string>
+  <string name="download_Downloaded">Ficheiro Descarregado.</string>
+  <string name="upload_Canceled">Envio cancelado pelo utilizador.</string>
+  <string name="upload_NotFound">Não foi possível encontrar: </string>
+  <string name="upload_Uploading">A enviar: </string>
+  <string name="upload_Error">Ocorreu um erro: </string>
+  <string name="upload_NonOK">O servidor devolveu o estado não-OK: </string>
+  <string name="upload_Uploaded">Ficheiro enviado.</string>
 </resources>

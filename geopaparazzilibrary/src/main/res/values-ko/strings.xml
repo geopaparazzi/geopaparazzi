@@ -159,4 +159,16 @@
   <string name="form_exit_prompt">종료 하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.</string>
   <string name="note_in_map_center">지도 중심</string>
   <string name="note_in_gps">GPS</string>
+  <string name="download_Canceled">사용자가 다운로드를 취소했습니다.</string>
+  <string name="download_Exists">기존 다운로드 없음:</string>
+  <string name="download_CannotWrite">파일에 쓸 수 없음:</string>
+  <string name="download_Downloading">다운로드중:</string>
+  <string name="download_Error">오류 발생:</string>
+  <string name="download_Downloaded">파일 다운로드를 완료했습니다.</string>
+  <string name="upload_Canceled">사용자가 업로드를 취소했습니다.</string>
+  <string name="upload_NotFound">탐색할 수 없음:</string>
+  <string name="upload_Uploading">업로드 중:</string>
+  <string name="upload_Error">오류 발생:</string>
+  <string name="upload_NonOK">서버가 비정상 상태를 반환:</string>
+  <string name="upload_Uploaded">파일 업로드를 완료했습니다.</string>
 </resources>

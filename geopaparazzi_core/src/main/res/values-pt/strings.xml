@@ -432,4 +432,5 @@
   <string name="description_of_the_new_profile">Descrição do novo perfil</string>
   <string name="browse_images">Navegar pelas imagens</string>
   <string name="confirm_remove_image">Remover imagem?</string>
+  <string name="return_to_view_after_note">Voltar à visualização após a nota</string>
 </resources>
