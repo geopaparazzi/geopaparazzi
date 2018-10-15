@@ -438,8 +438,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>The Geopaparazzi Survey Server</h1>
 <div class="details">
 <span id="author" class="author">HydroloGIS S.r.l.</span><br>
-<span id="revnumber">version 2.10,</span>
-<span id="revdate">2018-08-23</span>
+<span id="revnumber">version 2.12,</span>
+<span id="revdate">2018-10-15</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -456,13 +456,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_the_mapview">2.4.2. The mapview</a></li>
 <li><a href="#_the_settings_views">2.4.3. The Settings Views</a></li>
 <li><a href="#_the_export_views">2.4.4. The Export Views</a></li>
+<li><a href="#_the_project_data_view">2.4.5. The Project Data View</a></li>
+<li><a href="#_the_form_builder_view">2.4.6. The Form Builder View</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a href="#_the_mobile_app_gsss">3. The mobile app, GSSS</a>
 <ul class="sectlevel2">
-<li><a href="#_troubleshooting">3.1. Troubleshooting</a></li>
+<li><a href="#_settings">3.1. Settings</a>
+<ul class="sectlevel3">
+<li><a href="#_checking_the_device_id">3.1.1. Checking the Device Id</a></li>
+<li><a href="#_setting_the_server_url">3.1.2. Setting the server URL</a></li>
+</ul>
+</li>
+<li><a href="#_synchronization">3.2. Synchronization</a></li>
+<li><a href="#_data_download">3.3. Data Download</a></li>
+<li><a href="#_tags_download">3.4. Tags Download</a></li>
+<li><a href="#_troubleshooting">3.5. Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -493,8 +504,7 @@ The app can connect to geopaparazzi projects and synchronize the data contained 
 upload the data to the server.</p>
 </div>
 <div class="paragraph">
-<p>Any device that connects to the server with its ID, will be accepted and if not available, the new id is
-automatically inserted in the central db.</p>
+<p>A device, to be able to connect to the server, needs to be registered in the surveyor settings section of the server by an administrator user.</p>
 </div>
 <div class="paragraph">
 <p>The applications are available as Free and Open Source software. The server is available under EPL v2.0, while the
@@ -523,7 +533,7 @@ documentation. Many tutorials are available in the net to install docker.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v2.10</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v2.12</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -620,7 +630,7 @@ the command to run the application is:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -p 8080:8080 moovida/gss:v2.10</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -e JAVA_OPTS="-Xms1256m -Xmx4g -Dstage.globalfolder=/home/basefolder/" -p 8080:8080 moovida/gss:v2.12</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -688,10 +698,10 @@ of the toolbar the currently logged user is shown.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Surveyors</p>
+<p>Surveyors (admin mode)</p>
 </li>
 <li>
-<p>Web Users</p>
+<p>Web Users (admin mode)</p>
 </li>
 <li>
 <p>Map Chooser</p>
@@ -709,8 +719,26 @@ of the toolbar the currently logged user is shown.</p>
 <li>
 <p>KMZ</p>
 </li>
+<li>
+<p>Database (admin mode)</p>
+</li>
 </ul>
 </div>
+</li>
+<li>
+<p>Project Data (admin mode)</p>
+</li>
+<li>
+<p>Form Builder</p>
+</li>
+<li>
+<p>Log View (admin mode)</p>
+</li>
+<li>
+<p>About</p>
+</li>
+<li>
+<p>Logout</p>
 </li>
 </ul>
 </div>
@@ -743,12 +771,6 @@ of the toolbar the currently logged user is shown.</p>
 <div class="paragraph">
 <p>The mapview features the Surveyor list and a map panel.</p>
 </div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="images/05_mapview.png" alt="05 mapview" width="100%">
-</div>
-<div class="title">Figure 6. The mapview with the surveyors list.</div>
-</div>
 <div class="paragraph">
 <p>The surveyor can be actived by selecting the checkbox in the table. Once the data of the
 surveyor are loaded, through the zoom button on top of the table it is possible to zoom to
@@ -756,9 +778,9 @@ the surveyor&#8217;s data extent.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/06_surveyor.png" alt="06 surveyor" width="100%">
+<img src="images/05_mapview.png" alt="05 mapview" width="100%">
 </div>
-<div class="title">Figure 7. The mapview zoomed on the data of a surveyor.</div>
+<div class="title">Figure 6. The mapview with the surveyors list.</div>
 </div>
 <div class="paragraph">
 <p>If data are uploaded while on the map view, one can either reload the view by refreshing the page
@@ -785,7 +807,7 @@ or notes that have forms, the complex form is not visualized in the information 
 <div class="content">
 <img src="images/08_notes.png" alt="08 notes" width="25%">
 </div>
-<div class="title">Figure 8. Notes.</div>
+<div class="title">Figure 7. Notes.</div>
 </div>
 <div class="paragraph">
 <p>For GPS logs the name of the log and the start and end timestamp are shown.</p>
@@ -794,7 +816,7 @@ or notes that have forms, the complex form is not visualized in the information 
 <div class="content">
 <img src="images/09_logs.png" alt="09 logs" width="30%">
 </div>
-<div class="title">Figure 9. Gps Logs.</div>
+<div class="title">Figure 8. Gps Logs.</div>
 </div>
 <div class="paragraph">
 <p>For media notes it is possible to visualize the images, by clicking on the image icon.</p>
@@ -803,7 +825,7 @@ or notes that have forms, the complex form is not visualized in the information 
 <div class="content">
 <img src="images/10_media.png" alt="10 media" width="70%">
 </div>
-<div class="title">Figure 10. Media notes.</div>
+<div class="title">Figure 9. Media notes.</div>
 </div>
 </div>
 <div class="sect3">
@@ -824,7 +846,7 @@ by double-clicking on the surveyor.</p>
 <div class="content">
 <img src="images/12_surveyors.png" alt="12 surveyors" width="100%">
 </div>
-<div class="title">Figure 11. Surveyor configuration.</div>
+<div class="title">Figure 10. Surveyor configuration.</div>
 </div>
 <div class="ulist">
 <ul>
@@ -837,7 +859,7 @@ by double-clicking on the surveyor.</p>
 <div class="content">
 <img src="images/11_users.png" alt="11 users" width="100%">
 </div>
-<div class="title">Figure 12. Web users configuration.</div>
+<div class="title">Figure 11. Web users configuration.</div>
 </div>
 <div class="ulist">
 <ul>
@@ -851,7 +873,7 @@ maps that can then be selected in the mapview.</p>
 <div class="content">
 <img src="images/13_maps.png" alt="13 maps" width="100%">
 </div>
-<div class="title">Figure 13. The background maps configuration.</div>
+<div class="title">Figure 12. The background maps configuration.</div>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -884,7 +906,7 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/14_export_pdf.png" alt="14 export pdf" width="100%">
 </div>
-<div class="title">Figure 14. The PDF export view</div>
+<div class="title">Figure 13. The PDF export view</div>
 </div>
 <div class="ulist">
 <ul>
@@ -897,7 +919,152 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/15_export_kmz.png" alt="15 export kmz" width="100%">
 </div>
-<div class="title">Figure 15. The KMZ export view</div>
+<div class="title">Figure 14. The KMZ export view</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Export the current database. While it is best to connect to the online database through the port 9092, which is exposed,
+in some environments it might not be possible (ex. Heroku allows only one port). In this
+case it is possible to export the database by downloading it.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/15_1_export_db.png" alt="15 1 export db" width="100%">
+</div>
+<div class="title">Figure 15. The database export view</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_project_data_view">2.4.5. The Project Data View</h4>
+<div class="paragraph">
+<p>In the project data view it is possible to upload datasets that can be downloaded by the mobiles app to
+allow geopaparazzi to access them.</p>
+</div>
+<div class="paragraph">
+<p>The view is split into 3 columns, one for each supported datatype:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>basemaps (mbtiles, mapsforge maps)</p>
+</li>
+<li>
+<p>overlays (spatialite databases)</p>
+</li>
+<li>
+<p>projects (geopaparazzi projects)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The user can simply drag the files in the lower area to upload the files.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/23_dataview_drag.png" alt="23 dataview drag" width="100%">
+</div>
+<div class="title">Figure 16. The project data view</div>
+</div>
+<div class="paragraph">
+<p>File types are placed in the right tables if recongized:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/24_dataview.png" alt="24 dataview" width="100%">
+</div>
+<div class="title">Figure 17. The different datatype tables</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_form_builder_view">2.4.6. The Form Builder View</h4>
+<div class="paragraph">
+<p>The form view is an interactive gui builder for geopaparazzi forms.</p>
+</div>
+<div class="paragraph">
+<p>To better understand the description of its usage, some naming needs to be fixed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>tags</strong>: a tag is what we see as a complete file on geopaparazzi (speak tags.json). From
+version 5.6.2 on Geopaparazzi loads any file that ends with <strong>tags.json</strong> from the geopaparazzi folder,
+allowing tags to be kept separate.</p>
+</li>
+<li>
+<p><strong>section</strong>: a section is what in geopaparazzi is seen as a button in the <strong>add notes</strong> view.</p>
+</li>
+<li>
+<p><strong>form</strong>: a form is a tab of the geopaparazzi view</p>
+</li>
+<li>
+<p><strong>widget</strong>: it is the widget the user interacts with, ex. combobox or textfield</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The naming is a bit confusing, but comes form the early days and is in the source code of geopaparazzi. So, in order
+to be able to always document things the same way, we have to follow these naming.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/25_forms.png" alt="25 forms" width="100%">
+</div>
+<div class="title">Figure 18. The From Builder</div>
+</div>
+<div class="paragraph">
+<p>After creating a tag with the <strong>add</strong> button, one can add a new section to the tag:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/26_forms.png" alt="26 forms" width="100%">
+</div>
+<div class="title">Figure 19. The add section dialog.</div>
+</div>
+<div class="paragraph">
+<p>Once the section is created the user can add <strong>forms</strong> to the section, which will load
+tabs for each one in the tab view.</p>
+</div>
+<div class="paragraph">
+<p>To each of it widgets can be added:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/27_forms.png" alt="27 forms" width="100%">
+</div>
+<div class="title">Figure 20. The add widget menu while adding a widget to a form tab.</div>
+</div>
+<div class="paragraph">
+<p>The add widget dialogs prompt the user for a key and a label and other parameters depending on the type:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/28_forms.png" alt="28 forms" width="100%">
+</div>
+<div class="title">Figure 21. The add text field widget</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/29_forms.png" alt="29 forms" width="100%">
+</div>
+<div class="title">Figure 22. The add combo widget, which can load from a textfile the combobox entries.</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/30_forms.png" alt="30 forms" width="100%">
+</div>
+<div class="title">Figure 23. The work in progress form view.</div>
+</div>
+<div class="paragraph">
+<p>Once the user has finalized his tag entry, it is necessary to mark it visible in order for the mobile app to see it:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/31_forms.png" alt="31 forms" width="70%">
+</div>
+<div class="title">Figure 24. The checkbox to mark the tag visible.</div>
 </div>
 </div>
 </div>
@@ -913,54 +1080,74 @@ rights to use the maps you select.
 <div class="content">
 <img src="images/16_mobile_install.png" alt="16 mobile install" width="70%">
 </div>
-<div class="title">Figure 16. GSSS on play store.</div>
+<div class="title">Figure 25. GSSS on play store.</div>
 </div>
 <div class="paragraph">
-<p>Once installed and launched it will complain about the fact that no project database has been chosen yet:</p>
+<p>Once installed and launched it shows an empty view with the logo:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/16_mobile_start.png" alt="16 mobile start" width="30%">
+<img src="images/32_mobile.png" alt="32 mobile" width="30%">
 </div>
-<div class="title">Figure 17. First start of GSSS.</div>
+<div class="title">Figure 26. First start of GSSS.</div>
 </div>
 <div class="paragraph">
-<p>In the side menu it is possible to access several features.</p>
+<p>In the side menu it is possible to access several features. The first 3 are the synchronization features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Synchronization</p>
+</li>
+<li>
+<p>Data Download</p>
+</li>
+<li>
+<p>Forms Download</p>
+</li>
+</ul>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/17_mobile_menu.png" alt="17 mobile menu" width="30%">
+<img src="images/33_mobile_menu.png" alt="33 mobile menu" width="30%">
 </div>
-<div class="title">Figure 18. The main menu.</div>
+<div class="title">Figure 27. The main menu.</div>
 </div>
+<div class="sect2">
+<h3 id="_settings">3.1. Settings</h3>
+<div class="sect3">
+<h4 id="_checking_the_device_id">3.1.1. Checking the Device Id</h4>
 <div class="paragraph">
 <p>The first thing to do is to check if the device has an own unique device id. If it
 has one, the following screen will be shown:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/17_mobile_menu_id.png" alt="17 mobile menu id" width="30%">
+<img src="images/37_mobile_id.png" alt="37 mobile id" width="30%">
 </div>
-<div class="title">Figure 19. The device id.</div>
+<div class="title">Figure 28. The device id.</div>
 </div>
 <div class="paragraph">
 <p>This is also the id that the server part uses as device identifier.</p>
 </div>
 <div class="paragraph">
-<p>If no id is available, the user will be prompted to insert one.</p>
+<p>If no id is available, the user will be prompted to insert one manually.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_setting_the_server_url">3.1.2. Setting the server URL</h4>
 <div class="paragraph">
-<p>To be able to connect to the GSS server, the url of the server needs to be inserted.
-The url has to end with <strong>upload</strong>:</p>
+<p>To be able to connect to the GSS server, the URL of the server needs to be inserted.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/17_mobile_menu_url.png" alt="17 mobile menu url" width="30%">
+<img src="images/38_mobile_url.png" alt="38 mobile url" width="30%">
 </div>
-<div class="title">Figure 20. The upload URL of the server.</div>
+<div class="title">Figure 29. The upload URL of the server.</div>
 </div>
 <div class="paragraph">
-<p>From the side menu it is also possible to access some basic settings:</p>
+<p>From the right side menu it is also possible to load a new geopaparazzi database
+and access some basic settings:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -976,15 +1163,13 @@ will be uploaded again.</p>
 </li>
 </ol>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="images/18_mobile_settings.png" alt="18 mobile settings" width="30%">
 </div>
-<div class="title">Figure 21. The settings dialog.</div>
 </div>
+<div class="sect2">
+<h3 id="_synchronization">3.2. Synchronization</h3>
 <div class="paragraph">
 <p>Once the app is configured, it is possible to load a project (first entry
-of the menu). A filechooser of dialog will open to select the database to
+of the right side menu). A filechooser of dialog will open to select the database to
 synchronize. Once loaded the list of notes, gps log and media notes
 are shown in the tabbed view:</p>
 </div>
@@ -992,16 +1177,7 @@ are shown in the tabbed view:</p>
 <div class="content">
 <img src="images/19_mobile_load.png" alt="19 mobile load" width="30%">
 </div>
-<div class="title">Figure 22. The content of the database that can be synchronized.</div>
-</div>
-<div class="paragraph">
-<p>Also, at the bottom of the main menu, the path and name of the database are shown:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/19_mobile_menu_loaded.png" alt="19 mobile menu loaded" width="30%">
-</div>
-<div class="title">Figure 23. The path and name of the connected database.</div>
+<div class="title">Figure 30. The content of the database that can be synchronized.</div>
 </div>
 <div class="paragraph">
 <p>To synchronize, the floating action button at the bottom right part can
@@ -1011,7 +1187,7 @@ be used. It is possible to synchronize everything or just a part.</p>
 <div class="content">
 <img src="images/20_mobile_syncfab.png" alt="20 mobile syncfab" width="30%">
 </div>
-<div class="title">Figure 24. The action button that allows to upload notes, logs, media or everything.</div>
+<div class="title">Figure 31. The action button that allows to upload notes, logs, media or everything.</div>
 </div>
 <div class="paragraph">
 <p>Once the button is pushed, the app connects to the GSS server and sends
@@ -1019,12 +1195,45 @@ the selected data to the server. At the end</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/21_mobile_syncdone.png" alt="21 mobile syncdone" width="30%">
+<img src="images/40_mobile_upload.png" alt="40 mobile upload" width="30%">
 </div>
-<div class="title">Figure 25. The dialog of a successful sync.</div>
+<div class="title">Figure 32. The dialog of a successful sync.</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_troubleshooting">3.1. Troubleshooting</h3>
+<h3 id="_data_download">3.3. Data Download</h3>
+<div class="paragraph">
+<p>The <strong>Data download</strong> action opens an empty view and a referesh button. Once hit, the
+app will download the data available for the user to download:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/35_mobile_data.png" alt="35 mobile data" width="30%">
+</div>
+<div class="title">Figure 33. The data list downloaded from the server.</div>
+</div>
+<div class="paragraph">
+<p>The icons show the different types of dataset.</p>
+</div>
+<div class="paragraph">
+<p>One can download a dataset by tapping on the most left button with the cloud download icon.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tags_download">3.4. Tags Download</h3>
+<div class="paragraph">
+<p>The <strong>Forms download</strong> action opens an empty view and a referesh button. Once hit, the
+app will download the tags available for the user to download:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/36_mobile_tags.png" alt="36 mobile tags" width="30%">
+</div>
+<div class="title">Figure 34. The tags list downloaded from the server.</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_troubleshooting">3.5. Troubleshooting</h3>
 <div class="paragraph">
 <p>If you experience issues or problems of any kind, you can use the <strong>send debug log</strong>
 button to send some debug information about the error to the developers. This will help them
@@ -1034,7 +1243,16 @@ to solve the issue and create a new release.</p>
 <div class="content">
 <img src="images/22_send_log.png" alt="22 send log" width="30%">
 </div>
-<div class="title">Figure 26. The send log button.</div>
+<div class="title">Figure 35. The send log button.</div>
+</div>
+<div class="paragraph">
+<p>Note that the more information is added in the text view, the better it will be for the developers.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/39_mobile_log.png" alt="39 mobile log" width="30%">
+</div>
+<div class="title">Figure 36. The send log dialog</div>
 </div>
 </div>
 </div>
@@ -1042,7 +1260,7 @@ to solve the issue and create a new release.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 2.10<br>
+Version 2.12<br>
 </div>
 </div>
 <script type="text/x-mathjax-config">
