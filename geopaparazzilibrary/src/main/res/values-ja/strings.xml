@@ -159,4 +159,16 @@
   <string name="form_exit_prompt">終了しますか。未保存の変更は失われます。</string>
   <string name="note_in_map_center">地図の中心</string>
   <string name="note_in_gps">GPS</string>
+  <string name="download_Canceled">ダウンロードはユーザーによりキャンセルされました。</string>
+  <string name="download_Exists">ダウンロードするものはありません:</string>
+  <string name="download_CannotWrite">ファイルに書き込めません:</string>
+  <string name="download_Downloading">ダウンロード中:</string>
+  <string name="download_Error">エラーが発生しました:</string>
+  <string name="download_Downloaded">ファイルがダウンロードされました。</string>
+  <string name="upload_Canceled">アップロードはユーザーによりキャンセルされました。</string>
+  <string name="upload_NotFound">見つかりません:</string>
+  <string name="upload_Uploading">アップロード中:</string>
+  <string name="upload_Error">エラーが発生しました:</string>
+  <string name="upload_NonOK">サーバーが OKではないステータスを返しました:</string>
+  <string name="upload_Uploaded">ファイルがアップロードされました。</string>
 </resources>

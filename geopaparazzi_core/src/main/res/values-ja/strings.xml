@@ -436,4 +436,5 @@
   <string name="description_of_the_new_profile">新規プロファイル名の説明</string>
   <string name="browse_images">画像参照</string>
   <string name="confirm_remove_image">画像を削除しますか？</string>
+  <string name="return_to_view_after_note">ノート作成後にビューに戻る</string>
 </resources>
