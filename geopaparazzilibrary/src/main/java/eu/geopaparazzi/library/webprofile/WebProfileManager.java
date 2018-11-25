@@ -114,7 +114,7 @@ public enum WebProfileManager {
 //            server = addActionPath(server, DOWNLOADLISTPATH);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
-        List<Profile> webprofilesList = json2WebprofilesList(jsonString);
+        List<Profile> webprofilesList = json2WebprofilesList(jsonString, server);
         return webprofilesList;
     }
 
@@ -125,7 +125,7 @@ public enum WebProfileManager {
      * @return the list of {@link Profile}.
      * @throws Exception if something goes wrong.
      */
-    public static List<Profile> json2WebprofilesList(String json) throws Exception {
+    public static List<Profile> json2WebprofilesList(String json, String server) throws Exception {
         List<Profile> wpList = new ArrayList<>();
 
         JSONObject jsonObject = new JSONObject(json);
@@ -133,7 +133,7 @@ public enum WebProfileManager {
         int profileNum = profilesArray.length();
         for (int i = 0; i < profileNum; i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-            Profile profile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
+            Profile profile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject, server);
             wpList.add(profile);
         }
         return wpList;
