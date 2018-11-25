@@ -52,6 +52,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
 
     private Spinner mainComboSpinner;
     private ArrayList<Spinner> orderedSubCombosList;
+    private ArrayList<TextView> orderedSubTextviewsList;
     private LinkedHashMap<String, List<NamedList<String>>> dataMap;
 
     /**
@@ -145,6 +146,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         combosLayout.addView(mainComboSpinner);
 
         orderedSubCombosList = new ArrayList<>();
+        orderedSubTextviewsList = new ArrayList<>();
 
         List<NamedList<String>> namedLists = dataMap.get(_mainComboValue);
         if (namedLists == null) {
@@ -163,6 +165,8 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             subTextView.setPadding(2, 2, 2, 2);
             subTextView.setText(namedList.name);
             subTextView.setTextColor(Compat.getColor(context, R.color.formcolor));
+
+            orderedSubTextviewsList.add(subTextView);
             combosLayout.addView(subTextView);
 
             Spinner subSpinner = new Spinner(context);
@@ -242,6 +246,9 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             }
             for (int i = 0; i < namedLists.size(); i++) {
                 NamedList<String> namedList = namedLists.get(i);
+                TextView subTextView = orderedSubTextviewsList.get(i);
+                subTextView.setText(namedList.name);
+
                 Spinner subSpinner = orderedSubCombosList.get(i);
                 ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, namedList.items);
                 combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
