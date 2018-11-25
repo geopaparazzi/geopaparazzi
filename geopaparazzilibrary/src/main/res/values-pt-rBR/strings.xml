@@ -156,7 +156,6 @@
   <string name="gps_status_notregistered">GPS ligado mas não registrado para atualização</string>
   <string name="gps_status_no_fix">GPS registrado para atualizações mas sem correção</string>
   <string name="gps_status_fix">GPS com correção</string>
-  <string name="form_exit_prompt">Você tem certeza que quer sair? Todas as atualizações serão perdidas.</string>
   <string name="note_in_map_center">Centro do Mapa</string>
   <string name="note_in_gps">GPS</string>
   <string name="download_Canceled">Download cancelado pelo usuário</string>

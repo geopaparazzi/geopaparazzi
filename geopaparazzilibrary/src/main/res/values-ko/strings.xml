@@ -156,7 +156,6 @@
   <string name="gps_status_notregistered">GPS가 켜져 있지만 업데이트에 등록되지 않음</string>
   <string name="gps_status_no_fix">GPS가 업데이트에 등록되었지만 수정되지 않음</string>
   <string name="gps_status_fix">GPS가 수정됨</string>
-  <string name="form_exit_prompt">종료 하시겠습니까? 저장되지 않은 변경 사항은 사라집니다.</string>
   <string name="note_in_map_center">지도 중심</string>
   <string name="note_in_gps">GPS</string>
   <string name="download_Canceled">사용자가 다운로드를 취소했습니다.</string>

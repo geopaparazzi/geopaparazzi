@@ -156,7 +156,6 @@
   <string name="gps_status_notregistered">GPS ON状態で未更新登録</string>
   <string name="gps_status_no_fix">GPS ON状態で未測位</string>
   <string name="gps_status_fix">GPS 測位中</string>
-  <string name="form_exit_prompt">終了しますか。未保存の変更は失われます。</string>
   <string name="note_in_map_center">地図の中心</string>
   <string name="note_in_gps">GPS</string>
   <string name="download_Canceled">ダウンロードはユーザーによりキャンセルされました。</string>
