@@ -355,20 +355,20 @@ public class GpsDataListActivity extends AppCompatActivity implements
             try {
                 DaoGpsLog.setLogsVisibility(true);
                 refreshList(true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (item.getItemId() == R.id.action_unselectall) {
             try {
                 DaoGpsLog.setLogsVisibility(false);
                 refreshList(true);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (item.getItemId() == R.id.action_merge) {
             try {
                 mergeSelected();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 GPLog.error(this, e.getLocalizedMessage(), e);
             }
         }

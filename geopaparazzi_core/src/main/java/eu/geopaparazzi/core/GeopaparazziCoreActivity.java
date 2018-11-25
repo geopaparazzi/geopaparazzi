@@ -102,11 +102,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
 //        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void init() {
 
         // set default values in the app's SharedPreferences
