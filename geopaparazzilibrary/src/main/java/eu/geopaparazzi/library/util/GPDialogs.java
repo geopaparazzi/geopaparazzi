@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -196,7 +197,7 @@ public class GPDialogs {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     try {
                         builder.setMessage(msg);
-                        builder.setPositiveButton(context.getString(android.R.string.yes),
+                        builder.setPositiveButton(context.getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         try {
@@ -211,7 +212,7 @@ public class GPDialogs {
                                 }
                         );
 
-                        builder.setNegativeButton(context.getString(android.R.string.no),
+                        builder.setNegativeButton(context.getString(R.string.no),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         try {

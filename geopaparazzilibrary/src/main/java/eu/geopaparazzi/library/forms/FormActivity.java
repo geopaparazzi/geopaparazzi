@@ -264,6 +264,22 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                try {
+                                    saveAction();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    }
+                }, new Runnable() {
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
                                 if (noteIsNew) {
                                     cancelResult();
                                 }
@@ -272,7 +288,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                         });
 
                     }
-                }, null
+                }
         );
     }
 
