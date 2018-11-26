@@ -79,7 +79,6 @@ public class GeopaparazziApplication extends GPApplication {
         super.onCreate();
         ResourcesManager.resetManager();
         try {
-            ResourcesManager.getInstance(this);
             ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
         } catch (Exception e) {
             e.printStackTrace();
