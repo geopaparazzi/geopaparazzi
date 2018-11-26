@@ -50,11 +50,11 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    api 'com.android.support:cardview-v7:27.1.0'
-    api 'com.android.support:appcompat-v7:27.1.0'
-    api 'com.android.support:design:27.1.0'
-    api 'com.android.support:preference-v7:27.1.0'
-    api 'com.android.support:support-v4:27.1.0'
+    api 'com.android.support:cardview-v7:28.0.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
+    api 'com.android.support:design:28.0.0'
+    api 'com.android.support:preference-v7:28.0.0'
+    api 'com.android.support:support-v4:28.0.0'
     api 'ch.acra:acra:4.9.0'
     api 'com.androidplot:androidplot-core:0.6.1'
     api 'com.android.support:multidex:1.0.3'
