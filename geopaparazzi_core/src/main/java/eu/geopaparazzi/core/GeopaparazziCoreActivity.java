@@ -70,13 +70,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             }
             // PERMISSIONS STOP
         } else {
-
-            try {
-                ResourcesManager.getInstance(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             completeInit();
         }
 
@@ -177,6 +170,11 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     }
 
     private void completeInit() {
+        try {
+            ResourcesManager.getInstance(this);
+        } catch (Exception e) {
+            GPLog.error(this, "Error", e);
+        }
         checkIncomingProject();
         init();
         checkIncomingUrl();
