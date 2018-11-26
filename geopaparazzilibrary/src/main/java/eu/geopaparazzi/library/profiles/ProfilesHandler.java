@@ -33,8 +33,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileOtherfiles;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
@@ -50,6 +53,9 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
  */
 public enum ProfilesHandler {
     INSTANCE;
+
+    // ToDo: fix this hack.  use eu.geopaparazzi.core.utilities.Constants.PREF_KEY_PROFILE_URL
+    public static final String PREF_KEY_PROFILE_URL = "cloud_profile_url";
 
     public static final String KEY_PROFILES_PREFERENCES = "KEY_PROFILES_PREFERENCES";
     public static final String NAME = "name";
@@ -95,11 +101,13 @@ public enum ProfilesHandler {
      */
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
-        return getProfilesFromJson(profilesJson, false);
+        String cloudProfileServer = preferences.getString(PREF_KEY_PROFILE_URL, "");
+        return getProfilesFromJson(profilesJson, false, cloudProfileServer);
     }
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences, boolean bWebOnly) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
-        return getProfilesFromJson(profilesJson, bWebOnly);
+        String cloudProfileServer = preferences.getString(PREF_KEY_PROFILE_URL, "");
+        return getProfilesFromJson(profilesJson, bWebOnly, cloudProfileServer);
     }
 
     /**
@@ -123,7 +131,7 @@ public enum ProfilesHandler {
      * @throws JSONException
      */
     @NonNull
-    public List<Profile> getProfilesFromJson(String profilesJson, boolean bWebOnly) throws JSONException {
+    public List<Profile> getProfilesFromJson(String profilesJson, boolean bWebOnly, String cloudProfileServer) throws JSONException {
         List<Profile> profilesList = new ArrayList<>();
 
         if (profilesJson.trim().length() == 0)
@@ -133,7 +141,7 @@ public enum ProfilesHandler {
         JSONArray profilesArray = root.getJSONArray(PROFILES);
         for (int i = 0; i < profilesArray.length(); i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-            Profile profile = getProfileFromJson(profileObject, bWebOnly);
+            Profile profile = getProfileFromJson(profileObject, bWebOnly, cloudProfileServer);
             if (profile != null) profilesList.add(profile);
         }
         return profilesList;
@@ -146,11 +154,11 @@ public enum ProfilesHandler {
      * @return the profile.
      * @throws JSONException
      */
-    public Profile getProfileFromJson(JSONObject profileObject)throws JSONException{
-        return getProfileFromJson( profileObject,false);
+    public Profile getProfileFromJson(JSONObject profileObject, String cloudProfileServer)throws JSONException{
+        return getProfileFromJson( profileObject,false, cloudProfileServer);
     }
 
-    public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly) throws JSONException {
+    public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly, String cloudProfileServer) throws JSONException {
         Profile profile = new Profile();
         boolean isWebProfile = false;
 
@@ -187,6 +195,7 @@ public enum ProfilesHandler {
                     }
                     if (tagsObject.has(URL)) {
                         String url = tagsObject.getString(URL);
+                        url = absoluteCloudProfileUrl(url, cloudProfileServer);
                         profileTags.tagsUrl = url;
                     }
                     if (tagsObject.has(SIZE)) {
@@ -206,10 +215,12 @@ public enum ProfilesHandler {
                     }
                     if (projectObject.has(URL)) {
                         String url = projectObject.getString(URL);
+                        url = absoluteCloudProfileUrl(url, cloudProfileServer);
                         profileProject.projectUrl = url;
                     }
                     if (projectObject.has(UPLOADURL)) {
                         String uploadurl = projectObject.getString(UPLOADURL);
+                        uploadurl = absoluteCloudProfileUrl(uploadurl, cloudProfileServer);
                         profileProject.projectUploadUrl = uploadurl;
                         if ( uploadurl != null && !uploadurl.isEmpty() ) isWebProfile = true;
                     }
@@ -233,6 +244,7 @@ public enum ProfilesHandler {
                         }
                         if (baseMapObject.has(URL)) {
                             String url = baseMapObject.getString(URL);
+                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             basemap.url = url;
                         }
                         if (baseMapObject.has(SIZE)) {
@@ -258,10 +270,12 @@ public enum ProfilesHandler {
                         }
                         if (spatialiteDbsObject.has(URL)) {
                             String url = spatialiteDbsObject.getString(URL);
+                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             spatialitemap.url = url;
                         }
                         if (spatialiteDbsObject.has(UPLOADURL)) {
                             String url = spatialiteDbsObject.getString(UPLOADURL);
+                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             spatialitemap.uploadUrl = url;
                         }
                         if (spatialiteDbsObject.has(SIZE)) {
@@ -295,6 +309,7 @@ public enum ProfilesHandler {
                         }
                         if (otherFileObject.has(URL)) {
                             String url = otherFileObject.getString(URL);
+                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             otherfiles.url = url;
                         }
                         if (otherFileObject.has(SIZE)) {
@@ -502,13 +517,12 @@ public enum ProfilesHandler {
                 if (name != null && active) {
                     String json = cursor.getString(2);
                     JSONObject profileObject = new JSONObject(json);
-                    activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
+                    activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject,"");
                 }
             } while (cursor.moveToNext());
             cursor.close();
         }
     }
-
 
     public List<BaseMap> getBaseMaps() {
         List<BaseMap> baseMaps = new ArrayList<>();
@@ -529,11 +543,35 @@ public enum ProfilesHandler {
         return baseMaps;
     }
 
-
     public List<Profile> addJsonProfile(JSONObject profileObject, List<Profile> profileList) throws JSONException {
-        Profile newProfile = getProfileFromJson(profileObject);
+        Profile newProfile = getProfileFromJson(profileObject, "");
         profileList.add(newProfile);
         return profileList;
     }
 
+    public static String absoluteCloudProfileUrl(String url, String cloudProfileServer) {
+        String sNewURL = "";
+        URL aServer = null;
+        URL aUrl;
+        String urlProtocol;
+
+        try {
+            aServer = new URL(cloudProfileServer);
+        } catch (MalformedURLException e){
+            GPLog.error("absoluteCloudProfileUrl: "+"", "Bad server URL: "+cloudProfileServer, e);
+        };
+
+        try {
+            aUrl = new URL(url);
+            sNewURL = url;  // if try succeeds, then it is an absolute (fully qualified) URL, so use it as is
+        } catch (MalformedURLException e){  // not a full url, so we need to form a url from the server and file parts
+            if ( aServer != null )     sNewURL  = aServer.getProtocol()+":";
+            if (!url.startsWith("//")) sNewURL += "//" + aServer.getAuthority(); // consists of host with an optional port number, username and password
+            if (!url.startsWith("/"))  sNewURL +=        aServer.getPath();  // getPath includes a leading "/"
+            if (!url.isEmpty() && !url.startsWith("/") ) sNewURL += "/";
+            sNewURL += url;
+        };
+
+        return sNewURL;
+    }
 }
