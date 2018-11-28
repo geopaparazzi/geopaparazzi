@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Käytä käyttöjärjestelmätasolla (säästää akkua, tarvitsee uudelleenkäynnistyksen)</string>
   <string name="gps_use_android_level_summary">Jos valittu, gps asetuksia sovelletaan käyttöjärjestelmä tasolta, mikä voi säästää akkua, mutta saattaa olla vähemmän vakaa signaali kun valitaan suuria välejä (jos GPS-yhteys ongelmia  laitekäynnistyksessä, jätä tämä valitsematta). Huomaa, että GPS käyttää virtaa jatkuvasti lähetettäessä alle 100 sekunnin välein. Parempaan akun kestoon valitse suurempi väli.</string>
   <string name="sms_preferences">Sms asetukset</string>
-  <string name="sms_preferences_summary">Aseta paniikkinumero ja ota käyttöön sms sieppaaja.</string>
-  <string name="sms_catcher">Salli paikannus</string>
   <string name="databaseError">Tietokantaan yhdistäminen epäonnistui</string>
   <string name="chart_profile_view">Profiili</string>
   <string name="gpx_import_processing">Tuodaan GPX ...</string>

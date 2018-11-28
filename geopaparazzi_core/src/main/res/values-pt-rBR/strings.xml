@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Use ao nível do android (poupa bateria, precisa de reinicialização)</string>
   <string name="gps_use_android_level_summary">Se marcado, as configurações do gps são aplicadas am nível do sistema operacional, o que pode economizar bateria, no entanto se tiver um sinal menos estável ao escolher grande intervalos (se você tiver problemas de conexão com gps em dispositivos de verificação, deixei desmarcado). Note que o gps conectado a energia continuamente envia intervalos de menos de 100 segundos. Para melhor vida da bateria escolha intervalos maiores. </string>
   <string name="sms_preferences">Configurações de SMS</string>
-  <string name="sms_preferences_summary">Configure o número de panico e habilite o capturador de SMS.</string>
-  <string name="sms_catcher">Habilitar captura de sms</string>
   <string name="databaseError">Ocorreu um erro ao conectar-se ao banco de dados</string>
   <string name="chart_profile_view">Visão do perfil</string>
   <string name="gpx_import_processing">Importando gpx…</string>

@@ -56,7 +56,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         super.onCreate(savedInstanceState);
 
         permissionHelper = new PermissionWriteStorage();
-        permissionHelper.add(new PermissionFineLocation()).add(new PermissionSendSms()).add(new PermissionRecieveSms()).add(new PermissionForegroundService());
+        permissionHelper.add(new PermissionFineLocation()).add(new PermissionForegroundService());
 
         if (Build.VERSION.SDK_INT >= 23) {
             // PERMISSIONS START

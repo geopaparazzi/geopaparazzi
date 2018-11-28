@@ -43,7 +43,6 @@
   <string name="gps_logging_distance">Минимальное записываемое расстояние GPS</string>
   <string name="gps_logging_interval">Минимальный записываемый интервал GPS</string>
   <string name="sms_preferences">Настройки sms</string>
-  <string name="sms_catcher">Разрешить ловлю SMS</string>
   <string name="databaseError">При соединении с базой данных произошла ошибка</string>
   <string name="chart_profile_view">Просмотр профиля</string>
   <string name="gpx_import_processing">Импортируется GPX…</string>

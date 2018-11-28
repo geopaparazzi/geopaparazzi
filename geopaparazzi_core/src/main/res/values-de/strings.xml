@@ -38,7 +38,6 @@
   <string name="gps_logging_distance">Min. GPS Entfernung</string>
   <string name="gps_logging_interval">Min. GPS Intervall</string>
   <string name="gps_use_android_level">Benutze Android-Level (reduziert Batterieverbrauch, erfordert Neustart)</string>
-  <string name="sms_catcher">Aktivierung SMS-Autopositionsrücksender</string>
   <string name="databaseError">Ein Fehler ist während des Verbindens mit der Datenbank aufgetreten</string>
   <string name="chart_profile_view">Profil-Ansicht</string>
   <string name="gpx_import_processing">Importiere GPX…</string>

@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Gebruik op android niveau (spaart batterij, herstart nodig)</string>
   <string name="gps_use_android_level_summary">Indien aangevinkt worden de GPS instellingen toegepast op het  \'\'operating system\" (os) niveau, waardoor het batterij gebruik beperkt wordt maar kan resulteren in een minder stabiel signaal bij grote intervals. Indien je GPS connectie problemen ondervindt laat deze uitgevinkt. Houd er rekening mee dat het GPS os voordurend is ingeschakelt indien het interval minder dan 100 seconden is. Voor een langere batterij duur moet je dus langere intervallen kiezen. </string>
   <string name="sms_preferences">SMS instellingen</string>
-  <string name="sms_preferences_summary">Stel het paniek nummer in en schakel de stuur-locatie-SMS in  </string>
-  <string name="sms_catcher">Schakel de stuur-locatie-SMS in</string>
   <string name="databaseError">Er is een fout opgetreden bij aankoppelen aan de databank</string>
   <string name="chart_profile_view"> </string>
   <string name="gpx_import_processing">Importeer GPX .....</string>

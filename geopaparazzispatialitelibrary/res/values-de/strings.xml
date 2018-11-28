@@ -16,4 +16,12 @@
   <string name="toggle_visibility">Sichtbarkeit ändern</string>
   <string name="label_field">Beschriftungsfeld</string>
   <string name="label_size">Beschriftungsgröße</string>
+  <string name="select_table_types">Wählen Typen</string>
+  <string name="select_type">Wähle Typen</string>
+  <string name="remove_from_list">%s aus der Liste entfernen</string>
+  <string name="selected_file_no_vector_data">Die ausgewählte Datei enthält keine Vektordaten:</string>
+  <string name="adding_new_source">Neue Quelle hinzufügen ...</string>
+  <string name="select_spatialite_database">Wählen Sie die spatialite Datenbank zum Hinzufügen aus</string>
+  <string name="select_spatialite_database_folder">Wählen Sie den spatialite Datenbankordner zum Hinzufügen aus</string>
+  <string name="loading_databases">Datenbanken werden geladen ...</string>
 </resources>

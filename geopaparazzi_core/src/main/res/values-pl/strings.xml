@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Używaj na poziomie Androida (oszczędza baterię, wymaga restartu)</string>
   <string name="gps_use_android_level_summary">Gdy zaznaczono, stosowane są ustawienia GPS na poziomie systemu operacyjnego, co pozwala na zaoszczędzenie zużycia baterii, ale sygnał może być mniej stabilny, gdy wybrano odległe odstępy czasowe (jeżeli masz problemy z połączeniem GPS na urządzeniach z zaznaczoną tą opcją, pozostaw ją wyłączoną). Miej na uwadze, że GPS jest zasilany w sposób ciągły przez system tak aby przesyłać dane w odstępach mniejszych niż 100 sekund. Dla lepszej żywotności baterii wybierz większe interwały.</string>
   <string name="sms_preferences">Ustawienia SMS</string>
-  <string name="sms_preferences_summary">Ustaw numer alarmowy i włącz przechwytywanie sms.</string>
-  <string name="sms_catcher">Włącz przechwytywanie SMS</string>
   <string name="databaseError">Wystąpił błąd podczas łączenia z bazą danych.</string>
   <string name="chart_profile_view">Widok Profilu</string>
   <string name="gpx_import_processing">Importowanie gpx...</string>

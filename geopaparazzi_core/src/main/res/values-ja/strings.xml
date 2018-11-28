@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">省電力利用 (バッテリ節約, 再起動後に有効)</string>
   <string name="gps_use_android_level_summary">チェックすると、GPS設定はオペレーティングシステムレベルのバッテリセーブが適用されますが、長い間隔を選択している場合に信号が不安定になります。（チェックをした場合にGPS接続に問題がある場合は、チェックを外します）100秒未満の間隔で継続した電力がGPSに供給されるということに注意してください。バッテリー節約のためには長い間隔を選択します。</string>
   <string name="sms_preferences">SMS設定</string>
-  <string name="sms_preferences_summary">パニック番号とSMSキャッチャー有効設定</string>
-  <string name="sms_catcher">SMS受信を有効にする</string>
   <string name="databaseError">データベース接続中にエラーが発生しました</string>
   <string name="chart_profile_view">プロフィール</string>
   <string name="gpx_import_processing">gpx をインポートしています...</string>

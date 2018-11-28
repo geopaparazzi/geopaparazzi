@@ -48,8 +48,6 @@
   <string name="gps_logging_interval">Min interval GPS bilježenja</string>
   <string name="gps_use_android_level">Koristi na nivou Android OS-a (štedi bateriju, potreban restart)</string>
   <string name="sms_preferences">SMS postavke</string>
-  <string name="sms_preferences_summary">Pistavi broj za pomoć i omogući SMS hvatača.</string>
-  <string name="sms_catcher">Omogući SMS hvatača</string>
   <string name="databaseError">Došlo je do greške prilikom spajanja na bazu</string>
   <string name="chart_profile_view">Prikaz profila</string>
   <string name="gpx_import_processing">Uvoz gpx datoteke...</string>
