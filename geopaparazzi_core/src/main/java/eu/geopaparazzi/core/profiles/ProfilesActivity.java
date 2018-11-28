@@ -322,7 +322,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             File inputFile = new File(applicationSupporterDir, PROFILES_CONFIG_JSON);
             if (inputFile.exists()) {
                 String profilesJson = FileUtilities.readfile(inputFile);
-                List<Profile> importedProfiles = ProfilesHandler.INSTANCE.getProfilesFromJson(profilesJson, false,null);
+                List<Profile> importedProfiles = ProfilesHandler.INSTANCE.getProfilesFromJson(profilesJson, false);
 
                 for (Profile profile : importedProfiles) {
                     if (!profileList.contains(profile)) {
