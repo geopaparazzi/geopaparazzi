@@ -14,9 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.View;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -30,13 +27,10 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.permissions.AChainedPermissionHelper;
 import eu.geopaparazzi.library.permissions.PermissionFineLocation;
-import eu.geopaparazzi.library.permissions.PermissionGetAccounts;
+import eu.geopaparazzi.library.permissions.PermissionForegroundService;
 import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
 import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
-import eu.geopaparazzi.library.profiles.Profile;
-import eu.geopaparazzi.library.profiles.ProfilesHandler;
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -62,17 +56,12 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         super.onCreate(savedInstanceState);
 
         permissionHelper = new PermissionWriteStorage();
-        permissionHelper.add(new PermissionFineLocation()).add(new PermissionSendSms()).add(new PermissionRecieveSms());
-
-        checkIncomingProject();
+        permissionHelper.add(new PermissionFineLocation()).add(new PermissionForegroundService());
 
         if (Build.VERSION.SDK_INT >= 23) {
             // PERMISSIONS START
             if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
-                init();
-
-                checkIncomingUrl();
-                checkAvailableProfiles();
+                completeInit();
             } else {
                 if (permissionHelper.hasPermission(this)) {
                     permissionHelper = permissionHelper.getNextWithoutPermission(this);
@@ -81,9 +70,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             }
             // PERMISSIONS STOP
         } else {
-            init();
-            checkIncomingUrl();
-            checkAvailableProfiles();
+            completeInit();
         }
 
         setContentView(R.layout.activity_geopaparazzi);
@@ -100,11 +87,6 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     private void init() {
@@ -172,7 +154,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             AChainedPermissionHelper nextWithoutPermission = permissionHelper.getNextWithoutPermission(this);
             permissionHelper = nextWithoutPermission;
             if (permissionHelper == null) {
-                init();
+                completeInit();
             } else {
                 permissionHelper.requestPermission(this);
             }
@@ -185,6 +167,18 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                 }
             });
         }
+    }
+
+    private void completeInit() {
+        try {
+            ResourcesManager.getInstance(this);
+        } catch (Exception e) {
+            GPLog.error(this, "Error", e);
+        }
+        checkIncomingProject();
+        init();
+        checkIncomingUrl();
+        checkAvailableProfiles();
     }
 
     // called after onCreate completes execution

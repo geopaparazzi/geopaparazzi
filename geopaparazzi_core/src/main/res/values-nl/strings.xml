@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Gebruik op android niveau (spaart batterij, herstart nodig)</string>
   <string name="gps_use_android_level_summary">Indien aangevinkt worden de GPS instellingen toegepast op het  \'\'operating system\" (os) niveau, waardoor het batterij gebruik beperkt wordt maar kan resulteren in een minder stabiel signaal bij grote intervals. Indien je GPS connectie problemen ondervindt laat deze uitgevinkt. Houd er rekening mee dat het GPS os voordurend is ingeschakelt indien het interval minder dan 100 seconden is. Voor een langere batterij duur moet je dus langere intervallen kiezen. </string>
   <string name="sms_preferences">SMS instellingen</string>
-  <string name="sms_preferences_summary">Stel het paniek nummer in en schakel de stuur-locatie-SMS in  </string>
-  <string name="sms_catcher">Schakel de stuur-locatie-SMS in</string>
   <string name="databaseError">Er is een fout opgetreden bij aankoppelen aan de databank</string>
   <string name="chart_profile_view"> </string>
   <string name="gpx_import_processing">Importeer GPX .....</string>
@@ -130,8 +128,11 @@
   <string name="view_in_mixare">Bekijk in mixare</string>
   <string name="gps_use_coarse">Gebruik de positie op basis van het netwerk in plaats van GPS ( herstart nodig)</string>
   <string name="type_to_filter">Type om te filteren</string>
+  <string name="geopapcloud_preferences">Cloud server instellingen</string>
   <string name="geopapcloud_user_label">Gebruikersnaam</string>
   <string name="geopapcloud_password_label">Wachtwoord</string>
+  <string name="geopapcloud_server_label">Cloud Project server</string>
+  <string name="cloud_profile_url_label">Cloud Profiel URL</string>
   <string name="exporting_data">Exporteer data</string>
   <string name="exporting_data_to_kmz">Exporteer data naar KMZ</string>
   <string name="exporting_data_to_gpx">Exporteer data naar GPX</string>
@@ -149,6 +150,7 @@
   <string name="select_map_to_use">Selecteer de kaart</string>
   <string name="no_map_file_found_going_to_mapnik">Kon de kaart niet vinden, overgegaan op MAPNIK tile bron.</string>
   <string name="enter_project_description">Voer de beschrijving in van het project</string>
+  <string name="no_images">Cloud Profiel</string>
   <string name="with_images">Met afbeeldingen</string>
   <string name="successfully_imported_bookmarks">Kaartenlocaties succesvol geïmporteerd </string>
   <string name="error_bookmarks_import">Er is een fout opgetreden bij het importeren van de kaartlocaties.</string>
@@ -382,9 +384,16 @@
   <string name="interrupted_by_user">Onderbroken door de gebruiker</string>
   <string name="import_cloud_data">Cloud data</string>
   <string name="new_picture">Nieuwe foto</string>
+  <string name="Documents">Dokumenten</string>
+  <string name="Document_title">Dokument#</string>
   <string name="Images">Afbeeldingen</string>
   <string name="upload_to_cloud_prompt">Het huidige project uploaden naar de cloud?</string>
   <string name="data_to_pdf_label">Project formulieren omzetten naar PDF</string>
   <string name="exporting_data_to_pdf">Exporteren formulier data naar PDF</string>
   <!--geoss2go profiles-->
+  <string name="profiles_action_settings">Instellingen</string>
+  <string name="profiles_action_cloud_import">Importeer Cloud Profielen</string>
+  <string name="profiles_action_import">Importeer Profielen</string>
+  <string name="profiles_action_export">Exporteer Profielen</string>
+  <string name="profiles_action_delete">Verwijder alle Profielen</string>
 </resources>

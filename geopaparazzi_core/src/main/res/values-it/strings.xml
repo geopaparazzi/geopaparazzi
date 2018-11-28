@@ -49,8 +49,7 @@
   <string name="gps_use_android_level">Utilizzo a livello di sistema operativo (risparmia la batteria, è necessario riavviare il dispositivo).</string>
   <string name="gps_use_android_level_summary">Se selezionato vengono modificate le impostazioni del GPS per tutto il sistema operativo, questo permette di risparmiare batteria, ma potrebbe portare ad una minore stabilità del segnale se vengono selezionati intervalli grandi. Se vengono sperimentati problemi con il GPS sul device con questa opzione selezionata, si consiglia di deselezionarla. Nota: il GPS viene mantenuto sempre acceso per intervalli minori di 100 secondi. Per risparmiare batteria si consiglia di selezionare intervalli maggiori.</string>
   <string name="sms_preferences">Impostazioni Sms</string>
-  <string name="sms_preferences_summary">Imposta il numero panic e attiva l\'sms catcher. </string>
-  <string name="sms_catcher">Attiva accettazione sms</string>
+  <string name="sms_preferences_summary">Imposta il numero di panico.</string>
   <string name="databaseError">è avvenuto un error durante la connessione al database!</string>
   <string name="chart_profile_view">Vista profilo</string>
   <string name="gpx_import_processing">Importo gpx…</string>
@@ -64,8 +63,8 @@
   <string name="audio_recording">Registrazione audio… premere qui per fermare la registrazione</string>
   <string name="audio_recording_stop">ferma</string>
   <string name="panic">panico!</string>
-  <string name="panic_number">Setta il panic number</string>
-  <string name="panic_number_notset">Non sembra essere disponibile alcuno panic number. Inserirlo nei settaggi.</string>
+  <string name="panic_number">Imposta il numero di panico</string>
+  <string name="panic_number_notset">Non sembra essere disponibile alcuno number di panico. Inserirlo nelle impostazioni.</string>
   <string name="panic_upper">  PANICO!  </string>
   <string name="send_status_update">oppure semplicemente manda una posizione</string>
   <string name="help_needed">E\' necessario aiuto!</string>
@@ -437,4 +436,5 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="description_of_the_new_profile">Descrizione del nuovo Profilo</string>
   <string name="browse_images">Sfoglia immagini</string>
   <string name="confirm_remove_image">Rimuovere l\'immagine?</string>
+  <string name="return_to_view_after_note">Torna alla vista dopo inserimento nota</string>
 </resources>

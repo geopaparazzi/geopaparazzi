@@ -162,7 +162,21 @@
     <string name="gps_status_notregistered">GPS on but not registered to updates</string>
     <string name="gps_status_no_fix">GPS registered to updates but no fix</string>
     <string name="gps_status_fix">GPS has fix</string>
-    <string name="form_exit_prompt">Are you sure you want to exit? Unsaved changes will be lost.</string>
+    <string name="form_exit_prompt">Save Note?</string>
     <string name="note_in_map_center">Map Center</string>
     <string name="note_in_gps">GPS</string>
+
+    <string name="download_Canceled">Download canceled by user.</string>
+    <string name="download_Exists">Not downloading existing: </string>
+    <string name="download_CannotWrite">Unable to write to file: </string>
+    <string name="download_Downloading">Downloading: </string>
+    <string name="download_Error">An error occurred: </string>
+    <string name="download_Downloaded">File Downloaded.</string>
+    <string name="upload_Canceled">Upload canceled by user.</string>
+    <string name="upload_NotFound">Cannot find: </string>
+    <string name="upload_Uploading">Uploading: </string>
+    <string name="upload_Error">An error occurred: </string>
+    <string name="upload_NonOK">Server returned non-OK status: </string>
+    <string name="upload_Uploaded">File uploaded.</string>
+
 </resources>

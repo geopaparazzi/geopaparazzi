@@ -67,6 +67,14 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
 
+            <CheckBox
+                android:id="@+id/returnToViewAfterNoteCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                style="@style/GPTextViewStyle"
+                android:text="@string/return_to_view_after_note" />
+
             <GridView
                 android:id="@+id/osmgridview"
                 android:layout_width="fill_parent"

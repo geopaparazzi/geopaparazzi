@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.Switch;
@@ -97,12 +98,14 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private BroadcastReceiver broadcastReceiver;
 
     public static String PREFS_KEY_GUITEXTSIZEFACTOR = "PREFS_KEY_GUI_TEXTSIZE_FACTOR"; //$NON-NLS-1$
+    public static String PREFS_KEY_RETURNTOVIEWAFTERNOTE = "PREFS_KEY_RETURNTOVIEWAFTERNOTE"; //$NON-NLS-1$
     public static String PREFS_KEY_GUICOLUMNCOUNT = "PREFS_KEY_GUI_COLUMN_COUNT"; //$NON-NLS-1$
     public static int DEFAULT_GUICOLUMNCOUNT = 2;
     public static int DEFAULT_GUITEXTSIZEFACTOR = 1;
     private int textsizeFactor = DEFAULT_GUITEXTSIZEFACTOR;
     private ArrayAdapter<String> arrayAdapter;
     private GridView buttonGridView;
+    private CheckBox returnToViewAfterNoteCheckBox;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -139,6 +142,18 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
                 DEFAULT_GUITEXTSIZEFACTOR);
         setToggleSize();
+
+        returnToViewAfterNoteCheckBox = findViewById(R.id.returnToViewAfterNoteCheckBox);
+        boolean returnToViewAfterNote = preferences.getBoolean(PREFS_KEY_RETURNTOVIEWAFTERNOTE, false);
+        returnToViewAfterNoteCheckBox.setChecked(returnToViewAfterNote);
+        returnToViewAfterNoteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Editor editor = preferences.edit();
+                editor.putBoolean(PREFS_KEY_RETURNTOVIEWAFTERNOTE, isChecked);
+                editor.apply();
+            }
+        });
 
         double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         if (mapCenter != null) {
@@ -194,6 +209,14 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 tagButton.setText(spanString);
                 tagButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, tagButton.getTextSize() * textsizeFactor);
                 tagButton.setTextColor(buttonTextColor);
+                try {
+                    String description = TagsManager.getInstance(getContext()).getSectionDescriptionByName(tagNamesArray[position]);
+                    if (description != null) {
+                        Compat.addTooltip(tagButton, description);
+                    }
+                } catch (Exception e) {
+                    GPLog.error(this, "Error retrieving tagsManager.", e);
+                }
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;
                 tagButton.setPadding(0, ind, 0, ind);
@@ -395,7 +418,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 break;
             }
         }
-        finish();
+        boolean returnToViewAfterNote = returnToViewAfterNoteCheckBox.isChecked();
+        if (!returnToViewAfterNote) {
+            finish();
+        }
     }
 
     @Override
@@ -403,7 +429,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         try {
             DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "",
                     null);
-            finish();
+            boolean returnToViewAfterNote = returnToViewAfterNoteCheckBox.isChecked();
+            if (!returnToViewAfterNote) {
+                finish();
+            }
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
@@ -426,15 +455,15 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         TextView textCenterText;
         TextView textGpsText;
 
-        int topMargin   = 50 + textsizeFactor * 20;
-        int leftMargin  = 10 + textsizeFactor * 30;
+        int topMargin = 50 + textsizeFactor * 20;
+        int leftMargin = 10 + textsizeFactor * 30;
         int rightMargin = 10 + textsizeFactor * 50;
 
         textCenterText = findViewById(R.id.centerText);
-        textCenterText.setPadding(0,topMargin,rightMargin,topMargin);  // left,top,right,bottom
+        textCenterText.setPadding(0, topMargin, rightMargin, topMargin);  // left,top,right,bottom
 
         textGpsText = findViewById(R.id.gpsText);
-        textGpsText.setPadding(leftMargin,topMargin,0,topMargin);
+        textGpsText.setPadding(leftMargin, topMargin, 0, topMargin);
 
         togglePositionTypeButtonGps.setScaleX(textsizeFactor);
         togglePositionTypeButtonGps.setScaleY(textsizeFactor);

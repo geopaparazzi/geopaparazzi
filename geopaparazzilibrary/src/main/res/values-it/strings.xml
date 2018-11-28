@@ -156,7 +156,19 @@
   <string name="gps_status_notregistered">GPS acceso, ma non registra aggiornamenti</string>
   <string name="gps_status_no_fix">GPS registrato, ma non ha connessione valida</string>
   <string name="gps_status_fix">GPS ha connessione valida</string>
-  <string name="form_exit_prompt">Sei sicuro di che voler uscire? Le modifiche non salvate anrdanno perse.</string>
+  <string name="form_exit_prompt">Salvare nota?</string>
   <string name="note_in_map_center">Centro Mappa</string>
   <string name="note_in_gps">GPS</string>
+  <string name="download_Canceled">Scaricamento cancellato dall\'utente</string>
+  <string name="download_Exists">Non verrà scaricato perchè già esistente:</string>
+  <string name="download_CannotWrite">Impossibile scrivere il file:</string>
+  <string name="download_Downloading">Download in corso:</string>
+  <string name="download_Error">Si è verificato un errore:</string>
+  <string name="download_Downloaded">File scaricato.</string>
+  <string name="upload_Canceled">Caricamento cancellato dall\'utente.</string>
+  <string name="upload_NotFound">Non trovo:</string>
+  <string name="upload_Uploading">Caricamento in corso:</string>
+  <string name="upload_Error">Si è verificato un errore:</string>
+  <string name="upload_NonOK">Il Server a restituito uno stato non-OK:</string>
+  <string name="upload_Uploaded">File caricato.</string>
 </resources>

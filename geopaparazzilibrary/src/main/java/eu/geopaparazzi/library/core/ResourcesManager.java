@@ -181,7 +181,7 @@ public class ResourcesManager implements Serializable {
 
         for (File file : extRootDirs) {
             if (file != null && file.exists()) {
-                if (file.canWrite() & mainStorageDir == null) {
+                if (file.canWrite() && mainStorageDir == null) {
                     mainStorageDir = file;
                 } else if (file.canRead()) {
                     otherStorageDirs.add(file);

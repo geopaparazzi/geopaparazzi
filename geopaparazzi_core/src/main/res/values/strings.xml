@@ -49,8 +49,7 @@
     <string name="gps_use_android_level">Use at android level (saves battery, needs restart)</string>
     <string name="gps_use_android_level_summary">If checked, the gps settings are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
     <string name="sms_preferences">Sms settings</string>
-    <string name="sms_preferences_summary">Set the panic number and enable the sms catcher.</string>
-    <string name="sms_catcher">Enable sms catcher</string>
+    <string name="sms_preferences_summary">Set the panic number.</string>
     <string name="databaseError">An error occurred while connecting to the database</string>
     <string name="chart_profile_view">Profile View</string>
     <string name="gpx_import_processing">Importing gpx…</string>
@@ -440,6 +439,7 @@
     <string name="description_of_the_new_profile">Description of the new profile</string>
     <string name="browse_images" >Browse images</string>
     <string name="confirm_remove_image" >Remove image?</string>
+    <string name="return_to_view_after_note">Return to view after note</string>
 
 
 </resources>

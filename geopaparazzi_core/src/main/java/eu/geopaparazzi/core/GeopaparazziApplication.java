@@ -79,7 +79,6 @@ public class GeopaparazziApplication extends GPApplication {
         super.onCreate();
         ResourcesManager.resetManager();
         try {
-            ResourcesManager.getInstance(this);
             ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,6 +110,13 @@ public class GeopaparazziApplication extends GPApplication {
     }
 
     public static void reset() {
+        if (database != null) {
+            try {
+                database.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         database = null;
     }
 }

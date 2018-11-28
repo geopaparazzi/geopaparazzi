@@ -142,7 +142,8 @@ public class SmsUtilities {
             msg = "";
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 19 && number.length() == 0) {
+            // if no number is here show a nice list of last used conversations to choose from
             try {
                 Class<?> smsClass = Class.forName("android.provider.Telephony$Sms");
                 Method getPackageMethod = smsClass.getMethod("getDefaultSmsPackage", Context.class);
@@ -160,6 +161,7 @@ public class SmsUtilities {
                 GPLog.error("SmsUtilities", "Error sending sms in > 4.4.", e);
             }
         } else {
+            // if a number is available, then set the message for that contact/number
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + number));
             intent.putExtra("sms_body", msg);
             context.startActivity(intent);

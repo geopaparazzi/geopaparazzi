@@ -303,8 +303,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         if (activeProfile != null) {
             if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
                 // hide new project and open project
-                menu.getItem(1).setVisible(false);
-                menu.getItem(2).setVisible(false);
+                menu.getItem(1).setEnabled(false);
+                menu.getItem(2).setEnabled(false);
             }
         }
 
@@ -322,6 +322,25 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         }
         if (!hasProfilesProvider)
             menu.getItem(7).setVisible(false);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+        if (activeProfile != null) {
+            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
+                // hide new project and open project
+                menu.getItem(1).setEnabled(false);
+                menu.getItem(2).setEnabled(false);
+            }
+        } else {
+            menu.getItem(1).setEnabled(true);
+            menu.getItem(2).setEnabled(true);
+        }
+
+
     }
 
     @Override

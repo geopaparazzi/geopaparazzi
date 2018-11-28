@@ -29,9 +29,11 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Metadata;
+import eu.geopaparazzi.library.util.Utilities;
 
 import static eu.geopaparazzi.core.database.TableDescriptions.MetadataTableFields;
 import static eu.geopaparazzi.core.database.TableDescriptions.MetadataTableDefaultValues;
@@ -90,7 +92,7 @@ public class DaoMetadata {
      * @param creationUser the user creating the project.
      * @throws java.io.IOException if something goes wrong.
      */
-    public static void initProjectMetadata(String name, String description, String notes, String creationUser) throws IOException {
+    public static void initProjectMetadata(String name, String description, String notes, String creationUser, String uniqueId) throws IOException {
         Date creationDate = new Date();
         if (name == null) {
             name = "";
@@ -150,6 +152,13 @@ public class DaoMetadata {
             values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), EMPTY_VALUE);
             sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
 
+            if (uniqueId != null) {
+                values = new ContentValues();
+                values.put(MetadataTableFields.COLUMN_KEY.getFieldName(), MetadataTableDefaultValues.KEY_DEVICEID.getFieldName());
+                values.put(MetadataTableFields.COLUMN_LABEL.getFieldName(), MetadataTableDefaultValues.KEY_DEVICEID.getFieldLabel());
+                values.put(MetadataTableFields.COLUMN_VALUE.getFieldName(), uniqueId);
+                sqliteDatabase.insertOrThrow(TABLE_METADATA, null, values);
+            }
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             GPLog.error("DaoMetadata", e.getLocalizedMessage(), e);

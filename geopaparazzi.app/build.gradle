@@ -63,10 +63,10 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    api 'com.android.support:appcompat-v7:27.1.0'
-    api 'com.android.support:design:27.1.0'
-    api 'com.android.support:preference-v7:27.1.0'
-    api 'com.android.support:support-v4:27.1.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
+    api 'com.android.support:design:28.0.0'
+    api 'com.android.support:preference-v7:28.0.0'
+    api 'com.android.support:support-v4:28.0.0'
     implementation project(':geopaparazzi_core')
     implementation project(':geopaparazzi_default_import_plugins')
     implementation project(':geopaparazzi_default_export_plugins')

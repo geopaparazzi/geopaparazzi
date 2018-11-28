@@ -224,6 +224,8 @@ public class FormUtilities {
      *
      */
     public static final String ATTR_SECTIONNAME = "sectionname";
+
+    public static final String ATTR_SECTIONDESCRIPTION = "sectiondescription";
     /**
      *
      */

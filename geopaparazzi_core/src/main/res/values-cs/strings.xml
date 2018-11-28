@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Použít na úrovni Androidu (šetří baterii, vyžaduje opětovné spuštění)</string>
   <string name="gps_use_android_level_summary">Je-li zaškrtnuto, nastavení GPS se použijí na úrovni operačního systému, což může šetřit baterii, ale signál může být méně stálý, když se zvolí větší intervaly (pokud máte u zaškrtnutých zařízení u GPS potíže se spojením, ponechejte nezaškrtnuto). Povšimněte si, že GPS OS pracuje nepřetržitě, aby se signál posílal v intervalech menších než 100 sekund. Aby baterie vydržela déle, zvolte větší intervaly.</string>
   <string name="sms_preferences">Nastavení SMS</string>
-  <string name="sms_preferences_summary">Zadat číslo pro stav nouze a povolit chytač SMS.</string>
-  <string name="sms_catcher">Povolit zachytávač SMS</string>
   <string name="databaseError">Při připojení k databázi se vyskytla chyba</string>
   <string name="chart_profile_view">Pohled na profil</string>
   <string name="gpx_import_processing">Načítá se GPX...</string>

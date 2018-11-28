@@ -28,7 +28,6 @@
   <string name="gps_logging_distance">Min. distance for gps logging</string>
   <string name="gps_logging_interval">Min. intervall for gps logging</string>
   <string name="gps_use_android_level">Brukes av Android (sparer batteri, trenger omstart)</string>
-  <string name="sms_catcher">Aktiver sms henting</string>
   <string name="databaseError">Det oppstod en feil under tilkobling til databasen</string>
   <string name="chart_profile_view">Profil-visning</string>
   <string name="gpx_import_processing">Importerer gpx…</string>

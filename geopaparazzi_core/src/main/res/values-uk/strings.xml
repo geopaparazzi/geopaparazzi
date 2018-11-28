@@ -48,8 +48,6 @@
   <string name="gps_logging_interval">Мінімальний інтервал журналювання gps</string>
   <string name="gps_use_android_level">Використання рівня андроїда (зберігає батарею, потрібен рестарт)</string>
   <string name="sms_preferences">Налаштування СМС</string>
-  <string name="sms_preferences_summary">Встановлення панічного числа і включити вловлювач sms.</string>
-  <string name="sms_catcher">Включити вловлювач смс-ів </string>
   <string name="databaseError">Сталася помилка при з’єднанні до бази даних</string>
   <string name="chart_profile_view">Перегляд профілю</string>
   <string name="gpx_import_processing">Імпортування gpx...</string>

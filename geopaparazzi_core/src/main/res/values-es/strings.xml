@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Utilizar en el nivel de Android (ahorra batería, requiere inicializar)</string>
   <string name="gps_use_android_level_summary">Si se selecciona, las preferencias gps se aplican a nivel de sistema operativo. Esto puede ahorrar batería, pero podría generar una señal menos estable cuando seleccione intervalos grandes (si al comprobar los dispositivos tiene problemas de conexión gps, deje esta casilla sin marcar). Tenga en cuenta que el sistema operativo alimenta el gps de forma continua para intervalos de envío menores de 100 segundos. Para lograr una mayor duración de la batería seleccione intervalos mayores.</string>
   <string name="sms_preferences">Ajustes de SMS</string>
-  <string name="sms_preferences_summary">Establecer el número de pánico y activar el receptor de SMS.</string>
-  <string name="sms_catcher">Activa el receptor de sms</string>
   <string name="databaseError">Se ha producido un error al conectar con la base de datos</string>
   <string name="chart_profile_view">Vista perfil</string>
   <string name="gpx_import_processing">Importando gpx...</string>

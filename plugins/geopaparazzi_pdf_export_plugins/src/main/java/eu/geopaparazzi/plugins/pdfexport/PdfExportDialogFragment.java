@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -244,7 +245,7 @@ public class PdfExportDialogFragment extends DialogFragment {
             Anchor anchor = new Anchor(sectionName);
             anchor.setName(sectionName);
             Chapter currentChapter = new Chapter(new Paragraph(anchor), count);
-            addEmptyLine(currentChapter, 3);
+            addEmptyLine(currentChapter, 1);
 
             PdfPTable infoTable = new PdfPTable(2);
             infoTable.setHeaderRows(0);
@@ -255,16 +256,16 @@ public class PdfExportDialogFragment extends DialogFragment {
             addKeyValueToTableRow(infoTable, "Latitude", note.getLat() + "");
             addKeyValueToTableRow(infoTable, "Longitude", note.getLon() + "");
 
-            addEmptyLine(currentChapter, 3);
 
             List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
             for (String formName : formsNames) {
+                addEmptyLine(currentChapter, 3);
                 Paragraph section = new Paragraph(formName);
                 currentChapter.addSection(section);
-                addEmptyLine(currentChapter, 3);
+                addEmptyLine(currentChapter, 1);
 
                 PdfPTable currentTable = new PdfPTable(2);
-                currentTable.setHeaderRows(1);
+                currentTable.setHeaderRows(0);
                 currentTable.setWidthPercentage(90);
                 currentChapter.add(currentTable);
 
@@ -371,6 +372,9 @@ public class PdfExportDialogFragment extends DialogFragment {
                         addKeyValueToTableRow(currentTable, label, value);
                     }
                 }
+
+//                addKeyValueToTableRow(currentTable, "test", "testvalue");
+
             }
 
             document.add(currentChapter);
@@ -382,11 +386,12 @@ public class PdfExportDialogFragment extends DialogFragment {
     }
 
     private void addKeyValueToTableRow(PdfPTable table, String key, String value) {
-        PdfPCell keyCell = new PdfPCell(new Phrase(key));
+        PdfPCell keyCell = new PdfPCell(new Paragraph(key));
         keyCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         keyCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         keyCell.setPadding(10);
         table.addCell(keyCell);
+
         PdfPCell valueCell = new PdfPCell(new Phrase(value));
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);

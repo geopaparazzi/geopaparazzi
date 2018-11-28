@@ -163,8 +163,6 @@ public class NotesListActivity extends AppCompatActivity {
         invertSelection = getString(R.string.invert_selection);
         deleteSelected = getString(R.string.delete_selected);
 
-        refreshList();
-
         filterText = findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
     }
@@ -173,7 +171,13 @@ public class NotesListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+
+        String filterStr = filterText.getText().toString();
+        if (filterStr.length() > 0) {
+            filterList(filterStr);
+        } else {
+            refreshList();
+        }
     }
 
     protected void onDestroy() {

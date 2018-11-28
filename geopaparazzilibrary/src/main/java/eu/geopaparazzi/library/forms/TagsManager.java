@@ -26,8 +26,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONDESCRIPTION;
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMITEMS;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMS;
@@ -106,11 +109,12 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
 public class TagsManager {
 
     /**
-     * The tags file name.
+     * The tags file name end pattern. All files that end with this are ligible as tags.
      */
-    public static String TAGSFILENAME = "tags.json";
+    public static String TAGSFILENAME_ENDPATTERN = "tags.json";
 
     private LinkedHashMap<String, JSONObject> sectionsMap = null;
+    private HashMap<String, String> sectionsDescriptionMap = null;
 
     private static TagsManager tagsManager;
 
@@ -145,39 +149,59 @@ public class TagsManager {
     private void getFileTags(Context context) throws Exception {
         if (sectionsMap == null) {
             sectionsMap = new LinkedHashMap<>();
+            sectionsDescriptionMap = new HashMap<>();
         }
-        File tagsFile = null;
+        File[] tagsFileArray = null;
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
         if (activeProfile != null) {
             String relativePath = activeProfile.profileTags.getRelativePath();
             if (relativePath != null) {
-                tagsFile = activeProfile.getFile(relativePath);
-                if (!tagsFile.exists())
-                    tagsFile = null;
+                File profileTagsFile = activeProfile.getFile(relativePath);
+                if (profileTagsFile.exists()) {
+                    tagsFileArray = new File[1];
+                    tagsFileArray[0] = profileTagsFile;
+                }
+
             }
         }
 
-        if (tagsFile == null) {
+        if (tagsFileArray == null) {
             File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
-            tagsFile = new File(applicationDir, TAGSFILENAME);
-            if (!tagsFile.exists() || Debug.doOverwriteTags) {
-                AssetManager assetManager = context.getAssets();
-                InputStream inputStream = assetManager.open("tags/tags.json");
 
-                FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
+            tagsFileArray = applicationDir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(TAGSFILENAME_ENDPATTERN);
+                }
+            });
+
+            if (tagsFileArray == null || tagsFileArray.length == 0 || Debug.doOverwriteTags) {
+                AssetManager assetManager = context.getAssets();
+                InputStream inputStream = assetManager.open("tags/" + TAGSFILENAME_ENDPATTERN);
+
+                File examplesTagsFile = new File(applicationDir, TAGSFILENAME_ENDPATTERN);
+                FileUtilities.copyFile(inputStream, new FileOutputStream(examplesTagsFile));
+                tagsFileArray = new File[1];
+                tagsFileArray[0] = examplesTagsFile;
             }
         }
 
-        if (tagsFile.exists()) {
-            sectionsMap.clear();
+        sectionsMap.clear();
+        sectionsDescriptionMap.clear();
+        for (File tagsFile : tagsFileArray) {
+            if (!tagsFile.exists()) continue;
             String tagsFileString = FileUtilities.readfile(tagsFile);
             JSONArray sectionsArrayObj = new JSONArray(tagsFileString);
             int tagsNum = sectionsArrayObj.length();
             for (int i = 0; i < tagsNum; i++) {
                 JSONObject jsonObject = sectionsArrayObj.getJSONObject(i);
                 if (jsonObject.has(ATTR_SECTIONNAME)) {
-                    String sectionName = jsonObject.get(ATTR_SECTIONNAME).toString();
+                    String sectionName = jsonObject.getString(ATTR_SECTIONNAME);
                     sectionsMap.put(sectionName, jsonObject);
+                    if (jsonObject.has(ATTR_SECTIONDESCRIPTION)){
+                        String descr = jsonObject.getString(ATTR_SECTIONDESCRIPTION);
+                        sectionsDescriptionMap.put(sectionName, descr);
+                    }
                 }
             }
         }
@@ -200,6 +224,10 @@ public class TagsManager {
         return sectionsMap.get(name);
     }
 
+    public String getSectionDescriptionByName(String sectionName) {
+        return sectionsDescriptionMap.get(sectionName);
+    }
+
     /**
      * get form name from a section obj.
      *
@@ -208,7 +236,7 @@ public class TagsManager {
      * @throws JSONException if something goes wrong.
      */
     public static List<String> getFormNames4Section(JSONObject section) throws JSONException {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
         if (jsonArray != null && jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -345,7 +373,7 @@ public class TagsManager {
      * @throws JSONException if something goes wrong.
      */
     public static LinkedHashMap<String, List<String>> extractComboValuesMap(JSONObject formItem) throws JSONException {
-        LinkedHashMap<String, List<String>> valuesMap = new LinkedHashMap<String, List<String>>();
+        LinkedHashMap<String, List<String>> valuesMap = new LinkedHashMap<>();
         if (formItem.has(TAG_VALUES)) {
             JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
 

@@ -720,8 +720,18 @@ public class MapView extends ViewGroup {
         this.frameBuffer.destroy();
         this.touchEventHandler.destroy();
         this.mapScaleBar.destroy();
-        this.inMemoryTileCache.destroy();
-        this.fileSystemTileCache.destroy();
+        try {
+            if (this.inMemoryTileCache != null)
+                this.inMemoryTileCache.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (this.fileSystemTileCache != null)
+                this.fileSystemTileCache.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         this.mapDatabase.closeFile();
     }
