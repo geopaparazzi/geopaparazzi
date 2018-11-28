@@ -41,14 +41,14 @@ public class PanicActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panic);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.core.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        panicButton = (ImageButton) findViewById(R.id.panicButton);
+        panicButton = findViewById(R.id.panicButton);
         panicButton.setOnClickListener(this);
 
-        Button sendUpdateButton = (Button) findViewById(R.id.sendUpdateButton);
+        Button sendUpdateButton = findViewById(R.id.sendUpdateButton);
         sendUpdateButton.setOnClickListener(this);
 
     }
@@ -64,10 +64,10 @@ public class PanicActivity extends AppCompatActivity implements View.OnClickList
     private void sendPosition(boolean isPanic) {
         Context context = this;
         if (isPanic) {
-            String lastPosition = getString(R.string.help_needed);
+            String message = getString(R.string.help_needed);
             String[] panicNumbers = getPanicNumbers(context);
             if (panicNumbers == null) {
-                String positionText = SmsUtilities.createPositionText(context, lastPosition);
+                String positionText = SmsUtilities.createPositionText(context, message);
                 SmsUtilities.sendSMSViaApp(context, "", positionText);
             } else {
                 for (String number : panicNumbers) {
@@ -75,9 +75,8 @@ public class PanicActivity extends AppCompatActivity implements View.OnClickList
                     if (number.length() == 0) {
                         continue;
                     }
-
-                    String positionText = SmsUtilities.createPositionText(context, lastPosition);
-                    SmsUtilities.sendSMS(context, number, positionText, true);
+                    String positionText = SmsUtilities.createPositionText(context, message);
+                    SmsUtilities.sendSMSViaApp(context, number, positionText);
                 }
             }
         } else {

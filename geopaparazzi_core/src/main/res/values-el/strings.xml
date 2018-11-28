@@ -36,7 +36,6 @@
   <string name="gps_logging_distance">Ελάχιστη απόσταση καταγραφής του gps</string>
   <string name="gps_logging_interval">Ελάχιστο διάστημα καταγραφής του gps</string>
   <string name="gps_use_android_level">Χρήση σε επίπεδο android (εξοικονομεί μπαταρία, χρειάζεται επανεκκίνηση)</string>
-  <string name="sms_catcher">Ενεργοποίηση sms catcher</string>
   <string name="databaseError">Ένα σφάλμα παρουσιάστηκε κατα τη σύνδεση στη βάση δεδομένων</string>
   <string name="chart_profile_view">Προβολή προφίλ</string>
   <string name="gpx_import_processing">Εισαγωγή gpx...</string>

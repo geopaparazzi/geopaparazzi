@@ -106,7 +106,6 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     private ArrayAdapter<String> arrayAdapter;
     private GridView buttonGridView;
     private CheckBox returnToViewAfterNoteCheckBox;
-    private TagsManager tagsManager;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -188,8 +187,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
 
         buttonGridView = findViewById(R.id.osmgridview);
         try {
-            tagsManager = TagsManager.getInstance(this);
-            Set<String> sectionNames = tagsManager.getSectionNames();
+            Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
             tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
@@ -211,9 +209,13 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 tagButton.setText(spanString);
                 tagButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, tagButton.getTextSize() * textsizeFactor);
                 tagButton.setTextColor(buttonTextColor);
-                String description = tagsManager.getSectionDescriptionByName(tagNamesArray[position]);
-                if (description != null) {
-                    Compat.addTooltip(tagButton, description);
+                try {
+                    String description = TagsManager.getInstance(getContext()).getSectionDescriptionByName(tagNamesArray[position]);
+                    if (description != null) {
+                        Compat.addTooltip(tagButton, description);
+                    }
+                } catch (Exception e) {
+                    GPLog.error(this, "Error retrieving tagsManager.", e);
                 }
                 tagButton.setBackground(buttonDrawable);
                 int ind = 35;

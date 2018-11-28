@@ -32,7 +32,6 @@
   <string name="gps_logging_distance">最小的GPS日志的距离</string>
   <string name="gps_logging_interval">最小的GPS记录间隔</string>
   <string name="sms_preferences">Sms 設置</string>
-  <string name="sms_catcher">启用短信捕捉</string>
   <string name="chart_profile_view">
 个人资料查看</string>
   <string name="gpx_import_processing">读入gpx中...</string>

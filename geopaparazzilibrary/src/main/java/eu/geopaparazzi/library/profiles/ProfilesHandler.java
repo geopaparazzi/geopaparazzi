@@ -33,11 +33,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileOtherfiles;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
@@ -53,9 +50,6 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
  */
 public enum ProfilesHandler {
     INSTANCE;
-
-    // ToDo: fix this hack.  use eu.geopaparazzi.core.utilities.Constants.PREF_KEY_PROFILE_URL
-    public static final String PREF_KEY_PROFILE_URL = "cloud_profile_url";
 
     public static final String KEY_PROFILES_PREFERENCES = "KEY_PROFILES_PREFERENCES";
     public static final String NAME = "name";
@@ -101,13 +95,11 @@ public enum ProfilesHandler {
      */
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
-        String cloudProfileServer = preferences.getString(PREF_KEY_PROFILE_URL, "");
-        return getProfilesFromJson(profilesJson, false, cloudProfileServer);
+        return getProfilesFromJson(profilesJson, false);
     }
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences, boolean bWebOnly) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
-        String cloudProfileServer = preferences.getString(PREF_KEY_PROFILE_URL, "");
-        return getProfilesFromJson(profilesJson, bWebOnly, cloudProfileServer);
+        return getProfilesFromJson(profilesJson, bWebOnly);
     }
 
     /**
@@ -131,7 +123,7 @@ public enum ProfilesHandler {
      * @throws JSONException
      */
     @NonNull
-    public List<Profile> getProfilesFromJson(String profilesJson, boolean bWebOnly, String cloudProfileServer) throws JSONException {
+    public List<Profile> getProfilesFromJson(String profilesJson, boolean bWebOnly) throws JSONException {
         List<Profile> profilesList = new ArrayList<>();
 
         if (profilesJson.trim().length() == 0)
@@ -141,7 +133,7 @@ public enum ProfilesHandler {
         JSONArray profilesArray = root.getJSONArray(PROFILES);
         for (int i = 0; i < profilesArray.length(); i++) {
             JSONObject profileObject = profilesArray.getJSONObject(i);
-            Profile profile = getProfileFromJson(profileObject, bWebOnly, cloudProfileServer);
+            Profile profile = getProfileFromJson(profileObject, bWebOnly);
             if (profile != null) profilesList.add(profile);
         }
         return profilesList;
@@ -154,11 +146,11 @@ public enum ProfilesHandler {
      * @return the profile.
      * @throws JSONException
      */
-    public Profile getProfileFromJson(JSONObject profileObject, String cloudProfileServer)throws JSONException{
-        return getProfileFromJson( profileObject,false, cloudProfileServer);
+    public Profile getProfileFromJson(JSONObject profileObject)throws JSONException{
+        return getProfileFromJson( profileObject,false);
     }
 
-    public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly, String cloudProfileServer) throws JSONException {
+    public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly) throws JSONException {
         Profile profile = new Profile();
         boolean isWebProfile = false;
 
@@ -195,7 +187,6 @@ public enum ProfilesHandler {
                     }
                     if (tagsObject.has(URL)) {
                         String url = tagsObject.getString(URL);
-                        url = absoluteCloudProfileUrl(url, cloudProfileServer);
                         profileTags.tagsUrl = url;
                     }
                     if (tagsObject.has(SIZE)) {
@@ -215,12 +206,10 @@ public enum ProfilesHandler {
                     }
                     if (projectObject.has(URL)) {
                         String url = projectObject.getString(URL);
-                        url = absoluteCloudProfileUrl(url, cloudProfileServer);
                         profileProject.projectUrl = url;
                     }
                     if (projectObject.has(UPLOADURL)) {
                         String uploadurl = projectObject.getString(UPLOADURL);
-                        uploadurl = absoluteCloudProfileUrl(uploadurl, cloudProfileServer);
                         profileProject.projectUploadUrl = uploadurl;
                         if ( uploadurl != null && !uploadurl.isEmpty() ) isWebProfile = true;
                     }
@@ -244,7 +233,6 @@ public enum ProfilesHandler {
                         }
                         if (baseMapObject.has(URL)) {
                             String url = baseMapObject.getString(URL);
-                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             basemap.url = url;
                         }
                         if (baseMapObject.has(SIZE)) {
@@ -270,12 +258,10 @@ public enum ProfilesHandler {
                         }
                         if (spatialiteDbsObject.has(URL)) {
                             String url = spatialiteDbsObject.getString(URL);
-                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             spatialitemap.url = url;
                         }
                         if (spatialiteDbsObject.has(UPLOADURL)) {
                             String url = spatialiteDbsObject.getString(UPLOADURL);
-                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             spatialitemap.uploadUrl = url;
                         }
                         if (spatialiteDbsObject.has(SIZE)) {
@@ -309,7 +295,6 @@ public enum ProfilesHandler {
                         }
                         if (otherFileObject.has(URL)) {
                             String url = otherFileObject.getString(URL);
-                            url = absoluteCloudProfileUrl(url, cloudProfileServer);
                             otherfiles.url = url;
                         }
                         if (otherFileObject.has(SIZE)) {
@@ -517,12 +502,13 @@ public enum ProfilesHandler {
                 if (name != null && active) {
                     String json = cursor.getString(2);
                     JSONObject profileObject = new JSONObject(json);
-                    activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject,"");
+                    activeProfile = ProfilesHandler.INSTANCE.getProfileFromJson(profileObject);
                 }
             } while (cursor.moveToNext());
             cursor.close();
         }
     }
+
 
     public List<BaseMap> getBaseMaps() {
         List<BaseMap> baseMaps = new ArrayList<>();
@@ -543,8 +529,9 @@ public enum ProfilesHandler {
         return baseMaps;
     }
 
+
     public List<Profile> addJsonProfile(JSONObject profileObject, List<Profile> profileList) throws JSONException {
-        Profile newProfile = getProfileFromJson(profileObject, "");
+        Profile newProfile = getProfileFromJson(profileObject);
         profileList.add(newProfile);
         return profileList;
     }

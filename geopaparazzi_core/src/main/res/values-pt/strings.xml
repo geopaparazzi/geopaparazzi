@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Usar ao nível do Android (poupa bateria, necessário reiniciar)</string>
   <string name="gps_use_android_level_summary">Se ativado, as configurações do GPS são aplicadas ao nível do sistema operativo, gastando menos bateria, mas pode ter um sinal menos estável ao escolher intervalos longos (se tiver problemas de ligação do GPS com isto ativo, desative isto). Note que o sistema operativo alimenta continuadamente o GPS para intervalos de envio menores que 100 segundos. Para poupar bateria use intervalos mais longos.</string>
   <string name="sms_preferences">Configurações SMS</string>
-  <string name="sms_preferences_summary">Definir um número de pânico e ativar o receptor de SMS.</string>
-  <string name="sms_catcher">Ativa o receptor de SMS</string>
   <string name="databaseError">Ocorreu um erro ao fazer a ligação à base de dados</string>
   <string name="chart_profile_view">Vista de Perfil</string>
   <string name="gpx_import_processing">Importar GPX...</string>

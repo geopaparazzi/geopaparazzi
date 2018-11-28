@@ -50,8 +50,6 @@
   <string name="gps_use_android_level">안드로이드 수준에서 사용 (배터리 절약, 재시작 필요)</string>
   <string name="gps_use_android_level_summary">이 옵션을 선택하면, GPS 설정은 운영체제 수준에서 적용되며, 송신 간격을 늘리면 베터리를 절약할 수 있지만 불안정한 신호가 사용될 수 있습니다(이 장치에서 GPS 연결 문제가 있는 경우 선택하지 마십시오). 운영체제에서 GPS는 100초 이하의 송신 간격으로 연속 구동됩니다. 베터리 수명을 위해 더 큰 간격을 선택하십시오.</string>
   <string name="sms_preferences">SMS 설정</string>
-  <string name="sms_preferences_summary">패닉 번호를 설정하고 SMS 알림을 활성화합니다.</string>
-  <string name="sms_catcher">SMS 알림 활성화</string>
   <string name="databaseError">데이터베이스에 연결 중 오류가 발생했습니다</string>
   <string name="chart_profile_view">프로필 보기</string>
   <string name="gpx_import_processing">GPX 가져오는 중...</string>

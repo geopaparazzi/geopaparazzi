@@ -49,8 +49,6 @@
   <string name="gps_use_android_level">Utiliser au niveau d\'android (sauvegarde la batterie, redémarrage nécessaire)</string>
   <string name="gps_use_android_level_summary">Si elle est cochée, les paramètres GPS sont appliqués au niveau du système d\'exploitation, ce qui permet d\'économiser de la batterie, mais pourrait avoir un signal moins stable lors du choix de grands intervalles (si vous avez gps problèmes de connexion sur les appareils de contrôle, laissez cette case non cochée). Notez que les os gps alimentés en continu pendant des intervalles de moins de 100 secondes d\'envoi. Pour une meilleure autonomie de la batterie choisir des intervalles plus grands.</string>
   <string name="sms_preferences">Paramètres SMS</string>
-  <string name="sms_preferences_summary">Définissez le numéro de panique et permettre au receveur de sms.</string>
-  <string name="sms_catcher">Activer le receveur de SMS</string>
   <string name="databaseError">Une erreur s\'est produite lors de la connexion à la base de données</string>
   <string name="chart_profile_view">Vue du profil</string>
   <string name="gpx_import_processing">Import gpx...</string>

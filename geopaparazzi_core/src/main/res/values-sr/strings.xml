@@ -36,7 +36,6 @@
   <string name="gps_logging_distance">Minimalna razdaljina gps prijave</string>
   <string name="gps_logging_interval">Minimalni interval gps prijave</string>
   <string name="gps_use_android_level">Koristi na android nivou (čuva bateriju, potrebno restartovanje)</string>
-  <string name="sms_catcher">Dopusti prijem SMS-a</string>
   <string name="databaseError">Pojavila se greška u toku povezivanja sa datom podataka</string>
   <string name="chart_profile_view">Prikaz profila</string>
   <string name="gpx_import_processing">Unošenje gpx...</string>

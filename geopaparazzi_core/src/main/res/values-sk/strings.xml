@@ -36,7 +36,6 @@
   <string name="gps_logging_distance">Min. vzdialenosť pri meraní GPS</string>
   <string name="gps_logging_interval">Min. interval záznamu GPS</string>
   <string name="gps_use_android_level">Použiť na úrovni Android (šetrí batériu, potrebuje reštart)</string>
-  <string name="sms_catcher">Povoliť sms catcher</string>
   <string name="databaseError">Pri pripojení databázy sa vyskytla chyba</string>
   <string name="chart_profile_view">Profil</string>
   <string name="gpx_import_processing">Import gpx...</string>
