@@ -797,7 +797,18 @@ public class CustomTileDownloader extends TileDownloader {
                         if (bitmapFile.exists())
                             decodedBitmap = BitmapFactory.decodeFile(urlString);
                     } else {
-                        decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+                        try {
+                            decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+                        } catch (Exception e) {
+                            if (e.getMessage().toLowerCase().contains("cleartext http traffic")) {
+                                // change source to https and try again
+                                if (PROTOCOL.equals(HTTP_STR)) {
+                                    urlString = urlString.replaceFirst(HTTP_STR, HTTPS_STR);
+                                    decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+                                    PROTOCOL = HTTPS_STR;
+                                }
+                            }
+                        }
                     }
                     if (doScaleTiles && type != TILESCHEMA.wms)
                         decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);

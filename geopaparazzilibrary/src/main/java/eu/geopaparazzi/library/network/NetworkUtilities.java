@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -553,19 +554,16 @@ public class NetworkUtilities {
      * @param urlStr the url.
      * @return the downloaded bitmap or null.
      */
-    public static Bitmap downloadBitmap(String urlStr) {
+    public static Bitmap downloadBitmap(String urlStr) throws Exception {
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(urlStr);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
             return BitmapFactory.decodeStream(inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             urlConnection.disconnect();
         }
-        return null;
     }
 
 
