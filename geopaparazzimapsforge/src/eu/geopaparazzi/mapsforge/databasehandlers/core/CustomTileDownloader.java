@@ -800,14 +800,15 @@ public class CustomTileDownloader extends TileDownloader {
                         try {
                             decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
                         } catch (Exception e) {
-                            if (e.getMessage().toLowerCase().contains("cleartext http traffic")) {
-                                // change source to https and try again
-                                if (PROTOCOL.equals(HTTP_STR)) {
-                                    urlString = urlString.replaceFirst(HTTP_STR, HTTPS_STR);
-                                    decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
-                                    PROTOCOL = HTTPS_STR;
-                                }
-                            }
+                            return false;
+//                            if (e.getMessage().toLowerCase().contains("cleartext http traffic")) {
+//                                // change source to https and try again
+//                                if (PROTOCOL.equals(HTTP_STR)) {
+//                                    urlString = urlString.replaceFirst(HTTP_STR, HTTPS_STR);
+//                                    decodedBitmap = NetworkUtilities.downloadBitmap(urlString);
+//                                    PROTOCOL = HTTPS_STR;
+//                                }
+//                            }
                         }
                     }
                     if (doScaleTiles && type != TILESCHEMA.wms)

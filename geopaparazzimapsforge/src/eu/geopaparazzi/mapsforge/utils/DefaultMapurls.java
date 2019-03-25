@@ -43,9 +43,7 @@ public class DefaultMapurls {
         /** */
         mapnik(eu.geopaparazzi.mapsforge.R.raw.mapnik),
         /** */
-        opencycle(eu.geopaparazzi.mapsforge.R.raw.opencycle),
-        /** */
-        mapquest(eu.geopaparazzi.mapsforge.R.raw.mapquest);
+        opencycle(eu.geopaparazzi.mapsforge.R.raw.opencycle);
 
         private int resourceId;
 

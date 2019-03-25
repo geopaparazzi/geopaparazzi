@@ -1,4 +1,4 @@
-url=https://tile.openstreetmap.org/ZZZ/XXX/YYY.png
+url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
 minzoom=0
 maxzoom=19
 center=11.42 46.8
