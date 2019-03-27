@@ -18,7 +18,7 @@
 
 package eu.geopaparazzi.core.database.objects;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Created by hydrologis on 05/07/2015.

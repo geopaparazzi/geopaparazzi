@@ -18,7 +18,6 @@
 package eu.geopaparazzi.core.maptools.tools;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,22 +27,23 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import org.mapsforge.android.maps.MapView;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.map.android.view.MapView;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.Tool;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.core.features.Tool;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.core.R;
 
 /**
  * The main point layer editing tool group, which just shows the tool palette.

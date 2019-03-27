@@ -24,8 +24,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.core.model.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -577,45 +575,45 @@ public class DaoImages implements IImagesDbHelper {
         return imageData;
     }
 
-    /**
-     * Get all image overlays.
-     *
-     * @param marker the marker to use.
-     * @param onlyStandalone if true, only pure image notes are returned.
-     *                       One example of non pure image notes is the image
-     *                       that belongs to a form based note.
-     * @return the list of {@link OverlayItem}s.
-     * @throws IOException if something goes wrong.
-     */
-    public static List<OverlayItem> getImagesOverlayList(Drawable marker, boolean onlyStandalone) throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayItem> images = new ArrayList<>();
-        String asColumnsToReturn[] = {//
-                ImageTableFields.COLUMN_LON.getFieldName(),//
-                ImageTableFields.COLUMN_LAT.getFieldName(), //
-                ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(),//
-                ImageTableFields.COLUMN_TEXT.getFieldName()//
-        };
-        String strSortOrder = "_id ASC";
-        String whereString = null;
-        if (onlyStandalone) {
-            whereString = ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
-        }
-        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            long imageDataId = c.getLong(2);
-            String text = c.getString(3);
-
-            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), text, imageDataId + "", marker);
-            images.add(image);
-            c.moveToNext();
-        }
-        c.close();
-        return images;
-    }
+//    /**
+//     * Get all image overlays.
+//     *
+//     * @param marker the marker to use.
+//     * @param onlyStandalone if true, only pure image notes are returned.
+//     *                       One example of non pure image notes is the image
+//     *                       that belongs to a form based note.
+//     * @return the list of {@link OverlayItem}s.
+//     * @throws IOException if something goes wrong.
+//     */
+//    public static List<OverlayItem> getImagesOverlayList(Drawable marker, boolean onlyStandalone) throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        List<OverlayItem> images = new ArrayList<>();
+//        String asColumnsToReturn[] = {//
+//                ImageTableFields.COLUMN_LON.getFieldName(),//
+//                ImageTableFields.COLUMN_LAT.getFieldName(), //
+//                ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(),//
+//                ImageTableFields.COLUMN_TEXT.getFieldName()//
+//        };
+//        String strSortOrder = "_id ASC";
+//        String whereString = null;
+//        if (onlyStandalone) {
+//            whereString = ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
+//        }
+//        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
+//        c.moveToFirst();
+//        while (!c.isAfterLast()) {
+//            double lon = c.getDouble(0);
+//            double lat = c.getDouble(1);
+//            long imageDataId = c.getLong(2);
+//            String text = c.getString(3);
+//
+//            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), text, imageDataId + "", marker);
+//            images.add(image);
+//            c.moveToNext();
+//        }
+//        c.close();
+//        return images;
+//    }
 
 
 }

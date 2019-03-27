@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.ISpatialiteTableAndFieldsNames;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteVersion;
 import jsqlite.Database;

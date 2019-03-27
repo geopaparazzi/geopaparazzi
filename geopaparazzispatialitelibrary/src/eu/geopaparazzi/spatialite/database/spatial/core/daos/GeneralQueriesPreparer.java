@@ -20,6 +20,8 @@ package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 import java.util.HashMap;
 
+import eu.geopaparazzi.spatialite.ISpatialiteTableAndFieldsNames;
+
 /**
  * General sql query to retrieve vector data of the whole Database in 1 query
  * <p/>

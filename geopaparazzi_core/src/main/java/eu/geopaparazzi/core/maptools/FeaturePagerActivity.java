@@ -30,16 +30,16 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -123,7 +123,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
         else if (item.getItemId() == R.id.action_image_browser) {
             Intent intent = new Intent(this, ResourceBrowser.class);
             String tableName = selectedFeature.getTableName();
-            SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(selectedFeature);
+            SpatialVectorTable table = null;// TODO SpatialiteSourcesManager.INSTANCE.getTableFromFeature(selectedFeature);
             intent.putExtra(TABLENAME_EXTRA_MESSAGE, tableName);
             intent.putExtra(DBPATH_EXTRA_MESSAGE, selectedFeature.getDatabasePath());
             intent.putExtra(ROWID_EXTRA_MESSAGE, selectedFeature.getId());
@@ -183,10 +183,12 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     private void saveData() throws Exception {
         for (Feature feature : featuresList) {
             if (feature.isDirty()) {
-                SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
-                SpatialiteDatabaseHandler spatialiteDatabaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(table);
-                Database database = spatialiteDatabaseHandler.getDatabase();
-                DaoSpatialite.updateFeatureAlphanumericAttributes(database, feature);
+                SpatialVectorTable table = null;// SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+
+                // TODO
+//                SpatialiteDatabaseHandler spatialiteDatabaseHandler = SpatialiteSourcesManager.INSTANCE.getExistingDatabaseHandlerByTable(table);
+//                Database database = spatialiteDatabaseHandler.getDatabase();
+//                DaoSpatialite.updateFeatureAlphanumericAttributes(database, feature);
             }
         }
     }

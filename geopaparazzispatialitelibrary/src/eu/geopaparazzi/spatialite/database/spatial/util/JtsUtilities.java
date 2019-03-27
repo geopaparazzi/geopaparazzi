@@ -17,12 +17,12 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.util;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Polygon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class JtsUtilities {
     }
 
     /**
-     * Create a {@link com.vividsolutions.jts.geom.LineString} from a list of coordinates.
+     * Create a {@link LineString} from a list of coordinates.
      *
      * @param coordinatesList the list of coordinates.
      * @return the created line.

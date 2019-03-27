@@ -40,9 +40,11 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -55,7 +57,6 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -64,19 +65,22 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.mapsforge.android.maps.DebugSettings;
-import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapScaleBar;
-import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
-import org.mapsforge.android.maps.MapScaleBar.TextField;
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.model.GeoPoint;
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.EDb;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.MapViewProjection;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,12 +94,11 @@ import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.GeocodeActivity;
 import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.Tool;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.Tool;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -113,28 +116,22 @@ import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
+import eu.geopaparazzi.mapsforge.core.layers.SpatialiteTableLayer;
+import eu.geopaparazzi.core.maptools.EditableLayersListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
-import eu.geopaparazzi.core.database.DaoImages;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.database.objects.Bookmark;
 import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
-import eu.geopaparazzi.core.maptools.tools.LineMainEditingToolGroup;
-import eu.geopaparazzi.core.maptools.tools.NoEditableLayerToolGroup;
 import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
-import eu.geopaparazzi.core.maptools.tools.PointMainEditingToolGroup;
-import eu.geopaparazzi.core.maptools.tools.PolygonMainEditingToolGroup;
 import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
-import eu.geopaparazzi.core.mapview.overlays.ArrayGeopaparazziOverlay;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
 import eu.geopaparazzi.core.ui.activities.GpsDataListActivity;
@@ -147,7 +144,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.*;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapviewActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener {
+public class MapviewActivity extends AppCompatActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -178,7 +175,6 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     private MapView mMapView;
     private SharedPreferences mPeferences;
 
-    private ArrayGeopaparazziOverlay mDataOverlay;
 
     private List<String> smsString;
     private Drawable notesDrawable;
@@ -207,6 +203,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     private String latString;
     private String lonString;
     private TextView batteryText;
+    private LayerManager layerManager;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -218,7 +215,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     boolean rereadMap = intent.getBooleanExtra(MapsSupportService.REREAD_MAP_REQUEST, false);
                     if (rereadMap) {
                         readData();
-                        mMapView.invalidate();
+                        mMapView.repaint();
                     }
                 } else if (intent.hasExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST)) {
                     boolean centerOnPosition = intent.getBooleanExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, false);
@@ -269,11 +266,38 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
 
         /*
          * create main mapview
-        */
+         */
         mMapView = new MapView(this);
         mMapView.setClickable(true);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setOnTouchListener(this);
+        layerManager = mMapView.getLayerManager();
+        Layers layers = layerManager.getLayers();
+
+        TileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
+                mMapView.getModel().displayModel.getTileSize(), 1f,
+                mMapView.getModel().frameBufferModel.getOverdrawFactor());
+
+
+        // TODO remove this hardcoded testing
+        File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
+        MapDataStore mapDataStore = new MapFile(mapFile);
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
+                mMapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
+        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+        layers.add(tileRendererLayer);
+
+        File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
+        try {
+            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
+            spatialDb.open(spatialiteFile.getAbsolutePath());
+            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
+            SpatialiteTableLayer spatialiteTableLayer = new SpatialiteTableLayer(mMapView, spatialDb, "ne_10m_roads");
+            layers.add(spatialiteTableLayer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         float mapScaleX = mPeferences.getFloat(MAPSCALE_X, 1f);
         float mapScaleY = mPeferences.getFloat(MAPSCALE_Y, 1f);
@@ -289,28 +313,29 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         // TileCache fileSystemTileCache = this.mMapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        BaseMapSourcesManager.INSTANCE.loadSelectedBaseMap(mMapView);
+//        BaseMapSourcesManager.INSTANCE.loadSelectedBaseMap(mMapView);
 
-        MapScaleBar mapScaleBar = this.mMapView.getMapScaleBar();
-
-        boolean doImperial = mPeferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
-        mapScaleBar.setImperialUnits(doImperial);
-        if (doImperial) {
-            mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
-            mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
-        } else {
-            mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
-            mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
-        }
-        mapScaleBar.setScreenPosition(ScreenPosition.TOPLEFT);
-
-        if (Debug.D) {
-            // boolean drawTileFrames = mPeferences.getBoolean("drawTileFrames", false);
-            // boolean drawTileCoordinates = mPeferences.getBoolean("drawTileCoordinates", false);
-            // boolean highlightWaterTiles = mPeferences.getBoolean("highlightWaterTiles", false);
-            DebugSettings debugSettings = new DebugSettings(true, true, false);
-            this.mMapView.setDebugSettings(debugSettings);
-        }
+        mMapView.getMapScaleBar().setVisible(true);
+//        MapScaleBar mapScaleBar = this.mMapView.getMapScaleBar();
+//
+//        boolean doImperial = mPeferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
+//        mapScaleBar.setImperialUnits(doImperial);
+//        if (doImperial) {
+//            mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
+//            mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
+//        } else {
+//            mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
+//            mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
+//        }
+//        mapScaleBar.setScreenPosition(ScreenPosition.TOPLEFT);
+//
+//        if (Debug.D) {
+//            // boolean drawTileFrames = mPeferences.getBoolean("drawTileFrames", false);
+//            // boolean drawTileCoordinates = mPeferences.getBoolean("drawTileCoordinates", false);
+//            // boolean highlightWaterTiles = mPeferences.getBoolean("highlightWaterTiles", false);
+//            DebugSettings debugSettings = new DebugSettings(true, true, false);
+//            this.mMapView.setDebugSettings(debugSettings);
+//        }
 
         setTextScale();
 
@@ -438,10 +463,11 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             notesDrawable = Compat.getDrawable(this, R.drawable.ic_place_accent_24dp);
         }
 
-        mDataOverlay = new ArrayGeopaparazziOverlay(this);
-        List<Overlay> overlays = mMapView.getOverlays();
-        overlays.clear();
-        overlays.add(mDataOverlay);
+        // TODO
+//        mDataOverlay = new ArrayGeopaparazziOverlay(this);
+//        List<Overlay> overlays = mMapView.getOverlays();
+//        overlays.clear();
+//        overlays.add(mDataOverlay);
 
         super.onResume();
     }
@@ -457,7 +483,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (textSizeFactor < 0.5f) {
             textSizeFactor = 1f;
         }
-        mMapView.setTextScale(textSizeFactor);
+//        mMapView.setTextScale(textSizeFactor);
     }
 
     @Override
@@ -472,60 +498,56 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
         if (gpsServiceBroadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
 
-        if (mDataOverlay != null)
-            mDataOverlay.dispose();
 
         if (mMapView != null) {
-            MapGenerator mapGenerator = mMapView.getMapGenerator();
-            if (mapGenerator != null) {
-                mapGenerator.cleanup();
-            }
+            mMapView.destroyAll();
         }
+        AndroidGraphicFactory.clearResourceMemoryCache();
         super.onDestroy();
     }
 
     private void readData() {
         try {
-            mDataOverlay.clearItems();
-            mDataOverlay.clearWays();
-
-            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays();
-            mDataOverlay.addWays(logOverlaysList);
-
-            boolean imagesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, true);
-            boolean notesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, true);
-
-            /* images */
-            if (imagesVisible) {
-                Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_images_48dp);
-                Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
-                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
-                mDataOverlay.addItems(imagesOverlaysList);
-            }
-
-            /* gps notes */
-            if (notesVisible) {
-                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth(), notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
-                        notesDrawable.getIntrinsicHeight() / 2);
-                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
-                List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
-                mDataOverlay.addItems(noteOverlaysList);
-            }
-
-            /* bookmarks */
-            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_bookmarks_48dp);
-            Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
-            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
-            mDataOverlay.addItems(bookmarksOverlays);
-
-            // read last known gps position
-            if (lastGpsPosition != null) {
-                GeoPoint geoPoint = toGeopoint((int) (lastGpsPosition[0] * E6), (int) (lastGpsPosition[1] * E6));
-                if (geoPoint != null) {
-                    mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
-                    mDataOverlay.requestRedraw();
-                }
-            }
+//            mDataOverlay.clearItems();
+//            mDataOverlay.clearWays();
+//
+//            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays();
+//            mDataOverlay.addWays(logOverlaysList);
+//
+//            boolean imagesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, true);
+//            boolean notesVisible = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, true);
+//
+//            /* images */
+//            if (imagesVisible) {
+//                Drawable imageMarker = Compat.getDrawable(this, R.drawable.ic_images_48dp);
+//                Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
+//                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker, true);
+//                mDataOverlay.addItems(imagesOverlaysList);
+//            }
+//
+//            /* gps notes */
+//            if (notesVisible) {
+//                notesDrawable.setBounds(notesDrawable.getIntrinsicWidth(), notesDrawable.getIntrinsicHeight() / -2, notesDrawable.getIntrinsicWidth() / 2,
+//                        notesDrawable.getIntrinsicHeight() / 2);
+//                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
+//                List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
+//                mDataOverlay.addItems(noteOverlaysList);
+//            }
+//
+//            /* bookmarks */
+//            Drawable bookmarkMarker = Compat.getDrawable(this, R.drawable.ic_bookmarks_48dp);
+//            Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
+//            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
+//            mDataOverlay.addItems(bookmarksOverlays);
+//
+//            // read last known gps position
+//            if (lastGpsPosition != null) {
+//                GeoPoint geoPoint = toGeopoint((int) (lastGpsPosition[0] * E6), (int) (lastGpsPosition[1] * E6));
+//                if (geoPoint != null) {
+//                    mDataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
+//                    mDataOverlay.requestRedraw();
+//                }
+//            }
             // mDataOverlay.requestRedraw();
         } catch (Exception e1) {
             GPLog.error(this, null, e1); //$NON-NLS-1$
@@ -538,10 +560,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             GPLog.addLogEntry(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
 
         if (action == MotionEvent.ACTION_MOVE) {
-            MapViewPosition mapPosition = mMapView.getMapPosition();
-            GeoPoint mapCenter = mapPosition.getMapCenter();
-            double lon = mapCenter.longitudeE6 / E6;
-            double lat = mapCenter.latitudeE6 / E6;
+            IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+            LatLong mapCenter = mapPosition.getCenter();
+            double lon = mapCenter.getLongitudeE6() / E6;
+            double lat = mapCenter.getLatitudeE6() / E6;
             if (coordView != null) {
                 coordView.setText(lonString + " " + COORDINATE_FORMATTER.format(lon) //
                         + "\n" + latString + " " + COORDINATE_FORMATTER.format(lat));
@@ -564,7 +586,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     }
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            int zoom = mMapView.getMapPosition().getZoomLevel();
+                            int zoom = mMapView.getModel().mapViewPosition.getZoomLevel();
                             setZoom(zoom);
                         }
                     });
@@ -593,13 +615,13 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      * @return integer current zoom level.
      */
     private int getZoom() {
-        MapViewPosition mapPosition = mMapView.getMapPosition();
+        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
         byte zoom = mapPosition.getZoomLevel();
         return zoom;
     }
 
     public void setZoom(int zoom) {
-        mMapView.getController().setZoom(zoom);
+        mMapView.getModel().mapViewPosition.setZoomLevel((byte) zoom);
         setGuiZoomText(zoom);
         saveCenterPref();
     }
@@ -611,49 +633,28 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     /**
      * @return the center [lon, lat]
      */
-    public double[] getCenterLonLat() {
-        MapViewPosition mapPosition = mMapView.getMapPosition();
-        GeoPoint mapCenter = mapPosition.getMapCenter();
-        double lon = mapCenter.longitudeE6 / E6;
-        double lat = mapCenter.latitudeE6 / E6;
-//        zoom = mapPosition.getZoomLevel();
-        return new double[]{lon, lat};
-    }
-
+//    public double[] getCenterLonLat() {
+//        MapViewPosition mapPosition = mMapView.getMapPosition();
+//        GeoPoint mapCenter = mapPosition.getMapCenter();
+//        double lon = mapCenter.longitudeE6 / E6;
+//        double lat = mapCenter.latitudeE6 / E6;
+////        zoom = mapPosition.getZoomLevel();
+//        return new double[]{lon, lat};
+//    }
     public void setNewCenterAtZoom(double lon, double lat, int zoom) {
-        GeoPoint geoPoint = toGeopoint(lon, lat);
-        if (geoPoint != null) {
-            mMapView.getController().setZoom(zoom);
-            mMapView.getController().setCenter(geoPoint);
-            setGuiZoomText(zoom);
-            saveCenterPref(lon, lat, zoom);
-        }
+        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+        mapPosition.setZoomLevel((byte) zoom);
+        mapPosition.setCenter(new LatLong(lat, lon));
+
+        setGuiZoomText(zoom);
+        saveCenterPref(lon, lat, zoom);
     }
 
-    private GeoPoint toGeopoint(double lon, double lat) {
-        try {
-            return new GeoPoint(lat, lon);
-        } catch (Exception e) {
-            GPLog.error(this, "ERROR", e);
-            return null;
-        }
-    }
-
-    private GeoPoint toGeopoint(int lonE6, int latE6) {
-        try {
-            return new GeoPoint(latE6, lonE6);
-        } catch (Exception e) {
-            GPLog.error(this, "ERROR", e);
-            return null;
-        }
-    }
 
     public void setNewCenter(double lon, double lat) {
-        GeoPoint geoPoint = toGeopoint(lon, lat);
-        if (geoPoint != null) {
-            mMapView.getController().setCenter(geoPoint);
-            saveCenterPref();
-        }
+        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+        mapPosition.setCenter(new LatLong(lat, lon));
+        saveCenterPref();
     }
 
 
@@ -690,8 +691,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 return true;
             case MENU_SCALE_ID:
                 MapScaleBar mapScaleBar = mMapView.getMapScaleBar();
-                boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
-                mapScaleBar.setShowMapScaleBar(!showMapScaleBar);
+                boolean showMapScaleBar = mapScaleBar.isVisible();
+                mapScaleBar.setVisible(!showMapScaleBar);
                 return true;
             case MENU_COMPASS_ID:
                 AppsUtilities.checkAndOpenGpsStatus(this);
@@ -703,7 +704,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                 }
 
                 try {
-                    float[] nswe = getMapWorldBounds();
+                    double[] nswe = getMapWorldBounds();
                     List<PointF3D> points = new ArrayList<>();
                     List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
                     for (Bookmark bookmark : bookmarksList) {
@@ -714,7 +715,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                         PointF3D p = new PointF3D((float) lon, (float) lat, 0f, title);
                         points.add(p);
                     }
-                    List<Note> notesList = DaoNotes.getNotesList(new float[]{nswe[0], nswe[1], nswe[2], nswe[3]}, false);
+                    List<Note> notesList = DaoNotes.getNotesList(new double[]{nswe[0], nswe[1], nswe[2], nswe[3]}, false);
                     for (Note note : notesList) {
                         double lat = note.getLat();
                         double lon = note.getLon();
@@ -744,7 +745,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     return false;
                 }
             case MENU_LOADMAPSFORGE_VECTORS_ID: {
-                float[] mapWorldBounds = getMapWorldBounds();
+                double[] mapWorldBounds = getMapWorldBounds();
                 int currentZoomLevel = getZoom();
                 Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
                 mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
@@ -804,13 +805,13 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      *
      * @return the [n,s,w,e] in degrees.
      */
-    private float[] getMapWorldBounds() {
-        float[] nswe = getMapWorldBoundsE6();
-        float n = nswe[0] / E6;
-        float s = nswe[1] / E6;
-        float w = nswe[2] / E6;
-        float e = nswe[3] / E6;
-        return new float[]{n, s, w, e};
+    private double[] getMapWorldBounds() {
+        double[] nswe = getMapWorldBoundsE6();
+        double n = nswe[0] / E6;
+        double s = nswe[1] / E6;
+        double w = nswe[2] / E6;
+        double e = nswe[3] / E6;
+        return new double[]{n, s, w, e};
     }
 
     /**
@@ -818,17 +819,18 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      *
      * @return the [n,s,w,e] in midrodegrees.
      */
-    private float[] getMapWorldBoundsE6() {
-        Projection projection = mMapView.getProjection();
-        int latitudeSpan = projection.getLatitudeSpan();
-        int longitudeSpan = projection.getLongitudeSpan();
-        MapViewPosition mapPosition = mMapView.getMapPosition();
-        GeoPoint c = mapPosition.getMapCenter();
-        float n = (c.latitudeE6 + latitudeSpan / 2);
-        float s = (c.latitudeE6 - latitudeSpan / 2);
-        float w = (c.longitudeE6 - longitudeSpan / 2);
-        float e = (c.longitudeE6 + longitudeSpan / 2);
-        float[] nswe = {n, s, w, e};
+    private double[] getMapWorldBoundsE6() {
+        MapViewProjection projection = mMapView.getMapViewProjection();
+        double latitudeSpan = projection.getLatitudeSpan();
+        double longitudeSpan = projection.getLongitudeSpan();
+        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+
+        LatLong c = mapPosition.getCenter();
+        double n = (c.getLatitudeE6() + latitudeSpan / 2);
+        double s = (c.getLatitudeE6() - latitudeSpan / 2);
+        double w = (c.getLongitudeE6() - longitudeSpan / 2);
+        double e = (c.getLongitudeE6() + longitudeSpan / 2);
+        double[] nswe = {n, s, w, e};
         return nswe;
     }
 
@@ -981,9 +983,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void addBookmark() {
-        GeoPoint mapCenter = mMapView.getMapPosition().getMapCenter();
-        final float centerLat = mapCenter.latitudeE6 / E6;
-        final float centerLon = mapCenter.longitudeE6 / E6;
+        final IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+        LatLong mapCenter = mapPosition.getCenter();
+        final float centerLat = mapCenter.getLatitudeE6() / E6;
+        final float centerLon = mapCenter.getLongitudeE6() / E6;
 
         final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
         final String proposedName = "bookmark " + newDate;
@@ -996,8 +999,8 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
                     if (theTextToRunOn.length() < 1) {
                         theTextToRunOn = proposedName;
                     }
-                    int zoom = mMapView.getMapPosition().getZoomLevel();
-                    float[] nswe = getMapWorldBounds();
+                    int zoom = mapPosition.getZoomLevel();
+                    double[] nswe = getMapWorldBounds();
                     DaoBookmarks.addBookmark(centerLon, centerLat, theTextToRunOn, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
                     readData();
                 } catch (IOException e) {
@@ -1013,7 +1016,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      * Calls the mapview redraw.
      */
     public void invalidateMap() {
-        mMapView.invalidateOnUiThread();
+        mMapView.repaint();
     }
 
 
@@ -1035,10 +1038,10 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             lat = lonLatZoom[1];
             zoom = (int) lonLatZoom[2];
         } else {
-            MapViewPosition mapPosition = mMapView.getMapPosition();
-            GeoPoint mapCenter = mapPosition.getMapCenter();
-            lon = mapCenter.longitudeE6 / E6;
-            lat = mapCenter.latitudeE6 / E6;
+            IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+            LatLong mapCenter = mapPosition.getCenter();
+            lon = mapCenter.getLongitudeE6() / E6;
+            lat = mapCenter.getLatitudeE6() / E6;
             zoom = mapPosition.getZoomLevel();
         }
 
@@ -1067,20 +1070,20 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
      * @param zoom    the zoom. Can be <code>null</code>.
      */
     public void setCenterAndZoomForMapWindowFocus(Double centerX, Double centerY, Integer zoom) {
-        MapViewPosition mapPosition = mMapView.getMapPosition();
-        GeoPoint mapCenter = mapPosition.getMapCenter();
+        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
+        LatLong mapCenter = mapPosition.getCenter();
         int zoomLevel = mapPosition.getZoomLevel();
         float cx = 0f;
         float cy = 0f;
         if (centerX != null) {
             cx = centerX.floatValue();
         } else {
-            cx = mapCenter.longitudeE6 / E6;
+            cx = mapCenter.getLongitudeE6() / E6;
         }
         if (centerY != null) {
             cy = centerY.floatValue();
         } else {
-            cy = mapCenter.latitudeE6 / E6;
+            cy = mapCenter.getLatitudeE6() / E6;
         }
         if (zoom != null) {
             zoomLevel = zoom;
@@ -1138,7 +1141,7 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             // send updates to the editing framework
             EditManager.INSTANCE.onGpsUpdate(lon, lat);
 
-            float[] nsweE6 = getMapWorldBoundsE6();
+            double[] nsweE6 = getMapWorldBoundsE6();
             int latE6 = (int) ((float) lat * E6);
             int lonE6 = (int) ((float) lon * E6);
             boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
@@ -1149,15 +1152,18 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
             int eE6 = (int) nsweE6[3];
 
             // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
-            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
-                GeoPoint point = toGeopoint(lonE6, latE6);
-                if (point != null) {
-                    mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
-                    mDataOverlay.requestRedraw();
-                }
-            }
 
-            Projection p = mMapView.getProjection();
+            // TODO check this
+//            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
+//                GeoPoint point = toGeopoint(lonE6, latE6);
+//                if (point != null) {
+//                    mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
+//                    mDataOverlay.requestRedraw();
+//                }
+//            }
+
+
+            MapViewProjection p = mMapView.getMapViewProjection();
             int paddingX = (int) (p.getLongitudeSpan() * 0.2);
             int paddingY = (int) (p.getLatitudeSpan() * 0.2);
             int newEE6 = eE6 - paddingX;
@@ -1378,30 +1384,32 @@ public class MapviewActivity extends MapActivity implements OnTouchListener, OnC
     }
 
     private void toggleEditing() {
-        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
-        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-        if (activeToolGroup == null) {
-            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
-            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-            if (editLayer == null) {
-                // if not layer is
-                activeToolGroup = new NoEditableLayerToolGroup(mMapView);
-//                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
-//                return;
-            } else if (editLayer.isPolygon())
-                activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
-            else if (editLayer.isLine())
-                activeToolGroup = new LineMainEditingToolGroup(mMapView);
-            else if (editLayer.isPoint())
-                activeToolGroup = new PointMainEditingToolGroup(mMapView);
-            EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
-            setLeftButtoonsEnablement(false);
-        } else {
-            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
-            EditManager.INSTANCE.setActiveTool(null);
-            EditManager.INSTANCE.setActiveToolGroup(null);
-            setLeftButtoonsEnablement(true);
-        }
+
+        // TODO EDITING
+//        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
+//        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+//        if (activeToolGroup == null) {
+//            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
+//            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+//            if (editLayer == null) {
+//                // if not layer is
+//                activeToolGroup = new NoEditableLayerToolGroup(mMapView);
+////                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
+////                return;
+//            } else if (editLayer.isPolygon())
+//                activeToolGroup = new PolygonMainEditingToolGroup(mMapView);
+//            else if (editLayer.isLine())
+//                activeToolGroup = new LineMainEditingToolGroup(mMapView);
+//            else if (editLayer.isPoint())
+//                activeToolGroup = new PointMainEditingToolGroup(mMapView);
+//            EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
+//            setLeftButtoonsEnablement(false);
+//        } else {
+//            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
+//            EditManager.INSTANCE.setActiveTool(null);
+//            EditManager.INSTANCE.setActiveToolGroup(null);
+//            setLeftButtoonsEnablement(true);
+//        }
     }
 
     private void setLeftButtoonsEnablement(boolean enable) {

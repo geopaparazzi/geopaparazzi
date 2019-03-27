@@ -19,7 +19,7 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import java.util.List;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.ToolGroup;
 
 /**
  * The group of tools active when a selection has been done.

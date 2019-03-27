@@ -19,11 +19,6 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -31,30 +26,40 @@ import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapViewProjection;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.utilities.Constants;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
 /**
  * A tool to measure by means of drawing on the map.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TapMeasureTool extends MapTool {
-    private final Paint measurePaint = new Paint();
-    private final Paint measureTextPaint = new Paint();
-    private Path measurePath = new Path();
+    private final Paint measurePaint = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint measureTextPaint = AndroidGraphicFactory.INSTANCE.createPaint();
+    private Path measurePath = AndroidGraphicFactory.INSTANCE.createPath();
 
     private float measuredDistance = Float.NaN;
     private String distanceString;
@@ -62,7 +67,6 @@ public class TapMeasureTool extends MapTool {
     private float lastX = -1;
     private float lastY = -1;
 
-    private final Point tmpP = new Point();
 
     private final Rect rect = new Rect();
 
@@ -71,25 +75,27 @@ public class TapMeasureTool extends MapTool {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the mapview reference.
      */
-    public TapMeasureTool( MapView mapView ) {
+    public TapMeasureTool(MapView mapView) {
         super(mapView);
 
         Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
 
-        measurePaint.setAntiAlias(true);
-        measurePaint.setColor(Color.DKGRAY);
-        measurePaint.setStrokeWidth(3f);
-        measurePaint.setStyle(Paint.Style.STROKE);
+        int stroke = MapsforgeUtils.toColor("#212121", -1);
 
-        measureTextPaint.setAntiAlias(true);
+//        measurePaint.setAntiAlias(true);
+        measurePaint.setColor(stroke);
+        measurePaint.setStrokeWidth(3f);
+        measurePaint.setStyle(Style.STROKE);
+
+//        measureTextPaint.setAntiAlias(true);
         int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics());
         measureTextPaint.setTextSize(pixel);
-        measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        measureTextPaint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 
         distanceString = context.getString(R.string.distance);
     }
@@ -99,7 +105,7 @@ public class TapMeasureTool extends MapTool {
             mapView.setClickable(false);
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         int cWidth = canvas.getWidth();
         // RectF retfF = new RectF();
         // measurePath.computeBounds(retfF, true);
@@ -107,9 +113,8 @@ public class TapMeasureTool extends MapTool {
         canvas.drawPath(measurePath, measurePaint);
         int upper = 70;
         int delta = 5;
-        measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
-        int textWidth = rect.width();
-        int textHeight = rect.height();
+        int textWidth = measureTextPaint.getTextWidth(distanceString);
+        int textHeight = measureTextPaint.getTextHeight(distanceString);
         int x = cWidth / 2 - textWidth / 2;
         canvas.drawText(distanceString, x, upper, measureTextPaint);
         textBuilder.setLength(0);
@@ -122,8 +127,7 @@ public class TapMeasureTool extends MapTool {
             textBuilder.append(" m"); //$NON-NLS-1$
         }
         String distanceText = textBuilder.toString();
-        measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
-        textWidth = rect.width();
+        textWidth = measureTextPaint.getTextWidth(distanceText);
         x = cWidth / 2 - textWidth / 2;
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
         if (GPLog.LOG_HEAVY)
@@ -131,67 +135,65 @@ public class TapMeasureTool extends MapTool {
 
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
 
-        Projection pj = mapView.getProjection();
+        MapViewProjection pj = mapView.getMapViewProjection();
         // handle drawing
         float currentX = event.getX();
         float currentY = event.getY();
 
-        tmpP.set(round(currentX), round(currentY));
-
         int action = event.getAction();
-        switch( action ) {
-        case MotionEvent.ACTION_DOWN:
-            measuredDistance = 0;
-            measurePath.reset();
-            GeoPoint firstGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(firstGeoPoint, tmpP);
-            measurePath.moveTo(tmpP.x, tmpP.y);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                measuredDistance = 0;
+                measurePath.clear(); // TODO check
+                LatLong firstGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                Point tmpP = pj.toPixels(firstGeoPoint);
+                measurePath.moveTo((float) tmpP.x, (float) tmpP.y);
 
-            lastX = currentX;
-            lastY = currentY;
-
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry(this, "TOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
-            break;
-        case MotionEvent.ACTION_MOVE:
-            float dx = currentX - lastX;
-            float dy = currentY - lastY;
-            if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
-                return true;
-            }
 
-            GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(currentGeoPoint, tmpP);
-            measurePath.lineTo(tmpP.x, tmpP.y);
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry(this, "DRAG: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$ //$NON-NLS-2$
-            // the measurement
-            GeoPoint previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "TOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                if (abs(dx) < 1 && abs(dy) < 1) {
+                    lastX = currentX;
+                    lastY = currentY;
+                    return true;
+                }
 
-            Location l1 = new Location("gps"); //$NON-NLS-1$
-            l1.setLatitude(previousGeoPoint.getLatitude());
-            l1.setLongitude(previousGeoPoint.getLongitude());
-            Location l2 = new Location("gps"); //$NON-NLS-1$
-            l2.setLatitude(currentGeoPoint.getLatitude());
-            l2.setLongitude(currentGeoPoint.getLongitude());
+                LatLong currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                Point tmpP2 = pj.toPixels(currentGeoPoint);
+                measurePath.lineTo((float) tmpP2.x, (float) tmpP2.y);
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "DRAG: " + tmpP2.x + "/" + tmpP2.y); //$NON-NLS-1$ //$NON-NLS-2$
+                // the measurement
+                LatLong previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
 
-            float distanceTo = l1.distanceTo(l2);
-            lastX = currentX;
-            lastY = currentY;
-            measuredDistance = measuredDistance + distanceTo;
-            EditManager.INSTANCE.invalidateEditingView();
-            break;
-        case MotionEvent.ACTION_UP:
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
-            break;
+                Location l1 = new Location("gps"); //$NON-NLS-1$
+                l1.setLatitude(previousGeoPoint.getLatitude());
+                l1.setLongitude(previousGeoPoint.getLongitude());
+                Location l2 = new Location("gps"); //$NON-NLS-1$
+                l2.setLatitude(currentGeoPoint.getLatitude());
+                l2.setLongitude(currentGeoPoint.getLongitude());
+
+                float distanceTo = l1.distanceTo(l2);
+                lastX = currentX;
+                lastY = currentY;
+                measuredDistance = measuredDistance + distanceTo;
+                EditManager.INSTANCE.invalidateEditingView();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "UNTOUCH: " + currentX + "/" + currentY); //$NON-NLS-1$//$NON-NLS-2$
+                break;
         }
 
         return true;

@@ -105,7 +105,6 @@ public enum ColorUtilities {
         return color;
     }
 
-
     public static int getColor(ColorUtilities colorEnum) {
         String name = colorEnum.name();
         Integer color = colorMap.get(name);

@@ -20,9 +20,6 @@ package eu.geopaparazzi.core.maptools.tools;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.os.Parcelable;
 import android.view.MotionEvent;
@@ -33,37 +30,42 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.vividsolutions.jts.android.PointTransformation;
-import com.vividsolutions.jts.android.ShapeWriter;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKBReader;
+import org.locationtech.jts.android.PointTransformation;
+import org.locationtech.jts.android.ShapeWriter;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKBReader;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.IMapViewPosition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.EditingView;
-import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.Tool;
-import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.ToolColors;
-import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.CopyToLayersListActivity;
 import eu.geopaparazzi.core.maptools.FeaturePagerActivity;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.mapview.MapsSupportService;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
-import eu.geopaparazzi.core.mapview.overlays.MapsforgePointTransformation;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.EditingView;
+import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.core.features.Tool;
+import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 
 /**
  * The group of tools active when a selection has been done.
@@ -79,26 +81,17 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
     private ImageButton deleteFeatureButton;
     private SliderDrawProjection editingViewProjection;
 
-    private Paint geometryPaintStroke = new Paint();
-    private Paint geometryPaintFill = new Paint();
+    private Paint geometryPaintStroke;
+    private Paint geometryPaintFill;
 
-    private final Paint selectedGeometryPaintStroke = new Paint();
-    private final Paint selectedGeometryPaintFill = new Paint();
+    private final Paint selectedGeometryPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint selectedGeometryPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
 
-    private final Paint selectedPreviewGeometryPaintStroke = new Paint();
-    private final Paint selectedPreviewGeometryPaintFill = new Paint();
+    private final Paint selectedPreviewGeometryPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint selectedPreviewGeometryPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
 
     private WKBReader wkbReader = new WKBReader();
 
-    /**
-     * Stores the top-left map position at which the redraw should happen.
-     */
-    private final Point point;
-
-    /**
-     * Stores the map position after drawing is finished.
-     */
-    private Point positionBeforeDraw;
     private ImageButton editAttributesButton;
 
     private boolean isInDeletePreview;
@@ -123,33 +116,31 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
         buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 
 
-        int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
-        selectedGeometryPaintStroke.setAntiAlias(true);
+        int stroke = MapsforgeUtils.toColor(ToolColors.selection_stroke.getHex(), -1);
+//        selectedGeometryPaintStroke.setAntiAlias(true);
         selectedGeometryPaintStroke.setStrokeWidth(5f);
         selectedGeometryPaintStroke.setColor(stroke);
-        selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        selectedGeometryPaintStroke.setStyle(Style.STROKE);
 
-        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
-        selectedGeometryPaintFill.setAntiAlias(true);
+        int fill = MapsforgeUtils.toColor(ToolColors.selection_fill.getHex(), -1);
+//        selectedGeometryPaintFill.setAntiAlias(true);
         selectedGeometryPaintFill.setColor(fill);
-        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
+        selectedGeometryPaintFill.setStyle(Style.FILL);
 
-        stroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
-        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
+        stroke = MapsforgeUtils.toColor(ToolColors.preview_stroke.getHex(), -1);
+//        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
         selectedPreviewGeometryPaintStroke.setColor(stroke);
-        selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        selectedPreviewGeometryPaintStroke.setStyle(Style.STROKE);
 
-        fill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
-        selectedPreviewGeometryPaintFill.setAntiAlias(true);
+        fill = MapsforgeUtils.toColor(ToolColors.preview_fill.getHex(), -1);
+//        selectedPreviewGeometryPaintFill.setAntiAlias(true);
         selectedPreviewGeometryPaintFill.setColor(fill);
-        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
+        selectedPreviewGeometryPaintFill.setStyle(Style.FILL);
 
         geometryPaintStroke = selectedGeometryPaintStroke;
         geometryPaintFill = selectedGeometryPaintFill;
 
-        point = new Point();
-        positionBeforeDraw = new Point();
     }
 
     public void activate() {
@@ -230,8 +221,7 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
                 if (context instanceof Activity) {
                     Activity activity = (Activity) context;
                     activity.startActivityForResult(intent, MapviewActivity.SELECTED_FEATURES_UPDATED_RETURN_CODE);
-                }
-                else {
+                } else {
                     context.startActivity(intent);
                 }
             }
@@ -328,23 +318,20 @@ public class PointOnSelectionToolGroup implements ToolGroup, OnClickListener, On
     public void onToolDraw(Canvas canvas) {
         try {
             if (selectedFeatures.size() > 0) {
-                Projection projection = editingViewProjection;
+                SliderDrawProjection projection = editingViewProjection;
+                IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 
-                byte zoomLevelBeforeDraw;
-                synchronized (mapView) {
-                    zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
-                    positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
-                            zoomLevelBeforeDraw);
-                }
-
+                byte zoomLevelBeforeDraw = mapPosition.getZoomLevel();
+                Point positionBeforeDraw = projection.toPoint(mapPosition.getCenter(),
+                        zoomLevelBeforeDraw);
                 // calculate the top-left point of the visible rectangle
-                point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
-                point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+                double x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
+                double y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+                Point point = new Point(x, y);
 
-                MapViewPosition mapPosition = mapView.getMapPosition();
                 byte zoomLevel = mapPosition.getZoomLevel();
 
-                PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
+                PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel, mapView.getModel().displayModel.getTileSize());
                 ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
                 shapeWriter.setRemoveDuplicatePoints(true);
                 // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);

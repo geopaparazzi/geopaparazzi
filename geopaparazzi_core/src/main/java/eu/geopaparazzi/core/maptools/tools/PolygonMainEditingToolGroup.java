@@ -19,7 +19,6 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,21 +28,24 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.mapsforge.android.maps.MapView;
+import org.locationtech.jts.geom.Geometry;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.map.android.view.MapView;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.core.features.Tool;
+import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.core.maptools.FeatureUtilities;
+import eu.geopaparazzi.core.mapview.MapsSupportService;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.Tool;
-import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -51,9 +53,6 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
-import eu.geopaparazzi.core.mapview.MapsSupportService;
 
 /**
  * The main polygon layer editing tool group, which just shows the tool palette.
@@ -243,8 +242,8 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null) {
                 // substitute the feature's geometry in the db
                 try {
-
-                    SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(cutExtendProcessedFeature);
+                    // TODO fix
+                    SpatialVectorTable spatialVectorTable = null;//SpatialiteSourcesManager.INSTANCE.getTableFromFeature(cutExtendProcessedFeature);
                     int tableGeomTypeCode = spatialVectorTable.getGeomType();
                     GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
 

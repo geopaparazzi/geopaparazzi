@@ -18,22 +18,26 @@
 package eu.geopaparazzi.core.maptools.tools;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.index.strtree.STRtree;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.index.strtree.STRtree;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapViewProjection;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -41,15 +45,16 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.objects.GpsLogInfo;
 import eu.geopaparazzi.core.maptools.MapTool;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 
 import static java.lang.Math.round;
 
@@ -59,17 +64,16 @@ import static java.lang.Math.round;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsLogInfoTool extends MapTool {
-    private final Paint linePaint = new Paint();
-    private final Paint colorBoxPaint = new Paint();
-    private final Paint whiteBoxPaint = new Paint();
-    private final Paint measureTextPaint = new Paint();
+    private final Paint linePaint = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint colorBoxPaint = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint whiteBoxPaint = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint measureTextPaint = AndroidGraphicFactory.INSTANCE.createPaint();
     private final SliderDrawProjection projection;
     private final String timeString;
     private final String lonString;
     private final String latString;
     private final String altimString;
 
-    private final Rect rect = new Rect();
 
     private DecimalFormat coordFormatter = new DecimalFormat("0.000000");
     private DecimalFormat elevFormatter = new DecimalFormat("0.0");
@@ -100,9 +104,9 @@ public class GpsLogInfoTool extends MapTool {
 
         readData(editingView);
 
-        whiteBoxPaint.setAntiAlias(false);
-        whiteBoxPaint.setColor(Color.argb(160, 255, 255, 255));
-        whiteBoxPaint.setStyle(Paint.Style.FILL);
+//        whiteBoxPaint.setAntiAlias(false);
+        whiteBoxPaint.setColor(AndroidGraphicFactory.INSTANCE.createColor(160, 255, 255, 255));
+        whiteBoxPaint.setStyle(Style.FILL);
 
     }
 
@@ -111,8 +115,8 @@ public class GpsLogInfoTool extends MapTool {
         int screenE = editingView.getWidth();
         int screenN = 0;
         int screenS = editingView.getHeight();
-        GeoPoint llPoint = projection.fromPixels(screenW, screenS);
-        GeoPoint urPoint = projection.fromPixels(screenE, screenN);
+        LatLong llPoint = projection.fromPixels(screenW, screenS);
+        LatLong urPoint = projection.fromPixels(screenE, screenN);
         double exp = 0.001;
         gpsLogInfoTree = DaoGpsLog.getGpsLogInfoTree(urPoint.getLatitude() + exp, llPoint.getLatitude() - exp, urPoint.getLongitude() + exp, llPoint.getLongitude() - exp);
     }
@@ -135,23 +139,23 @@ public class GpsLogInfoTool extends MapTool {
         GpsLogInfo logInfo = gpsLogInfo;
         int color = Color.BLACK;
         try {
-            color = Color.parseColor(logInfo.color);
+            color = MapsforgeUtils.toColor(logInfo.color, -1);
         } catch (Exception e) {
             // ignore
         }
-        linePaint.setAntiAlias(true);
+//        linePaint.setAntiAlias(true);
         linePaint.setColor(color);
         linePaint.setStrokeWidth(3f);
-        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStyle(Style.STROKE);
 
-        colorBoxPaint.setAntiAlias(false);
+//        colorBoxPaint.setAntiAlias(false);
         colorBoxPaint.setColor(color);
-        colorBoxPaint.setStyle(Paint.Style.FILL);
+        colorBoxPaint.setStyle(Style.FILL);
 
-        measureTextPaint.setAntiAlias(true);
+//        measureTextPaint.setAntiAlias(true);
         measureTextPaint.setTextSize(pixel);
         measureTextPaint.setColor(color);
-        measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        measureTextPaint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 
         String name = logInfo.logName;
         String ts = " - ";
@@ -164,7 +168,7 @@ public class GpsLogInfoTool extends MapTool {
         Coordinate pointXYZ = logInfo.pointXYZ;
         if (pointXYZ == null)
             pointXYZ = new Coordinate(-999, -999);
-        String lon = lonString +  coordFormatter.format(pointXYZ.x);
+        String lon = lonString + coordFormatter.format(pointXYZ.x);
         String lat = latString + coordFormatter.format(pointXYZ.y);
         String altim = altimString + elevFormatter.format(pointXYZ.z);
 
@@ -173,28 +177,27 @@ public class GpsLogInfoTool extends MapTool {
         int runningY = upper;
         int textWidth = 0;
         for (String text : texts) {
-            measureTextPaint.getTextBounds(text, 0, text.length(), rect);
-            int textHeight = rect.height();
+            int textHeight = measureTextPaint.getTextHeight(text);
             runningY += textHeight + 3;
         }
 
-        canvas.drawRect(0, 0, cWidth, runningY + 10, whiteBoxPaint);
-        canvas.drawRect(0, runningY, cWidth, runningY + 10, colorBoxPaint);
+
+        MapsforgeUtils.drawRect(canvas, 0, 0, cWidth, runningY + 10, whiteBoxPaint);
+        MapsforgeUtils.drawRect(canvas, 0, runningY, cWidth, runningY + 10, colorBoxPaint);
 
 
         runningY = upper;
         for (String text : texts) {
-            measureTextPaint.getTextBounds(text, 0, text.length(), rect);
-            textWidth = rect.width();
-            int textHeight = rect.height();
+            textWidth = measureTextPaint.getTextWidth(text);
+            int textHeight = measureTextPaint.getTextHeight(text);
             int x = cWidth / 2 - textWidth / 2;
             canvas.drawText(text, x, runningY, measureTextPaint);
             runningY += textHeight + 7;
         }
 
-        GeoPoint geoPoint = new GeoPoint(pointXYZ.y, pointXYZ.x);
-        Point point = projection.toPixels(geoPoint, null);
-        canvas.drawLine(point.x, point.y, cWidth / 2, runningY, linePaint);
+        LatLong geoPoint = new LatLong(pointXYZ.y, pointXYZ.x);
+        Point point = projection.toPixels(geoPoint);
+        canvas.drawLine((int) point.x, (int) point.y, cWidth / 2, runningY, linePaint);
     }
 
     public boolean onToolTouchEvent(MotionEvent event) {
@@ -202,7 +205,7 @@ public class GpsLogInfoTool extends MapTool {
             return false;
         }
 
-        Projection pj = mapView.getProjection();
+        MapViewProjection pj = mapView.getMapViewProjection();
         // handle drawing
         float currentX = event.getX();
         float currentY = event.getY();
@@ -212,8 +215,8 @@ public class GpsLogInfoTool extends MapTool {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                GeoPoint plusPoint = pj.fromPixels(round(currentX + deltaPixels), round(currentY + deltaPixels));
+                LatLong currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                LatLong plusPoint = pj.fromPixels(round(currentX + deltaPixels), round(currentY + deltaPixels));
 
                 double touchLon = currentGeoPoint.getLongitude();
                 double touchLat = currentGeoPoint.getLatitude();

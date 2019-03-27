@@ -21,19 +21,15 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Bookmark;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -163,7 +159,7 @@ public class DaoBookmarks {
      * @return the list of notes inside the bounds.
      * @throws IOException  if something goes wrong.
      */
-    public static List<Bookmark> getBookmarksInWorldBounds( float n, float s, float w, float e ) throws IOException {
+    public static List<Bookmark> getBookmarksInWorldBounds( double n, double s, double w, double e ) throws IOException {
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
@@ -228,35 +224,35 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
-    /**
-     * @param marker the marker to use.
-     * @return the list of {@link OverlayItem}s
-     * @throws IOException  if something goes wrong.
-     */
-    public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
-
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(query, null);
-            List<OverlayItem> bookmarks = new ArrayList<>();
-            c.moveToFirst();
-            while( !c.isAfterLast() ) {
-                double lon = c.getDouble(0);
-                double lat = c.getDouble(1);
-                String text = c.getString(2);
-                text = text + "\n";
-                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
-                bookmarks.add(bookmark);
-                c.moveToNext();
-            }
-            return bookmarks;
-        } finally {
-            if (c != null)
-                c.close();
-        }
-    }
+//    /**
+//     * @param marker the marker to use.
+//     * @return the list of {@link OverlayItem}s
+//     * @throws IOException  if something goes wrong.
+//     */
+//    public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
+//
+//        Cursor c = null;
+//        try {
+//            c = sqliteDatabase.rawQuery(query, null);
+//            List<OverlayItem> bookmarks = new ArrayList<>();
+//            c.moveToFirst();
+//            while( !c.isAfterLast() ) {
+//                double lon = c.getDouble(0);
+//                double lat = c.getDouble(1);
+//                String text = c.getString(2);
+//                text = text + "\n";
+//                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
+//                bookmarks.add(bookmark);
+//                c.moveToNext();
+//            }
+//            return bookmarks;
+//        } finally {
+//            if (c != null)
+//                c.close();
+//        }
+//    }
 
     /**
      * Create bookmarks tables.

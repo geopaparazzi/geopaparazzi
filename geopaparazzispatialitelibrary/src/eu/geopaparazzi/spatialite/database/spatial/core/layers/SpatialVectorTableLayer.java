@@ -17,7 +17,11 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.layers;
 
-import eu.geopaparazzi.library.features.ILayer;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.layer.Layer;
+
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
@@ -25,7 +29,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTabl
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialVectorTableLayer implements ILayer {
+public class SpatialVectorTableLayer extends Layer {
     private SpatialVectorTable spatialVectorTable;
 
     /**
@@ -44,18 +48,20 @@ public class SpatialVectorTableLayer implements ILayer {
         return spatialVectorTable;
     }
 
-    @Override
     public boolean isPolygon() {
         return spatialVectorTable.isPolygon();
     }
 
-    @Override
     public boolean isLine() {
         return spatialVectorTable.isLine();
     }
 
-    @Override
     public boolean isPoint() {
         return spatialVectorTable.isPoint();
+    }
+
+    @Override
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    // TODO fixem
     }
 }

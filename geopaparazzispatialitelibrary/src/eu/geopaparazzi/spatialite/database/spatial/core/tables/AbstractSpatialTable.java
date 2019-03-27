@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.tables;
 
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 
 import java.io.File;
 import java.io.Serializable;

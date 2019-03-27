@@ -19,16 +19,17 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,16 +37,16 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
-import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -53,7 +54,7 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.FeaturePagerActivity;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
 import jsqlite.Exception;
 
 import static java.lang.Math.abs;
@@ -67,8 +68,8 @@ import static java.lang.Math.round;
 public class InfoTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 
-    private final Paint infoRectPaintStroke = new Paint();
-    private final Paint infoRectPaintFill = new Paint();
+    private final Paint infoRectPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint infoRectPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
     private final Rect rect = new Rect();
 
     private float currentX;
@@ -76,13 +77,13 @@ public class InfoTool extends MapTool {
     private float lastX = -1;
     private float lastY = -1;
 
-    private final Point tmpP = new Point();
-    private final Point startP = new Point();
+    private Point tmpP ;
+    private Point startP ;
 
-    private float left;
-    private float right;
-    private float bottom;
-    private float top;
+    private double left;
+    private double right;
+    private double bottom;
+    private double top;
 
 
     private SliderDrawProjection sliderDrawProjection;
@@ -100,16 +101,15 @@ public class InfoTool extends MapTool {
         this.parentGroup = parentGroup;
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        int stroke = ColorUtilities.toColor(ToolColors.infoselection_stroke.getHex());
-        int fill = ColorUtilities.toColor(ToolColors.infoselection_fill.getHex());
-        infoRectPaintFill.setAntiAlias(true);
+        int stroke = MapsforgeUtils.toColor(ToolColors.infoselection_stroke.getHex(), -1);
+        int fill = MapsforgeUtils.toColor(ToolColors.infoselection_fill.getHex(), 80);
+//        infoRectPaintFill.setAntiAlias(true);
         infoRectPaintFill.setColor(fill);
-        infoRectPaintFill.setAlpha(80);
-        infoRectPaintFill.setStyle(Paint.Style.FILL);
-        infoRectPaintStroke.setAntiAlias(true);
+        infoRectPaintFill.setStyle(Style.FILL);
+//        infoRectPaintStroke.setAntiAlias(true);
         infoRectPaintStroke.setStrokeWidth(1.5f);
         infoRectPaintStroke.setColor(stroke);
-        infoRectPaintStroke.setStyle(Paint.Style.STROKE);
+        infoRectPaintStroke.setStyle(Style.STROKE);
     }
 
     public void activate() {
@@ -118,15 +118,15 @@ public class InfoTool extends MapTool {
     }
 
     public void onToolDraw(Canvas canvas) {
-        canvas.drawRect(rect, infoRectPaintFill);
-        canvas.drawRect(rect, infoRectPaintStroke);
+        MapsforgeUtils.drawRect(canvas, rect, infoRectPaintFill);
+        MapsforgeUtils.drawRect(canvas, rect, infoRectPaintStroke);
     }
 
     public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
-        Projection pj = sliderDrawProjection;
+        SliderDrawProjection pj = sliderDrawProjection;
 
         // handle drawing
         currentX = event.getX();
@@ -135,8 +135,8 @@ public class InfoTool extends MapTool {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(startGeoPoint, startP);
+                LatLong startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                startP = pj.toPixels(startGeoPoint);
 
                 lastX = currentX;
                 lastY = currentY;
@@ -149,8 +149,8 @@ public class InfoTool extends MapTool {
                     lastY = currentY;
                     return true;
                 }
-                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(currentGeoPoint, tmpP);
+                LatLong currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                tmpP = pj.toPixels(currentGeoPoint);
 
                 left = Math.min(tmpP.x, startP.x);
                 right = Math.max(tmpP.x, startP.x);
@@ -162,11 +162,11 @@ public class InfoTool extends MapTool {
                 break;
             case MotionEvent.ACTION_UP:
 
-                float deltaY = abs(top - bottom);
-                float deltaX = abs(right - left);
+                double deltaY = abs(top - bottom);
+                double deltaX = abs(right - left);
                 if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
-                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                    LatLong ul = pj.fromPixels(left, top);
+                    LatLong lr = pj.fromPixels(right, bottom);
 
                     infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
                 }

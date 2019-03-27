@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.ISpatialiteTableAndFieldsNames;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialiteDatabaseType;
 import jsqlite.Database;

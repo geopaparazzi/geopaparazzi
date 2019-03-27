@@ -20,10 +20,6 @@ package eu.geopaparazzi.core.maptools.tools;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff.Mode;
 import android.preference.PreferenceManager;
@@ -36,16 +32,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.vividsolutions.jts.android.PointTransformation;
-import com.vividsolutions.jts.android.ShapeWriter;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
+import org.locationtech.jts.android.PointTransformation;
+import org.locationtech.jts.android.ShapeWriter;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.util.MapViewProjection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,21 +56,22 @@ import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.mapview.MapsSupportService;
-import eu.geopaparazzi.core.mapview.overlays.MapsforgePointTransformation;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.Tool;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.core.features.Tool;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
@@ -92,18 +94,9 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
     private ImageButton addVertexButton;
     private SliderDrawProjection editingViewProjection;
 
-    private final Paint createdGeometryPaintHaloStroke = new Paint();
-    private final Paint createdGeometryPaintStroke = new Paint();
+    private final Paint createdGeometryPaintHaloStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint createdGeometryPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
 
-    /**
-     * Stores the top-left map position at which the redraw should happen.
-     */
-    private final Point point;
-
-    /**
-     * Stores the map position after drawing is finished.
-     */
-    private Point positionBeforeDraw;
     private ImageButton gpsStreamButton;
 
     private ImageButton commitButton;
@@ -143,20 +136,19 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
         editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 
-        int selectionStroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
+        int black = MapsforgeUtils.toColor("black", -1);
+        int selectionStroke = MapsforgeUtils.toColor(ToolColors.selection_stroke.getHex(), -1);
 
-        createdGeometryPaintHaloStroke.setAntiAlias(true);
+//        createdGeometryPaintHaloStroke.setAntiAlias(true);
         createdGeometryPaintHaloStroke.setStrokeWidth(7f);
-        createdGeometryPaintHaloStroke.setColor(Color.BLACK);
-        createdGeometryPaintHaloStroke.setStyle(Paint.Style.STROKE);
+        createdGeometryPaintHaloStroke.setColor(black);
+        createdGeometryPaintHaloStroke.setStyle(Style.STROKE);
 
-        createdGeometryPaintStroke.setAntiAlias(true);
+//        createdGeometryPaintStroke.setAntiAlias(true);
         createdGeometryPaintStroke.setStrokeWidth(5f);
         createdGeometryPaintStroke.setColor(selectionStroke);
-        createdGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        createdGeometryPaintStroke.setStyle(Style.STROKE);
 
-        point = new Point();
-        positionBeforeDraw = new Point();
     }
 
     public void activate() {
@@ -378,23 +370,20 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
     public void onToolDraw(Canvas canvas) {
         try {
 
-            Projection projection = editingViewProjection;
+            SliderDrawProjection projection = editingViewProjection;
+            IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 
-            byte zoomLevelBeforeDraw;
-            synchronized (mapView) {
-                zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
-                positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
-                        zoomLevelBeforeDraw);
-            }
-
+            byte zoomLevelBeforeDraw = mapPosition.getZoomLevel();
+            Point positionBeforeDraw = projection.toPoint(mapPosition.getCenter(),
+                    zoomLevelBeforeDraw);
             // calculate the top-left point of the visible rectangle
-            point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
-            point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+            double x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
+            double y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+            Point point = new Point(x, y);
 
-            MapViewPosition mapPosition = mapView.getMapPosition();
             byte zoomLevel = mapPosition.getZoomLevel();
 
-            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
+            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel, mapView.getModel().displayModel.getTileSize());
             ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
             shapeWriter.setRemoveDuplicatePoints(true);
             // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
@@ -409,14 +398,14 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
                 final PointF vertexPoint2 = new PointF();
                 pointTransformer.transform(coordinatesList.get(0), vertexPoint);
                 pointTransformer.transform(coordinatesList.get(1), vertexPoint2);
-                canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintHaloStroke);
-                canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintStroke);
+                canvas.drawLine((int) vertexPoint.x, (int) vertexPoint.y, (int) vertexPoint2.x, (int) vertexPoint2.y, createdGeometryPaintHaloStroke);
+                canvas.drawLine((int) vertexPoint.x, (int) vertexPoint.y, (int) vertexPoint2.x, (int) vertexPoint2.y, createdGeometryPaintStroke);
             }
 
             for (Coordinate vertexCoordinate : coordinatesList) {
                 pointTransformer.transform(vertexCoordinate, vertexPoint);
-                canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintHaloStroke);
-                canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintStroke);
+                canvas.drawCircle((int) vertexPoint.x, (int) vertexPoint.y, 10, createdGeometryPaintHaloStroke);
+                canvas.drawCircle((int) vertexPoint.x, (int) vertexPoint.y, 10, createdGeometryPaintStroke);
             }
 
         } catch (Exception e) {
@@ -430,13 +419,13 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
                 return false;
             }
 
-            Projection pj = mapView.getProjection();
+            MapViewProjection pj = mapView.getMapViewProjection();
             float currentX = event.getX();
             float currentY = event.getY();
 
             int action = event.getAction();
             if (action == MotionEvent.ACTION_DOWN) {
-                GeoPoint tapGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                LatLong tapGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 Coordinate coordinate = new Coordinate(tapGeoPoint.getLongitude(), tapGeoPoint.getLatitude());
                 addVertex(mapView.getContext(), coordinate);
                 if (coordinatesList.size() > 1) {

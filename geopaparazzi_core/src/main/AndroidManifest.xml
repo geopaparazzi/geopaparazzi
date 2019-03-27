@@ -284,7 +284,7 @@
         </activity>
 
         <activity
-            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity"
+            android:name=".maptools.EditableLayersListActivity"
             android:label="@string/editable_layers"
             android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">

@@ -21,24 +21,16 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Note;
-import eu.geopaparazzi.core.database.objects.NoteOverlayItem;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 
 import static eu.geopaparazzi.core.database.TableDescriptions.NotesTableFields;
 import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_NOTES;
@@ -288,7 +280,7 @@ public class DaoNotes {
      * @return the list of notes inside the bounds.
      * @throws IOException if something goes wrong.
      */
-    public static List<Note> getNotesList(float[] nswe, boolean onlyDirty) throws IOException {
+    public static List<Note> getNotesList(double[] nswe, boolean onlyDirty) throws IOException {
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
@@ -416,50 +408,50 @@ public class DaoNotes {
         return null;
     }
 
-    /**
-     * Get the list of notes from the db as OverlayItems.
-     *
-     * @param marker the marker to use.
-     * @return list of notes.
-     * @throws IOException if something goes wrong.
-     */
-    public static List<OverlayItem> getNoteOverlaysList(Drawable marker) throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayItem> notesList = new ArrayList<>();
-        String asColumnsToReturn[] = { //
-                NotesTableFields.COLUMN_LON.getFieldName(), //
-                NotesTableFields.COLUMN_LAT.getFieldName(), //
-                NotesTableFields.COLUMN_TS.getFieldName(), //
-                NotesTableFields.COLUMN_TEXT.getFieldName() //
-        };// ,
-        String strSortOrder = "_id ASC";
-        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-
-
-            if (!PositionUtilities.isValidCoordinateLL(lon, lat)) {
-                continue;
-            }
-
-            long date = c.getLong(2);
-            String text = c.getString(3);
-
-            StringBuilder description = new StringBuilder();
-            description.append(text);
-            description.append("\n\n");
-            description.append(TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(date)));
-
-            NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
-            notesList.add(item1);
-
-            c.moveToNext();
-        }
-        c.close();
-        return notesList;
-    }
+//    /**
+//     * Get the list of notes from the db as OverlayItems.
+//     *
+//     * @param marker the marker to use.
+//     * @return list of notes.
+//     * @throws IOException if something goes wrong.
+//     */
+//    public static List<OverlayItem> getNoteOverlaysList(Drawable marker) throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        List<OverlayItem> notesList = new ArrayList<>();
+//        String asColumnsToReturn[] = { //
+//                NotesTableFields.COLUMN_LON.getFieldName(), //
+//                NotesTableFields.COLUMN_LAT.getFieldName(), //
+//                NotesTableFields.COLUMN_TS.getFieldName(), //
+//                NotesTableFields.COLUMN_TEXT.getFieldName() //
+//        };// ,
+//        String strSortOrder = "_id ASC";
+//        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
+//        c.moveToFirst();
+//        while (!c.isAfterLast()) {
+//            double lon = c.getDouble(0);
+//            double lat = c.getDouble(1);
+//
+//
+//            if (!PositionUtilities.isValidCoordinateLL(lon, lat)) {
+//                continue;
+//            }
+//
+//            long date = c.getLong(2);
+//            String text = c.getString(3);
+//
+//            StringBuilder description = new StringBuilder();
+//            description.append(text);
+//            description.append("\n\n");
+//            description.append(TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(date)));
+//
+//            NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
+//            notesList.add(item1);
+//
+//            c.moveToNext();
+//        }
+//        c.close();
+//        return notesList;
+//    }
 
 
 }

@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -27,6 +27,7 @@ import java.util.Locale;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.types.EDataType;
+import eu.geopaparazzi.spatialite.ISpatialiteTableAndFieldsNames;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;

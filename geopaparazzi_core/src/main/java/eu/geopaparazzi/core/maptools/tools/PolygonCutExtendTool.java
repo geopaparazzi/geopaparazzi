@@ -19,46 +19,47 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import com.vividsolutions.jts.android.PointTransformation;
-import com.vividsolutions.jts.android.ShapeWriter;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.android.PointTransformation;
+import org.locationtech.jts.android.ShapeWriter;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.IMapViewPosition;
 
 import java.util.List;
 
-import eu.geopaparazzi.library.style.ToolColors;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.maptools.FeatureUtilities;
+import eu.geopaparazzi.core.maptools.MapTool;
+import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
-import eu.geopaparazzi.core.maptools.MapTool;
-import eu.geopaparazzi.core.mapview.overlays.MapsforgePointTransformation;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
@@ -70,34 +71,25 @@ import static java.lang.Math.round;
  */
 public class PolygonCutExtendTool extends MapTool {
 
-    private final Paint drawingPaintStroke = new Paint();
-    private final Paint drawingPaintFill = new Paint();
-    private final Paint selectedPreviewGeometryPaintStroke = new Paint();
-    private final Paint selectedPreviewGeometryPaintFill = new Paint();
+    private final Paint drawingPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint drawingPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint selectedPreviewGeometryPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint selectedPreviewGeometryPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
 
     private float currentX = 0;
     private float currentY = 0;
     private float lastX = -1;
     private float lastY = -1;
 
-    private final Point tmpP = new Point();
-    private final Point startP = new Point();
-    private final Point endP = new Point();
+    private Point tmpP = new Point(0, 0);
+    private Point startP = new Point(0, 0);
+    private Point endP = new Point(0, 0);
 
-    private Path drawingPath = new Path();
+    private Path drawingPath = AndroidGraphicFactory.INSTANCE.createPath();
 
-    private GeoPoint startGeoPoint;
+    private LatLong startGeoPoint;
     private Geometry previewGeometry = null;
 
-    /**
-     * Stores the top-left map position at which the redraw should happen.
-     */
-    private final Point point;
-
-    /**
-     * Stores the map position after drawing is finished.
-     */
-    private Point positionBeforeDraw;
 
     // private ProgressDialog infoProgressDialog;
 
@@ -117,30 +109,27 @@ public class PolygonCutExtendTool extends MapTool {
         this.doCut = doCut;
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        point = new Point();
-        positionBeforeDraw = new Point();
-
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        drawingPaintFill.setAntiAlias(true);
+//        drawingPaintFill.setAntiAlias(true);
         drawingPaintFill.setColor(Color.RED);
         // drawingPaintFill.setAlpha(80);
-        drawingPaintFill.setStyle(Paint.Style.FILL);
-        drawingPaintStroke.setAntiAlias(true);
+        drawingPaintFill.setStyle(Style.FILL);
+//        drawingPaintStroke.setAntiAlias(true);
         drawingPaintStroke.setStrokeWidth(5f);
         drawingPaintStroke.setColor(Color.RED);
-        drawingPaintStroke.setStyle(Paint.Style.STROKE);
+        drawingPaintStroke.setStyle(Style.STROKE);
 
         int previewStroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
         int previewFill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
-        selectedPreviewGeometryPaintFill.setAntiAlias(true);
+//        selectedPreviewGeometryPaintFill.setAntiAlias(true);
         selectedPreviewGeometryPaintFill.setColor(previewFill);
-        selectedPreviewGeometryPaintFill.setAlpha(180);
-        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
-        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
+//        selectedPreviewGeometryPaintFill.setAlpha(180);
+        selectedPreviewGeometryPaintFill.setStyle(Style.FILL);
+//        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
         selectedPreviewGeometryPaintStroke.setColor(previewStroke);
-        selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        selectedPreviewGeometryPaintStroke.setStyle(Style.STROKE);
 
     }
 
@@ -151,28 +140,25 @@ public class PolygonCutExtendTool extends MapTool {
 
     public void onToolDraw(Canvas canvas) {
         if (startP.x == 0 && startP.y == 0) return;
-        canvas.drawCircle(startP.x, startP.y, 15, drawingPaintFill);
+        canvas.drawCircle((int) startP.x, (int) startP.y, 15, drawingPaintFill);
         canvas.drawPath(drawingPath, drawingPaintStroke);
-        canvas.drawCircle(endP.x, endP.y, 15, drawingPaintFill);
+        canvas.drawCircle((int) endP.x, (int) endP.y, 15, drawingPaintFill);
 
         if (previewGeometry != null) {
-            Projection projection = editingViewProjection;
+            SliderDrawProjection projection = editingViewProjection;
+            IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 
-            byte zoomLevelBeforeDraw;
-            synchronized (mapView) {
-                zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
-                positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
-                        zoomLevelBeforeDraw);
-            }
-
+            byte zoomLevelBeforeDraw = mapPosition.getZoomLevel();
+            Point positionBeforeDraw = projection.toPoint(mapPosition.getCenter(),
+                    zoomLevelBeforeDraw);
             // calculate the top-left point of the visible rectangle
-            point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
-            point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+            double x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
+            double y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+            Point point = new Point(x, y);
 
-            MapViewPosition mapPosition = mapView.getMapPosition();
             byte zoomLevel = mapPosition.getZoomLevel();
 
-            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
+            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel, mapView.getModel().displayModel.getTileSize());
             ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
             shapeWriter.setRemoveDuplicatePoints(true);
 
@@ -184,7 +170,7 @@ public class PolygonCutExtendTool extends MapTool {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
-        Projection pj = editingViewProjection;
+        SliderDrawProjection pj = editingViewProjection;
 
         // handle drawing
         currentX = event.getX();
@@ -194,11 +180,11 @@ public class PolygonCutExtendTool extends MapTool {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(startGeoPoint, startP);
-                endP.set(startP.x, startP.y);
+                startP = pj.toPixels(startGeoPoint);
+                endP = new Point(startP.x, startP.y);
 
-                drawingPath.reset();
-                drawingPath.moveTo(startP.x, startP.y);
+//                drawingPath.reset();
+                drawingPath.moveTo((float) startP.x, (float) startP.y);
 
                 lastX = currentX;
                 lastY = currentY;
@@ -211,21 +197,21 @@ public class PolygonCutExtendTool extends MapTool {
                     lastY = currentY;
                     return true;
                 }
-                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(currentGeoPoint, tmpP);
-                drawingPath.lineTo(tmpP.x, tmpP.y);
-                endP.set(tmpP.x, tmpP.y);
+                LatLong currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                tmpP = pj.toPixels(currentGeoPoint);
+                drawingPath.lineTo((float) tmpP.x, (float) tmpP.y);
+                endP = new Point(tmpP.x, tmpP.y);
 
                 EditManager.INSTANCE.invalidateEditingView();
                 break;
             case MotionEvent.ACTION_UP:
 
-                GeoPoint endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                LatLong endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 GeometryFactory gf = new GeometryFactory();
                 Coordinate startCoord = new Coordinate(startGeoPoint.getLongitude(), startGeoPoint.getLatitude());
-                com.vividsolutions.jts.geom.Point startPoint = gf.createPoint(startCoord);
+                org.locationtech.jts.geom.Point startPoint = gf.createPoint(startCoord);
                 Coordinate endCoord = new Coordinate(endGeoPoint.getLongitude(), endGeoPoint.getLatitude());
-                com.vividsolutions.jts.geom.Point endPoint = gf.createPoint(endCoord);
+                org.locationtech.jts.geom.Point endPoint = gf.createPoint(endCoord);
                 Envelope env = new Envelope(startCoord, endCoord);
                 select(env.getMaxY(), env.getMinX(), env.getMinY(), env.getMaxX(), startPoint, endPoint);
                 //            EditManager.INSTANCE.invalidateEditingView();
@@ -246,7 +232,7 @@ public class PolygonCutExtendTool extends MapTool {
     }
 
     private void select(final double n, final double w, final double s, final double e,//
-                        final com.vividsolutions.jts.geom.Point startPoint, final com.vividsolutions.jts.geom.Point endPoint) {
+                        final org.locationtech.jts.geom.Point startPoint, final org.locationtech.jts.geom.Point endPoint) {
 
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
         SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;

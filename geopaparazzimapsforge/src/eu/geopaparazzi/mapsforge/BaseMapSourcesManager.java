@@ -21,11 +21,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.json.JSONException;
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.map.view.MapView;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,22 +39,14 @@ import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.mapsforge.databasehandlers.CustomTileDatabaseHandler;
-import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileDownloader;
-import eu.geopaparazzi.mapsforge.databasehandlers.core.CustomTileTable;
-import eu.geopaparazzi.mapsforge.databasehandlers.core.GeopackageTileDownloader;
-import eu.geopaparazzi.mapsforge.databasehandlers.MapDatabaseHandler;
-import eu.geopaparazzi.mapsforge.databasehandlers.core.MapGeneratorInternal;
-import eu.geopaparazzi.mapsforge.databasehandlers.core.MapTable;
+import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.mapsforge.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 import jsqlite.Exception;
 
@@ -263,57 +253,58 @@ public enum BaseMapSourcesManager {
         /*
          * add MAPURL TABLES
          */
-        try {
-            CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file);
-            if (customTileDatabaseHandler != null) {
-                try {
-                    List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
-                    for (AbstractSpatialTable table : tables) {
-                        collectedTables.add(table);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                customTileDatabaseHandler.close();
-            } else {
-                /*
-                 * add MAP TABLES
-                 */
-                MapDatabaseHandler mapDatabaseHandler = MapDatabaseHandler.getHandlerForFile(file);
-                if (mapDatabaseHandler != null) {
-                    try {
-                        List<MapTable> tables = mapDatabaseHandler.getTables(false);
-                        for (AbstractSpatialTable table : tables) {
-                            collectedTables.add(table);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    mapDatabaseHandler.close();
-                } else {
-                    /*
-                     * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
-                     */
-                    AbstractSpatialDatabaseHandler sdbHandler = getRasterHandlerForFile(file);
-                    if (sdbHandler != null) {
-                        try {
-                            List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
-                            for (AbstractSpatialTable table : tables) {
-                                collectedTables.add(table);
-                            }
-                        } finally {
-                            sdbHandler.close();
-                        }
-                    }
-
-                }
-
-            }
-        } catch (Exception e) {
-            GPLog.error(this, "error reading file: " + file, e);
-        }
-
-        return collectedTables;
+//        try {
+//            CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabaseHandler.getHandlerForFile(file);
+//            if (customTileDatabaseHandler != null) {
+//                try {
+//                    List<CustomTileTable> tables = customTileDatabaseHandler.getTables(false);
+//                    for (AbstractSpatialTable table : tables) {
+//                        collectedTables.add(table);
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                customTileDatabaseHandler.close();
+//            } else {
+//                /*
+//                 * add MAP TABLES
+//                 */
+//                MapDatabaseHandler mapDatabaseHandler = MapDatabaseHandler.getHandlerForFile(file);
+//                if (mapDatabaseHandler != null) {
+//                    try {
+//                        List<MapTable> tables = mapDatabaseHandler.getTables(false);
+//                        for (AbstractSpatialTable table : tables) {
+//                            collectedTables.add(table);
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    mapDatabaseHandler.close();
+//                } else {
+//                    /*
+//                     * add MBTILES, GEOPACKAGE, RASTERLITE TABLES
+//                     */
+//                    AbstractSpatialDatabaseHandler sdbHandler = getRasterHandlerForFile(file);
+//                    if (sdbHandler != null) {
+//                        try {
+//                            List<SpatialRasterTable> tables = sdbHandler.getSpatialRasterTables(false);
+//                            for (AbstractSpatialTable table : tables) {
+//                                collectedTables.add(table);
+//                            }
+//                        } finally {
+//                            sdbHandler.close();
+//                        }
+//                    }
+//
+//                }
+//
+//            }
+//        } catch (Exception e) {
+//            GPLog.error(this, "error reading file: " + file, e);
+//        }
+//
+//        return collectedTables;
+        return null;
     }
 
     /**
@@ -478,62 +469,62 @@ public enum BaseMapSourcesManager {
      *
      * @param mapView Map-View to set.
      */
-    public void loadSelectedBaseMap(MapView mapView) {
-        AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
-        if (selectedSpatialTable != null) {
-            int selectedSpatialDataTypeCode = ESpatialDataSources.getCode4Name(selectedTileSourceType);
-            MapGenerator selectedMapGenerator = null;
-            try {
-                ESpatialDataSources selectedSpatialDataType = ESpatialDataSources.getType4Code(selectedSpatialDataTypeCode);
-                switch (selectedSpatialDataType) {
-                    case MAP:
-                        MapTable selectedMapTable = (MapTable) selectedSpatialTable;
-                        clearTileCache(mapView);
-                        mapView.setMapFile(selectedMapTable.getDatabaseFile());
-                        if (selectedMapTable.getXmlFile().exists()) {
-                            try {
-                                mapView.setRenderTheme(selectedMapTable.getXmlFile());
-                            } catch (java.lang.Exception e) {
-                                // ignore the theme
-                                GPLog.error(this, "ERROR", e);
-                            }
-                        }
-                        break;
-                    case MBTILES:
-                    case GPKG:
-                    case RASTERLITE2:
-                    case SQLITE: {
-                        // TODO check
-                        SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
-                        selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
-                        clearTileCache(mapView);
-                        mapView.setMapGenerator(selectedMapGenerator);
-                    }
-                    break;
-                    case MAPURL: {
-                        selectedMapGenerator = new CustomTileDownloader(selectedSpatialTable.getDatabaseFile());
-                        try {
-                            clearTileCache(mapView);
-                            mapView.setMapGenerator(selectedMapGenerator);
-                            if (GPLog.LOG_HEAVY)
-                                GPLog.addLogEntry(this, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
-                                        + "] selected_map[" + selectedTableDatabasePath + "]");
-                        } catch (java.lang.NullPointerException e_mapurl) {
-                            GPLog.error(this, "MapsDirManager setMapGenerator[" + selectedTileSourceType + "] selected_map["
-                                    + selectedTableDatabasePath + "]", e_mapurl);
-                        }
-                    }
-                    break;
-                    default:
-                        break;
-                }
-            } catch (java.lang.Exception e) {
-                selectedMapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                mapView.setMapGenerator(selectedMapGenerator);
-                GPLog.error(this, "ERROR", e);
-            }
-        }
-    }
+//    public void loadSelectedBaseMap(MapView mapView) {
+//        AbstractSpatialTable selectedSpatialTable = getSelectedBaseMapTable();
+//        if (selectedSpatialTable != null) {
+//            int selectedSpatialDataTypeCode = ESpatialDataSources.getCode4Name(selectedTileSourceType);
+//            MapGenerator selectedMapGenerator = null;
+//            try {
+//                ESpatialDataSources selectedSpatialDataType = ESpatialDataSources.getType4Code(selectedSpatialDataTypeCode);
+//                switch (selectedSpatialDataType) {
+//                    case MAP:
+//                        MapTable selectedMapTable = (MapTable) selectedSpatialTable;
+//                        clearTileCache(mapView);
+//                        mapView.setMapFile(selectedMapTable.getDatabaseFile());
+//                        if (selectedMapTable.getXmlFile().exists()) {
+//                            try {
+//                                mapView.setRenderTheme(selectedMapTable.getXmlFile());
+//                            } catch (java.lang.Exception e) {
+//                                // ignore the theme
+//                                GPLog.error(this, "ERROR", e);
+//                            }
+//                        }
+//                        break;
+//                    case MBTILES:
+//                    case GPKG:
+//                    case RASTERLITE2:
+//                    case SQLITE: {
+//                        // TODO check
+//                        SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
+//                        selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
+//                        clearTileCache(mapView);
+//                        mapView.setMapGenerator(selectedMapGenerator);
+//                    }
+//                    break;
+//                    case MAPURL: {
+//                        selectedMapGenerator = new CustomTileDownloader(selectedSpatialTable.getDatabaseFile());
+//                        try {
+//                            clearTileCache(mapView);
+//                            mapView.setMapGenerator(selectedMapGenerator);
+//                            if (GPLog.LOG_HEAVY)
+//                                GPLog.addLogEntry(this, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
+//                                        + "] selected_map[" + selectedTableDatabasePath + "]");
+//                        } catch (java.lang.NullPointerException e_mapurl) {
+//                            GPLog.error(this, "MapsDirManager setMapGenerator[" + selectedTileSourceType + "] selected_map["
+//                                    + selectedTableDatabasePath + "]", e_mapurl);
+//                        }
+//                    }
+//                    break;
+//                    default:
+//                        break;
+//                }
+//            } catch (java.lang.Exception e) {
+//                selectedMapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
+//                mapView.setMapGenerator(selectedMapGenerator);
+//                GPLog.error(this, "ERROR", e);
+//            }
+//        }
+//    }
 
     /**
      * Clear MapView TileCache.
@@ -542,11 +533,7 @@ public enum BaseMapSourcesManager {
      */
     private static void clearTileCache(MapView mapView) {
         if (mapView != null) {
-            mapView.getInMemoryTileCache().destroy();
-            if (mapView.getFileSystemTileCache().isPersistent()) {
-                mapView.getFileSystemTileCache().setPersistent(false);
-            }
-            mapView.getFileSystemTileCache().destroy();
+            mapView.destroyAll();
         }
     }
 

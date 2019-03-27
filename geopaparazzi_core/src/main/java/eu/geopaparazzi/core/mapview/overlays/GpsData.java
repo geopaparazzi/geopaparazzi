@@ -20,8 +20,7 @@ package eu.geopaparazzi.core.mapview.overlays;
 import android.graphics.Paint;
 import android.graphics.Point;
 
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 
 /**
  * GpsData holds all parameters of a single circle on a Gpsoverlay. All rendering parameters like
@@ -33,7 +32,7 @@ public class GpsData {
     /**
      * Geographical coordinate of the circle.
      */
-    public GeoPoint center;
+    public LatLong center;
 
     /**
      * Paint which will be used to fill the circle.
@@ -89,7 +88,7 @@ public class GpsData {
      * @param paintOutline the paint which will be used to draw the circle outline (may be null).
      * @param title        the title of the circle (may be null).
      */
-    public GpsData(GeoPoint center, float radius, Paint paintFill, Paint paintOutline, String title) {
+    public GpsData(LatLong center, float radius, Paint paintFill, Paint paintOutline, String title) {
         this.title = title;
         this.cachedCenterPosition = new Point();
         this.cachedZoomLevel = Byte.MIN_VALUE;
@@ -102,7 +101,7 @@ public class GpsData {
      * @param radius the radius of the circle in meters.
      * @param title  the title of the circle (may be null).
      */
-    public GpsData(GeoPoint center, float radius, String title) {
+    public GpsData(LatLong center, float radius, String title) {
         this(center, radius, null, null, title);
     }
 
@@ -123,20 +122,16 @@ public class GpsData {
 
     /**
      * Sets the parameters of the circle.
-     * <p>
-     * Changes might not become visible until {@link Overlay#requestRedraw()} is called.
      *
      * @param center the geographical coordinates of the center point.
      * @param radius the radius of the circle in meters.
      */
-    public synchronized void setCircleData(GeoPoint center, float radius) {
+    public synchronized void setCircleData(LatLong center, float radius) {
         setCircleDataInternal(center, radius);
     }
 
     /**
      * Sets the paints which will be used to draw the overlay.
-     * <p>
-     * Changes might not become visible until {@link Overlay#requestRedraw()} is called.
      *
      * @param paintFill    the paint which will be used to fill the circle (may be null).
      * @param paintOutline the paint which will be used to draw the circle outline (may be null).
@@ -154,7 +149,7 @@ public class GpsData {
         this.title = title;
     }
 
-    private void setCircleDataInternal(GeoPoint center, float radius) {
+    private void setCircleDataInternal(LatLong center, float radius) {
         this.center = center;
         this.radius = radius;
         this.cachedZoomLevel = Byte.MIN_VALUE;

@@ -17,9 +17,10 @@
  */
 package eu.geopaparazzi.core.maptools;
 
-import org.mapsforge.android.maps.MapView;
 
-import eu.geopaparazzi.library.features.DrawingTool;
+import org.mapsforge.map.android.view.MapView;
+
+import eu.geopaparazzi.core.features.DrawingTool;
 
 /**
  * A tool that works on a {@link MapView}.

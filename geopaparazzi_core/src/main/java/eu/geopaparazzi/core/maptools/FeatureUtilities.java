@@ -19,22 +19,22 @@ package eu.geopaparazzi.core.maptools;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.net.Uri;
 
-import com.vividsolutions.jts.android.ShapeWriter;
-import com.vividsolutions.jts.android.geom.DrawableShape;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
-import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.io.WKBWriter;
-import com.vividsolutions.jts.noding.snapround.GeometryNoder;
-import com.vividsolutions.jts.operation.polygonize.Polygonizer;
+import org.locationtech.jts.android.ShapeWriter;
+import org.locationtech.jts.android.geom.DrawableShape;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.util.LinearComponentExtracter;
+import org.locationtech.jts.io.WKBReader;
+import org.locationtech.jts.io.WKBWriter;
+import org.locationtech.jts.noding.snapround.GeometryNoder;
+import org.locationtech.jts.operation.polygonize.Polygonizer;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -334,7 +334,7 @@ public class FeatureUtilities {
      * @throws Exception
      */
     public static SpatialVectorTable getTableFromFeature(Feature feature) throws Exception {
-        SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+        SpatialVectorTable table = null;// TODO SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
         return table;
     }
 

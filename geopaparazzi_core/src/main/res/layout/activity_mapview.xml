@@ -11,7 +11,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <!-- space for map view -->
     </RelativeLayout>
 
     <FrameLayout
@@ -68,7 +67,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <eu.geopaparazzi.library.features.EditingView
+        <eu.geopaparazzi.core.features.EditingView
             android:id="@+id/editingview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
@@ -152,9 +151,9 @@
                 android:id="@+id/togglemeasuremodebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_sides_space"
                 android:layout_marginTop="@dimen/mapview_sides_space"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_mapview_measuremode_off_24dp" />
         </LinearLayout>
@@ -174,12 +173,12 @@
                     android:id="@+id/battery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/mapview_bottom_space"
                     android:layout_marginLeft="@dimen/mapview_sides_space"
                     android:layout_marginTop="@dimen/mapview_sides_space"
+                    android:layout_marginBottom="@dimen/mapview_bottom_space"
                     android:background="@null"
-                    android:minHeight="1dp"
                     android:minWidth="1dp"
+                    android:minHeight="1dp"
                     android:textColor="@color/main_text_color_neutral"
                     android:textStyle="bold"
                     app:srcCompat="@drawable/ic_mapview_battery_24dp" />
@@ -198,9 +197,9 @@
                 android:id="@+id/center_on_gps_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_sides_space"
                 android:layout_marginTop="@dimen/mapview_sides_space"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_mapview_center_gps_red_24dp" />
 
@@ -208,9 +207,9 @@
                 android:id="@+id/toggleEditingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:layout_marginLeft="@dimen/mapview_sides_space"
                 android:layout_marginTop="@dimen/mapview_sides_space"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
                 android:background="@null"
                 app:srcCompat="@drawable/ic_mapview_toggle_editing_off_24dp" />
         </LinearLayout>
@@ -230,7 +229,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/mapview_sides_space"
-        android:paddingLeft="@dimen/mapview_sides_space" />
+        android:paddingLeft="@dimen/mapview_sides_space"
+        android:paddingBottom="@dimen/mapview_sides_space" />
 
 </android.support.design.widget.CoordinatorLayout>

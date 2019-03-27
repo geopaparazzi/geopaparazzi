@@ -19,38 +19,40 @@ package eu.geopaparazzi.core.maptools.tools;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.style.ToolColors;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.Feature;
-import eu.geopaparazzi.library.features.ILayer;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
-import eu.geopaparazzi.core.mapview.overlays.SliderDrawProjection;
+import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
+import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import jsqlite.Exception;
 
 import static java.lang.Math.abs;
@@ -64,20 +66,20 @@ import static java.lang.Math.round;
 public class SelectionTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 
-    private final Paint selectRectPaintStroke = new Paint();
-    private final Paint selectRectPaintFill = new Paint();
+    private final Paint selectRectPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+    private final Paint selectRectPaintFill = AndroidGraphicFactory.INSTANCE.createPaint();
     private final Rect rect = new Rect();
 
     private float lastX = -1;
     private float lastY = -1;
 
-    private final Point tmpP = new Point();
-    private final Point startP = new Point();
+    private Point tmpP = null;
+    private Point startP = null;
 
-    private float left;
-    private float right;
-    private float bottom;
-    private float top;
+    private double left;
+    private double right;
+    private double bottom;
+    private double top;
 
     private ProgressDialog infoProgressDialog;
 
@@ -92,16 +94,16 @@ public class SelectionTool extends MapTool {
         super(mapView);
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
-        int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
-        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
-        selectRectPaintFill.setAntiAlias(true);
+        int stroke = MapsforgeUtils.toColor(ToolColors.selection_stroke.getHex(), -1);
+        int fill = MapsforgeUtils.toColor(ToolColors.selection_fill.getHex(), 80);
+//        selectRectPaintFill.setAntiAlias(true);
         selectRectPaintFill.setColor(fill);
-        selectRectPaintFill.setAlpha(80);
-        selectRectPaintFill.setStyle(Paint.Style.FILL);
-        selectRectPaintStroke.setAntiAlias(true);
+//        selectRectPaintFill.setAlpha(80);
+        selectRectPaintFill.setStyle(Style.FILL);
+//        selectRectPaintStroke.setAntiAlias(true);
         selectRectPaintStroke.setStrokeWidth(1.5f);
         selectRectPaintStroke.setColor(stroke);
-        selectRectPaintStroke.setStyle(Paint.Style.STROKE);
+        selectRectPaintStroke.setStyle(Style.STROKE);
     }
 
     public void activate() {
@@ -110,15 +112,15 @@ public class SelectionTool extends MapTool {
     }
 
     public void onToolDraw(Canvas canvas) {
-        canvas.drawRect(rect, selectRectPaintFill);
-        canvas.drawRect(rect, selectRectPaintStroke);
+        MapsforgeUtils.drawRect(canvas, rect, selectRectPaintFill);
+        MapsforgeUtils.drawRect(canvas, rect, selectRectPaintStroke);
     }
 
     public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
-        Projection pj = editingViewProjection;
+        SliderDrawProjection pj = editingViewProjection;
 
         // handle drawing
         float currentX = event.getX();
@@ -127,8 +129,8 @@ public class SelectionTool extends MapTool {
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(startGeoPoint, startP);
+                LatLong startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                startP = pj.toPixels(startGeoPoint);
 
                 lastX = currentX;
                 lastY = currentY;
@@ -141,8 +143,8 @@ public class SelectionTool extends MapTool {
                     lastY = currentY;
                     return true;
                 }
-                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(currentGeoPoint, tmpP);
+                LatLong currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                tmpP = pj.toPixels(currentGeoPoint);
 
                 left = Math.min(tmpP.x, startP.x);
                 right = Math.max(tmpP.x, startP.x);
@@ -154,11 +156,11 @@ public class SelectionTool extends MapTool {
                 break;
             case MotionEvent.ACTION_UP:
 
-                float deltaY = abs(top - bottom);
-                float deltaX = abs(right - left);
+                double deltaY = abs(top - bottom);
+                double deltaX = abs(right - left);
                 if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
-                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                    LatLong ul = pj.fromPixels((int) left, (int) top);
+                    LatLong lr = pj.fromPixels((int) right, (int) bottom);
 
                     select(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
                 }

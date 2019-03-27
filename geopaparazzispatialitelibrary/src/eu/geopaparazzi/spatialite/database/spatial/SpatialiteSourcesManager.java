@@ -37,11 +37,9 @@ import java.util.Map;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
-import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -459,16 +457,16 @@ public enum SpatialiteSourcesManager {
         return newSpatialiteMap;
     }
 
-    public SpatialVectorTable getTableFromFeature(Feature feature) {
-        String tableName = feature.getTableName();
-        String databasePath = feature.getDatabasePath();
-
-        for (SpatialiteMap spatialiteMap : mSpatialiteMaps) {
-            if (spatialiteMap.databasePath.equals(databasePath) && spatialiteMap.tableName.equals(tableName)) {
-                return mSpatialiteMaps2TablesMap.get(spatialiteMap);
-            }
-        }
-
-        return null;
-    }
+//    public SpatialVectorTable getTableFromFeature(Feature feature) {
+//        String tableName = feature.getTableName();
+//        String databasePath = feature.getDatabasePath();
+//
+//        for (SpatialiteMap spatialiteMap : mSpatialiteMaps) {
+//            if (spatialiteMap.databasePath.equals(databasePath) && spatialiteMap.tableName.equals(tableName)) {
+//                return mSpatialiteMaps2TablesMap.get(spatialiteMap);
+//            }
+//        }
+//
+//        return null;
+//    }
 }
