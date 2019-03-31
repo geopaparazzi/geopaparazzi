@@ -28,6 +28,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.DECIMAL_FORMATTER_1;
 public class GpsPositionLayer extends Layer implements ISpatialiteTableAndFieldsNames {
     private Bitmap activeBitmap;
     private Bitmap staleBitmap;
+    private Bitmap movingBitmap;
     private int horizontalOffset;
     private int verticalOffset;
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
@@ -46,9 +47,12 @@ public class GpsPositionLayer extends Layer implements ISpatialiteTableAndFields
         org.mapsforge.core.graphics.Bitmap activeGpsBitmap = AndroidGraphicFactory.convertToBitmap(activeGpsMarker);
         Drawable staleGpsMarker = Compat.getDrawable(context, eu.geopaparazzi.library.R.drawable.ic_my_location_grey_24dp);
         org.mapsforge.core.graphics.Bitmap staleGpsBitmap = AndroidGraphicFactory.convertToBitmap(staleGpsMarker);
+        Drawable movingGpsMarker = Compat.getDrawable(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
+        org.mapsforge.core.graphics.Bitmap movingGpsBitmap = AndroidGraphicFactory.convertToBitmap(movingGpsMarker);
 
         this.activeBitmap = activeGpsBitmap;
         this.staleBitmap = staleGpsBitmap;
+        this.movingBitmap = movingGpsBitmap;
         this.horizontalOffset = 0;
         this.verticalOffset = 0;
 
@@ -80,7 +84,11 @@ public class GpsPositionLayer extends Layer implements ISpatialiteTableAndFields
         Bitmap current = null;
         Paint textPaint = null;
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-            current = activeBitmap;
+            if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
+                current = movingBitmap;
+            } else {
+                current = activeBitmap;
+            }
             textPaint = activeTextPaint;
         } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
             current = staleBitmap;
