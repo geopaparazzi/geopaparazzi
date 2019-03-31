@@ -102,6 +102,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import eu.geopaparazzi.core.mapview.layers.NotesLayer;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.GeocodeActivity;
 import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
@@ -352,6 +353,9 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             gpsPositionLayer = new GpsPositionLayer(this);
             layers.add(gpsPositionLayer);
 
+            NotesLayer notesLayer = new NotesLayer(this);
+            layers.add(notesLayer);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -521,30 +525,30 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             }
         }
 
-        // notes type
-        boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
-        if (doCustom) {
-            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
-            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
-            int noteSize = Integer.parseInt(sizeStr);
-            float opacity = Integer.parseInt(opacityStr);
-
-            OvalShape notesShape = new OvalShape();
-            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            notesPaint.setStyle(Paint.Style.FILL);
-            notesPaint.setColor(ColorUtilities.toColor(colorStr));
-            notesPaint.setAlpha((int) opacity);
-
-            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
-            Paint paint = notesShapeDrawable.getPaint();
-            paint.set(notesPaint);
-            notesShapeDrawable.setIntrinsicHeight(noteSize);
-            notesShapeDrawable.setIntrinsicWidth(noteSize);
-            notesDrawable = notesShapeDrawable;
-        } else {
-            notesDrawable = Compat.getDrawable(this, R.drawable.ic_place_accent_24dp);
-        }
+//        // notes type
+//        boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
+//        if (doCustom) {
+//            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
+//            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+//            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
+//            int noteSize = Integer.parseInt(sizeStr);
+//            float opacity = Integer.parseInt(opacityStr);
+//
+//            OvalShape notesShape = new OvalShape();
+//            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//            notesPaint.setStyle(Paint.Style.FILL);
+//            notesPaint.setColor(ColorUtilities.toColor(colorStr));
+//            notesPaint.setAlpha((int) opacity);
+//
+//            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
+//            Paint paint = notesShapeDrawable.getPaint();
+//            paint.set(notesPaint);
+//            notesShapeDrawable.setIntrinsicHeight(noteSize);
+//            notesShapeDrawable.setIntrinsicWidth(noteSize);
+//            notesDrawable = notesShapeDrawable;
+//        } else {
+//            notesDrawable = Compat.getDrawable(this, R.drawable.ic_place_accent_24dp);
+//        }
 
         // TODO
 //        mDataOverlay = new ArrayGeopaparazziOverlay(this);

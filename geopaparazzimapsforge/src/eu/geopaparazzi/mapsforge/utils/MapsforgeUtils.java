@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 
@@ -91,5 +92,12 @@ public class MapsforgeUtils {
                 Integer.valueOf(colorStr.substring(3, 5), 16),
                 Integer.valueOf(colorStr.substring(5, 7), 16)
         };
+    }
+
+    public static boolean contains(BoundingBox containing, BoundingBox toCheck) {
+        return containing.minLongitude < toCheck.minLongitude &&
+                containing.minLatitude < toCheck.minLatitude &&
+                containing.maxLongitude > toCheck.maxLongitude &&
+                containing.maxLatitude > toCheck.maxLatitude;
     }
 }
