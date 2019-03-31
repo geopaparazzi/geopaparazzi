@@ -31,9 +31,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -67,15 +69,24 @@ import android.widget.Toast;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.Layers;
+import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.cache.TileStore;
+import org.mapsforge.map.layer.cache.TwoLevelTileCache;
+import org.mapsforge.map.layer.download.TileDownloadLayer;
+import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
+import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.layer.tilestore.TileStoreLayer;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
@@ -88,6 +99,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
@@ -117,6 +129,9 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+import eu.geopaparazzi.mapsforge.core.layers.GpsPositionLayer;
+import eu.geopaparazzi.mapsforge.core.layers.MBTilesStore;
+import eu.geopaparazzi.mapsforge.core.layers.Rasterlite2Store;
 import eu.geopaparazzi.mapsforge.core.layers.SpatialiteTableLayer;
 import eu.geopaparazzi.core.maptools.EditableLayersListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity;
@@ -204,6 +219,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     private String lonString;
     private TextView batteryText;
     private LayerManager layerManager;
+    private GpsPositionLayer gpsPositionLayer;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -274,26 +290,69 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         layerManager = mMapView.getLayerManager();
         Layers layers = layerManager.getLayers();
 
-        TileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
-                mMapView.getModel().displayModel.getTileSize(), 1f,
-                mMapView.getModel().frameBufferModel.getOverdrawFactor());
-
-
-        // TODO remove this hardcoded testing
-        File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
-        MapDataStore mapDataStore = new MapFile(mapFile);
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
-                mMapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
-        layers.add(tileRendererLayer);
-
-        File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
         try {
+            // TODO remove this hardcoded testing
+//        mMapView.getModel().displayModel.setFixedTileSize(256); // just for mbtiles
+
+            // MAP FILES
+            TileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
+                    mMapView.getModel().displayModel.getTileSize(), 1f,
+                    mMapView.getModel().frameBufferModel.getOverdrawFactor());
+            File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
+            MapDataStore mapDataStore = new MapFile(mapFile);
+            TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
+                    mMapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
+            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+            layers.add(tileRendererLayer);
+
+            // ONLINE OSM
+//        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
+//                mMapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
+//                mMapView.getModel().frameBufferModel.getOverdrawFactor(), true);
+//        osmLayer = new TileDownloadLayer(osmTileCache,
+//                mMapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
+//                AndroidGraphicFactory.INSTANCE);
+//        layers.add(osmLayer);
+
+
+            // MBTILES FILES
+//        File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "italy.mbtiles");
+            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
+            MBTilesStore tileStore = new MBTilesStore(mbtilesFile);
+            tileStore.setRowType("tms");
+//        InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
+//                mMapView.getModel().displayModel.getTileSize(),
+//                mMapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
+//        TwoLevelTileCache mbtilesCache = new TwoLevelTileCache(memoryTileCache, tileStore);
+            TileStoreLayer tileStoreLayer = new TileStoreLayer(tileStore,
+                    mMapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, true);
+            layers.add(tileStoreLayer);
+
+            // RL2 FILES
+//            1873.berlin_stadt_postgrenzen_rasterlite2.rl2
+            File rl2File = new File(Environment.getExternalStorageDirectory(), "maps/1873.berlin_stadt_postgrenzen_rasterlite2.rl2");
+            Rasterlite2Store rl2Store = new Rasterlite2Store(rl2File, "berlin_stadtteilgrenzen.1880", mMapView.getModel().displayModel.getTileSize());
+            TileStoreLayer rl2StoreLayer = new TileStoreLayer(rl2Store,
+                    mMapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, true);
+            layers.add(rl2StoreLayer);
+
+            // SPATIALTE FILES
+            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
+
             ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
             spatialDb.open(spatialiteFile.getAbsolutePath());
             // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
-            SpatialiteTableLayer spatialiteTableLayer = new SpatialiteTableLayer(mMapView, spatialDb, "ne_10m_roads");
-            layers.add(spatialiteTableLayer);
+
+            SpatialiteTableLayer adminLayer = new SpatialiteTableLayer(mMapView, spatialDb, "ne_10m_admin_1_states_provinces");
+            layers.add(adminLayer);
+
+            SpatialiteTableLayer roadsLayer = new SpatialiteTableLayer(mMapView, spatialDb, "ne_10m_roads");
+            layers.add(roadsLayer);
+
+            gpsPositionLayer = new GpsPositionLayer(this);
+            layers.add(gpsPositionLayer);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -400,6 +459,17 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
     }
 
+    /**
+     * Returns the relative size of a map view in relation to the screen size of the device. This
+     * is used for cache size calculations.
+     * By default this returns 1.0, for a full size map view.
+     *
+     * @return the screen ratio of the mapview
+     */
+    private float getScreenRatio() {
+        return 1f;
+    }
+
     private void setCenterCross() {
         String crossColorStr = mPeferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
         int crossColor = ColorUtilities.toColor(crossColorStr);
@@ -432,11 +502,24 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     @Override
     protected void onPause() {
         GPDialogs.dismissProgressDialog(syncProgressDialog);
+        for (Layer layer : layerManager.getLayers()) {
+            if (layer instanceof TileDownloadLayer) {
+                TileDownloadLayer tileDownloadLayer = (TileDownloadLayer) layer;
+                tileDownloadLayer.onPause();
+            }
+        }
+
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        for (Layer layer : layerManager.getLayers()) {
+            if (layer instanceof TileDownloadLayer) {
+                TileDownloadLayer tileDownloadLayer = (TileDownloadLayer) layer;
+                tileDownloadLayer.onResume();
+            }
+        }
 
         // notes type
         boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
@@ -568,8 +651,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                 coordView.setText(lonString + " " + COORDINATE_FORMATTER.format(lon) //
                         + "\n" + latString + " " + COORDINATE_FORMATTER.format(lat));
             }
+
+            gpsPositionLayer.toggleInfo(true);
         }
         if (action == MotionEvent.ACTION_UP) {
+            gpsPositionLayer.toggleInfo(false);
             if (coordView != null)
                 coordView.setText("");
             saveCenterPref();
@@ -806,31 +892,8 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
      * @return the [n,s,w,e] in degrees.
      */
     private double[] getMapWorldBounds() {
-        double[] nswe = getMapWorldBoundsE6();
-        double n = nswe[0] / E6;
-        double s = nswe[1] / E6;
-        double w = nswe[2] / E6;
-        double e = nswe[3] / E6;
-        return new double[]{n, s, w, e};
-    }
-
-    /**
-     * Retrieves the map world bounds in microdegrees.
-     *
-     * @return the [n,s,w,e] in midrodegrees.
-     */
-    private double[] getMapWorldBoundsE6() {
-        MapViewProjection projection = mMapView.getMapViewProjection();
-        double latitudeSpan = projection.getLatitudeSpan();
-        double longitudeSpan = projection.getLongitudeSpan();
-        IMapViewPosition mapPosition = mMapView.getModel().mapViewPosition;
-
-        LatLong c = mapPosition.getCenter();
-        double n = (c.getLatitudeE6() + latitudeSpan / 2);
-        double s = (c.getLatitudeE6() - latitudeSpan / 2);
-        double w = (c.getLongitudeE6() - longitudeSpan / 2);
-        double e = (c.getLongitudeE6() + longitudeSpan / 2);
-        double[] nswe = {n, s, w, e};
+        BoundingBox bbox = mMapView.getBoundingBox();
+        double[] nswe = {bbox.maxLatitude, bbox.minLatitude, bbox.minLongitude, bbox.maxLongitude};
         return nswe;
     }
 
@@ -1107,6 +1170,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
 
+
         Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_red_24dp));
@@ -1126,10 +1190,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         }
 
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
-        float accuracy = 0;
-        if (lastGpsPositionExtras != null) {
-            accuracy = lastGpsPositionExtras[0];
-        }
+        int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
+
+        gpsPositionLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+        gpsPositionLayer.requestRedraw();
+
 
         if (this.mMapView.getWidth() <= 0 || this.mMapView.getWidth() <= 0) {
             return;
@@ -1141,17 +1206,8 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             // send updates to the editing framework
             EditManager.INSTANCE.onGpsUpdate(lon, lat);
 
-            double[] nsweE6 = getMapWorldBoundsE6();
-            int latE6 = (int) ((float) lat * E6);
-            int lonE6 = (int) ((float) lon * E6);
+            double[] nswe = getMapWorldBounds();
             boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-
-            int nE6 = (int) nsweE6[0];
-            int sE6 = (int) nsweE6[1];
-            int wE6 = (int) nsweE6[2];
-            int eE6 = (int) nsweE6[3];
-
-            // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
 
             // TODO check this
 //            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
@@ -1162,17 +1218,18 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //                }
 //            }
 
+            BoundingBox bbox = mMapView.getBoundingBox();
+            int paddingX = (int) (bbox.getLongitudeSpan() * 0.2);
+            int paddingY = (int) (bbox.getLatitudeSpan() * 0.2);
+            double newE = nswe[3] - paddingX;
+            double newW = nswe[2] + paddingX;
+            double newS = nswe[1] + paddingY;
+            double newN = nswe[0] - paddingY;
 
-            MapViewProjection p = mMapView.getMapViewProjection();
-            int paddingX = (int) (p.getLongitudeSpan() * 0.2);
-            int paddingY = (int) (p.getLatitudeSpan() * 0.2);
-            int newEE6 = eE6 - paddingX;
-            int newWE6 = wE6 + paddingX;
-            int newSE6 = sE6 + paddingY;
-            int newNE6 = nE6 - paddingY;
+            BoundingBox tmpBBox = new BoundingBox(newS, newW, newN, newE);
 
             boolean doCenter = false;
-            if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
+            if (!tmpBBox.contains(lat, lon)) {
                 if (centerOnGps) {
                     doCenter = true;
                 }
@@ -1185,7 +1242,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         } catch (Exception e) {
             GPLog.error(this, "On location change error", e); //$NON-NLS-1$
             // finish the activity to reset
-            finish();
+            //finish();
         }
     }
 
@@ -1253,7 +1310,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         } else if (i == R.id.zoomin) {
             int currentZoom = getZoom();
             int newZoom = currentZoom + 1;
-            int maxZoom = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable().getMaxZoom();
+            int maxZoom = 24;
             if (newZoom > maxZoom) newZoom = maxZoom;
             setZoom(newZoom);
             invalidateMap();
@@ -1267,7 +1324,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             int currentZoom;
             currentZoom = getZoom();
             newZoom = currentZoom - 1;
-            int minZoom = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable().getMinZoom();
+            int minZoom = 0;
             if (newZoom < minZoom) newZoom = minZoom;
             setZoom(newZoom);
             invalidateMap();

@@ -224,7 +224,9 @@ public class MBTilesDroidSpitter {
         // TODO: Optimize this if we have mbtiles_metadata with bound or min/max zoomlevels
         // Do not make any request and return null if we know it won't match any tile
         byte[] bb = getTileAsBytes(i_x, i_y_osm, i_z);
-        return BitmapFactory.decodeByteArray(bb, 0, bb.length);
+        if (bb != null)
+            return BitmapFactory.decodeByteArray(bb, 0, bb.length);
+        return null;
     }
     // -----------------------------------------------
 
@@ -254,23 +256,22 @@ public class MBTilesDroidSpitter {
         } catch (NumberFormatException e) {
             return null;
         }
-        // db_lock.readLock().lock();
         byte[] blob_data = null;
+        Cursor c = null;
         try {
-            final Cursor c = db_mbtiles.rawQuery(
+            c = db_mbtiles.rawQuery(
                     "select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?",
                     new String[]{s_x, s_y, s_z});
             if (!c.moveToFirst()) {
-                c.close();
-                // db_lock.readLock().unlock();
                 return null;
             }
             blob_data = c.getBlob(c.getColumnIndex("tile_data"));
-            c.close();
         } catch (Exception e) {
             GPLog.error(this, null, e);
             //} finally { // causes crash
             // db_lock.readLock().unlock();
+        } finally {
+            if (c != null) c.close();
         }
         return blob_data;
     }
@@ -594,7 +595,7 @@ public class MBTilesDroidSpitter {
      * Query the mbtiles metadata-table and returns validated results
      * - when called the first time, a mbtiles validity check is done
      *
-     * @return HashMap<String,String> metadate [key,value]
+     * @return HashMap<String               ,               String> metadate [key,value]
      */
     public MbTilesMetadata fetchMetadata(String metadataVersion) throws MetadataParseException {
         Cursor c = db_mbtiles.query(MbTilesSQLite.TABLE_METADATA, new String[]{MbTilesSQLite.COL_METADATA_NAME,
@@ -1122,7 +1123,7 @@ public class MBTilesDroidSpitter {
      * - Query only when 'this.i_request_url_count' > 0 ; i.e. Table exists and has records
      *
      * @param i_limit amount of records to retrieve [i_limit < 1 == all]
-     * @return HashMap<String,String> mbtiles_request_url [tile_id,tile_url]
+     * @return HashMap<String               ,               String> mbtiles_request_url [tile_id,tile_url]
      */
     public HashMap<String, String> retrieve_request_url(int i_limit) {
         HashMap<String, String> mbtiles_request_url = new LinkedHashMap<String, String>();
@@ -1160,7 +1161,7 @@ public class MBTilesDroidSpitter {
     /**
      * Returns result of last called fetchMetadata
      *
-     * @return HashMap<String,String> metadate [key,value]
+     * @return HashMap<String               ,               String> metadate [key,value]
      */
     public MbTilesMetadata getMetadata() {
         return this.metadata;

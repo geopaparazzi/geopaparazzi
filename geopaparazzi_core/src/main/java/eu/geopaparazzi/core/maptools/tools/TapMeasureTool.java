@@ -26,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
+import org.hortonmachine.dbs.utils.MercatorUtils;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
@@ -41,7 +42,6 @@ import org.mapsforge.map.util.MapViewProjection;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.library.style.ToolColors;
-import eu.geopaparazzi.library.util.MercatorUtils;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.maptools.MapTool;

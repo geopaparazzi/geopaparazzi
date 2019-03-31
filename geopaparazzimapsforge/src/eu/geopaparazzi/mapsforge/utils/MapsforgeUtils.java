@@ -42,10 +42,6 @@ public class MapsforgeUtils {
         canvas.drawPath(path, paint);
     }
 
-    public void getPaint() {
-
-    }
-
     /**
      * Returns the corresponding color int.
      *

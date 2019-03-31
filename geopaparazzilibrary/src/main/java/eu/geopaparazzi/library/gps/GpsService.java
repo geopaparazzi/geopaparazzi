@@ -129,10 +129,26 @@ public class GpsService extends Service implements LocationListener, Listener {
     public static final String GPS_LOGGING_STATUS = "GPS_LOGGING_STATUS";
     /**
      * Intent key to use for double array position data [lon, lat, elev].
+     * <p>
+     *     longitude and latitude in degrees.
+     * </p>
+     * <p>
+     *     elev: meters above the WGS 84 reference elipsoid.
+     * </p>
      */
     public static final String GPS_SERVICE_POSITION = "GPS_SERVICE_POSITION";
     /**
      * Intent key to use for double array position extra data [accuracy, speed, bearing].
+     *
+     * <p>
+     *     accuracy: estimated horizontal accuracy of this location, radial, in meters.
+     * </p>
+     * <p>
+     *     speed:  in meters/second over ground.
+     * </p>
+     * <p>
+     *     bearing:  horizontal direction of travel of th device guaranteed in the range (0.0, 360.0] if the device has a bearing.
+     * </p>
      */
     public static final String GPS_SERVICE_POSITION_EXTRAS = "GPS_SERVICE_POSITION_EXTRAS";
     /**

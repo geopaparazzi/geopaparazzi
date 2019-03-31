@@ -37,6 +37,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ColorUtilitiesCompat;
 import eu.geopaparazzi.library.style.Style;
 
 /**
@@ -50,6 +51,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
      * The complete list of fields in the properties table.
      */
     public static List<String> PROPERTIESTABLE_FIELDS_LIST;
+
+    private static HashMap<String, Integer> colorMap = new HashMap<>();
 
     static {
         List<String> fieldsList = new ArrayList<String>();
@@ -485,11 +488,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         paint.setStyle(org.mapsforge.core.graphics.Style.FILL);
 
 //        int color = AndroidGraphicFactory.INSTANCE.createColor();
-        paint.setColor(ColorUtilities.toColor(style.fillcolor));
-        float alpha = style.fillalpha * 255f;
-
-        // TODPO add alpha
-//        paint.setAlpha((int) alpha);
+        int alpha = (int) (style.fillalpha * 255);
+        paint.setColor(toColor(style.fillcolor, alpha));
         return paint;
     }
 
@@ -507,8 +507,8 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
 //        paint.setAntiAlias(true);
         paint.setStrokeCap(Cap.ROUND);
         paint.setStrokeJoin(Join.ROUND);
-        paint.setColor(ColorUtilities.toColor(style.strokecolor));
-        float alpha = style.strokealpha * 255f;
+        int alpha = (int) (style.strokealpha * 255);
+        paint.setColor(toColor(style.strokecolor, alpha));
 //        paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);
 
@@ -573,5 +573,56 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         return paint;
     }
 
+
+    /**
+     * Returns the corresponding color int.
+     *
+     * @param nameOrHex the name of the color as supported in this class, or the hex value.
+     * @return the int color.
+     */
+    public static int toColor(String nameOrHex, int alpha) {
+        if (alpha < 0) alpha = 255;
+        nameOrHex = nameOrHex.trim();
+        if (nameOrHex.startsWith("#")) {
+            int[] rgb = hex2Rgb(nameOrHex);
+
+            int color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+            return color;
+        }
+        Integer color = colorMap.get(nameOrHex);
+        if (color == null) {
+            ColorUtilities[] values = ColorUtilities.values();
+            for (ColorUtilities colorUtil : values) {
+                if (colorUtil.name().equalsIgnoreCase(nameOrHex)) {
+                    String hex = colorUtil.getHex();
+
+                    int[] rgb = hex2Rgb(hex);
+                    color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+
+                    colorMap.put(nameOrHex, color);
+                    return color;
+                }
+            }
+        }
+        if (color == null) {
+            String hex = ColorUtilitiesCompat.getHex(nameOrHex);
+            if (hex != null) {
+                return toColor(hex, alpha);
+            }
+        }
+        if (color == null) {
+            int[] rgb = hex2Rgb("#42a6ff");
+            color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+        }
+        return color;
+    }
+
+    public static int[] hex2Rgb(String colorStr) {
+        return new int[]{
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16)
+        };
+    }
 
 }
