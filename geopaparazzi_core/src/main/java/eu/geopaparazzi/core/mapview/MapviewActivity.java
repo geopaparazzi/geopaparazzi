@@ -298,7 +298,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             // MAP FILES
             TileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
                     mMapView.getModel().displayModel.getTileSize(), 1f,
-                    mMapView.getModel().frameBufferModel.getOverdrawFactor());
+                    mMapView.getModel().frameBufferModel.getOverdrawFactor(), true);
             File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
             MapDataStore mapDataStore = new MapFile(mapFile);
             TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
