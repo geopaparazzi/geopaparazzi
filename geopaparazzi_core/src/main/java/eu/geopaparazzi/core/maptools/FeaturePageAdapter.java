@@ -144,7 +144,9 @@ public class FeaturePageAdapter extends PagerAdapter {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         String text = editView.getText().toString();
-                        FeatureUtilities.viewIfApplicable(v.getContext(), text);
+                        // FIXME
+//                        FeatureUtilities.viewIfApplicable(v.getContext(), text);
+
                         return false;
                     }
                 });

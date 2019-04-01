@@ -36,8 +36,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.SimplePosition;
 import eu.geopaparazzi.library.util.UrlUtilities;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -80,13 +78,13 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     }
 
     private void checkAvailableProfiles() {
-//        try {
-//            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
-            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+////        try {
+////            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+//            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
+//            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
+////        } catch (JSONException e) {
+////            e.printStackTrace();
+////        }
     }
 
     private void init() {

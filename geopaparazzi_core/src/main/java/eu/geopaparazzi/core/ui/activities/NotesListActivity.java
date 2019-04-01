@@ -116,7 +116,7 @@ public class NotesListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_noteslist);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

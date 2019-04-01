@@ -18,25 +18,25 @@
 package eu.geopaparazzi.core.maptools;
 
 
-import org.mapsforge.map.android.view.MapView;
 
 import eu.geopaparazzi.core.features.DrawingTool;
+import eu.geopaparazzi.map.GPMapView;
 
 /**
- * A tool that works on a {@link MapView}.
+ * A tool that works on a {@link GPMapView}.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class MapTool implements DrawingTool {
 
-    protected MapView mapView;
+    protected GPMapView mapView;
 
     /**
      * Constructor.
      * 
      * @param mapView the mapview to work on
      */
-    public MapTool(MapView mapView) {
+    public MapTool(GPMapView mapView) {
         this.mapView = mapView;
     }
 

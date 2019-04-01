@@ -87,9 +87,8 @@ import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+//import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+//import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -146,7 +145,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         StringAsyncTask task = new StringAsyncTask(getActivity()) {
             protected String doBackgroundWork() {
                 try {
-                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
+//                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
                 } catch (Exception e) {
                     return "ERROR: " + e.getLocalizedMessage();
                 }
@@ -347,8 +346,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_tilesource) {
-            Intent preferencesIntent = new Intent(this.getActivity(), SourcesTreeListActivity.class);
-            startActivity(preferencesIntent);
+            // FIXME
+//            Intent preferencesIntent = new Intent(this.getActivity(), SourcesTreeListActivity.class);
+//            startActivity(preferencesIntent);
             return true;
         } else if (i == R.id.action_new) {
             NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
@@ -518,7 +518,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (v == mMapviewButton) {
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead(); // ugly, needs to be reviewed
+            // FIXME
+//            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead(); // ugly, needs to be reviewed
             Intent importIntent = new Intent(getActivity(), MapviewActivity.class);
             startActivity(importIntent);
         } else if (v == mGpslogButton) {

@@ -28,8 +28,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.strtree.STRtree;
 
-import org.mapsforge.core.model.LatLong;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +48,7 @@ import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.GpsLogInfo;
 import eu.geopaparazzi.core.database.objects.Line;
 import eu.geopaparazzi.core.database.objects.LogMapItem;
+import eu.geopaparazzi.map.GPGeoPoint;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsDataTableFields;
@@ -248,7 +247,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                                    long timestamp) throws IOException {
 
         try {
-            new LatLong(lat, lon);
+            new GPGeoPoint(lat, lon);
         } catch (Exception e) {
             // if the point is not valid, do not insert it
             return;

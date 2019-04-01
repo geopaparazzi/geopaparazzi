@@ -70,7 +70,7 @@ public class BookmarksListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_bookmarkslist);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

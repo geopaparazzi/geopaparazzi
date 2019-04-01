@@ -23,7 +23,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
-import org.mapsforge.map.view.MapView;
 
 import java.io.File;
 import java.io.IOException;
@@ -526,15 +525,15 @@ public enum BaseMapSourcesManager {
 //        }
 //    }
 
-    /**
-     * Clear MapView TileCache.
-     *
-     * @param mapView the {@link MapView}.
-     */
-    private static void clearTileCache(MapView mapView) {
-        if (mapView != null) {
-            mapView.destroyAll();
-        }
-    }
+//    /**
+//     * Clear MapView TileCache.
+//     *
+//     * @param mapView the {@link MapView}.
+//     */
+//    private static void clearTileCache(MapView mapView) {
+//        if (mapView != null) {
+//            mapView.destroyAll();
+//        }
+//    }
 
 }

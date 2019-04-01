@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">ja</string>
+  <string name="no">nej</string>
+  <string name="gpx_import_processing">importer gpx...</string>
+  <string name="menu_settings">indstillinger</string>
+</resources>

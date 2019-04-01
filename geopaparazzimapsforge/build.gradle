@@ -5,13 +5,47 @@ dependencies {
     api 'com.android.support:design:28.0.0'
     api 'com.android.support:support-v4:28.0.0'
 
-    implementation 'net.sf.kxml:kxml2:2.3.0'
-    implementation 'com.caverock:androidsvg:1.3'
-    api 'org.mapsforge:mapsforge-core:0.11.0'
-    api 'org.mapsforge:mapsforge-map:0.11.0'
-    api 'org.mapsforge:mapsforge-map-reader:0.11.0'
-    api 'org.mapsforge:mapsforge-themes:0.11.0'
-    api 'org.mapsforge:mapsforge-map-android:0.11.0'
+//    implementation 'net.sf.kxml:kxml2:2.3.0'
+//    implementation 'com.caverock:androidsvg:1.3'
+//    api 'org.mapsforge:mapsforge-core:0.11.0'
+//    api 'org.mapsforge:mapsforge-map:0.11.0'
+//    api 'org.mapsforge:mapsforge-map-reader:0.11.0'
+//    api 'org.mapsforge:mapsforge-themes:0.11.0'
+//    api 'org.mapsforge:mapsforge-map-android:0.11.0'
+
+
+    api 'org.mapsforge:vtm:0.11.0'
+    api 'org.mapsforge:vtm-themes:0.11.0'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+
+    api 'org.mapsforge:vtm-android:0.11.0'
+    api 'org.mapsforge:vtm-android:0.11.0:natives-armeabi-v7a'
+    implementation 'org.mapsforge:vtm-android:0.11.0:natives-arm64-v8a'
+    implementation 'org.mapsforge:vtm-android:0.11.0:natives-x86'
+    implementation 'org.mapsforge:vtm-android:0.11.0:natives-x86_64'
+    api 'com.caverock:androidsvg:1.3'
+//    api 'org.mapsforge:vtm-gdx:0.11.0'
+//    api 'org.mapsforge:vtm-android-gdx:0.11.0'
+//    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-armeabi-v7a'
+//    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-arm64-v8a'
+//    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86'
+//    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86_64'
+//    api 'com.badlogicgames.gdx:gdx:1.9.9'
+//    api 'com.badlogicgames.gdx:gdx-backend-android:1.9.9'
+
+//    api project(':vtm-android')
+//    implementation project(':vtm-extras')
+//    implementation project(':vtm-http')
+//    implementation project(':vtm-jeo')
+//    implementation project(':vtm-json')
+//    implementation project(':vtm-jts')
+//    implementation project(':vtm-mvt')
+//    implementation project(':vtm-themes')
+//    implementation "org.slf4j:slf4j-android:$slf4jVersion"
+//
+//    implementation project(':vtm-android-gdx')
+//    implementation project(':vtm-gdx')
+//    implementation project(':vtm-gdx-poi3d')
 
     api project(':geopaparazzispatialitelibrary')
 }

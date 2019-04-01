@@ -111,7 +111,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         super.onCreate(icicle);
         setContentView(R.layout.activity_addnotes);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

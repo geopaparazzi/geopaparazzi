@@ -28,7 +28,6 @@ import org.acra.ReportingInteractionMode;
 import org.acra.config.ACRAConfiguration;
 import org.acra.config.ACRAConfigurationException;
 import org.acra.config.ConfigurationBuilder;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +84,6 @@ public class GeopaparazziApplication extends GPApplication {
             e.printStackTrace();
         }
 
-        AndroidGraphicFactory.createInstance(this);
         Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized."); //$NON-NLS-1$//$NON-NLS-2$
     }
 

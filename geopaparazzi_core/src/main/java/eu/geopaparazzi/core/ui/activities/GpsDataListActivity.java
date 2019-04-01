@@ -93,7 +93,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_gpsdatalist);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

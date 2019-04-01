@@ -46,11 +46,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
-import eu.geopaparazzi.library.core.maps.BaseMap;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import jsqlite.Exception;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
@@ -124,7 +120,8 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                                 for (ProfileBasemaps currentBasemap : activeProfile.basemapsList) {
                                     String filePath = currentBasemap.getRelativePath();
                                     File basemap = new File(sdcardDir, filePath);
-                                    BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(basemap);
+                                    // FIXME
+//                                    BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(basemap);
                                 }
                             } catch (Exception e) {
                                 GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
@@ -181,11 +178,12 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                     } else {
                         activeSwitch.setText(R.string.profiles_activate_profile);
                     }
-                    try {
-                        BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
-                    } catch (Exception e) {
-                        // can be ignored
-                    }
+                    // FIXME
+//                    try {
+//                        BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
+//                    } catch (Exception e) {
+//                        // can be ignored
+//                    }
                     loadProfiles();
                 }
             });

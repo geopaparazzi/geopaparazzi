@@ -20,7 +20,8 @@ package eu.geopaparazzi.core.features;
 
 import android.view.MotionEvent;
 
-import org.mapsforge.core.graphics.Canvas;
+import eu.geopaparazzi.map.GPCanvas;
+
 
 /**
  * A tool that can draw.
@@ -32,9 +33,9 @@ public interface DrawingTool extends Tool {
     /**
      * Called when the tool should draw.
      * 
-     * @param canvas the {@link Canvas} to draw on.
+     * @param canvas the {@link GPCanvas} to draw on.
      */
-    public void onToolDraw(Canvas canvas);
+    public void onToolDraw(GPCanvas canvas);
 
     /**
      * Called on a touch event.

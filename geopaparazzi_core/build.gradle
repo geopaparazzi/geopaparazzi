@@ -52,15 +52,14 @@ dependencies {
     api 'com.android.support:design:28.0.0'
     api 'com.android.support:preference-v7:28.0.0'
     api 'com.android.support:support-v4:28.0.0'
+    api project(':geopaparazzimap')
     api project(':geopaparazzilibrary')
-    api project(':geopaparazzispatialitelibrary')
-    api project(':geopaparazzimapsforge')
     api project(':wms_nww')
     api project(':geopaparazzi_acrylicpaint')
 }
 
 task copyNativeLibs(type: Copy) {
-    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'jniLibs')) {
+    from(new File(project(':geopaparazzimap').projectDir, 'jniLibs')) {
         include 'armeabi/libjsqlite.so'
         include 'armeabi-v7a/libjsqlite.so'
         include 'x86/libjsqlite.so'

@@ -64,7 +64,7 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         super.onCreate(icicle);
         setContentView(R.layout.activity_notesproperties);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

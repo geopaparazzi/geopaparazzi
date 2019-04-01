@@ -4,13 +4,13 @@ dependencies {
     api 'com.android.support:design:28.0.0'
     api 'com.android.support:support-v4:28.0.0'
 
-    implementation 'net.sf.kxml:kxml2:2.3.0'
-    implementation 'com.caverock:androidsvg:1.3'
-    api 'org.mapsforge:mapsforge-core:0.11.0'
-    api 'org.mapsforge:mapsforge-map:0.11.0'
-    api 'org.mapsforge:mapsforge-map-reader:0.11.0'
-    api 'org.mapsforge:mapsforge-themes:0.11.0'
-    api 'org.mapsforge:mapsforge-map-android:0.11.0'
+//    implementation 'net.sf.kxml:kxml2:2.3.0'
+//    implementation 'com.caverock:androidsvg:1.3'
+//    api 'org.mapsforge:mapsforge-core:0.11.0'
+//    api 'org.mapsforge:mapsforge-map:0.11.0'
+//    api 'org.mapsforge:mapsforge-map-reader:0.11.0'
+//    api 'org.mapsforge:mapsforge-themes:0.11.0'
+//    api 'org.mapsforge:mapsforge-map-android:0.11.0'
 
     api project(':geopaparazzilibrary')
     api fileTree(include: ['*.jar'], dir: 'libs')

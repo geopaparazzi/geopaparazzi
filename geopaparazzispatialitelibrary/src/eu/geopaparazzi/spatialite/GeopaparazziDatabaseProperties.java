@@ -24,10 +24,6 @@ import org.hortonmachine.dbs.compat.IHMResultSet;
 import org.hortonmachine.dbs.compat.IHMStatement;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mapsforge.core.graphics.Cap;
-import org.mapsforge.core.graphics.Join;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -473,149 +469,149 @@ public class GeopaparazziDatabaseProperties implements ISpatialiteTableAndFields
         return stylesList;
     }
 
-
-    /**
-     * Get the fill {@link Paint} for a given style.
-     * <p/>
-     * <p>Paints are cached and reused.</p>
-     *
-     * @param style the {@link Style} to use.
-     * @return the paint.
-     */
-    public static Paint getFillPaint4Style(Style style) {
-        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
-//        paint.setAntiAlias(true);
-        paint.setStyle(org.mapsforge.core.graphics.Style.FILL);
-
-//        int color = AndroidGraphicFactory.INSTANCE.createColor();
-        int alpha = (int) (style.fillalpha * 255);
-        paint.setColor(toColor(style.fillcolor, alpha));
-        return paint;
-    }
-
-    /**
-     * Get the stroke {@link Paint} for a given style.
-     * <p/>
-     * <p>Paints are cached and reused.</p>
-     *
-     * @param style the {@link Style} to use.
-     * @return the paint.
-     */
-    public static Paint getStrokePaint4Style(Style style) {
-        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint.setStyle(org.mapsforge.core.graphics.Style.STROKE);
-//        paint.setAntiAlias(true);
-        paint.setStrokeCap(Cap.ROUND);
-        paint.setStrokeJoin(Join.ROUND);
-        int alpha = (int) (style.strokealpha * 255);
-        paint.setColor(toColor(style.strokecolor, alpha));
-//        paint.setAlpha((int) alpha);
-        paint.setStrokeWidth(style.width);
-
-        try {
-            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
-            if (shiftAndDash != null) {
-                float[] dash = Style.getDashOnly(shiftAndDash);
-                if (dash.length > 1)
-                    paint.setDashPathEffect(dash);
-            }
-        } catch (java.lang.Exception e) {
-            GPLog.error("GeopaparazziDatabaseProperties", "Error on dash creation: " + style.dashPattern, e);
-        }
-
-        return paint;
-    }
-
-    /**
-     * Get the fill paint for a theme style. These are not editable and as such do not change.
-     *
-     * @param uniqueValue the theme unique value key.
-     * @param style       the style to use for the paint.
-     * @return the generated paint.
-     */
-    public static Paint getFillPaint4Theme(String uniqueValue, Style style) {
-        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
-//        paint.setAntiAlias(true);
-        paint.setStyle(org.mapsforge.core.graphics.Style.FILL);
-        paint.setColor(ColorUtilities.toColor(style.fillcolor));
-        float alpha = style.fillalpha * 255f;
-//        paint.setAlpha((int) alpha);
-        return paint;
-    }
-
-    /**
-     * Get the stroke paint for a theme style. These are not editable and as such do not change.
-     *
-     * @param uniqueValue the theme unique value key.
-     * @param style       the style to use for the paint.
-     * @return the generated paint.
-     */
-    public static Paint getStrokePaint4Theme(String uniqueValue, Style style) {
-        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint.setStyle(org.mapsforge.core.graphics.Style.STROKE);
-//        paint.setAntiAlias(true);
-        paint.setStrokeCap(Cap.ROUND);
-        paint.setStrokeJoin(Join.ROUND);
-        paint.setColor(ColorUtilities.toColor(style.strokecolor));
-        float alpha = style.strokealpha * 255f;
-//        paint.setAlpha((int) alpha);
-        paint.setStrokeWidth(style.width);
-        try {
-            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
-            if (shiftAndDash != null) {
-                float[] dash = Style.getDashOnly(shiftAndDash);
-                if (dash.length > 1)
-                    paint.setDashPathEffect(dash);
-            }
-        } catch (java.lang.Exception e) {
-            GPLog.error("GeopaparazziDatabaseProperties", "Error on dash creation: " + style.dashPattern, e);
-        }
-        return paint;
-    }
-
-
-    /**
-     * Returns the corresponding color int.
-     *
-     * @param nameOrHex the name of the color as supported in this class, or the hex value.
-     * @return the int color.
-     */
-    public static int toColor(String nameOrHex, int alpha) {
-        if (alpha < 0) alpha = 255;
-        nameOrHex = nameOrHex.trim();
-        if (nameOrHex.startsWith("#")) {
-            int[] rgb = hex2Rgb(nameOrHex);
-
-            int color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
-            return color;
-        }
-        Integer color = colorMap.get(nameOrHex);
-        if (color == null) {
-            ColorUtilities[] values = ColorUtilities.values();
-            for (ColorUtilities colorUtil : values) {
-                if (colorUtil.name().equalsIgnoreCase(nameOrHex)) {
-                    String hex = colorUtil.getHex();
-
-                    int[] rgb = hex2Rgb(hex);
-                    color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
-
-                    colorMap.put(nameOrHex, color);
-                    return color;
-                }
-            }
-        }
-        if (color == null) {
-            String hex = ColorUtilitiesCompat.getHex(nameOrHex);
-            if (hex != null) {
-                return toColor(hex, alpha);
-            }
-        }
-        if (color == null) {
-            int[] rgb = hex2Rgb("#42a6ff");
-            color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
-        }
-        return color;
-    }
+// FIXME
+//    /**
+//     * Get the fill {@link Paint} for a given style.
+//     * <p/>
+//     * <p>Paints are cached and reused.</p>
+//     *
+//     * @param style the {@link Style} to use.
+//     * @return the paint.
+//     */
+//    public static Paint getFillPaint4Style(Style style) {
+//        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+////        paint.setAntiAlias(true);
+//        paint.setStyle(org.mapsforge.core.graphics.Style.FILL);
+//
+////        int color = AndroidGraphicFactory.INSTANCE.createColor();
+//        int alpha = (int) (style.fillalpha * 255);
+//        paint.setColor(toColor(style.fillcolor, alpha));
+//        return paint;
+//    }
+//
+//    /**
+//     * Get the stroke {@link Paint} for a given style.
+//     * <p/>
+//     * <p>Paints are cached and reused.</p>
+//     *
+//     * @param style the {@link Style} to use.
+//     * @return the paint.
+//     */
+//    public static Paint getStrokePaint4Style(Style style) {
+//        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+//        paint.setStyle(org.mapsforge.core.graphics.Style.STROKE);
+////        paint.setAntiAlias(true);
+//        paint.setStrokeCap(Cap.ROUND);
+//        paint.setStrokeJoin(Join.ROUND);
+//        int alpha = (int) (style.strokealpha * 255);
+//        paint.setColor(toColor(style.strokecolor, alpha));
+////        paint.setAlpha((int) alpha);
+//        paint.setStrokeWidth(style.width);
+//
+//        try {
+//            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+//            if (shiftAndDash != null) {
+//                float[] dash = Style.getDashOnly(shiftAndDash);
+//                if (dash.length > 1)
+//                    paint.setDashPathEffect(dash);
+//            }
+//        } catch (java.lang.Exception e) {
+//            GPLog.error("GeopaparazziDatabaseProperties", "Error on dash creation: " + style.dashPattern, e);
+//        }
+//
+//        return paint;
+//    }
+//
+//    /**
+//     * Get the fill paint for a theme style. These are not editable and as such do not change.
+//     *
+//     * @param uniqueValue the theme unique value key.
+//     * @param style       the style to use for the paint.
+//     * @return the generated paint.
+//     */
+//    public static Paint getFillPaint4Theme(String uniqueValue, Style style) {
+//        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+////        paint.setAntiAlias(true);
+//        paint.setStyle(org.mapsforge.core.graphics.Style.FILL);
+//        paint.setColor(ColorUtilities.toColor(style.fillcolor));
+//        float alpha = style.fillalpha * 255f;
+////        paint.setAlpha((int) alpha);
+//        return paint;
+//    }
+//
+//    /**
+//     * Get the stroke paint for a theme style. These are not editable and as such do not change.
+//     *
+//     * @param uniqueValue the theme unique value key.
+//     * @param style       the style to use for the paint.
+//     * @return the generated paint.
+//     */
+//    public static Paint getStrokePaint4Theme(String uniqueValue, Style style) {
+//        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+//        paint.setStyle(org.mapsforge.core.graphics.Style.STROKE);
+////        paint.setAntiAlias(true);
+//        paint.setStrokeCap(Cap.ROUND);
+//        paint.setStrokeJoin(Join.ROUND);
+//        paint.setColor(ColorUtilities.toColor(style.strokecolor));
+//        float alpha = style.strokealpha * 255f;
+////        paint.setAlpha((int) alpha);
+//        paint.setStrokeWidth(style.width);
+//        try {
+//            float[] shiftAndDash = Style.dashFromString(style.dashPattern);
+//            if (shiftAndDash != null) {
+//                float[] dash = Style.getDashOnly(shiftAndDash);
+//                if (dash.length > 1)
+//                    paint.setDashPathEffect(dash);
+//            }
+//        } catch (java.lang.Exception e) {
+//            GPLog.error("GeopaparazziDatabaseProperties", "Error on dash creation: " + style.dashPattern, e);
+//        }
+//        return paint;
+//    }
+//
+//
+//    /**
+//     * Returns the corresponding color int.
+//     *
+//     * @param nameOrHex the name of the color as supported in this class, or the hex value.
+//     * @return the int color.
+//     */
+//    public static int toColor(String nameOrHex, int alpha) {
+//        if (alpha < 0) alpha = 255;
+//        nameOrHex = nameOrHex.trim();
+//        if (nameOrHex.startsWith("#")) {
+//            int[] rgb = hex2Rgb(nameOrHex);
+//
+//            int color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+//            return color;
+//        }
+//        Integer color = colorMap.get(nameOrHex);
+//        if (color == null) {
+//            ColorUtilities[] values = ColorUtilities.values();
+//            for (ColorUtilities colorUtil : values) {
+//                if (colorUtil.name().equalsIgnoreCase(nameOrHex)) {
+//                    String hex = colorUtil.getHex();
+//
+//                    int[] rgb = hex2Rgb(hex);
+//                    color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+//
+//                    colorMap.put(nameOrHex, color);
+//                    return color;
+//                }
+//            }
+//        }
+//        if (color == null) {
+//            String hex = ColorUtilitiesCompat.getHex(nameOrHex);
+//            if (hex != null) {
+//                return toColor(hex, alpha);
+//            }
+//        }
+//        if (color == null) {
+//            int[] rgb = hex2Rgb("#42a6ff");
+//            color = AndroidGraphicFactory.INSTANCE.createColor(alpha, rgb[0], rgb[1], rgb[2]);
+//        }
+//        return color;
+//    }
 
     public static int[] hex2Rgb(String colorStr) {
         return new int[]{

@@ -71,7 +71,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
 
         setContentView(R.layout.activity_gpsdataproperties);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

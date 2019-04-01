@@ -39,8 +39,6 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.core.R;
 
 
@@ -131,19 +129,6 @@ public class GpsInfoDialogFragment extends DialogFragment {
         double azimuth = orientationSensor.getAzimuthDegrees();
         StringBuilder sb = new StringBuilder();
 
-        AbstractSpatialTable selectedMapTable = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable();
-        if (selectedMapTable != null) {
-            String path = selectedMapTable.getDatabasePath();
-            float[] bounds = selectedMapTable.getTableBounds();
-            String mapType = selectedMapTable.getMapType();
-            sb.append(mapString).append(":\n");
-            sb.append(pathString).append(": ").append(path).append("\n");
-            sb.append(boundsString).append(":\n");
-            sb.append(indent).append("s = ").append(bounds[1]).append("\n");
-            sb.append(indent).append("n = ").append(bounds[0]).append("\n");
-            sb.append(indent).append("w = ").append(bounds[3]).append("\n");
-            sb.append(indent).append("e = ").append(bounds[2]).append("\n\n");
-        }
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             // sb.append(indent).append(nodataString).append("\n");
         } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
