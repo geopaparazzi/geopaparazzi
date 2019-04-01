@@ -13,6 +13,7 @@ import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
+import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -104,9 +105,17 @@ public class GPMapView extends org.oscim.android.MapView {
         out.close();
     }
 
-    public void setBaseMap(String mapPath) {
-        MapFileTileSource tileSource = new MapFileTileSource();
-        if (tileSource.setMapFile(mapPath)) {
+    public void setBaseMap(String... mapPaths) {
+        MultiMapFileTileSource tileSource = new MultiMapFileTileSource();
+        boolean okToLoad = false;
+        for (String mapPath : mapPaths) {
+            MapFileTileSource ts = new MapFileTileSource();
+            okToLoad = ts.setMapFile(mapPath);
+            if (okToLoad){
+                tileSource.add(ts);
+            }
+        }
+        if (okToLoad) {
             // Vector layer
             VectorTileLayer tileLayer = map().setBaseMap(tileSource);
 

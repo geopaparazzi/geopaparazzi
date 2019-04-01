@@ -277,8 +277,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
 
             // Tile source
-            String mapPath = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
-            mapView.setBaseMap(mapPath);
+            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
+            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
+            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
+            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
+            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 
             // ONLINE OSM
 //        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
