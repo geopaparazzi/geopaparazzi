@@ -12,6 +12,7 @@ import org.oscim.renderer.bucket.TextureItem;
 
 import java.io.IOException;
 
+import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.vtm.VtmUtilities;
 
@@ -20,8 +21,13 @@ public class GpsPositionLayer extends LocationTextureLayer {
     private static TextureRegion staleTexture;
     private static TextureRegion movingTexture;
 
-    public GpsPositionLayer(GPMapView mapView, Context context) throws IOException {
-        super(mapView.map(), createTextures(context));
+    private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private float[] lastGpsPositionExtras;
+    private int[] lastGpsStatusExtras;
+    private double[] lastGpsPosition;
+
+    public GpsPositionLayer(GPMapView mapView) throws IOException {
+        super(mapView.map(), createTextures(mapView.getContext()));
 
         // set color of accuracy circle (Color.BLUE is default)
         locationRenderer.setAccuracyColor(Color.get(50, 50, 255));
@@ -61,9 +67,48 @@ public class GpsPositionLayer extends LocationTextureLayer {
         locationRenderer.setTextureRegion(movingTexture);
     }
 
-    public void disable(){
+
+    /**
+     * @param lastGpsServiceStatus
+     * @param lastGpsPosition       lon, lat, elev
+     * @param lastGpsPositionExtras accuracy, speed, bearing.
+     * @param lastGpsStatusExtras   maxSatellites, satCount, satUsedInFixCount.
+     */
+    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras) {
+        this.lastGpsServiceStatus = lastGpsServiceStatus;
+        this.lastGpsPositionExtras = lastGpsPositionExtras;
+        this.lastGpsStatusExtras = lastGpsStatusExtras;
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+            this.lastGpsPosition = lastGpsPosition;
+        }
+
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+            if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
+                setMoving();
+            } else {
+                setActive();
+            }
+        } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
+            setStale();
+        }
+
+        float bearing = 0;
+        float accuracy = 0;
+        if (lastGpsPositionExtras != null) {
+            bearing = lastGpsPositionExtras[2];
+            accuracy = lastGpsPositionExtras[0];
+        }
+        if (lastGpsPosition != null)
+            setPosition(lastGpsPosition[1], lastGpsPosition[0], bearing, accuracy);
+    }
+
+
+    public void disable() {
         setEnabled(false);
     }
 
 
+    public void enable() {
+        setEnabled(true);
+    }
 }

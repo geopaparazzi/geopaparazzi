@@ -63,8 +63,13 @@ import android.widget.Toast;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
+import org.oscim.backend.canvas.Color;
 import org.oscim.layers.tile.vector.VectorTileLayer;
+import org.oscim.layers.vector.VectorLayer;
+import org.oscim.layers.vector.geometries.PointDrawable;
+import org.oscim.layers.vector.geometries.Style;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
+import org.oscim.utils.ColorUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -285,7 +290,9 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
             mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 
-            mapView.toggleLocationLayer(true);
+            mapView.toggleNotesLayer(true);
+
+//            mapView.toggleLocationLayer(true);
 
             // ONLINE OSM
 //        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",

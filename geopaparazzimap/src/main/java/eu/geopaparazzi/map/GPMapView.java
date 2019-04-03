@@ -2,9 +2,12 @@ package eu.geopaparazzi.map;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.net.nsd.NsdServiceInfo;
+import android.preference.PreferenceManager;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.utils.EGeometryType;
@@ -39,7 +42,10 @@ import java.io.IOException;
 import java.util.List;
 
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
+import eu.geopaparazzi.map.layers.NotesLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
     private GpsServiceStatus lastGpsServiceStatus;
@@ -47,10 +53,13 @@ public class GPMapView extends org.oscim.android.MapView {
     private int[] lastGpsStatusExtras;
     private double[] lastGpsPosition;
     private GpsPositionLayer locationLayer;
+    private NotesLayer notesLayer;
+    private final SharedPreferences peferences;
 
     public GPMapView(Context context) {
         super(context);
 
+        peferences = PreferenceManager.getDefaultSharedPreferences(context);
 
     }
 
@@ -213,17 +222,34 @@ public class GPMapView extends org.oscim.android.MapView {
         map().layers().add(vectorLayer);
     }
 
+    public void toggleNotesLayer(boolean enable) {
+        if (enable) {
+            if (notesLayer == null) {
+                notesLayer = new NotesLayer(this);
+                map().layers().add(notesLayer);
+            }
+            notesLayer.enable();
+        } else {
+            if (notesLayer != null)
+                notesLayer.disable();
+        }
+    }
+
+
     public void toggleLocationLayer(boolean enable) {
         if (enable) {
             try {
-                locationLayer = new GpsPositionLayer(this, getContext());
+                if (locationLayer == null) {
+                    locationLayer = new GpsPositionLayer(this);
+                    map().layers().add(locationLayer);
+                }
+                locationLayer.enable();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             if (locationLayer != null) {
                 locationLayer.disable();
-                locationLayer = null;
             }
         }
 
@@ -244,8 +270,8 @@ public class GPMapView extends org.oscim.android.MapView {
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             this.lastGpsPosition = lastGpsPosition;
 
-            if (locationLayer != null) {
-                locationLayer.setPosition(lastGpsPosition[1], lastGpsPosition[0], lastGpsPositionExtras[2], lastGpsPositionExtras[0]);
+            if (locationLayer != null && locationLayer.isEnabled()) {
+                locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
             }
         }
     }

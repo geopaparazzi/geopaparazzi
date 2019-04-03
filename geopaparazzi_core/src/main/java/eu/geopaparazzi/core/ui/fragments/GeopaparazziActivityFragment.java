@@ -46,7 +46,7 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.TableDescriptions;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;

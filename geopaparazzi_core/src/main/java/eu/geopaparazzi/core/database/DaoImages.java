@@ -21,7 +21,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 
@@ -36,10 +35,10 @@ import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 
-import static eu.geopaparazzi.core.database.TableDescriptions.ImageDataTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.ImageTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_IMAGES;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_IMAGE_DATA;
+import static eu.geopaparazzi.library.database.TableDescriptions.ImageDataTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.ImageTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_IMAGES;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_IMAGE_DATA;
 
 /**
  * Data access object for images.

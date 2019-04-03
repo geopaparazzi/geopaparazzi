@@ -32,8 +32,8 @@ import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
-import static eu.geopaparazzi.core.database.TableDescriptions.NotesTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_NOTES;
+import static eu.geopaparazzi.library.database.TableDescriptions.NotesTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_NOTES;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

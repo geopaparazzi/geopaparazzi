@@ -33,7 +33,7 @@
 //import java.util.Date;
 //import java.util.List;
 //
-//import eu.geopaparazzi.core.database.TableDescriptions;
+//import eu.geopaparazzi.library.database.TableDescriptions;
 //import eu.geopaparazzi.library.GPApplication;
 //import eu.geopaparazzi.library.style.ColorUtilities;
 //import eu.geopaparazzi.library.util.Compat;

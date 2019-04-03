@@ -1,27 +1,20 @@
 package eu.geopaparazzi.map.vtm;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 
-import org.oscim.backend.CanvasAdapter;
+import org.oscim.android.canvas.AndroidGraphics;
 import org.oscim.backend.canvas.Bitmap;
-import org.oscim.utils.IOUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
+
+import eu.geopaparazzi.library.util.Compat;
 
 public class VtmUtilities {
 
 
     public static Bitmap getBitmapFromResource(Context context, int resourceId) throws IOException {
-        InputStream is = null;
-        Bitmap bmp = null;
-        try {
-            is = context.getResources().openRawResource(resourceId);
-            float scale = CanvasAdapter.getScale();
-            bmp = CanvasAdapter.decodeSvgBitmap(is, (int) (60 * scale), (int) (60 * scale), 100);
-            return bmp;
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+        Drawable activeGpsMarker = Compat.getDrawable(context, resourceId);
+        return AndroidGraphics.drawableToBitmap(activeGpsMarker);
     }
 }

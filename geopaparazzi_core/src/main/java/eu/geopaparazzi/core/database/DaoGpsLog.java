@@ -36,6 +36,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
@@ -51,12 +52,12 @@ import eu.geopaparazzi.core.database.objects.LogMapItem;
 import eu.geopaparazzi.map.GPGeoPoint;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsDataTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsPropertiesTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOGS;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOG_DATA;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsDataTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsPropertiesTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_DATA;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
