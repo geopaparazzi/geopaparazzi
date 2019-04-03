@@ -96,7 +96,7 @@ public class GpsLogsLayer extends VectorLayer {
                         if (gpslogGeoPoints.size() > 1) {
                             LineString lineString = gf.createLineString(gpslogGeoPoints.toArray(new Coordinate[0]));
                             Style style = Style.builder()
-                                    .strokeColor(color)
+                                    .strokeColor(ColorUtilities.toColor(color))
                                     .strokeWidth((float) width)
                                     .cap(Paint.Cap.ROUND)
                                     .build();

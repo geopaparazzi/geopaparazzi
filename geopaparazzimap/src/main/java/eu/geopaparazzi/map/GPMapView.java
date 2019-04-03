@@ -38,6 +38,7 @@ import java.util.List;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
+import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.NotesLayer;
 import eu.geopaparazzi.map.layers.NotesLayer2;
 
@@ -50,6 +51,7 @@ public class GPMapView extends org.oscim.android.MapView {
     private NotesLayer notesLayer;
     private final SharedPreferences peferences;
     private GpsLogsLayer gpsLogsLayer;
+    private ImagesLayer imagesLayer;
 
     public GPMapView(Context context) {
         super(context);
@@ -230,6 +232,31 @@ public class GPMapView extends org.oscim.android.MapView {
         }
     }
 
+    public void toggleImagesLayer(boolean enable) {
+        if (enable) {
+            if (imagesLayer == null) {
+                imagesLayer = new ImagesLayer(this);
+                map().layers().add(imagesLayer);
+            }
+            imagesLayer.enable();
+        } else {
+            if (imagesLayer != null)
+                imagesLayer.disable();
+        }
+    }
+
+    public void toggleGpsLogsLayer(boolean enable) {
+        if (enable) {
+            if (gpsLogsLayer == null) {
+                gpsLogsLayer = new GpsLogsLayer(this);
+                map().layers().add(gpsLogsLayer);
+            }
+            gpsLogsLayer.enable();
+        } else {
+            if (gpsLogsLayer != null)
+                gpsLogsLayer.disable();
+        }
+    }
 
     public void toggleLocationLayer(boolean enable) {
         if (enable) {
@@ -271,16 +298,5 @@ public class GPMapView extends org.oscim.android.MapView {
         }
     }
 
-    public void toggleGpsLogsLayer(boolean enable) {
-        if (enable) {
-            if (gpsLogsLayer == null) {
-                gpsLogsLayer = new GpsLogsLayer(this);
-                map().layers().add(gpsLogsLayer);
-            }
-            gpsLogsLayer.enable();
-        } else {
-            if (gpsLogsLayer != null)
-                gpsLogsLayer.disable();
-        }
-    }
+
 }
