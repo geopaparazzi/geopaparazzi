@@ -13,6 +13,7 @@ public class GPMapScaleBarLayer extends GPLayer {
 
     private final MapScaleBarLayer mapScaleBarLayer;
 
+    // FIXME can't work like that
     public GPMapScaleBarLayer(GPMapView mapView) {
         super(new GPMap(mapView));
         DefaultMapScaleBar mapScaleBar = new DefaultMapScaleBar(mapView.map());

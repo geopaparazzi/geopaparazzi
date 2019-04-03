@@ -61,6 +61,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.EDb;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 
@@ -283,6 +285,8 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
             mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 
+            mapView.toggleLocationLayer(true);
+
             // ONLINE OSM
 //        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
 //                mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
@@ -314,18 +318,16 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //                    mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, true);
 //            layers.add(rl2StoreLayer);
 //
-//            // SPATIALTE FILES
+            // SPATIALTE FILES
 //            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
 //
 //            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
 //            spatialDb.open(spatialiteFile.getAbsolutePath());
 //            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
 //
-//            SpatialiteTableLayer adminLayer = new SpatialiteTableLayer(mapView, spatialDb, "ne_10m_admin_1_states_provinces");
-//            layers.add(adminLayer);
-//
-//            SpatialiteTableLayer roadsLayer = new SpatialiteTableLayer(mapView, spatialDb, "ne_10m_roads");
-//            layers.add(roadsLayer);
+//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
+//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
+
 //
 //            gpsPositionLayer = new GpsPositionLayer(this);
 //            layers.add(gpsPositionLayer);
@@ -1184,6 +1186,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
 
+        mapView.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
 //        gpsPositionLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
 //        gpsPositionLayer.requestRedraw();
 

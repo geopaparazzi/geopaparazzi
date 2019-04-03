@@ -1,6 +1,6 @@
 include ':geopaparazzi.app', ':geopaparazzi_profiles_export_plugins'
 include ':geopaparazzi_core'
-include ':geopaparazzispatialitelibrary',':geopaparazzimap', ':geopaparazzimapsforge', ':geopaparazzilibrary'
+include ':geopaparazzimap', ':geopaparazzilibrary'
 include ':wms_nww'
 include ':geopaparazzi_acrylicpaint'
 include ':geopaparazzi_default_import_plugins'

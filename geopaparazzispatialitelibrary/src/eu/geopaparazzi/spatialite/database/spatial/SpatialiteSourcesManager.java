@@ -48,7 +48,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryMo
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
-import jsqlite.Exception;
 
 /**
  * The base maps sources manager.

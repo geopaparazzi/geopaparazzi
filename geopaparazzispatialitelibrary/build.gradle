@@ -13,7 +13,7 @@ dependencies {
 //    api 'org.mapsforge:mapsforge-map-android:0.11.0'
 
     api project(':geopaparazzilibrary')
-    api fileTree(include: ['*.jar'], dir: 'libs')
+//    api fileTree(include: ['*.jar'], dir: 'libs')
 }
 android {
     compileSdkVersion project.ext.mycompileSdkVersion

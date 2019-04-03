@@ -71,12 +71,33 @@ dependencies {
     //    implementation project(':vtm-gdx-poi3d')
     api project(':geopaparazzilibrary')
 
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
 }
 android {
     compileSdkVersion project.ext.mycompileSdkVersion
     buildToolsVersion project.ext.mybuildToolsVersion
-
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'src/main/AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+            aidl {
+                srcDir 'src'
+            }
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
