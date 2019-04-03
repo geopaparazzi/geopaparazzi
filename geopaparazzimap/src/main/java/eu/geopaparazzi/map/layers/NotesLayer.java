@@ -33,6 +33,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
@@ -42,9 +43,11 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static Bitmap notesBitmap;
+    private GPMapView mapView;
 
     public NotesLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
+        this.mapView = mapView;
         setOnItemGestureListener(this);
 
         try {
@@ -129,7 +132,13 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
                 boolean hasForm = form != null && form.length() > 0;
 
 
-                String descr = id + ") " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts)) + (hasForm ? " (form)" : "");
+                String descr = "note: " + text + "\n" +
+                        "id: " + id + "\n" +
+                        "longitude: " + lon + "\n" +
+                        "latitude: " + lat + "\n" +
+                        "elevation: " + elev + "\n" +
+                        "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts)) + "\n" +
+                        "has form: " + hasForm;
 
                 pts.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
                 c.moveToNext();
@@ -157,6 +166,10 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
     @Override
     public boolean onItemSingleTapUp(int index, MarkerItem item) {
+        if (item != null) {
+            String description = item.getSnippet();
+            GPDialogs.infoDialog(mapView.getContext(), description, null);
+        }
         return false;
     }
 
@@ -192,7 +205,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
         int dist2symbol = (int) Math.round(bitmapHeight * 1.5);
 
         int titleWidth = ((int) haloTextPainter.getTextWidth(item.title) + 2 * margin);
-        int titleHeight = (int) ( haloTextPainter.getTextHeight(item.title) + textPainter.getFontDescent() + 2 * margin);
+        int titleHeight = (int) (haloTextPainter.getTextHeight(item.title) + textPainter.getFontDescent() + 2 * margin);
 
         int symbolWidth = poiBitmap.getWidth();
 
