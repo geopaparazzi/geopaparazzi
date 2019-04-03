@@ -290,9 +290,10 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
             mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 
+            mapView.toggleGpsLogsLayer(true);
             mapView.toggleNotesLayer(true);
+            mapView.toggleLocationLayer(true);
 
-//            mapView.toggleLocationLayer(true);
 
             // ONLINE OSM
 //        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
@@ -339,7 +340,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //            gpsPositionLayer = new GpsPositionLayer(this);
 //            layers.add(gpsPositionLayer);
 //
-//            NotesLayer notesLayer = new NotesLayer(this);
+//            NotesLayer2 notesLayer = new NotesLayer2(this);
 //            layers.add(notesLayer);
 
 

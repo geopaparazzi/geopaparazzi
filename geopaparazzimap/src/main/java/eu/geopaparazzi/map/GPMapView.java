@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.net.nsd.NsdServiceInfo;
 import android.preference.PreferenceManager;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
@@ -18,8 +17,6 @@ import org.oscim.backend.canvas.Color;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
-import org.oscim.layers.LocationLayer;
-import org.oscim.layers.LocationTextureLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
@@ -28,9 +25,6 @@ import org.oscim.layers.vector.geometries.LineDrawable;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
-import org.oscim.renderer.atlas.TextureAtlas;
-import org.oscim.renderer.atlas.TextureRegion;
-import org.oscim.renderer.bucket.TextureItem;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
@@ -42,10 +36,10 @@ import java.io.IOException;
 import java.util.List;
 
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
 import eu.geopaparazzi.map.layers.NotesLayer;
+import eu.geopaparazzi.map.layers.NotesLayer2;
 
 public class GPMapView extends org.oscim.android.MapView {
     private GpsServiceStatus lastGpsServiceStatus;
@@ -55,6 +49,7 @@ public class GPMapView extends org.oscim.android.MapView {
     private GpsPositionLayer locationLayer;
     private NotesLayer notesLayer;
     private final SharedPreferences peferences;
+    private GpsLogsLayer gpsLogsLayer;
 
     public GPMapView(Context context) {
         super(context);
@@ -273,6 +268,19 @@ public class GPMapView extends org.oscim.android.MapView {
             if (locationLayer != null && locationLayer.isEnabled()) {
                 locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
             }
+        }
+    }
+
+    public void toggleGpsLogsLayer(boolean enable) {
+        if (enable) {
+            if (gpsLogsLayer == null) {
+                gpsLogsLayer = new GpsLogsLayer(this);
+                map().layers().add(gpsLogsLayer);
+            }
+            gpsLogsLayer.enable();
+        } else {
+            if (gpsLogsLayer != null)
+                gpsLogsLayer.disable();
         }
     }
 }

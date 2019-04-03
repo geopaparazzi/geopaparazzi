@@ -1,56 +1,100 @@
 package eu.geopaparazzi.map.layers;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.preference.PreferenceManager;
 
 import org.hortonmachine.dbs.utils.MercatorUtils;
+import org.oscim.android.canvas.AndroidGraphics;
+import org.oscim.backend.CanvasAdapter;
+import org.oscim.backend.canvas.Bitmap;
 import org.oscim.backend.canvas.Color;
-import org.oscim.core.MercatorProjection;
+import org.oscim.backend.canvas.Paint;
+import org.oscim.core.GeoPoint;
+import org.oscim.layers.marker.ItemizedLayer;
+import org.oscim.layers.marker.MarkerItem;
+import org.oscim.layers.marker.MarkerSymbol;
 import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.Style;
-import org.oscim.utils.ColorUtil;
+import org.oscim.map.Map;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.vtm.VtmUtilities;
 
-public class NotesLayer extends VectorLayer {
-
-    private final SharedPreferences peferences;
+public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem> {
+    private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
+    private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
+    private static Bitmap notesBitmap;
 
     public NotesLayer(GPMapView mapView) {
-        super(mapView.map());
+        super(mapView.map(), getMarkerSymbol(mapView));
+        setOnItemGestureListener(this);
 
-        peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
         try {
             reloadData();
         } catch (IOException e) {
             GPLog.error(this, null, e);
         }
+
+
+    }
+
+    private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
+        SharedPreferences peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
+        // notes type
+        boolean doCustom = peferences.getBoolean(LibraryConstants.PREFS_KEY_NOTES_CHECK, true);
+        String textSizeStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_TEXT_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+        String colorStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
+        Drawable notesDrawable;
+        if (doCustom) {
+            String opacityStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
+            String sizeStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
+            int noteSize = Integer.parseInt(sizeStr);
+            float opacity = Integer.parseInt(opacityStr);
+
+            OvalShape notesShape = new OvalShape();
+            android.graphics.Paint notesPaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+            notesPaint.setStyle(android.graphics.Paint.Style.FILL);
+            notesPaint.setColor(ColorUtilities.toColor(colorStr));
+            notesPaint.setAlpha((int) opacity);
+
+            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
+            android.graphics.Paint paint = notesShapeDrawable.getPaint();
+            paint.set(notesPaint);
+            notesShapeDrawable.setIntrinsicHeight(noteSize);
+            notesShapeDrawable.setIntrinsicWidth(noteSize);
+            notesDrawable = notesShapeDrawable;
+        } else {
+            notesDrawable = Compat.getDrawable(mapView.getContext(), eu.geopaparazzi.library.R.drawable.ic_place_accent_24dp);
+        }
+
+        notesBitmap = AndroidGraphics.drawableToBitmap(notesDrawable);
+
+        return new MarkerSymbol(notesBitmap, MarkerSymbol.HotspotPlace.CENTER, false);
+    }
+
+    public NotesLayer(Map map, MarkerSymbol defaultMarker) {
+        super(map, defaultMarker);
     }
 
     public void reloadData() throws IOException {
-        tmpDrawables.clear();
-        mDrawables.clear();
-
-        String opacityStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
-        String sizeStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-        String colorStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
-        int noteSize = Integer.parseInt(sizeStr);
-        float opacity = Integer.parseInt(opacityStr);
-        float alpha = 1 - opacity / 255f;
-
-        Style pointStyle = null;
-
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
         String query = "SELECT " +//
@@ -68,52 +112,33 @@ public class NotesLayer extends VectorLayer {
                 ", " +//
                 TableDescriptions.NotesTableFields.COLUMN_FORM.getFieldName() +//
                 " FROM " + TableDescriptions.TABLE_NOTES;
-//        query = query + " WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
-//        query = query.replaceFirst("XXX", String.valueOf(boundingBox.minLongitude - plus));
-//        query = query.replaceFirst("XXX", String.valueOf(boundingBox.maxLongitude + plus));
-//        query = query.replaceFirst("XXX", String.valueOf(boundingBox.minLatitude - plus));
-//        query = query.replaceFirst("XXX", String.valueOf(boundingBox.maxLatitude + plus));
-//        query = query + " AND " + TableDescriptions.NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
         query = query + " WHERE " + TableDescriptions.NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
 
-//        STRtree tmp = new STRtree();
+        List<MarkerItem> pts = new ArrayList<>();
         try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 int i = 0;
-//                LayerNote note = new LayerNote();
                 long id = c.getLong(i++);
                 double lon = c.getDouble(i++);
                 double lat = c.getDouble(i++);
-//                note.elev = c.getDouble(i++);
-//                note.text = c.getString(i++);
-//                note.ts = c.getLong(i++);
-//                String form = c.getString(i);
-//                note.hasForm = form != null && form.length() > 0;
-//                tmp.insert(new Envelope(new Coordinate(note.lon, note.lat)), note);
+                double elev = c.getDouble(i++);
+                String text = c.getString(i++);
+                long ts = c.getLong(i++);
+                String form = c.getString(i);
+                boolean hasForm = form != null && form.length() > 0;
 
 
-                if (pointStyle == null) {
-                    double longitudeFromMeters = MercatorUtils.metersXToLongitude(noteSize);
+                String descr = id + ") " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts)) + (hasForm ? " (form)" : "");
 
-                    pointStyle = Style.builder()
-                            .buffer(longitudeFromMeters)
-                            .strokeColor(colorStr)
-                            .fillColor(colorStr)
-                            .fillAlpha(opacity)
-                            .build();
-                }
-                add(new PointDrawable(lat, lon, pointStyle));
-
-//                currentMinLon = Math.min(currentMinLon, note.lon);
-//                currentMaxLon = Math.max(currentMaxLon, note.lon);
-//                currentMinLat = Math.min(currentMinLat, note.lat);
-//                currentMaxLat = Math.max(currentMaxLat, note.lat);
-
+                pts.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
                 c.moveToNext();
             }
 
-//            tmp.build();
+            for (MarkerItem mi : pts) {
+                mi.setMarker(createAdvancedSymbol(mi, notesBitmap));
+            }
+            addItems(pts);
         }
 
 
@@ -128,5 +153,68 @@ public class NotesLayer extends VectorLayer {
 
     public void enable() {
         setEnabled(true);
+    }
+
+    @Override
+    public boolean onItemSingleTapUp(int index, MarkerItem item) {
+        return false;
+    }
+
+    @Override
+    public boolean onItemLongPress(int index, MarkerItem item) {
+        return false;
+    }
+
+
+    /**
+     * Creates a transparent symbol with text and description.
+     *
+     * @param item      -> the MarkerItem to process, containing title and description
+     *                  if description starts with a '#' the first line of the description is drawn.
+     * @param poiBitmap -> poi bitmap for the center
+     * @return MarkerSymbol with title, description and symbol
+     */
+    private MarkerSymbol createAdvancedSymbol(MarkerItem item, Bitmap poiBitmap) {
+        final Paint textPainter = CanvasAdapter.newPaint();
+        textPainter.setStyle(Paint.Style.FILL);
+        textPainter.setColor(FG_COLOR);
+        int bitmapHeight = poiBitmap.getHeight();
+        textPainter.setTextSize(bitmapHeight);
+        textPainter.setTypeface(Paint.FontFamily.MONOSPACE, Paint.FontStyle.NORMAL);
+
+        final Paint haloTextPainter = CanvasAdapter.newPaint();
+        haloTextPainter.setStyle(Paint.Style.FILL);
+        haloTextPainter.setColor(Color.WHITE);
+        haloTextPainter.setTextSize(bitmapHeight);
+        haloTextPainter.setTypeface(Paint.FontFamily.MONOSPACE, Paint.FontStyle.BOLD);
+
+        int margin = 3;
+        int dist2symbol = (int) Math.round(bitmapHeight * 1.5);
+
+        int titleWidth = ((int) haloTextPainter.getTextWidth(item.title) + 2 * margin);
+        int titleHeight = (int) ( haloTextPainter.getTextHeight(item.title) + textPainter.getFontDescent() + 2 * margin);
+
+        int symbolWidth = poiBitmap.getWidth();
+
+        int xSize = Math.max(titleWidth, symbolWidth);
+        int ySize = titleHeight + symbolWidth + dist2symbol;
+
+        // markerCanvas, the drawing area for all: title, description and symbol
+        Bitmap markerBitmap = CanvasAdapter.newBitmap(xSize, ySize, 0);
+        org.oscim.backend.canvas.Canvas markerCanvas = CanvasAdapter.newCanvas();
+        markerCanvas.setBitmap(markerBitmap);
+
+        // titleCanvas for the title text
+        Bitmap titleBitmap = CanvasAdapter.newBitmap(titleWidth + margin, titleHeight + margin, 0);
+        org.oscim.backend.canvas.Canvas titleCanvas = CanvasAdapter.newCanvas();
+        titleCanvas.setBitmap(titleBitmap);
+
+        titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), haloTextPainter);
+        titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), textPainter);
+
+        markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), 0);
+        markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.5f), ySize * 0.5f - (symbolWidth * 0.5f));
+
+        return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
     }
 }
