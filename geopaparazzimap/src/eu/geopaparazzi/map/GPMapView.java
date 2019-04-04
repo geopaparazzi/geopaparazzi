@@ -321,11 +321,13 @@ public class GPMapView extends org.oscim.android.MapView {
             try {
                 if (locationTextLayer == null) {
                     locationTextLayer = new GpsPositionTextLayer(this);
+                    locationTextLayer.disable();
 //                    map().layers().add(locationTextLayer);
                     Layers layers = map().layers();
                     layers.add(locationTextLayer, SYSTEM);
                 }
-                locationTextLayer.enable();
+                if (peferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false))
+                    locationTextLayer.enable();
             } catch (Exception e) {
                 e.printStackTrace();
             }

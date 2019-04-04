@@ -83,17 +83,13 @@ public class GpsPositionLayer extends LocationTextureLayer {
         }
 
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-            enable();
             if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
                 setMoving();
             } else {
                 setActive();
             }
         } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
-            enable();
             setStale();
-        }else{
-            disable();
         }
 
         float bearing = 0;

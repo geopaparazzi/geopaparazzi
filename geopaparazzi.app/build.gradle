@@ -43,13 +43,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    sourceSets {
-        main {
-            def nDir = new File(buildDir, 'native-libs')
-            project.logger.lifecycle('Native src dir: ' + nDir)
-            jniLibs.srcDir nDir
-        }
-    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -67,18 +60,6 @@ android {
 
     }
 }
-
-task copyNativeLibs(type: Copy) {
-    from(new File(project(':geopaparazzimap').projectDir, 'jniLibs')) {
-        include 'arm64-v8a/libjsqlite.so'
-        include 'armeabi-v7a/libjsqlite.so'
-        include 'x86_64/libjsqlite.so'
-    }
-    into new File(buildDir, 'native-libs')
-}
-tasks.withType(JavaCompile) { compileTask -> compileTask.dependsOn copyNativeLibs }
-clean.dependsOn 'cleanCopyNativeLibs'
-
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
