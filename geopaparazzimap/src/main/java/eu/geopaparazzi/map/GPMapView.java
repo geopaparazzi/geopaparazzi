@@ -18,6 +18,7 @@ import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
 import org.oscim.layers.tile.buildings.BuildingLayer;
+import org.oscim.layers.tile.vector.OsmTileLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.layers.vector.VectorLayer;
@@ -25,6 +26,7 @@ import org.oscim.layers.vector.geometries.LineDrawable;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
+import org.oscim.map.Layers;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
@@ -35,9 +37,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
+import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.NotesLayer;
 import eu.geopaparazzi.map.layers.NotesLayer2;
@@ -52,11 +58,29 @@ public class GPMapView extends org.oscim.android.MapView {
     private final SharedPreferences peferences;
     private GpsLogsLayer gpsLogsLayer;
     private ImagesLayer imagesLayer;
+    private GpsPositionTextLayer locationTextLayer;
+
+    public static final int MAPSFORGE_PRE = 0;
+    public static final int OVERLAYS = 1;
+    public static final int GEOPAPARAZZI = 2;
+    public static final int MAPSFORGE_POST = 3;
+    public static final int SYSTEM = 4;
+    public static final int ON_TOP_GEOPAPARAZZI = 5;
+
+    private float lastUsedBearing = -1;
 
     public GPMapView(Context context) {
         super(context);
 
         peferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Layers layers = map().layers();
+        layers.addGroup(MAPSFORGE_PRE);
+        layers.addGroup(OVERLAYS);
+        layers.addGroup(GEOPAPARAZZI);
+        layers.addGroup(MAPSFORGE_POST);
+        layers.addGroup(SYSTEM);
+        layers.addGroup(ON_TOP_GEOPAPARAZZI);
 
     }
 
@@ -153,13 +177,18 @@ public class GPMapView extends org.oscim.android.MapView {
         }
         if (okToLoad) {
             // Vector layer
-            VectorTileLayer tileLayer = map().setBaseMap(tileSource);
+            VectorTileLayer tileLayer = new OsmTileLayer(map());
+            tileLayer.setTileSource(tileSource);
+//            VectorTileLayer tileLayer = map().setBaseMap(tileSource);
+            Layers layers = map().layers();
+            layers.add(tileLayer, MAPSFORGE_PRE);
 
             // Building layer
-            map().layers().add(new BuildingLayer(map(), tileLayer));
-
+            layers.add(new BuildingLayer(map(), tileLayer), MAPSFORGE_POST);
+//            map().layers().add(new BuildingLayer(map(), tileLayer));
             // Label layer
-            map().layers().add(new LabelLayer(map(), tileLayer));
+            layers.add(new LabelLayer(map(), tileLayer), MAPSFORGE_POST);
+//            map().layers().add(new LabelLayer(map(), tileLayer));
 
             // Render theme
             setTheme(GPMapThemes.DEFAULT);
@@ -216,14 +245,18 @@ public class GPMapView extends org.oscim.android.MapView {
         }
         vectorLayer.update();
 
-        map().layers().add(vectorLayer);
+        Layers layers = map().layers();
+        layers.add(vectorLayer, OVERLAYS);
+//        map().layers().add(vectorLayer);
     }
 
     public void toggleNotesLayer(boolean enable) {
         if (enable) {
             if (notesLayer == null) {
                 notesLayer = new NotesLayer(this);
-                map().layers().add(notesLayer);
+//                map().layers().add(notesLayer);
+                Layers layers = map().layers();
+                layers.add(notesLayer, ON_TOP_GEOPAPARAZZI);
             }
             notesLayer.enable();
         } else {
@@ -236,7 +269,9 @@ public class GPMapView extends org.oscim.android.MapView {
         if (enable) {
             if (imagesLayer == null) {
                 imagesLayer = new ImagesLayer(this);
-                map().layers().add(imagesLayer);
+//                map().layers().add(imagesLayer);
+                Layers layers = map().layers();
+                layers.add(imagesLayer, ON_TOP_GEOPAPARAZZI);
             }
             imagesLayer.enable();
         } else {
@@ -249,7 +284,9 @@ public class GPMapView extends org.oscim.android.MapView {
         if (enable) {
             if (gpsLogsLayer == null) {
                 gpsLogsLayer = new GpsLogsLayer(this);
-                map().layers().add(gpsLogsLayer);
+//                map().layers().add(gpsLogsLayer);
+                Layers layers = map().layers();
+                layers.add(gpsLogsLayer, GEOPAPARAZZI);
             }
             gpsLogsLayer.enable();
         } else {
@@ -263,15 +300,38 @@ public class GPMapView extends org.oscim.android.MapView {
             try {
                 if (locationLayer == null) {
                     locationLayer = new GpsPositionLayer(this);
-                    map().layers().add(locationLayer);
+                    locationLayer.disable();
+//                    map().layers().add(locationLayer);
+                    Layers layers = map().layers();
+                    layers.add(locationLayer, SYSTEM);
                 }
-                locationLayer.enable();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             if (locationLayer != null) {
                 locationLayer.disable();
+            }
+        }
+
+    }
+
+    public void toggleLocationTextLayer(boolean enable) {
+        if (enable) {
+            try {
+                if (locationTextLayer == null) {
+                    locationTextLayer = new GpsPositionTextLayer(this);
+//                    map().layers().add(locationTextLayer);
+                    Layers layers = map().layers();
+                    layers.add(locationTextLayer, SYSTEM);
+                }
+                locationTextLayer.enable();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (locationTextLayer != null) {
+                locationTextLayer.disable();
             }
         }
 
@@ -291,12 +351,67 @@ public class GPMapView extends org.oscim.android.MapView {
         this.lastGpsStatusExtras = lastGpsStatusExtras;
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             this.lastGpsPosition = lastGpsPosition;
-
-            if (locationLayer != null && locationLayer.isEnabled()) {
-                locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
-            }
         }
+        if (locationLayer != null) {
+            locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+        }
+        if (locationTextLayer != null) {
+            locationTextLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+        }
+
+
+        boolean centerOnGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+        if (centerOnGps) {
+            GPMapPosition mapPosition = getMapPosition();
+            mapPosition.setPosition(lastGpsPosition[1], lastGpsPosition[0]);
+            setMapPosition(mapPosition);
+            saveCenterPref();
+        }
+        boolean rotateWithGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
+        if (rotateWithGps && lastGpsPositionExtras != null) {
+            float bearing = lastGpsPositionExtras[2];
+            if (bearing == 0 && lastUsedBearing != -1) {
+                bearing = lastUsedBearing;
+            } else {
+                lastUsedBearing = bearing;
+            }
+
+            float mapBearing = 360f - bearing;
+            map().viewport().setRotation(mapBearing);
+        }
+
     }
 
 
+    /**
+     * Save the current mapview position to preferences.
+     *
+     * @param lonLatZoom optional position + zoom. If null, position is taken from the mapview.
+     */
+    private synchronized void saveCenterPref(double... lonLatZoom) {
+        double lon;
+        double lat;
+        int zoom;
+        if (lonLatZoom != null && lonLatZoom.length == 3) {
+            lon = lonLatZoom[0];
+            lat = lonLatZoom[1];
+            zoom = (int) lonLatZoom[2];
+        } else {
+            GPMapPosition mapPosition = getMapPosition();
+            lat = mapPosition.getLatitude();
+            lon = mapPosition.getLongitude();
+            zoom = mapPosition.getZoomLevel();
+        }
+
+        if (GPLog.LOG_ABSURD) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Map Center moved: "); //$NON-NLS-1$
+            sb.append(lon);
+            sb.append("/"); //$NON-NLS-1$
+            sb.append(lat);
+            GPLog.addLogEntry(this, sb.toString());
+        }
+
+        PositionUtilities.putMapCenterInPreferences(peferences, lon, lat, zoom);
+    }
 }

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -153,14 +155,12 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
     private final int MENU_GPSDATA = 1;
     private final int MENU_DATA = 2;
-    private final int MENU_CENTER_ON_GPS = 3;
-    private final int MENU_SCALE_ID = 4;
-    private final int MENU_MIXARE_ID = 5;
-    private final int MENU_GO_TO = 6;
-    private final int MENU_CENTER_ON_MAP = 7;
-    private final int MENU_COMPASS_ID = 8;
-    private final int MENU_SHAREPOSITION_ID = 9;
-    private final int MENU_LOADMAPSFORGE_VECTORS_ID = 10;
+    private final int MENU_SCALE_ID = 3;
+    private final int MENU_GO_TO = 4;
+    private final int MENU_CENTER_ON_MAP = 5;
+    private final int MENU_COMPASS_ID = 6;
+    private final int MENU_SHAREPOSITION_ID = 7;
+    private final int MENU_LOADMAPSFORGE_VECTORS_ID = 8;
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     public static final String MAPSCALE_X = "MAPSCALE_X"; //$NON-NLS-1$
@@ -271,7 +271,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //        mapView.getModel().displayModel.setFixedTileSize(256); // just for mbtiles
 
             // MAP FILES
-//            TileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
+//            MBTilesTileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
 //                    mapView.getModel().displayModel.getTileSize(), 1f,
 //                    mapView.getModel().frameBufferModel.getOverdrawFactor(), true);
 //            File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
@@ -280,7 +280,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //                    mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
 //            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
 //            layers.add(tileRendererLayer);
-
 
 
             // Tile source
@@ -294,10 +293,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             mapView.toggleNotesLayer(true);
             mapView.toggleImagesLayer(true);
             mapView.toggleLocationLayer(true);
+            mapView.toggleLocationTextLayer(true);
 
 
             // ONLINE OSM
-//        TileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
+//        MBTilesTileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
 //                mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
 //                mapView.getModel().frameBufferModel.getOverdrawFactor(), true);
 //        osmLayer = new TileDownloadLayer(osmTileCache,
@@ -328,14 +328,14 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //            layers.add(rl2StoreLayer);
 //
             // SPATIALTE FILES
-//            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
-//
-//            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
-//            spatialDb.open(spatialiteFile.getAbsolutePath());
-//            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
-//
-//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
-//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
+            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
+
+            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
+            spatialDb.open(spatialiteFile.getAbsolutePath());
+            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
+
+            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
+            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
 
 //
 //            gpsPositionLayer = new GpsPositionLayer(this);
@@ -361,7 +361,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         // boolean persistent = mPeferences.getBoolean("cachePersistence", false);
         // int capacity = Math.min(mPeferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
         // FILE_SYSTEM_CACHE_SIZE_MAX);
-        // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
+        // MBTilesTileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
 //        BaseMapSourcesManager.INSTANCE.loadSelectedBaseMap(mapView);
@@ -414,6 +414,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
         centerOnGps = findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
+        centerOnGps.setOnLongClickListener(this);
 
         ImageButton addnotebytagButton = findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(this);
@@ -752,18 +753,10 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         menu.add(Menu.NONE, MENU_DATA, 2, R.string.base_maps);//.setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar);//.setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
-        boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-        if (centerOnGps) {
-            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.disable_center_on_gps);//.setIcon(                    android.R.drawable.ic_menu_mylocation);
-        } else {
-            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.enable_center_on_gps);//.setIcon(                     android.R.drawable.ic_menu_mylocation);
-        }
-
-        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 7, R.string.center_on_map);//.setIcon(android.R.drawable.ic_menu_mylocation);
-        menu.add(Menu.NONE, MENU_GO_TO, 8, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 8, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 9, R.string.view_in_mixare);//.setIcon(R.drawable.icon_datasource);
-        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 9, getString(R.string.menu_extract_mapsforge_data));//"Import mapsforge data");//.setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 5, R.string.center_on_map);//.setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, MENU_GO_TO, 6, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 7, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
+        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 8, getString(R.string.menu_extract_mapsforge_data));//"Import mapsforge data");//.setIcon(R.drawable.icon_datasource);
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -785,40 +778,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             case MENU_COMPASS_ID:
                 AppsUtilities.checkAndOpenGpsStatus(this);
                 return true;
-            case MENU_MIXARE_ID:
-                if (!MixareHandler.isMixareInstalled(this)) {
-                    MixareHandler.installMixareFromMarket(this);
-                    return true;
-                }
-
-                try {
-                    double[] nswe = getMapWorldBounds();
-                    List<PointF3D> points = new ArrayList<>();
-                    List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
-                    for (Bookmark bookmark : bookmarksList) {
-                        double lat = bookmark.getLat();
-                        double lon = bookmark.getLon();
-                        String title = bookmark.getName();
-
-                        PointF3D p = new PointF3D((float) lon, (float) lat, 0f, title);
-                        points.add(p);
-                    }
-                    List<Note> notesList = DaoNotes.getNotesList(new double[]{nswe[0], nswe[1], nswe[2], nswe[3]}, false);
-                    for (Note note : notesList) {
-                        double lat = note.getLat();
-                        double lon = note.getLon();
-                        double elevation = note.getAltim();
-                        String title = note.getName(); // note.getName() + " (" + note.getDescription() +
-
-                        PointF3D p = new PointF3D((float) lon, (float) lat, (float) elevation, title);
-                        points.add(p);
-                    }
-                    MixareHandler.runRegionOnMixare(this, points);
-                    return true;
-                } catch (Exception e1) {
-                    GPLog.error(this, null, e1); //$NON-NLS-1$
-                    return false;
-                }
             case MENU_SHAREPOSITION_ID:
                 try {
                     if (!NetworkUtilities.isNetworkAvailable(this)) {
@@ -851,13 +810,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //                double lat = selectedBaseMapTable.getCenterY();
 //                int zoom = selectedBaseMapTable.getDefaultZoom();
 //                setNewCenterAtZoom(lon, lat, zoom);
-                return true;
-            }
-            case MENU_CENTER_ON_GPS: {
-                boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-                Editor edit = mPeferences.edit();
-                edit.putBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, !centerOnGps);
-                edit.apply();
                 return true;
             }
             default:
@@ -1196,8 +1148,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
 
         mapView.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
-//        gpsPositionLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
-//        gpsPositionLayer.requestRedraw();
 
 
         if (mapView.getViewportWidth() <= 0 || mapView.getViewportWidth() <= 0) {
@@ -1210,39 +1160,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             // send updates to the editing framework
             EditManager.INSTANCE.onGpsUpdate(lon, lat);
 
-            double[] nswe = getMapWorldBounds();
-            boolean centerOnGps = mPeferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
-            // TODO check this
-//            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
-//                GeoPoint point = toGeopoint(lonE6, latE6);
-//                if (point != null) {
-//                    mDataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
-//                    mDataOverlay.requestRedraw();
-//                }
-//            }
-
-            GPBBox bbox = mapView.getBoundingBox();
-            int paddingX = (int) (bbox.getLongitudeSpan() * 0.2);
-            int paddingY = (int) (bbox.getLatitudeSpan() * 0.2);
-            double newE = nswe[3] - paddingX;
-            double newW = nswe[2] + paddingX;
-            double newS = nswe[1] + paddingY;
-            double newN = nswe[0] - paddingY;
-
-            GPBBox tmpBBox = new GPBBox(newS, newW, newN, newE);
-
-            boolean doCenter = false;
-            if (!tmpBBox.contains(lat, lon)) {
-                if (centerOnGps) {
-                    doCenter = true;
-                }
-            }
-            if (doCenter) {
-                setNewCenter(lon, lat);
-                if (GPLog.LOG_ABSURD)
-                    GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$
-            }
         } catch (Exception e) {
             GPLog.error(this, "On location change error", e); //$NON-NLS-1$
             // finish the activity to reset
@@ -1298,6 +1216,56 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             edit2.putFloat(MAPSCALE_Y, scaleY2);
             edit2.apply();
             return true;
+        } else if (i == R.id.center_on_gps_btn) {
+            String[] items = new String[]{"center on gps", "rotate with bearing", "show info"};
+            boolean[] checkedItems = new boolean[items.length];
+            checkedItems[0] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+            checkedItems[1] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
+            checkedItems[2] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false);
+
+            DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
+                checkedItems[which] = isChecked;
+
+                if (which == 0) {
+                    // check center on gps
+                    boolean centerOnGps = checkedItems[0];
+                    Editor edit = mPeferences.edit();
+                    edit.putBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, centerOnGps);
+                    edit.apply();
+                }
+                if (which == 1) {
+                    // check rotate map
+                    boolean rotateMapWithGps = checkedItems[1];
+                    Editor edit = mPeferences.edit();
+                    edit.putBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, rotateMapWithGps);
+                    edit.apply();
+                }
+                if (which == 2) {
+                    // check show info
+                    boolean showGpsInfo = checkedItems[2];
+                    Editor edit = mPeferences.edit();
+                    edit.putBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, showGpsInfo);
+                    edit.apply();
+                    mapView.toggleLocationTextLayer(showGpsInfo);
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("");
+            builder.setMultiChoiceItems(items, checkedItems, dialogListener);
+//            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialogInterface) {
+//                    try {
+//                        sourcesTreeListActivity.refreshData(SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps());
+//                    } catch (Exception e) {
+//                        GPLog.error(this, null, e);
+//                    }
+//                }
+//            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
         }
         return false;
     }

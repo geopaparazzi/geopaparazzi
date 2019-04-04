@@ -14,7 +14,7 @@
 //import org.mapsforge.core.graphics.TileBitmap;
 //import org.mapsforge.core.util.IOUtils;
 //import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-//import org.mapsforge.map.layer.cache.TileCache;
+//import org.mapsforge.map.layer.cache.MBTilesTileCache;
 //import org.mapsforge.map.layer.queue.Job;
 //import org.mapsforge.map.model.common.Observer;
 //
@@ -32,7 +32,7 @@
 // * This tile store uses the standard TMS directory layout of zoomlevel/y/x . To support
 // * a different directory structure override the findFile method.
 // */
-//public class MBTilesStore implements TileCache {
+//public class MBTilesStore implements MBTilesTileCache {
 //
 //    private AndroidGraphicFactory graphicFactory;
 //    private MBTilesDb mbTilesDb;

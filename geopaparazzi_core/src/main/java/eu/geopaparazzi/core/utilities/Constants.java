@@ -34,8 +34,6 @@ public interface Constants {
 
     String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
 
-    String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
-
     String PREFS_KEY_RETINA = "PREFS_KEY_RETINA";
 
 

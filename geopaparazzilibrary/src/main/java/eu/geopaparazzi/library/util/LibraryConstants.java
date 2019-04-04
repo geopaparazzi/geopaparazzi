@@ -373,4 +373,9 @@ public interface LibraryConstants {
     String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
     String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
     String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
+
+
+    String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
+    String PREFS_KEY_ROTATE_MAP_WITH_GPS = "rotate_map_with_gps";
+    String PREFS_KEY_SHOW_GPS_INFO = "show_gps_info";
 }
