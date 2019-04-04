@@ -37,8 +37,6 @@ public class GpsPositionLayer extends LocationTextureLayer {
 
         // set billboard rendering for TextureRegion (false is default)
         locationRenderer.setBillboard(false);
-
-        setEnabled(false);
     }
 
     private static TextureRegion createTextures(Context context) throws IOException {

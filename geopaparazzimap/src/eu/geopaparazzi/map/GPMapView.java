@@ -216,7 +216,7 @@ public class GPMapView extends org.oscim.android.MapView {
                 .strokeColor("#0000FF")
                 .strokeWidth(3f)
                 .fillColor("#0000FF")
-                .fillAlpha(0.6f)
+                .fillAlpha(0.0f)
                 .cap(Paint.Cap.ROUND)
                 .build();
         List<Geometry> geoms = spatialDb.getGeometriesIn(tableName, (Envelope) null, null);
@@ -300,7 +300,7 @@ public class GPMapView extends org.oscim.android.MapView {
             try {
                 if (locationLayer == null) {
                     locationLayer = new GpsPositionLayer(this);
-                    locationLayer.disable();
+                    locationLayer.enable();
 //                    map().layers().add(locationLayer);
                     Layers layers = map().layers();
                     layers.add(locationLayer, SYSTEM);
