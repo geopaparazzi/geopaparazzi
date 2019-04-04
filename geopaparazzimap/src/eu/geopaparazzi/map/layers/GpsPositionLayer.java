@@ -25,6 +25,7 @@ public class GpsPositionLayer extends LocationTextureLayer {
     private float[] lastGpsPositionExtras;
     private int[] lastGpsStatusExtras;
     private double[] lastGpsPosition;
+    private float lastUsedBearing = -1;
 
     public GpsPositionLayer(GPMapView mapView) throws IOException {
         super(mapView.map(), createTextures(mapView.getContext()));
@@ -95,6 +96,13 @@ public class GpsPositionLayer extends LocationTextureLayer {
         if (lastGpsPositionExtras != null) {
             bearing = lastGpsPositionExtras[2];
             accuracy = lastGpsPositionExtras[0];
+            if (bearing == 0 && lastUsedBearing != -1) {
+                bearing = lastUsedBearing;
+            } else {
+                lastUsedBearing = bearing;
+            }
+
+            bearing = 360f - bearing;
         }
         if (lastGpsPosition != null)
             setPosition(lastGpsPosition[1], lastGpsPosition[0], bearing, accuracy);
