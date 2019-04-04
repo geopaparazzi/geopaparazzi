@@ -126,6 +126,7 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.GPMapScaleBarLayer;
+import jsqlite.Database;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -329,6 +330,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //
             // SPATIALTE FILES
             File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
+
 
             ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
             spatialDb.open(spatialiteFile.getAbsolutePath());

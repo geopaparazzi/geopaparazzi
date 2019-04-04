@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <eu.geopaparazzi.library.sketch.DrawingSurface
+        android:id="@+id/drawingSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/commandsBar"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/main_background" >
+
+        <Spinner
+            android:id="@+id/colorspinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" />
+
+        <Spinner
+            android:id="@+id/widthspinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/colorspinner" />
+
+        <ImageButton
+            android:id="@+id/redoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            app:srcCompat="@drawable/button_background_drawable"
+            android:contentDescription="@string/redo"
+            android:onClick="onClick"
+            android:src="@android:drawable/ic_media_ff" />
+
+        <ImageButton
+            android:id="@+id/undoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/redoButton"
+            android:background="@drawable/button_background_drawable"
+            android:contentDescription="@string/undo"
+            android:onClick="onClick"
+            app:srcCompat="@android:drawable/ic_media_rew" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

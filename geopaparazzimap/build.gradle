@@ -79,7 +79,7 @@ android {
     sourceSets {
         main {
             manifest {
-                srcFile 'src/main/AndroidManifest.xml'
+                srcFile 'AndroidManifest.xml'
             }
             java {
                 srcDir 'src'

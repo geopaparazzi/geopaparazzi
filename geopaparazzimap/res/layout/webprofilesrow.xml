@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/webprofilelayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dip">
+
+    <ImageView
+        android:id="@+id/downloadprofile_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/download_icon_description"
+        android:src="@drawable/ic_download_from_cloud"
+        app:srcCompat="@drawable/ic_download_from_cloud" />
+
+    <TextView
+        android:id="@+id/nametext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/downloadprofile_image"
+        android:layout_toRightOf="@+id/downloadprofile_image"
+        android:text="Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/descriptiontext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nametext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/nametext"
+        android:text="Description"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/datetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nametext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/descriptiontext"
+        android:text="Date"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/datetext"
+        android:layout_toEndOf="@+id/downloadprofile_image"
+        android:text="Comments"
+        android:textAppearance="@style/GPTextViewStyle"
+        android:textColor="@color/main_selection_border"
+        android:textStyle="bold" />
+
+</RelativeLayout>

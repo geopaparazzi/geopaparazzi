@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="25dp"
+    android:gravity="center_vertical">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/dialogTextLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:hint="dummy hint">
+
+        <EditText
+            android:id="@+id/dialogEdittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="15dp"
+            android:ems="10"
+            android:inputType="text">
+
+            <requestFocus />
+        </EditText>
+    </android.support.design.widget.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/dialogcheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogTextLayout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="New CheckBox" />
+
+</RelativeLayout>
