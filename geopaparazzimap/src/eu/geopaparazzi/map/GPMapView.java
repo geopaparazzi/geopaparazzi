@@ -17,6 +17,7 @@ import org.oscim.backend.canvas.Color;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
+import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
@@ -45,6 +46,7 @@ import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
 import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
+import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.NotesLayer;
 import eu.geopaparazzi.map.layers.NotesLayer2;
 
@@ -248,6 +250,12 @@ public class GPMapView extends org.oscim.android.MapView {
         Layers layers = map().layers();
         layers.add(vectorLayer, OVERLAYS);
 //        map().layers().add(vectorLayer);
+    }
+
+    public void addMBTilesLayer(String dbPath) throws Exception {
+        BitmapTileLayer bitmapLayer = new BitmapTileLayer(map(), new MBTilesTileSource(dbPath));
+        Layers layers = map().layers();
+        layers.add(bitmapLayer, OVERLAYS);
     }
 
     public void toggleNotesLayer(boolean enable) {

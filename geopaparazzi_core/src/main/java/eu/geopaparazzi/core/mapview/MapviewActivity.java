@@ -308,8 +308,12 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
 
 //            // MBTILES FILES
-////        File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "italy.mbtiles");
-//            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
+//        File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "italy.mbtiles");
+            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
+            mapView.addMBTilesLayer(mbtilesFile.getAbsolutePath());
+            File mbtilesFile2 = new File(Environment.getExternalStorageDirectory(), "maps/bolzano.mbtiles");
+            mapView.addMBTilesLayer(mbtilesFile2.getAbsolutePath());
+
 //            MBTilesStore tileStore = new MBTilesStore(mbtilesFile);
 //            tileStore.setRowType("tms");
 ////        InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
