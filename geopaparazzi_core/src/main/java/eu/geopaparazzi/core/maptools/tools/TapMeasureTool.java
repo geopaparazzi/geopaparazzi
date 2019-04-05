@@ -37,6 +37,7 @@ import org.locationtech.jts.geom.Coordinate;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.features.EditManager;
+import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.database.GPLog;
@@ -69,6 +70,7 @@ public class TapMeasureTool extends MapTool {
 
     private StringBuilder textBuilder = new StringBuilder();
     private boolean doImperial = false;
+    private OverlayViewProjection projection;
 
     /**
      * Constructor.
@@ -103,6 +105,9 @@ public class TapMeasureTool extends MapTool {
     public void activate() {
         if (mapView != null)
             mapView.setClickable(false);
+
+        EditingView editingView = EditManager.INSTANCE.getEditingView();
+        projection = new OverlayViewProjection(mapView, editingView);
     }
 
     public void onToolDraw(Canvas canvas) {
@@ -140,7 +145,6 @@ public class TapMeasureTool extends MapTool {
             return false;
         }
 
-        OverlayViewProjection pj = mapView.getOverlayViewProjection();
         int zoomLevel = mapView.getMapPosition().getZoomLevel();
 
         // handle drawing
@@ -154,8 +158,8 @@ public class TapMeasureTool extends MapTool {
             case MotionEvent.ACTION_DOWN:
                 measuredDistance = 0;
                 measurePath.reset();
-                Coordinate firstGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(firstGeoPoint, tmpP);
+                Coordinate firstGeoPoint = projection.fromPixels(round(currentX), round(currentY));
+                projection.toPixels(firstGeoPoint, tmpP);
                 measurePath.moveTo(tmpP.x, tmpP.y);
 
                 lastX = currentX;
@@ -173,13 +177,13 @@ public class TapMeasureTool extends MapTool {
                     return true;
                 }
 
-                Coordinate currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(currentGeoPoint, tmpP);
+                Coordinate currentGeoPoint = projection.fromPixels(round(currentX), round(currentY));
+                projection.toPixels(currentGeoPoint, tmpP);
                 measurePath.lineTo(tmpP.x, tmpP.y);
                 if (GPLog.LOG_HEAVY)
                     GPLog.addLogEntry(this, "DRAG: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$ //$NON-NLS-2$
                 // the measurement
-                Coordinate previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
+                Coordinate previousGeoPoint = projection.fromPixels(round(lastX), round(lastY));
 
                 Location l1 = new Location("gps"); //$NON-NLS-1$
                 l1.setLatitude(previousGeoPoint.x);

@@ -92,6 +92,7 @@ import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.core.features.Tool;
 import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.core.maptools.MapTool;
+import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
 import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
 import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
@@ -142,7 +143,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapviewActivity extends AppCompatActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener {
+public class MapviewActivity extends AppCompatActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -462,6 +463,14 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
 
+
+        mapView.addMapUpdateListener(this);
+
+    }
+
+    @Override
+    public void onUpdate(GPMapPosition mapPosition) {
+        setGuiZoomText(mapPosition.getZoomLevel());
     }
 
     /**
@@ -655,33 +664,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                 coordView.setText(lonString + " " + COORDINATE_FORMATTER.format(lon) //
                         + "\n" + latString + " " + COORDINATE_FORMATTER.format(lat));
             }
-
-//            gpsPositionLayer.toggleInfo(true);
         }
         if (action == MotionEvent.ACTION_UP) {
-//            gpsPositionLayer.toggleInfo(false);
             if (coordView != null)
                 coordView.setText("");
             saveCenterPref();
-
-            // update zoom ui a bit later. This is ugly but
-            // found no way until there is not event handling
-            // in mapsforge
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            int zoom = mapPosition.getZoomLevel();
-                            setZoom(zoom);
-                        }
-                    });
-                }
-            }).start();
         }
         return false;
     }
@@ -1355,54 +1342,26 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                 EditManager.INSTANCE.setActiveTool(null);
             }
 //
-//        } else if (i == R.id.toggleloginfobutton) {
-//            isInNonClickableMode = !mapView.isClickable();
-//            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
-//            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
-////                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
-//            if (!isInNonClickableMode) {
-//                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_on_24dp));
-//                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
-////                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-//
-//                try {
-//                    GpsLogInfoTool measureTool = new GpsLogInfoTool(mapView);
-//                    EditManager.INSTANCE.setActiveTool(measureTool);
-//                } catch (Exception e) {
-//                    GPLog.error(this, null, e);
-//                }
-//            } else {
-//                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
-//                EditManager.INSTANCE.setActiveTool(null);
-//            }
+        } else if (i == R.id.toggleloginfobutton) {
+            isInNonClickableMode = !mapView.isClickable();
+            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
+//                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
+            if (!isInNonClickableMode) {
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_on_24dp));
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
+//                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
 
-//            case R.id.toggleviewingconebutton:
-//                if (lastGpsPosition != null) {
-//                    setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
-//
-//                    isInNonClickableMode = !mapView.isClickable();
-//                    toggleLoginfoButton = (ImageButton) findViewById(R.id.toggleloginfobutton);
-//                    toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-//                    toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
-//                    if (!isInNonClickableMode) {
-//                        toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_on);
-//                        toggleLoginfoButton.setBackgroundResource(R.drawable.mapview_loginfo_off);
-//                        toggleMeasuremodeButton.setBackgroundResource(R.drawable.mapview_measuremode_off);
-//
-//                        try {
-//                            ViewingConeTool viewingConeTool = new ViewingConeTool(mapView, this);
-//                            EditManager.INSTANCE.setActiveTool(viewingConeTool);
-//                        } catch (Exception e) {
-//                            GPLog.error(this, null, e);
-//                        }
-//                    } else {
-//                        toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-//                        EditManager.INSTANCE.setActiveTool(null);
-//                    }
-//                }else{
-//                    GPDialogs.warningDialog(this,getString(R.string.warning_viewcone_gps) ,null);
-//                }
-//                break;
+                try {
+                    GpsLogInfoTool measureTool = new GpsLogInfoTool(mapView);
+                    EditManager.INSTANCE.setActiveTool(measureTool);
+                } catch (Exception e) {
+                    GPLog.error(this, null, e);
+                }
+            } else {
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
+                EditManager.INSTANCE.setActiveTool(null);
+            }
         } else if (i == R.id.toggleEditingButton) {
             toggleEditing();
 
@@ -1498,4 +1457,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     public void onCoordinateInserted(double lon, double lat) {
         setNewCenter(lon, lat);
     }
+
+
 }

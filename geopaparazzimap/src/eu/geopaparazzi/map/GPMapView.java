@@ -18,6 +18,7 @@ import org.oscim.backend.canvas.Color;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
+import org.oscim.event.Event;
 import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -29,6 +30,7 @@ import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
+import org.oscim.map.Map;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
@@ -37,6 +39,7 @@ import org.oscim.utils.ColorUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -54,6 +57,10 @@ import eu.geopaparazzi.map.layers.NotesLayer;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 public class GPMapView extends org.oscim.android.MapView {
+    public static interface GPMapUpdateListener {
+        void onUpdate(GPMapPosition mapPosition);
+    }
+
     private GpsServiceStatus lastGpsServiceStatus;
     private float[] lastGpsPositionExtras;
     private int[] lastGpsStatusExtras;
@@ -78,6 +85,8 @@ public class GPMapView extends org.oscim.android.MapView {
     private CurrentGpsLogLayer currentGpsLogLayer;
     private View editingView;
 
+    private List<GPMapUpdateListener> mapUpdateListeners = new ArrayList<>();
+
     public GPMapView(Context context) {
         super(context);
 
@@ -93,14 +102,24 @@ public class GPMapView extends org.oscim.android.MapView {
         layers.addGroup(ON_TOP_GEOPAPARAZZI);
         layers.addGroup(ON_TOP_SYSTEM);
 
+
+        map().events.bind((e, mapPosition) -> {
+            for (GPMapUpdateListener mapUpdateListener : mapUpdateListeners) {
+                mapUpdateListener.onUpdate(new GPMapPosition(mapPosition));
+            }
+        });
     }
 
-    public GPMapProjection getProjection() {
-        return new GPMapProjection(this);
+    public void addMapUpdateListener(GPMapUpdateListener mapUpdateListener) {
+        if (!mapUpdateListeners.contains(mapUpdateListener)) {
+            mapUpdateListeners.add(mapUpdateListener);
+        }
     }
 
-    public OverlayViewProjection getOverlayViewProjection() {
-        return new OverlayViewProjection(this, editingView);
+    public void removeMapUpdateListener(GPMapUpdateListener mapUpdateListener) {
+        if (mapUpdateListeners.contains(mapUpdateListener)) {
+            mapUpdateListeners.remove(mapUpdateListener);
+        }
     }
 
     public void repaint() {
