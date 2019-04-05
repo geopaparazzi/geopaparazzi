@@ -252,8 +252,8 @@ public class GPMapView extends org.oscim.android.MapView {
 //        map().layers().add(vectorLayer);
     }
 
-    public void addMBTilesLayer(String dbPath) throws Exception {
-        BitmapTileLayer bitmapLayer = new BitmapTileLayer(map(), new MBTilesTileSource(dbPath));
+    public void addMBTilesLayer(String dbPath, Integer alpha, Integer transparentColor) throws Exception {
+        BitmapTileLayer bitmapLayer = new BitmapTileLayer(map(), new MBTilesTileSource(dbPath, alpha, transparentColor));
         Layers layers = map().layers();
         layers.add(bitmapLayer, OVERLAYS);
     }

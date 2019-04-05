@@ -4,11 +4,10 @@ import org.oscim.tiling.ITileDataSource;
 import org.oscim.tiling.TileSource;
 
 public class MBTilesTileSource extends TileSource {
-    public static final int tileSize = 256;
     private final MBTilesTileDataSource ds;
 
-    public MBTilesTileSource(String dbPath) throws Exception {
-        ds = new MBTilesTileDataSource(dbPath);
+    public MBTilesTileSource(String dbPath, Integer alpha, Integer transparentColor) throws Exception {
+        ds = new MBTilesTileDataSource(dbPath, alpha, transparentColor);
     }
 
 

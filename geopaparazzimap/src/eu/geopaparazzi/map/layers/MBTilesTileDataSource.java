@@ -29,6 +29,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import eu.geopaparazzi.library.images.ImageUtilities;
+
 import static org.oscim.tiling.QueryResult.DELAYED;
 import static org.oscim.tiling.QueryResult.FAILED;
 import static org.oscim.tiling.QueryResult.SUCCESS;
@@ -38,12 +40,16 @@ public class MBTilesTileDataSource implements ITileDataSource {
 
     private final MBTilesDb db;
     private final ADb adb;
+    private final Integer transparentColor;
+    private Integer alpha;
 
-    public MBTilesTileDataSource(String dbPath) throws Exception {
+    public MBTilesTileDataSource(String dbPath, Integer alpha, Integer transparentColor) throws Exception {
         adb = EDb.SPATIALITE4ANDROID.getSpatialDb();
         boolean exists = adb.open(dbPath);
         if (!exists)
             throw new RuntimeException("needs to exist");
+        this.alpha = alpha;
+        this.transparentColor = transparentColor;
         db = new MBTilesDb(adb);
         db.setTileRowType("tms");
     }
@@ -54,9 +60,22 @@ public class MBTilesTileDataSource implements ITileDataSource {
 
         try {
             byte[] imageBytes = db.getTile(tile.tileX, tile.tileY, tile.zoomLevel);
-            if (Tile.SIZE != 256) {
+//            if (Tile.SIZE != 256) {
+//                android.graphics.Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+//                bmp = android.graphics.Bitmap.createScaledBitmap(bmp, Tile.SIZE, Tile.SIZE, false);
+//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//                bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, bos);
+//                imageBytes = bos.toByteArray();
+//            }
+
+            if (transparentColor != null || alpha != null) {
                 android.graphics.Bitmap bmp = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                bmp = android.graphics.Bitmap.createScaledBitmap(bmp, Tile.SIZE, Tile.SIZE, false);
+                if (transparentColor != null) {
+                    bmp = ImageUtilities.makeTransparent(bmp, transparentColor);
+                }
+                if (alpha != null) {
+                    bmp = ImageUtilities.makeBitmapTransparent(bmp, alpha);
+                }
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, bos);
                 imageBytes = bos.toByteArray();
