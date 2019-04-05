@@ -12,6 +12,7 @@ import org.oscim.renderer.bucket.TextureItem;
 
 import java.io.IOException;
 
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.vtm.VtmUtilities;
@@ -21,10 +22,6 @@ public class GpsPositionLayer extends LocationTextureLayer {
     private static TextureRegion staleTexture;
     private static TextureRegion movingTexture;
 
-    private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
-    private float[] lastGpsPositionExtras;
-    private int[] lastGpsStatusExtras;
-    private double[] lastGpsPosition;
     private float lastUsedBearing = -1;
 
     public GpsPositionLayer(GPMapView mapView) throws IOException {
@@ -72,15 +69,9 @@ public class GpsPositionLayer extends LocationTextureLayer {
      * @param lastGpsPosition       lon, lat, elev
      * @param lastGpsPositionExtras accuracy, speed, bearing.
      * @param lastGpsStatusExtras   maxSatellites, satCount, satUsedInFixCount.
+     * @param lastGpsLoggingStatus
      */
-    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras) {
-        this.lastGpsServiceStatus = lastGpsServiceStatus;
-        this.lastGpsPositionExtras = lastGpsPositionExtras;
-        this.lastGpsStatusExtras = lastGpsStatusExtras;
-        if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-            this.lastGpsPosition = lastGpsPosition;
-        }
-
+    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus) {
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
                 setMoving();

@@ -27,6 +27,7 @@ import java.util.List;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.TableDescriptions;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
@@ -48,6 +49,7 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private float[] lastGpsPositionExtras;
     private int[] lastGpsStatusExtras;
+    private GpsLoggingStatus lastGpsLoggingStatus;
     private double[] lastGpsPosition;
 
     public GpsPositionTextLayer(GPMapView mapView) {
@@ -92,14 +94,7 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     }
 
 
-    /**
-     * Creates a transparent symbol with text and description.
-     *
-     * @param item -> the MarkerItem to process, containing title and description
-     *             if description starts with a '#' the first line of the description is drawn.
-     * @return MarkerSymbol with title, description and symbol
-     */
-    private MarkerSymbol createAdvancedSymbol(MarkerItem item) {
+    private MarkerSymbol createAdvancedSymbol() {
         final Paint textPainter = CanvasAdapter.newPaint();
         textPainter.setStyle(Paint.Style.FILL);
         textPainter.setColor(Color.BLACK);
@@ -121,6 +116,10 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
             lines.add("sats: " + lastGpsStatusExtras[1]);
             lines.add("fixsats: " + lastGpsStatusExtras[2]);
         }
+        if (lastGpsLoggingStatus != null) {
+            String msg = lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON ? "on" : "off";
+            lines.add("logging is " + msg);
+        }
 
         float refHeight = textPainter.getTextHeight(lines.get(0)) * 1.5f;
         float interline = 1.4f;
@@ -133,8 +132,8 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
 
         int margin = 6;
         int imageWidth = (int) (maxWidth + margin);
-        int imageHeight = (int) (lines.size() * refHeight);//(int) (heightSum + margin);
-        Bitmap titleBitmap = CanvasAdapter.newBitmap(imageWidth, imageHeight+margin, 0);
+        int imageHeight = (int) (lines.size() * refHeight);
+        Bitmap titleBitmap = CanvasAdapter.newBitmap(imageWidth, imageHeight + margin, 0);
         org.oscim.backend.canvas.Canvas titleCanvas = CanvasAdapter.newCanvas();
         titleCanvas.setBitmap(titleBitmap);
 
@@ -144,18 +143,9 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
         int x = margin;
         int count = 1;
         for (String line : lines) {
-
-            float deltaY;
-//            if (count == 1) {
-//                deltaY = refHeight/2.0f;// textPainter.getTextHeight(line);
-//            } else {
-                deltaY = refHeight * count;//(textPainter.getTextHeight(line) + interline) * count;
-//            }
-
+            float deltaY = refHeight * count;
             int y = (int) (margin + deltaY);
-//            int y = (int) (imageHeight - margin - deltaY);
             titleCanvas.drawText(line, x, y, textPainter);
-//            titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), textPainter);
             count++;
         }
         return (new MarkerSymbol(titleBitmap, MarkerSymbol.HotspotPlace.LOWER_LEFT_CORNER, true));
@@ -167,11 +157,13 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
      * @param lastGpsPosition       lon, lat, elev
      * @param lastGpsPositionExtras accuracy, speed, bearing.
      * @param lastGpsStatusExtras   maxSatellites, satCount, satUsedInFixCount.
+     * @param lastGpsLoggingStatus
      */
-    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras) {
+    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus) {
         this.lastGpsServiceStatus = lastGpsServiceStatus;
         this.lastGpsPositionExtras = lastGpsPositionExtras;
         this.lastGpsStatusExtras = lastGpsStatusExtras;
+        this.lastGpsLoggingStatus = lastGpsLoggingStatus;
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             this.lastGpsPosition = lastGpsPosition;
         }
@@ -187,13 +179,13 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             double delta = 0.0001;
             if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
-                MarkerItem item = new MarkerItem("M:b=" + bearing, "", new GeoPoint(lastGpsPosition[1] + delta, lastGpsPosition[0] + delta));
-                MarkerSymbol sym = createAdvancedSymbol(item);
+                MarkerItem item = new MarkerItem("", "", new GeoPoint(lastGpsPosition[1] + delta, lastGpsPosition[0] + delta));
+                MarkerSymbol sym = createAdvancedSymbol();
                 item.setMarker(sym);
                 addItem(item);
             } else {
-                MarkerItem item = new MarkerItem("A:b=" + bearing, "", new GeoPoint(lastGpsPosition[1] + delta, lastGpsPosition[0] + delta));
-                MarkerSymbol sym = createAdvancedSymbol(item);
+                MarkerItem item = new MarkerItem("", "", new GeoPoint(lastGpsPosition[1] + delta, lastGpsPosition[0] + delta));
+                MarkerSymbol sym = createAdvancedSymbol();
                 item.setMarker(sym);
                 addItem(item);
             }

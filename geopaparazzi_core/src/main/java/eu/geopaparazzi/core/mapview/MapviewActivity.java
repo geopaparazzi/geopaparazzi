@@ -291,6 +291,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 
             mapView.toggleGpsLogsLayer(true);
+            mapView.toggleCurrentGpsLogLayer(true);
             mapView.toggleNotesLayer(true);
             mapView.toggleImagesLayer(true);
             mapView.toggleLocationLayer(true);
@@ -347,7 +348,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //            gpsPositionLayer = new GpsPositionLayer(this);
 //            layers.add(gpsPositionLayer);
 //
-//            NotesLayer2 notesLayer = new NotesLayer2(this);
+//            CurrentGpsLogLayer notesLayer = new CurrentGpsLogLayer(this);
 //            layers.add(notesLayer);
 
 
@@ -1153,7 +1154,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
 
-        mapView.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+        mapView.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
 
 
         if (mapView.getViewportWidth() <= 0 || mapView.getViewportWidth() <= 0) {

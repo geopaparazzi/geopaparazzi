@@ -39,16 +39,17 @@ import java.io.IOException;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.map.layers.CurrentGpsLogLayer;
 import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
 import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.NotesLayer;
-import eu.geopaparazzi.map.layers.NotesLayer2;
 
 public class GPMapView extends org.oscim.android.MapView {
     private GpsServiceStatus lastGpsServiceStatus;
@@ -70,6 +71,7 @@ public class GPMapView extends org.oscim.android.MapView {
     public static final int ON_TOP_GEOPAPARAZZI = 5;
 
     private float lastUsedBearing = -1;
+    private CurrentGpsLogLayer currentGpsLogLayer;
 
     public GPMapView(Context context) {
         super(context);
@@ -303,6 +305,20 @@ public class GPMapView extends org.oscim.android.MapView {
         }
     }
 
+    public void toggleCurrentGpsLogLayer(boolean enable) {
+        if (enable) {
+            if (currentGpsLogLayer == null) {
+                currentGpsLogLayer = new CurrentGpsLogLayer(this);
+                Layers layers = map().layers();
+                layers.add(currentGpsLogLayer, GEOPAPARAZZI);
+            }
+            currentGpsLogLayer.enable();
+        } else {
+            if (currentGpsLogLayer != null)
+                currentGpsLogLayer.disable();
+        }
+    }
+
     public void toggleLocationLayer(boolean enable) {
         if (enable) {
             try {
@@ -349,13 +365,13 @@ public class GPMapView extends org.oscim.android.MapView {
 
     /**
      * Get a gps status update.
-     *
-     * @param lastGpsServiceStatus
+     *  @param lastGpsServiceStatus
      * @param lastGpsPosition       [lon, lat, elev]
      * @param lastGpsPositionExtras [accuracy, speed, bearing]
      * @param lastGpsStatusExtras   [maxSatellites, satCount, satUsedInFixCount]
+     * @param lastGpsLoggingStatus
      */
-    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras) {
+    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus) {
         this.lastGpsServiceStatus = lastGpsServiceStatus;
         this.lastGpsPositionExtras = lastGpsPositionExtras;
         this.lastGpsStatusExtras = lastGpsStatusExtras;
@@ -363,12 +379,14 @@ public class GPMapView extends org.oscim.android.MapView {
             this.lastGpsPosition = lastGpsPosition;
         }
         if (locationLayer != null) {
-            locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+            locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
         }
         if (locationTextLayer != null) {
-            locationTextLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras);
+            locationTextLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
         }
-
+        if (currentGpsLogLayer != null) {
+            currentGpsLogLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
+        }
 
         boolean centerOnGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
         if (centerOnGps) {

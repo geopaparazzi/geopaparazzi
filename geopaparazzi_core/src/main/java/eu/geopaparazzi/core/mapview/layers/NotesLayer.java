@@ -44,7 +44,7 @@
 //
 //import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_NOTES_SIZE;
 //
-//public class NotesLayer2 extends Layer implements ISpatialiteTableAndFieldsNames {
+//public class CurrentGpsLogLayer extends Layer implements ISpatialiteTableAndFieldsNames {
 //    private Bitmap notesBitmap;
 //    private int horizontalOffset;
 //    private int verticalOffset;
@@ -59,7 +59,7 @@
 //    private Context context;
 //    private long currentMapSize;
 //
-//    public NotesLayer2(Context context) {
+//    public CurrentGpsLogLayer(Context context) {
 //        super();
 //        this.context = context;
 //
