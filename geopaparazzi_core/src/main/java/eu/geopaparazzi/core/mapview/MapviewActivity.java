@@ -93,6 +93,7 @@ import eu.geopaparazzi.core.features.Tool;
 import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
+import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
 import eu.geopaparazzi.core.ui.activities.GpsDataListActivity;
@@ -437,9 +438,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         final ImageButton toggleLogInfoButton = findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
 
-//        final ImageButton toggleviewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
-//        toggleviewingconeButton.setOnClickListener(this);
-
         final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
@@ -451,6 +449,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         EditingView editingView = findViewById(R.id.editingview);
         LinearLayout editingToolsLayout = findViewById(R.id.editingToolsLayout);
         EditManager.INSTANCE.setEditingView(editingView, editingToolsLayout);
+        mapView.setEditingView(editingView);
 
         // if after rotation a toolgroup is there, enable ti with its icons
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
@@ -1038,13 +1037,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
     }
 
-    /**
-     * Calls the mapview redraw.
-     */
-    public void invalidateMap() {
-        mapView.repaint();
-    }
-
 
     private boolean boundsContain(int latE6, int lonE6, int nE6, int sE6, int wE6, int eE6) {
         return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
@@ -1298,7 +1290,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             int maxZoom = 24;
             if (newZoom > maxZoom) newZoom = maxZoom;
             setZoom(newZoom);
-            invalidateMap();
             Tool activeTool = EditManager.INSTANCE.getActiveTool();
             if (activeTool instanceof MapTool) {
                 ((MapTool) activeTool).onViewChanged();
@@ -1312,7 +1303,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             int minZoom = 0;
             if (newZoom < minZoom) newZoom = minZoom;
             setZoom(newZoom);
-            invalidateMap();
             Tool activeTool1 = EditManager.INSTANCE.getActiveTool();
             if (activeTool1 instanceof MapTool) {
                 ((MapTool) activeTool1).onViewChanged();
@@ -1348,23 +1338,22 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
         } else if (i == R.id.togglemeasuremodebutton) {
 
-            // FIXME
-//            isInNonClickableMode = !mapView.isClickable();
-//            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
-//            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
-////                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
-//            if (!isInNonClickableMode) {
-//                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
-//                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
-////                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-//
-//                TapMeasureTool measureTool = new TapMeasureTool(mapView);
-//                EditManager.INSTANCE.setActiveTool(measureTool);
-//            } else {
-//                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
-//
-//                EditManager.INSTANCE.setActiveTool(null);
-//            }
+            isInNonClickableMode = !mapView.isClickable();
+            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
+            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+//                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
+            if (!isInNonClickableMode) {
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
+//                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
+
+                TapMeasureTool measureTool = new TapMeasureTool(mapView);
+                EditManager.INSTANCE.setActiveTool(measureTool);
+            } else {
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
+
+                EditManager.INSTANCE.setActiveTool(null);
+            }
 //
 //        } else if (i == R.id.toggleloginfobutton) {
 //            isInNonClickableMode = !mapView.isClickable();

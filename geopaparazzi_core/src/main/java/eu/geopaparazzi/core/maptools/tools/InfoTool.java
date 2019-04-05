@@ -54,7 +54,7 @@
 //import eu.geopaparazzi.core.maptools.FeaturePagerActivity;
 //import eu.geopaparazzi.core.maptools.FeatureUtilities;
 //import eu.geopaparazzi.core.maptools.MapTool;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import jsqlite.Exception;
 //
 //import static java.lang.Math.abs;
@@ -86,7 +86,7 @@
 //    private double top;
 //
 //
-//    private SliderDrawProjection sliderDrawProjection;
+//    private OverlayViewProjection sliderDrawProjection;
 //
 //    private ToolGroup parentGroup;
 //
@@ -99,7 +99,7 @@
 //    public InfoTool(ToolGroup parentGroup, MapView mapView) {
 //        super(mapView);
 //        this.parentGroup = parentGroup;
-//        sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
+//        sliderDrawProjection = new OverlayViewProjection(mapView, EditManager.INSTANCE.getEditingView());
 //
 //        int stroke = MapsforgeUtils.toColor(ToolColors.infoselection_stroke.getHex(), -1);
 //        int fill = MapsforgeUtils.toColor(ToolColors.infoselection_fill.getHex(), 80);
@@ -126,7 +126,7 @@
 //        if (mapView == null || mapView.isClickable()) {
 //            return false;
 //        }
-//        SliderDrawProjection pj = sliderDrawProjection;
+//        OverlayViewProjection pj = sliderDrawProjection;
 //
 //        // handle drawing
 //        currentX = event.getX();

@@ -47,7 +47,7 @@
 //import eu.geopaparazzi.core.maptools.FeatureUtilities;
 //import eu.geopaparazzi.core.maptools.MapTool;
 //import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.library.database.GPLog;
 //import eu.geopaparazzi.core.features.EditManager;
 //import eu.geopaparazzi.library.features.Feature;
@@ -93,7 +93,7 @@
 //
 //    // private ProgressDialog infoProgressDialog;
 //
-//    private SliderDrawProjection editingViewProjection;
+//    private OverlayViewProjection editingViewProjection;
 //    private Feature startFeature;
 //    private Feature endFeature;
 //    private boolean doCut;
@@ -107,7 +107,7 @@
 //    public PolygonCutExtendTool(MapView mapView, boolean doCut) {
 //        super(mapView);
 //        this.doCut = doCut;
-//        editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
+//        editingViewProjection = new OverlayViewProjection(mapView, EditManager.INSTANCE.getEditingView());
 //
 //        // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
 //        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -145,7 +145,7 @@
 //        canvas.drawCircle((int) endP.x, (int) endP.y, 15, drawingPaintFill);
 //
 //        if (previewGeometry != null) {
-//            SliderDrawProjection projection = editingViewProjection;
+//            OverlayViewProjection projection = editingViewProjection;
 //            IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 //
 //            byte zoomLevelBeforeDraw = mapPosition.getZoomLevel();
@@ -170,7 +170,7 @@
 //        if (mapView == null || mapView.isClickable()) {
 //            return false;
 //        }
-//        SliderDrawProjection pj = editingViewProjection;
+//        OverlayViewProjection pj = editingViewProjection;
 //
 //        // handle drawing
 //        currentX = event.getX();

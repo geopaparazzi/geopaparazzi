@@ -54,7 +54,7 @@
 //import eu.geopaparazzi.core.database.objects.GpsLogInfo;
 //import eu.geopaparazzi.core.maptools.MapTool;
 //import eu.geopaparazzi.map.graphics.GPGraphicsFactory;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 //
 //import static java.lang.Math.round;
@@ -69,7 +69,7 @@
 //    private final Paint colorBoxPaint = AndroidGraphicFactory.INSTANCE.createPaint();
 //    private final Paint whiteBoxPaint = AndroidGraphicFactory.INSTANCE.createPaint();
 //    private final Paint measureTextPaint = AndroidGraphicFactory.INSTANCE.createPaint();
-//    private final SliderDrawProjection projection;
+//    private final OverlayViewProjection projection;
 //    private final String timeString;
 //    private final String lonString;
 //    private final String latString;
@@ -101,7 +101,7 @@
 //        altimString = context.getString(R.string.altim);
 //
 //        EditingView editingView = EditManager.INSTANCE.getEditingView();
-//        projection = new SliderDrawProjection(mapView, editingView);
+//        projection = new OverlayViewProjection(mapView, editingView);
 //
 //        readData(editingView);
 //

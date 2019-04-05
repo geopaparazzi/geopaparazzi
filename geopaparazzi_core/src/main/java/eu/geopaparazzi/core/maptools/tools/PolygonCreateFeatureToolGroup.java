@@ -57,7 +57,7 @@
 //import eu.geopaparazzi.core.maptools.FeatureUtilities;
 //import eu.geopaparazzi.core.mapview.MapsSupportService;
 //import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.library.database.GPLog;
 //import eu.geopaparazzi.core.features.EditManager;
 //import eu.geopaparazzi.core.features.EditingView;
@@ -91,7 +91,7 @@
 //
 //    private List<Coordinate> coordinatesList = new ArrayList<>();
 //    private ImageButton addVertexButton;
-//    private SliderDrawProjection editingViewProjection;
+//    private OverlayViewProjection editingViewProjection;
 //
 //    private final Paint createdGeometryPaintHaloStroke = AndroidGraphicFactory.INSTANCE.createPaint();
 //    private final Paint createdGeometryPaintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
@@ -130,7 +130,7 @@
 //        this.mapView = mapView;
 //
 //        EditingView editingView = EditManager.INSTANCE.getEditingView();
-//        editingViewProjection = new SliderDrawProjection(mapView, editingView);
+//        editingViewProjection = new OverlayViewProjection(mapView, editingView);
 //        buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 //
 //        int selectionStroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
@@ -393,7 +393,7 @@
 //
 //    public void onToolDraw(Canvas canvas) {
 //        try {
-//            SliderDrawProjection projection = editingViewProjection;
+//            OverlayViewProjection projection = editingViewProjection;
 //            IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 //
 //

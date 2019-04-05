@@ -25,36 +25,36 @@ import android.view.View;
 
 /**
  * A slider view to draw on.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class EditingView extends View {
 
     /**
      * Constructor.
-     * 
-     * @param context  the context to use.
-     * @param attrs the attributes.
+     *
+     * @param context the context to use.
+     * @param attrs   the attributes.
      */
-    public EditingView( Context context, AttributeSet attrs ) {
+    public EditingView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    protected void onDraw( Canvas canvas ) {
-//        super.onDraw(canvas);
-//        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-//        if (activeToolGroup instanceof DrawingTool) {
-//            ((DrawingTool) activeToolGroup).onToolDraw(canvas);
-//        }
-//        Tool activeTool = EditManager.INSTANCE.getActiveTool();
-//        if (activeTool instanceof DrawingTool) {
-//            ((DrawingTool) activeTool).onToolDraw(canvas);
-//        }
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup instanceof DrawingTool) {
+            ((DrawingTool) activeToolGroup).onToolDraw(canvas);
+        }
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool instanceof DrawingTool) {
+            ((DrawingTool) activeTool).onToolDraw(canvas);
+        }
     }
 
     @Override
-    public boolean onTouchEvent( MotionEvent event ) {
+    public boolean onTouchEvent(MotionEvent event) {
         Tool activeTool = EditManager.INSTANCE.getActiveTool();
         if (activeTool instanceof DrawingTool) {
             return ((DrawingTool) activeTool).onToolTouchEvent(event);

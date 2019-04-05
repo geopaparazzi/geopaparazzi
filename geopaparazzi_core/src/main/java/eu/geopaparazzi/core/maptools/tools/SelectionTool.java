@@ -40,7 +40,7 @@
 //import eu.geopaparazzi.core.R;
 //import eu.geopaparazzi.core.maptools.FeatureUtilities;
 //import eu.geopaparazzi.core.maptools.MapTool;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.library.database.GPLog;
 //import eu.geopaparazzi.core.features.EditManager;
 //import eu.geopaparazzi.library.features.Feature;
@@ -83,7 +83,7 @@
 //
 //    private ProgressDialog infoProgressDialog;
 //
-//    private SliderDrawProjection editingViewProjection;
+//    private OverlayViewProjection editingViewProjection;
 //
 //    /**
 //     * Constructor.
@@ -92,7 +92,7 @@
 //     */
 //    public SelectionTool(MapView mapView) {
 //        super(mapView);
-//        editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
+//        editingViewProjection = new OverlayViewProjection(mapView, EditManager.INSTANCE.getEditingView());
 //
 //        int stroke = MapsforgeUtils.toColor(ToolColors.selection_stroke.getHex(), -1);
 //        int fill = MapsforgeUtils.toColor(ToolColors.selection_fill.getHex(), 80);
@@ -120,7 +120,7 @@
 //        if (mapView == null || mapView.isClickable()) {
 //            return false;
 //        }
-//        SliderDrawProjection pj = editingViewProjection;
+//        OverlayViewProjection pj = editingViewProjection;
 //
 //        // handle drawing
 //        float currentX = event.getX();

@@ -61,7 +61,7 @@
 //import eu.geopaparazzi.library.style.ToolColors;
 //import eu.geopaparazzi.library.util.Compat;
 //import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
-//import eu.geopaparazzi.mapsforge.core.proj.SliderDrawProjection;
+//import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.mapsforge.utils.MapsforgeUtils;
 //import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
 //
@@ -77,7 +77,7 @@
 //    private int buttonSelectionColor;
 //    private List<Feature> selectedFeatures = new ArrayList<>();
 //    private ImageButton deleteFeatureButton;
-//    private SliderDrawProjection editingViewProjection;
+//    private OverlayViewProjection editingViewProjection;
 //
 //    private Paint geometryPaintStroke;
 //    private Paint geometryPaintFill;
@@ -109,7 +109,7 @@
 //        this.selectedFeatures.addAll(selectedFeatures);
 //
 //        EditingView editingView = EditManager.INSTANCE.getEditingView();
-//        editingViewProjection = new SliderDrawProjection(mapView, editingView);
+//        editingViewProjection = new OverlayViewProjection(mapView, editingView);
 //        buttonSelectionColor = Compat.getColor(editingView.getContext(), R.color.main_selection);
 //
 //
@@ -316,7 +316,7 @@
 //    public void onToolDraw(Canvas canvas) {
 //        try {
 //            if (selectedFeatures.size() > 0) {
-//                SliderDrawProjection projection = editingViewProjection;
+//                OverlayViewProjection projection = editingViewProjection;
 //                IMapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
 //
 //                byte zoomLevelBeforeDraw = mapPosition.getZoomLevel();

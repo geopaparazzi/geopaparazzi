@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.utils.EGeometryType;
@@ -50,6 +51,7 @@ import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.NotesLayer;
+import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 public class GPMapView extends org.oscim.android.MapView {
     private GpsServiceStatus lastGpsServiceStatus;
@@ -74,6 +76,7 @@ public class GPMapView extends org.oscim.android.MapView {
 
     private float lastUsedBearing = -1;
     private CurrentGpsLogLayer currentGpsLogLayer;
+    private View editingView;
 
     public GPMapView(Context context) {
         super(context);
@@ -92,6 +95,13 @@ public class GPMapView extends org.oscim.android.MapView {
 
     }
 
+    public GPMapProjection getProjection() {
+        return new GPMapProjection(this);
+    }
+
+    public OverlayViewProjection getOverlayViewProjection() {
+        return new OverlayViewProjection(this, editingView);
+    }
 
     public void repaint() {
         invalidate();
@@ -446,5 +456,9 @@ public class GPMapView extends org.oscim.android.MapView {
         }
 
         PositionUtilities.putMapCenterInPreferences(peferences, lon, lat, zoom);
+    }
+
+    public void setEditingView(View editingView) {
+        this.editingView = editingView;
     }
 }

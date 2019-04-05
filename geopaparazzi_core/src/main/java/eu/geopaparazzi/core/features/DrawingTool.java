@@ -18,9 +18,8 @@
 
 package eu.geopaparazzi.core.features;
 
+import android.graphics.Canvas;
 import android.view.MotionEvent;
-
-import eu.geopaparazzi.map.GPCanvas;
 
 
 /**
@@ -33,9 +32,9 @@ public interface DrawingTool extends Tool {
     /**
      * Called when the tool should draw.
      * 
-     * @param canvas the {@link GPCanvas} to draw on.
+     * @param canvas the {@link Canvas} to draw on.
      */
-    public void onToolDraw(GPCanvas canvas);
+    public void onToolDraw(Canvas canvas);
 
     /**
      * Called on a touch event.
