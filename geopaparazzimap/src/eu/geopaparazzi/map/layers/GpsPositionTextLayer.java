@@ -131,8 +131,8 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
         }
 
         int margin = 6;
-        int imageWidth = (int) (maxWidth + margin);
-        int imageHeight = (int) (lines.size() * refHeight);
+        int imageWidth = (int) (maxWidth + margin * 3);
+        int imageHeight = (int) (lines.size() * refHeight + refHeight);
         Bitmap titleBitmap = CanvasAdapter.newBitmap(imageWidth, imageHeight + margin, 0);
         org.oscim.backend.canvas.Canvas titleCanvas = CanvasAdapter.newCanvas();
         titleCanvas.setBitmap(titleBitmap);
@@ -140,7 +140,7 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
         titleCanvas.fillRectangle(0, 0, imageWidth, imageHeight, TRANSP_WHITE);
 
 
-        int x = margin;
+        int x = margin * 2;
         int count = 1;
         for (String line : lines) {
             float deltaY = refHeight * count;

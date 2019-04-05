@@ -64,11 +64,13 @@ public class GPMapView extends org.oscim.android.MapView {
     private GpsPositionTextLayer locationTextLayer;
 
     public static final int MAPSFORGE_PRE = 0;
-    public static final int OVERLAYS = 1;
-    public static final int GEOPAPARAZZI = 2;
-    public static final int MAPSFORGE_POST = 3;
-    public static final int SYSTEM = 4;
-    public static final int ON_TOP_GEOPAPARAZZI = 5;
+    public static final int DEFAULT_ONLINE_SERVICES = 1;
+    public static final int OVERLAYS = 2;
+    public static final int GEOPAPARAZZI = 3;
+    public static final int MAPSFORGE_POST = 4;
+    public static final int SYSTEM = 5;
+    public static final int ON_TOP_GEOPAPARAZZI = 6;
+    public static final int ON_TOP_SYSTEM = 7;
 
     private float lastUsedBearing = -1;
     private CurrentGpsLogLayer currentGpsLogLayer;
@@ -80,11 +82,13 @@ public class GPMapView extends org.oscim.android.MapView {
 
         Layers layers = map().layers();
         layers.addGroup(MAPSFORGE_PRE);
+        layers.addGroup(DEFAULT_ONLINE_SERVICES);
         layers.addGroup(OVERLAYS);
         layers.addGroup(GEOPAPARAZZI);
         layers.addGroup(MAPSFORGE_POST);
         layers.addGroup(SYSTEM);
         layers.addGroup(ON_TOP_GEOPAPARAZZI);
+        layers.addGroup(ON_TOP_SYSTEM);
 
     }
 
@@ -348,7 +352,7 @@ public class GPMapView extends org.oscim.android.MapView {
                     locationTextLayer.disable();
 //                    map().layers().add(locationTextLayer);
                     Layers layers = map().layers();
-                    layers.add(locationTextLayer, SYSTEM);
+                    layers.add(locationTextLayer, ON_TOP_SYSTEM);
                 }
                 if (peferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false))
                     locationTextLayer.enable();
@@ -365,7 +369,8 @@ public class GPMapView extends org.oscim.android.MapView {
 
     /**
      * Get a gps status update.
-     *  @param lastGpsServiceStatus
+     *
+     * @param lastGpsServiceStatus
      * @param lastGpsPosition       [lon, lat, elev]
      * @param lastGpsPositionExtras [accuracy, speed, bearing]
      * @param lastGpsStatusExtras   [maxSatellites, satCount, satUsedInFixCount]

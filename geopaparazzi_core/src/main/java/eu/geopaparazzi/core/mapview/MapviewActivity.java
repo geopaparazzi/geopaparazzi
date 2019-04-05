@@ -1224,11 +1224,12 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             edit2.apply();
             return true;
         } else if (i == R.id.center_on_gps_btn) {
-            String[] items = new String[]{"center on gps", "rotate with bearing", "show info"};
+            String[] items = new String[]{"center on gps", "rotate with bearing", "show info", "hide accuracy"};
             boolean[] checkedItems = new boolean[items.length];
             checkedItems[0] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
             checkedItems[1] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
             checkedItems[2] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false);
+            checkedItems[3] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_IGNORE_GPS_ACCURACY, false);
 
             DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
                 checkedItems[which] = isChecked;
@@ -1239,21 +1240,25 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                     Editor edit = mPeferences.edit();
                     edit.putBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, centerOnGps);
                     edit.apply();
-                }
-                if (which == 1) {
+                } else if (which == 1) {
                     // check rotate map
                     boolean rotateMapWithGps = checkedItems[1];
                     Editor edit = mPeferences.edit();
                     edit.putBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, rotateMapWithGps);
                     edit.apply();
-                }
-                if (which == 2) {
+                } else if (which == 2) {
                     // check show info
                     boolean showGpsInfo = checkedItems[2];
                     Editor edit = mPeferences.edit();
                     edit.putBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, showGpsInfo);
                     edit.apply();
                     mapView.toggleLocationTextLayer(showGpsInfo);
+                } else if (which == 3) {
+                    // check show info
+                    boolean ignoreAccuracy = checkedItems[3];
+                    Editor edit = mPeferences.edit();
+                    edit.putBoolean(LibraryConstants.PREFS_KEY_IGNORE_GPS_ACCURACY, ignoreAccuracy);
+                    edit.apply();
                 }
             };
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

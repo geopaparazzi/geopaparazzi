@@ -69,15 +69,14 @@ public class GpsLogsLayer extends VectorLayer {
 
             Point startPoint = lineString.getStartPoint();
 
-            double widthKm = gpsLog.width / 1000;
-//            double longitudeFromMeters = MercatorUtils.metersXToLongitude(gpsLog.width);
             Style pointStyle = Style.builder()
-//                    .buffer(longitudeFromMeters)
+                    .buffer(gpsLog.width)
                     .fillColor(ColorUtilities.toColor(gpsLog.color))
                     .strokeColor(ColorUtilities.toColor(gpsLog.color))
+                    .scaleZoomLevel(19)
                     .fillAlpha(1)
                     .build();
-            add(new CircleDrawable(new GeoPoint(startPoint.getY(), startPoint.getX()), widthKm, pointStyle));
+            add(new PointDrawable(startPoint.getY(), startPoint.getX(), pointStyle));
         }
         update();
     }
