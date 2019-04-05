@@ -18,7 +18,6 @@ import org.oscim.backend.canvas.Color;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
-import org.oscim.event.Event;
 import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -30,7 +29,6 @@ import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
-import org.oscim.map.Map;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
@@ -47,6 +45,7 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.map.layers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.CurrentGpsLogLayer;
 import eu.geopaparazzi.map.layers.GpsLogsLayer;
 import eu.geopaparazzi.map.layers.GpsPositionLayer;
@@ -54,7 +53,6 @@ import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.NotesLayer;
-import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 public class GPMapView extends org.oscim.android.MapView {
     public static interface GPMapUpdateListener {
@@ -71,6 +69,7 @@ public class GPMapView extends org.oscim.android.MapView {
     private GpsLogsLayer gpsLogsLayer;
     private ImagesLayer imagesLayer;
     private GpsPositionTextLayer locationTextLayer;
+    private BookmarkLayer bookmarksLayer;
 
     public static final int MAPSFORGE_PRE = 0;
     public static final int DEFAULT_ONLINE_SERVICES = 1;
@@ -300,6 +299,21 @@ public class GPMapView extends org.oscim.android.MapView {
 //                map().layers().add(notesLayer);
                 Layers layers = map().layers();
                 layers.add(notesLayer, ON_TOP_GEOPAPARAZZI);
+            }
+            notesLayer.enable();
+        } else {
+            if (notesLayer != null)
+                notesLayer.disable();
+        }
+    }
+
+    public void toggleBookmarksLayer(boolean enable) {
+        if (enable) {
+            if (bookmarksLayer == null) {
+                bookmarksLayer = new BookmarkLayer(this);
+//                map().layers().add(notesLayer);
+                Layers layers = map().layers();
+                layers.add(bookmarksLayer, ON_TOP_GEOPAPARAZZI);
             }
             notesLayer.enable();
         } else {

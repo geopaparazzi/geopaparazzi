@@ -294,6 +294,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
             mapView.toggleGpsLogsLayer(true);
             mapView.toggleCurrentGpsLogLayer(true);
+            mapView.toggleBookmarksLayer(true);
             mapView.toggleNotesLayer(true);
             mapView.toggleImagesLayer(true);
             mapView.toggleLocationLayer(true);
