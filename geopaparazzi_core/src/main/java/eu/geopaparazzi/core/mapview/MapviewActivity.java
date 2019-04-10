@@ -286,11 +286,13 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
 
             // Tile source
-            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
-            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
-            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
-            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
-            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
+//            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
+//            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
+//            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
+//            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
+//            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
+
+            mapView.addVectorTilesLayer("https://vectortiles.xyz/zxy/tapioca", "/{Z}/{X}/{Y}.pbf");
 
             mapView.toggleGpsLogsLayer(true);
             mapView.toggleCurrentGpsLogLayer(true);

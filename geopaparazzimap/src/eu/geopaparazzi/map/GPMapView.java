@@ -30,6 +30,8 @@ import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
 import org.oscim.theme.VtmThemes;
+import org.oscim.tiling.source.OkHttpEngine;
+import org.oscim.tiling.source.UrlTileSource;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
 import org.oscim.utils.ColorUtil;
@@ -53,6 +55,7 @@ import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.ImagesLayer;
 import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.NotesLayer;
+import eu.geopaparazzi.map.layers.VectorTilesOnlineSource;
 
 public class GPMapView extends org.oscim.android.MapView {
     public static interface GPMapUpdateListener {
@@ -232,6 +235,30 @@ public class GPMapView extends org.oscim.android.MapView {
         }
     }
 
+    public void addVectorTilesLayer(String url, String tilePath) {
+
+        UrlTileSource tileSource = VectorTilesOnlineSource.builder()
+//                .apiKey("xxxxxxx") // Put a proper API key
+                .url(url).tilePath(tilePath)
+                .zoomMin(0).zoomMax(20)
+                .httpFactory(new OkHttpEngine.OkHttpFactory())
+                //.locale("en")
+                .build();
+
+//        if (USE_CACHE) {
+//            // Cache the tiles into a local SQLite database
+//            mCache = new TileCache(this, null, "tile.db");
+//            mCache.setCacheSize(512 * (1 << 10));
+//            tileSource.setCache(mCache);
+//        }
+
+        VectorTileLayer l = new OsmTileLayer(map());
+        l.setTileSource(tileSource);
+        l.setEnabled(true);
+        Layers layers = map().layers();
+        layers.add(l, OVERLAYS);
+    }
+
     public void addSpatialDbLayer(ASpatialDb spatialDb, String tableName) throws Exception {
         VectorLayer vectorLayer = new VectorLayer(mMap);
 
@@ -315,10 +342,10 @@ public class GPMapView extends org.oscim.android.MapView {
                 Layers layers = map().layers();
                 layers.add(bookmarksLayer, ON_TOP_GEOPAPARAZZI);
             }
-            notesLayer.enable();
+            bookmarksLayer.enable();
         } else {
-            if (notesLayer != null)
-                notesLayer.disable();
+            if (bookmarksLayer != null)
+                bookmarksLayer.disable();
         }
     }
 

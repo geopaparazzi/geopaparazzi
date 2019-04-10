@@ -20,6 +20,8 @@ dependencies {
     //    api 'org.mapsforge:mapsforge-map-android:0.11.0'
     api 'org.mapsforge:vtm:0.11.0'
     api 'org.mapsforge:vtm-themes:0.11.0'
+    api 'org.mapsforge:vtm-mvt:0.11.0'
+    api 'org.mapsforge:vtm-http:0.11.0'
     implementation 'org.slf4j:slf4j-api:1.7.25'
     api 'org.mapsforge:vtm-android:0.11.0'
     implementation 'org.mapsforge:vtm-android:0.11.0:natives-armeabi-v7a'
