@@ -58,10 +58,8 @@ dependencies {
     api 'ch.acra:acra:4.9.0'
     api 'com.androidplot:androidplot-core:0.6.1'
     api 'com.android.support:multidex:1.0.3'
-
     api 'org.mapsforge:vtm-jts:0.11.0'
     api 'org.locationtech.jts:jts-core:1.15.0'
-
 }
 
 repositories {

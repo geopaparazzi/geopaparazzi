@@ -72,7 +72,6 @@ dependencies {
 
     //    implementation project(':vtm-gdx-poi3d')
     api project(':geopaparazzilibrary')
-
     api fileTree(include: ['*.jar'], dir: 'libs')
 }
 android {
