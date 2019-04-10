@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.mapsforge:vtm-android:0.11.0:natives-x86_64'
     api 'com.caverock:androidsvg:1.3'
 
+    api 'com.github.woxthebox:draglistview:1.6.3'
+
     //    api 'org.mapsforge:vtm-gdx:0.11.0'
 
     //    api 'org.mapsforge:vtm-android-gdx:0.11.0'

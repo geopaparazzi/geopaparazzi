@@ -157,6 +157,15 @@ public enum ESpatialDataSources {
         return new String[]{MAPURL.getExtension().substring(1), MAP.getExtension().substring(1), SQLITE.getExtension().substring(1), MBTILES.getExtension().substring(1), DB.getExtension().substring(1)};
     }
 
+    public static String[] getAllSupportedExtensions() {
+        ESpatialDataSources[] sources = values();
+        String[] list = new String[sources.length];
+        for (int i = 0; i < sources.length; i++) {
+            list[i] = sources[i].getExtension().substring(1);
+        }
+        return list;
+    }
+
     /**
      * @return the db's type code.
      */

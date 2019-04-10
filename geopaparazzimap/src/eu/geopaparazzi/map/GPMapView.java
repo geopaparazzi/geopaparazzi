@@ -78,7 +78,7 @@ public class GPMapView extends org.oscim.android.MapView {
     public static final int DEFAULT_ONLINE_SERVICES = 1;
     public static final int OVERLAYS = 2;
     public static final int GEOPAPARAZZI = 3;
-    public static final int MAPSFORGE_POST = 4;
+    public static final int OBJECTS3D = 4;
     public static final int SYSTEM = 5;
     public static final int ON_TOP_GEOPAPARAZZI = 6;
     public static final int ON_TOP_SYSTEM = 7;
@@ -99,7 +99,7 @@ public class GPMapView extends org.oscim.android.MapView {
         layers.addGroup(DEFAULT_ONLINE_SERVICES);
         layers.addGroup(OVERLAYS);
         layers.addGroup(GEOPAPARAZZI);
-        layers.addGroup(MAPSFORGE_POST);
+        layers.addGroup(OBJECTS3D);
         layers.addGroup(SYSTEM);
         layers.addGroup(ON_TOP_GEOPAPARAZZI);
         layers.addGroup(ON_TOP_SYSTEM);
@@ -223,10 +223,10 @@ public class GPMapView extends org.oscim.android.MapView {
             layers.add(tileLayer, MAPSFORGE_PRE);
 
             // Building layer
-            layers.add(new BuildingLayer(map(), tileLayer), MAPSFORGE_POST);
+            layers.add(new BuildingLayer(map(), tileLayer), OBJECTS3D);
 //            map().layers().add(new BuildingLayer(map(), tileLayer));
             // Label layer
-            layers.add(new LabelLayer(map(), tileLayer), MAPSFORGE_POST);
+            layers.add(new LabelLayer(map(), tileLayer), OBJECTS3D);
 //            map().layers().add(new LabelLayer(map(), tileLayer));
 
             // Render theme

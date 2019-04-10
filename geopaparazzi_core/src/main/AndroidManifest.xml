@@ -308,6 +308,8 @@
         <activity android:name="eu.geopaparazzi.library.webprofile.WebProfilesListActivity" />
         <activity android:name="eu.geopaparazzi.library.webprofile.WebProfilesUploadListActivity" />
 
+        <activity android:name="eu.geopaparazzi.map.utils.MainActivity" />
+
         <activity
             android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
             android:label="@string/Images"

@@ -128,6 +128,7 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.GPMapScaleBarLayer;
+import eu.geopaparazzi.map.utils.MainActivity;
 import jsqlite.Database;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
@@ -248,6 +249,17 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         menuButton.setOnClickListener(this);
         menuButton.setOnLongClickListener(this);
         registerForContextMenu(menuButton);
+
+        FloatingActionButton layerButton = findViewById(R.id.layers_map_button);
+        layerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapTagsIntent = new Intent(MapviewActivity.this, MainActivity.class);
+                startActivity(mapTagsIntent);
+            }
+        });
+
+
 
         // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
