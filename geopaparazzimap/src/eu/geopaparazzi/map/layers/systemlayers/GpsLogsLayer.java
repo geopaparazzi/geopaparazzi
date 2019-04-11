@@ -1,42 +1,34 @@
-package eu.geopaparazzi.map.layers;
+package eu.geopaparazzi.map.layers.systemlayers;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 
-import org.hortonmachine.dbs.utils.MercatorUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.oscim.backend.canvas.Paint;
-import org.oscim.core.GeoPoint;
-import org.oscim.layers.vector.JtsConverter;
 import org.oscim.layers.vector.VectorLayer;
-import org.oscim.layers.vector.geometries.CircleDrawable;
 import org.oscim.layers.vector.geometries.LineDrawable;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.Style;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 
-import static eu.geopaparazzi.library.database.TableDescriptions.*;
-
-import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.MapUtilities;
-import eu.geopaparazzi.map.layers.items.GpsLog;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.utils.GpsLog;
 
-public class GpsLogsLayer extends VectorLayer {
+public class GpsLogsLayer extends VectorLayer implements ISystemLayer{
 
     private final SharedPreferences peferences;
 
@@ -91,5 +83,13 @@ public class GpsLogsLayer extends VectorLayer {
         setEnabled(true);
     }
 
+    @Override
+    public String getName() {
+        return "Gps Log";
+    }
 
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return toDefaultJson();
+    }
 }

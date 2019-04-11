@@ -1,13 +1,9 @@
-package eu.geopaparazzi.map.layers;
+package eu.geopaparazzi.map.layers.systemlayers;
 
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.preference.PreferenceManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oscim.android.canvas.AndroidGraphics;
 import org.oscim.backend.CanvasAdapter;
 import org.oscim.backend.canvas.Bitmap;
@@ -19,27 +15,20 @@ import org.oscim.layers.marker.MarkerItem;
 import org.oscim.layers.marker.MarkerSymbol;
 import org.oscim.map.Map;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.library.GPApplication;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DECIMAL_FORMATTER_1;
 
-public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem> {
+public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
@@ -195,4 +184,13 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
 
     }
 
+    @Override
+    public String getName() {
+        return "Gps Info";
+    }
+
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return toDefaultJson();
+    }
 }

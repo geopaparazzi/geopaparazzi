@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.TableDescriptions;
-import eu.geopaparazzi.map.layers.items.GpsLog;
+import eu.geopaparazzi.map.layers.utils.GpsLog;
 
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_DATA;

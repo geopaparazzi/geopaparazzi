@@ -1,4 +1,4 @@
-package eu.geopaparazzi.map.layers.items;
+package eu.geopaparazzi.map.layers.utils;
 
 import org.locationtech.jts.geom.Coordinate;
 

@@ -1,9 +1,11 @@
-package eu.geopaparazzi.map.layers;
+package eu.geopaparazzi.map.layers.systemlayers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oscim.backend.canvas.Bitmap;
 import org.oscim.backend.canvas.Color;
 import org.oscim.layers.LocationTextureLayer;
@@ -18,9 +20,10 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
 import eu.geopaparazzi.map.vtm.VtmUtilities;
 
-public class GpsPositionLayer extends LocationTextureLayer {
+public class GpsPositionLayer extends LocationTextureLayer implements ISystemLayer {
     private static TextureRegion activeTexture;
     private static TextureRegion staleTexture;
     private static TextureRegion movingTexture;
@@ -120,5 +123,16 @@ public class GpsPositionLayer extends LocationTextureLayer {
 
     public void enable() {
         setEnabled(true);
+    }
+
+
+    @Override
+    public String getName() {
+        return "Gps Position";
+    }
+
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return toDefaultJson();
     }
 }

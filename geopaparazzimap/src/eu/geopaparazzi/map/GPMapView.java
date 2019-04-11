@@ -18,6 +18,7 @@ import org.oscim.backend.canvas.Color;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
+import org.oscim.layers.Layer;
 import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
@@ -47,14 +48,15 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.map.layers.BookmarkLayer;
-import eu.geopaparazzi.map.layers.CurrentGpsLogLayer;
-import eu.geopaparazzi.map.layers.GpsLogsLayer;
-import eu.geopaparazzi.map.layers.GpsPositionLayer;
-import eu.geopaparazzi.map.layers.GpsPositionTextLayer;
-import eu.geopaparazzi.map.layers.ImagesLayer;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
+import eu.geopaparazzi.map.layers.systemlayers.CurrentGpsLogLayer;
+import eu.geopaparazzi.map.layers.systemlayers.GpsLogsLayer;
+import eu.geopaparazzi.map.layers.systemlayers.GpsPositionLayer;
+import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
+import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
 import eu.geopaparazzi.map.layers.MBTilesTileSource;
-import eu.geopaparazzi.map.layers.NotesLayer;
+import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 import eu.geopaparazzi.map.layers.VectorTilesOnlineSource;
 
 public class GPMapView extends org.oscim.android.MapView {
@@ -74,14 +76,6 @@ public class GPMapView extends org.oscim.android.MapView {
     private GpsPositionTextLayer locationTextLayer;
     private BookmarkLayer bookmarksLayer;
 
-    public static final int MAPSFORGE_PRE = 0;
-    public static final int DEFAULT_ONLINE_SERVICES = 1;
-    public static final int OVERLAYS = 2;
-    public static final int GEOPAPARAZZI = 3;
-    public static final int OBJECTS3D = 4;
-    public static final int SYSTEM = 5;
-    public static final int ON_TOP_GEOPAPARAZZI = 6;
-    public static final int ON_TOP_SYSTEM = 7;
 
     private float lastUsedBearing = -1;
     private CurrentGpsLogLayer currentGpsLogLayer;
@@ -93,17 +87,6 @@ public class GPMapView extends org.oscim.android.MapView {
         super(context);
 
         peferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        Layers layers = map().layers();
-        layers.addGroup(MAPSFORGE_PRE);
-        layers.addGroup(DEFAULT_ONLINE_SERVICES);
-        layers.addGroup(OVERLAYS);
-        layers.addGroup(GEOPAPARAZZI);
-        layers.addGroup(OBJECTS3D);
-        layers.addGroup(SYSTEM);
-        layers.addGroup(ON_TOP_GEOPAPARAZZI);
-        layers.addGroup(ON_TOP_SYSTEM);
-
 
         map().events.bind((e, mapPosition) -> {
             for (GPMapUpdateListener mapUpdateListener : mapUpdateListeners) {
@@ -147,7 +130,21 @@ public class GPMapView extends org.oscim.android.MapView {
                 return;
             }
         }
+    }
 
+    /**
+     * @return the position of the first system layer. from there only system layers should be.
+     */
+    public int getSystemLayersIndex() {
+        Layers layers = map().layers();
+        int index = 0;
+        for (Layer layer : layers) {
+            if (layer instanceof ISystemLayer) {
+                return index;
+            }
+            index++;
+        }
+        return index;
     }
 
     public void setScaleX(float mapScaleX) {
@@ -173,7 +170,6 @@ public class GPMapView extends org.oscim.android.MapView {
 
     public GPBBox getBoundingBox() {
         BoundingBox bb = map().getBoundingBox(0);
-
         return new GPBBox(bb.getMinLatitude(), bb.getMinLongitude(), bb.getMaxLatitude(), bb.getMaxLongitude());
     }
 
@@ -202,37 +198,6 @@ public class GPMapView extends org.oscim.android.MapView {
         FileOutputStream out = new FileOutputStream(imageFile);
         bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
         out.close();
-    }
-
-    public void setBaseMap(String... mapPaths) {
-        MultiMapFileTileSource tileSource = new MultiMapFileTileSource();
-        boolean okToLoad = false;
-        for (String mapPath : mapPaths) {
-            MapFileTileSource ts = new MapFileTileSource();
-            okToLoad = ts.setMapFile(mapPath);
-            if (okToLoad) {
-                tileSource.add(ts);
-            }
-        }
-        if (okToLoad) {
-            // Vector layer
-            VectorTileLayer tileLayer = new OsmTileLayer(map());
-            tileLayer.setTileSource(tileSource);
-//            VectorTileLayer tileLayer = map().setBaseMap(tileSource);
-            Layers layers = map().layers();
-            layers.add(tileLayer, MAPSFORGE_PRE);
-
-            // Building layer
-            layers.add(new BuildingLayer(map(), tileLayer), OBJECTS3D);
-//            map().layers().add(new BuildingLayer(map(), tileLayer));
-            // Label layer
-            layers.add(new LabelLayer(map(), tileLayer), OBJECTS3D);
-//            map().layers().add(new LabelLayer(map(), tileLayer));
-
-            // Render theme
-            setTheme(GPMapThemes.DEFAULT);
-
-        }
     }
 
     public void addVectorTilesLayer(String url, String tilePath) {

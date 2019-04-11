@@ -1,7 +1,9 @@
-package eu.geopaparazzi.map.layers;
+package eu.geopaparazzi.map.layers.systemlayers;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -18,9 +20,10 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.MapUtilities;
-import eu.geopaparazzi.map.layers.items.GpsLog;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.utils.GpsLog;
 
-public class CurrentGpsLogLayer extends VectorLayer {
+public class CurrentGpsLogLayer extends VectorLayer implements ISystemLayer {
     private GeometryFactory gf = new GeometryFactory();
     private GpsLog lastLog;
     private Style lineStyle;
@@ -85,5 +88,15 @@ public class CurrentGpsLogLayer extends VectorLayer {
 
     public void enable() {
         setEnabled(true);
+    }
+
+    @Override
+    public String getName() {
+        return "Current Log";
+    }
+
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return toDefaultJson();
     }
 }

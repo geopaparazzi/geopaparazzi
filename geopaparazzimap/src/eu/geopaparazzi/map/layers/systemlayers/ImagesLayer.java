@@ -1,14 +1,13 @@
-package eu.geopaparazzi.map.layers;
+package eu.geopaparazzi.map.layers.systemlayers;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.preference.PreferenceManager;
 
-import org.hortonmachine.dbs.utils.MercatorUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oscim.android.canvas.AndroidGraphics;
 import org.oscim.backend.CanvasAdapter;
 import org.oscim.backend.canvas.Bitmap;
@@ -18,9 +17,6 @@ import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
 import org.oscim.layers.marker.MarkerSymbol;
-import org.oscim.layers.vector.VectorLayer;
-import org.oscim.layers.vector.geometries.PointDrawable;
-import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Map;
 
 import java.io.IOException;
@@ -37,18 +33,18 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.vtm.VtmUtilities;
+import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
 
-public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem> {
+public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem> , ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
-    private static Bitmap notesBitmap;
+    private static Bitmap imagesBitmap;
     private GPMapView mapView;
     private static int textSize;
     private static String colorStr;
 
-    public NotesLayer(GPMapView mapView) {
+    public ImagesLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
         setOnItemGestureListener(this);
@@ -64,96 +60,61 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
     private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
         SharedPreferences peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
-        // notes type
-        boolean doCustom = peferences.getBoolean(LibraryConstants.PREFS_KEY_NOTES_CHECK, true);
         String textSizeStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_TEXT_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
         textSize = Integer.parseInt(textSizeStr);
         colorStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.ALMOST_BLACK.getHex());
-        Drawable notesDrawable;
-        if (doCustom) {
-            String opacityStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
-            String sizeStr = peferences.getString(LibraryConstants.PREFS_KEY_NOTES_SIZE, LibraryConstants.DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-            int noteSize = Integer.parseInt(sizeStr);
-            float opacity = Integer.parseInt(opacityStr);
+        Drawable imagesDrawable = Compat.getDrawable(mapView.getContext(), eu.geopaparazzi.library.R.drawable.ic_images_48dp);
 
-            OvalShape notesShape = new OvalShape();
-            android.graphics.Paint notesPaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-            notesPaint.setStyle(android.graphics.Paint.Style.FILL);
-            notesPaint.setColor(ColorUtilities.toColor(colorStr));
-            notesPaint.setAlpha((int) opacity);
+        imagesBitmap = AndroidGraphics.drawableToBitmap(imagesDrawable);
 
-            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
-            android.graphics.Paint paint = notesShapeDrawable.getPaint();
-            paint.set(notesPaint);
-            notesShapeDrawable.setIntrinsicHeight(noteSize);
-            notesShapeDrawable.setIntrinsicWidth(noteSize);
-            notesDrawable = notesShapeDrawable;
-        } else {
-            notesDrawable = Compat.getDrawable(mapView.getContext(), eu.geopaparazzi.library.R.drawable.ic_place_accent_24dp);
-        }
-
-        notesBitmap = AndroidGraphics.drawableToBitmap(notesDrawable);
-
-        return new MarkerSymbol(notesBitmap, MarkerSymbol.HotspotPlace.CENTER, false);
+        return new MarkerSymbol(imagesBitmap, MarkerSymbol.HotspotPlace.UPPER_LEFT_CORNER, false);
     }
 
-    public NotesLayer(Map map, MarkerSymbol defaultMarker) {
+    public ImagesLayer(Map map, MarkerSymbol defaultMarker) {
         super(map, defaultMarker);
     }
 
     public void reloadData() throws IOException {
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
-        String query = "SELECT " +//
-                TableDescriptions.NotesTableFields.COLUMN_ID.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_LON.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_LAT.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_ALTIM.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_TEXT.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_TS.getFieldName() +
-                ", " +//
-                TableDescriptions.NotesTableFields.COLUMN_FORM.getFieldName() +//
-                " FROM " + TableDescriptions.TABLE_NOTES;
-        query = query + " WHERE " + TableDescriptions.NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
+        List<MarkerItem> images = new ArrayList<>();
+        String asColumnsToReturn[] = {//
+                TableDescriptions.ImageTableFields.COLUMN_LON.getFieldName(),//
+                TableDescriptions.ImageTableFields.COLUMN_LAT.getFieldName(), //
+                TableDescriptions.ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(),//
+                TableDescriptions.ImageTableFields.COLUMN_ALTIM.getFieldName(),//
+                TableDescriptions.ImageTableFields.COLUMN_TS.getFieldName(),//
+                TableDescriptions.ImageTableFields.COLUMN_TEXT.getFieldName()//
+        };
+        String strSortOrder = "_id ASC";
+        String whereString = TableDescriptions.ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
+        Cursor c = sqliteDatabase.query(TableDescriptions.TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            double lon = c.getDouble(0);
+            double lat = c.getDouble(1);
+            long imageDataId = c.getLong(2);
+            double elev = c.getDouble(3);
+            long ts = c.getLong(4);
+            String text = c.getString(5);
 
-        List<MarkerItem> pts = new ArrayList<>();
-        try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                int i = 0;
-                long id = c.getLong(i++);
-                double lon = c.getDouble(i++);
-                double lat = c.getDouble(i++);
-                double elev = c.getDouble(i++);
-                String text = c.getString(i++);
-                long ts = c.getLong(i++);
-                String form = c.getString(i);
-                boolean hasForm = form != null && form.length() > 0;
+            String descr = "note: " + text + "\n" +
+                    "id: " + imageDataId + "\n" +
+                    "longitude: " + lon + "\n" +
+                    "latitude: " + lat + "\n" +
+                    "elevation: " + elev + "\n" +
+                    "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));
 
-
-                String descr = "note: " + text + "\n" +
-                        "id: " + id + "\n" +
-                        "longitude: " + lon + "\n" +
-                        "latitude: " + lat + "\n" +
-                        "elevation: " + elev + "\n" +
-                        "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts)) + "\n" +
-                        "has form: " + hasForm;
-
-                pts.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
-                c.moveToNext();
-            }
-
-            for (MarkerItem mi : pts) {
-                mi.setMarker(createAdvancedSymbol(mi, notesBitmap));
-            }
-            addItems(pts);
+            images.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
+            c.moveToNext();
         }
+        c.close();
 
+
+        for (MarkerItem mi : images) {
+            mi.setMarker(createAdvancedSymbol(mi, imagesBitmap));
+        }
+        addItems(images);
 
         update();
     }
@@ -207,7 +168,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
         int bitmapHeight = poiBitmap.getHeight();
         int margin = 3;
-        int dist2symbol = (int) Math.round(bitmapHeight * 1.5);
+        int dist2symbol = (int) Math.round(bitmapHeight / 2.0);
 
         int titleWidth = ((int) haloTextPainter.getTextWidth(item.title) + 2 * margin);
         int titleHeight = (int) (haloTextPainter.getTextHeight(item.title) + textPainter.getFontDescent() + 2 * margin);
@@ -235,5 +196,15 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
         markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.5f), ySize * 0.5f - (symbolWidth * 0.5f));
 
         return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
+    }
+
+    @Override
+    public String getName() {
+        return "Project Images";
+    }
+
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return toDefaultJson();
     }
 }
