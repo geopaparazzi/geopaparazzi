@@ -13,6 +13,7 @@ import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
 import org.oscim.layers.marker.MarkerSymbol;
+import org.oscim.map.Layers;
 import org.oscim.map.Map;
 
 import java.util.ArrayList;
@@ -23,15 +24,18 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
+import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DECIMAL_FORMATTER_1;
 
-public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, ISystemLayer {
+public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, IPositionLayer, ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
+    public static final String NAME = "Gps Info";
     private static Bitmap notesBitmap;
     private GPMapView mapView;
 
@@ -185,12 +189,43 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     }
 
     @Override
+    public String getId() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
-        return "Gps Info";
+        return NAME;
+    }
+
+    @Override
+    public GPMapView getMapView() {
+        return mapView;
+    }
+
+    @Override
+    public void load() {
+        Layers layers = map().layers();
+        layers.add(this, LayerGroups.GROUP_SYSTEM_TOP.getGroupId());
     }
 
     @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 }

@@ -65,12 +65,18 @@ import android.widget.Toast;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
+import org.json.JSONException;
 import org.oscim.backend.canvas.Color;
+import org.oscim.layers.tile.buildings.BuildingLayer;
+import org.oscim.layers.tile.vector.OsmTileLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
+import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.Style;
+import org.oscim.map.Layers;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
+import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
 import org.oscim.utils.ColorUtil;
 
 import java.io.File;
@@ -128,6 +134,7 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.GPMapScaleBarLayer;
+import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.utils.MainActivity;
 import jsqlite.Database;
 
@@ -260,7 +267,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         });
 
 
-
         // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
@@ -279,96 +285,41 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         mapView.setClickable(true);
 //        mapView.setBuiltInZoomControls(false);
         mapView.setOnTouchListener(this);
-        GPLayers layers = mapView.getLayers();
 
         try {
-            // TODO remove this hardcoded testing
-//        mapView.getModel().displayModel.setFixedTileSize(256); // just for mbtiles
-
-            // MAP FILES
-//            MBTilesTileCache tileCache = AndroidUtil.createTileCache(this, "mapcache",
-//                    mapView.getModel().displayModel.getTileSize(), 1f,
-//                    mapView.getModel().frameBufferModel.getOverdrawFactor(), true);
-//            File mapFile = new File(Environment.getExternalStorageDirectory(), "maps/italy.map");
-//            MapDataStore mapDataStore = new MapFile(mapFile);
-//            TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
-//                    mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-//            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
-//            layers.add(tileRendererLayer);
-
-
-            // Tile source
-            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
-            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
-            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
-            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
-            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
-
-//            mapView.addVectorTilesLayer("https://vectortiles.xyz/zxy/tapioca", "/{Z}/{X}/{Y}.pbf");
-
-            mapView.toggleGpsLogsLayer(true);
-            mapView.toggleCurrentGpsLogLayer(true);
-            mapView.toggleBookmarksLayer(true);
-            mapView.toggleNotesLayer(true);
-            mapView.toggleImagesLayer(true);
-            mapView.toggleLocationLayer(true);
-            mapView.toggleLocationTextLayer(true);
-
-
-            // ONLINE OSM
-//        MBTilesTileCache osmTileCache = AndroidUtil.createTileCache(this, "osmcache",
-//                mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-//                mapView.getModel().frameBufferModel.getOverdrawFactor(), true);
-//        osmLayer = new TileDownloadLayer(osmTileCache,
-//                mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-//                AndroidGraphicFactory.INSTANCE);
-//        layers.add(osmLayer);
-
-
-//            // MBTILES FILES
-//        File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "italy.mbtiles");
-            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
-            mapView.addMBTilesLayer(mbtilesFile.getAbsolutePath(), null, Color.WHITE);
-            File mbtilesFile2 = new File(Environment.getExternalStorageDirectory(), "maps/bolzano.mbtiles");
-            mapView.addMBTilesLayer(mbtilesFile2.getAbsolutePath(), 128, null);
-
-//            MBTilesStore tileStore = new MBTilesStore(mbtilesFile);
-//            tileStore.setRowType("tms");
-////        InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
-////                mapView.getModel().displayModel.getTileSize(),
-////                mapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
-////        TwoLevelTileCache mbtilesCache = new TwoLevelTileCache(memoryTileCache, tileStore);
-//            TileStoreLayer tileStoreLayer = new TileStoreLayer(tileStore,
-//                    mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, true);
-//            layers.add(tileStoreLayer);
+//            // Tile source
+//            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
+//            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
+//            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
+//            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
+//            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
 //
-//            // RL2 FILES
-////            1873.berlin_stadt_postgrenzen_rasterlite2.rl2
-//            File rl2File = new File(Environment.getExternalStorageDirectory(), "maps/1873.berlin_stadt_postgrenzen_rasterlite2.rl2");
-//            Rasterlite2Store rl2Store = new Rasterlite2Store(rl2File, "berlin_stadtteilgrenzen.1880", mapView.getModel().displayModel.getTileSize());
-//            TileStoreLayer rl2StoreLayer = new TileStoreLayer(rl2Store,
-//                    mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, true);
-//            layers.add(rl2StoreLayer);
+////            mapView.addVectorTilesLayer("https://vectortiles.xyz/zxy/tapioca", "/{Z}/{X}/{Y}.pbf");
 //
-            // SPATIALTE FILES
-            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
-
-
-            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
-            spatialDb.open(spatialiteFile.getAbsolutePath());
-            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
-
-            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
-            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
-
+//            mapView.toggleGpsLogsLayer(true);
+//            mapView.toggleCurrentGpsLogLayer(true);
+//            mapView.toggleBookmarksLayer(true);
+//            mapView.toggleNotesLayer(true);
+//            mapView.toggleImagesLayer(true);
+//            mapView.toggleLocationLayer(true);
+//            mapView.toggleLocationTextLayer(true);
 //
-//            gpsPositionLayer = new GpsPositionLayer(this);
-//            layers.add(gpsPositionLayer);
 //
-//            CurrentGpsLogLayer notesLayer = new CurrentGpsLogLayer(this);
-//            layers.add(notesLayer);
-
-
+////            // MBTILES FILES
+//            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
+//            mapView.addMBTilesLayer(mbtilesFile.getAbsolutePath(), null, Color.WHITE);
+//            File mbtilesFile2 = new File(Environment.getExternalStorageDirectory(), "maps/bolzano.mbtiles");
+//            mapView.addMBTilesLayer(mbtilesFile2.getAbsolutePath(), 128, null);
+//
+//            // SPATIALTE FILES
+//            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
+//            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
+//            spatialDb.open(spatialiteFile.getAbsolutePath());
+//            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
+//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
+//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
+//
+//
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -393,8 +344,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
         // Scale bar
 
-        mapView.getLayers().add(new GPMapScaleBarLayer(mapView));
-//        mapView.getMapScaleBar().setVisible(true);
+//        mapView.getLayers().add(new GPMapScaleBarLayer(mapView));
 
 
 //        MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
@@ -537,12 +487,14 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 //                tileDownloadLayer.onPause();
 //            }
 //        }
-
+        LayerManager.INSTANCE.onPause(mapView);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        LayerManager.INSTANCE.onResume(mapView);
+
 //        for (Layer layer : layerManager.getLayers()) {
 //            if (layer instanceof TileDownloadLayer) {
 //                TileDownloadLayer tileDownloadLayer = (TileDownloadLayer) layer;
@@ -611,6 +563,11 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
             GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
 
 
+        try {
+            LayerManager.INSTANCE.dispose(mapView);
+        } catch (JSONException e) {
+            GPLog.error(this, null, e);
+        }
         if (mapView != null) {
             mapView.destroyAll();
         }
@@ -1246,9 +1203,10 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                     Editor edit = mPeferences.edit();
                     edit.putBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, showGpsInfo);
                     edit.apply();
-                    mapView.toggleLocationTextLayer(showGpsInfo);
+
+//                    mapView.toggleLocationTextLayer(showGpsInfo);
                 } else if (which == 3) {
-                    // check show info
+                    // check ignore gps
                     boolean ignoreAccuracy = checkedItems[3];
                     Editor edit = mPeferences.edit();
                     edit.putBoolean(LibraryConstants.PREFS_KEY_IGNORE_GPS_ACCURACY, ignoreAccuracy);

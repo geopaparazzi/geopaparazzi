@@ -17,16 +17,19 @@ import java.util.stream.Collectors;
 
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.layers.persistence.IVectorTileOfflineLayer;
+import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
 
 public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLayer {
 
-    private final String name;
+    private String name;
     private String path;
     private GPMapView mapView;
     private String[] mapPaths;
+    private MultiMapFileTileSource tileSource;
 
-    public MapsforgeLayer(GPMapView mapView, String... mapPaths) {
+    public MapsforgeLayer(GPMapView mapView, String name, String... mapPaths) {
         super(mapView.map());
         this.mapView = mapView;
         this.mapPaths = mapPaths;
@@ -36,12 +39,14 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
             String mapName = FileUtilities.getNameWithoutExtention(new File(mapPath));
             names.add(mapName);
         }
-        name = names.stream().collect(Collectors.joining("-"));
+        this.name = name;
+        if (name == null)
+            this.name = names.stream().collect(Collectors.joining("-"));
         path = Arrays.stream(mapPaths).collect(Collectors.joining(PATHS_DELIMITER));
     }
 
-    public void load(Integer positionIndex) {
-        MultiMapFileTileSource tileSource = new MultiMapFileTileSource();
+    public void load() {
+        tileSource = new MultiMapFileTileSource();
         boolean okToLoad = false;
         for (String mapPath : mapPaths) {
             MapFileTileSource ts = new MapFileTileSource();
@@ -53,21 +58,25 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
         if (okToLoad) {
             setTileSource(tileSource);
 
-            int systemLayersIndex = mapView.getSystemLayersIndex();
-            Layers layers = map().layers();
-            if (positionIndex != null) {
-                layers.add(positionIndex, this);
-            } else {
-                layers.add(systemLayersIndex, this);
-            }
+            Layers layers = mapView.map().layers();
+            layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+
             // Building layer
-            systemLayersIndex = mapView.getSystemLayersIndex();
-            layers.add(systemLayersIndex, new BuildingLayer(map(), this));
+            layers.add(new BuildingLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
 
             // labels layer
-            layers.add(map().layers().size() - 1, new LabelLayer(map(), this));
-
+            layers.add(new LabelLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
         }
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 
     @Override
@@ -92,13 +101,14 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
 
     @Override
     public JSONObject toJson() throws JSONException {
-        // name
-        // path
-        // theme
-        // type
-        JSONObject jo = new JSONObject();
-        jo.put(LAYERNAME_TAG, name);
+        JSONObject jo = toDefaultJson();
         jo.put(LAYERPATH_TAG, path);
         return jo;
+    }
+
+    @Override
+    public void dispose() {
+        if (tileSource != null)
+            tileSource.close();
     }
 }

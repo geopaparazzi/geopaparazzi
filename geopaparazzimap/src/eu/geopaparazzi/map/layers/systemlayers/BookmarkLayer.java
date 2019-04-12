@@ -9,36 +9,33 @@ import android.preference.PreferenceManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.android.canvas.AndroidGraphics;
-import org.oscim.backend.CanvasAdapter;
 import org.oscim.backend.canvas.Bitmap;
-import org.oscim.backend.canvas.Color;
-import org.oscim.backend.canvas.Paint;
 import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
 import org.oscim.layers.marker.MarkerSymbol;
+import org.oscim.map.Layers;
 import org.oscim.map.Map;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
 public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
+    public static final String NAME = "Project Bookmarks";
     private static Bitmap imagesBitmap;
     private GPMapView mapView;
     private static String colorStr;
@@ -135,12 +132,43 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
 
 
     @Override
+    public String getId() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
-        return "Project Bookmarks";
+        return NAME;
+    }
+
+    @Override
+    public GPMapView getMapView() {
+        return mapView;
+    }
+
+    @Override
+    public void load() {
+        Layers layers = map().layers();
+        layers.add(this, LayerGroups.GROUP_SYSTEM_TOP.getGroupId());
+    }
+
+    @Override
+    public void dispose() {
+
     }
 
     @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 }

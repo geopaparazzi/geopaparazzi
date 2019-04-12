@@ -1,7 +1,4 @@
-package eu.geopaparazzi.map.layers.persistence;
-
-import eu.geopaparazzi.map.GPMapThemes;
-import eu.geopaparazzi.map.layers.utils.Vector3dLayerType;
+package eu.geopaparazzi.map.layers.interfaces;
 
 /**
  * A layer that allows for the creation also of the 3d buildings and labels.

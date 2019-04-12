@@ -15,6 +15,7 @@ import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.LineDrawable;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.Style;
+import org.oscim.map.Layers;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,17 +26,21 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.MapUtilities;
-import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.utils.GpsLog;
 
-public class GpsLogsLayer extends VectorLayer implements ISystemLayer{
+public class GpsLogsLayer extends VectorLayer implements ISystemLayer {
 
+    public static final String NAME = "Gps Log";
     private final SharedPreferences peferences;
+    private GPMapView mapView;
 
     public GpsLogsLayer(GPMapView mapView) {
         super(mapView.map());
 
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
+        this.mapView = mapView;
         try {
             reloadData();
         } catch (IOException e) {
@@ -84,12 +89,43 @@ public class GpsLogsLayer extends VectorLayer implements ISystemLayer{
     }
 
     @Override
+    public String getId() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
-        return "Gps Log";
+        return NAME;
+    }
+
+    @Override
+    public GPMapView getMapView() {
+        return mapView;
+    }
+
+    @Override
+    public void load() {
+        Layers layers = map().layers();
+        layers.add(this, LayerGroups.GROUP_SYSTEM.getGroupId());
     }
 
     @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 }

@@ -37,6 +37,7 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.map.layers.LayerManager;
 
 /**
  * Application singleton.
@@ -80,6 +81,8 @@ public class GeopaparazziApplication extends GPApplication {
         ResourcesManager.resetManager();
         try {
             ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+
+            LayerManager.INSTANCE.init();
         } catch (Exception e) {
             e.printStackTrace();
         }

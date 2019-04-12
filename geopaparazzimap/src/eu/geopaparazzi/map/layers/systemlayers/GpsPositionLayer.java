@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.oscim.backend.canvas.Bitmap;
 import org.oscim.backend.canvas.Color;
 import org.oscim.layers.LocationTextureLayer;
+import org.oscim.map.Layers;
 import org.oscim.map.Map;
 import org.oscim.renderer.atlas.TextureAtlas;
 import org.oscim.renderer.atlas.TextureRegion;
@@ -20,20 +21,25 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
+import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
+import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.vtm.VtmUtilities;
 
-public class GpsPositionLayer extends LocationTextureLayer implements ISystemLayer {
+public class GpsPositionLayer extends LocationTextureLayer implements IPositionLayer, ISystemLayer {
+    public static final String NAME = "Gps Position";
     private static TextureRegion activeTexture;
     private static TextureRegion staleTexture;
     private static TextureRegion movingTexture;
     private SharedPreferences peferences = null;
+    private GPMapView mapView;
 
     private float lastUsedBearing = -1;
 
     public GpsPositionLayer(GPMapView mapView) throws IOException {
         super(mapView.map(), createTextures(mapView.getContext()));
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
+        this.mapView = mapView;
 
 
         // set color of accuracy circle (Color.BLUE is default)
@@ -127,12 +133,43 @@ public class GpsPositionLayer extends LocationTextureLayer implements ISystemLay
 
 
     @Override
+    public String getId() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
-        return "Gps Position";
+        return NAME;
+    }
+
+    @Override
+    public GPMapView getMapView() {
+        return mapView;
+    }
+
+    @Override
+    public void load() {
+        Layers layers = map().layers();
+        layers.add(this, LayerGroups.GROUP_SYSTEM_TOP.getGroupId());
     }
 
     @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 }

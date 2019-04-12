@@ -9,37 +9,14 @@ import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.View;
 
-import org.hortonmachine.dbs.compat.ASpatialDb;
-import org.hortonmachine.dbs.utils.EGeometryType;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.Geometry;
-import org.oscim.backend.canvas.Color;
-import org.oscim.backend.canvas.Paint;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
 import org.oscim.layers.Layer;
-import org.oscim.layers.tile.bitmap.BitmapTileLayer;
-import org.oscim.layers.tile.buildings.BuildingLayer;
-import org.oscim.layers.tile.vector.OsmTileLayer;
-import org.oscim.layers.tile.vector.VectorTileLayer;
-import org.oscim.layers.tile.vector.labeling.LabelLayer;
-import org.oscim.layers.vector.VectorLayer;
-import org.oscim.layers.vector.geometries.LineDrawable;
-import org.oscim.layers.vector.geometries.PointDrawable;
-import org.oscim.layers.vector.geometries.PolygonDrawable;
-import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
 import org.oscim.theme.VtmThemes;
-import org.oscim.tiling.source.OkHttpEngine;
-import org.oscim.tiling.source.UrlTileSource;
-import org.oscim.tiling.source.mapfile.MapFileTileSource;
-import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
-import org.oscim.utils.ColorUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,16 +25,9 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.map.layers.persistence.ISystemLayer;
-import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
-import eu.geopaparazzi.map.layers.systemlayers.CurrentGpsLogLayer;
-import eu.geopaparazzi.map.layers.systemlayers.GpsLogsLayer;
-import eu.geopaparazzi.map.layers.systemlayers.GpsPositionLayer;
-import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
-import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
-import eu.geopaparazzi.map.layers.MBTilesTileSource;
-import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
-import eu.geopaparazzi.map.layers.VectorTilesOnlineSource;
+import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
+import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
     public static interface GPMapUpdateListener {
@@ -68,17 +38,10 @@ public class GPMapView extends org.oscim.android.MapView {
     private float[] lastGpsPositionExtras;
     private int[] lastGpsStatusExtras;
     private double[] lastGpsPosition;
-    private GpsPositionLayer locationLayer;
-    private NotesLayer notesLayer;
     private final SharedPreferences peferences;
-    private GpsLogsLayer gpsLogsLayer;
-    private ImagesLayer imagesLayer;
-    private GpsPositionTextLayer locationTextLayer;
-    private BookmarkLayer bookmarksLayer;
 
 
     private float lastUsedBearing = -1;
-    private CurrentGpsLogLayer currentGpsLogLayer;
     private View editingView;
 
     private List<GPMapUpdateListener> mapUpdateListeners = new ArrayList<>();
@@ -93,6 +56,8 @@ public class GPMapView extends org.oscim.android.MapView {
                 mapUpdateListener.onUpdate(new GPMapPosition(mapPosition));
             }
         });
+
+        LayerManager.INSTANCE.createGroups(this);
     }
 
     public void addMapUpdateListener(GPMapUpdateListener mapUpdateListener) {
@@ -200,207 +165,201 @@ public class GPMapView extends org.oscim.android.MapView {
         out.close();
     }
 
-    public void addVectorTilesLayer(String url, String tilePath) {
-
-        UrlTileSource tileSource = VectorTilesOnlineSource.builder()
-//                .apiKey("xxxxxxx") // Put a proper API key
-                .url(url).tilePath(tilePath)
-                .zoomMin(0).zoomMax(20)
-                .httpFactory(new OkHttpEngine.OkHttpFactory())
-                //.locale("en")
-                .build();
-
-//        if (USE_CACHE) {
-//            // Cache the tiles into a local SQLite database
-//            mCache = new TileCache(this, null, "tile.db");
-//            mCache.setCacheSize(512 * (1 << 10));
-//            tileSource.setCache(mCache);
+//    public void addVectorTilesLayer(String url, String tilePath) {
+//
+//        UrlTileSource tileSource = VectorTilesOnlineSource.builder()
+////                .apiKey("xxxxxxx") // Put a proper API key
+//                .url(url).tilePath(tilePath)
+//                .zoomMin(0).zoomMax(20)
+//                .httpFactory(new OkHttpEngine.OkHttpFactory())
+//                //.locale("en")
+//                .build();
+//
+////        if (USE_CACHE) {
+////            // Cache the tiles into a local SQLite database
+////            mCache = new TileCache(this, null, "tile.db");
+////            mCache.setCacheSize(512 * (1 << 10));
+////            tileSource.setCache(mCache);
+////        }
+//
+//        VectorTileLayer l = new OsmTileLayer(map());
+//        l.setTileSource(tileSource);
+//        l.setEnabled(true);
+//        Layers layers = map().layers();
+//        layers.add(l, OVERLAYS);
+//    }
+//
+//    public void addSpatialDbLayer(ASpatialDb spatialDb, String tableName) throws Exception {
+//        VectorLayer vectorLayer = new VectorLayer(mMap);
+//
+//        Style pointStyle = Style.builder()
+//                .buffer(0.5)
+//                .fillColor(Color.RED)
+//                .fillAlpha(0.2f).buffer(Math.random() + 0.2)
+//                .fillColor(ColorUtil.setHue(Color.RED,
+//                        (int) (Math.random() * 50) / 50.0))
+//                .fillAlpha(0.5f)
+//                .build();
+//        Style lineStyle = Style.builder()
+//                .strokeColor("#FF0000")
+//                .strokeWidth(3f)
+//                .cap(Paint.Cap.ROUND)
+//                .build();
+//        Style polygonStyle = Style.builder()
+//                .strokeColor("#0000FF")
+//                .strokeWidth(3f)
+//                .fillColor("#0000FF")
+//                .fillAlpha(0.0f)
+//                .cap(Paint.Cap.ROUND)
+//                .build();
+//        List<Geometry> geoms = spatialDb.getGeometriesIn(tableName, (Envelope) null, null);
+//        for (Geometry geom : geoms) {
+//            EGeometryType type = EGeometryType.forGeometry(geom);
+//            if (type == EGeometryType.POINT || type == EGeometryType.MULTIPOINT) {
+//                int numGeometries = geom.getNumGeometries();
+//                for (int i = 0; i < numGeometries; i++) {
+//                    Geometry geometryN = geom.getGeometryN(i);
+//                    Coordinate c = geometryN.getCoordinate();
+//                    vectorLayer.add(new PointDrawable(c.y, c.x, pointStyle));
+//                }
+//            } else if (type == EGeometryType.LINESTRING || type == EGeometryType.MULTILINESTRING) {
+//                int numGeometries = geom.getNumGeometries();
+//                for (int i = 0; i < numGeometries; i++) {
+//                    Geometry geometryN = geom.getGeometryN(i);
+//                    vectorLayer.add(new LineDrawable(geometryN, lineStyle));
+//                }
+//            } else if (type == EGeometryType.POLYGON || type == EGeometryType.MULTIPOLYGON) {
+//                int numGeometries = geom.getNumGeometries();
+//                for (int i = 0; i < numGeometries; i++) {
+//                    Geometry geometryN = geom.getGeometryN(i);
+//                    vectorLayer.add(new PolygonDrawable(geometryN, polygonStyle));
+//                }
+//            }
 //        }
-
-        VectorTileLayer l = new OsmTileLayer(map());
-        l.setTileSource(tileSource);
-        l.setEnabled(true);
-        Layers layers = map().layers();
-        layers.add(l, OVERLAYS);
-    }
-
-    public void addSpatialDbLayer(ASpatialDb spatialDb, String tableName) throws Exception {
-        VectorLayer vectorLayer = new VectorLayer(mMap);
-
-        Style pointStyle = Style.builder()
-                .buffer(0.5)
-                .fillColor(Color.RED)
-                .fillAlpha(0.2f).buffer(Math.random() + 0.2)
-                .fillColor(ColorUtil.setHue(Color.RED,
-                        (int) (Math.random() * 50) / 50.0))
-                .fillAlpha(0.5f)
-                .build();
-        Style lineStyle = Style.builder()
-                .strokeColor("#FF0000")
-                .strokeWidth(3f)
-                .cap(Paint.Cap.ROUND)
-                .build();
-        Style polygonStyle = Style.builder()
-                .strokeColor("#0000FF")
-                .strokeWidth(3f)
-                .fillColor("#0000FF")
-                .fillAlpha(0.0f)
-                .cap(Paint.Cap.ROUND)
-                .build();
-        List<Geometry> geoms = spatialDb.getGeometriesIn(tableName, (Envelope) null, null);
-        for (Geometry geom : geoms) {
-            EGeometryType type = EGeometryType.forGeometry(geom);
-            if (type == EGeometryType.POINT || type == EGeometryType.MULTIPOINT) {
-                int numGeometries = geom.getNumGeometries();
-                for (int i = 0; i < numGeometries; i++) {
-                    Geometry geometryN = geom.getGeometryN(i);
-                    Coordinate c = geometryN.getCoordinate();
-                    vectorLayer.add(new PointDrawable(c.y, c.x, pointStyle));
-                }
-            } else if (type == EGeometryType.LINESTRING || type == EGeometryType.MULTILINESTRING) {
-                int numGeometries = geom.getNumGeometries();
-                for (int i = 0; i < numGeometries; i++) {
-                    Geometry geometryN = geom.getGeometryN(i);
-                    vectorLayer.add(new LineDrawable(geometryN, lineStyle));
-                }
-            } else if (type == EGeometryType.POLYGON || type == EGeometryType.MULTIPOLYGON) {
-                int numGeometries = geom.getNumGeometries();
-                for (int i = 0; i < numGeometries; i++) {
-                    Geometry geometryN = geom.getGeometryN(i);
-                    vectorLayer.add(new PolygonDrawable(geometryN, polygonStyle));
-                }
-            }
-        }
-        vectorLayer.update();
-
-        Layers layers = map().layers();
-        layers.add(vectorLayer, OVERLAYS);
-//        map().layers().add(vectorLayer);
-    }
-
-    public void addMBTilesLayer(String dbPath, Integer alpha, Integer transparentColor) throws Exception {
-        BitmapTileLayer bitmapLayer = new BitmapTileLayer(map(), new MBTilesTileSource(dbPath, alpha, transparentColor));
-        Layers layers = map().layers();
-        layers.add(bitmapLayer, OVERLAYS);
-    }
-
-    public void toggleNotesLayer(boolean enable) {
-        if (enable) {
-            if (notesLayer == null) {
-                notesLayer = new NotesLayer(this);
-//                map().layers().add(notesLayer);
-                Layers layers = map().layers();
-                layers.add(notesLayer, ON_TOP_GEOPAPARAZZI);
-            }
-            notesLayer.enable();
-        } else {
-            if (notesLayer != null)
-                notesLayer.disable();
-        }
-    }
-
-    public void toggleBookmarksLayer(boolean enable) {
-        if (enable) {
-            if (bookmarksLayer == null) {
-                bookmarksLayer = new BookmarkLayer(this);
-//                map().layers().add(notesLayer);
-                Layers layers = map().layers();
-                layers.add(bookmarksLayer, ON_TOP_GEOPAPARAZZI);
-            }
-            bookmarksLayer.enable();
-        } else {
-            if (bookmarksLayer != null)
-                bookmarksLayer.disable();
-        }
-    }
-
-    public void toggleImagesLayer(boolean enable) {
-        if (enable) {
-            if (imagesLayer == null) {
-                imagesLayer = new ImagesLayer(this);
-//                map().layers().add(imagesLayer);
-                Layers layers = map().layers();
-                layers.add(imagesLayer, ON_TOP_GEOPAPARAZZI);
-            }
-            imagesLayer.enable();
-        } else {
-            if (imagesLayer != null)
-                imagesLayer.disable();
-        }
-    }
-
-    public void toggleGpsLogsLayer(boolean enable) {
-        if (enable) {
-            if (gpsLogsLayer == null) {
-                gpsLogsLayer = new GpsLogsLayer(this);
-//                map().layers().add(gpsLogsLayer);
-                Layers layers = map().layers();
-                layers.add(gpsLogsLayer, GEOPAPARAZZI);
-            }
-            gpsLogsLayer.enable();
-        } else {
-            if (gpsLogsLayer != null)
-                gpsLogsLayer.disable();
-        }
-    }
-
-    public void toggleCurrentGpsLogLayer(boolean enable) {
-        if (enable) {
-            if (currentGpsLogLayer == null) {
-                currentGpsLogLayer = new CurrentGpsLogLayer(this);
-                Layers layers = map().layers();
-                layers.add(currentGpsLogLayer, GEOPAPARAZZI);
-            }
-            currentGpsLogLayer.enable();
-        } else {
-            if (currentGpsLogLayer != null)
-                currentGpsLogLayer.disable();
-        }
-    }
-
-    public void toggleLocationLayer(boolean enable) {
-        if (enable) {
-            try {
-                if (locationLayer == null) {
-                    locationLayer = new GpsPositionLayer(this);
-                    locationLayer.enable();
-//                    map().layers().add(locationLayer);
-                    Layers layers = map().layers();
-                    layers.add(locationLayer, SYSTEM);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (locationLayer != null) {
-                locationLayer.disable();
-            }
-        }
-
-    }
-
-    public void toggleLocationTextLayer(boolean enable) {
-        if (enable) {
-            try {
-                if (locationTextLayer == null) {
-                    locationTextLayer = new GpsPositionTextLayer(this);
-                    locationTextLayer.disable();
-//                    map().layers().add(locationTextLayer);
-                    Layers layers = map().layers();
-                    layers.add(locationTextLayer, ON_TOP_SYSTEM);
-                }
-                if (peferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false))
-                    locationTextLayer.enable();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (locationTextLayer != null) {
-                locationTextLayer.disable();
-            }
-        }
-
-    }
+//        vectorLayer.update();
+//
+//        Layers layers = map().layers();
+//        layers.add(vectorLayer, OVERLAYS);
+////        map().layers().add(vectorLayer);
+//    }
+//
+//    public void toggleNotesLayer(boolean enable) {
+//        if (enable) {
+//            if (notesLayer == null) {
+//                notesLayer = new NotesLayer(this);
+////                map().layers().add(notesLayer);
+//                Layers layers = map().layers();
+//                layers.add(notesLayer, ON_TOP_GEOPAPARAZZI);
+//            }
+//            notesLayer.enable();
+//        } else {
+//            if (notesLayer != null)
+//                notesLayer.disable();
+//        }
+//    }
+//
+//    public void toggleBookmarksLayer(boolean enable) {
+//        if (enable) {
+//            if (bookmarksLayer == null) {
+//                bookmarksLayer = new BookmarkLayer(this);
+////                map().layers().add(notesLayer);
+//                Layers layers = map().layers();
+//                layers.add(bookmarksLayer, ON_TOP_GEOPAPARAZZI);
+//            }
+//            bookmarksLayer.enable();
+//        } else {
+//            if (bookmarksLayer != null)
+//                bookmarksLayer.disable();
+//        }
+//    }
+//
+//    public void toggleImagesLayer(boolean enable) {
+//        if (enable) {
+//            if (imagesLayer == null) {
+//                imagesLayer = new ImagesLayer(this);
+////                map().layers().add(imagesLayer);
+//                Layers layers = map().layers();
+//                layers.add(imagesLayer, ON_TOP_GEOPAPARAZZI);
+//            }
+//            imagesLayer.enable();
+//        } else {
+//            if (imagesLayer != null)
+//                imagesLayer.disable();
+//        }
+//    }
+//
+//    public void toggleGpsLogsLayer(boolean enable) {
+//        if (enable) {
+//            if (gpsLogsLayer == null) {
+//                gpsLogsLayer = new GpsLogsLayer(this);
+////                map().layers().add(gpsLogsLayer);
+//                Layers layers = map().layers();
+//                layers.add(gpsLogsLayer, GEOPAPARAZZI);
+//            }
+//            gpsLogsLayer.enable();
+//        } else {
+//            if (gpsLogsLayer != null)
+//                gpsLogsLayer.disable();
+//        }
+//    }
+//
+//    public void toggleCurrentGpsLogLayer(boolean enable) {
+//        if (enable) {
+//            if (currentGpsLogLayer == null) {
+//                currentGpsLogLayer = new CurrentGpsLogLayer(this);
+//                Layers layers = map().layers();
+//                layers.add(currentGpsLogLayer, GEOPAPARAZZI);
+//            }
+//            currentGpsLogLayer.enable();
+//        } else {
+//            if (currentGpsLogLayer != null)
+//                currentGpsLogLayer.disable();
+//        }
+//    }
+//
+//    public void toggleLocationLayer(boolean enable) {
+//        if (enable) {
+//            try {
+//                if (locationLayer == null) {
+//                    locationLayer = new GpsPositionLayer(this);
+//                    locationLayer.enable();
+////                    map().layers().add(locationLayer);
+//                    Layers layers = map().layers();
+//                    layers.add(locationLayer, SYSTEM);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            if (locationLayer != null) {
+//                locationLayer.disable();
+//            }
+//        }
+//
+//    }
+//
+//    public void toggleLocationTextLayer(boolean enable) {
+//        if (enable) {
+//            try {
+//                if (locationTextLayer == null) {
+//                    locationTextLayer = new GpsPositionTextLayer(this);
+//                    locationTextLayer.disable();
+////                    map().layers().add(locationTextLayer);
+//                    Layers layers = map().layers();
+//                    layers.add(locationTextLayer, ON_TOP_SYSTEM);
+//                }
+//                if (peferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false))
+//                    locationTextLayer.enable();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            if (locationTextLayer != null) {
+//                locationTextLayer.disable();
+//            }
+//        }
+//
+//    }
 
     /**
      * Get a gps status update.
@@ -418,16 +377,13 @@ public class GPMapView extends org.oscim.android.MapView {
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
             this.lastGpsPosition = lastGpsPosition;
         }
-        if (locationLayer != null) {
-            locationLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
-        }
-        if (locationTextLayer != null) {
-            locationTextLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
-        }
-        if (currentGpsLogLayer != null) {
-            currentGpsLogLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
-        }
 
+        for (Layer layer : map().layers()) {
+            if (layer instanceof IPositionLayer) {
+                IPositionLayer positionLayer = (IPositionLayer) layer;
+                positionLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
+            }
+        }
         boolean centerOnGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
         if (centerOnGps) {
             GPMapPosition mapPosition = getMapPosition();

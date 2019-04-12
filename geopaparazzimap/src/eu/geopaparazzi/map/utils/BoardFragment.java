@@ -10,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +28,8 @@ import android.widget.TextView;
 
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
-import com.woxthebox.draglistview.DragItemAdapter;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +44,8 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 
 public class BoardFragment extends Fragment implements IActivitySupporter, View.OnClickListener {
 
@@ -52,7 +54,6 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
 
     private static int sCreatedItems = 0;
     private BoardView mBoardView;
-    private int mColumns;
 
     private boolean isFabOpen = false;
     private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton;
@@ -216,48 +217,52 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
 
 //        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Board");
 
-//        public static final int MAPSFORGE_PRE = 0;
-//        public static final int DEFAULT_ONLINE_SERVICES = 1;
-//        public static final int OVERLAYS = 2;
-//        public static final int GEOPAPARAZZI = 3;
-//        public static final int OBJECTS3D = 4;
-//        public static final int SYSTEM = 5;
-//        public static final int ON_TOP_GEOPAPARAZZI = 6;
-//        public static final int ON_TOP_SYSTEM = 7;
-
-        addColumn("mapsforge");
-        addColumn("default online serivices");
-        addColumn("overlays");
-        addColumn("project layers");
-        addColumn("3D layers");
-        addColumn("system layers");
-        addColumn("above project");
-        addColumn("above system");
+        try {
+            addUserLayersColumn();
+            addSystemLayersColumn();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void addColumn(String name) {
+    private void addUserLayersColumn() throws Exception {
         final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
 
-        final int column = mColumns;
+        List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+        int index = 1;
+        for (JSONObject layerDefinition : layerDefinitions) {
+            String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+            Pair<Long, String> pair = new Pair<>((long) index, name);
+            mItemArray.add(pair);
+            index++;
+        }
+
         final ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
-        ((TextView) header.findViewById(R.id.text)).setText(name);
+        ((TextView) header.findViewById(R.id.text)).setText("user layers");
         ((TextView) header.findViewById(R.id.item_count)).setText("");
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                long id = sCreatedItems++;
-                Pair item = new Pair<>(id, "Test " + id);
-                mBoardView.addItem(mBoardView.getColumnOfHeader(v), 0, item, true);
-                //mBoardView.moveItem(4, 0, 0, true);
-                //mBoardView.removeItem(column, 0);
-                //mBoardView.moveItem(0, 0, 1, 3, false);
-                //mBoardView.replaceItem(0, 0, item1, true);
-                ((TextView) header.findViewById(R.id.item_count)).setText(String.valueOf(mItemArray.size()));
-            }
-        });
+
         mBoardView.addColumn(listAdapter, header, header, false);
-        mColumns++;
+    }
+
+    private void addSystemLayersColumn() throws Exception {
+        final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
+
+        List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getSystemLayersDefinitions();
+        int index = 1;
+        for (JSONObject layerDefinition : layerDefinitions) {
+            String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+            Pair<Long, String> pair = new Pair<>((long) index, name);
+            mItemArray.add(pair);
+            index++;
+        }
+
+        final ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.column_item, R.id.item_layout, true);
+        final View header = View.inflate(getActivity(), R.layout.column_header, null);
+        ((TextView) header.findViewById(R.id.text)).setText("system");
+        ((TextView) header.findViewById(R.id.item_count)).setText("");
+
+        mBoardView.addColumn(listAdapter, header, header, false);
     }
 
     @Override
@@ -419,10 +424,12 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
                             final File finalFile = file;
                             // TODO do something with file
 
+                            int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
+
 
                             int focusedColumn = mBoardView.getFocusedColumn();
                             int itemCount = mBoardView.getItemCount(focusedColumn);
-                            Pair<Long, String> pair = new Pair<>((long) 1, finalFile.getName());
+                            Pair<Long, String> pair = new Pair<>((long) index, finalFile.getName());
 
                             mBoardView.addItem(focusedColumn, itemCount, pair, true);
                         }
