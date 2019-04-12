@@ -1,4 +1,4 @@
-// MainActivity.java
+// MapLayerListActivity.java
 // Hosts the GeopaparazziActivityFragment on a phone and both the
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.geopaparazzi.core;

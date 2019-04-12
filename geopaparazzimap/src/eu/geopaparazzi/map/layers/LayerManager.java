@@ -30,8 +30,9 @@ import eu.geopaparazzi.map.layers.systemlayers.GpsPositionLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
-import eu.geopaparazzi.map.layers.tileofflinelayers.MBTilesLayer;
-import eu.geopaparazzi.map.layers.vector3dlayers.MapsforgeLayer;
+import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
+import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
+import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
 
 
 public enum LayerManager {
@@ -59,6 +60,16 @@ public enum LayerManager {
                 userLayersDefinitions.add(jsonObject);
             }
         }
+//        if (userLayersDefinitions.size() == 0) {
+//            // add a default
+//            JSONObject jo = new JSONObject();
+//            jo.put(IGpLayer.LAYERTYPE_TAG, VectorTilesServiceLayer.class.getCanonicalName());
+//            jo.put(IGpLayer.LAYERNAME_TAG, "OpenScienceMap VTM");
+//            jo.put(IGpLayer.LAYERURL_TAG, "http://opensciencemap.org/tiles/vtm");
+//            jo.put(IGpLayer.LAYERPATH_TAG, "/{Z}/{X}/{Y}.vtm");
+//            jo.put(IGpLayer.LAYERENABLED_TAG, true);
+//            userLayersDefinitions.add(jo);
+//        }
 
 
         String loadedSystemMapsJson = preferences.getString(GP_LOADED_SYSTEMMAPS_KEY, "{}");
@@ -145,27 +156,43 @@ public enum LayerManager {
         });
 
         for (JSONObject layerDefinition : userLayersDefinitions) {
-            String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
-            String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
-            if (layerClass.equals(MapsforgeLayer.class.getCanonicalName())) {
-                String mapPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                String[] mapPaths = mapPath.split(IGpLayer.PATHS_DELIMITER);
-                MapsforgeLayer mapsforgeLayer = new MapsforgeLayer(mapView, name, mapPaths);
-                mapsforgeLayer.load();
-            } else if (layerClass.equals(MBTilesLayer.class.getCanonicalName())) {
-                String path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                try {
+            try {
+                String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
+                String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+                boolean isEnabled = true;
+                boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
+                if (hasEnabled)
+                    isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+                if (layerClass.equals(MapsforgeLayer.class.getCanonicalName())) {
+                    String mapPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                    String[] mapPaths = mapPath.split(IGpLayer.PATHS_DELIMITER);
+                    MapsforgeLayer mapsforgeLayer = new MapsforgeLayer(mapView, name, mapPaths);
+                    mapsforgeLayer.load();
+                    mapsforgeLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(MBTilesLayer.class.getCanonicalName())) {
+                    String path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
                     MBTilesLayer mbtilesLayer = new MBTilesLayer(mapView, path, null, null);
                     mbtilesLayer.load();
-                } catch (Exception e) {
-                    GPLog.error(this, "Unable to load layer: " + path, e);
+                    mbtilesLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(VectorTilesServiceLayer.class.getCanonicalName())) {
+                    String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                    String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+                    VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, null, url, tilePath);
+                    vtsLayer.load();
+                    vtsLayer.setEnabled(isEnabled);
                 }
+            } catch (Exception e) {
+                GPLog.error(this, "Unable to load layer: " + layerDefinition.toString(2), e);
             }
         }
         if (systemLayersDefinitions.size() > 0) {
             for (JSONObject layerDefinition : systemLayersDefinitions) {
                 String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
-                boolean isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+                boolean isEnabled = true;
+                boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
+                if (hasEnabled)
+                    isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+
                 if (layerClass.equals(GpsLogsLayer.class.getCanonicalName())) {
                     GpsLogsLayer sysLayer = new GpsLogsLayer(mapView);
                     sysLayer.load();
@@ -314,31 +341,31 @@ public enum LayerManager {
         return -1;
     }
 
-    public void swapLayers(GPMapView mapView, int oldIndex, int newIndex) {
-        Layers layers = mapView.map().layers();
-        Layer removed = layers.remove(oldIndex);
-        layers.add(newIndex, removed);
-    }
+//    public void swapLayers(GPMapView mapView, int oldIndex, int newIndex) {
+//        Layers layers = mapView.map().layers();
+//        Layer removed = layers.remove(oldIndex);
+//        layers.add(newIndex, removed);
+//    }
 
 
     public void onResume(GPMapView mapView) {
         if (mapView != null) {
             Layers layers = mapView.map().layers();
-            int count = (int) layers.stream().filter(l -> l instanceof IGpLayer).count();
-            if (count != userLayersDefinitions.size() + systemLayersDefinitions.size()) {
+//            int count = (int) layers.stream().filter(l -> l instanceof IGpLayer).count();
+//            if (count != userLayersDefinitions.size() + systemLayersDefinitions.size()) {
                 try {
                     loadInMap(mapView);
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
-            }
+//            }
             for (Layer layer : layers) {
                 if (layer instanceof IGpLayer) {
                     IGpLayer gpLayer = (IGpLayer) layer;
                     gpLayer.onResume();
                 }
             }
-            count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
+            int count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
             if (count > 0) {
                 mapView.setTheme(GPMapThemes.DEFAULT);
             }
@@ -398,5 +425,19 @@ public enum LayerManager {
         }
 
 
+    }
+
+    public void setEnabled(boolean isSystem, int position, boolean enabled) {
+        try {
+            if (isSystem) {
+                JSONObject layerObj = systemLayersDefinitions.get(position);
+                layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
+            } else {
+                JSONObject layerObj = userLayersDefinitions.get(position);
+                layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

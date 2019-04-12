@@ -16,6 +16,7 @@ import org.oscim.map.Layers;
 import java.io.IOException;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.style.ColorUtilities;
@@ -39,24 +40,35 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
     }
 
     private void preLoadData() throws IOException {
-        SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
-        lastLog = MapUtilities.getLastGpsLog(sqliteDatabase);
-        lineStyle = Style.builder()
-                .strokeColor(ColorUtilities.toColor(lastLog.color))
-                .strokeWidth((float) lastLog.width)
-                .cap(Paint.Cap.ROUND)
-                .build();
+        createLogAndStyle();
 
         reloadLog();
     }
 
+    private void createLogAndStyle() throws IOException {
+        if (lastLog == null) {
+            SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
+            lastLog = MapUtilities.getLastGpsLog(sqliteDatabase);
+        }
+        if (lastLog != null && lineStyle == null)
+            lineStyle = Style.builder()
+                    .strokeColor(ColorUtilities.toColor(lastLog.color))
+                    .strokeWidth((float) lastLog.width)
+                    .cap(Paint.Cap.ROUND)
+                    .build();
+    }
+
     private void reloadLog() {
+        try {
+            createLogAndStyle();
+        } catch (IOException e) {
+            GPLog.error(this, "ERRROR loading log/style", e);
+        }
         if (lastLog.gpslogGeoPoints.size() > 1) {
             LineString lineString = gf.createLineString(lastLog.gpslogGeoPoints.toArray(new Coordinate[0]));
             tmpDrawables.clear();
             mDrawables.clear();
             add(new LineDrawable(lineString, lineStyle));
-
             update();
         }
     }

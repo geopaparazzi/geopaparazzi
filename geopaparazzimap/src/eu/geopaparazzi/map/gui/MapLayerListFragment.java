@@ -1,15 +1,15 @@
-package eu.geopaparazzi.map.utils;
+package eu.geopaparazzi.map.gui;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -47,7 +49,7 @@ import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 
-public class BoardFragment extends Fragment implements IActivitySupporter, View.OnClickListener {
+public class MapLayerListFragment extends Fragment implements IActivitySupporter, View.OnClickListener {
 
     public static final int PICKFILE_REQUEST_CODE = 666;
     public static final int PICKFOLDER_REQUEST_CODE = 667;
@@ -59,8 +61,8 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
     private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
-    public static BoardFragment newInstance() {
-        return new BoardFragment();
+    public static MapLayerListFragment newInstance() {
+        return new MapLayerListFragment();
     }
 
     @Override
@@ -226,18 +228,17 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
     }
 
     private void addUserLayersColumn() throws Exception {
-        final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
+        final ArrayList<MapLayerItem> mItemArray = new ArrayList<>();
 
         List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-        int index = 1;
+        int index = 0;
         for (JSONObject layerDefinition : layerDefinitions) {
-            String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
-            Pair<Long, String> pair = new Pair<>((long) index, name);
-            mItemArray.add(pair);
+            MapLayerItem layerItem = getMapLayerItem(index, layerDefinition);
+            mItemArray.add(layerItem);
             index++;
         }
 
-        final ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.column_item, R.id.item_layout, true);
+        final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
         ((TextView) header.findViewById(R.id.text)).setText("user layers");
         ((TextView) header.findViewById(R.id.item_count)).setText("");
@@ -245,19 +246,40 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
         mBoardView.addColumn(listAdapter, header, header, false);
     }
 
+    @NonNull
+    private MapLayerItem getMapLayerItem(int index, JSONObject layerDefinition) throws JSONException {
+        String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+        boolean isEnabled = true;
+        boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
+        if (hasEnabled) {
+            isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+        }
+        String path = "";
+        if (layerDefinition.has(IGpLayer.LAYERURL_TAG))
+            path += layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+        if (layerDefinition.has(IGpLayer.LAYERPATH_TAG))
+            path += layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+        MapLayerItem layerItem = new MapLayerItem();
+        layerItem.position = index;
+        layerItem.enabled = isEnabled;
+        layerItem.path = path;
+        layerItem.name = name;
+        return layerItem;
+    }
+
     private void addSystemLayersColumn() throws Exception {
-        final ArrayList<Pair<Long, String>> mItemArray = new ArrayList<>();
+        final ArrayList<MapLayerItem> mItemArray = new ArrayList<>();
 
         List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getSystemLayersDefinitions();
-        int index = 1;
+        int index = 0;
         for (JSONObject layerDefinition : layerDefinitions) {
-            String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
-            Pair<Long, String> pair = new Pair<>((long) index, name);
-            mItemArray.add(pair);
+            MapLayerItem layerItem = getMapLayerItem(index, layerDefinition);
+            layerItem.isSystem = true;
+            mItemArray.add(layerItem);
             index++;
         }
 
-        final ItemAdapter listAdapter = new ItemAdapter(mItemArray, R.layout.column_item, R.id.item_layout, true);
+        final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
         ((TextView) header.findViewById(R.id.text)).setText("system");
         ((TextView) header.findViewById(R.id.item_count)).setText("");
@@ -329,9 +351,12 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
             ((TextView) dragHeader.findViewById(R.id.text)).setText(((TextView) clickedHeader.findViewById(R.id.text)).getText());
             ((TextView) dragHeader.findViewById(R.id.item_count)).setText(((TextView) clickedHeader.findViewById(R.id.item_count)).getText());
             for (int i = 0; i < clickedRecyclerView.getChildCount(); i++) {
-                View view = View.inflate(dragView.getContext(), R.layout.column_item, null);
-                ((TextView) view.findViewById(R.id.text)).setText(((TextView) clickedRecyclerView.getChildAt(i).findViewById(R.id.text)).getText());
-                dragLayout.addView(view);
+                View mapItemView = View.inflate(dragView.getContext(), R.layout.column_item, null);
+
+
+
+                ((TextView) mapItemView.findViewById(R.id.text)).setText(((TextView) clickedRecyclerView.getChildAt(i).findViewById(R.id.text)).getText());
+                dragLayout.addView(mapItemView);
 
                 if (i == 0) {
                     dragScrollView.setScrollY(-clickedRecyclerView.getChildAt(i).getTop());
@@ -363,8 +388,15 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
 
         @Override
         public void onBindDragView(View clickedView, View dragView) {
-            CharSequence text = ((TextView) clickedView.findViewById(R.id.text)).getText();
-            ((TextView) dragView.findViewById(R.id.text)).setText(text);
+            CharSequence name = ((TextView) clickedView.findViewById(R.id.nameView)).getText();
+            ((TextView) dragView.findViewById(R.id.nameView)).setText(name);
+
+            CharSequence path = ((TextView) clickedView.findViewById(R.id.pathView)).getText();
+            ((TextView) dragView.findViewById(R.id.pathView)).setText(path);
+
+            boolean enabled = ((CheckBox) clickedView.findViewById(R.id.enableCheckbox)).isChecked();
+            ((CheckBox) dragView.findViewById(R.id.enableCheckbox)).setChecked(enabled);
+
             CardView dragCard = dragView.findViewById(R.id.card);
             CardView clickedCard = clickedView.findViewById(R.id.card);
 
@@ -422,16 +454,18 @@ public class BoardFragment extends Fragment implements IActivitySupporter, View.
                         if (file.exists()) {
                             Utilities.setLastFilePath(getActivity(), filePath);
                             final File finalFile = file;
-                            // TODO do something with file
-
                             int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
-
 
                             int focusedColumn = mBoardView.getFocusedColumn();
                             int itemCount = mBoardView.getItemCount(focusedColumn);
-                            Pair<Long, String> pair = new Pair<>((long) index, finalFile.getName());
 
-                            mBoardView.addItem(focusedColumn, itemCount, pair, true);
+                            MapLayerItem item = new MapLayerItem();
+                            item.position = index;
+                            item.name = FileUtilities.getNameWithoutExtention(finalFile);
+                            item.path = finalFile.getParentFile().getAbsolutePath();
+                            item.enabled = true;
+
+                            mBoardView.addItem(focusedColumn, itemCount, item, true);
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(getActivity(), e, null);

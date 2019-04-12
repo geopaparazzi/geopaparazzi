@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package eu.geopaparazzi.map.utils;
+package eu.geopaparazzi.map.gui;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,14 +29,17 @@ import com.woxthebox.draglistview.DragItemAdapter;
 import java.util.ArrayList;
 
 import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.layers.LayerManager;
 
-class ItemAdapter extends DragItemAdapter<Pair<Long, String>, ItemAdapter.ViewHolder> {
+class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.ViewHolder> {
 
+    private MapLayerListFragment mapLayerListFragment;
     private int mLayoutId;
     private int mGrabHandleId;
     private boolean mDragOnLongPress;
 
-    ItemAdapter(ArrayList<Pair<Long, String>> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
+    MapLayerAdapter(MapLayerListFragment mapLayerListFragment, ArrayList<MapLayerItem> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
+        this.mapLayerListFragment = mapLayerListFragment;
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
         mDragOnLongPress = dragOnLongPress;
@@ -53,32 +56,42 @@ class ItemAdapter extends DragItemAdapter<Pair<Long, String>, ItemAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        String text = mItemList.get(position).second;
-        holder.mText.setText(text);
+        MapLayerItem item = mItemList.get(position);
+        holder.nameView.setText(item.name);
+        holder.pathView.setText(item.path);
+        holder.enableCheckbox.setChecked(item.enabled);
+        holder.enableCheckbox.setOnCheckedChangeListener((e, i) -> {
+            item.enabled = holder.enableCheckbox.isChecked();
+            LayerManager.INSTANCE.setEnabled(item.isSystem, item.position, item.enabled);
+        });
         holder.itemView.setTag(mItemList.get(position));
     }
 
     @Override
     public long getUniqueItemId(int position) {
-        return mItemList.get(position).first;
+        return mItemList.get(position).position;
     }
 
     class ViewHolder extends DragItemAdapter.ViewHolder {
-        TextView mText;
+        TextView nameView;
+        TextView pathView;
+        CheckBox enableCheckbox;
 
         ViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
-            mText = (TextView) itemView.findViewById(R.id.text);
+            nameView = itemView.findViewById(R.id.nameView);
+            pathView = itemView.findViewById(R.id.pathView);
+            enableCheckbox = itemView.findViewById(R.id.enableCheckbox);
         }
 
         @Override
         public void onItemClicked(View view) {
-            Toast.makeText(view.getContext(), "Item clicked", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(view.getContext(), "Item clicked" + nameView.getText(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public boolean onItemLongClicked(View view) {
-            Toast.makeText(view.getContext(), "Item long clicked", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(view.getContext(), "Item long clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
     }

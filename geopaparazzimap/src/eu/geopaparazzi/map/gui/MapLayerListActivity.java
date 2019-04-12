@@ -1,6 +1,5 @@
-package eu.geopaparazzi.map.utils;
+package eu.geopaparazzi.map.gui;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,7 +9,7 @@ import android.view.MenuItem;
 
 import eu.geopaparazzi.map.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MapLayerListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            showFragment(BoardFragment.newInstance());
+            showFragment(MapLayerListFragment.newInstance());
         }
 
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.main_decorations)));
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //                showFragment(ListFragment.newInstance());
 //                return true;
 //            case R.id.action_board:
-//                showFragment(BoardFragment.newInstance());
+//                showFragment(MapLayerListFragment.newInstance());
 //                return true;
 //        }
 

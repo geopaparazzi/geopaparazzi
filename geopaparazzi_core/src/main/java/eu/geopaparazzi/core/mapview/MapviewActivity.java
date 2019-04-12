@@ -29,14 +29,10 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -63,27 +59,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.hortonmachine.dbs.compat.ASpatialDb;
-import org.hortonmachine.dbs.compat.EDb;
 import org.json.JSONException;
-import org.oscim.backend.canvas.Color;
-import org.oscim.layers.tile.buildings.BuildingLayer;
-import org.oscim.layers.tile.vector.OsmTileLayer;
-import org.oscim.layers.tile.vector.VectorTileLayer;
-import org.oscim.layers.tile.vector.labeling.LabelLayer;
-import org.oscim.layers.vector.VectorLayer;
-import org.oscim.layers.vector.geometries.PointDrawable;
-import org.oscim.layers.vector.geometries.Style;
-import org.oscim.map.Layers;
-import org.oscim.tiling.source.mapfile.MapFileTileSource;
-import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
-import org.oscim.utils.ColorUtil;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -91,15 +71,12 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.objects.Bookmark;
-import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.core.features.EditingView;
 import eu.geopaparazzi.core.features.Tool;
 import eu.geopaparazzi.core.features.ToolGroup;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
-import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
 import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
@@ -110,12 +87,10 @@ import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
-import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.sms.SmsUtilities;
@@ -124,23 +99,17 @@ import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PointF3D;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPBBox;
-import eu.geopaparazzi.map.GPLayers;
 import eu.geopaparazzi.map.GPMapPosition;
-import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.layers.GPMapScaleBarLayer;
 import eu.geopaparazzi.map.layers.LayerManager;
-import eu.geopaparazzi.map.utils.MainActivity;
-import jsqlite.Database;
+import eu.geopaparazzi.map.gui.MapLayerListActivity;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
-import static eu.geopaparazzi.library.util.LibraryConstants.E6;
 import static eu.geopaparazzi.library.util.LibraryConstants.LATITUDE;
 import static eu.geopaparazzi.library.util.LibraryConstants.LONGITUDE;
 import static eu.geopaparazzi.library.util.LibraryConstants.NAME;
@@ -261,7 +230,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
         layerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapTagsIntent = new Intent(MapviewActivity.this, MainActivity.class);
+                Intent mapTagsIntent = new Intent(MapviewActivity.this, MapLayerListActivity.class);
                 startActivity(mapTagsIntent);
             }
         });
@@ -481,12 +450,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     @Override
     protected void onPause() {
         GPDialogs.dismissProgressDialog(syncProgressDialog);
-//        for (Layer layer : layerManager.layers()) {
-//            if (layer instanceof TileDownloadLayer) {
-//                TileDownloadLayer tileDownloadLayer = (TileDownloadLayer) layer;
-//                tileDownloadLayer.onPause();
-//            }
-//        }
         LayerManager.INSTANCE.onPause(mapView);
         super.onPause();
     }
@@ -494,45 +457,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     @Override
     protected void onResume() {
         LayerManager.INSTANCE.onResume(mapView);
-
-//        for (Layer layer : layerManager.getLayers()) {
-//            if (layer instanceof TileDownloadLayer) {
-//                TileDownloadLayer tileDownloadLayer = (TileDownloadLayer) layer;
-//                tileDownloadLayer.onResume();
-//            }
-//        }
-
-//        // notes type
-//        boolean doCustom = mPeferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
-//        if (doCustom) {
-//            String opacityStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "255"); //$NON-NLS-1$
-//            String sizeStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_SIZE, DEFAULT_NOTES_SIZE + ""); //$NON-NLS-1$
-//            String colorStr = mPeferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, ColorUtilities.BLUE.getHex()); //$NON-NLS-1$
-//            int noteSize = Integer.parseInt(sizeStr);
-//            float opacity = Integer.parseInt(opacityStr);
-//
-//            OvalShape notesShape = new OvalShape();
-//            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//            notesPaint.setStyle(Paint.Style.FILL);
-//            notesPaint.setColor(ColorUtilities.toColor(colorStr));
-//            notesPaint.setAlpha((int) opacity);
-//
-//            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
-//            Paint paint = notesShapeDrawable.getPaint();
-//            paint.set(notesPaint);
-//            notesShapeDrawable.setIntrinsicHeight(noteSize);
-//            notesShapeDrawable.setIntrinsicWidth(noteSize);
-//            notesDrawable = notesShapeDrawable;
-//        } else {
-//            notesDrawable = Compat.getDrawable(this, R.drawable.ic_place_accent_24dp);
-//        }
-
-        // TODO
-//        mDataOverlay = new ArrayGeopaparazziOverlay(this);
-//        List<Overlay> overlays = mapView.getOverlays();
-//        overlays.clear();
-//        overlays.add(mDataOverlay);
-
         super.onResume();
     }
 
@@ -1204,7 +1128,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                     edit.putBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, showGpsInfo);
                     edit.apply();
 
-//                    mapView.toggleLocationTextLayer(showGpsInfo);
+                    mapView.toggleLocationTextLayer(showGpsInfo);
                 } else if (which == 3) {
                     // check ignore gps
                     boolean ignoreAccuracy = checkedItems[3];

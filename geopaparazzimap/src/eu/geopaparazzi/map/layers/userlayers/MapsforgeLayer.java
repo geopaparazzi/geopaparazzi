@@ -1,4 +1,4 @@
-package eu.geopaparazzi.map.layers.vector3dlayers;
+package eu.geopaparazzi.map.layers.userlayers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
