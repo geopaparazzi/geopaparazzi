@@ -34,8 +34,6 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
     private SharedPreferences peferences = null;
     private GPMapView mapView;
 
-    private float lastUsedBearing = -1;
-
     public GpsPositionLayer(GPMapView mapView) throws IOException {
         super(mapView.map(), createTextures(mapView.getContext()));
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
@@ -95,7 +93,7 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
             } else {
                 setActive();
             }
-        } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
+        } else {
             setStale();
         }
 
@@ -104,14 +102,7 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         if (lastGpsPositionExtras != null) {
             bearing = lastGpsPositionExtras[2];
             accuracy = lastGpsPositionExtras[0];
-            if (bearing == 0 && lastUsedBearing != -1) {
-                bearing = lastUsedBearing;
-            } else {
-                lastUsedBearing = bearing;
-            }
-
             bearing = 360f - bearing;
-
             boolean ignoreAccuracy = peferences.getBoolean(LibraryConstants.PREFS_KEY_IGNORE_GPS_ACCURACY, false);
             if (ignoreAccuracy) {
                 accuracy = 0;
