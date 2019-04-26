@@ -82,7 +82,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
 
     private double latitude = -9999.0;
     private double longitude = -9999.0;
-    private double elevation = -9999.0;
     private String mSectionName;
     private String mFormName;
     private JSONObject sectionObject;
@@ -176,7 +175,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         mFormName = formInfo.formName;
         latitude = formInfo.latitude;
         longitude = formInfo.longitude;
-        elevation = formInfo.elevation;
         noteId = formInfo.noteId;
         noteIsNew = !formInfo.objectExists;
 
@@ -213,7 +211,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
                 formInfoHolder.noteId = noteId;
                 formInfoHolder.longitude = longitude;
                 formInfoHolder.latitude = latitude;
-                formInfoHolder.elevation = elevation;
                 formInfoHolder.objectExists = !noteIsNew;
 
                 outState.putSerializable(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
@@ -408,7 +405,6 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
         formInfoHolder.noteId = noteId;
         formInfoHolder.longitude = longitude;
         formInfoHolder.latitude = latitude;
-        formInfoHolder.elevation = elevation;
         formInfoHolder.sectionObjectString = sectionObjectString;
 
         formInfoHolder.lastTimestamp = timestamp;

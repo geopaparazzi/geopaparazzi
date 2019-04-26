@@ -16,6 +16,7 @@ import java.util.List;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.MapTypeHandler;
@@ -147,10 +148,11 @@ public enum LayerManager {
     /**
      * Load all the layers in the map.
      *
-     * @param mapView the map view.
+     * @param mapView           the map view.
+     * @param activitySupporter
      * @throws JSONException
      */
-    public void loadInMap(GPMapView mapView) throws Exception {
+    public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
         mapView.map().layers().removeIf(layer -> {
             return layer instanceof IGpLayer;
         });
@@ -210,7 +212,7 @@ public enum LayerManager {
                     sysLayer.load();
                     sysLayer.setEnabled(isEnabled);
                 } else if (layerClass.equals(NotesLayer.class.getCanonicalName())) {
-                    NotesLayer sysLayer = new NotesLayer(mapView);
+                    NotesLayer sysLayer = new NotesLayer(mapView, activitySupporter);
                     sysLayer.load();
                     sysLayer.setEnabled(isEnabled);
                 } else if (layerClass.equals(GpsPositionLayer.class.getCanonicalName())) {
@@ -224,11 +226,11 @@ public enum LayerManager {
                 }
             }
         } else {
-            loadSystemLayers(mapView, systemLayersDefinitions);
+            loadSystemLayers(mapView, activitySupporter, systemLayersDefinitions);
         }
     }
 
-    public void loadSystemLayers(GPMapView mapView, List<JSONObject> systemLayersDefinitions) throws Exception {
+    public void loadSystemLayers(GPMapView mapView, IActivitySupporter activitySupporter, List<JSONObject> systemLayersDefinitions) throws Exception {
         GpsLogsLayer gpsLogsLayer = new GpsLogsLayer(mapView);
         gpsLogsLayer.load();
         systemLayersDefinitions.add(gpsLogsLayer.toJson());
@@ -245,7 +247,7 @@ public enum LayerManager {
         imagesLayer.load();
         systemLayersDefinitions.add(imagesLayer.toJson());
 
-        NotesLayer notesLayer = new NotesLayer(mapView);
+        NotesLayer notesLayer = new NotesLayer(mapView, activitySupporter);
         notesLayer.load();
         systemLayersDefinitions.add(notesLayer.toJson());
 
@@ -348,16 +350,16 @@ public enum LayerManager {
 //    }
 
 
-    public void onResume(GPMapView mapView) {
+    public void onResume(GPMapView mapView, IActivitySupporter activitySupporter) {
         if (mapView != null) {
             Layers layers = mapView.map().layers();
 //            int count = (int) layers.stream().filter(l -> l instanceof IGpLayer).count();
 //            if (count != userLayersDefinitions.size() + systemLayersDefinitions.size()) {
-                try {
-                    loadInMap(mapView);
-                } catch (Exception e) {
-                    GPLog.error(this, null, e);
-                }
+            try {
+                loadInMap(mapView, activitySupporter);
+            } catch (Exception e) {
+                GPLog.error(this, null, e);
+            }
 //            }
             for (Layer layer : layers) {
                 if (layer instanceof IGpLayer) {

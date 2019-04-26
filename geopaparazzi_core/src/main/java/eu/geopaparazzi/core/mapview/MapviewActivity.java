@@ -98,6 +98,7 @@ import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.TextRunnable;
@@ -107,6 +108,7 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.gui.MapLayerListActivity;
+import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -120,7 +122,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapviewActivity extends AppCompatActivity implements OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
+public class MapviewActivity extends AppCompatActivity implements IActivitySupporter, OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -128,7 +130,6 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     /**
      * The form update return code.
      */
-    public static final int FORMUPDATE_RETURN_CODE = 669;
     private final int CONTACT_RETURN_CODE = 670;
     public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;
     // private static final int MAPSDIR_FILETREE = 777;
@@ -456,7 +457,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
 
     @Override
     protected void onResume() {
-        LayerManager.INSTANCE.onResume(mapView);
+        LayerManager.INSTANCE.onResume(mapView, this);
         super.onResume();
     }
 
@@ -856,7 +857,7 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
                 }
                 break;
             }
-            case (FORMUPDATE_RETURN_CODE): {
+            case (NotesLayer.FORMUPDATE_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
                     if (formInfoHolder != null) {
@@ -1356,4 +1357,8 @@ public class MapviewActivity extends AppCompatActivity implements OnTouchListene
     }
 
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

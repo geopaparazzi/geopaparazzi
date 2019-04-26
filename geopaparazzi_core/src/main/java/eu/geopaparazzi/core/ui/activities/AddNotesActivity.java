@@ -59,6 +59,7 @@ import eu.geopaparazzi.core.ui.dialogs.AddNoteLayoutDialogFragment;
 import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
@@ -245,7 +246,6 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                                 formInfoHolder.noteId = noteId;
                                 formInfoHolder.longitude = longitude;
                                 formInfoHolder.latitude = latitude;
-                                formInfoHolder.elevation = elevation;
                                 formInfoHolder.objectExists = false;
                                 formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
@@ -353,8 +353,9 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 // this note needs to be removed, since is was created but then
                 // cancel was pressed
                 try {
-                    Note note = DaoNotes.getNoteById(noteId);
-                    DaoNotes.deleteComplexNote(note);
+                    DaoNotes daoNotes = new DaoNotes();
+                    ANote note = daoNotes.getNoteById(noteId);
+                    daoNotes.deleteComplexNote((Note) note);
                     return;
                 } catch (IOException e) {
                     GPLog.error(this, null, e);

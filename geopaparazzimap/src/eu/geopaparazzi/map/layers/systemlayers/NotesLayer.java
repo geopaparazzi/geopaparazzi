@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,11 +29,16 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.ANote;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.TableDescriptions;
+import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
@@ -47,15 +53,20 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
     public static final String NAME = "Project Notes";
+    public static final String NONFORMSTART = "@";
+
+    public static final int FORMUPDATE_RETURN_CODE = 669;
     private static Bitmap notesBitmap;
     private GPMapView mapView;
+    private IActivitySupporter activitySupporter;
     private static int textSize;
     private static String colorStr;
     private boolean showLabels;
 
-    public NotesLayer(GPMapView mapView) {
+    public NotesLayer(GPMapView mapView, IActivitySupporter activitySupporter) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
+        this.activitySupporter = activitySupporter;
         setOnItemGestureListener(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
@@ -147,15 +158,19 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
                 boolean hasForm = form != null && form.length() > 0;
 
 
-                String descr = "note: " + text + "\n" +
-                        "id: " + id + "\n" +
-                        "longitude: " + lon + "\n" +
-                        "latitude: " + lat + "\n" +
-                        "elevation: " + elev + "\n" +
-                        "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts)) + "\n" +
-                        "has form: " + hasForm;
+                String descr;
+                if (!hasForm) {
+                    descr = NONFORMSTART + "note: " + text + "\n" +
+                            "id: " + id + "\n" +
+                            "longitude: " + lon + "\n" +
+                            "latitude: " + lat + "\n" +
+                            "elevation: " + elev + "\n" +
+                            "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));
+                } else {
+                    descr = form;
+                }
 
-                pts.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
+                pts.add(new MarkerItem(id, text, descr, new GeoPoint(lat, lon)));
                 c.moveToNext();
             }
 
@@ -183,7 +198,32 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     public boolean onItemSingleTapUp(int index, MarkerItem item) {
         if (item != null) {
             String description = item.getSnippet();
-            GPDialogs.infoDialog(mapView.getContext(), description, null);
+            if (description.startsWith(NONFORMSTART)) {
+                GPDialogs.infoDialog(mapView.getContext(), description.substring(1), null);
+            }else{
+                try {
+                    long uid = (long) item.getUid();
+                    ANote note = DefaultHelperClasses.getDefaulfNotesHelper().getNoteById(uid);
+
+                    GeoPoint point = item.getPoint();
+                    double lat = point.getLatitude();
+                    double lon = point.getLongitude();
+                    Intent formIntent = new Intent(mapView.getContext(), FormActivity.class);
+                    FormInfoHolder formInfoHolder = new FormInfoHolder();
+                    formInfoHolder.sectionName = item.title;
+                    formInfoHolder.formName = null;
+                    formInfoHolder.noteId = note.getId();
+                    formInfoHolder.longitude = lon;
+                    formInfoHolder.latitude = lat;
+                    formInfoHolder.sectionObjectString = item.getSnippet();
+                    formInfoHolder.objectExists = true;
+                    formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
+
+                    activitySupporter.startActivityForResult(formIntent, FORMUPDATE_RETURN_CODE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return false;
     }
@@ -196,7 +236,8 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
     /**
      * Creates a transparent symbol with text and description.
-     *PREFS_KEY_IMAGES_TEXT_VISIBLE
+     * PREFS_KEY_IMAGES_TEXT_VISIBLE
+     *
      * @param item      -> the MarkerItem to process, containing title and description
      *                  if description starts with a '#' the first line of the description is drawn.
      * @param poiBitmap -> poi bitmap for the center

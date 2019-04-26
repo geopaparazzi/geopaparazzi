@@ -15,29 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package eu.geopaparazzi.library.database;
 
-package eu.geopaparazzi.library.forms;
+import android.database.sqlite.SQLiteDatabase;
 
-import java.io.Serializable;
+import java.io.IOException;
 
 /**
- * Form info to pass around.
+ * Interface that helps handling notes in the database.
  *
- * @author Andrea Antonello
+ * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormInfoHolder implements Serializable {
-    public static final String BUNDLE_KEY_INFOHOLDER = "BUNDLE_KEY_INFOHOLDER";
+public interface INotesDbHelper {
 
-    public String sectionName;
-    public String formName;
-    public String sectionObjectString;
-    public long noteId;
-    public double longitude;
-    public double latitude;
-    public boolean objectExists;
 
-    // ADDED INFO FOR RENDERING AND UPDATE
-    public String renderingLabel;
-    public long lastTimestamp;
-    public String category = "POI";
+    /**
+     * Get an note from the db by its id..
+     *
+     * @param id the id of the note to get.
+     * @return the image or null.
+     * @throws IOException if something goes wrong.
+     */
+    ANote getNoteById(long id) throws IOException;
 }

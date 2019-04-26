@@ -77,6 +77,7 @@ import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.database.objects.ItemComparators;
 import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
+import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 
 /**
  * Notes listing activity.
@@ -493,8 +494,6 @@ public class NotesListActivity extends AppCompatActivity {
                 double lon = note.getLon();
                 String form = note.getForm();
                 if (form.length() > 0 && !description.equals(LibraryConstants.OSM)) {
-                    double altim = note.getAltim();
-
                     Intent formIntent = new Intent(this, FormActivity.class);
                     FormInfoHolder formInfoHolder = new FormInfoHolder();
                     formInfoHolder.sectionName = currentNote.getName();
@@ -502,12 +501,11 @@ public class NotesListActivity extends AppCompatActivity {
                     formInfoHolder.noteId = note.getId();
                     formInfoHolder.longitude = lon;
                     formInfoHolder.latitude = lat;
-                    formInfoHolder.elevation = altim;
                     formInfoHolder.sectionObjectString = form;
                     formInfoHolder.objectExists = true;
                     formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
 
-                    this.startActivityForResult(formIntent, MapviewActivity.FORMUPDATE_RETURN_CODE);
+                    this.startActivityForResult(formIntent, NotesLayer.FORMUPDATE_RETURN_CODE);
                 }
             }
         } else if (currentNote instanceof Image) {
@@ -630,7 +628,7 @@ public class NotesListActivity extends AppCompatActivity {
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case (MapviewActivity.FORMUPDATE_RETURN_CODE): {
+            case (NotesLayer.FORMUPDATE_RETURN_CODE): {
                 if (resultCode == Activity.RESULT_OK) {
                     FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
                     if (formInfoHolder != null) {

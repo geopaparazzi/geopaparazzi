@@ -29,7 +29,9 @@ import java.util.List;
 
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Note;
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.INotesDbHelper;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 import static eu.geopaparazzi.library.database.TableDescriptions.NotesTableFields;
@@ -39,7 +41,7 @@ import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_NOTES;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class DaoNotes {
+public class DaoNotes implements INotesDbHelper {
 
     /**
      * Create the notes tables.
@@ -357,7 +359,7 @@ public class DaoNotes {
         return id;
     }
 
-    public static Note getNoteById(long checkId) throws IOException {
+    public ANote getNoteById(long checkId) throws IOException {
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
