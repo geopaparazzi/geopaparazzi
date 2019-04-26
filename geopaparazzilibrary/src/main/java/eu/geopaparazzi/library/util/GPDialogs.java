@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -235,6 +236,60 @@ public class GPDialogs {
                     alertDialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in yesNoMessageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }.execute((String) null);
+    }
+
+    public static void multiOptionDialog(final Context context, final String[] items, final boolean[] checkedItems,
+                                         final Runnable onSelectionRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute(String response) {
+                try {
+                    DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
+                        checkedItems[which] = isChecked;
+                    };
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    builder.setTitle("");
+                    builder.setMultiChoiceItems(items, checkedItems, dialogListener);
+                    builder.setOnCancelListener(e -> {
+                        onSelectionRunnable.run();
+                    });
+                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in multiOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }.execute((String) null);
+    }
+
+    public static void singleOptionDialog(final Context context, final String[] items, final boolean[] checkedItems,
+                                          final Runnable onSelectionRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute(String response) {
+                try {
+                    DialogInterface.OnClickListener dialogListener = (dialog, which) -> {
+                        checkedItems[which] = true;
+                    };
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    builder.setTitle("");
+                    builder.setSingleChoiceItems(items, 0, dialogListener);
+                    builder.setOnCancelListener(e -> {
+                        onSelectionRunnable.run();
+                    });
+                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in singleOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }.execute((String) null);

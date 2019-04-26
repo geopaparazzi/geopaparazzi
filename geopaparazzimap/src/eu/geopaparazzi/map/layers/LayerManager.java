@@ -31,6 +31,7 @@ import eu.geopaparazzi.map.layers.systemlayers.GpsPositionLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
+import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
@@ -182,6 +183,18 @@ public enum LayerManager {
                     VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, null, url, tilePath);
                     vtsLayer.load();
                     vtsLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(BitmapTileServiceLayer.class.getCanonicalName())) {
+                    String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                    String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+                    int maxZoom = 19;
+                    if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
+                        maxZoom = layerDefinition.getInt(IGpLayer.LAYERMAXZOOM_TAG);
+                    float alpha = 1f;
+                    if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
+                        alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERMAXZOOM_TAG);
+                    BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, url, tilePath, maxZoom, alpha);
+                    bitmapLayer.load();
+                    bitmapLayer.setEnabled(isEnabled);
                 }
             } catch (Exception e) {
                 GPLog.error(this, "Unable to load layer: " + layerDefinition.toString(2), e);
@@ -427,6 +440,23 @@ public enum LayerManager {
         }
 
 
+    }
+
+    public int addBitmapTileService(String name, String url, String tilePath, int maxZoom, float alpha, Integer index) throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put(IGpLayer.LAYERTYPE_TAG, BitmapTileServiceLayer.class.getCanonicalName());
+        jo.put(IGpLayer.LAYERNAME_TAG, name);
+        jo.put(IGpLayer.LAYERURL_TAG, url);
+        jo.put(IGpLayer.LAYERPATH_TAG, tilePath);
+        jo.put(IGpLayer.LAYERMAXZOOM_TAG, maxZoom);
+        jo.put(IGpLayer.LAYERALPHA_TAG, alpha);
+        if (!userLayersDefinitions.contains(jo))
+            if (index != null) {
+                userLayersDefinitions.add(index, jo);
+            } else {
+                userLayersDefinitions.add(jo);
+            }
+        return userLayersDefinitions.indexOf(jo);
     }
 
     public void setEnabled(boolean isSystem, int position, boolean enabled) {

@@ -17,6 +17,7 @@ public interface IGpLayer {
     String LAYERNAME_TAG = "name";
     String LAYERPATH_TAG = "path";
     String LAYERURL_TAG = "url";
+    String LAYERMAXZOOM_TAG = "maxzoom";
     String LAYERTRANSPARENTCOLOR_TAG = "transparentcolor";
     String LAYERALPHA_TAG = "alpha";
 

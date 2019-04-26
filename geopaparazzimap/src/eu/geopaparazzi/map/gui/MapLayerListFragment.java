@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +49,7 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
+import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
 
 public class MapLayerListFragment extends Fragment implements IActivitySupporter, View.OnClickListener {
 
@@ -58,7 +60,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
     private BoardView mBoardView;
 
     private boolean isFabOpen = false;
-    private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton;
+    private FloatingActionButton toggleButton, addSourceButton, addSourceFolderButton, addDefaultTileSourcesButton;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     public static MapLayerListFragment newInstance() {
@@ -150,6 +152,8 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         addSourceButton.setOnClickListener(this);
         addSourceFolderButton = view.findViewById(R.id.addMapSourceFolderButton);
         addSourceFolderButton.setOnClickListener(this);
+        addDefaultTileSourcesButton = view.findViewById(R.id.addDefaultTileSourcesButton);
+        addDefaultTileSourcesButton.setOnClickListener(this);
 
         fab_open = AnimationUtils.loadAnimation(getContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getContext(), R.anim.fab_close);
@@ -168,24 +172,29 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             addMap();
         } else if (v == addSourceFolderButton) {
             addMapFolder();
+        } else if (v == addDefaultTileSourcesButton) {
+            addDefaultTileSource();
         }
     }
-
 
     public void animateFAB() {
         if (isFabOpen) {
             toggleButton.startAnimation(rotate_backward);
             addSourceButton.startAnimation(fab_close);
             addSourceFolderButton.startAnimation(fab_close);
+            addDefaultTileSourcesButton.startAnimation(fab_close);
             addSourceButton.setClickable(false);
             addSourceFolderButton.setClickable(false);
+            addDefaultTileSourcesButton.setClickable(false);
             isFabOpen = false;
         } else {
             toggleButton.startAnimation(rotate_forward);
             addSourceButton.startAnimation(fab_open);
             addSourceFolderButton.startAnimation(fab_open);
+            addDefaultTileSourcesButton.startAnimation(fab_open);
             addSourceButton.setClickable(true);
             addSourceFolderButton.setClickable(true);
+            addDefaultTileSourcesButton.setClickable(true);
             isFabOpen = true;
         }
     }
@@ -210,6 +219,40 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(getActivity(), e, null);
         }
+    }
+
+    private void addDefaultTileSource() {
+        List<String> namesList = EOnlineTileSources.getNames();
+        String[] names = namesList.toArray(new String[0]);
+        boolean[] checked = new boolean[names.length];
+
+        GPDialogs.singleOptionDialog(getActivity(), names, checked, () -> {
+            FragmentActivity activity = getActivity();
+            if (activity != null)
+                activity.runOnUiThread(() -> {
+                    for (int i = 0; i < checked.length; i++) {
+                        if (checked[i]) {
+                            EOnlineTileSources source = EOnlineTileSources.getByName(names[i]);
+                            int index = 0;
+                            try {
+                                index = LayerManager.INSTANCE.addBitmapTileService(source.getName(), source.getUrl(), source.get_tilePath(), source.getMaxZoom(), 1f, null);
+                                MapLayerItem item = new MapLayerItem();
+                                item.position = index;
+                                item.name = source.getName();
+                                item.path = source.getUrl();
+                                item.enabled = true;
+                                int focusedColumn = mBoardView.getFocusedColumn();
+                                int itemCount = mBoardView.getItemCount(focusedColumn);
+                                mBoardView.addItem(focusedColumn, itemCount, item, true);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                });
+        });
+
     }
 
 
@@ -330,6 +373,62 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
     }
 
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case (PICKFILE_REQUEST_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                        File file = new File(filePath);
+                        if (file.exists()) {
+                            Utilities.setLastFilePath(getActivity(), filePath);
+                            final File finalFile = file;
+                            int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
+
+                            int focusedColumn = mBoardView.getFocusedColumn();
+                            int itemCount = mBoardView.getItemCount(focusedColumn);
+
+                            MapLayerItem item = new MapLayerItem();
+                            item.position = index;
+                            item.name = FileUtilities.getNameWithoutExtention(finalFile);
+                            item.path = finalFile.getParentFile().getAbsolutePath();
+                            item.enabled = true;
+
+                            mBoardView.addItem(focusedColumn, itemCount, item, true);
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(getActivity(), e, null);
+                    }
+                }
+                break;
+            }
+            case (PICKFOLDER_REQUEST_CODE): {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        String folderPath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                        final File folder = new File(folderPath);
+                        if (folder.exists()) {
+                            Utilities.setLastFilePath(getContext(), folderPath);
+                            final List<File> foundFiles = new ArrayList<>();
+                            // get all supported files
+                            String[] supportedExtensions = ESpatialDataSources.getSupportedTileSourcesExtensions();
+                            FileUtilities.searchDirectoryRecursive(folder, supportedExtensions, foundFiles);
+                            // add basemap to list and in mPreferences
+                        }
+                    } catch (Exception e) {
+                        GPDialogs.errorDialog(getActivity(), e, null);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
+    //// DRAG AND DROP
+
+
     private static class MyColumnDragItem extends DragItem {
 
         MyColumnDragItem(Context context, int layoutId) {
@@ -352,7 +451,6 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             ((TextView) dragHeader.findViewById(R.id.item_count)).setText(((TextView) clickedHeader.findViewById(R.id.item_count)).getText());
             for (int i = 0; i < clickedRecyclerView.getChildCount(); i++) {
                 View mapItemView = View.inflate(dragView.getContext(), R.layout.column_item, null);
-
 
 
                 ((TextView) mapItemView.findViewById(R.id.text)).setText(((TextView) clickedRecyclerView.getChildAt(i).findViewById(R.id.text)).getText());
@@ -439,59 +537,6 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             anim.setInterpolator(new DecelerateInterpolator());
             anim.setDuration(ANIMATION_DURATION);
             anim.start();
-        }
-    }
-
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (PICKFILE_REQUEST_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                        File file = new File(filePath);
-                        if (file.exists()) {
-                            Utilities.setLastFilePath(getActivity(), filePath);
-                            final File finalFile = file;
-                            int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
-
-                            int focusedColumn = mBoardView.getFocusedColumn();
-                            int itemCount = mBoardView.getItemCount(focusedColumn);
-
-                            MapLayerItem item = new MapLayerItem();
-                            item.position = index;
-                            item.name = FileUtilities.getNameWithoutExtention(finalFile);
-                            item.path = finalFile.getParentFile().getAbsolutePath();
-                            item.enabled = true;
-
-                            mBoardView.addItem(focusedColumn, itemCount, item, true);
-                        }
-                    } catch (Exception e) {
-                        GPDialogs.errorDialog(getActivity(), e, null);
-                    }
-                }
-                break;
-            }
-            case (PICKFOLDER_REQUEST_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        String folderPath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                        final File folder = new File(folderPath);
-                        if (folder.exists()) {
-                            Utilities.setLastFilePath(getContext(), folderPath);
-                            final List<File> foundFiles = new ArrayList<>();
-                            // get all supported files
-                            String[] supportedExtensions = ESpatialDataSources.getSupportedTileSourcesExtensions();
-                            FileUtilities.searchDirectoryRecursive(folder, supportedExtensions, foundFiles);
-                            // add basemap to list and in mPreferences
-                        }
-                    } catch (Exception e) {
-                        GPDialogs.errorDialog(getActivity(), e, null);
-                    }
-                }
-                break;
-            }
         }
     }
 }
