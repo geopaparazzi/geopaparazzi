@@ -199,7 +199,8 @@
     <string name="custom_icon_properties">Custom icon properties</string>
     <string name="use_custom">use custom</string>
     <string name="labels">Labels</string>
-    <string name="show_labels">show labels</string>
+    <string name="show_notes_labels">show notes labels</string>
+    <string name="show_image_labels">show image labels</string>
     <string name="halo">halo</string>
     <string name="screen_preferences">Screen settings</string>
     <string name="screen_preferences_summary">Set the screen preferences as the center cross or the screen density.</string>

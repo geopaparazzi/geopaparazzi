@@ -39,6 +39,9 @@ import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_TEXT_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_VISIBLE;
+
 public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
@@ -48,14 +51,21 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     private GPMapView mapView;
     private static int textSize;
     private static String colorStr;
+    private boolean showLabels;
 
     public NotesLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
         setOnItemGestureListener(this);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+        boolean notesVisible = preferences.getBoolean(PREFS_KEY_NOTES_VISIBLE, true);
+
+        showLabels = preferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
+
         try {
-            reloadData();
+            if (notesVisible)
+                reloadData();
         } catch (IOException e) {
             GPLog.error(this, null, e);
         }
@@ -186,7 +196,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
     /**
      * Creates a transparent symbol with text and description.
-     *
+     *PREFS_KEY_IMAGES_TEXT_VISIBLE
      * @param item      -> the MarkerItem to process, containing title and description
      *                  if description starts with a '#' the first line of the description is drawn.
      * @param poiBitmap -> poi bitmap for the center
@@ -232,7 +242,8 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), haloTextPainter);
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), textPainter);
 
-        markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), 0);
+        if (showLabels)
+            markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), 0);
         markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.5f), ySize * 0.5f - (symbolWidth * 0.5f));
 
         return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));

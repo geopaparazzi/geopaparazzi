@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_TEXT_VISIBLE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_VISIBLE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_CHECK;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_CUSTOMCOLOR;
@@ -133,13 +134,23 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         });
 
         // show labels
-        final CheckBox showLabelsCheckbox = findViewById(R.id.checkShowLabels);
-        boolean showLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
-        showLabelsCheckbox.setChecked(showLabels);
-        showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        final CheckBox showNotesLabelsCheckbox = findViewById(R.id.checkShowNotesLabels);
+        boolean showNotesLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
+        showNotesLabelsCheckbox.setChecked(showNotesLabels);
+        showNotesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showLabelsCheckbox.isChecked());
+                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showNotesLabelsCheckbox.isChecked());
+                editor.apply();
+            }
+        });
+        final CheckBox showImagesLabelsCheckbox = findViewById(R.id.checkShowImageLabels);
+        boolean showImagesLabels = mPreferences.getBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, true);
+        showImagesLabelsCheckbox.setChecked(showImagesLabels);
+        showImagesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Editor editor = mPreferences.edit();
+                editor.putBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, showImagesLabelsCheckbox.isChecked());
                 editor.apply();
             }
         });

@@ -47,12 +47,16 @@ import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_TEXT_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_VISIBLE;
+
 public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLayer.OnItemGestureListener<MarkerItem>, ISystemLayer {
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
     public static final String NAME = "Project Images";
     private static Bitmap imagesBitmap;
+    private boolean showLabels;
     private GPMapView mapView;
     private static int textSize;
     private static String colorStr;
@@ -62,8 +66,13 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
         this.mapView = mapView;
         setOnItemGestureListener(this);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+        boolean imagesVisible = preferences.getBoolean(PREFS_KEY_IMAGES_VISIBLE, true);
+        showLabels = preferences.getBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, true);
+
         try {
-            reloadData();
+            if (imagesVisible)
+                reloadData();
         } catch (IOException e) {
             GPLog.error(this, null, e);
         }
@@ -169,8 +178,6 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
     }
 
 
-
-
     @Override
     public boolean onItemLongPress(int index, MarkerItem item) {
         return false;
@@ -225,7 +232,8 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), haloTextPainter);
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), textPainter);
 
-        markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), symbolWidth * 0.25f);
+        if (showLabels)
+            markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), symbolWidth * 0.25f);
         markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.25f), ySize * 0.5f - (symbolWidth * 0.25f));
 
         return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
