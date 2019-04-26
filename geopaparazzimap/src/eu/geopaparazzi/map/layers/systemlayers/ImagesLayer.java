@@ -1,10 +1,13 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,14 +29,21 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.TableDescriptions;
+import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormInfoHolder;
+import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
@@ -108,7 +118,7 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
                     "elevation: " + elev + "\n" +
                     "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));
 
-            images.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
+            images.add(new MarkerItem(imageDataId, text, descr, new GeoPoint(lat, lon)));
             c.moveToNext();
         }
         c.close();
@@ -135,11 +145,31 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
     @Override
     public boolean onItemSingleTapUp(int index, MarkerItem item) {
         if (item != null) {
-            String description = item.getSnippet();
-            GPDialogs.infoDialog(mapView.getContext(), description, null);
+            Context context = mapView.getContext();
+            long uid = (long) item.getUid();
+            openImage(context, uid, item.title);
+            return true;
         }
         return false;
     }
+
+
+    private void openImage(Context context, long imageDataId, String title) {
+        try {
+            // get image from db
+            int length = title.length();
+            String ext = title.substring(length - 4, length);
+            String tempImageName = ImageUtilities.getTempImageName(ext);
+            IImagesDbHelper imageHelper = DefaultHelperClasses.getDefaulfImageHelper();
+            byte[] imageData = imageHelper.getImageDataById(imageDataId, null);
+            AppsUtilities.showImage(imageData, tempImageName, context);
+        } catch (java.lang.Exception e) {
+            GPLog.error(this, null, e);
+        }
+    }
+
+
+
 
     @Override
     public boolean onItemLongPress(int index, MarkerItem item) {
@@ -195,8 +225,8 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), haloTextPainter);
         titleCanvas.drawText(item.title, margin, titleHeight - margin - textPainter.getFontDescent(), textPainter);
 
-        markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), 0);
-        markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.5f), ySize * 0.5f - (symbolWidth * 0.5f));
+        markerCanvas.drawBitmap(titleBitmap, xSize * 0.5f - (titleWidth * 0.5f), symbolWidth * 0.25f);
+        markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.25f), ySize * 0.5f - (symbolWidth * 0.25f));
 
         return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
     }
