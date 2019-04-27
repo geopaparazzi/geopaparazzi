@@ -39,8 +39,7 @@ public class VectorTilesServiceLayer extends OsmTileLayer implements IVectorTile
         this.url = url;
         this.tilePath = tilePath;
 
-        if (name == null)
-            this.name = url;
+        this.name = name != null ? name : url;
     }
 
     public void load() {

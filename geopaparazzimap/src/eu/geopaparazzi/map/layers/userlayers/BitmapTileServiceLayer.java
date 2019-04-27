@@ -15,6 +15,7 @@ import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
 public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTileOnlineLayer {
 
     private final GPMapView mapView;
+    private final String name;
     private final String url;
     private final String tilePath;
     private final int maxZoom;
@@ -24,15 +25,17 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
         super(mapView.map(), getTileSource(mapView, onlineTileSource.getUrl(), onlineTileSource.getTilePath(), onlineTileSource.getMaxZoom()), bitmapAlpha);
 
         this.mapView = mapView;
+        this.name = onlineTileSource.getName();
         this.url = onlineTileSource.getUrl();
         this.tilePath = onlineTileSource.getTilePath();
         this.maxZoom = onlineTileSource.getMaxZoom();
     }
 
-    public BitmapTileServiceLayer(GPMapView mapView, String url, String tilePath, int maxZoom, float bitmapAlpha) {
+    public BitmapTileServiceLayer(GPMapView mapView, String name, String url, String tilePath, int maxZoom, float bitmapAlpha) {
         super(mapView.map(), getTileSource(mapView, url, tilePath, maxZoom), bitmapAlpha);
 
         this.mapView = mapView;
+        this.name = name != null ? name : url;
         this.url = url;
         this.tilePath = tilePath;
         this.maxZoom = maxZoom;
@@ -65,7 +68,7 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
 
     @Override
     public String getName() {
-        return url;
+        return name;
     }
 
     @Override

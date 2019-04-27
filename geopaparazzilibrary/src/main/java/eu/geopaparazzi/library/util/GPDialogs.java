@@ -281,7 +281,9 @@ public class GPDialogs {
             protected void onPostExecute(String response) {
                 try {
                     DialogInterface.OnClickListener dialogListener = (dialog, which) -> {
-                        checkedItems[which] = true;
+                        for (int i = 0; i < checkedItems.length; i++) {
+                            checkedItems[i] = which == i;
+                        }
                     };
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setTitle("");

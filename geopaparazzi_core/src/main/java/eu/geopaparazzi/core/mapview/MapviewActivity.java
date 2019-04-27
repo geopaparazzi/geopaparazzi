@@ -409,7 +409,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     @Override
     public void onUpdate(GPMapPosition mapPosition) {
-        setGuiZoomText(mapPosition.getZoomLevel());
+        setGuiZoomText(mapPosition.getZoomLevel(), (int) mapView.getScaleX());
     }
 
     /**
@@ -602,12 +602,15 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         GPMapPosition mapPosition = mapView.getMapPosition();
         mapPosition.setZoomLevel(zoom);
         mapView.setMapPosition(mapPosition);
-        setGuiZoomText(zoom);
         saveCenterPref();
     }
 
-    private void setGuiZoomText(int newZoom) {
-        zoomLevelText.setText(formatter.format(newZoom));
+    private void setGuiZoomText(int newZoom, int newScale) {
+        String scalePart = "";
+        if (newScale > 1)
+            scalePart = "*" + newScale;
+        String text = formatter.format(newZoom) + scalePart;
+        zoomLevelText.setText(text);
     }
 
     /**

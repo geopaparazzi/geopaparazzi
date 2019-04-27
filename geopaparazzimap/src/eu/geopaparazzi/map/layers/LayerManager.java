@@ -154,9 +154,7 @@ public enum LayerManager {
      * @throws JSONException
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
-        mapView.map().layers().removeIf(layer -> {
-            return layer instanceof IGpLayer;
-        });
+        mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer);
 
         for (JSONObject layerDefinition : userLayersDefinitions) {
             try {
@@ -180,7 +178,7 @@ public enum LayerManager {
                 } else if (layerClass.equals(VectorTilesServiceLayer.class.getCanonicalName())) {
                     String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
                     String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
-                    VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, null, url, tilePath);
+                    VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, name, url, tilePath);
                     vtsLayer.load();
                     vtsLayer.setEnabled(isEnabled);
                 } else if (layerClass.equals(BitmapTileServiceLayer.class.getCanonicalName())) {
@@ -192,7 +190,7 @@ public enum LayerManager {
                     float alpha = 1f;
                     if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
                         alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERMAXZOOM_TAG);
-                    BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, url, tilePath, maxZoom, alpha);
+                    BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, name, url, tilePath, maxZoom, alpha);
                     bitmapLayer.load();
                     bitmapLayer.setEnabled(isEnabled);
                 }
