@@ -16,9 +16,9 @@
 
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
-    <uses-permission
-        android:name="android.permission.ACCESS_MOCK_LOCATION"
-        tools:ignore="MockLocation" />
+    <!--<uses-permission-->
+        <!--android:name="android.permission.ACCESS_MOCK_LOCATION"-->
+        <!--tools:ignore="MockLocation" />-->
 
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -308,7 +308,15 @@
         <activity android:name="eu.geopaparazzi.library.webprofile.WebProfilesListActivity" />
         <activity android:name="eu.geopaparazzi.library.webprofile.WebProfilesUploadListActivity" />
 
-        <activity android:name="eu.geopaparazzi.map.gui.MapLayerListActivity" />
+        <activity
+            android:name="eu.geopaparazzi.map.gui.MapLayerListActivity"
+            android:label="Layers View"
+            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
+            android:theme="@style/GeopapTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
+        </activity>
 
         <activity
             android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"

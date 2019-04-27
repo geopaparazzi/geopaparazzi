@@ -21,11 +21,11 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
     private float bitmapAlpha;
 
     public BitmapTileServiceLayer(GPMapView mapView, EOnlineTileSources onlineTileSource, float bitmapAlpha) {
-        super(mapView.map(), getTileSource(mapView, onlineTileSource.getUrl(), onlineTileSource.get_tilePath(), onlineTileSource.getMaxZoom()), bitmapAlpha);
+        super(mapView.map(), getTileSource(mapView, onlineTileSource.getUrl(), onlineTileSource.getTilePath(), onlineTileSource.getMaxZoom()), bitmapAlpha);
 
         this.mapView = mapView;
         this.url = onlineTileSource.getUrl();
-        this.tilePath = onlineTileSource.get_tilePath();
+        this.tilePath = onlineTileSource.getTilePath();
         this.maxZoom = onlineTileSource.getMaxZoom();
     }
 

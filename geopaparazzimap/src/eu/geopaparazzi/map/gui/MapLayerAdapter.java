@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
@@ -58,7 +57,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         super.onBindViewHolder(holder, position);
         MapLayerItem item = mItemList.get(position);
         holder.nameView.setText(item.name);
-        holder.pathView.setText(item.path);
+        holder.pathView.setText(item.url != null ? item.url : item.path);
         holder.enableCheckbox.setChecked(item.enabled);
         holder.enableCheckbox.setOnCheckedChangeListener((e, i) -> {
             item.enabled = holder.enableCheckbox.isChecked();

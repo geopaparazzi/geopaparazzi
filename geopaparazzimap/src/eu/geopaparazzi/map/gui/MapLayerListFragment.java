@@ -140,7 +140,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
             @Override
             public boolean canDropItemAtPosition(int oldColumn, int oldRow, int newColumn, int newRow) {
-                // Add logic here to prevent an item to be dropped
+                // we drag and drop only on same column
                 return oldColumn == newColumn;
             }
         });
@@ -235,10 +235,11 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                             EOnlineTileSources source = EOnlineTileSources.getByName(names[i]);
                             int index = 0;
                             try {
-                                index = LayerManager.INSTANCE.addBitmapTileService(source.getName(), source.getUrl(), source.get_tilePath(), source.getMaxZoom(), 1f, null);
+                                index = LayerManager.INSTANCE.addBitmapTileService(source.getName(), source.getUrl(), source.getTilePath(), source.getMaxZoom(), 1f, null);
                                 MapLayerItem item = new MapLayerItem();
                                 item.position = index;
                                 item.name = source.getName();
+                                item.url = source.getUrl();
                                 item.path = source.getUrl();
                                 item.enabled = true;
                                 int focusedColumn = mBoardView.getFocusedColumn();
@@ -289,27 +290,6 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         mBoardView.addColumn(listAdapter, header, header, false);
     }
 
-    @NonNull
-    private MapLayerItem getMapLayerItem(int index, JSONObject layerDefinition) throws JSONException {
-        String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
-        boolean isEnabled = true;
-        boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
-        if (hasEnabled) {
-            isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
-        }
-        String path = "";
-        if (layerDefinition.has(IGpLayer.LAYERURL_TAG))
-            path += layerDefinition.getString(IGpLayer.LAYERURL_TAG);
-        if (layerDefinition.has(IGpLayer.LAYERPATH_TAG))
-            path += layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-        MapLayerItem layerItem = new MapLayerItem();
-        layerItem.position = index;
-        layerItem.enabled = isEnabled;
-        layerItem.path = path;
-        layerItem.name = name;
-        return layerItem;
-    }
-
     private void addSystemLayersColumn() throws Exception {
         final ArrayList<MapLayerItem> mItemArray = new ArrayList<>();
 
@@ -328,6 +308,26 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         ((TextView) header.findViewById(R.id.item_count)).setText("");
 
         mBoardView.addColumn(listAdapter, header, header, false);
+    }
+
+
+    @NonNull
+    private MapLayerItem getMapLayerItem(int index, JSONObject layerDefinition) throws JSONException {
+        String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+        boolean isEnabled = true;
+        boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
+        if (hasEnabled) {
+            isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+        }
+        MapLayerItem layerItem = new MapLayerItem();
+        layerItem.position = index;
+        layerItem.enabled = isEnabled;
+        if (layerDefinition.has(IGpLayer.LAYERURL_TAG))
+            layerItem.url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+        if (layerDefinition.has(IGpLayer.LAYERPATH_TAG))
+            layerItem.path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+        layerItem.name = name;
+        return layerItem;
     }
 
     @Override
@@ -451,7 +451,6 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             ((TextView) dragHeader.findViewById(R.id.item_count)).setText(((TextView) clickedHeader.findViewById(R.id.item_count)).getText());
             for (int i = 0; i < clickedRecyclerView.getChildCount(); i++) {
                 View mapItemView = View.inflate(dragView.getContext(), R.layout.column_item, null);
-
 
                 ((TextView) mapItemView.findViewById(R.id.text)).setText(((TextView) clickedRecyclerView.getChildAt(i).findViewById(R.id.text)).getText());
                 dragLayout.addView(mapItemView);

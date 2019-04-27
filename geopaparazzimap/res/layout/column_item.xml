@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2014 Magnus Woxblom
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Magnus Woxblom
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -10,16 +9,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="2dp"
     android:paddingLeft="6dp"
+    android:paddingTop="2dp"
     android:paddingRight="6dp"
-    android:paddingTop="2dp">
+    android:paddingBottom="2dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card"
@@ -41,44 +39,61 @@
             android:gravity="center_vertical"
             android:padding="12dp">
 
-            <ImageView
-                android:id="@+id/iconview"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="12dp"
-                android:foregroundGravity="center_vertical"
-                android:src="@drawable/goto_position" />
-
-            <TextView
-                android:id="@+id/nameView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_toEndOf="@+id/iconview"
-                android:text="test test test"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/pathView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nameView"
-                android:layout_alignStart="@+id/nameView"
-                android:layout_marginTop="5dp"
-                android:textSize="10sp"
-                android:text="TextView" />
 
             <CheckBox
                 android:id="@+id/enableCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:text="" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@+id/morebutton"
+                android:layout_toEndOf="@+id/enableCheckbox">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/nameView"
+                        style="@style/GPTitleTextViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:gravity="center_vertical"
+                        android:text="Test test test" />
+
+                    <TextView
+                        android:id="@+id/pathView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/nameView"
+                        android:layout_alignStart="@+id/nameView"
+                        android:layout_marginTop="5dp"
+                        android:text="TextView"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+            </HorizontalScrollView>
+
+            <ImageButton
+                android:id="@+id/morebutton"
+                app:srcCompat="@drawable/ic_menu_primary_24dp"
+                android:layout_width="@dimen/min_touch_size"
+                android:layout_height="@dimen/min_touch_size"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:padding="5dip" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

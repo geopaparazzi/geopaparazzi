@@ -103,7 +103,7 @@ public enum EOnlineTileSources {
         return _url;
     }
 
-    public String get_tilePath() {
+    public String getTilePath() {
         return _tilePath;
     }
 
