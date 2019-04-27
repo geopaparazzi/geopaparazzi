@@ -10,7 +10,8 @@
  limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto" xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -48,52 +49,38 @@
                 android:layout_centerVertical="true"
                 android:text="" />
 
-            <HorizontalScrollView
-                android:id="@+id/horizontalScrollView2"
+
+            <TextView
+                android:id="@+id/nameView"
+                style="@style/GPTitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_gravity="start"
+                android:layout_toStartOf="@+id/morebutton"
+                android:layout_toEndOf="@+id/enableCheckbox"
+                android:text="Test test test" />
+
+            <TextView
+                android:id="@+id/pathView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/nameView"
+                android:layout_alignStart="@+id/nameView"
+                android:layout_marginTop="5dp"
                 android:layout_toStartOf="@+id/morebutton"
-                android:layout_toEndOf="@+id/enableCheckbox">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:padding="12dp">
-
-                    <TextView
-                        android:id="@+id/nameView"
-                        style="@style/GPTitleTextViewStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="start"
-                        android:gravity="center_vertical"
-                        android:text="Test test test" />
-
-                    <TextView
-                        android:id="@+id/pathView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/nameView"
-                        android:layout_alignStart="@+id/nameView"
-                        android:layout_marginTop="5dp"
-                        android:text="TextView"
-                        android:textSize="10sp" />
-                </RelativeLayout>
-            </HorizontalScrollView>
+                android:text="TextView"
+                android:textSize="10sp" />
 
             <ImageButton
                 android:id="@+id/morebutton"
-                app:srcCompat="@drawable/ic_menu_primary_24dp"
                 android:layout_width="@dimen/min_touch_size"
                 android:layout_height="@dimen/min_touch_size"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@null"
-                android:padding="5dip" />
+                android:padding="5dip"
+                app:srcCompat="@drawable/ic_menu_primary_24dp" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

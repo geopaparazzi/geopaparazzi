@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
@@ -85,6 +86,7 @@ import eu.geopaparazzi.core.ui.activities.ImportMapsforgeActivity;
 import eu.geopaparazzi.core.ui.activities.NotesListActivity;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.activities.GeocodeActivity;
 import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
@@ -106,9 +108,11 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPBBox;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.gui.MapLayerItem;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.gui.MapLayerListActivity;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
+import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -709,25 +713,20 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     private boolean goTo() {
         String[] items = new String[]{getString(R.string.goto_coordinate), getString(R.string.geocoding)};
+        boolean[] checked = new boolean[2];
+        GPDialogs.singleOptionDialog(this, items, checked, () -> {
+            runOnUiThread(() -> {
 
-        // FIXME
-//        new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
-//                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        dialog.dismiss();
-//
-//                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-//                        if (selectedPosition == 0) {
-//                            InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
-//                            insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
-//                        } else {
-//                            Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
-//                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-//                        }
-//
-//                    }
-//                }).show();
+                int selectedPosition = checked[1] ? 1 : 0;
+                if (selectedPosition == 0) {
+                    InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
+                    insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
+                } else {
+                    Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
+                    startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+                }
+            });
+        });
 
         return true;
     }

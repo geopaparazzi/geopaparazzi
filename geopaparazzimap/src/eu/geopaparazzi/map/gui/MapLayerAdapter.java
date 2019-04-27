@@ -18,15 +18,24 @@ package eu.geopaparazzi.map.gui;
 
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
-import java.util.ArrayList;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.geopaparazzi.library.database.ANote;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerManager;
 
@@ -56,12 +65,31 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         MapLayerItem item = mItemList.get(position);
+        item.position = position;
         holder.nameView.setText(item.name);
         holder.pathView.setText(item.url != null ? item.url : item.path);
         holder.enableCheckbox.setChecked(item.enabled);
         holder.enableCheckbox.setOnCheckedChangeListener((e, i) -> {
             item.enabled = holder.enableCheckbox.isChecked();
             LayerManager.INSTANCE.setEnabled(item.isSystem, item.position, item.enabled);
+        });
+        holder.moreButton.setOnClickListener(e -> {
+            PopupMenu popup = new PopupMenu(mapLayerListFragment.getActivity(), holder.moreButton);
+            String remove_layer = "Remove layer";
+            if (!getItemList().get(item.position).isSystem) {
+                popup.getMenu().add(remove_layer);
+            }
+            popup.setOnMenuItemClickListener(selectedItem -> {
+                String actionName = selectedItem.getTitle().toString();
+                if (actionName.equals(remove_layer)) {
+                    mapLayerListFragment.removeItemAtIndex(0, item.position);
+                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                    userLayersDefinitions.remove(item.position);
+                    notifyDataSetChanged();
+                }
+                return true;
+            });
+            popup.show();
         });
         holder.itemView.setTag(mItemList.get(position));
     }
@@ -75,12 +103,14 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         TextView nameView;
         TextView pathView;
         CheckBox enableCheckbox;
+        ImageButton moreButton;
 
         ViewHolder(final View itemView) {
             super(itemView, mGrabHandleId, mDragOnLongPress);
             nameView = itemView.findViewById(R.id.nameView);
             pathView = itemView.findViewById(R.id.pathView);
             enableCheckbox = itemView.findViewById(R.id.enableCheckbox);
+            moreButton = itemView.findViewById(R.id.morebutton);
         }
 
         @Override

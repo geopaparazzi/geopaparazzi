@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -44,6 +45,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.activities.GeocodeActivity;
+import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -283,8 +286,10 @@ public class GPDialogs {
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setSingleChoiceItems(items, 0, dialogListener);
-                    builder.setOnCancelListener(e -> {
-                        onSelectionRunnable.run();
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            onSelectionRunnable.run();
+                        }
                     });
                     android.support.v7.app.AlertDialog dialog = builder.create();
                     dialog.show();

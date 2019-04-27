@@ -256,6 +256,10 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
     }
 
+    public void removeItemAtIndex(int col, int row) {
+        mBoardView.removeItem(col, row);
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
