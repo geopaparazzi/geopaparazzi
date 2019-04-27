@@ -206,8 +206,8 @@ public enum LayerManager {
                         if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
                             maxZoom = layerDefinition.getInt(IGpLayer.LAYERMAXZOOM_TAG);
                         float alpha = 1f;
-                        if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
-                            alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERMAXZOOM_TAG);
+                        if (layerDefinition.has(IGpLayer.LAYERALPHA_TAG))
+                            alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERALPHA_TAG);
                         BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, name, url, tilePath, maxZoom, alpha);
                         bitmapLayer.load();
                         bitmapLayer.setEnabled(isEnabled);
@@ -415,6 +415,16 @@ public enum LayerManager {
             }
     }
 
+    /**
+     * Ad a mapsforge map file to the list.
+     *
+     * <p>If a mapfile is already existing, then add to it</p>
+     *
+     * @param finalFile the file to add.
+     * @param index  the index of the added layer.
+     * @return
+     * @throws Exception
+     */
     public int addMapFile(File finalFile, Integer index) throws Exception {
         int i = finalFile.getName().lastIndexOf('.');
         String name = FileUtilities.getNameWithoutExtention(finalFile);
@@ -423,19 +433,39 @@ public enum LayerManager {
         if (mapTypeHandler == null) {
             throw new RuntimeException();
         }
+
         JSONObject jo = null;
         switch (mapTypeHandler) {
             case MAPSFORGE: {
-                jo = new JSONObject();
-                jo.put(IGpLayer.LAYERTYPE_TAG, MapsforgeLayer.class.getCanonicalName());
-                jo.put(IGpLayer.LAYERNAME_TAG, name);
-                jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
-                if (!userLayersDefinitions.contains(jo))
-                    if (index != null) {
-                        userLayersDefinitions.add(index, jo);
-                    } else {
-                        userLayersDefinitions.add(jo);
+                JSONObject existingObj = null;
+                for (JSONObject def : userLayersDefinitions) {
+                    String type = def.getString(IGpLayer.LAYERTYPE_TAG);
+                    if (ELayerTypes.fromType(type) == ELayerTypes.MAPSFORGE) {
+                        existingObj = def;
+                        break;
                     }
+                }
+
+                if (existingObj != null) {
+                    String existingName = existingObj.getString(IGpLayer.LAYERNAME_TAG);
+                    String existingPath = existingObj.getString(IGpLayer.LAYERPATH_TAG);
+                    existingName += IGpLayer.PATHS_DELIMITER + name;
+                    existingPath += IGpLayer.PATHS_DELIMITER + finalFile.getAbsolutePath();
+                    existingObj.put(IGpLayer.LAYERNAME_TAG, existingName);
+                    existingObj.put(IGpLayer.LAYERPATH_TAG, existingPath);
+                    return -1;
+                } else {
+                    jo = new JSONObject();
+                    jo.put(IGpLayer.LAYERTYPE_TAG, MapsforgeLayer.class.getCanonicalName());
+                    jo.put(IGpLayer.LAYERNAME_TAG, name);
+                    jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
+                    if (!userLayersDefinitions.contains(jo))
+                        if (index != null) {
+                            userLayersDefinitions.add(index, jo);
+                        } else {
+                            userLayersDefinitions.add(jo);
+                        }
+                }
                 break;
             }
             case MBTILES: {
@@ -454,7 +484,7 @@ public enum LayerManager {
         if (jo != null) {
             return userLayersDefinitions.indexOf(jo);
         } else {
-            return 0;
+            return -1;
         }
 
 

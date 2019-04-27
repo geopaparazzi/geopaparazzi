@@ -55,7 +55,6 @@
                 style="@style/GPTitleTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
                 android:layout_gravity="start"
                 android:layout_toStartOf="@+id/morebutton"
                 android:layout_toEndOf="@+id/enableCheckbox"

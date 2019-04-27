@@ -26,6 +26,8 @@ public class MBTilesLayer extends BitmapTileLayer implements IRasterTileOfflineL
         this.dbPath = dbPath;
         name = FileUtilities.getNameWithoutExtention(new File(dbPath));
         this.alpha = alpha;
+        if (alpha != null)
+            setBitmapAlpha(alpha, false);
         this.transparentColor = transparentColor;
     }
 

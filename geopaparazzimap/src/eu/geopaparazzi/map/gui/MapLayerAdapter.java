@@ -37,6 +37,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.routing.osmbonuspack.IGeoPoint;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
@@ -69,7 +70,8 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         MapLayerItem item = mItemList.get(position);
-        item.position = position;
+//        item.position = position;
+        // TODO how to track position changes?
         holder.nameView.setText(item.name);
         holder.pathView.setText(item.url != null ? item.url : item.path);
         holder.enableCheckbox.setChecked(item.enabled);
@@ -82,72 +84,110 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
             String remove_layer = "Remove layer";
             String toggle3d = "Toggle 3D";
             String toggleLabels = "Toggle Labels";
-            String setAlpha = "Set transparency";
+            String setAlpha = "Set opacity";
 
-            MapLayerItem mapLayerItem = getItemList().get(item.position);
-
-            try {
-                ELayerTypes layerType = ELayerTypes.fromType(mapLayerItem.type);
-                switch (layerType) {
-                    case MAPSFORGE: {
-                        popup.getMenu().add(toggle3d);
-                        popup.getMenu().add(toggleLabels);
-                        break;
-                    }
-                    case MBTILES: {
-                        popup.getMenu().add(setAlpha);
-                        break;
-                    }
-                    case VECTORTILESSERVICE: {
-                        break;
-                    }
-                    case BITMAPTILESERVICE: {
-                        popup.getMenu().add(setAlpha);
-                        break;
-                    }
+            List<MapLayerItem> itemList = getItemList();
+            MapLayerItem selMapLayerItem = null;
+            int selIndex = 0;
+            for (int i = 0; i < itemList.size(); i++) {
+                MapLayerItem mapLayerItem = itemList.get(i);
+                if (mapLayerItem.name.equals(holder.nameView.getText().toString())) {
+                    selMapLayerItem = mapLayerItem;
+                    selIndex = i;
+                    break;
                 }
-            } catch (Exception e1) {
-                GPLog.error(this, null, e1);
             }
-
-            if (!mapLayerItem.isSystem) {
-                popup.getMenu().add(remove_layer);
-            }
-
-            popup.setOnMenuItemClickListener(selectedItem -> {
-                String actionName = selectedItem.getTitle().toString();
+            if (selMapLayerItem != null) {
                 try {
-                    if (actionName.equals(remove_layer)) {
-                        mapLayerListFragment.removeItemAtIndex(0, item.position);
-                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                        userLayersDefinitions.remove(item.position);
-                        notifyDataSetChanged();
-                    } else if (actionName.equals(toggle3d)) {
-                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                        JSONObject jsonObject = userLayersDefinitions.get(item.position);
-                        if (jsonObject.has(IGpLayer.LAYERDO3D_TAG)) {
-                            boolean do3D = jsonObject.getBoolean(IGpLayer.LAYERDO3D_TAG);
-                            jsonObject.put(IGpLayer.LAYERDO3D_TAG, !do3D);
-
-                        } else {
-                            jsonObject.put(IGpLayer.LAYERDO3D_TAG, false);
+                    ELayerTypes layerType = ELayerTypes.fromType(selMapLayerItem.type);
+                    switch (layerType) {
+                        case MAPSFORGE: {
+                            popup.getMenu().add(toggle3d);
+                            popup.getMenu().add(toggleLabels);
+                            break;
                         }
-                    } else if (actionName.equals(toggleLabels)) {
-                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                        JSONObject jsonObject = userLayersDefinitions.get(item.position);
-                        if (jsonObject.has(IGpLayer.LAYERDOLABELS_TAG)) {
-                            boolean doLabels = jsonObject.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
-                            jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, !doLabels);
-                        } else {
-                            jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
+                        case MBTILES: {
+                            popup.getMenu().add(setAlpha);
+                            break;
+                        }
+                        case VECTORTILESSERVICE: {
+                            break;
+                        }
+                        case BITMAPTILESERVICE: {
+                            popup.getMenu().add(setAlpha);
+                            break;
                         }
                     }
-                } catch (JSONException e1) {
+                } catch (Exception e1) {
                     GPLog.error(this, null, e1);
                 }
-                return true;
-            });
-            popup.show();
+
+                if (!selMapLayerItem.isSystem) {
+                    popup.getMenu().add(remove_layer);
+                }
+
+                int finalSelIndex = selIndex;
+                popup.setOnMenuItemClickListener(selectedItem -> {
+                    String actionName = selectedItem.getTitle().toString();
+                    try {
+                        if (actionName.equals(remove_layer)) {
+                            mapLayerListFragment.removeItemAtIndex(0, finalSelIndex);
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            userLayersDefinitions.remove(finalSelIndex);
+                            notifyDataSetChanged();
+                        } else if (actionName.equals(toggle3d)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            if (jsonObject.has(IGpLayer.LAYERDO3D_TAG)) {
+                                boolean do3D = jsonObject.getBoolean(IGpLayer.LAYERDO3D_TAG);
+                                jsonObject.put(IGpLayer.LAYERDO3D_TAG, !do3D);
+
+                            } else {
+                                jsonObject.put(IGpLayer.LAYERDO3D_TAG, false);
+                            }
+                        } else if (actionName.equals(toggleLabels)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            if (jsonObject.has(IGpLayer.LAYERDOLABELS_TAG)) {
+                                boolean doLabels = jsonObject.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
+                                jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, !doLabels);
+                            } else {
+                                jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
+                            }
+                        } else if (actionName.equals(setAlpha)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            int def = 100;
+                            if (jsonObject.has(IGpLayer.LAYERALPHA_TAG))
+                                def = (int) (jsonObject.getDouble(IGpLayer.LAYERALPHA_TAG) * 100.0);
+
+                            String[] alphas = {"25%", "50%", "75%", "100%"};
+                            boolean[] selAlphas = {def == 25, def == 50, def == 75, def == 100};
+                            GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), alphas, selAlphas, () -> {
+                                for (int i = 0; i < selAlphas.length; i++) {
+                                    if (selAlphas[i]) {
+                                        String alpha = alphas[i].replace("%", "");
+                                        int alphaInt = Integer.parseInt(alpha);
+                                        double a = alphaInt / 100.0;
+                                        try {
+                                            jsonObject.put(IGpLayer.LAYERALPHA_TAG, a);
+                                        } catch (JSONException e1) {
+                                            GPLog.error(this, null, e1);
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+
+
+                        }
+                    } catch (JSONException e1) {
+                        GPLog.error(this, null, e1);
+                    }
+                    return true;
+                });
+                popup.show();
+            }
         });
         holder.itemView.setTag(mItemList.get(position));
     }
@@ -158,6 +198,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     }
 
     class ViewHolder extends DragItemAdapter.ViewHolder {
+
         TextView nameView;
         TextView pathView;
         CheckBox enableCheckbox;

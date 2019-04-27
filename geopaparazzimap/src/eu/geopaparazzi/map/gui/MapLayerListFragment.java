@@ -102,7 +102,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
             @Override
             public void onItemChangedPosition(int oldColumn, int oldRow, int newColumn, int newRow) {
-                //Toast.makeText(mBoardView.getContext(), "Position changed - column: " + newColumn + " row: " + newRow, Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -393,17 +393,29 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                             Utilities.setLastFilePath(getActivity(), filePath);
                             final File finalFile = file;
                             int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
-
                             int focusedColumn = mBoardView.getFocusedColumn();
                             int itemCount = mBoardView.getItemCount(focusedColumn);
+                            if (index >= 0) {
+                                MapLayerItem item = new MapLayerItem();
+                                item.position = index;
+                                item.name = FileUtilities.getNameWithoutExtention(finalFile);
+                                item.path = finalFile.getParentFile().getAbsolutePath();
+                                item.enabled = true;
 
-                            MapLayerItem item = new MapLayerItem();
-                            item.position = index;
-                            item.name = FileUtilities.getNameWithoutExtention(finalFile);
-                            item.path = finalFile.getParentFile().getAbsolutePath();
-                            item.enabled = true;
-
-                            mBoardView.addItem(focusedColumn, itemCount, item, true);
+                                mBoardView.addItem(focusedColumn, itemCount, item, true);
+                            } else {
+                                // reload list to show changes in existing item
+                                DragItemAdapter adapter = mBoardView.getAdapter(focusedColumn);
+                                List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                int i = 0;
+                                List<MapLayerItem> mItemArray = new ArrayList<>();
+                                for (JSONObject layerDefinition : layerDefinitions) {
+                                    MapLayerItem layerItem = getMapLayerItem(i, layerDefinition);
+                                    mItemArray.add(layerItem);
+                                    i++;
+                                }
+                                adapter.setItemList(mItemArray);
+                            }
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(getActivity(), e, null);

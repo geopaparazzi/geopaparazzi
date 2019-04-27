@@ -280,6 +280,13 @@ public class GPDialogs {
 
             protected void onPostExecute(String response) {
                 try {
+                    int checkedItemIndex = 0;
+                    for (int i = 0; i < checkedItems.length; i++) {
+                        if (checkedItems[i]) {
+                            checkedItemIndex = i;
+                            break;
+                        }
+                    }
                     DialogInterface.OnClickListener dialogListener = (dialog, which) -> {
                         for (int i = 0; i < checkedItems.length; i++) {
                             checkedItems[i] = which == i;
@@ -287,7 +294,7 @@ public class GPDialogs {
                     };
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setTitle("");
-                    builder.setSingleChoiceItems(items, 0, dialogListener);
+                    builder.setSingleChoiceItems(items, checkedItemIndex, dialogListener);
                     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             onSelectionRunnable.run();
