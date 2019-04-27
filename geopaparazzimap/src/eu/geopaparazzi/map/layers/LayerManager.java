@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.layers.Layer;
+import org.oscim.layers.tile.buildings.BuildingLayer;
+import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Layers;
 
 import java.io.File;
@@ -154,7 +156,7 @@ public enum LayerManager {
      * @throws JSONException
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
-        mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer);
+        mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
 
         for (JSONObject layerDefinition : userLayersDefinitions) {
             try {
@@ -164,35 +166,53 @@ public enum LayerManager {
                 boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
                 if (hasEnabled)
                     isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
-                if (layerClass.equals(MapsforgeLayer.class.getCanonicalName())) {
-                    String mapPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                    String[] mapPaths = mapPath.split(IGpLayer.PATHS_DELIMITER);
-                    MapsforgeLayer mapsforgeLayer = new MapsforgeLayer(mapView, name, mapPaths);
-                    mapsforgeLayer.load();
-                    mapsforgeLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(MBTilesLayer.class.getCanonicalName())) {
-                    String path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                    MBTilesLayer mbtilesLayer = new MBTilesLayer(mapView, path, null, null);
-                    mbtilesLayer.load();
-                    mbtilesLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(VectorTilesServiceLayer.class.getCanonicalName())) {
-                    String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                    String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
-                    VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, name, url, tilePath);
-                    vtsLayer.load();
-                    vtsLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(BitmapTileServiceLayer.class.getCanonicalName())) {
-                    String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                    String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
-                    int maxZoom = 19;
-                    if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
-                        maxZoom = layerDefinition.getInt(IGpLayer.LAYERMAXZOOM_TAG);
-                    float alpha = 1f;
-                    if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
-                        alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERMAXZOOM_TAG);
-                    BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, name, url, tilePath, maxZoom, alpha);
-                    bitmapLayer.load();
-                    bitmapLayer.setEnabled(isEnabled);
+
+                ELayerTypes layerType = ELayerTypes.fromType(layerClass);
+                switch (layerType) {
+                    case MAPSFORGE: {
+                        String mapPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                        String[] mapPaths = mapPath.split(IGpLayer.PATHS_DELIMITER);
+                        boolean doLabels = true;
+                        if (layerDefinition.has(IGpLayer.LAYERDOLABELS_TAG))
+                            doLabels = layerDefinition.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
+                        boolean do3d = true;
+                        if (layerDefinition.has(IGpLayer.LAYERDO3D_TAG))
+                            do3d = layerDefinition.getBoolean(IGpLayer.LAYERDO3D_TAG);
+
+                        MapsforgeLayer mapsforgeLayer = new MapsforgeLayer(mapView, name, do3d, doLabels, mapPaths);
+                        mapsforgeLayer.load();
+                        mapsforgeLayer.setEnabled(isEnabled);
+                        break;
+                    }
+                    case MBTILES: {
+                        String path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                        MBTilesLayer mbtilesLayer = new MBTilesLayer(mapView, path, null, null);
+                        mbtilesLayer.load();
+                        mbtilesLayer.setEnabled(isEnabled);
+                        break;
+                    }
+                    case VECTORTILESSERVICE: {
+                        String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                        String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+                        VectorTilesServiceLayer vtsLayer = new VectorTilesServiceLayer(mapView, name, url, tilePath);
+                        vtsLayer.load();
+                        vtsLayer.setEnabled(isEnabled);
+                        break;
+                    }
+                    case BITMAPTILESERVICE: {
+                        String tilePath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+                        String url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
+                        int maxZoom = 19;
+                        if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
+                            maxZoom = layerDefinition.getInt(IGpLayer.LAYERMAXZOOM_TAG);
+                        float alpha = 1f;
+                        if (layerDefinition.has(IGpLayer.LAYERMAXZOOM_TAG))
+                            alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERMAXZOOM_TAG);
+                        BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, name, url, tilePath, maxZoom, alpha);
+                        bitmapLayer.load();
+                        bitmapLayer.setEnabled(isEnabled);
+                        break;
+                    }
                 }
             } catch (Exception e) {
                 GPLog.error(this, "Unable to load layer: " + layerDefinition.toString(2), e);
@@ -459,15 +479,19 @@ public enum LayerManager {
 
     public void setEnabled(boolean isSystem, int position, boolean enabled) {
         try {
-            if (isSystem) {
-                JSONObject layerObj = systemLayersDefinitions.get(position);
-                layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
-            } else {
-                JSONObject layerObj = userLayersDefinitions.get(position);
-                layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
-            }
+            List<JSONObject> list = isSystem ? systemLayersDefinitions : userLayersDefinitions;
+            JSONObject layerObj = list.get(position);
+            layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
         } catch (JSONException e) {
-            e.printStackTrace();
+            GPLog.error(this, null, e);
+        }
+    }
+
+    public void changeLayerPosition(boolean isSystem, int fromRow, int toRow) {
+        List<JSONObject> list = isSystem ? systemLayersDefinitions : userLayersDefinitions;
+        if (list.size() > fromRow && list.size() > toRow) {
+            JSONObject item = list.remove(fromRow);
+            list.add(toRow, item);
         }
     }
 }

@@ -26,12 +26,16 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
     private String name;
     private String path;
     private GPMapView mapView;
+    private boolean do3d;
+    private boolean doLabels;
     private String[] mapPaths;
     private MultiMapFileTileSource tileSource;
 
-    public MapsforgeLayer(GPMapView mapView, String name, String... mapPaths) {
+    public MapsforgeLayer(GPMapView mapView, String name, boolean do3d, boolean doLabels, String... mapPaths) {
         super(mapView.map());
         this.mapView = mapView;
+        this.do3d = do3d;
+        this.doLabels = doLabels;
         this.mapPaths = mapPaths;
 
         List<String> names = new ArrayList<>();
@@ -62,10 +66,12 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
             layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
 
             // Building layer
-            layers.add(new BuildingLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
+            if (do3d)
+                layers.add(new BuildingLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
 
             // labels layer
-            layers.add(new LabelLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
+            if (doLabels)
+                layers.add(new LabelLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
         }
     }
 
@@ -103,6 +109,8 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
     public JSONObject toJson() throws JSONException {
         JSONObject jo = toDefaultJson();
         jo.put(LAYERPATH_TAG, path);
+        jo.put(LAYERDO3D_TAG, do3d);
+        jo.put(LAYERDOLABELS_TAG, doLabels);
         return jo;
     }
 

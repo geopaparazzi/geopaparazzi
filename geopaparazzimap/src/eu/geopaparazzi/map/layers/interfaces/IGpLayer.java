@@ -16,6 +16,8 @@ public interface IGpLayer {
     String LAYERENABLED_TAG = "enabled";
     String LAYERNAME_TAG = "name";
     String LAYERPATH_TAG = "path";
+    String LAYERDOLABELS_TAG = "dolabels";
+    String LAYERDO3D_TAG = "do3d";
     String LAYERURL_TAG = "url";
     String LAYERMAXZOOM_TAG = "maxzoom";
     String LAYERTRANSPARENTCOLOR_TAG = "transparentcolor";

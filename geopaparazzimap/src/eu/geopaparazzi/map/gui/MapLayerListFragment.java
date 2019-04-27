@@ -27,9 +27,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
+import com.woxthebox.draglistview.DragItemAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,8 +95,8 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
             @Override
             public void onItemDragEnded(int fromColumn, int fromRow, int toColumn, int toRow) {
-                if (fromColumn != toColumn || fromRow != toRow) {
-                    //Toast.makeText(getContext(), "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show();
+                if (fromRow != toRow) {
+                    LayerManager.INSTANCE.changeLayerPosition(fromColumn == 1, fromRow, toRow);
                 }
             }
 
@@ -318,6 +320,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
     @NonNull
     private MapLayerItem getMapLayerItem(int index, JSONObject layerDefinition) throws JSONException {
         String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
+        String type = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
         boolean isEnabled = true;
         boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
         if (hasEnabled) {
@@ -331,6 +334,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         if (layerDefinition.has(IGpLayer.LAYERPATH_TAG))
             layerItem.path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
         layerItem.name = name;
+        layerItem.type = type;
         return layerItem;
     }
 

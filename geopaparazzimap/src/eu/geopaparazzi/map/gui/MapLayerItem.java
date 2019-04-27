@@ -28,4 +28,8 @@ public class MapLayerItem {
      * If true, the resource is a system resource.
      */
     public boolean isSystem;
+    /**
+     * The layer's class
+     */
+    public String type;
 }

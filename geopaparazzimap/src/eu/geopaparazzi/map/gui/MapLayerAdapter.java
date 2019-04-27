@@ -29,15 +29,19 @@ import android.widget.TextView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.ANote;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 
 class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.ViewHolder> {
 
@@ -76,16 +80,70 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         holder.moreButton.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(mapLayerListFragment.getActivity(), holder.moreButton);
             String remove_layer = "Remove layer";
-            if (!getItemList().get(item.position).isSystem) {
+            String toggle3d = "Toggle 3D";
+            String toggleLabels = "Toggle Labels";
+            String setAlpha = "Set transparency";
+
+            MapLayerItem mapLayerItem = getItemList().get(item.position);
+
+            try {
+                ELayerTypes layerType = ELayerTypes.fromType(mapLayerItem.type);
+                switch (layerType) {
+                    case MAPSFORGE: {
+                        popup.getMenu().add(toggle3d);
+                        popup.getMenu().add(toggleLabels);
+                        break;
+                    }
+                    case MBTILES: {
+                        popup.getMenu().add(setAlpha);
+                        break;
+                    }
+                    case VECTORTILESSERVICE: {
+                        break;
+                    }
+                    case BITMAPTILESERVICE: {
+                        popup.getMenu().add(setAlpha);
+                        break;
+                    }
+                }
+            } catch (Exception e1) {
+                GPLog.error(this, null, e1);
+            }
+
+            if (!mapLayerItem.isSystem) {
                 popup.getMenu().add(remove_layer);
             }
+
             popup.setOnMenuItemClickListener(selectedItem -> {
                 String actionName = selectedItem.getTitle().toString();
-                if (actionName.equals(remove_layer)) {
-                    mapLayerListFragment.removeItemAtIndex(0, item.position);
-                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                    userLayersDefinitions.remove(item.position);
-                    notifyDataSetChanged();
+                try {
+                    if (actionName.equals(remove_layer)) {
+                        mapLayerListFragment.removeItemAtIndex(0, item.position);
+                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                        userLayersDefinitions.remove(item.position);
+                        notifyDataSetChanged();
+                    } else if (actionName.equals(toggle3d)) {
+                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                        JSONObject jsonObject = userLayersDefinitions.get(item.position);
+                        if (jsonObject.has(IGpLayer.LAYERDO3D_TAG)) {
+                            boolean do3D = jsonObject.getBoolean(IGpLayer.LAYERDO3D_TAG);
+                            jsonObject.put(IGpLayer.LAYERDO3D_TAG, !do3D);
+
+                        } else {
+                            jsonObject.put(IGpLayer.LAYERDO3D_TAG, false);
+                        }
+                    } else if (actionName.equals(toggleLabels)) {
+                        List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                        JSONObject jsonObject = userLayersDefinitions.get(item.position);
+                        if (jsonObject.has(IGpLayer.LAYERDOLABELS_TAG)) {
+                            boolean doLabels = jsonObject.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
+                            jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, !doLabels);
+                        } else {
+                            jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
+                        }
+                    }
+                } catch (JSONException e1) {
+                    GPLog.error(this, null, e1);
                 }
                 return true;
             });
