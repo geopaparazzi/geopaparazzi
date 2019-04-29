@@ -21,7 +21,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.MapTypeHandler;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
@@ -431,14 +430,13 @@ public enum LayerManager {
     public int addMapFile(File finalFile, Integer index) throws Exception {
         int i = finalFile.getName().lastIndexOf('.');
         String name = FileUtilities.getNameWithoutExtention(finalFile);
-        String extension = finalFile.getName().substring(i + 1);
-        MapTypeHandler mapTypeHandler = MapTypeHandler.forExtension(extension);
-        if (mapTypeHandler == null) {
+        ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
+        if (layerType == null) {
             throw new RuntimeException();
         }
 
         JSONObject jo = null;
-        switch (mapTypeHandler) {
+        switch (layerType) {
             case MAPSFORGE: {
                 JSONObject existingObj = null;
                 for (JSONObject def : userLayersDefinitions) {
@@ -459,7 +457,7 @@ public enum LayerManager {
                     return -1;
                 } else {
                     jo = new JSONObject();
-                    jo.put(IGpLayer.LAYERTYPE_TAG, MapsforgeLayer.class.getCanonicalName());
+                    jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
                     jo.put(IGpLayer.LAYERNAME_TAG, name);
                     jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
                     if (!userLayersDefinitions.contains(jo))
@@ -473,7 +471,7 @@ public enum LayerManager {
             }
             case MBTILES: {
                 jo = new JSONObject();
-                jo.put(IGpLayer.LAYERTYPE_TAG, MBTilesLayer.class.getCanonicalName());
+                jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
                 jo.put(IGpLayer.LAYERNAME_TAG, name);
                 jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
                 if (!userLayersDefinitions.contains(jo))

@@ -71,8 +71,10 @@ public class MBTilesLayer extends BitmapTileLayer implements IRasterTileOfflineL
     public JSONObject toJson() throws JSONException {
         JSONObject jo = toDefaultJson();
         jo.put(LAYERPATH_TAG, dbPath);
-        jo.put(LAYERALPHA_TAG, alpha);
-        jo.put(LAYERTRANSPARENTCOLOR_TAG, transparentColor);
+        if (alpha != null)
+            jo.put(LAYERALPHA_TAG, alpha);
+        if (transparentColor != null)
+            jo.put(LAYERTRANSPARENTCOLOR_TAG, transparentColor);
         return jo;
     }
 

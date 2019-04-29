@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.types.ESpatialDataSources;
 import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
@@ -397,9 +398,11 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                             int itemCount = mBoardView.getItemCount(focusedColumn);
                             if (index >= 0) {
                                 MapLayerItem item = new MapLayerItem();
+                                ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
+                                item.type = layerType.getType();
                                 item.position = index;
                                 item.name = FileUtilities.getNameWithoutExtention(finalFile);
-                                item.path = finalFile.getParentFile().getAbsolutePath();
+                                item.path = finalFile.getAbsolutePath();
                                 item.enabled = true;
 
                                 mBoardView.addItem(focusedColumn, itemCount, item, true);

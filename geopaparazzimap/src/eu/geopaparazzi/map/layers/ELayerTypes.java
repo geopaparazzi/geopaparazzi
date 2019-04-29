@@ -11,7 +11,13 @@ public enum ELayerTypes {
     BITMAPTILESERVICE("BitmapTileService", BitmapTileServiceLayer.class.getCanonicalName()),
     MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName());
 
-    public static int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+    public static final int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+
+    public static final String MBTILES_EXT = "mbtiles";
+    public static final String MAPSFORGE_EXT = "map";
+    public static final String SPATIALITE_EXT = "sqlite";
+    public static final String RASTERLITE2_EXT = "rl2";
+    public static final String MAPURL_EXT = "mapurl";
 
 
     private final String label;
@@ -29,6 +35,24 @@ public enum ELayerTypes {
             }
         }
         throw new IllegalArgumentException("No type for class: " + typeString);
+    }
+
+    public String getType() {
+        return className;
+    }
+
+    public static ELayerTypes fromFileExt(String fileName) throws Exception {
+        fileName = fileName.toLowerCase();
+        if (fileName.endsWith(MBTILES_EXT)) {
+            return ELayerTypes.MBTILES;
+        } else if (fileName.endsWith(MAPSFORGE_EXT)) {
+            return ELayerTypes.MAPSFORGE;
+//        }else if (fileName.endsWith(SPATIALITE_EXT)){
+//            return ELayerTypes.;
+        }
+
+
+        throw new IllegalArgumentException("No layer type supported for file type: " + fileName);
     }
 
 }
