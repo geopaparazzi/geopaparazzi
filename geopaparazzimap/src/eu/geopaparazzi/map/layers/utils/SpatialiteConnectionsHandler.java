@@ -3,14 +3,21 @@ package eu.geopaparazzi.map.layers.utils;
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
+import org.hortonmachine.dbs.compat.IGeometryParser;
+import org.hortonmachine.dbs.compat.IHMResultSet;
+import org.hortonmachine.dbs.compat.IHMStatement;
 import org.hortonmachine.dbs.utils.EGeometryType;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.Style;
 
 public enum SpatialiteConnectionsHandler {
@@ -95,13 +102,31 @@ public enum SpatialiteConnectionsHandler {
 
     public Style getStyleForTable(String dbPath, String tableName, String labelField) throws Exception {
         ASpatialDb db = getDb(dbPath);
-        Style style4Table = SpatialiteStyleProperties.getStyle4Table(db, tableName, labelField);
+        Style style4Table = SpatialiteUtilities.getStyle4Table(db, tableName, labelField);
         return style4Table;
     }
 
-    public List<Geometry> getGeometries(String dbPath, String tableName) throws Exception {
+    public List<Geometry> getGeometries(String dbPath, String tableName, Style gpStyle) throws Exception {
         ASpatialDb db = getDb(dbPath);
-        List<Geometry> geoms = db.getGeometriesIn(tableName, (Envelope) null, null);
+        GeometryColumn gCol = db.getGeometryColumnsForTable(tableName);
+        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(db, tableName, gCol, gpStyle, 4326, null);
+
+        IGeometryParser gp = db.getType().getGeometryParser();
+        List<Geometry> geoms = db.execOnConnection(connection -> {
+            List<Geometry> tmp = new ArrayList<>();
+            try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
+                while (rs.next()) {
+                    Geometry geometry = gp.fromResultSet(rs, 1);
+                    if (geometry != null) {
+                        String label = rs.getString(2);
+                        String theme = rs.getString(3);
+                        geometry.setUserData(label + SpatialiteUtilities.LABEL_THEME_SEPARATOR + theme);
+                        tmp.add(geometry);
+                    }
+                }
+            }
+            return tmp;
+        });
         return geoms;
     }
 

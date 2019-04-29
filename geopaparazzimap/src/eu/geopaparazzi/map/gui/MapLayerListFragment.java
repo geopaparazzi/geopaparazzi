@@ -35,11 +35,14 @@ import com.woxthebox.draglistview.DragItemAdapter;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
+import org.hortonmachine.dbs.compat.ISpatialTableNames;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -431,7 +434,21 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                     try (ASpatialDb db = EDb.SPATIALITE4ANDROID.getSpatialDb()) {
                                         db.open(finalFile.getAbsolutePath());
 
-                                        tableNames = db.getTables(true);
+                                        HashMap<String, List<String>> tablesMap = db.getTablesMap(true);
+                                        List<String> tableNamesTmp = tablesMap.get(ISpatialTableNames.USERDATA);
+                                        if (tableNamesTmp != null) {
+                                            tableNamesTmp.removeIf(tn -> {
+                                                try {
+                                                    GeometryColumn gc = db.getGeometryColumnsForTable(tn);
+                                                    if (gc == null)
+                                                        return true;
+                                                } catch (Exception e) {
+                                                    return true;
+                                                }
+                                                return false;
+                                            });
+                                            tableNames = tableNamesTmp;
+                                        }
                                     }
 
                                     if (tableNames != null && tableNames.size() > 0) {

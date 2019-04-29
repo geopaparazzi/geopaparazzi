@@ -19,10 +19,12 @@
 package eu.geopaparazzi.map.layers.utils;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.IHMResultSet;
 import org.hortonmachine.dbs.compat.IHMStatement;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Envelope;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +40,10 @@ import eu.geopaparazzi.library.style.Style;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialiteStyleProperties implements ISpatialiteTableAndFieldsNames {
-
+public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
+    public static final String DUMMY = "dummy";
+    public static final String ROWID_PK = "ROWID";
+    public static final String LABEL_THEME_SEPARATOR = "@@";
     /**
      * The complete list of fields in the properties table.
      */
@@ -310,7 +314,7 @@ public class SpatialiteStyleProperties implements ISpatialiteTableAndFieldsNames
                                 }
                             }
                         } catch (JSONException e) {
-                            GPLog.error("SpatialiteStyleProperties", null, e);
+                            GPLog.error("SpatialiteUtilities", null, e);
                         }
                     }
 
@@ -373,6 +377,101 @@ public class SpatialiteStyleProperties implements ISpatialiteTableAndFieldsNames
         return style;
     }
 
+
+    /**
+     * Create data query.
+     *
+     * @param db                  the db to use.
+     * @param tableName           the table to query.
+     * @param tableGeometryColumn the table geom column.
+     * @param tableStyle          the table style.
+     * @param destSrid            the destination srid.
+     * @param env                 optional envelope.
+     * @return the query.
+     */
+    public static String buildGeometriesInBoundsQuery(ASpatialDb db, String tableName, GeometryColumn tableGeometryColumn, Style tableStyle, int destSrid, Envelope env) {
+        boolean doTransform = false;
+        if (tableGeometryColumn.srid != destSrid) {
+            doTransform = true;
+        }
+
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT ");
+//        qSb.append("ST_AsBinary(");
+        qSb.append("CastToXY(");
+        if (doTransform)
+            qSb.append("ST_Transform(");
+        qSb.append(tableGeometryColumn.geometryColumnName);
+        if (doTransform) {
+            qSb.append(",");
+            qSb.append(destSrid);
+            qSb.append(")");
+        }
+        qSb.append(")");
+//        qSb.append(")");
+        if (tableStyle.labelvisible == 1) {
+            qSb.append(",");
+            qSb.append(tableStyle.labelfield);
+        } else {
+            qSb.append(",'" + DUMMY + "'");
+        }
+        if (tableStyle.themeField != null) {
+            qSb.append(",");
+            qSb.append(tableStyle.themeField);
+        } else {
+            qSb.append(",'" + DUMMY + "'");
+        }
+        qSb.append(" FROM ");
+        qSb.append("\"").append(tableName).append("\"");
+
+        if (env != null) {
+            StringBuilder mbrSb = new StringBuilder();
+            if (doTransform)
+                mbrSb.append("ST_Transform(");
+            mbrSb.append("BuildMBR(");
+            mbrSb.append(env.getMinX());
+            mbrSb.append(",");
+            mbrSb.append(env.getMaxY());
+            mbrSb.append(",");
+            mbrSb.append(env.getMaxX());
+            mbrSb.append(",");
+            mbrSb.append(env.getMinY());
+            if (doTransform) {
+                mbrSb.append(",");
+                mbrSb.append(destSrid);
+                mbrSb.append("),");
+                mbrSb.append(tableGeometryColumn.srid);
+            }
+            mbrSb.append(")");
+            String mbr = mbrSb.toString();
+
+            // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
+            // the SpatialIndex could be fulfilled, but checking the Geometry could return the result
+            // that it is not
+            qSb.append(" WHERE ST_Intersects(");
+            qSb.append(tableGeometryColumn.geometryColumnName);
+            qSb.append(", ");
+            qSb.append(mbr);
+            qSb.append(") = 1 AND ");
+            qSb.append(ROWID_PK);
+            qSb.append("  IN (SELECT ");
+            qSb.append(ROWID_PK);
+            qSb.append(" FROM Spatialindex WHERE f_table_name ='");
+            qSb.append(tableName);
+            qSb.append("'");
+            // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
+            qSb.append(" AND f_geometry_column = '");
+            qSb.append(tableGeometryColumn.geometryColumnName);
+            qSb.append("'");
+            qSb.append(" AND search_frame = ");
+            qSb.append(mbr);
+            qSb.append(");");
+        }
+        String q = qSb.toString();
+        return q;
+    }
+
+
 //    /**
 //     * Retrieve the {@link Style} for all tables of a db.
 //     *
@@ -432,7 +531,7 @@ public class SpatialiteStyleProperties implements ISpatialiteTableAndFieldsNames
 //            }
 //            return stylesList;
 //        } catch (Exception e) {
-//            GPLog.error("SpatialiteStyleProperties", null, e);
+//            GPLog.error("SpatialiteUtilities", null, e);
 //            return null;
 //        } finally {
 //            try {

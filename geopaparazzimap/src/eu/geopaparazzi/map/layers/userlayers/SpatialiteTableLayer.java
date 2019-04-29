@@ -4,7 +4,6 @@ import org.hortonmachine.dbs.utils.EGeometryType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.layers.vector.VectorLayer;
@@ -22,6 +21,7 @@ import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IVectorLayer;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
+import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
 
 public class SpatialiteTableLayer extends VectorLayer implements IVectorLayer {
 
@@ -46,43 +46,76 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorLayer {
 
             EGeometryType geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
             eu.geopaparazzi.library.style.Style gpStyle = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
-            List<Geometry> geometries = SpatialiteConnectionsHandler.INSTANCE.getGeometries(dbPath, tableName);
-
+            List<Geometry> geometries = SpatialiteConnectionsHandler.INSTANCE.getGeometries(dbPath, tableName, gpStyle);
 
             Style pointStyle = null;
             Style lineStyle = null;
             Style polygonStyle = null;
 
             for (Geometry geom : geometries) {
+                eu.geopaparazzi.library.style.Style themeStyle = null;
+                if (gpStyle.themeField != null) {
+                    // set paint
+                    String userData = geom.getUserData().toString();
+                    String[] split = userData.split(SpatialiteUtilities.LABEL_THEME_SEPARATOR);
+//                    String label = split[0];
+                    String themeFieldValue = split[1];
+
+                    themeStyle = gpStyle.themeMap.get(themeFieldValue);
+                }
+
                 if (geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT) {
                     if (pointStyle == null) {
                         pointStyle = Style.builder()
-                                .buffer(0.5)
+                                .buffer(gpStyle.size)
                                 .strokeWidth(gpStyle.width)
                                 .strokeColor(ColorUtilities.toColor(gpStyle.strokecolor))
                                 .fillColor(ColorUtilities.toColor(gpStyle.fillcolor))
                                 .fillAlpha(gpStyle.fillalpha)
                                 .build();
                     }
-                    int numGeometries = geom.getNumGeometries();
-                    for (int i = 0; i < numGeometries; i++) {
-                        Geometry geometryN = geom.getGeometryN(i);
-                        Coordinate c = geometryN.getCoordinate();
-                        add(new PointDrawable(c.y, c.x, pointStyle));
+                    if (geom != null) {
+                        int numGeometries = geom.getNumGeometries();
+                        for (int i = 0; i < numGeometries; i++) {
+                            Geometry geometryN = geom.getGeometryN(i);
+                            Coordinate c = geometryN.getCoordinate();
+                            if (themeStyle != null) {
+                                Style pointThemeStyle = Style.builder()
+                                        .buffer(themeStyle.size)
+                                        .strokeWidth(themeStyle.width)
+                                        .strokeColor(ColorUtilities.toColor(themeStyle.strokecolor))
+                                        .fillColor(ColorUtilities.toColor(themeStyle.fillcolor))
+                                        .fillAlpha(themeStyle.fillalpha)
+                                        .build();
+                                add(new PointDrawable(c.y, c.x, pointThemeStyle));
+                            } else {
+                                add(new PointDrawable(c.y, c.x, pointStyle));
+                            }
+                        }
                     }
                 } else if (geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING) {
-                    int numGeometries = geom.getNumGeometries();
-                    for (int i = 0; i < numGeometries; i++) {
-                        Geometry geometryN = geom.getGeometryN(i);
-
-                        if (lineStyle == null) {
-                            lineStyle = Style.builder()
-                                    .strokeColor(ColorUtilities.toColor(gpStyle.strokecolor))
-                                    .strokeWidth(gpStyle.width)
-                                    .cap(Paint.Cap.ROUND)
-                                    .build();
+                    if (lineStyle == null) {
+                        lineStyle = Style.builder()
+                                .strokeColor(ColorUtilities.toColor(gpStyle.strokecolor))
+                                .strokeWidth(gpStyle.width)
+                                .cap(Paint.Cap.ROUND)
+                                .build();
+                    }
+                    if (geom != null) {
+                        int numGeometries = geom.getNumGeometries();
+                        for (int i = 0; i < numGeometries; i++) {
+                            Geometry geometryN = geom.getGeometryN(i);
+                            if (themeStyle != null) {
+                                Style lineThemeStyle = Style.builder()
+                                        .strokeColor(ColorUtilities.toColor(themeStyle.strokecolor))
+                                        .strokeWidth(themeStyle.width)
+                                        .cap(Paint.Cap.ROUND)
+                                        .build();
+                                add(new LineDrawable(geometryN, lineThemeStyle));
+                            } else {
+                                add(new LineDrawable(geometryN, lineStyle));
+                            }
                         }
-                        add(new LineDrawable(geometryN, lineStyle));
                     }
                 } else if (geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON) {
                     if (polygonStyle == null) {
@@ -94,10 +127,23 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorLayer {
                                 .cap(Paint.Cap.ROUND)
                                 .build();
                     }
-                    int numGeometries = geom.getNumGeometries();
-                    for (int i = 0; i < numGeometries; i++) {
-                        Geometry geometryN = geom.getGeometryN(i);
-                        add(new PolygonDrawable(geometryN, polygonStyle));
+                    if (geom != null) {
+                        int numGeometries = geom.getNumGeometries();
+                        for (int i = 0; i < numGeometries; i++) {
+                            Geometry geometryN = geom.getGeometryN(i);
+                            if (themeStyle != null) {
+                                Style polygonThemeStyle = Style.builder()
+                                        .strokeColor(ColorUtilities.toColor(themeStyle.strokecolor))
+                                        .strokeWidth(themeStyle.width)
+                                        .fillColor(ColorUtilities.toColor(themeStyle.fillcolor))
+                                        .fillAlpha(themeStyle.fillalpha)
+                                        .cap(Paint.Cap.ROUND)
+                                        .build();
+                                add(new PolygonDrawable(geometryN, polygonThemeStyle));
+                            } else {
+                                add(new PolygonDrawable(geometryN, polygonStyle));
+                            }
+                        }
                     }
                 }
             }

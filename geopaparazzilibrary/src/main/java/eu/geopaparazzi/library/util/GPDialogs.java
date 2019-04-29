@@ -259,8 +259,10 @@ public class GPDialogs {
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setMultiChoiceItems(items, checkedItems, dialogListener);
-                    builder.setOnCancelListener(e -> {
-                        onSelectionRunnable.run();
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            onSelectionRunnable.run();
+                        }
                     });
                     android.support.v7.app.AlertDialog dialog = builder.create();
                     dialog.show();
