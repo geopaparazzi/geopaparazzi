@@ -18,8 +18,6 @@ package eu.geopaparazzi.map.gui;
 
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -29,20 +27,24 @@ import android.widget.TextView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
+import org.hortonmachine.dbs.utils.EGeometryType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.routing.osmbonuspack.IGeoPoint;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
+import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
+import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeObject;
+import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 
 class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.ViewHolder> {
 
@@ -81,10 +83,11 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         });
         holder.moreButton.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(mapLayerListFragment.getActivity(), holder.moreButton);
-            String remove_layer = "Remove layer";
+            String remove_layer = "Remove Layer";
             String toggle3d = "Toggle 3D";
             String toggleLabels = "Toggle Labels";
-            String setAlpha = "Set opacity";
+            String setAlpha = "Set Opacity";
+            String setStyle = "Set Style";
 
             List<MapLayerItem> itemList = getItemList();
             MapLayerItem selMapLayerItem = null;
@@ -115,6 +118,10 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                         }
                         case BITMAPTILESERVICE: {
                             popup.getMenu().add(setAlpha);
+                            break;
+                        }
+                        case SPATIALITE: {
+                            popup.getMenu().add(setStyle);
                             break;
                         }
                     }
@@ -190,9 +197,44 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                 }
                             });
 
+                        } else if (actionName.equals(setStyle)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                            String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
 
+                            Style style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+                            SpatialiteColorStrokeObject colorStrokeObject = new SpatialiteColorStrokeObject();
+                            colorStrokeObject.dbPath = dbPath;
+                            colorStrokeObject.tableName = tableName;
+
+                            EGeometryType geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
+
+                            boolean isPoint = geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT;
+                            boolean isLine = geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING;
+                            boolean isPolygon = geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON;
+                            if (isPolygon || isPoint) {
+                                colorStrokeObject.hasFill = true;
+                                colorStrokeObject.fillColor = ColorUtilities.toColor(style.fillcolor);
+                                colorStrokeObject.fillAlpha = (int) (style.fillalpha * 255);
+                            }
+                            if (isPolygon || isLine || isPoint) {
+                                colorStrokeObject.hasStroke = true;
+                                colorStrokeObject.strokeColor = ColorUtilities.toColor(style.strokecolor);
+                                colorStrokeObject.strokeAlpha = (int) (style.strokealpha * 255);
+
+                                colorStrokeObject.hasStrokeWidth = true;
+                                colorStrokeObject.strokeWidth = (int) style.width;
+                            }
+                            if (isPoint) {
+                                colorStrokeObject.hasShape = true;
+                                colorStrokeObject.shapeWKT = style.shape;
+                                colorStrokeObject.shapeSize = (int) style.size;
+                            }
+                            SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                            colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");
                         }
-                    } catch (JSONException e1) {
+                    } catch (Exception e1) {
                         GPLog.error(this, null, e1);
                     }
                     return true;

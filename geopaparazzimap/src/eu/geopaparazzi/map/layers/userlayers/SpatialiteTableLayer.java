@@ -55,12 +55,10 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorLayer {
             for (Geometry geom : geometries) {
                 eu.geopaparazzi.library.style.Style themeStyle = null;
                 if (gpStyle.themeField != null) {
-                    // set paint
                     String userData = geom.getUserData().toString();
                     String[] split = userData.split(SpatialiteUtilities.LABEL_THEME_SEPARATOR);
 //                    String label = split[0];
                     String themeFieldValue = split[1];
-
                     themeStyle = gpStyle.themeMap.get(themeFieldValue);
                 }
 

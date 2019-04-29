@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.map.R;
 
-public class MapLayerListActivity extends AppCompatActivity {
+public class MapLayerListActivity extends AppCompatActivity implements ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,5 +57,10 @@ public class MapLayerListActivity extends AppCompatActivity {
 //        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPropertiesChanged(ColorStrokeObject newColorStrokeObject) {
+
     }
 }

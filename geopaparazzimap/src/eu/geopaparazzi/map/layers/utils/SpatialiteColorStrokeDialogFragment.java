@@ -16,19 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.core.dialogs;
+package eu.geopaparazzi.map.layers.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -46,8 +44,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.style.ColorStrokeObject;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
@@ -57,25 +57,14 @@ import eu.geopaparazzi.library.util.Compat;
  *
  * @author Andrea Antonello
  */
-public class ColorStrokeDialogFragment extends DialogFragment {
-    /**
-     * A simple interface to use to notify color and stroke changes.
-     */
-    public interface IColorStrokePropertiesChangeListener {
-
-        /**
-         * Called when there is the need to notify that a change occurred.
-         */
-        void onPropertiesChanged(ColorStrokeObject newColorStrokeObject);
-    }
+public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
 
     private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
 
     private ImageView mWidthImageView;
-    private ColorStrokeObject mCurrentColorStrokeObject;
+    private SpatialiteColorStrokeObject mCurrentColorStrokeObject;
 
     private TextView mWidthTextView;
-    private IColorStrokePropertiesChangeListener colorStrokePropertiesChangeListener;
     private SeekBar mWidthSeekBar;
     private boolean handlingFillColor;
     private SeekBar mAlphaSeekBar;
@@ -94,8 +83,8 @@ public class ColorStrokeDialogFragment extends DialogFragment {
      * @param colorStrokeObject object holding color and stroke info.
      * @return the instance.
      */
-    public static ColorStrokeDialogFragment newInstance(ColorStrokeObject colorStrokeObject) {
-        ColorStrokeDialogFragment f = new ColorStrokeDialogFragment();
+    public static SpatialiteColorStrokeDialogFragment newInstance(SpatialiteColorStrokeObject colorStrokeObject) {
+        SpatialiteColorStrokeDialogFragment f = new SpatialiteColorStrokeDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable(PREFS_KEY_COLORPROPERTIES, colorStrokeObject);
         f.setArguments(args);
@@ -107,7 +96,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ColorStrokeObject mInitialColorStrokeObject = (ColorStrokeObject) getArguments().getSerializable(PREFS_KEY_COLORPROPERTIES);
+        SpatialiteColorStrokeObject mInitialColorStrokeObject = (SpatialiteColorStrokeObject) getArguments().getSerializable(PREFS_KEY_COLORPROPERTIES);
         if (mInitialColorStrokeObject != null) {
             mCurrentColorStrokeObject = mInitialColorStrokeObject.duplicate();
         }
@@ -304,8 +293,20 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
         builder.setPositiveButton(R.string.set_properties,
                 (dialog, id) -> {
-                    if (colorStrokePropertiesChangeListener != null) {
-                        colorStrokePropertiesChangeListener.onPropertiesChanged(mCurrentColorStrokeObject);
+                    try {
+                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(mCurrentColorStrokeObject.dbPath);
+                        Style style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(mCurrentColorStrokeObject.dbPath, mCurrentColorStrokeObject.tableName, null);
+                        style.fillcolor = ColorUtilities.getHex(mCurrentColorStrokeObject.fillColor);
+                        style.fillalpha = mCurrentColorStrokeObject.fillAlpha / 255f;
+                        style.strokecolor = ColorUtilities.getHex(mCurrentColorStrokeObject.strokeColor);
+                        style.strokealpha = mCurrentColorStrokeObject.strokeAlpha / 255f;
+                        style.width = mCurrentColorStrokeObject.strokeWidth;
+                        style.shape = mCurrentColorStrokeObject.shapeWKT;
+                        style.size = mCurrentColorStrokeObject.shapeSize;
+
+                        SpatialiteUtilities.updateStyle(db, style);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
                     }
                 }
         );
@@ -340,22 +341,6 @@ public class ColorStrokeDialogFragment extends DialogFragment {
         mRedSeekBar.setProgress(red);
         mGreenSeekBar.setProgress(green);
         mBlueSeekBar.setProgress(blue);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        if (activity instanceof IColorStrokePropertiesChangeListener) {
-            colorStrokePropertiesChangeListener = (IColorStrokePropertiesChangeListener) activity;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        colorStrokePropertiesChangeListener = null;
     }
 
     private final OnSeekBarChangeListener lineWidthChanged =
