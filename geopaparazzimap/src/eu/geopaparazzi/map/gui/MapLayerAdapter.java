@@ -161,8 +161,19 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             if (jsonObject.has(IGpLayer.LAYERALPHA_TAG))
                                 def = (int) (jsonObject.getDouble(IGpLayer.LAYERALPHA_TAG) * 100.0);
 
-                            String[] alphas = {"25%", "50%", "75%", "100%"};
-                            boolean[] selAlphas = {def == 25, def == 50, def == 75, def == 100};
+                            int[] opacityLevels = ELayerTypes.OPACITY_LEVELS;
+                            String[] alphas = new String[opacityLevels.length];
+                            boolean[] selAlphas = new boolean[opacityLevels.length];
+                            boolean oneTrue = false;
+                            for (int i = 0; i < opacityLevels.length; i++) {
+                                alphas[i] = opacityLevels[i] + "%";
+                                boolean isThat = def == opacityLevels[i];
+                                selAlphas[i] = isThat;
+                                if (isThat) oneTrue = true;
+                            }
+                            if (!oneTrue)
+                                // if none selected set 100% opaque
+                                selAlphas[selAlphas.length - 1] = true;
                             GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), alphas, selAlphas, () -> {
                                 for (int i = 0; i < selAlphas.length; i++) {
                                     if (selAlphas[i]) {

@@ -186,7 +186,10 @@ public enum LayerManager {
                     }
                     case MBTILES: {
                         String path = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
-                        MBTilesLayer mbtilesLayer = new MBTilesLayer(mapView, path, null, null);
+                        float alpha = 1f;
+                        if (layerDefinition.has(IGpLayer.LAYERALPHA_TAG))
+                            alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERALPHA_TAG);
+                        MBTilesLayer mbtilesLayer = new MBTilesLayer(mapView, path, alpha, null);
                         mbtilesLayer.load();
                         mbtilesLayer.setEnabled(isEnabled);
                         break;

@@ -15,13 +15,13 @@ import eu.geopaparazzi.map.layers.interfaces.IRasterTileOfflineLayer;
 
 public class MBTilesLayer extends BitmapTileLayer implements IRasterTileOfflineLayer {
     private final String name;
-    private Integer alpha;
+    private Float alpha;
     private Integer transparentColor;
     private GPMapView mapView;
     private String dbPath;
 
-    public MBTilesLayer(GPMapView mapView, String dbPath, Integer alpha, Integer transparentColor) throws Exception {
-        super(mapView.map(), new MBTilesTileSource(dbPath, alpha, transparentColor));
+    public MBTilesLayer(GPMapView mapView, String dbPath, Float alpha, Integer transparentColor) throws Exception {
+        super(mapView.map(), new MBTilesTileSource(dbPath, null, transparentColor));
         this.mapView = mapView;
         this.dbPath = dbPath;
         name = FileUtilities.getNameWithoutExtention(new File(dbPath));

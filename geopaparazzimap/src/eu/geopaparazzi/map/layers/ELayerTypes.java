@@ -11,6 +11,8 @@ public enum ELayerTypes {
     BITMAPTILESERVICE("BitmapTileService", BitmapTileServiceLayer.class.getCanonicalName()),
     MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName());
 
+    public static int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+
 
     private final String label;
     private final String className;
