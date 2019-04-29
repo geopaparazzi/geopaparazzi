@@ -33,6 +33,8 @@ import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
 import com.woxthebox.draglistview.DragItemAdapter;
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.EDb;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -393,32 +395,88 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                         if (file.exists()) {
                             Utilities.setLastFilePath(getActivity(), filePath);
                             final File finalFile = file;
-                            int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
-                            int focusedColumn = mBoardView.getFocusedColumn();
-                            int itemCount = mBoardView.getItemCount(focusedColumn);
-                            if (index >= 0) {
-                                MapLayerItem item = new MapLayerItem();
-                                ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
-                                item.type = layerType.getType();
-                                item.position = index;
-                                item.name = FileUtilities.getNameWithoutExtention(finalFile);
-                                item.path = finalFile.getAbsolutePath();
-                                item.enabled = true;
+                            ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
+                            switch (layerType) {
+                                case MAPSFORGE:
+                                case MBTILES:
+                                    int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
+                                    int focusedColumn = mBoardView.getFocusedColumn();
+                                    int itemCount = mBoardView.getItemCount(focusedColumn);
+                                    if (index >= 0) {
+                                        MapLayerItem item = new MapLayerItem();
+                                        item.type = layerType.getType();
+                                        item.position = index;
+                                        item.name = FileUtilities.getNameWithoutExtention(finalFile);
+                                        item.path = finalFile.getAbsolutePath();
+                                        item.enabled = true;
 
-                                mBoardView.addItem(focusedColumn, itemCount, item, true);
-                            } else {
-                                // reload list to show changes in existing item
-                                DragItemAdapter adapter = mBoardView.getAdapter(focusedColumn);
-                                List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                int i = 0;
-                                List<MapLayerItem> mItemArray = new ArrayList<>();
-                                for (JSONObject layerDefinition : layerDefinitions) {
-                                    MapLayerItem layerItem = getMapLayerItem(i, layerDefinition);
-                                    mItemArray.add(layerItem);
-                                    i++;
+                                        mBoardView.addItem(focusedColumn, itemCount, item, true);
+                                    } else {
+                                        // reload list to show changes in existing item
+                                        DragItemAdapter adapter = mBoardView.getAdapter(focusedColumn);
+                                        List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                        int i = 0;
+                                        List<MapLayerItem> mItemArray = new ArrayList<>();
+                                        for (JSONObject layerDefinition : layerDefinitions) {
+                                            MapLayerItem layerItem = getMapLayerItem(i, layerDefinition);
+                                            mItemArray.add(layerItem);
+                                            i++;
+                                        }
+                                        adapter.setItemList(mItemArray);
+                                    }
+                                    break;
+                                case SPATIALITE: {
+                                    // ask for table
+                                    List<String> tableNames = null;
+                                    try (ASpatialDb db = EDb.SPATIALITE4ANDROID.getSpatialDb()) {
+                                        db.open(finalFile.getAbsolutePath());
+
+                                        tableNames = db.getTables(true);
+                                    }
+
+                                    if (tableNames != null && tableNames.size() > 0) {
+                                        String[] items = new String[tableNames.size()];
+                                        boolean[] checkItems = new boolean[tableNames.size()];
+                                        for (int i = 0; i < items.length; i++) {
+                                            items[i] = tableNames.get(i);
+                                        }
+                                        GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
+                                            List<String> selTables = new ArrayList<>();
+                                            for (int i = 0; i < checkItems.length; i++) {
+                                                if (checkItems[i]) {
+                                                    selTables.add(items[i]);
+                                                }
+                                            }
+                                            if (selTables.size() > 0) {
+                                                for (String selTable : selTables) {
+                                                    try {
+                                                        int index2 = LayerManager.INSTANCE.addSpatialiteTable(finalFile.getAbsoluteFile(), selTable, null);
+                                                        int focusedColumn2 = mBoardView.getFocusedColumn();
+                                                        int itemCount2 = mBoardView.getItemCount(focusedColumn2);
+                                                        if (index2 >= 0) {
+                                                            MapLayerItem item = new MapLayerItem();
+                                                            item.type = layerType.getType();
+                                                            item.position = index2;
+                                                            item.name = selTable;
+                                                            item.path = finalFile.getAbsolutePath();
+                                                            item.enabled = true;
+
+                                                            mBoardView.addItem(focusedColumn2, itemCount2, item, true);
+                                                        }
+                                                    } catch (Exception e) {
+                                                        GPLog.error(this, null, e);
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                    } else {
+                                        GPDialogs.warningDialog(getActivity(), "Unable to find tables in the selected database.", null);
+                                    }
+
                                 }
-                                adapter.setItemList(mItemArray);
                             }
+
                         }
                     } catch (Exception e) {
                         GPDialogs.errorDialog(getActivity(), e, null);

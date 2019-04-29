@@ -3,13 +3,15 @@ package eu.geopaparazzi.map.layers;
 import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
+import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
 
 public enum ELayerTypes {
     MAPSFORGE("mapsforge", MapsforgeLayer.class.getCanonicalName()),
     VECTORTILESSERVICE("VectorTilesService", VectorTilesServiceLayer.class.getCanonicalName()),
     BITMAPTILESERVICE("BitmapTileService", BitmapTileServiceLayer.class.getCanonicalName()),
-    MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName());
+    MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName()),
+    SPATIALITE("sqlite", SpatialiteTableLayer.class.getCanonicalName());
 
     public static final int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 
@@ -47,8 +49,8 @@ public enum ELayerTypes {
             return ELayerTypes.MBTILES;
         } else if (fileName.endsWith(MAPSFORGE_EXT)) {
             return ELayerTypes.MAPSFORGE;
-//        }else if (fileName.endsWith(SPATIALITE_EXT)){
-//            return ELayerTypes.;
+        } else if (fileName.endsWith(SPATIALITE_EXT)) {
+            return ELayerTypes.SPATIALITE;
         }
 
 

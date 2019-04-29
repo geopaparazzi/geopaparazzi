@@ -3,7 +3,7 @@ package eu.geopaparazzi.map.layers.interfaces;
 /**
  *
  */
-public interface ISpatialiteLayer extends IGpLayer {
+public interface IVectorLayer extends IGpLayer {
 
 //    public String name;
 //

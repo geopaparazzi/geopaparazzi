@@ -35,6 +35,7 @@ import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
+import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
 
 
@@ -213,6 +214,14 @@ public enum LayerManager {
                         BitmapTileServiceLayer bitmapLayer = new BitmapTileServiceLayer(mapView, name, url, tilePath, maxZoom, alpha);
                         bitmapLayer.load();
                         bitmapLayer.setEnabled(isEnabled);
+                        break;
+                    }
+                    case SPATIALITE: {
+                        String dbPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+
+                        SpatialiteTableLayer mapsforgeLayer = new SpatialiteTableLayer(mapView, dbPath, name);
+                        mapsforgeLayer.load();
+                        mapsforgeLayer.setEnabled(isEnabled);
                         break;
                     }
                 }
@@ -418,13 +427,13 @@ public enum LayerManager {
     }
 
     /**
-     * Ad a mapsforge map file to the list.
+     * Ad a mapsforge and mbtiles files to the list.
      *
-     * <p>If a mapfile is already existing, then add to it</p>
+     * <p>If a mapfile is already existing, then add to it.</p>
      *
      * @param finalFile the file to add.
-     * @param index  the index of the added layer.
-     * @return
+     * @param index     optional index of the layer to add.
+     * @return the index in which the layer was added or -1 if for some reason a new layer has not been added.
      * @throws Exception
      */
     public int addMapFile(File finalFile, Integer index) throws Exception {
@@ -487,13 +496,26 @@ public enum LayerManager {
         } else {
             return -1;
         }
+    }
 
-
+    public int addSpatialiteTable(File dbFile, String tableName, Integer index) throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.SPATIALITE.getType());
+        jo.put(IGpLayer.LAYERNAME_TAG, tableName);
+        jo.put(IGpLayer.LAYERPATH_TAG, dbFile);
+        jo.put(IGpLayer.LAYERMAXZOOM_TAG, 25);
+        if (!userLayersDefinitions.contains(jo))
+            if (index != null) {
+                userLayersDefinitions.add(index, jo);
+            } else {
+                userLayersDefinitions.add(jo);
+            }
+        return userLayersDefinitions.indexOf(jo);
     }
 
     public int addBitmapTileService(String name, String url, String tilePath, int maxZoom, float alpha, Integer index) throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put(IGpLayer.LAYERTYPE_TAG, BitmapTileServiceLayer.class.getCanonicalName());
+        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.BITMAPTILESERVICE.getType());
         jo.put(IGpLayer.LAYERNAME_TAG, name);
         jo.put(IGpLayer.LAYERURL_TAG, url);
         jo.put(IGpLayer.LAYERPATH_TAG, tilePath);
@@ -525,4 +547,6 @@ public enum LayerManager {
             list.add(toRow, item);
         }
     }
+
+
 }

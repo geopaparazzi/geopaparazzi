@@ -243,124 +243,6 @@ public class GPMapView extends org.oscim.android.MapView {
 //        layers.add(vectorLayer, OVERLAYS);
 ////        map().layers().add(vectorLayer);
 //    }
-//
-//    public void toggleNotesLayer(boolean enable) {
-//        if (enable) {
-//            if (notesLayer == null) {
-//                notesLayer = new NotesLayer(this);
-////                map().layers().add(notesLayer);
-//                Layers layers = map().layers();
-//                layers.add(notesLayer, ON_TOP_GEOPAPARAZZI);
-//            }
-//            notesLayer.enable();
-//        } else {
-//            if (notesLayer != null)
-//                notesLayer.disable();
-//        }
-//    }
-//
-//    public void toggleBookmarksLayer(boolean enable) {
-//        if (enable) {
-//            if (bookmarksLayer == null) {
-//                bookmarksLayer = new BookmarkLayer(this);
-////                map().layers().add(notesLayer);
-//                Layers layers = map().layers();
-//                layers.add(bookmarksLayer, ON_TOP_GEOPAPARAZZI);
-//            }
-//            bookmarksLayer.enable();
-//        } else {
-//            if (bookmarksLayer != null)
-//                bookmarksLayer.disable();
-//        }
-//    }
-//
-//    public void toggleImagesLayer(boolean enable) {
-//        if (enable) {
-//            if (imagesLayer == null) {
-//                imagesLayer = new ImagesLayer(this);
-////                map().layers().add(imagesLayer);
-//                Layers layers = map().layers();
-//                layers.add(imagesLayer, ON_TOP_GEOPAPARAZZI);
-//            }
-//            imagesLayer.enable();
-//        } else {
-//            if (imagesLayer != null)
-//                imagesLayer.disable();
-//        }
-//    }
-//
-//    public void toggleGpsLogsLayer(boolean enable) {
-//        if (enable) {
-//            if (gpsLogsLayer == null) {
-//                gpsLogsLayer = new GpsLogsLayer(this);
-////                map().layers().add(gpsLogsLayer);
-//                Layers layers = map().layers();
-//                layers.add(gpsLogsLayer, GEOPAPARAZZI);
-//            }
-//            gpsLogsLayer.enable();
-//        } else {
-//            if (gpsLogsLayer != null)
-//                gpsLogsLayer.disable();
-//        }
-//    }
-//
-//    public void toggleCurrentGpsLogLayer(boolean enable) {
-//        if (enable) {
-//            if (currentGpsLogLayer == null) {
-//                currentGpsLogLayer = new CurrentGpsLogLayer(this);
-//                Layers layers = map().layers();
-//                layers.add(currentGpsLogLayer, GEOPAPARAZZI);
-//            }
-//            currentGpsLogLayer.enable();
-//        } else {
-//            if (currentGpsLogLayer != null)
-//                currentGpsLogLayer.disable();
-//        }
-//    }
-//
-//    public void toggleLocationLayer(boolean enable) {
-//        if (enable) {
-//            try {
-//                if (locationLayer == null) {
-//                    locationLayer = new GpsPositionLayer(this);
-//                    locationLayer.enable();
-////                    map().layers().add(locationLayer);
-//                    Layers layers = map().layers();
-//                    layers.add(locationLayer, SYSTEM);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            if (locationLayer != null) {
-//                locationLayer.disable();
-//            }
-//        }
-//
-//    }
-//
-//    public void toggleLocationTextLayer(boolean enable) {
-//        if (enable) {
-//            try {
-//                if (locationTextLayer == null) {
-//                    locationTextLayer = new GpsPositionTextLayer(this);
-//                    locationTextLayer.disable();
-////                    map().layers().add(locationTextLayer);
-//                    Layers layers = map().layers();
-//                    layers.add(locationTextLayer, ON_TOP_SYSTEM);
-//                }
-//                if (peferences.getBoolean(LibraryConstants.PREFS_KEY_SHOW_GPS_INFO, false))
-//                    locationTextLayer.enable();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            if (locationTextLayer != null) {
-//                locationTextLayer.disable();
-//            }
-//        }
-//
-//    }
 
     /**
      * Get a gps status update.
@@ -438,12 +320,11 @@ public class GPMapView extends org.oscim.android.MapView {
         }
 
         if (GPLog.LOG_ABSURD) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Map Center moved: "); //$NON-NLS-1$
-            sb.append(lon);
-            sb.append("/"); //$NON-NLS-1$
-            sb.append(lat);
-            GPLog.addLogEntry(this, sb.toString());
+            String sb = "Map Center moved: " + //$NON-NLS-1$
+                    lon +
+                    "/" + //$NON-NLS-1$
+                    lat;
+            GPLog.addLogEntry(this, sb);
         }
 
         PositionUtilities.putMapCenterInPreferences(peferences, lon, lat, zoom);

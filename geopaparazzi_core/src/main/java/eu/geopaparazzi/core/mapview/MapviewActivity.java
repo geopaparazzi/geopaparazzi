@@ -260,45 +260,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 //        mapView.setBuiltInZoomControls(false);
         mapView.setOnTouchListener(this);
 
-        try {
-//            // Tile source
-//            String mapPath1 = new File(Environment.getExternalStorageDirectory(), "maps/italy.map").getAbsolutePath();
-//            String mapPath2 = new File(Environment.getExternalStorageDirectory(), "maps/austria.map").getAbsolutePath();
-//            String mapPath3 = new File(Environment.getExternalStorageDirectory(), "maps/spain.map").getAbsolutePath();
-//            String mapPath4 = new File(Environment.getExternalStorageDirectory(), "maps/portugal.map").getAbsolutePath();
-//            mapView.setBaseMap(mapPath1, mapPath2, mapPath3, mapPath4);
-//
-////            mapView.addVectorTilesLayer("https://vectortiles.xyz/zxy/tapioca", "/{Z}/{X}/{Y}.pbf");
-//
-//            mapView.toggleGpsLogsLayer(true);
-//            mapView.toggleCurrentGpsLogLayer(true);
-//            mapView.toggleBookmarksLayer(true);
-//            mapView.toggleNotesLayer(true);
-//            mapView.toggleImagesLayer(true);
-//            mapView.toggleLocationLayer(true);
-//            mapView.toggleLocationTextLayer(true);
-//
-//
-////            // MBTILES FILES
-//            File mbtilesFile = new File(Environment.getExternalStorageDirectory(), "maps/pericolo_rotiano.mbtiles");
-//            mapView.addMBTilesLayer(mbtilesFile.getAbsolutePath(), null, Color.WHITE);
-//            File mbtilesFile2 = new File(Environment.getExternalStorageDirectory(), "maps/bolzano.mbtiles");
-//            mapView.addMBTilesLayer(mbtilesFile2.getAbsolutePath(), 128, null);
-//
-//            // SPATIALTE FILES
-//            File spatialiteFile = new File(Environment.getExternalStorageDirectory(), "maps/naturalearth_italy_thematic.sqlite");
-//            ASpatialDb spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
-//            spatialDb.open(spatialiteFile.getAbsolutePath());
-//            // ne_10m_roads, ne_10m_admin_1_states_provinces, ne_10m_populated_places
-//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_admin_1_states_provinces");
-//            mapView.addSpatialDbLayer(spatialDb, "ne_10m_roads");
-//
-//
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         float mapScaleX = mPeferences.getFloat(MAPSCALE_X, 1f);
         float mapScaleY = mPeferences.getFloat(MAPSCALE_Y, 1f);
         if (mapScaleX > 1 || mapScaleY > 1) {
