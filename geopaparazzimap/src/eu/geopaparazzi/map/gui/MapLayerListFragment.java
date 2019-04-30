@@ -254,7 +254,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                 int itemCount = mBoardView.getItemCount(focusedColumn);
                                 mBoardView.addItem(focusedColumn, itemCount, item, true);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                GPDialogs.warningDialog(getActivity(), e.getMessage(), null);
                             }
 
                         }

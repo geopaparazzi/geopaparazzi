@@ -46,6 +46,7 @@ public enum LayerManager {
     public static final String LAYERS = "layers";
     public static final String GP_LOADED_USERMAPS_KEY = "GP_LOADED_USERMAPS_KEY";
     public static final String GP_LOADED_SYSTEMMAPS_KEY = "GP_LOADED_SYSTEMMAPS_KEY";
+    public static final String SAME_NAME_EXISTS = "A layer with the same name already exists.";
     private List<JSONObject> userLayersDefinitions = new ArrayList<>();
     private List<JSONObject> systemLayersDefinitions = new ArrayList<>();
 
@@ -452,6 +453,8 @@ public enum LayerManager {
     public int addMapFile(File finalFile, Integer index) throws Exception {
         int i = finalFile.getName().lastIndexOf('.');
         String name = FileUtilities.getNameWithoutExtention(finalFile);
+        checkSameNameLayerExists(name);
+
         ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
         if (layerType == null) {
             throw new RuntimeException();
@@ -512,7 +515,25 @@ public enum LayerManager {
         }
     }
 
+    private void checkSameNameLayerExists(String name) throws Exception {
+        for (JSONObject definition : userLayersDefinitions) {
+            String existingName = definition.getString(IGpLayer.LAYERNAME_TAG);
+            if (existingName.equals(name)) {
+                throw new Exception(SAME_NAME_EXISTS);
+            }
+        }
+        for (JSONObject definition : systemLayersDefinitions) {
+            String existingName = definition.getString(IGpLayer.LAYERNAME_TAG);
+            if (existingName.equals(name)) {
+                throw new Exception(SAME_NAME_EXISTS);
+            }
+        }
+
+    }
+
     public int addSpatialiteTable(File dbFile, String tableName, Integer index) throws Exception {
+        checkSameNameLayerExists(tableName);
+
         JSONObject jo = new JSONObject();
         jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.SPATIALITE.getType());
         jo.put(IGpLayer.LAYERNAME_TAG, tableName);
@@ -528,6 +549,7 @@ public enum LayerManager {
     }
 
     public int addBitmapTileService(String name, String url, String tilePath, int maxZoom, float alpha, Integer index) throws Exception {
+        checkSameNameLayerExists(name);
         JSONObject jo = new JSONObject();
         jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.BITMAPTILESERVICE.getType());
         jo.put(IGpLayer.LAYERNAME_TAG, name);
