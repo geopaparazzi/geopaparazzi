@@ -127,19 +127,12 @@ import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 public class MapviewActivity extends AppCompatActivity implements IActivitySupporter, OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
-    private final int DATAPROPERTIES_RETURN_CODE = 671;
-
-    private final int CONTACT_RETURN_CODE = 670;
     public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;
 
     private final int MENU_GPSDATA = 1;
-    private final int MENU_DATA = 2;
-    private final int MENU_SCALE_ID = 3;
-    private final int MENU_GO_TO = 4;
-    private final int MENU_CENTER_ON_MAP = 5;
-    private final int MENU_COMPASS_ID = 6;
-    private final int MENU_SHAREPOSITION_ID = 7;
-    private final int MENU_LOADMAPSFORGE_VECTORS_ID = 8;
+    private final int MENU_GO_TO = 2;
+    private final int MENU_COMPASS_ID = 3;
+    private final int MENU_SHAREPOSITION_ID = 4;
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     public static final String MAPSCALE_X = "MAPSCALE_X"; //$NON-NLS-1$
@@ -149,7 +142,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     private SharedPreferences mPeferences;
 
 
-    private List<String> smsString;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
     private double[] lastGpsPosition;
 
@@ -512,13 +504,9 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect);//.setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_DATA, 2, R.string.base_maps);//.setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar);//.setIcon(R.drawable.ic_menu_scalebar);
-        menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 5, R.string.center_on_map);//.setIcon(android.R.drawable.ic_menu_mylocation);
-        menu.add(Menu.NONE, MENU_GO_TO, 6, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 7, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
-        menu.add(Menu.NONE, MENU_LOADMAPSFORGE_VECTORS_ID, 8, getString(R.string.menu_extract_mapsforge_data));//"Import mapsforge data");//.setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 2, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_GO_TO, 3, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 4, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
     }
 
     public boolean onContextItemSelected(MenuItem item) {
@@ -526,16 +514,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             case MENU_GPSDATA:
                 Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
                 startActivity(gpsDatalistIntent);
-                return true;
-            case MENU_DATA:
-//                Intent datalistIntent = new Intent(this, SpatialiteDatabasesTreeListActivity.class);
-//                startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
-//                return true;
-            case MENU_SCALE_ID:
-                // FIXME
-//                MapScaleBar mapScaleBar = mapView.getMapScaleBar();
-//                boolean showMapScaleBar = mapScaleBar.isVisible();
-//                mapScaleBar.setVisible(!showMapScaleBar);
                 return true;
             case MENU_COMPASS_ID:
                 AppsUtilities.checkAndOpenGpsStatus(this);
@@ -553,26 +531,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                     GPLog.error(this, null, e1); //$NON-NLS-1$
                     return false;
                 }
-            case MENU_LOADMAPSFORGE_VECTORS_ID: {
-                double[] mapWorldBounds = getMapWorldBounds();
-                int currentZoomLevel = getZoom();
-                Intent mapsforgeIntent = new Intent(this, ImportMapsforgeActivity.class);
-                mapsforgeIntent.putExtra(LibraryConstants.NSWE, mapWorldBounds);
-                mapsforgeIntent.putExtra(LibraryConstants.ZOOMLEVEL, currentZoomLevel);
-                startActivity(mapsforgeIntent);
-                return true;
-            }
             case MENU_GO_TO: {
                 return goTo();
-            }
-            case MENU_CENTER_ON_MAP: {
-                // FIXME
-//                AbstractSpatialTable selectedBaseMapTable = BaseMapSourcesManager.INSTANCE.getSelectedBaseMapTable();
-//                double lon = selectedBaseMapTable.getCenterX();
-//                double lat = selectedBaseMapTable.getCenterY();
-//                int zoom = selectedBaseMapTable.getDefaultZoom();
-//                setNewCenterAtZoom(lon, lat, zoom);
-                return true;
             }
             default:
         }
@@ -584,7 +544,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         boolean[] checked = new boolean[2];
         GPDialogs.singleOptionDialog(this, items, checked, () -> {
             runOnUiThread(() -> {
-
                 int selectedPosition = checked[1] ? 1 : 0;
                 if (selectedPosition == 0) {
                     InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
@@ -595,7 +554,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 }
             });
         });
-
         return true;
     }
 
@@ -667,60 +625,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                     double lat = data.getDoubleExtra(LATITUDE, 0d);
                     int zoom = data.getIntExtra(ZOOMLEVEL, 1);
                     setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
-                }
-                break;
-            }
-//            case (GPSDATAPROPERTIES_RETURN_CODE): {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-//                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
-//                    setCenterAndZoomForMapWindowFocus(lon, lat, null);
-//                }
-//                break;
-//            }
-            case (DATAPROPERTIES_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    double lon = data.getDoubleExtra(LONGITUDE, 0d);
-                    double lat = data.getDoubleExtra(LATITUDE, 0d);
-                    int zoom = data.getIntExtra(ZOOMLEVEL, 1);
-                    setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
-                }
-                break;
-            }
-            case (CONTACT_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri uri = data.getData();
-                    String number = null;
-                    if (smsString != null && uri != null) {
-                        Cursor c = null;
-                        try {
-                            c = getContentResolver().query(
-                                    uri,
-                                    new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                            ContactsContract.CommonDataKinds.Phone.TYPE}, null, null, null
-                            );
-
-                            if (c != null && c.moveToFirst()) {
-                                number = c.getString(0);
-                                // int type = c.getInt(1);
-                                // showSelectedNumber(type, number);
-                            }
-                        } finally {
-                            if (c != null) {
-                                c.close();
-                            }
-                        }
-
-                        if (number != null) {
-                            int count = 1;
-                            for (String sms : smsString) {
-                                sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                                SmsUtilities.sendSMS(MapviewActivity.this, number, sms, false);
-                                String msg = getString(R.string.sent_sms) + count++;
-                                GPDialogs.toast(this, msg, Toast.LENGTH_SHORT);
-                            }
-                        }
-                    }
                 }
                 break;
             }
@@ -876,7 +780,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
 
 
-        Resources resources = getResources();
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             centerOnGps.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_center_gps_red_24dp));
         } else {
@@ -913,8 +816,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         } catch (Exception e) {
             GPLog.error(this, "On location change error", e); //$NON-NLS-1$
-            // finish the activity to reset
-            //finish();
         }
     }
 
@@ -1009,16 +910,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("");
             builder.setMultiChoiceItems(items, checkedItems, dialogListener);
-//            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//                @Override
-//                public void onCancel(DialogInterface dialogInterface) {
-//                    try {
-//                        sourcesTreeListActivity.refreshData(SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps());
-//                    } catch (Exception e) {
-//                        GPLog.error(this, null, e);
-//                    }
-//                }
-//            });
             AlertDialog dialog = builder.create();
             dialog.show();
 
@@ -1208,13 +1099,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // force to exit through the exit button
-        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                if (EditManager.INSTANCE.getActiveToolGroup() != null) {
-                    return true;
-                }
+        if (keyCode == KeyEvent.KEYCODE_BACK && EditManager.INSTANCE.getActiveToolGroup() != null) {
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

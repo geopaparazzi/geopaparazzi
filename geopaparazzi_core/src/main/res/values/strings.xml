@@ -325,7 +325,7 @@
     <string name="export_img_processing">Exporting images...</string>
     <string name="routing_pref_title">Routing api key</string>
     <string name="routing_pref_summary">To use MapQuest and Graphhopper routing services insert the proper ApiKey.</string>
-    <string name="gps_info_dialog_title">Map/Gps Information</string>
+    <string name="gps_info_dialog_title">Gps Information</string>
     <string name="open_gps_settings">Open GPS settings</string>
     <string name="dashboard_note_action_description">Add a text, picture or sketch note</string>
     <string name="dashboard_metadata_action_description">View the project information</string>

@@ -46,7 +46,6 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
@@ -69,6 +68,7 @@ import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -87,10 +87,11 @@ import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-//import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-//import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
+
+//import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
+//import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
 
 /**
  * The fragment of the main geopap view.
@@ -345,12 +346,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.action_tilesource) {
-            // FIXME
-//            Intent preferencesIntent = new Intent(this.getActivity(), SourcesTreeListActivity.class);
-//            startActivity(preferencesIntent);
-            return true;
-        } else if (i == R.id.action_new) {
+        if (i == R.id.action_new) {
             NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
             newProjectDialogFragment.show(getFragmentManager(), "new project dialog");
             return true;
