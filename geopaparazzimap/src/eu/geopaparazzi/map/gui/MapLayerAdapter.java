@@ -103,26 +103,28 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
             if (selMapLayerItem != null) {
                 try {
                     ELayerTypes layerType = ELayerTypes.fromType(selMapLayerItem.type);
-                    switch (layerType) {
-                        case MAPSFORGE: {
-                            popup.getMenu().add(toggle3d);
-                            popup.getMenu().add(toggleLabels);
-                            break;
-                        }
-                        case MBTILES: {
-                            popup.getMenu().add(setAlpha);
-                            break;
-                        }
-                        case VECTORTILESSERVICE: {
-                            break;
-                        }
-                        case BITMAPTILESERVICE: {
-                            popup.getMenu().add(setAlpha);
-                            break;
-                        }
-                        case SPATIALITE: {
-                            popup.getMenu().add(setStyle);
-                            break;
+                    if (layerType != null) {
+                        switch (layerType) {
+                            case MAPSFORGE: {
+                                popup.getMenu().add(toggle3d);
+                                popup.getMenu().add(toggleLabels);
+                                break;
+                            }
+                            case MBTILES: {
+                                popup.getMenu().add(setAlpha);
+                                break;
+                            }
+                            case VECTORTILESSERVICE: {
+                                break;
+                            }
+                            case BITMAPTILESERVICE: {
+                                popup.getMenu().add(setAlpha);
+                                break;
+                            }
+                            case SPATIALITE: {
+                                popup.getMenu().add(setStyle);
+                                break;
+                            }
                         }
                     }
                 } catch (Exception e1) {

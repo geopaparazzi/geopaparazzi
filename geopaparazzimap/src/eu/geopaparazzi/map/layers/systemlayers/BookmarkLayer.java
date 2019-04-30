@@ -49,7 +49,7 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
 
         try {
             reloadData();
-        } catch (IOException e) {
+        } catch (Exception e) {
             GPLog.error(this, null, e);
         }
 
@@ -71,15 +71,13 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
         super(map, defaultMarker);
     }
 
-    public void reloadData() throws IOException {
+    public void reloadData() throws Exception {
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
         List<MarkerItem> bookmarks = new ArrayList<>();
         String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
 
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(query, null);
+        try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 double lon = c.getDouble(0);
@@ -92,9 +90,6 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
                 bookmarks.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
                 c.moveToNext();
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
 
 

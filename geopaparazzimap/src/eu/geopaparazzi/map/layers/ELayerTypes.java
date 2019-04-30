@@ -36,7 +36,7 @@ public enum ELayerTypes {
                 return type;
             }
         }
-        throw new IllegalArgumentException("No type for class: " + typeString);
+        return null;
     }
 
     public String getType() {

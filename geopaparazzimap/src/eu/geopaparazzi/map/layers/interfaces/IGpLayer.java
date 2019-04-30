@@ -7,6 +7,8 @@ import org.oscim.layers.Layer;
 import org.oscim.layers.vector.AbstractVectorLayer;
 import org.oscim.map.Layers;
 
+import java.io.IOException;
+
 import eu.geopaparazzi.map.GPMapView;
 
 public interface IGpLayer {
@@ -38,6 +40,8 @@ public interface IGpLayer {
      * Load the layer into the map view.
      */
     void load();
+
+    void reloadData() throws Exception;
 
     void onResume();
 

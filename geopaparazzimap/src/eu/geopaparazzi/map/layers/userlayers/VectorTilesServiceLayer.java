@@ -69,6 +69,11 @@ public class VectorTilesServiceLayer extends OsmTileLayer implements IVectorTile
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }

@@ -1,9 +1,6 @@
 package eu.geopaparazzi.map;
 
 import org.oscim.map.Layers;
-import org.oscim.map.Map;
-
-import eu.geopaparazzi.map.layers.GPMapScaleBarLayer;
 
 public class GPLayers {
 

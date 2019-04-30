@@ -58,6 +58,11 @@ public class MBTilesLayer extends BitmapTileLayer implements IRasterTileOfflineL
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }

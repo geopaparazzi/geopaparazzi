@@ -83,6 +83,11 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }

@@ -210,6 +210,11 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
     }

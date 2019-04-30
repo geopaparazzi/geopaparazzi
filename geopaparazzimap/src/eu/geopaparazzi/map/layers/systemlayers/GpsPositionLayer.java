@@ -145,6 +145,10 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
     }
 
     @Override
+    public void reloadData() {
+    }
+
+    @Override
     public JSONObject toJson() throws JSONException {
         return toDefaultJson();
     }

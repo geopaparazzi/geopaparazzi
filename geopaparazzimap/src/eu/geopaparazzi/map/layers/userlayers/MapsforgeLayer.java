@@ -76,6 +76,11 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
     }
 
     @Override
+    public void reloadData() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }

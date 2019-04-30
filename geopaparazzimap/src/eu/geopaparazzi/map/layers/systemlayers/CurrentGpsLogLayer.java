@@ -42,7 +42,7 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
     private void preLoadData() throws IOException {
         createLogAndStyle();
 
-        reloadLog();
+        reloadData();
     }
 
     private void createLogAndStyle() throws IOException {
@@ -58,7 +58,7 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
                     .build();
     }
 
-    private void reloadLog() {
+    public void reloadData() {
         try {
             createLogAndStyle();
         } catch (IOException e) {
@@ -91,7 +91,7 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
                 }
             } else if (lastGpsPosition != null) {
                 lastLog.gpslogGeoPoints.add(new Coordinate(lastGpsPosition[0], lastGpsPosition[1]));
-                reloadLog();
+                reloadData();
             }
         } else {
             lastLog = null;

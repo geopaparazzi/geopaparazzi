@@ -100,7 +100,7 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
         List<MarkerItem> images = new ArrayList<>();
-        String asColumnsToReturn[] = {//
+        String[] asColumnsToReturn = {//
                 TableDescriptions.ImageTableFields.COLUMN_LON.getFieldName(),//
                 TableDescriptions.ImageTableFields.COLUMN_LAT.getFieldName(), //
                 TableDescriptions.ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName(),//

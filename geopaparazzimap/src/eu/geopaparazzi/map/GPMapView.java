@@ -26,8 +26,10 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
+import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
@@ -295,6 +297,19 @@ public class GPMapView extends org.oscim.android.MapView {
                 GpsPositionTextLayer positionTextLayer = (GpsPositionTextLayer) layer;
                 positionTextLayer.setEnabled(showGpsInfo);
                 break;
+            }
+        }
+    }
+
+    /**
+     * Reload the data of a layer type.
+     *
+     * @param layerClass teh class of the layer to reload.
+     */
+    public void reloadLayer(Class<? extends IGpLayer> layerClass) throws Exception {
+        for (Layer layer : map().layers()) {
+            if (layer.getClass().isAssignableFrom(layerClass)) {
+                ((IGpLayer) layer).reloadData();
             }
         }
     }
