@@ -409,14 +409,12 @@ public enum LayerManager {
     public void onResume(GPMapView mapView, IActivitySupporter activitySupporter) {
         if (mapView != null) {
             Layers layers = mapView.map().layers();
-//            int count = (int) layers.stream().filter(l -> l instanceof IGpLayer).count();
-//            if (count != userLayersDefinitions.size() + systemLayersDefinitions.size()) {
+            // right now we dispose and reload
             try {
                 loadInMap(mapView, activitySupporter);
             } catch (Exception e) {
                 GPLog.error(this, null, e);
             }
-//            }
             for (Layer layer : layers) {
                 if (layer instanceof IGpLayer) {
                     IGpLayer gpLayer = (IGpLayer) layer;
@@ -431,13 +429,20 @@ public enum LayerManager {
     }
 
     public void onPause(GPMapView mapView) {
-        if (mapView != null)
+        if (mapView != null) {
+//            for (Layer layer : mapView.map().layers()) {
+//                if (layer instanceof IGpLayer) {
+//                    IGpLayer gpLayer = (IGpLayer) layer;
+//                    gpLayer.onPause();
+//                }
+//            }
             for (Layer layer : mapView.map().layers()) {
                 if (layer instanceof IGpLayer) {
                     IGpLayer gpLayer = (IGpLayer) layer;
-                    gpLayer.onPause();
+                    gpLayer.dispose();
                 }
             }
+        }
     }
 
     /**

@@ -99,6 +99,7 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
 
     @Override
     public void dispose() {
+        onDetach();
         if (mTileSource != null)
             mTileSource.close();
     }
