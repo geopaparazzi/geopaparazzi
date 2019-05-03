@@ -24,7 +24,7 @@
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
-        app:srcCompat="@drawable/ic_download_from_cloud" />
+        app:srcCompat="@drawable/ic_defaultsources_24" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addMapSourceButton"
