@@ -248,13 +248,23 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
                             jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
                             selMapLayerItem.isEditing = false;
-                            updateEditingColor(holder, false);
+
+                            notifyDataSetChanged();
                         } else if (actionName.equals(enableEditing)) {
                             List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                            jsonObject.put(IGpLayer.LAYEREDITING_TAG, true);
-                            selMapLayerItem.isEditing = true;
-                            updateEditingColor(holder, true);
+                            List<MapLayerItem> mapItemList = getItemList();
+                            for (int i = 0; i < userLayersDefinitions.size(); i++) {
+                                JSONObject jsonObject = userLayersDefinitions.get(i);
+                                MapLayerItem tmpItem = mapItemList.get(i);
+                                if (i == finalSelIndex) {
+                                    jsonObject.put(IGpLayer.LAYEREDITING_TAG, true);
+                                    selMapLayerItem.isEditing = true;
+                                } else {
+                                    jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
+                                    tmpItem.isEditing = false;
+                                }
+                            }
+                            notifyDataSetChanged();
                         }
                     } catch (Exception e1) {
                         GPLog.error(this, null, e1);
