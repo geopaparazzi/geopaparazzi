@@ -16,6 +16,7 @@ public interface IGpLayer {
 
     String LAYERTYPE_TAG = "type";
     String LAYERENABLED_TAG = "enabled";
+    String LAYEREDITING_TAG = "editing";
     String LAYERNAME_TAG = "name";
     String LAYERPATH_TAG = "path";
     String LAYERDOLABELS_TAG = "dolabels";

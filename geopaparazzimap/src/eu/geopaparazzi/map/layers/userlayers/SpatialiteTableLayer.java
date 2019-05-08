@@ -34,12 +34,14 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     private GPMapView mapView;
     private final String dbPath;
     private final String tableName;
+    private boolean isEditing;
 
-    public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName) {
+    public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
         this.mapView = mapView;
         this.dbPath = dbPath;
         this.tableName = tableName;
+        this.isEditing = isEditing;
     }
 
     public void load() {
@@ -193,6 +195,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     public JSONObject toJson() throws JSONException {
         JSONObject jo = toDefaultJson();
         jo.put(LAYERPATH_TAG, dbPath);
+        jo.put(LAYEREDITING_TAG, isEditing);
         return jo;
     }
 
@@ -203,6 +206,10 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
+    }
+
+    public boolean isInEditingMode() {
+        return isEditing;
     }
 
     @Override

@@ -29,6 +29,10 @@ public class MapLayerItem {
      */
     public boolean isSystem;
     /**
+     * If true, the resource is in editing mode.
+     */
+    public boolean isEditing;
+    /**
      * The layer's class
      */
     public String type;

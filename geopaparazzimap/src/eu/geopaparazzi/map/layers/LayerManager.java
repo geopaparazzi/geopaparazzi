@@ -230,9 +230,13 @@ public enum LayerManager {
                         case SPATIALITE: {
                             String dbPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
 
-                            SpatialiteTableLayer mapsforgeLayer = new SpatialiteTableLayer(mapView, dbPath, name);
-                            mapsforgeLayer.load();
-                            mapsforgeLayer.setEnabled(isEnabled);
+                            boolean isEditing = false;
+                            if (layerDefinition.has(IGpLayer.LAYEREDITING_TAG))
+                                isEditing = layerDefinition.getBoolean(IGpLayer.LAYEREDITING_TAG);
+
+                            SpatialiteTableLayer spatialiteLayer = new SpatialiteTableLayer(mapView, dbPath, name, isEditing);
+                            spatialiteLayer.load();
+                            spatialiteLayer.setEnabled(isEnabled);
                             break;
                         }
                     }

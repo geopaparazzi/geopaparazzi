@@ -16,6 +16,7 @@
 
 package eu.geopaparazzi.map.gui;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,10 +73,9 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         MapLayerItem item = mItemList.get(position);
-//        item.position = position;
-        // TODO how to track position changes?
         holder.nameView.setText(item.name);
         holder.pathView.setText(item.url != null ? item.url : item.path);
+        updateEditingColor(holder, item.isEditing);
         holder.enableCheckbox.setChecked(item.enabled);
         holder.enableCheckbox.setOnCheckedChangeListener((e, i) -> {
             item.enabled = holder.enableCheckbox.isChecked();
@@ -88,18 +88,21 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
             String toggleLabels = "Toggle Labels";
             String setAlpha = "Set Opacity";
             String setStyle = "Set Style";
+            String enableEditing = "Enable editing";
+            String disableEditing = "Disable editing";
 
             List<MapLayerItem> itemList = getItemList();
-            MapLayerItem selMapLayerItem = null;
+            MapLayerItem selMapLayerItem_ = null;
             int selIndex = 0;
             for (int i = 0; i < itemList.size(); i++) {
                 MapLayerItem mapLayerItem = itemList.get(i);
                 if (mapLayerItem.name.equals(holder.nameView.getText().toString())) {
-                    selMapLayerItem = mapLayerItem;
+                    selMapLayerItem_ = mapLayerItem;
                     selIndex = i;
                     break;
                 }
             }
+            MapLayerItem selMapLayerItem = selMapLayerItem_;
             if (selMapLayerItem != null) {
                 try {
                     ELayerTypes layerType = ELayerTypes.fromType(selMapLayerItem.type);
@@ -123,6 +126,11 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             }
                             case SPATIALITE: {
                                 popup.getMenu().add(setStyle);
+                                if (selMapLayerItem.isEditing) {
+                                    popup.getMenu().add(disableEditing);
+                                } else {
+                                    popup.getMenu().add(enableEditing);
+                                }
                                 break;
                             }
                         }
@@ -235,6 +243,18 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             }
                             SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
                             colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");
+                        } else if (actionName.equals(disableEditing)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
+                            selMapLayerItem.isEditing = false;
+                            updateEditingColor(holder, false);
+                        } else if (actionName.equals(enableEditing)) {
+                            List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                            JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                            jsonObject.put(IGpLayer.LAYEREDITING_TAG, true);
+                            selMapLayerItem.isEditing = true;
+                            updateEditingColor(holder, true);
                         }
                     } catch (Exception e1) {
                         GPLog.error(this, null, e1);
@@ -245,6 +265,17 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
             }
         });
         holder.itemView.setTag(mItemList.get(position));
+    }
+
+    private void updateEditingColor(@NonNull ViewHolder holder, boolean isEditing) {
+        Context context = mapLayerListFragment.getContext();
+        if (context != null) {
+            if (isEditing) {
+                holder.itemView.setBackgroundColor(context.getColor(R.color.main_selection));
+            } else {
+                holder.itemView.setBackgroundColor(context.getColor(R.color.main_background));
+            }
+        }
     }
 
     @Override

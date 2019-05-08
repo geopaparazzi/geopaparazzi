@@ -328,13 +328,17 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
         String type = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
         boolean isEnabled = true;
-        boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
-        if (hasEnabled) {
+        if (layerDefinition.has(IGpLayer.LAYERENABLED_TAG)) {
             isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+        }
+        boolean isEditing = false;
+        if (layerDefinition.has(IGpLayer.LAYEREDITING_TAG)) {
+            isEditing = layerDefinition.getBoolean(IGpLayer.LAYEREDITING_TAG);
         }
         MapLayerItem layerItem = new MapLayerItem();
         layerItem.position = index;
         layerItem.enabled = isEnabled;
+        layerItem.isEditing = isEditing;
         if (layerDefinition.has(IGpLayer.LAYERURL_TAG))
             layerItem.url = layerDefinition.getString(IGpLayer.LAYERURL_TAG);
         if (layerDefinition.has(IGpLayer.LAYERPATH_TAG))
@@ -477,6 +481,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                                             item.name = selTable;
                                                             item.path = finalFile.getAbsolutePath();
                                                             item.enabled = true;
+                                                            item.isEditing = false;
 
                                                             mBoardView.addItem(focusedColumn2, itemCount2, item, true);
                                                         }

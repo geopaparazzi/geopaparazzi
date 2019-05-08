@@ -16,6 +16,13 @@ public interface IVectorDbLayer extends IGpLayer {
      */
     boolean isEditable();
 
+
+    /**
+     * @return true if the layer is activated for editing.
+     */
+    boolean isInEditingMode();
+
+
     /**
      * Get the list of features, given a query.
      *
