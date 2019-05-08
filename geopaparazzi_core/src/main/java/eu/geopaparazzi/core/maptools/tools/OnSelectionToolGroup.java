@@ -18,7 +18,7 @@
 package eu.geopaparazzi.core.maptools.tools;
 
 import java.util.List;
-import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.core.features.ToolGroup;
 
 /**
@@ -34,6 +34,6 @@ public interface OnSelectionToolGroup extends ToolGroup {
      *
      * @param features the new features to select.
      */
-    public void setSelectedFeatures(List<Feature> features);
+    void setSelectedFeatures(List<Feature> features);
 
 }

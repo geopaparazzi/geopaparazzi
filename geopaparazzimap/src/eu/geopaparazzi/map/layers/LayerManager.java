@@ -14,6 +14,7 @@ import org.oscim.map.Layers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
@@ -23,6 +24,7 @@ import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
+import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOnlineLayer;
 import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
@@ -589,5 +591,9 @@ public enum LayerManager {
         }
     }
 
-
+    public List<IVectorDbLayer> getEnabledVectorLayers(GPMapView mapView) {
+        List<IGpLayer> layers = mapView.getLayers();
+        List<IVectorDbLayer> vectorLayers = layers.stream().filter(l -> l instanceof IVectorDbLayer && l.isEnabled()).map(l -> (IVectorDbLayer) l).collect(Collectors.toList());
+        return vectorLayers;
+    }
 }

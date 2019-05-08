@@ -6,18 +6,13 @@ import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.IGeometryParser;
 import org.hortonmachine.dbs.compat.IHMResultSet;
 import org.hortonmachine.dbs.compat.IHMStatement;
-import org.hortonmachine.dbs.utils.EGeometryType;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.locationtech.jts.geom.Envelope;
+import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.Style;
 
 public enum SpatialiteConnectionsHandler {
@@ -96,8 +91,7 @@ public enum SpatialiteConnectionsHandler {
     public EGeometryType getGeometryType(String dbPath, String tableName) throws Exception {
         ASpatialDb db = getDb(dbPath);
         GeometryColumn geometryColumn = db.getGeometryColumnsForTable(tableName);
-        EGeometryType geometryType = EGeometryType.fromSpatialiteCode(geometryColumn.geometryType);
-        return geometryType;
+        return geometryColumn.geometryType;
     }
 
     public Style getStyleForTable(String dbPath, String tableName, String labelField) throws Exception {

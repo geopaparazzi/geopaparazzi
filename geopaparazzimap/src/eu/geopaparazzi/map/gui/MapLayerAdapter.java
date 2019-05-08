@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
-import org.hortonmachine.dbs.utils.EGeometryType;
+import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.json.JSONException;
 import org.json.JSONObject;
 

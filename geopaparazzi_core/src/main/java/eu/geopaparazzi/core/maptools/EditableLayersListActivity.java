@@ -37,6 +37,7 @@
 //import java.util.List;
 //import java.util.Map;
 //
+//import eu.geopaparazzi.core.R;
 //import eu.geopaparazzi.core.features.EditManager;
 //import eu.geopaparazzi.core.features.ILayer;
 //import eu.geopaparazzi.library.core.maps.SpatialiteMap;

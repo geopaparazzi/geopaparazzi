@@ -32,15 +32,15 @@ public interface LibraryConstants {
     String GEOPAPARAZZI_DB_EXTENSION = ".gpap";
 
     /**
-     * The epsg for lat/long wgs84. 
+     * The epsg for lat/long wgs84.
      */
-    String SRID_WGS84_4326 = "4326"; //$NON-NLS-1$
+    int SRID_WGS84_4326 = 4326;
     /**
-     * The epsg Sperical Mercator used by OSM. 
+     * The epsg Sperical Mercator used by OSM.
      */
-    String SRID_MERCATOR_3857 = "3857"; //$NON-NLS-1$
+    int SRID_MERCATOR_3857 = 3857;
     /**
-     * 
+     *
      */
     float E6 = 1000000f;
 
@@ -136,7 +136,6 @@ public interface LibraryConstants {
 
     /**
      * Key used to store the mapview zoom level.
-     *
      */
     String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM"; //$NON-NLS-1$
 
@@ -321,15 +320,15 @@ public interface LibraryConstants {
      */
     float GPS_LOGGING_DISTANCE = 1f;
     /**
-     * Key for tilesource in preferences. 
+     * Key for tilesource in preferences.
      */
     String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
     /**
-     * Key for tilesource file in preferences. 
+     * Key for tilesource file in preferences.
      */
     String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
     /**
-     * Key for tilesource title in preferences. 
+     * Key for tilesource title in preferences.
      */
     String PREFS_KEY_TILESOURCE_TITLE = "PREFS_KEY_TILESOURCE_TITLE";
 

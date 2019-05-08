@@ -25,7 +25,7 @@ import eu.geopaparazzi.library.database.GPLog;
 
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.MapUtilities;
+import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.utils.GpsLog;

@@ -22,17 +22,20 @@ import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.IHMResultSet;
 import org.hortonmachine.dbs.compat.IHMStatement;
+import org.hortonmachine.dbs.datatypes.EDataType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.library.style.Style;
 
 /**
@@ -44,6 +47,15 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
     public static final String DUMMY = "dummy";
     public static final String ROWID_PK = "ROWID";
     public static final String LABEL_THEME_SEPARATOR = "@@";
+
+    /**
+     * Array of fields that will be ingored in attributes handling.
+     */
+    public static String[] IGNORED_FIELDS = {"ROWID", "PK_UID", "_id"};
+
+
+    public static List<String> reserverSqlWords = Arrays.asList("ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ATTACH", "AUTOINCREMENT", "BEFORE", "BEGIN", "BETWEEN", "BY", "CASCADE", "CASE", "CAST", "CHECK", "COLLATE", "COLUMN", "COMMIT", "CONFLICT", "CONSTRAINT", "CREATE", "CROSS", "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATABASE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DESC", "DETACH", "DISTINCT", "DROP", "EACH", "ELSE", "END", "ESCAPE", "EXCEPT", "EXCLUSIVE", "EXISTS", "EXPLAIN", "FAIL", "FOR", "FOREIGN", "FROM", "FULL", "GLOB", "GROUP", "HAVING", "IF", "IGNORE", "IMMEDIATE", "IN", "INDEX", "INDEXED", "INITIALLY", "INNER", "INSERT", "INSTEAD", "INTERSECT", "INTO", "IS", "ISNULL", "JOIN", "KEY", "LEFT", "LIKE", "LIMIT", "MATCH", "NATURAL", "NO", "NOT", "NOTNULL", "NULL", "OF", "OFFSET", "ON", "OR", "ORDER", "OUTER", "PLAN", "PRAGMA", "PRIMARY", "QUERY", "RAISE", "RECURSIVE", "REFERENCES", "REGEXP", "REINDEX", "RELEASE", "RENAME", "REPLACE", "RESTRICT", "RIGHT", "ROLLBACK", "ROW", "SAVEPOINT", "SELECT", "SET", "TABLE", "TEMP", "TEMPORARY", "THEN", "TO", "TRANSACTION", "TRIGGER", "UNION", "UNIQUE", "UPDATE", "USING", "VACUUM", "VALUES", "VIEW", "VIRTUAL", "WHEN", "WHERE", "WITH", "WITHOUT");
+
     /**
      * The complete list of fields in the properties table.
      */
@@ -471,6 +483,84 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
         return q;
     }
 
+    /**
+     * Checks if a field needs to be ignored.
+     *
+     * @param field the field to check.
+     * @return <code>true</code> if the field needs to be ignored.
+     */
+    public static boolean doIgnoreField(String field) {
+        for (String ingoredField : SpatialiteUtilities.IGNORED_FIELDS) {
+            if (field.equals(ingoredField)) {
+                return true;
+            }
+        }
+        field = field.toUpperCase();
+        if (reserverSqlWords.contains(field)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static String escapeString(String value) {
+        return value.replaceAll("'", "''");
+    }
+
+    /**
+     * Updates the alphanumeric values of a feature in the given database.
+     *
+     * @param database the database.
+     * @param feature  the feature.
+     * @throws Exception if something goes wrong.
+     */
+    public static void updateFeatureAlphanumericAttributes(ASpatialDb database, Feature feature) throws Exception {
+        String tableName = feature.getTableName();
+        List<String> attributeNames = feature.getAttributeNames();
+        List<Object> attributeValues = feature.getAttributeValues();
+        List<String> attributeTypes = feature.getAttributeTypes();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("update \"").append(tableName);
+        sbIn.append("\" set ");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < attributeNames.size(); i++) {
+            String fieldName = attributeNames.get(i);
+            Object value = attributeValues.get(i);
+            String type = attributeTypes.get(i);
+            boolean ignore = doIgnoreField(fieldName);
+            if (!ignore) {
+                EDataType dataType = EDataType.getType4Name(type);
+                String valueStr = null;
+                if (value != null)
+                    valueStr = value.toString();
+                if (dataType == EDataType.TEXT || dataType == EDataType.DATE) {
+                    valueStr = escapeString(valueStr);
+                    sb.append(" , ").append(fieldName).append("='").append(valueStr).append("'");
+                } else if (valueStr == null || "".equals(valueStr)) {
+                    sb.append(" , ").append(fieldName).append("=NULL");
+                } else {
+                    sb.append(" , ").append(fieldName).append("=").append(valueStr);
+                }
+            }
+        }
+        String valuesPart = sb.substring(3);
+
+        String pkName = feature.getAttributeNames().get(feature.getIdIndex());
+        String pkValue = feature.getAttributeValues().get(feature.getIdIndex()).toString();
+        sbIn.append(" ");
+        sbIn.append(valuesPart);
+        sbIn.append(" where ");
+        sbIn.append(pkName);
+        sbIn.append("=");
+        sbIn.append(pkValue);
+
+        String updateQuery = sbIn.toString();
+        database.executeInsertUpdateDeleteSql(updateQuery);
+
+        //SpatialVectorTable table = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(feature);
+        //createImageField(table);
+    }
 
 //    /**
 //     * Retrieve the {@link Style} for all tables of a db.

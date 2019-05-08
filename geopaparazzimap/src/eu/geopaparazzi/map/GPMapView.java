@@ -75,20 +75,12 @@ public class GPMapView extends org.oscim.android.MapView {
         }
     }
 
-    public void repaint() {
-        invalidate();
-    }
-
     public void setClickable(boolean b) {
         super.setClickable(b);
     }
 
     public void setOnTouchListener(OnTouchListener l) {
         super.setOnTouchListener(l);
-    }
-
-    public GPLayers getLayers() {
-        return new GPLayers(this);
     }
 
     public void setTheme(GPMapThemes aDefault) {
@@ -98,21 +90,6 @@ public class GPMapView extends org.oscim.android.MapView {
                 return;
             }
         }
-    }
-
-    /**
-     * @return the position of the first system layer. from there only system layers should be.
-     */
-    public int getSystemLayersIndex() {
-        Layers layers = map().layers();
-        int index = 0;
-        for (Layer layer : layers) {
-            if (layer instanceof ISystemLayer) {
-                return index;
-            }
-            index++;
-        }
-        return index;
     }
 
     public void setScaleX(float mapScaleX) {
@@ -168,83 +145,17 @@ public class GPMapView extends org.oscim.android.MapView {
         out.close();
     }
 
-//    public void addVectorTilesLayer(String url, String tilePath) {
-//
-//        UrlTileSource tileSource = VectorTilesOnlineSource.builder()
-////                .apiKey("xxxxxxx") // Put a proper API key
-//                .url(url).tilePath(tilePath)
-//                .zoomMin(0).zoomMax(20)
-//                .httpFactory(new OkHttpEngine.OkHttpFactory())
-//                //.locale("en")
-//                .build();
-//
-////        if (USE_CACHE) {
-////            // Cache the tiles into a local SQLite database
-////            mCache = new TileCache(this, null, "tile.db");
-////            mCache.setCacheSize(512 * (1 << 10));
-////            tileSource.setCache(mCache);
-////        }
-//
-//        VectorTileLayer l = new OsmTileLayer(map());
-//        l.setTileSource(tileSource);
-//        l.setEnabled(true);
-//        Layers layers = map().layers();
-//        layers.add(l, OVERLAYS);
-//    }
-//
-//    public void addSpatialDbLayer(ASpatialDb spatialDb, String tableName) throws Exception {
-//        VectorLayer vectorLayer = new VectorLayer(mMap);
-//
-//        Style pointStyle = Style.builder()
-//                .buffer(0.5)
-//                .fillColor(Color.RED)
-//                .fillAlpha(0.2f).buffer(Math.random() + 0.2)
-//                .fillColor(ColorUtil.setHue(Color.RED,
-//                        (int) (Math.random() * 50) / 50.0))
-//                .fillAlpha(0.5f)
-//                .build();
-//        Style lineStyle = Style.builder()
-//                .strokeColor("#FF0000")
-//                .strokeWidth(3f)
-//                .cap(Paint.Cap.ROUND)
-//                .build();
-//        Style polygonStyle = Style.builder()
-//                .strokeColor("#0000FF")
-//                .strokeWidth(3f)
-//                .fillColor("#0000FF")
-//                .fillAlpha(0.0f)
-//                .cap(Paint.Cap.ROUND)
-//                .build();
-//        List<Geometry> geoms = spatialDb.getGeometriesIn(tableName, (Envelope) null, null);
-//        for (Geometry geom : geoms) {
-//            EGeometryType type = EGeometryType.forGeometry(geom);
-//            if (type == EGeometryType.POINT || type == EGeometryType.MULTIPOINT) {
-//                int numGeometries = geom.getNumGeometries();
-//                for (int i = 0; i < numGeometries; i++) {
-//                    Geometry geometryN = geom.getGeometryN(i);
-//                    Coordinate c = geometryN.getCoordinate();
-//                    vectorLayer.add(new PointDrawable(c.y, c.x, pointStyle));
-//                }
-//            } else if (type == EGeometryType.LINESTRING || type == EGeometryType.MULTILINESTRING) {
-//                int numGeometries = geom.getNumGeometries();
-//                for (int i = 0; i < numGeometries; i++) {
-//                    Geometry geometryN = geom.getGeometryN(i);
-//                    vectorLayer.add(new LineDrawable(geometryN, lineStyle));
-//                }
-//            } else if (type == EGeometryType.POLYGON || type == EGeometryType.MULTIPOLYGON) {
-//                int numGeometries = geom.getNumGeometries();
-//                for (int i = 0; i < numGeometries; i++) {
-//                    Geometry geometryN = geom.getGeometryN(i);
-//                    vectorLayer.add(new PolygonDrawable(geometryN, polygonStyle));
-//                }
-//            }
-//        }
-//        vectorLayer.update();
-//
-//        Layers layers = map().layers();
-//        layers.add(vectorLayer, OVERLAYS);
-////        map().layers().add(vectorLayer);
-//    }
+    public List<IGpLayer> getLayers() {
+        List<IGpLayer> layerList = new ArrayList<>();
+        for (Layer layer : map().layers()) {
+            if (layer instanceof IGpLayer) {
+                IGpLayer gpLayer = (IGpLayer) layer;
+                layerList.add(gpLayer);
+            }
+        }
+        return layerList;
+    }
+
 
     /**
      * Get a gps status update.

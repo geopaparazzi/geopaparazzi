@@ -1,9 +1,11 @@
-package eu.geopaparazzi.map;
+package eu.geopaparazzi.map.utils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import org.hortonmachine.dbs.compat.objects.QueryResult;
+import org.hortonmachine.dbs.datatypes.EDataType;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.TableDescriptions;
+import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.utils.GpsLog;
 
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
@@ -170,6 +173,34 @@ public class MapUtilities {
                 c.close();
         }
         return null;
+    }
+
+
+    /**
+     * Convert a {@link QueryResult} into a list of features for the editing engine.
+     *
+     * @param tableName   name of the table the feature is part of.
+     * @param dbPath      path to the db.
+     * @param queryResult the result to convert.
+     * @return the list of features.
+     */
+    public static List<Feature> fromQueryResult(String tableName, String dbPath, QueryResult queryResult) {
+        int pkIndex = queryResult.pkIndex;
+        int geomIndex = queryResult.geometryIndex;
+        List<Feature> featuresList = new ArrayList<>();
+        for (Object[] data : queryResult.data) {
+            Feature feature = new Feature(tableName, dbPath, pkIndex, geomIndex);
+            for (int i = 0; i < data.length; i++) {
+                String cName = queryResult.names.get(i);
+                Object dataObj = data[i];
+                String typeStr = queryResult.types.get(i);
+
+                EDataType type = EDataType.getType4Name(typeStr);
+                feature.addAttribute(cName, dataObj, type.name());
+            }
+            featuresList.add(feature);
+        }
+        return featuresList;
     }
 
 }

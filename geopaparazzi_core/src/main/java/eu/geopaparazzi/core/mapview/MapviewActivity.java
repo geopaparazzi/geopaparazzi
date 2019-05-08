@@ -18,7 +18,6 @@
 package eu.geopaparazzi.core.mapview;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,15 +25,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -61,10 +55,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import eu.geopaparazzi.core.R;
@@ -73,28 +66,31 @@ import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.features.EditManager;
 import eu.geopaparazzi.core.features.EditingView;
+import eu.geopaparazzi.core.features.ILayer;
 import eu.geopaparazzi.core.features.Tool;
 import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
+import eu.geopaparazzi.core.maptools.tools.NoEditableLayerToolGroup;
+import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
 import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
 import eu.geopaparazzi.core.ui.activities.GpsDataListActivity;
-import eu.geopaparazzi.core.ui.activities.ImportMapsforgeActivity;
 import eu.geopaparazzi.core.ui.activities.NotesListActivity;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.activities.GeocodeActivity;
 import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.share.ShareUtilities;
-import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
@@ -171,13 +167,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         mapsSupportBroadcastReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-//                if (intent.hasExtra(MapsSupportService.REREAD_MAP_REQUEST)) {
-//                    boolean rereadMap = intent.getBooleanExtra(MapsSupportService.REREAD_MAP_REQUEST, false);
-//                    if (rereadMap) {
-//                        readData();
-//                        mapView.repaint();
-//                    }
-//                } else
                 if (intent.hasExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST)) {
                     boolean centerOnPosition = intent.getBooleanExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, false);
                     if (centerOnPosition) {
@@ -470,17 +459,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         zoomLevelText.setText(text);
     }
 
-    /**
-     * @return the center [lon, lat]
-     */
-//    public double[] getCenterLonLat() {
-//        MapViewPosition mapPosition = mapView.getMapPosition();
-//        GeoPoint mapCenter = mapPosition.getMapCenter();
-//        double lon = mapCenter.longitudeE6 / E6;
-//        double lat = mapCenter.latitudeE6 / E6;
-////        zoom = mapPosition.getZoomLevel();
-//        return new double[]{lon, lat};
-//    }
     public void setNewCenterAtZoom(double lon, double lat, int zoom) {
         GPMapPosition mapPosition = mapView.getMapPosition();
         mapPosition.setZoomLevel(zoom);
@@ -542,18 +520,16 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     private boolean goTo() {
         String[] items = new String[]{getString(R.string.goto_coordinate), getString(R.string.geocoding)};
         boolean[] checked = new boolean[2];
-        GPDialogs.singleOptionDialog(this, items, checked, () -> {
-            runOnUiThread(() -> {
-                int selectedPosition = checked[1] ? 1 : 0;
-                if (selectedPosition == 0) {
-                    InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
-                    insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
-                } else {
-                    Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
-                    startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-                }
-            });
-        });
+        GPDialogs.singleOptionDialog(this, items, checked, () -> runOnUiThread(() -> {
+            int selectedPosition = checked[1] ? 1 : 0;
+            if (selectedPosition == 0) {
+                InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
+                insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
+            } else {
+                Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
+                startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+            }
+        }));
         return true;
     }
 
@@ -648,16 +624,15 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             }
             case (SELECTED_FEATURES_UPDATED_RETURN_CODE):
                 if (resultCode == Activity.RESULT_OK) {
-                    // FIXME
-//                    ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-//                    if (activeToolGroup != null) {
-//                        if (activeToolGroup instanceof OnSelectionToolGroup) {
-//                            Bundle extras = data.getExtras();
-//                            ArrayList<Feature> featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
-//                            OnSelectionToolGroup selectionGroup = (OnSelectionToolGroup) activeToolGroup;
-//                            selectionGroup.setSelectedFeatures(featuresList);
-//                        }
-//                    }
+                    ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+                    if (activeToolGroup != null) {
+                        if (activeToolGroup instanceof OnSelectionToolGroup) {
+                            Bundle extras = data.getExtras();
+                            ArrayList<Feature> featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
+                            OnSelectionToolGroup selectionGroup = (OnSelectionToolGroup) activeToolGroup;
+                            selectionGroup.setSelectedFeatures(featuresList);
+                        }
+                    }
                 }
                 break;
         }
@@ -822,7 +797,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     public boolean onLongClick(View v) {
         int i = v.getId();
         if (i == R.id.toggleEditingButton) {
-            // FIXME
 //            Intent editableLayersIntent = new Intent(MapviewActivity.this, EditableLayersListActivity.class);
 //            startActivity(editableLayersIntent);
             return true;
@@ -1026,32 +1000,31 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     }
 
     private void toggleEditing() {
-
-        // TODO EDITING
-//        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
-//        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-//        if (activeToolGroup == null) {
-//            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
-//            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-//            if (editLayer == null) {
-//                // if not layer is
-//                activeToolGroup = new NoEditableLayerToolGroup(mapView);
-////                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
-////                return;
-//            } else if (editLayer.isPolygon())
+        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup == null) {
+            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
+            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+            if (editLayer == null) {
+                // if not layer is
+                activeToolGroup = new NoEditableLayerToolGroup(mapView);
+//                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
+//                return;
+            }
+//            else if (editLayer.isPolygon())
 //                activeToolGroup = new PolygonMainEditingToolGroup(mapView);
 //            else if (editLayer.isLine())
 //                activeToolGroup = new LineMainEditingToolGroup(mapView);
 //            else if (editLayer.isPoint())
 //                activeToolGroup = new PointMainEditingToolGroup(mapView);
-//            EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
-//            setLeftButtoonsEnablement(false);
-//        } else {
-//            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
-//            EditManager.INSTANCE.setActiveTool(null);
-//            EditManager.INSTANCE.setActiveToolGroup(null);
-//            setLeftButtoonsEnablement(true);
-//        }
+            EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
+            setLeftButtoonsEnablement(false);
+        } else {
+            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
+            EditManager.INSTANCE.setActiveTool(null);
+            EditManager.INSTANCE.setActiveToolGroup(null);
+            setLeftButtoonsEnablement(true);
+        }
     }
 
     private void setLeftButtoonsEnablement(boolean enable) {

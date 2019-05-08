@@ -42,7 +42,7 @@
 //
 //import eu.geopaparazzi.library.database.GPLog;
 //import eu.geopaparazzi.library.features.Feature;
-//import eu.geopaparazzi.library.util.types.EDataType;
+//import eu.geopaparazzi.map.utils.EDataType;
 //import eu.geopaparazzi.spatialite.ISpatialiteTableAndFieldsNames;
 //import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 //import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;

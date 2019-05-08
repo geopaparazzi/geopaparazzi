@@ -97,8 +97,7 @@ public class OverlayViewProjection {
 
         if (out == null) {
             // create a new point and return it
-            return new Point((int) (MercatorProjection.longitudeToPixelX(in.x, zoomLevel) - pixelX),
-                    (int) (MercatorProjection.latitudeToPixelY(in.y, zoomLevel) - pixelY));
+            out = new Point();
         }
 
         // reuse the existing point

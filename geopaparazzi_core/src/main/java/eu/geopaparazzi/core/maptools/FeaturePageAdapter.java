@@ -32,6 +32,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
+import org.hortonmachine.dbs.datatypes.EDataType;
+import org.locationtech.jts.geom.Geometry;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,12 +44,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.library.util.types.EDataType;
+import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 
 /**
  * Page adapter for features.
@@ -92,6 +99,8 @@ public class FeaturePageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         final Feature feature = featuresList.get(position);
 
+        int pkIndex = feature.getIdIndex();
+
         int bgColor = Compat.getColor(context, eu.geopaparazzi.library.R.color.formbgcolor);
         int textColor = Compat.getColor(context, eu.geopaparazzi.library.R.color.formcolor);
 
@@ -114,13 +123,19 @@ public class FeaturePageAdapter extends PagerAdapter {
         scrollView.addView(linearLayoutView);
 
         List<String> attributeNames = feature.getAttributeNames();
-        List<String> attributeValues = feature.getAttributeValuesStrings();
+        List<Object> attributeValues = feature.getAttributeValues();
         List<String> attributeTypes = feature.getAttributeTypes();
         for (int i = 0; i < attributeNames.size(); i++) {
             final String name = attributeNames.get(i);
-            String value = attributeValues.get(i);
+//          TODO check  if (SpatialiteUtilities.doIgnoreField(name)) continue;
             String typeString = attributeTypes.get(i);
             EDataType type = EDataType.getType4Name(typeString);
+            if (type == EDataType.GEOMETRY) continue;
+            Object value = attributeValues.get(i);
+            String valueStr = "";
+            if (value != null) {
+                valueStr = value.toString();
+            }
 
             TextView textView = new TextView(context);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -131,13 +146,18 @@ public class FeaturePageAdapter extends PagerAdapter {
 
             linearLayoutView.addView(textView);
 
-            final TextView editView = getEditView(feature, name, type, value);
+            final TextView editView = getEditView(feature, name, type, valueStr);
             LinearLayout.LayoutParams editViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT);
             editViewParams.setMargins(margin, 0, margin, 0);
             editView.setLayoutParams(editViewParams);
             editView.setPadding(padding * 2, padding, padding * 2, padding);
-            editView.setFocusable(!isReadOnly);
+            if (i == pkIndex) {
+                // PK INDEX IS NEVER EDITABLE
+                editView.setFocusable(false);
+            } else {
+                editView.setFocusable(!isReadOnly);
+            }
 
             if (isReadOnly) {
                 editView.setOnTouchListener(new View.OnTouchListener() {
@@ -157,19 +177,30 @@ public class FeaturePageAdapter extends PagerAdapter {
         /*
          * add also area and length
          */
-        if (feature.getOriginalArea() > -1) {
-            TextView areaTextView = new TextView(context);
-            areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            areaTextView.setPadding(padding, padding, padding, padding);
-            areaTextView.setText(context.getString(eu.geopaparazzi.core.R.string.area_colon) + areaLengthFormatter.format(feature.getOriginalArea()));
-            areaTextView.setTextColor(textColor);
-            TextView lengthTextView = new TextView(context);
-            lengthTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            lengthTextView.setPadding(padding, padding, padding, padding);
-            lengthTextView.setText(context.getString(eu.geopaparazzi.core.R.string.length_colon) + areaLengthFormatter.format(feature.getOriginalLength()));
-            lengthTextView.setTextColor(textColor);
-            linearLayoutView.addView(areaTextView);
-            linearLayoutView.addView(lengthTextView);
+        Geometry defaultGeometry = feature.getDefaultGeometry();
+        if (defaultGeometry != null) {
+            try {
+                ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
+                GeometryColumn gcol = db.getGeometryColumnsForTable(feature.getTableName());
+                Geometry reprojected = db.reproject(defaultGeometry, LibraryConstants.SRID_WGS84_4326, gcol.srid);
+
+                TextView areaTextView = new TextView(context);
+                areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                areaTextView.setPadding(padding, padding, padding, padding);
+                String text = context.getString(R.string.area_colon) + areaLengthFormatter.format(reprojected.getArea());
+                areaTextView.setText(text);
+                areaTextView.setTextColor(textColor);
+                TextView lengthTextView = new TextView(context);
+                lengthTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                lengthTextView.setPadding(padding, padding, padding, padding);
+                text = context.getString(R.string.length_colon) + areaLengthFormatter.format(reprojected.getLength());
+                lengthTextView.setText(text);
+                lengthTextView.setTextColor(textColor);
+                linearLayoutView.addView(areaTextView);
+                linearLayoutView.addView(lengthTextView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         container.addView(scrollView);
 
