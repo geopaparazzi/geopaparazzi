@@ -54,7 +54,9 @@ public enum SpatialiteConnectionsHandler {
      * @throws Exception
      */
     public void disposeTable(String dbPath, String tableName) throws Exception {
-        ASpatialDb db = getDb(dbPath);
+        ASpatialDb db = connection2DbsMap.get(dbPath);
+        if (db == null)
+            return;
         if (db.hasTable(tableName)) {
             List<String> openTables = connection2TablesMap.get(dbPath);
             if (openTables == null) {
@@ -129,6 +131,7 @@ public enum SpatialiteConnectionsHandler {
         if (spatialDb == null) {
             spatialDb = EDb.SPATIALITE4ANDROID.getSpatialDb();
             spatialDb.open(dbPath);
+            connection2DbsMap.put(dbPath, spatialDb);
         }
         return spatialDb;
     }
