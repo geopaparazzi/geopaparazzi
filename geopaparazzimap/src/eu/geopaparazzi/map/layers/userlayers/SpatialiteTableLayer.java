@@ -1,8 +1,11 @@
 package eu.geopaparazzi.map.layers.userlayers;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.objects.QueryResult;
+import org.hortonmachine.dbs.datatypes.EDataType;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
+import org.hortonmachine.dbs.datatypes.ESpatialiteGeometryType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
@@ -35,6 +38,9 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     private final String dbPath;
     private final String tableName;
     private boolean isEditing;
+    private EGeometryType geometryType;
+    private GeometryColumn gCol;
+    private List<String[]> tableColumnInfos;
 
     public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
@@ -62,7 +68,10 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
 
         SpatialiteConnectionsHandler.INSTANCE.openTable(dbPath, tableName);
 
-        EGeometryType geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
+        gCol = db.getGeometryColumnsForTable(tableName);
+        tableColumnInfos = db.getTableColumns(tableName);
+        geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
         eu.geopaparazzi.library.style.Style gpStyle = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
         List<Geometry> geometries = SpatialiteConnectionsHandler.INSTANCE.getGeometries(dbPath, tableName, gpStyle);
 
@@ -167,6 +176,11 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     }
 
     @Override
+    public EGeometryType getGeometryType() {
+        return geometryType;
+    }
+
+    @Override
     public void onResume() {
 
     }
@@ -252,8 +266,96 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
 //        });
     }
 
+
     @Override
     public String getDbPath() {
         return dbPath;
+    }
+
+
+    /**
+     * Add a new spatial record by adding a geometry.
+     * <p/>
+     * <p>The other attributes will not be populated.
+     *
+     * @param geometry     the geometry that will create the new record.
+     * @param geometrySrid the srid of the geometry without the EPSG prefix.
+     * @throws Exception if something goes wrong.
+     */
+    public void addNewFeatureByGeometry(Geometry geometry, int geometrySrid)
+            throws Exception {
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(getDbPath());
+
+
+        String geometryFieldName = gCol.geometryColumnName;
+        int srid = gCol.srid;
+        ESpatialiteGeometryType spatialiteGeometryType = geometryType.toSpatialiteGeometryType();
+        String geometryTypeCast = spatialiteGeometryType.getGeometryTypeCast();
+        String spaceDimensionsCast = spatialiteGeometryType.getSpaceDimensionsCast();
+        String multiSingleCast = spatialiteGeometryType.getMultiSingleCast();
+
+
+        // get list of non geom fields and default values
+        String nonGeomFieldsNames = "";
+        String nonGeomFieldsValues = "";
+        for (String[] columnInfo : tableColumnInfos) {
+            String field = columnInfo[0];
+            String fieldType = columnInfo[1];
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            if (!ignore) {
+                EDataType tableFieldType = EDataType.getType4Name(fieldType);
+                if (tableFieldType != null) {
+                    nonGeomFieldsNames = nonGeomFieldsNames + "," + field;
+                    nonGeomFieldsValues = nonGeomFieldsValues + "," + tableFieldType.getDefaultValueForSql();
+                }
+            }
+        }
+
+        boolean doTransform = true;
+        if (srid == geometrySrid) {
+            doTransform = false;
+        }
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("insert into \"").append(tableName);
+        sbIn.append("\" (");
+        sbIn.append(geometryFieldName);
+        // add fields
+        if (nonGeomFieldsNames.length() > 0) {
+            sbIn.append(nonGeomFieldsNames);
+        }
+        sbIn.append(") values (");
+        if (doTransform)
+            sbIn.append("ST_Transform(");
+        if (multiSingleCast != null)
+            sbIn.append(multiSingleCast).append("(");
+        if (spaceDimensionsCast != null)
+            sbIn.append(spaceDimensionsCast).append("(");
+        if (geometryTypeCast != null)
+            sbIn.append(geometryTypeCast).append("(");
+        sbIn.append("GeomFromText('");
+        sbIn.append(geometry.toText());
+        sbIn.append("' , ");
+        sbIn.append(geometrySrid);
+        sbIn.append(")");
+        if (geometryTypeCast != null)
+            sbIn.append(")");
+        if (spaceDimensionsCast != null)
+            sbIn.append(")");
+        if (multiSingleCast != null)
+            sbIn.append(")");
+        if (doTransform) {
+            sbIn.append(",");
+            sbIn.append(srid);
+            sbIn.append(")");
+        }
+        // add field default values
+        if (nonGeomFieldsNames.length() > 0) {
+            sbIn.append(nonGeomFieldsValues);
+        }
+        sbIn.append(")");
+        String insertQuery = sbIn.toString();
+
+        db.executeInsertUpdateDeleteSql(insertQuery);
     }
 }

@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map;
 
+import org.locationtech.jts.geom.Coordinate;
 import org.oscim.core.MapPosition;
 
 public class GPMapPosition {
@@ -10,6 +11,9 @@ public class GPMapPosition {
         this.mapPosition = mapPosition;
     }
 
+    public Coordinate getCoordinate() {
+        return new Coordinate(mapPosition.getLongitude(), mapPosition.getLatitude());
+    }
 
     public double getLongitude() {
         return mapPosition.getLongitude();

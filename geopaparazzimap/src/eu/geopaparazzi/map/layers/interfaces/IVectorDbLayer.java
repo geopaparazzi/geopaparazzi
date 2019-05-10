@@ -9,28 +9,7 @@ import eu.geopaparazzi.map.features.Feature;
 /**
  *
  */
-public interface IVectorDbLayer extends IGpLayer {
-
-    /**
-     * @return true if the layer allows for geometry editing.
-     */
-    boolean isEditable();
-
-
-    /**
-     * @return true if the layer is activated for editing.
-     */
-    boolean isInEditingMode();
-
-
-    /**
-     * Get the list of features, given a query.
-     *
-     * @param env optional envelope.
-     * @return the list of features
-     * @throws Exception
-     */
-    List<Feature> getFeatures(Envelope env) throws Exception;
+public interface IVectorDbLayer extends IEditableLayer {
 
     /**
      * @return the path to the database.

@@ -56,7 +56,7 @@
 //import eu.geopaparazzi.core.R;
 //import eu.geopaparazzi.core.maptools.FeatureUtilities;
 //import eu.geopaparazzi.core.mapview.MapsSupportService;
-//import eu.geopaparazzi.mapsforge.core.proj.MapsforgePointTransformation;
+//import eu.geopaparazzi.mapsforge.core.proj.MapviewPointTransformation;
 //import eu.geopaparazzi.mapsforge.core.proj.OverlayViewProjection;
 //import eu.geopaparazzi.library.database.GPLog;
 //import eu.geopaparazzi.core.features.EditManager;
@@ -383,7 +383,7 @@
 //
 //            byte zoomLevel = mapPosition.getZoomLevel();
 //
-//            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel, mapView.getModel().displayModel.getTileSize());
+//            PointTransformation pointTransformer = new MapviewPointTransformation(projection, point, zoomLevel, mapView.getModel().displayModel.getTileSize());
 //            ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
 //            shapeWriter.setRemoveDuplicatePoints(true);
 //            // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);

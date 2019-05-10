@@ -19,8 +19,11 @@ package eu.geopaparazzi.core.maptools;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.Uri;
 
+import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -34,6 +37,9 @@ import org.locationtech.jts.operation.polygonize.Polygonizer;
 
 import java.util.Collection;
 import java.util.List;
+
+import eu.geopaparazzi.core.jts.android.ShapeWriter;
+import eu.geopaparazzi.core.jts.android.geom.DrawableShape;
 
 /**
  * A spatial feature container.
@@ -169,5 +175,47 @@ public class FeatureUtilities {
         }
         if (intent != null)
             context.startActivity(intent);
+    }
+
+    /**
+     * Draw a geometry on a canvas.
+     *
+     * @param geom                the {@link Geometry} to draw.
+     * @param canvas              the {@link Canvas}.
+     * @param shapeWriter         the shape writer.
+     * @param geometryPaintFill   the fill.
+     * @param geometryPaintStroke the stroke.
+     */
+    public static void drawGeometry(Geometry geom, Canvas canvas, ShapeWriter shapeWriter, Paint geometryPaintFill,
+                                    Paint geometryPaintStroke) {
+        String geometryTypeStr = geom.getGeometryType();
+        EGeometryType geometryType = EGeometryType.forTypeName(geometryTypeStr);
+        DrawableShape shape = shapeWriter.toShape(geom);
+        switch (geometryType) {
+            case MULTIPOINT:
+            case POINT: {
+                if (geometryPaintFill != null)
+                    shape.fill(canvas, geometryPaintFill);
+                if (geometryPaintStroke != null)
+                    shape.draw(canvas, geometryPaintStroke);
+            }
+            break;
+            case MULTILINESTRING:
+            case LINESTRING: {
+                if (geometryPaintStroke != null)
+                    shape.draw(canvas, geometryPaintStroke);
+            }
+            break;
+            case MULTIPOLYGON:
+            case POLYGON: {
+                if (geometryPaintFill != null)
+                    shape.fill(canvas, geometryPaintFill);
+                if (geometryPaintStroke != null)
+                    shape.draw(canvas, geometryPaintStroke);
+            }
+            break;
+            default:
+                break;
+        }
     }
 }

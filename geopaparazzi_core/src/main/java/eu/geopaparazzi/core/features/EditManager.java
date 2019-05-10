@@ -19,6 +19,9 @@ package eu.geopaparazzi.core.features;
 
 import android.widget.LinearLayout;
 
+import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
+import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
+
 /**
  * The editing layer manager.
  * 
@@ -30,7 +33,7 @@ public enum EditManager {
      */
     INSTANCE;
 
-    private ILayer editLayer;
+    private IEditableLayer editLayer;
     private Tool activeTool;
     private ToolGroup activeToolGroup;
     private EditingView editingView;
@@ -39,7 +42,7 @@ public enum EditManager {
     /**
      * @return the editing layer.
      */
-    public ILayer getEditLayer() {
+    public IEditableLayer getEditLayer() {
         return editLayer;
     }
 
@@ -48,7 +51,7 @@ public enum EditManager {
      * 
      * @param editLayer the editing layer.
      */
-    public void setEditLayer( ILayer editLayer ) {
+    public void setEditLayer( IEditableLayer editLayer ) {
         this.editLayer = editLayer;
     }
 

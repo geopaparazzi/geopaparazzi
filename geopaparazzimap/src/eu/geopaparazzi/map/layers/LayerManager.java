@@ -22,6 +22,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
@@ -599,5 +600,17 @@ public enum LayerManager {
         List<IGpLayer> layers = mapView.getLayers();
         List<IVectorDbLayer> vectorLayers = layers.stream().filter(l -> l instanceof IVectorDbLayer && l.isEnabled()).map(l -> (IVectorDbLayer) l).collect(Collectors.toList());
         return vectorLayers;
+    }
+
+    /**
+     * Get all editable and enabled layers.
+     *
+     * @param mapView the mapview.
+     * @return the list of editable and enabled layers.
+     */
+    public List<IEditableLayer> getEditableLayers(GPMapView mapView) {
+        List<IGpLayer> layers = mapView.getLayers();
+        List<IEditableLayer> editableLayers = layers.stream().filter(l -> l instanceof IEditableLayer && l.isEnabled() && ((IEditableLayer) l).isEditable()).map(l -> (IEditableLayer) l).collect(Collectors.toList());
+        return editableLayers;
     }
 }
