@@ -33,34 +33,30 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKBReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.map.GPMapPosition;
+import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.MapsSupportService;
+import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.features.Feature;
+import eu.geopaparazzi.map.features.FeatureUtilities;
 import eu.geopaparazzi.map.features.editing.EditManager;
 import eu.geopaparazzi.map.features.editing.EditingView;
 import eu.geopaparazzi.map.features.tools.interfaces.Tool;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
+import eu.geopaparazzi.map.gui.FeaturePagerActivity;
 import eu.geopaparazzi.map.jts.MapviewPointTransformation;
 import eu.geopaparazzi.map.jts.android.PointTransformation;
 import eu.geopaparazzi.map.jts.android.ShapeWriter;
-import eu.geopaparazzi.library.style.ToolColors;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.gui.FeaturePagerActivity;
-import eu.geopaparazzi.map.features.FeatureUtilities;
-import eu.geopaparazzi.map.MapsSupportService;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.map.GPMapPosition;
-import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 import eu.geopaparazzi.map.utils.MapUtilities;
@@ -105,7 +101,6 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
     private ImageButton commitButton;
 
     private ImageButton undoButton;
-    private ImageButton copyFeatureButton;
 
     /**
      * Constructor.
@@ -174,14 +169,14 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             deleteFeatureButton.setOnClickListener(this);
             parent.addView(deleteFeatureButton);
 
-            copyFeatureButton = new ImageButton(context);
-            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
-            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_copy_geoms_24dp));
-            copyFeatureButton.setPadding(0, padding, 0, padding);
-            copyFeatureButton.setOnTouchListener(this);
-            copyFeatureButton.setOnClickListener(this);
-            parent.addView(copyFeatureButton);
+//            copyFeatureButton = new ImageButton(context);
+//            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+//                    LayoutParams.WRAP_CONTENT));
+//            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_copy_geoms_24dp));
+//            copyFeatureButton.setPadding(0, padding, 0, padding);
+//            copyFeatureButton.setOnTouchListener(this);
+//            copyFeatureButton.setOnClickListener(this);
+//            parent.addView(copyFeatureButton);
 
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -241,9 +236,9 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
                 commitButton.setVisibility(View.VISIBLE);
                 EditManager.INSTANCE.invalidateEditingView();
             }
-        } else if (v == copyFeatureButton) {
-            Context context = v.getContext();
-            GPDialogs.warningDialog(context, "Thsi feature is cuurently disabled.", null);
+//        } else if (v == copyFeatureButton) {
+//            Context context = v.getContext();
+//            GPDialogs.warningDialog(context, "Thsi feature is cuurently disabled.", null);
 //            if (selectedFeatures.size() > 0) {
 //                List<Feature> copySelectedFeatures = new ArrayList<>(selectedFeatures);
 //                Context context = v.getContext();
