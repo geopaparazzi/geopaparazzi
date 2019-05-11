@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.core.features;
+package eu.geopaparazzi.map.features;
 
 import android.widget.LinearLayout;
 
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
-import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 
 /**
  * The editing layer manager.

@@ -222,6 +222,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         }
     }
 
+    @Override
     public boolean isInEditingMode() {
         return isEditing;
     }
@@ -272,16 +273,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         return dbPath;
     }
 
-
-    /**
-     * Add a new spatial record by adding a geometry.
-     * <p/>
-     * <p>The other attributes will not be populated.
-     *
-     * @param geometry     the geometry that will create the new record.
-     * @param geometrySrid the srid of the geometry without the EPSG prefix.
-     * @throws Exception if something goes wrong.
-     */
+    @Override
     public void addNewFeatureByGeometry(Geometry geometry, int geometrySrid)
             throws Exception {
         ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(getDbPath());
@@ -356,6 +348,59 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         sbIn.append(")");
         String insertQuery = sbIn.toString();
 
+        db.executeInsertUpdateDeleteSql(insertQuery);
+    }
+
+    @Override
+    public void updateFeatureGeometry(Feature feature, Geometry geometry, int geometrySrid)
+            throws Exception {
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
+        String geometryFieldName = gCol.geometryColumnName;
+        int srid = gCol.srid;
+        ESpatialiteGeometryType spatialiteGeometryType = geometryType.toSpatialiteGeometryType();
+        String geometryTypeCast = spatialiteGeometryType.getGeometryTypeCast();
+        String spaceDimensionsCast = spatialiteGeometryType.getSpaceDimensionsCast();
+        String multiSingleCast = spatialiteGeometryType.getMultiSingleCast();
+
+        boolean doTransform = true;
+        if (srid == geometrySrid) {
+            doTransform = false;
+        }
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("update \"").append(tableName);
+        sbIn.append("\" set ");
+        sbIn.append(geometryFieldName);
+        sbIn.append(" = ");
+        if (doTransform)
+            sbIn.append("ST_Transform(");
+        if (multiSingleCast != null)
+            sbIn.append(multiSingleCast).append("(");
+        if (spaceDimensionsCast != null)
+            sbIn.append(spaceDimensionsCast).append("(");
+        if (geometryTypeCast != null)
+            sbIn.append(geometryTypeCast).append("(");
+        sbIn.append("GeomFromText('");
+        sbIn.append(geometry.toText());
+        sbIn.append("' , ");
+        sbIn.append(geometrySrid);
+        sbIn.append(")");
+        if (geometryTypeCast != null)
+            sbIn.append(")");
+        if (spaceDimensionsCast != null)
+            sbIn.append(")");
+        if (multiSingleCast != null)
+            sbIn.append(")");
+        if (doTransform) {
+            sbIn.append(",");
+            sbIn.append(srid);
+            sbIn.append(")");
+        }
+        sbIn.append("");
+        sbIn.append(" where ");
+        sbIn.append(feature.getIdFieldName()).append("=");
+        sbIn.append(feature.getIdFieldValue());
+        String insertQuery = sbIn.toString();
         db.executeInsertUpdateDeleteSql(insertQuery);
     }
 }

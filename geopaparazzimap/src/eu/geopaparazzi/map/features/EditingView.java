@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.core.features;
+package eu.geopaparazzi.map.features;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -44,8 +44,8 @@ public class EditingView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-        if (activeToolGroup instanceof DrawingTool) {
-            ((DrawingTool) activeToolGroup).onToolDraw(canvas);
+        if (activeToolGroup != null) {
+            activeToolGroup.onToolDraw(canvas);
         }
         Tool activeTool = EditManager.INSTANCE.getActiveTool();
         if (activeTool instanceof DrawingTool) {
@@ -60,8 +60,8 @@ public class EditingView extends View {
             return ((DrawingTool) activeTool).onToolTouchEvent(event);
         }
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-        if (activeToolGroup instanceof DrawingTool) {
-            return ((DrawingTool) activeToolGroup).onToolTouchEvent(event);
+        if (activeToolGroup != null) {
+            return activeToolGroup.onToolTouchEvent(event);
         }
         return false;
     }

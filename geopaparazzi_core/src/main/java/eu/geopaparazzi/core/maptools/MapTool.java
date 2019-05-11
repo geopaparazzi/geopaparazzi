@@ -19,7 +19,7 @@ package eu.geopaparazzi.core.maptools;
 
 
 
-import eu.geopaparazzi.core.features.DrawingTool;
+import eu.geopaparazzi.map.features.DrawingTool;
 import eu.geopaparazzi.map.GPMapView;
 
 /**

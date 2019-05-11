@@ -75,10 +75,21 @@ public interface IEditableLayer extends IGpLayer {
      * Add a new feature that has only the geometry (all other fields are default value).
      *
      * @param geometry the geometry.
-     * @param srid the srid of the added geometry, in case reprojection is needed.
+     * @param srid     the srid of the added geometry, in case reprojection is needed.
      * @throws Exception
      */
-    void addNewFeatureByGeometry(Geometry geometry, int srid) throws Exception ;
+    void addNewFeatureByGeometry(Geometry geometry, int srid) throws Exception;
+
+    /**
+     * Updates the geometry of a feature in the given database.
+     *
+     * @param feature the feature to update.
+     * @param geometry the new geometry to set.
+     * @param geometrySrid the srid of the new geometry, in case reprojection is necessary.
+     *
+     * @throws Exception if something goes wrong.
+     */
+    void updateFeatureGeometry(Feature feature, Geometry geometry, int geometrySrid) throws Exception;
 
     /**
      * @return the type of the geometry fo rthis layer.

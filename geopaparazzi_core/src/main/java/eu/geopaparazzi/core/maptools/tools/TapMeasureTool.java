@@ -36,8 +36,8 @@ import org.locationtech.jts.geom.Coordinate;
 
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.EditingView;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.EditingView;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.database.GPLog;

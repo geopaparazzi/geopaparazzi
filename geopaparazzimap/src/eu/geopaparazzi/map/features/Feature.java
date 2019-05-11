@@ -71,9 +71,21 @@ public class Feature implements Parcelable {
         return idIndex;
     }
 
+    public String getIdFieldName() {
+        if (idIndex == -1) return null;
+        return attributeNames.get(idIndex);
+    }
+
+    public Object getIdFieldValue() {
+        if (idIndex == -1) return null;
+        return attributeValues.get(idIndex);
+    }
+
+
     public int getGeometryIndex() {
         return geometryIndex;
     }
+
 
     /**
      * Add a new attribute.

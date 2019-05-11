@@ -36,20 +36,16 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.ILayer;
+import eu.geopaparazzi.map.features.EditManager;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
-import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 import static java.lang.Math.abs;

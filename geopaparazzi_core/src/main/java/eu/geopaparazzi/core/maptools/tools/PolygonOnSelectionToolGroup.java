@@ -40,10 +40,10 @@ import org.locationtech.jts.io.WKBReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.EditingView;
-import eu.geopaparazzi.core.features.Tool;
-import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.EditingView;
+import eu.geopaparazzi.map.features.Tool;
+import eu.geopaparazzi.map.features.ToolGroup;
 import eu.geopaparazzi.core.jts.MapviewPointTransformation;
 import eu.geopaparazzi.core.jts.android.PointTransformation;
 import eu.geopaparazzi.core.jts.android.ShapeWriter;

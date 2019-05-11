@@ -67,7 +67,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <eu.geopaparazzi.core.features.EditingView
+        <eu.geopaparazzi.map.features.EditingView
             android:id="@+id/editingview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />

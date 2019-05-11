@@ -19,7 +19,6 @@ package eu.geopaparazzi.core.maptools.tools;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
@@ -30,26 +29,24 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import org.hortonmachine.dbs.datatypes.EGeometryType;
+import org.locationtech.jts.geom.Geometry;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.Tool;
-import eu.geopaparazzi.core.features.ToolGroup;
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.Tool;
+import eu.geopaparazzi.map.features.ToolGroup;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
-import eu.geopaparazzi.core.mapview.MapsSupportService;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
-import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 
 /**
  * The main polygon layer editing tool group, which just shows the tool palette.
@@ -232,24 +229,18 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
             if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null) {
                 // substitute the feature's geometry in the db
                 try {
+                    IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
+                    EGeometryType geometryType = editLayer.getGeometryType();
 
-                    SpatialVectorTable spatialVectorTable = SpatialiteSourcesManager.INSTANCE.getTableFromFeature(cutExtendProcessedFeature);
-                    int tableGeomTypeCode = spatialVectorTable.getGeomType();
-                    GeometryType tableGeometryType = GeometryType.forValue(tableGeomTypeCode);
-
-                    Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
+                    Geometry newGeom = cutExtendProcessedFeature.getDefaultGeometry();
 
                     Context context = v.getContext();
-                    if (tableGeometryType.isGeometryCompatible(newGeom)) {
-                        DaoSpatialite.updateFeatureGeometry(
-                                cutExtendProcessedFeature.getId(),
-                                newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
+                    if (geometryType.toSpatialiteGeometryType().isGeometryCompatible(newGeom)) {
+                        editLayer.updateFeatureGeometry(cutExtendProcessedFeature, newGeom, LibraryConstants.SRID_WGS84_4326);
 
                         IEditableLayer.deleteFeatures(Collections.singletonList(cutExtendFeatureToRemove));
-                        // reset mapview
-                        Intent intent = new Intent(context, MapsSupportService.class);
-                        intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                        context.startService(intent);
+                        // reset layer
+                        editLayer.reloadData();
                     } else {
                         GPDialogs.warningDialog(context, context.getString(R.string.geom_incompatible_with_layer), null);
                         return;

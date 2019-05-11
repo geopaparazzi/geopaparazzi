@@ -29,14 +29,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.util.List;
-import java.util.Map;
 
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.ILayer;
-import eu.geopaparazzi.core.features.Tool;
-import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.Tool;
+import eu.geopaparazzi.map.features.ToolGroup;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.core.R;
@@ -77,7 +74,7 @@ public class NoEditableLayerToolGroup implements ToolGroup, OnClickListener, OnT
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         Context context = parent.getContext();
-        ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+//        IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
         int padding = 2;
 
         selectAllButton = new ImageButton(context);

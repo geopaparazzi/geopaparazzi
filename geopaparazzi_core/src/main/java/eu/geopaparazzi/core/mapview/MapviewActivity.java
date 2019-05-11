@@ -64,11 +64,11 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.EditingView;
-import eu.geopaparazzi.core.features.ILayer;
-import eu.geopaparazzi.core.features.Tool;
-import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.core.maptools.tools.PolygonMainEditingToolGroup;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.EditingView;
+import eu.geopaparazzi.map.features.Tool;
+import eu.geopaparazzi.map.features.ToolGroup;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
@@ -105,6 +105,7 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.gui.MapLayerListActivity;
 import eu.geopaparazzi.map.layers.LayerManager;
+import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 
@@ -1004,15 +1005,14 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
-            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+            IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer == null) {
                 // if not layer is
                 activeToolGroup = new NoEditableLayerToolGroup(mapView);
 //                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
 //                return;
-            }
-//            else if (editLayer.isPolygon())
-//                activeToolGroup = new PolygonMainEditingToolGroup(mapView);
+            } else if (editLayer.getGeometryType().isPolygon())
+                activeToolGroup = new PolygonMainEditingToolGroup(mapView);
 //            else if (editLayer.isLine())
 //                activeToolGroup = new LineMainEditingToolGroup(mapView);
 //            else if (editLayer.isPoint())

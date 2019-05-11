@@ -37,8 +37,8 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.EditingView;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.EditingView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;

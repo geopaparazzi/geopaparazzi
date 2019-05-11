@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.core.maptools.tools;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -37,8 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.features.EditManager;
-import eu.geopaparazzi.core.features.ToolGroup;
+import eu.geopaparazzi.map.features.EditManager;
+import eu.geopaparazzi.map.features.ToolGroup;
 import eu.geopaparazzi.core.maptools.FeaturePagerActivity;
 import eu.geopaparazzi.core.maptools.FeatureUtilities;
 import eu.geopaparazzi.core.maptools.MapTool;

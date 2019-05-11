@@ -16,31 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.core.features;
-
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-
+package eu.geopaparazzi.map.features;
 
 /**
- * A tool that can draw.
+ * A group of tools.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface DrawingTool extends Tool {
+public interface ToolGroup extends DrawingTool {
 
     /**
-     * Called when the tool should draw.
-     * 
-     * @param canvas the {@link Canvas} to draw on.
+     * Create a custom UI for the tool if necessary.
      */
-    public void onToolDraw(Canvas canvas);
+    public void initUI();
 
     /**
-     * Called on a touch event.
-     * 
-     * @param event the current triggered event.
-     * @return <code>true</code> if the event has been handled.
+     * Disables the toolgroup.
      */
-    public boolean onToolTouchEvent(MotionEvent event);
+    public void disable();
+
+    /**
+     * Callback when a tool finishes.
+     * 
+     * @param tool the tool that finished.
+     */
+    public void onToolFinished(Tool tool);
+
+    /**
+     * Callback for position updates. 
+     * 
+     * @param lon longitude.
+     * @param lat latitude.
+     */
+    public void onGpsUpdate(double lon, double lat);
 }

@@ -22,6 +22,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.features.EditManager;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
@@ -238,6 +239,9 @@ public enum LayerManager {
                             SpatialiteTableLayer spatialiteLayer = new SpatialiteTableLayer(mapView, dbPath, name, isEditing);
                             spatialiteLayer.load();
                             spatialiteLayer.setEnabled(isEnabled);
+                            if (isEditing) {
+                                EditManager.INSTANCE.setEditLayer(spatialiteLayer);
+                            }
                             break;
                         }
                     }
