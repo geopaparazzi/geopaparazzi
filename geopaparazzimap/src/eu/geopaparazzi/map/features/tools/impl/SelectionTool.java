@@ -258,8 +258,8 @@ public class SelectionTool extends MapTool {
                                 EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                             } else if (geometryType.isLine()) {
                                 GPDialogs.toast(context, String.format(context.getString(R.string.selected_line_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
-//                              TODO  LineOnSelectionToolGroup selectionGroup = new LineOnSelectionToolGroup(mapView, features);
-//                                EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                                LineOnSelectionToolGroup selectionGroup = new LineOnSelectionToolGroup(mapView, features);
+                                EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                             } else if (geometryType.isPoint()) {
                                 GPDialogs.toast(context, String.format(context.getString(R.string.selected_point_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
 //                              TODO  PointOnSelectionToolGroup selectionGroup = new PointOnSelectionToolGroup(mapView, features);

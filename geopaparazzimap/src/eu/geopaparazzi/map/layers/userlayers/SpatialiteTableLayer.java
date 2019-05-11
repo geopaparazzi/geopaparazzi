@@ -117,6 +117,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                             .strokeColor(ColorUtilities.toColor(gpStyle.strokecolor))
                             .fillColor(ColorUtilities.toColor(gpStyle.fillcolor))
                             .fillAlpha(gpStyle.fillalpha)
+                            .scaleZoomLevel(19)
                             .build();
                 }
                 if (geom != null) {
@@ -131,6 +132,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                                     .strokeColor(ColorUtilities.toColor(themeStyle.strokecolor))
                                     .fillColor(ColorUtilities.toColor(themeStyle.fillcolor))
                                     .fillAlpha(themeStyle.fillalpha)
+                                    .scaleZoomLevel(19)
                                     .build();
                             drawable = new GPPointDrawable(c.y, c.x, pointThemeStyle, id);
                             add((Drawable) drawable);
@@ -316,6 +318,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         String multiSingleCast = spatialiteGeometryType.getMultiSingleCast();
 
 
+        long newId = -1;
         // get list of non geom fields and default values
         String nonGeomFieldsNames = "";
         String nonGeomFieldsValues = "";
@@ -327,7 +330,13 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                 EDataType tableFieldType = EDataType.getType4Name(fieldType);
                 if (tableFieldType != null) {
                     nonGeomFieldsNames = nonGeomFieldsNames + "," + field;
-                    nonGeomFieldsValues = nonGeomFieldsValues + "," + tableFieldType.getDefaultValueForSql();
+                    String valueToSet = tableFieldType.getDefaultValueForSql();
+                    if (columnInfo[2].equals("1")) {
+                        long max = db.getMax(tableName, field);
+                        newId = max + 1;
+                        valueToSet = String.valueOf(newId);
+                    }
+                    nonGeomFieldsValues = nonGeomFieldsValues + "," + valueToSet;
                 }
             }
         }
@@ -383,27 +392,39 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         /*
          * if everything went well, add also geometry to the layer
          */
+        addNewGeometry(geometry, newId);
+        update();
+    }
+
+    private void addNewGeometry(Geometry geometry, long id) {
         if (geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT) {
             int numGeometries = geometry.getNumGeometries();
             for (int i = 0; i < numGeometries; i++) {
                 Geometry geometryN = geometry.getGeometryN(i);
                 Coordinate c = geometryN.getCoordinate();
-                add(new PointDrawable(c.y, c.x, pointStyle));
+
+                GPPointDrawable drawable = new GPPointDrawable(c.y, c.x, pointStyle, id);
+                add(drawable);
+                drawablesMap.put(id, drawable);
+
             }
         } else if (geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING) {
             int numGeometries = geometry.getNumGeometries();
             for (int i = 0; i < numGeometries; i++) {
                 Geometry geometryN = geometry.getGeometryN(i);
-                add(new LineDrawable(geometryN, lineStyle));
+                GPLineDrawable drawable = new GPLineDrawable(geometryN, lineStyle, id);
+                add(drawable);
+                drawablesMap.put(id, drawable);
             }
         } else if (geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON) {
             int numGeometries = geometry.getNumGeometries();
             for (int i = 0; i < numGeometries; i++) {
                 Geometry geometryN = geometry.getGeometryN(i);
-                add(new PolygonDrawable(geometryN, polygonStyle));
+                GPPolygonDrawable drawable = new GPPolygonDrawable(geometryN, polygonStyle, id);
+                add(drawable);
+                drawablesMap.put(id, drawable);
             }
         }
-        update();
     }
 
     @Override
@@ -457,6 +478,24 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         sbIn.append(feature.getIdFieldValue());
         String insertQuery = sbIn.toString();
         db.executeInsertUpdateDeleteSql(insertQuery);
+
+
+        Object idFieldValue = feature.getIdFieldValue();
+        long id = -1;
+        if (idFieldValue instanceof Number) {
+            id = ((Number) idFieldValue).longValue();
+        }
+        IGPDrawable drawable = drawablesMap.get(id);
+        if (drawable != null)
+            remove((Drawable) drawable);
+        drawablesMap.remove(id);
+
+        Geometry g = geometry;
+        if (doTransform) {
+            g = db.reproject(geometry, geometrySrid, srid);
+        }
+        addNewGeometry(g, id);
+        update();
     }
 
     public void deleteFeatures(List<Feature> features) throws Exception {
@@ -494,6 +533,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
             IGPDrawable drawable = drawablesMap.get(id);
             if (drawable != null)
                 remove((Drawable) drawable);
+            drawablesMap.remove(id);
         }
         update();
     }

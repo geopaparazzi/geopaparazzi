@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.map.features.tools.impl;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,9 +40,9 @@ import org.locationtech.jts.io.WKBReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
@@ -66,7 +67,7 @@ import eu.geopaparazzi.map.utils.MapUtilities;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener, OnSelectionToolGroup {
+public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener, OnSelectionToolGroup {
 
     private final GPMapView mapView;
 
@@ -76,14 +77,9 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
     private OverlayViewProjection editingViewProjection;
 
     private Paint geometryPaintStroke = new Paint();
-    private Paint geometryPaintFill = new Paint();
 
     private final Paint selectedGeometryPaintStroke = new Paint();
-    private final Paint selectedGeometryPaintFill = new Paint();
     private final Paint selectedPreviewGeometryPaintStroke = new Paint();
-    private final Paint selectedPreviewGeometryPaintFill = new Paint();
-
-    private WKBReader wkbReader = new WKBReader();
 
     /**
      * Stores the top-left map position at which the redraw should happen.
@@ -101,6 +97,8 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
     private ImageButton commitButton;
 
     private ImageButton undoButton;
+    private ImageButton continueLineFeatureButton;
+//    private ImageButton copyFeatureButton;
 
     /**
      * Constructor.
@@ -108,7 +106,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
      * @param mapView          the map view.
      * @param selectedFeatures the set of selected features.
      */
-    public PolygonOnSelectionToolGroup(GPMapView mapView, List<Feature> selectedFeatures) {
+    public LineOnSelectionToolGroup(GPMapView mapView, List<Feature> selectedFeatures) {
         this.mapView = mapView;
         this.selectedFeatures.addAll(selectedFeatures);
 
@@ -118,28 +116,17 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
 
         int stroke = ColorUtilities.toColor(ToolColors.selection_stroke.getHex());
-        int fill = ColorUtilities.toColor(ToolColors.selection_fill.getHex());
-        selectedGeometryPaintFill.setAntiAlias(true);
-        selectedGeometryPaintFill.setColor(fill);
-        selectedGeometryPaintFill.setAlpha(180);
-        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedGeometryPaintStroke.setAntiAlias(true);
         selectedGeometryPaintStroke.setStrokeWidth(5f);
         selectedGeometryPaintStroke.setColor(stroke);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
         stroke = ColorUtilities.toColor(ToolColors.preview_stroke.getHex());
-        fill = ColorUtilities.toColor(ToolColors.preview_fill.getHex());
-        selectedPreviewGeometryPaintFill.setAntiAlias(true);
-        selectedPreviewGeometryPaintFill.setColor(fill);
-        selectedPreviewGeometryPaintFill.setAlpha(180);
-        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedPreviewGeometryPaintStroke.setAntiAlias(true);
         selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
         selectedPreviewGeometryPaintStroke.setColor(stroke);
         selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
-        geometryPaintFill = selectedGeometryPaintFill;
         geometryPaintStroke = selectedGeometryPaintStroke;
 
         point = new Point();
@@ -163,7 +150,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             deleteFeatureButton = new ImageButton(context);
             deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_delete_feature_24dp));
+            deleteFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_delete_line_feature_24dp));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
             deleteFeatureButton.setOnClickListener(this);
@@ -172,11 +159,20 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 //            copyFeatureButton = new ImageButton(context);
 //            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
 //                    LayoutParams.WRAP_CONTENT));
-//            copyFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_copy_geoms_24dp));
+//            copyFeatureButton.setBackground(context.getDrawable(R.drawable.editing_copy_geoms));
 //            copyFeatureButton.setPadding(0, padding, 0, padding);
 //            copyFeatureButton.setOnTouchListener(this);
 //            copyFeatureButton.setOnClickListener(this);
 //            parent.addView(copyFeatureButton);
+
+            continueLineFeatureButton = new ImageButton(context);
+            continueLineFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            continueLineFeatureButton.setBackground(Compat.getDrawable(context, R.drawable.ic_editing_continue_line_24dp));
+            continueLineFeatureButton.setPadding(0, padding, 0, padding);
+            continueLineFeatureButton.setOnClickListener(this);
+            continueLineFeatureButton.setOnTouchListener(this);
+            parent.addView(continueLineFeatureButton);
 
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -224,27 +220,25 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
                 if (context instanceof Activity) {
                     Activity activity = (Activity) context;
                     activity.startActivityForResult(intent, MapUtilities.SELECTED_FEATURES_UPDATED_RETURN_CODE);
-                } else {
+                }
+                else {
                     context.startActivity(intent);
                 }
             }
         } else if (v == deleteFeatureButton) {
             if (!isInDeletePreview) {
                 isInDeletePreview = true;
-                geometryPaintFill = selectedPreviewGeometryPaintFill;
                 geometryPaintStroke = selectedPreviewGeometryPaintStroke;
                 commitButton.setVisibility(View.VISIBLE);
                 EditManager.INSTANCE.invalidateEditingView();
             }
 //        } else if (v == copyFeatureButton) {
-//            Context context = v.getContext();
-//            GPDialogs.warningDialog(context, "Thsi feature is cuurently disabled.", null);
 //            if (selectedFeatures.size() > 0) {
-//                List<Feature> copySelectedFeatures = new ArrayList<>(selectedFeatures);
+//                List<Feature> copySelectedFeatures = new ArrayList<Feature>(selectedFeatures);
 //                Context context = v.getContext();
 //                Intent intent = new Intent(context, CopyToLayersListActivity.class);
 //                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-//                        (ArrayList<? extends Parcelable>) copySelectedFeatures);
+//                        (ArrayList< ? extends Parcelable>) copySelectedFeatures);
 //                context.startActivity(intent);
 //
 //                selectedFeatures.clear();
@@ -252,13 +246,19 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 //                EditManager.INSTANCE.setActiveTool(null);
 //
 //            }
+        } else if (v == continueLineFeatureButton) {
+            Feature featureToContinue = null;
+            if (selectedFeatures.size() > 0) {
+                featureToContinue = selectedFeatures.get(0);
+            }
+            ToolGroup createFeatureToolGroup = new LineCreateFeatureToolGroup(mapView, featureToContinue);
+            EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == undoButton) {
             if (isInDeletePreview) {
                 /*
                  * if in delete preview, disable it
                  */
                 isInDeletePreview = false;
-                geometryPaintFill = selectedGeometryPaintFill;
                 geometryPaintStroke = selectedGeometryPaintStroke;
                 commitButton.setVisibility(View.GONE);
                 EditManager.INSTANCE.invalidateEditingView();
@@ -267,7 +267,7 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
                  * if in selection mode, clear the selection
                  */
                 selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
                 commitButton.setVisibility(View.GONE);
             }
@@ -282,14 +282,13 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
                     selectedFeatures.clear();
 
                     // reset drawview
-                    EditManager.INSTANCE.setActiveToolGroup(new PolygonMainEditingToolGroup(mapView));
+                    EditManager.INSTANCE.setActiveToolGroup(new LineMainEditingToolGroup(mapView));
                     EditManager.INSTANCE.setActiveTool(null);
 
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
 
-                geometryPaintFill = selectedGeometryPaintFill;
                 geometryPaintStroke = selectedGeometryPaintStroke;
             }
         }
@@ -321,11 +320,11 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
             if (selectedFeatures.size() > 0) {
                 OverlayViewProjection projection = editingViewProjection;
 
-                int zoomLevelBeforeDraw;
+                byte zoomLevelBeforeDraw;
                 synchronized (mapView) {
-                    zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
+                    zoomLevelBeforeDraw = (byte) mapView.getMapPosition().getZoomLevel();
                     positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getCoordinate(), positionBeforeDraw,
-                            (byte) zoomLevelBeforeDraw);
+                            zoomLevelBeforeDraw);
                 }
 
                 // calculate the top-left point of the visible rectangle
@@ -342,10 +341,10 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
                 // draw features
                 for (Feature feature : selectedFeatures) {
-                    Geometry defaultGeometry = feature.getDefaultGeometry();
-                    if (defaultGeometry != null) {
+                    Geometry geometry = feature.getDefaultGeometry();
+                    if (geometry != null) {
                         try {
-                            FeatureUtilities.drawGeometry(defaultGeometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
+                            FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, null, geometryPaintStroke);
                         } catch (Exception e) {
                             GPLog.error(this, null, e); //$NON-NLS-1$
                         }

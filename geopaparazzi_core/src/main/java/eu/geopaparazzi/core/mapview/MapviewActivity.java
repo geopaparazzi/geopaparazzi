@@ -64,6 +64,7 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.map.features.tools.impl.LineMainEditingToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.PolygonMainEditingToolGroup;
 import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.features.editing.EditManager;
@@ -161,6 +162,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     private String latString;
     private String lonString;
     private TextView batteryText;
+    private ImageButton toggleEditingButton;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -274,7 +276,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         final ImageButton toggleLogInfoButton = findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
 
-        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
+        toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
         toggleEditingButton.setOnLongClickListener(this);
 
@@ -287,14 +289,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         LinearLayout editingToolsLayout = findViewById(R.id.editingToolsLayout);
         EditManager.INSTANCE.setEditingView(editingView, editingToolsLayout);
         mapView.setEditingView(editingView);
-
-        // if after rotation a toolgroup is there, enable ti with its icons
-        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-        if (activeToolGroup != null) {
-            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
-            activeToolGroup.initUI();
-            setLeftButtoonsEnablement(false);
-        }
 
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
@@ -358,6 +352,20 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     @Override
     protected void onResume() {
         LayerManager.INSTANCE.onResume(mapView, this);
+
+        IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
+        if (editLayer == null) {
+            disableEditing();
+        } else {
+            // if after rotation a toolgroup is there, enable ti with its icons
+            ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+            if (activeToolGroup != null) {
+                toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
+                activeToolGroup.initUI();
+                setLeftButtoonsEnablement(false);
+            }
+        }
+
         super.onResume();
     }
 
@@ -1001,7 +1009,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     }
 
     private void toggleEditing() {
-        final ImageButton toggleEditingButton = findViewById(R.id.toggleEditingButton);
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         if (activeToolGroup == null) {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
@@ -1013,18 +1020,22 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 //                return;
             } else if (editLayer.getGeometryType().isPolygon())
                 activeToolGroup = new PolygonMainEditingToolGroup(mapView);
-//            else if (editLayer.isLine())
-//                activeToolGroup = new LineMainEditingToolGroup(mapView);
-//            else if (editLayer.isPoint())
+            else if (editLayer.getGeometryType().isLine())
+                activeToolGroup = new LineMainEditingToolGroup(mapView);
+//TODO            else if (editLayer.isPoint())
 //                activeToolGroup = new PointMainEditingToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {
-            toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
-            EditManager.INSTANCE.setActiveTool(null);
-            EditManager.INSTANCE.setActiveToolGroup(null);
-            setLeftButtoonsEnablement(true);
+            disableEditing();
         }
+    }
+
+    private void disableEditing() {
+        toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
+        EditManager.INSTANCE.setActiveTool(null);
+        EditManager.INSTANCE.setActiveToolGroup(null);
+        setLeftButtoonsEnablement(true);
     }
 
     private void setLeftButtoonsEnablement(boolean enable) {

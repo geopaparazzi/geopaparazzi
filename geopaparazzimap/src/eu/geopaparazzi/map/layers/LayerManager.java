@@ -169,7 +169,7 @@ public enum LayerManager {
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
         mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
-
+        EditManager.INSTANCE.setEditLayer(null);
         for (JSONObject layerDefinition : userLayersDefinitions) {
             try {
                 String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);

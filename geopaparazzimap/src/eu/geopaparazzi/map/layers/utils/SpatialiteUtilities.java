@@ -52,7 +52,7 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
     /**
      * Array of fields that will be ingored in attributes handling.
      */
-    public static String[] IGNORED_FIELDS = {"ROWID", "PK_UID", "_id"};
+    public static String[] IGNORED_FIELDS = {"ROWID", "_id"};
 
 
     /**
