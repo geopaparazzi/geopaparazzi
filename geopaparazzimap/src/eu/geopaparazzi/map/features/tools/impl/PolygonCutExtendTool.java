@@ -28,6 +28,8 @@ import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -35,6 +37,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.List;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.editing.EditManager;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
@@ -51,6 +54,8 @@ import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
+import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
+import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 import static java.lang.Math.abs;
@@ -269,7 +274,17 @@ public class PolygonCutExtendTool extends MapTool {
                         west = e - 1;
                     }
 
-                    List<Feature> features = editLayer.getFeatures(new Envelope(west, east, south, north));
+                    Envelope env = new Envelope(west, east, south, north);
+                    if (editLayer instanceof IVectorDbLayer) {
+                        IVectorDbLayer vectorDbLayer = (IVectorDbLayer) editLayer;
+                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorDbLayer.getDbPath());
+
+                        int mapSrid = LibraryConstants.SRID_WGS84_4326;
+                        GeometryColumn gcol = db.getGeometryColumnsForTable(vectorDbLayer.getName());
+                        env = db.reproject(env, mapSrid, gcol.srid);
+                    }
+
+                    List<Feature> features = editLayer.getFeatures(env);
                     Geometry startGeometry = null;
                     Geometry endGeometry = null;
                     for (Feature feature : features) {
