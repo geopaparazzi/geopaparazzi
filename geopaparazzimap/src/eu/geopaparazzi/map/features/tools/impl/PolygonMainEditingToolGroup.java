@@ -238,7 +238,7 @@ public class PolygonMainEditingToolGroup implements ToolGroup, OnClickListener, 
                     if (geometryType.toSpatialiteGeometryType().isGeometryCompatible(newGeom)) {
                         editLayer.updateFeatureGeometry(cutExtendProcessedFeature, newGeom, LibraryConstants.SRID_WGS84_4326);
 
-                        IEditableLayer.deleteFeatures(Collections.singletonList(cutExtendFeatureToRemove));
+                        editLayer.deleteFeatures(Collections.singletonList(cutExtendFeatureToRemove));
                         // reset layer
                         editLayer.reloadData();
                     } else {

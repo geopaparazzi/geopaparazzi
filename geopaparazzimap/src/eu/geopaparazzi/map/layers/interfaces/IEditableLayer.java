@@ -44,32 +44,7 @@ public interface IEditableLayer extends IGpLayer {
      * @param features the features list to remove.
      * @throws Exception if something goes wrong.
      */
-    static void deleteFeatures(List<Feature> features) throws Exception {
-        if (features.size() == 0) return;
-        Feature firstFeature = features.get(0);
-        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(firstFeature.getDatabasePath());
-        String tableName = firstFeature.getTableName();
-
-        StringBuilder sbIn = new StringBuilder();
-        sbIn.append("delete from \"").append(tableName);
-        sbIn.append("\" where ");
-
-        int idIndex = firstFeature.getIdIndex();
-        String indexName = firstFeature.getAttributeNames().get(idIndex);
-
-        StringBuilder sb = new StringBuilder();
-        for (Feature feature : features) {
-            sb.append(" OR ");
-            sb.append(indexName).append("=");
-            sb.append(feature.getAttributeValues().get(idIndex));
-        }
-        String valuesPart = sb.substring(4);
-
-        sbIn.append(valuesPart);
-
-        String updateQuery = sbIn.toString();
-        db.executeInsertUpdateDeleteSql(updateQuery);
-    }
+    void deleteFeatures(List<Feature> features) throws Exception;
 
     /**
      * Add a new feature that has only the geometry (all other fields are default value).

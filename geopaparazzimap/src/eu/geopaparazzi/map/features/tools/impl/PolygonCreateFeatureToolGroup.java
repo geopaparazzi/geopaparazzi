@@ -272,6 +272,11 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
                     }
                     GPDialogs.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                     coordinatesList.clear();
+
+                    /*
+                     * TODO open the table view to insert data
+                     */
+
                 } catch (Exception e) {
                     if (e.getMessage().contains("UNIQUE constraint failed")) {
                         GPDialogs.warningDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);

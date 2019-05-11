@@ -282,7 +282,8 @@ public class PolygonOnSelectionToolGroup implements ToolGroup, OnClickListener, 
 
                 try {
                     // delete features
-                    IEditableLayer.deleteFeatures(selectedFeatures);
+                    IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
+                    editLayer.deleteFeatures(selectedFeatures);
                     selectedFeatures.clear();
 
                     // reset mapview

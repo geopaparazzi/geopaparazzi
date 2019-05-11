@@ -1,5 +1,7 @@
 package eu.geopaparazzi.map.layers.userlayers;
 
+import android.util.LongSparseArray;
+
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.objects.QueryResult;
@@ -13,12 +15,14 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.layers.vector.VectorLayer;
+import org.oscim.layers.vector.geometries.Drawable;
 import org.oscim.layers.vector.geometries.LineDrawable;
 import org.oscim.layers.vector.geometries.PointDrawable;
 import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
 
+import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -28,6 +32,10 @@ import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
+import eu.geopaparazzi.map.layers.layerobjects.GPLineDrawable;
+import eu.geopaparazzi.map.layers.layerobjects.GPPointDrawable;
+import eu.geopaparazzi.map.layers.layerobjects.GPPolygonDrawable;
+import eu.geopaparazzi.map.layers.layerobjects.IGPDrawable;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
 import eu.geopaparazzi.map.utils.MapUtilities;
@@ -45,6 +53,8 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     private Style pointStyle = null;
     private Style lineStyle = null;
     private Style polygonStyle = null;
+
+    private LongSparseArray<IGPDrawable> drawablesMap = null;
 
     public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
@@ -77,10 +87,18 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         tableColumnInfos = db.getTableColumns(tableName);
         geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
         eu.geopaparazzi.library.style.Style gpStyle = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
-        List<Geometry> geometries = SpatialiteConnectionsHandler.INSTANCE.getGeometries(dbPath, tableName, gpStyle);
 
+        List<Feature> features = getFeatures(null);
+        drawablesMap = new LongSparseArray<>(features.size());
 
-        for (Geometry geom : geometries) {
+        for (Feature feature : features) {
+            Geometry geom = feature.getDefaultGeometry();
+            Object idFieldValue = feature.getIdFieldValue();
+            long id = -1;
+            if (idFieldValue instanceof Number) {
+                id = ((Number) idFieldValue).longValue();
+            }
+
             eu.geopaparazzi.library.style.Style themeStyle = null;
             if (gpStyle.themeField != null) {
                 String userData = geom.getUserData().toString();
@@ -90,6 +108,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                 themeStyle = gpStyle.themeMap.get(themeFieldValue);
             }
 
+            IGPDrawable drawable = null;
             if (geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT) {
                 if (pointStyle == null) {
                     pointStyle = Style.builder()
@@ -113,9 +132,11 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                                     .fillColor(ColorUtilities.toColor(themeStyle.fillcolor))
                                     .fillAlpha(themeStyle.fillalpha)
                                     .build();
-                            add(new PointDrawable(c.y, c.x, pointThemeStyle));
+                            drawable = new GPPointDrawable(c.y, c.x, pointThemeStyle, id);
+                            add((Drawable) drawable);
                         } else {
-                            add(new PointDrawable(c.y, c.x, pointStyle));
+                            drawable = new GPPointDrawable(c.y, c.x, pointStyle, id);
+                            add((Drawable) drawable);
                         }
                     }
                 }
@@ -137,9 +158,11 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                                     .strokeWidth(themeStyle.width)
                                     .cap(Paint.Cap.ROUND)
                                     .build();
-                            add(new LineDrawable(geometryN, lineThemeStyle));
+                            drawable = new GPLineDrawable(geometryN, lineThemeStyle, id);
+                            add((Drawable) drawable);
                         } else {
-                            add(new LineDrawable(geometryN, lineStyle));
+                            drawable = new GPLineDrawable(geometryN, lineStyle, id);
+                            add((Drawable) drawable);
                         }
                     }
                 }
@@ -165,12 +188,17 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
                                     .fillAlpha(themeStyle.fillalpha)
                                     .cap(Paint.Cap.ROUND)
                                     .build();
-                            add(new PolygonDrawable(geometryN, polygonThemeStyle));
+                            drawable = new GPPolygonDrawable(geometryN, polygonThemeStyle, id);
+                            add((Drawable) drawable);
                         } else {
-                            add(new PolygonDrawable(geometryN, polygonStyle));
+                            drawable = new GPPolygonDrawable(geometryN, polygonStyle, id);
+                            add((Drawable) drawable);
                         }
                     }
                 }
+            }
+            if (drawable != null) {
+                drawablesMap.put(id, drawable);
             }
         }
         update();
@@ -429,5 +457,44 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         sbIn.append(feature.getIdFieldValue());
         String insertQuery = sbIn.toString();
         db.executeInsertUpdateDeleteSql(insertQuery);
+    }
+
+    public void deleteFeatures(List<Feature> features) throws Exception {
+        if (features.size() == 0) return;
+        Feature firstFeature = features.get(0);
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(firstFeature.getDatabasePath());
+        String tableName = firstFeature.getTableName();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("delete from \"").append(tableName);
+        sbIn.append("\" where ");
+
+        int idIndex = firstFeature.getIdIndex();
+        String indexName = firstFeature.getAttributeNames().get(idIndex);
+
+        StringBuilder sb = new StringBuilder();
+        for (Feature feature : features) {
+            sb.append(" OR ");
+            sb.append(indexName).append("=");
+            sb.append(feature.getAttributeValues().get(idIndex));
+        }
+        String valuesPart = sb.substring(4);
+
+        sbIn.append(valuesPart);
+
+        String updateQuery = sbIn.toString();
+        db.executeInsertUpdateDeleteSql(updateQuery);
+
+        for (Feature feature : features) {
+            Object idFieldValue = feature.getIdFieldValue();
+            long id = -1;
+            if (idFieldValue instanceof Number) {
+                id = ((Number) idFieldValue).longValue();
+            }
+            IGPDrawable drawable = drawablesMap.get(id);
+            if (drawable != null)
+                remove((Drawable) drawable);
+        }
+        update();
     }
 }

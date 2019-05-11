@@ -37,6 +37,7 @@ import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.ISpatialTableNames;
+import org.hortonmachine.dbs.datatypes.EDataType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -442,14 +443,24 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                         List<String> tableNamesTmp = tablesMap.get(ISpatialTableNames.USERDATA);
                                         if (tableNamesTmp != null) {
                                             tableNamesTmp.removeIf(tn -> {
+                                                // also remove tables that do not have a numeric primary key
                                                 try {
                                                     GeometryColumn gc = db.getGeometryColumnsForTable(tn);
                                                     if (gc == null)
                                                         return true;
+                                                    List<String[]> tableColumns = db.getTableColumns(tn);
+                                                    for (String[] tableColumn : tableColumns) {
+                                                        if (tableColumn[2].equals("1")) {
+                                                            EDataType type = EDataType.getType4Name(tableColumn[1]);
+                                                            if (type == EDataType.INTEGER || type == EDataType.LONG) {
+                                                                return false;
+                                                            }
+                                                        }
+                                                    }
+                                                    return true;
                                                 } catch (Exception e) {
                                                     return true;
                                                 }
-                                                return false;
                                             });
                                             tableNames = tableNamesTmp;
                                         }
