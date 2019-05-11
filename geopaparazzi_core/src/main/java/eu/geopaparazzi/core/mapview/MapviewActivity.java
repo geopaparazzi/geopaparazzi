@@ -64,16 +64,17 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.maptools.tools.PolygonMainEditingToolGroup;
-import eu.geopaparazzi.map.features.EditManager;
-import eu.geopaparazzi.map.features.EditingView;
-import eu.geopaparazzi.map.features.Tool;
-import eu.geopaparazzi.map.features.ToolGroup;
-import eu.geopaparazzi.core.maptools.FeatureUtilities;
-import eu.geopaparazzi.core.maptools.MapTool;
+import eu.geopaparazzi.map.features.tools.impl.PolygonMainEditingToolGroup;
+import eu.geopaparazzi.map.MapsSupportService;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.editing.EditingView;
+import eu.geopaparazzi.map.features.tools.interfaces.Tool;
+import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
+import eu.geopaparazzi.map.features.FeatureUtilities;
+import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
-import eu.geopaparazzi.core.maptools.tools.NoEditableLayerToolGroup;
-import eu.geopaparazzi.core.maptools.tools.OnSelectionToolGroup;
+import eu.geopaparazzi.map.features.tools.impl.NoEditableLayerToolGroup;
+import eu.geopaparazzi.map.features.tools.impl.OnSelectionToolGroup;
 import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
@@ -108,6 +109,7 @@ import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
+import eu.geopaparazzi.map.utils.MapUtilities;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
@@ -124,8 +126,6 @@ import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 public class MapviewActivity extends AppCompatActivity implements IActivitySupporter, OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
-    public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;
-
     private final int MENU_GPSDATA = 1;
     private final int MENU_GO_TO = 2;
     private final int MENU_COMPASS_ID = 3;
@@ -623,7 +623,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 }
                 break;
             }
-            case (SELECTED_FEATURES_UPDATED_RETURN_CODE):
+            case (MapUtilities.SELECTED_FEATURES_UPDATED_RETURN_CODE):
                 if (resultCode == Activity.RESULT_OK) {
                     ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
                     if (activeToolGroup != null) {

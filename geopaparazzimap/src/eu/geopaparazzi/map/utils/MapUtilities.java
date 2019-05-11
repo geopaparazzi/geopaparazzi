@@ -22,6 +22,8 @@ import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_PR
 
 public class MapUtilities {
 
+    public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;
+
 
     public static List<Coordinate> getGpslogGeoPoints(SQLiteDatabase sqliteDatabase, long logId, int pointsNum)
             throws IOException {

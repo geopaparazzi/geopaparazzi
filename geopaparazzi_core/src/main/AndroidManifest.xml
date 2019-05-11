@@ -165,7 +165,7 @@
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
-            android:name="eu.geopaparazzi.core.maptools.FeaturePagerActivity"
+            android:name="eu.geopaparazzi.map.gui.FeaturePagerActivity"
             android:label="@string/features"
             android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -346,7 +346,7 @@
             android:exported="true" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
-        <service android:name="eu.geopaparazzi.core.mapview.MapsSupportService" />
+        <service android:name="eu.geopaparazzi.core.eu.geopaparazzi.map.MapsSupportService" />
 
 
 

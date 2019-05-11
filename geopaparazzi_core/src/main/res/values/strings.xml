@@ -225,7 +225,6 @@
     <!-- ellipsis character instead of three dots -->
     <string name="project">Project</string>
     <string name="gps_status">GPS Status</string>
-    <string name="no_queriable_layer_is_visible">No queriable layer is visible.</string>
     <string name="set_path_manually">Set manually the path (if set, it has precedence over combobox)</string>
     <string name="choose_from_suggested">or choose from suggested</string>
     <string name="reset_style_tables">Reset style tables</string>
@@ -262,23 +261,8 @@
     <string name="creation_date">Creation date</string>
     <string name="creation_user">Project creation user</string>
     <string name="last_modification_user">Last project modification user</string>
-    <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
     <string name="reset_string">reset</string>
     <string name="avaiable_layers">Available layers</string>
-    <string name="geometry_saved">Geometry saved.</string>
-    <string name="unique_constraint_violation_message">A unique constraint violation occurred. Databases with unique constraints are not supported.</string>
-    <string name="selfintersection_message">The added vertex has created a selfintersection of the polygon and your layer doesn\'t support it.</string>
-    <string name="no_gps_coordinate_acquired_yet">No GPS coordinate has been acquired yet.</string>
-    <string name="info_uppercase">INFO</string>
-    <string name="extracting_info">Extracting information...</string>
-    <string name="geom_incompatible_with_layer">The resulting geometry is not compatible with the destination layer.</string>
-    <string name="selected_features_in_layer">Selected %1$d features with %2$d polygons.</string>
-    <string name="selected_line_features_in_layer">Selected %1$d features with %2$d lines.</string>
-    <string name="selected_point_features_in_layer">Selected %1$d features with %2$d points.</string>
-    <string name="no_compatible_layers_found">No compatible layers found</string>
-    <string name="copied_features_to_layer">Copied %1$d geometries to layer: %2$s</string>
-    <string name="area_colon">Area: </string>
-    <string name="length_colon">Length: </string>
     <string name="save_uppercase">SAVE</string>
     <string name="saving_to_database">Saving data to database...</string>
     <string name="downloading">Downloading...</string>

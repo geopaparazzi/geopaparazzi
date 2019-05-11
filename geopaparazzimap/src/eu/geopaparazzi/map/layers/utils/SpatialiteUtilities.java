@@ -519,12 +519,19 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
         List<Object> attributeValues = feature.getAttributeValues();
         List<String> attributeTypes = feature.getAttributeTypes();
 
+        int geometryIndex = feature.getGeometryIndex();
+        int idIndex = feature.getIdIndex();
+
         StringBuilder sbIn = new StringBuilder();
         sbIn.append("update \"").append(tableName);
         sbIn.append("\" set ");
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < attributeNames.size(); i++) {
+            if (i == idIndex || i == geometryIndex) {
+                continue;
+            }
+
             String fieldName = attributeNames.get(i);
             Object value = attributeValues.get(i);
             String type = attributeTypes.get(i);
@@ -546,8 +553,8 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
         }
         String valuesPart = sb.substring(3);
 
-        String pkName = feature.getAttributeNames().get(feature.getIdIndex());
-        String pkValue = feature.getAttributeValues().get(feature.getIdIndex()).toString();
+        String pkName = feature.getAttributeNames().get(idIndex);
+        String pkValue = feature.getAttributeValues().get(idIndex).toString();
         sbIn.append(" ");
         sbIn.append(valuesPart);
         sbIn.append(" where ");

@@ -117,6 +117,8 @@
     <string name="unauthorized_api_key">Unauthorized access. Check your API-key.</string>
     <string name="sd_card_foldername">External SD Card</string>
     <string name="internal_card_foldername">Internal Storage</string>
+    <string name="area_colon">Area: </string>
+    <string name="length_colon">Length: </string>
 
     <string name="fill_and_stroke_color_title">Fill and Stroke color</string>
     <string name="fill_color_title">Fill color</string>
@@ -178,5 +180,22 @@
     <string name="upload_Error">An error occurred: </string>
     <string name="upload_NonOK">Server returned non-OK status: </string>
     <string name="upload_Uploaded">File uploaded.</string>
+
+    <string name="info_uppercase">INFO</string>
+    <string name="extracting_info">Extracting information...</string>
+    <string name="no_queriable_layer_is_visible">No queriable layer is visible.</string>
+    <string name="geometry_saved">Geometry saved.</string>
+    <string name="unique_constraint_violation_message">A unique constraint violation occurred. Databases with unique constraints are not supported.</string>
+    <string name="selfintersection_message">The added vertex has created a selfintersection of the polygon and your layer doesn\'t support it.</string>
+    <string name="no_gps_coordinate_acquired_yet">No GPS coordinate has been acquired yet.</string>
+    <string name="geom_incompatible_with_layer">The resulting geometry is not compatible with the destination layer.</string>
+    <string name="selected_features_in_layer">Selected %1$d features with %2$d polygons.</string>
+    <string name="selected_line_features_in_layer">Selected %1$d features with %2$d lines.</string>
+    <string name="selected_point_features_in_layer">Selected %1$d features with %2$d points.</string>
+    <string name="no_compatible_layers_found">No compatible layers found</string>
+    <string name="copied_features_to_layer">Copied %1$d geometries to layer: %2$s</string>
+    <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
+
+
 
 </resources>

@@ -37,15 +37,15 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.map.features.EditManager;
-import eu.geopaparazzi.map.features.EditingView;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.editing.EditingView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.objects.GpsLogInfo;
-import eu.geopaparazzi.core.maptools.MapTool;
+import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
