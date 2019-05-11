@@ -65,6 +65,7 @@ import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.map.features.tools.impl.LineMainEditingToolGroup;
+import eu.geopaparazzi.map.features.tools.impl.PointMainEditingToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.PolygonMainEditingToolGroup;
 import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.features.editing.EditManager;
@@ -278,7 +279,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
-        toggleEditingButton.setOnLongClickListener(this);
 
         if (mapCenterLocation != null)
             setNewCenterAtZoom(mapCenterLocation[0], mapCenterLocation[1], (int) mapCenterLocation[2]);
@@ -805,11 +805,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     public boolean onLongClick(View v) {
         int i = v.getId();
-        if (i == R.id.toggleEditingButton) {
-//            Intent editableLayersIntent = new Intent(MapviewActivity.this, EditableLayersListActivity.class);
-//            startActivity(editableLayersIntent);
-            return true;
-        } else if (i == R.id.addnotebytagbutton) {
+        if (i == R.id.addnotebytagbutton) {
             Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
             intent.putExtra(LibraryConstants.PREFS_KEY_MAP_ZOOM, true);
             startActivityForResult(intent, ZOOM_RETURN_CODE);
@@ -1022,8 +1018,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 activeToolGroup = new PolygonMainEditingToolGroup(mapView);
             else if (editLayer.getGeometryType().isLine())
                 activeToolGroup = new LineMainEditingToolGroup(mapView);
-//TODO            else if (editLayer.isPoint())
-//                activeToolGroup = new PointMainEditingToolGroup(mapView);
+            else if (editLayer.getGeometryType().isPoint())
+                activeToolGroup = new PointMainEditingToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
         } else {
