@@ -538,13 +538,13 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
             boolean ignore = doIgnoreField(fieldName);
             if (!ignore) {
                 EDataType dataType = EDataType.getType4Name(type);
-                String valueStr = null;
+                String valueStr = "";
                 if (value != null)
                     valueStr = value.toString();
                 if (dataType == EDataType.TEXT || dataType == EDataType.DATE) {
                     valueStr = escapeString(valueStr);
                     sb.append(" , ").append(fieldName).append("='").append(valueStr).append("'");
-                } else if (valueStr == null || "".equals(valueStr)) {
+                } else if ("".equals(valueStr)) {
                     sb.append(" , ").append(fieldName).append("=NULL");
                 } else {
                     sb.append(" , ").append(fieldName).append("=").append(valueStr);

@@ -272,12 +272,6 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
                     }
                     GPDialogs.toast(commitButton.getContext(), commitButton.getContext().getString(R.string.geometry_saved), Toast.LENGTH_SHORT);
                     coordinatesList.clear();
-
-                    // reset mapview
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MapsSupportService.class);
-                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                    context.startService(intent);
                 } catch (Exception e) {
                     if (e.getMessage().contains("UNIQUE constraint failed")) {
                         GPDialogs.warningDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);

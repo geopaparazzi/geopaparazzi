@@ -42,6 +42,10 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
     private GeometryColumn gCol;
     private List<String[]> tableColumnInfos;
 
+    private Style pointStyle = null;
+    private Style lineStyle = null;
+    private Style polygonStyle = null;
+
     public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
         this.mapView = mapView;
@@ -75,9 +79,6 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         eu.geopaparazzi.library.style.Style gpStyle = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
         List<Geometry> geometries = SpatialiteConnectionsHandler.INSTANCE.getGeometries(dbPath, tableName, gpStyle);
 
-        Style pointStyle = null;
-        Style lineStyle = null;
-        Style polygonStyle = null;
 
         for (Geometry geom : geometries) {
             eu.geopaparazzi.library.style.Style themeStyle = null;
@@ -349,6 +350,32 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         String insertQuery = sbIn.toString();
 
         db.executeInsertUpdateDeleteSql(insertQuery);
+
+
+        /*
+         * if everything went well, add also geometry to the layer
+         */
+        if (geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT) {
+            int numGeometries = geometry.getNumGeometries();
+            for (int i = 0; i < numGeometries; i++) {
+                Geometry geometryN = geometry.getGeometryN(i);
+                Coordinate c = geometryN.getCoordinate();
+                add(new PointDrawable(c.y, c.x, pointStyle));
+            }
+        } else if (geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING) {
+            int numGeometries = geometry.getNumGeometries();
+            for (int i = 0; i < numGeometries; i++) {
+                Geometry geometryN = geometry.getGeometryN(i);
+                add(new LineDrawable(geometryN, lineStyle));
+            }
+        } else if (geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON) {
+            int numGeometries = geometry.getNumGeometries();
+            for (int i = 0; i < numGeometries; i++) {
+                Geometry geometryN = geometry.getGeometryN(i);
+                add(new PolygonDrawable(geometryN, polygonStyle));
+            }
+        }
+        update();
     }
 
     @Override
