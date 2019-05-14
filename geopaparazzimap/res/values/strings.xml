@@ -195,6 +195,13 @@
     <string name="no_compatible_layers_found">No compatible layers found</string>
     <string name="copied_features_to_layer">Copied %1$d geometries to layer: %2$s</string>
     <string name="preview_mode_save_warning">Preview mode. Once the save button is tapped, the geometry will be saved into the database</string>
+    <string name="Document_title">Document#</string>
+    <plurals name="n_images">
+        <item quantity="one">1 document</item>
+        <item quantity="other">%d documents</item>
+    </plurals>
+    <string name="confirm_remove_image" >Remove image?</string>
+
 
 
 

@@ -76,9 +76,12 @@ public class Feature implements Parcelable {
         return attributeNames.get(idIndex);
     }
 
-    public Object getIdFieldValue() {
-        if (idIndex == -1) return null;
-        return attributeValues.get(idIndex);
+    public long getIdFieldValue() {
+        Object o = attributeValues.get(idIndex);
+        if (o instanceof Number) {
+            return ((Number) o).longValue();
+        }
+        return -1;
     }
 
 

@@ -382,17 +382,12 @@
     <string name="browse_documents">Browse documents</string>
     <string name="new_picture">New picture</string>
     <string name="Documents">Documents</string>
-    <string name="Document_title">Document#</string>
     <string name="Images">Images</string>
     <string name="confirm_remove_document">Do you really want to remove the document?</string>
     <string name="upload_to_cloud_prompt">Upload the current project to the cloud?</string>
     <string name="data_to_pdf_label">Project Forms to Pdf</string>
     <string name="exporting_data_to_pdf">Exporting form data to PDF</string>
 
-    <plurals name="n_images">
-        <item quantity="one">1 document</item>
-        <item quantity="other">%d documents</item>
-    </plurals>
 
     <!-- geoss2go profiles -->
 
@@ -423,7 +418,6 @@
     <string name="name_of_the_new_profile">Name of the new profile</string>
     <string name="description_of_the_new_profile">Description of the new profile</string>
     <string name="browse_images" >Browse images</string>
-    <string name="confirm_remove_image" >Remove image?</string>
     <string name="return_to_view_after_note">Return to view after note</string>
 
 

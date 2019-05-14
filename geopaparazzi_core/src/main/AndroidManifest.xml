@@ -151,30 +151,11 @@
         </activity>
 
         <activity
-            android:name="eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity"
-            android:label="@string/basemaps"
-            android:parentActivityName="eu.geopaparazzi.core.GeopaparazziCoreActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.core.GeopaparazziCoreActivity" />
-        </activity>
-
-        <activity
             android:name="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar" />
 
         <activity
             android:name="eu.geopaparazzi.map.gui.FeaturePagerActivity"
-            android:label="@string/features"
-            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
-        </activity>
-        <activity
-            android:name="eu.geopaparazzi.core.maptools.CopyToLayersListActivity"
             android:label="@string/features"
             android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
@@ -251,17 +232,8 @@
             android:name="eu.geopaparazzi.library.camera.CameraNoteActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.camera.CameraDbActivity"
+            android:name="eu.geopaparazzi.map.gui.CameraDbActivity"
             android:configChanges="orientation|screenSize" />
-        <activity
-            android:name="eu.geopaparazzi.spatialite.database.spatial.activities.databasesview.SpatialiteDatabasesTreeListActivity"
-            android:label="@string/spatialite_databases"
-            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
-        </activity>
 
         <activity
             android:name="eu.geopaparazzi.library.core.activities.GeocodeActivity"
@@ -276,16 +248,6 @@
         <activity
             android:name="eu.geopaparazzi.core.ui.activities.ImportMapsforgeActivity"
             android:label="@string/extract_mapsforge_label"
-            android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
-            android:theme="@style/GeopapTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.geopaparazzi.core.mapview.MapviewActivity" />
-        </activity>
-
-        <activity
-            android:name=".maptools.EditableLayersListActivity"
-            android:label="@string/editable_layers"
             android:parentActivityName="eu.geopaparazzi.core.mapview.MapviewActivity"
             android:theme="@style/GeopapTheme.NoActionBar">
             <meta-data
@@ -319,7 +281,7 @@
         </activity>
 
         <activity
-            android:name="eu.geopaparazzi.core.maptools.resourceviews.ResourceBrowser"
+            android:name="eu.geopaparazzi.map.gui.ResourceBrowserActivity"
             android:label="@string/Images"
             android:theme="@style/GeopapTheme.NoActionBar"/>
 
@@ -346,7 +308,7 @@
             android:exported="true" />
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" />
-        <service android:name="eu.geopaparazzi.core.eu.geopaparazzi.map.MapsSupportService" />
+        <service android:name="eu.geopaparazzi.map.MapsSupportService" />
 
 
 

@@ -34,6 +34,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -43,9 +44,13 @@ import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.features.FeatureUtilities;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.tools.impl.LineOnSelectionToolGroup;
+import eu.geopaparazzi.map.features.tools.impl.PointOnSelectionToolGroup;
+import eu.geopaparazzi.map.features.tools.impl.PolygonOnSelectionToolGroup;
+import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
-import jsqlite.Exception;
 
 /**
  * The activity to page features.
@@ -110,14 +115,13 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
         if (item.getItemId() == R.id.action_goto) {
             gotoFeature();
         } else if (item.getItemId() == R.id.action_image_browser) {
-//            Intent intent = new Intent(this, ResourceBrowser.class);
-//            String tableName = selectedFeature.getTableName();
-//            SpatialVectorTable table = null;// TODO SpatialiteSourcesManager.INSTANCE.getTableFromFeature(selectedFeature);
-//            intent.putExtra(TABLENAME_EXTRA_MESSAGE, tableName);
-//            intent.putExtra(DBPATH_EXTRA_MESSAGE, selectedFeature.getDatabasePath());
-//            intent.putExtra(ROWID_EXTRA_MESSAGE, selectedFeature.getId());
-//            intent.putExtra(FeatureUtilities.KEY_READONLY, isReadOnly);
-//            startActivity(intent);
+            Intent intent = new Intent(this, ResourceBrowserActivity.class);
+            String tableName = selectedFeature.getTableName();
+            intent.putExtra(TABLENAME_EXTRA_MESSAGE, tableName);
+            intent.putExtra(DBPATH_EXTRA_MESSAGE, selectedFeature.getDatabasePath());
+            intent.putExtra(ROWID_EXTRA_MESSAGE, selectedFeature.getIdFieldValue());
+            intent.putExtra(FeatureUtilities.KEY_READONLY, isReadOnly);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.action_save) {
             int dirtyCount = 0;
             for (Feature feature : featuresList) {
@@ -136,7 +140,7 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
                 protected String doBackgroundWork() {
                     try {
                         saveData();
-                    } catch (Exception e) {
+                    } catch (java.lang.Exception e) {
                         ex = e;
                     }
                     return "";
@@ -168,17 +172,12 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
         super.onDestroy();
     }
 
-    private void saveData() throws Exception {
-        try {
-            for (Feature feature : featuresList) {
-                if (feature.isDirty()) {
-                    ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
-                    SpatialiteUtilities.updateFeatureAlphanumericAttributes(db, feature);
-                }
+    private void saveData() throws java.lang.Exception {
+        for (Feature feature : featuresList) {
+            if (feature.isDirty()) {
+                ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
+                SpatialiteUtilities.updateFeatureAlphanumericAttributes(db, feature);
             }
-        } catch (java.lang.Exception e) {
-            GPLog.error(this, null, e);
-            GPDialogs.errorDialog(this, e, null);
         }
     }
 
@@ -193,18 +192,17 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
             intent.putExtra(LibraryConstants.LATITUDE, centroid.y);
             this.startService(intent);
 
-            // FIXME
-//            ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-//            if (activeToolGroup instanceof PolygonOnSelectionToolGroup) {
-//                PolygonOnSelectionToolGroup toolGroup = (PolygonOnSelectionToolGroup) activeToolGroup;
-//                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
-//            } else if (activeToolGroup instanceof LineOnSelectionToolGroup) {
-//                LineOnSelectionToolGroup toolGroup = (LineOnSelectionToolGroup) activeToolGroup;
-//                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
-//            } else if (activeToolGroup instanceof PointOnSelectionToolGroup) {
-//                PointOnSelectionToolGroup toolGroup = (PointOnSelectionToolGroup) activeToolGroup;
-//                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
-//            }
+            ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+            if (activeToolGroup instanceof PolygonOnSelectionToolGroup) {
+                PolygonOnSelectionToolGroup toolGroup = (PolygonOnSelectionToolGroup) activeToolGroup;
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
+            } else if (activeToolGroup instanceof LineOnSelectionToolGroup) {
+                LineOnSelectionToolGroup toolGroup = (LineOnSelectionToolGroup) activeToolGroup;
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
+            } else if (activeToolGroup instanceof PointOnSelectionToolGroup) {
+                PointOnSelectionToolGroup toolGroup = (PointOnSelectionToolGroup) activeToolGroup;
+                toolGroup.setSelectedFeatures(Collections.singletonList(selectedFeature));
+            }
 
             finish();
         } catch (java.lang.Exception e) {
