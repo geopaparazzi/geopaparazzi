@@ -17,6 +17,8 @@
 package eu.geopaparazzi.map.gui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,10 +37,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
@@ -46,6 +50,7 @@ import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeObject;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
+import eu.geopaparazzi.map.utils.MapUtilities;
 
 class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.ViewHolder> {
 
@@ -90,6 +95,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
             String setStyle = "Set Style";
             String enableEditing = "Enable editing";
             String disableEditing = "Disable editing";
+            String setTheme = "Select theme";
 
             List<MapLayerItem> itemList = getItemList();
             MapLayerItem selMapLayerItem_ = null;
@@ -111,6 +117,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             case MAPSFORGE: {
                                 popup.getMenu().add(toggle3d);
                                 popup.getMenu().add(toggleLabels);
+                                popup.getMenu().add(setTheme);
                                 break;
                             }
                             case MBTILES: {
@@ -243,6 +250,29 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                             }
                             SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
                             colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");
+                        } else if (actionName.equals(setTheme)) {
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+                            String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());
+                            GPMapThemes[] themes = GPMapThemes.values();
+                            String[] themeNames = new String[themes.length];
+                            boolean[] selThemeNames = new boolean[themes.length];
+                            for (int i = 0; i < themeNames.length; i++) {
+                                themeNames[i] = themes[i].getThemeLabel();
+                                if (themeNames[i].equals(themeLabel)) {
+                                    selThemeNames[i] = true;
+                                }
+                            }
+                            GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), themeNames, selThemeNames, () -> {
+                                for (int i = 0; i < selThemeNames.length; i++) {
+                                    if (selThemeNames[i]) {
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.fromLabel(themeNames[i]).getThemeLabel());
+                                        editor.apply();
+                                        break;
+                                    }
+                                }
+                            });
+
                         } else if (actionName.equals(disableEditing)) {
                             List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
                             JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);

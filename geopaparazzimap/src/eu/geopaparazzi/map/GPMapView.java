@@ -13,6 +13,7 @@ import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
 import org.oscim.layers.Layer;
 import org.oscim.map.Layers;
+import org.oscim.renderer.MapRenderer;
 import org.oscim.theme.VtmThemes;
 
 import java.io.File;
@@ -52,6 +53,7 @@ public class GPMapView extends org.oscim.android.MapView {
     public GPMapView(Context context) {
         super(context);
 
+        MapRenderer.setBackgroundColor(0x5d9d7680);
         peferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         map().events.bind((e, mapPosition) -> {

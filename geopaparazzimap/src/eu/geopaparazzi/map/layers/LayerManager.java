@@ -42,6 +42,7 @@ import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
+import eu.geopaparazzi.map.utils.MapUtilities;
 
 
 public enum LayerManager {
@@ -423,7 +424,9 @@ public enum LayerManager {
             }
             int count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
             if (count > 0) {
-                mapView.setTheme(GPMapThemes.DEFAULT);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+                String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());
+                mapView.setTheme(GPMapThemes.fromLabel(themeLabel));
             }
         }
     }
