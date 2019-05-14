@@ -56,20 +56,16 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         permissionHelper = new PermissionWriteStorage();
         permissionHelper.add(new PermissionFineLocation()).add(new PermissionForegroundService());
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            // PERMISSIONS START
-            if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
-                completeInit();
-            } else {
-                if (permissionHelper.hasPermission(this)) {
-                    permissionHelper = permissionHelper.getNextWithoutPermission(this);
-                }
-                permissionHelper.requestPermission(this);
-            }
-            // PERMISSIONS STOP
-        } else {
+        // PERMISSIONS START
+        if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
             completeInit();
+        } else {
+            if (permissionHelper.hasPermission(this)) {
+                permissionHelper = permissionHelper.getNextWithoutPermission(this);
+            }
+            permissionHelper.requestPermission(this);
         }
+        // PERMISSIONS STOP
 
         setContentView(R.layout.activity_geopaparazzi);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -179,19 +175,10 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         checkAvailableProfiles();
     }
 
-    // called after onCreate completes execution
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button
-        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

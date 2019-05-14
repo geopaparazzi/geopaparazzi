@@ -180,24 +180,27 @@ public class GPMapView extends org.oscim.android.MapView {
                 positionLayer.setGpsStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastGpsLoggingStatus);
             }
         }
-        boolean centerOnGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-        if (centerOnGps) {
-            GPMapPosition mapPosition = getMapPosition();
-            mapPosition.setPosition(lastGpsPosition[1], lastGpsPosition[0]);
-            setMapPosition(mapPosition);
-            saveCenterPref();
-        }
-        boolean rotateWithGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
-        if (rotateWithGps && lastGpsPositionExtras != null) {
-            float bearing = lastGpsPositionExtras[2];
-            if (bearing == 0 && lastUsedBearing != -1) {
-                bearing = lastUsedBearing;
-            } else {
-                lastUsedBearing = bearing;
-            }
 
-            float mapBearing = 360f - bearing;
-            map().viewport().setRotation(mapBearing);
+        if (isRotationGestureEnabled()) {
+            boolean centerOnGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+            if (centerOnGps) {
+                GPMapPosition mapPosition = getMapPosition();
+                mapPosition.setPosition(lastGpsPosition[1], lastGpsPosition[0]);
+                setMapPosition(mapPosition);
+                saveCenterPref();
+            }
+            boolean rotateWithGps = peferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
+            if (rotateWithGps && lastGpsPositionExtras != null) {
+                float bearing = lastGpsPositionExtras[2];
+                if (bearing == 0 && lastUsedBearing != -1) {
+                    bearing = lastUsedBearing;
+                } else {
+                    lastUsedBearing = bearing;
+                }
+
+                float mapBearing = 360f - bearing;
+                map().viewport().setRotation(mapBearing);
+            }
         }
 
     }
@@ -258,5 +261,25 @@ public class GPMapView extends org.oscim.android.MapView {
 
     public void setEditingView(View editingView) {
         this.editingView = editingView;
+    }
+
+    public void enableRotationGesture(boolean enable) {
+        map().getEventLayer().enableRotation(enable);
+    }
+
+    public boolean isRotationGestureEnabled() {
+        return map().getEventLayer().rotationEnabled();
+    }
+
+    public void enableTiltGesture(boolean enable) {
+        map().getEventLayer().enableTilt(enable);
+    }
+
+    public void setRotation(double degrees) {
+        map().viewport().setRotation(degrees);
+    }
+
+    public void setTilt(double tilt) {
+        map().viewport().setTilt((float) tilt);
     }
 }

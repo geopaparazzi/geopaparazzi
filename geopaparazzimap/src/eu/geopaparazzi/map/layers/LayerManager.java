@@ -70,17 +70,6 @@ public enum LayerManager {
                 userLayersDefinitions.add(jsonObject);
             }
         }
-//        if (userLayersDefinitions.size() == 0) {
-//            // add a default
-//            JSONObject jo = new JSONObject();
-//            jo.put(IGpLayer.LAYERTYPE_TAG, VectorTilesServiceLayer.class.getCanonicalName());
-//            jo.put(IGpLayer.LAYERNAME_TAG, "OpenScienceMap VTM");
-//            jo.put(IGpLayer.LAYERURL_TAG, "http://opensciencemap.org/tiles/vtm");
-//            jo.put(IGpLayer.LAYERPATH_TAG, "/{Z}/{X}/{Y}.vtm");
-//            jo.put(IGpLayer.LAYERENABLED_TAG, true);
-//            userLayersDefinitions.add(jo);
-//        }
-
 
         String loadedSystemMapsJson = preferences.getString(GP_LOADED_SYSTEMMAPS_KEY, "{}");
         root = new JSONObject(loadedSystemMapsJson);

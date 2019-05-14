@@ -74,10 +74,8 @@ import eu.geopaparazzi.map.features.tools.interfaces.Tool;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
 import eu.geopaparazzi.map.features.FeatureUtilities;
 import eu.geopaparazzi.map.features.tools.MapTool;
-import eu.geopaparazzi.core.maptools.tools.GpsLogInfoTool;
 import eu.geopaparazzi.map.features.tools.impl.NoEditableLayerToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.OnSelectionToolGroup;
-import eu.geopaparazzi.core.maptools.tools.TapMeasureTool;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
 import eu.geopaparazzi.core.ui.activities.BookmarksListActivity;
 import eu.geopaparazzi.core.ui.activities.GpsDataListActivity;
@@ -1005,7 +1003,13 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     private void toggleEditing() {
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-        if (activeToolGroup == null) {
+        boolean isEditing = activeToolGroup != null;
+
+        mapView.enableRotationGesture(isEditing);
+        mapView.enableTiltGesture(isEditing);
+        if (isEditing) {
+            disableEditing();
+        } else {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
             if (editLayer == null) {
@@ -1021,8 +1025,9 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 activeToolGroup = new PointMainEditingToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
-        } else {
-            disableEditing();
+
+            mapView.setRotation(0);
+            mapView.setTilt(0);
         }
     }
 

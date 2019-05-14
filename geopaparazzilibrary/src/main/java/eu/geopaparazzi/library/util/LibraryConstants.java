@@ -379,4 +379,5 @@ public interface LibraryConstants {
     String PREFS_KEY_ROTATE_MAP_WITH_GPS = "rotate_map_with_gps";
     String PREFS_KEY_SHOW_GPS_INFO = "show_gps_info";
     String PREFS_KEY_IGNORE_GPS_ACCURACY = "ignore_gps_accuracy";
+
 }
