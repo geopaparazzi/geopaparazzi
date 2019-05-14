@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoImages;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.database.objects.Note;
@@ -426,10 +427,18 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     }
 
     @Override
-    public void addNote(double lon, double lat, double elev, long timestamp, String note) {
+    public void addNote(double lon, double lat, double elev, long timestamp, String note, boolean alsoAsBookmark) {
         try {
-            DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "",
-                    null);
+            DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "", null);
+            if (alsoAsBookmark) {
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                double[] mapCenterFromPreferences = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+                int zoom = 16;
+                if (mapCenterFromPreferences != null) {
+                    zoom = (int) mapCenterFromPreferences[2];
+                }
+                DaoBookmarks.addBookmark(lon, lat, note, zoom);
+            }
             boolean returnToViewAfterNote = returnToViewAfterNoteCheckBox.isChecked();
             if (!returnToViewAfterNote) {
                 finish();

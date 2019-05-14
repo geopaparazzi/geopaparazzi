@@ -108,7 +108,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName()).append(" REAL NOT NULL, ");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName()).append(" REAL NOT NULL,");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(GpsLogsDataTableFields.COLUMN_LOGID.getFieldName()).append(" INTEGER NOT NULL ");
         sB.append("CONSTRAINT ");
         sB.append(GpsLogsDataTableFields.COLUMN_LOGID.getFieldName());

@@ -664,8 +664,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                         theTextToRunOn = proposedName;
                     }
                     int zoom = mapPosition.getZoomLevel();
-                    double[] nswe = getMapWorldBounds();
-                    DaoBookmarks.addBookmark(centerLon, centerLat, theTextToRunOn, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
+                    DaoBookmarks.addBookmark(centerLon, centerLat, theTextToRunOn, zoom);
                     mapView.reloadLayer(BookmarkLayer.class);
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);

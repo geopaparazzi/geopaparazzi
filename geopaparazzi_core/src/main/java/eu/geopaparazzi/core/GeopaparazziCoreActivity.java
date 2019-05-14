@@ -124,7 +124,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                     public void run() {
                         GeopaparazziCoreActivity activity = GeopaparazziCoreActivity.this;
                         try {
-                            DaoBookmarks.addBookmark(simplePosition.longitude, simplePosition.latitude, simplePosition.text, simplePosition.zoomLevel, -1, -1, -1, -1);
+                            DaoBookmarks.addBookmark(simplePosition.longitude, simplePosition.latitude, simplePosition.text, simplePosition.zoomLevel);
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                             PositionUtilities.putMapCenterInPreferences(preferences, simplePosition.longitude, simplePosition.latitude, 16);
                             Intent mapIntent = new Intent(activity, MapviewActivity.class);

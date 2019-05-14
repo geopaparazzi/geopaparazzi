@@ -9,7 +9,10 @@ import android.preference.PreferenceManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.android.canvas.AndroidGraphics;
+import org.oscim.backend.CanvasAdapter;
 import org.oscim.backend.canvas.Bitmap;
+import org.oscim.backend.canvas.Color;
+import org.oscim.backend.canvas.Paint;
 import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
@@ -94,11 +97,32 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
 
 
         for (MarkerItem mi : bookmarks) {
-            mi.setMarker(new MarkerSymbol(imagesBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
+            mi.setMarker(createAdvancedSymbol(mi, imagesBitmap));
         }
         addItems(bookmarks);
 
         update();
+    }
+
+
+    private MarkerSymbol createAdvancedSymbol(MarkerItem item, Bitmap poiBitmap) {
+        int bitmapHeight = poiBitmap.getHeight();
+        int margin = 3;
+        int dist2symbol = (int) Math.round(bitmapHeight / 2.0);
+
+        int symbolWidth = poiBitmap.getWidth();
+
+        int xSize = symbolWidth;
+        int ySize = symbolWidth + dist2symbol;
+
+        // markerCanvas, the drawing area for all: title, description and symbol
+        Bitmap markerBitmap = CanvasAdapter.newBitmap(xSize, ySize, 0);
+        org.oscim.backend.canvas.Canvas markerCanvas = CanvasAdapter.newCanvas();
+        markerCanvas.setBitmap(markerBitmap);
+
+        markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.25f), ySize * 0.5f - (symbolWidth * 0.25f));
+
+        return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
     }
 
 

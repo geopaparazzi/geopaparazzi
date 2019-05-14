@@ -71,7 +71,7 @@ public class DaoImages implements IImagesDbHelper {
         sB.append("(");
         sB.append(ImageDataTableFields.COLUMN_ID);
         sB.append(") ON DELETE CASCADE,");
-        sB.append(ImageTableFields.COLUMN_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(ImageTableFields.COLUMN_TS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(ImageTableFields.COLUMN_TEXT.getFieldName()).append(" TEXT NOT NULL,");
         sB.append(ImageTableFields.COLUMN_NOTE_ID.getFieldName()).append(" INTEGER,");
         sB.append(ImageTableFields.COLUMN_ISDIRTY.getFieldName()).append(" INTEGER NOT NULL");

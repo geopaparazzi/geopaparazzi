@@ -58,7 +58,7 @@ public class DaoNotes implements INotesDbHelper {
         sB.append(NotesTableFields.COLUMN_LON.getFieldName()).append(" REAL NOT NULL, ");
         sB.append(NotesTableFields.COLUMN_LAT.getFieldName()).append(" REAL NOT NULL,");
         sB.append(NotesTableFields.COLUMN_ALTIM.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(NotesTableFields.COLUMN_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(NotesTableFields.COLUMN_TS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(NotesTableFields.COLUMN_DESCRIPTION.getFieldName()).append(" TEXT, ");
         sB.append(NotesTableFields.COLUMN_TEXT.getFieldName()).append(" TEXT NOT NULL, ");
         sB.append(NotesTableFields.COLUMN_FORM.getFieldName()).append(" CLOB, ");
