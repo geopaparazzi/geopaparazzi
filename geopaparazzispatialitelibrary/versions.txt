@@ -1,3 +1,0 @@
-spatialite 3.0.1
-proj4 4.7.1
-geos 3.2.2
