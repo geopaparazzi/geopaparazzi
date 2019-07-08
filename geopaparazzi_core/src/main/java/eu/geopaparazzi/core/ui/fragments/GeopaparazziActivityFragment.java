@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.system.Os;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -78,6 +80,7 @@ import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -86,6 +89,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -638,6 +642,34 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             GPDialogs.warningDialog(activity, getString(R.string.sdcard_notexist), activity::finish);
             return;
         }
+
+
+        try {
+            File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
+            File projFolder = new File(applicationDir, "proj");
+            File projFolderWithDate = new File(applicationDir, "proj20190708"); // to keep versions
+            File projDbFile = new File(projFolderWithDate, "proj.db");
+            if (!projDbFile.exists()) {
+                GPLog.addLogEntry("Proj 6 folder doesn't exist: " + projFolderWithDate.getAbsolutePath());
+                File zipFile = new File(applicationDir, "proj.zip");
+                AssetManager assetManager = activity.getAssets();
+                InputStream inputStream = assetManager.open("proj.zip");
+                FileUtilities.copyFile(inputStream, new FileOutputStream(zipFile));
+                GPLog.addLogEntry("Copied proj defs from asset to: " + zipFile.getAbsolutePath());
+                try {
+                    CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), applicationDir.getAbsolutePath(), false);
+                    projFolder.renameTo(projFolderWithDate);
+                    GPLog.addLogEntry("Uncompressed and renamed to: " + projFolderWithDate.getAbsolutePath());
+                } finally {
+                    zipFile.delete();
+                }
+
+            }
+            Os.setenv("PROJ_LIB", projFolderWithDate.getAbsolutePath(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         /*
          * check the logging system
