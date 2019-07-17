@@ -296,13 +296,16 @@ public class PolygonCutExtendTool extends MapTool {
                         }
                     }
 
-                    if (startGeometry != null)
+                    if (startGeometry != null && endGeometry != null) {
                         if (!doCut) {
                             previewGeometry = startGeometry.union(endGeometry);
                         } else {
                             previewGeometry = startGeometry.difference(endGeometry);
                         }
-                    return "";
+                        return "";
+                    } else {
+                        return "ERROR: no start or end geometry touched.";
+                    }
                 } catch (Exception e) {
                     GPLog.error(this, null, e); //$NON-NLS-1$
                     return "ERROR: " + e.getLocalizedMessage();
@@ -319,6 +322,7 @@ public class PolygonCutExtendTool extends MapTool {
                 GPDialogs.dismissProgressDialog(infoProgressDialog);
                 if (response.startsWith("ERROR")) {
                     GPDialogs.warningDialog(context, response, null);
+                    disable();
                 } else {
                     GPDialogs.toast(context, context.getString(R.string.preview_mode_save_warning), Toast.LENGTH_SHORT);
 

@@ -706,12 +706,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     // set paint
                                     String themeFieldValue = geometryIterator.getThemeFieldValue();
                                     Style themeStyle = style.themeMap.get(themeFieldValue);
-                                    if (themeStyle.fillcolor != null && themeStyle.fillcolor.trim().length() > 0)
-                                        fill = spatialTable.getFillPaint4Theme(themeFieldValue, themeStyle);
-                                    if (themeStyle.strokecolor != null && themeStyle.strokecolor.trim().length() > 0)
-                                        stroke = spatialTable.getStrokePaint4Theme(themeFieldValue, themeStyle);
-                                    if (spatialTable.isPoint())
-                                        shape_writer_point = new ShapeWriter(pointTransformer, themeStyle.shape, themeStyle.size);
+                                    if (themeStyle!=null) {
+                                        if (themeStyle.fillcolor != null && themeStyle.fillcolor.trim().length() > 0)
+                                            fill = spatialTable.getFillPaint4Theme(themeFieldValue, themeStyle);
+                                        if (themeStyle.strokecolor != null && themeStyle.strokecolor.trim().length() > 0)
+                                            stroke = spatialTable.getStrokePaint4Theme(themeFieldValue, themeStyle);
+                                        if (spatialTable.isPoint())
+                                            shape_writer_point = new ShapeWriter(pointTransformer, themeStyle.shape, themeStyle.size);
+                                    }
                                 }
                                 int geometriesCount = geom.getNumGeometries();
                                 for (int j = 0; j < geometriesCount; j++) {
