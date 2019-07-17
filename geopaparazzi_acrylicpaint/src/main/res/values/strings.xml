@@ -5,6 +5,7 @@
     <string name="app_description">Acrylic Paint is a Free and Open Source Software that frees your creativity!\n\nPress menu for more options.\n\nThanks to Anupam Shrivastava for the idea, to Valerio Bozzolan for reviving the project and the physicist Marco Gagino for the terrific support. Thanks to all the contributors!\n\nHappy painting :)</string>
     <string name="here_is_your_canvas">Here is your canvas. Start to paint!</string>
     <string name="color">Color</string>
+    <string name="width">Width</string>
     <string name="emboss">Bold</string>
     <string name="blur">Blur</string>
     <string name="brush_size">Brush size</string>

@@ -29,15 +29,14 @@ import java.util.Date;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Metadata;
-import eu.geopaparazzi.library.util.Utilities;
 
-import static eu.geopaparazzi.core.database.TableDescriptions.MetadataTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.MetadataTableDefaultValues;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_METADATA;
+import static eu.geopaparazzi.library.database.TableDescriptions.MetadataTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.MetadataTableDefaultValues;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_METADATA;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -247,7 +246,7 @@ public class DaoMetadata {
     /**
      * Set a value of the metadata.
      *
-     * @param key   the key to use (from {@link eu.geopaparazzi.core.database.TableDescriptions.MetadataTableFields}).
+     * @param key   the key to use (from {@link TableDescriptions.MetadataTableFields}).
      * @param value the value to set.
      * @throws java.io.IOException if something goes wrong.
      */

@@ -61,7 +61,7 @@ import eu.geopaparazzi.core.database.objects.Line;
 import eu.geopaparazzi.core.database.objects.LogMapItem;
 import eu.geopaparazzi.core.database.objects.MapItem;
 import eu.geopaparazzi.core.database.objects.SerializableLogs;
-import eu.geopaparazzi.core.mapview.MapsSupportService;
+import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
@@ -93,7 +93,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_gpsdatalist);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

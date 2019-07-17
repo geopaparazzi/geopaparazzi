@@ -29,7 +29,6 @@ import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
 import gov.nasa.worldwind.AddWMSDialog;
 import gov.nasa.worldwind.ogc.OGCBoundingBox;
 import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
@@ -163,7 +162,8 @@ public class ImportWmsMenuEntry extends MenuEntry implements AddWMSDialog.OnWMSL
                 FileUtilities.writefile(mapurlText, newMapurl);
 
 
-                BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(newMapurl);
+                // FIXME
+//                BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(newMapurl);
                 GPDialogs.infoDialog(context, context.getString(eu.geopaparazzi.core.R.string.wms_mapurl_added) + newMapurl.getName(), null);
             } catch (Exception e) {
                 e.printStackTrace();

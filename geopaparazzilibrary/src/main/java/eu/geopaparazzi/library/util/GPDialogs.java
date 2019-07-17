@@ -24,6 +24,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -43,6 +45,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.activities.GeocodeActivity;
+import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -235,6 +239,73 @@ public class GPDialogs {
                     alertDialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in yesNoMessageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }.execute((String) null);
+    }
+
+    public static void multiOptionDialog(final Context context, final String[] items, final boolean[] checkedItems,
+                                         final Runnable onSelectionRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute(String response) {
+                try {
+                    DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
+                        checkedItems[which] = isChecked;
+                    };
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    builder.setTitle("");
+                    builder.setMultiChoiceItems(items, checkedItems, dialogListener);
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            onSelectionRunnable.run();
+                        }
+                    });
+                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in multiOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }.execute((String) null);
+    }
+
+    public static void singleOptionDialog(final Context context, final String[] items, final boolean[] checkedItems,
+                                          final Runnable onSelectionRunnable) {
+        new AsyncTask<String, Void, String>() {
+            protected String doInBackground(String... params) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute(String response) {
+                try {
+                    int checkedItemIndex = 0;
+                    for (int i = 0; i < checkedItems.length; i++) {
+                        if (checkedItems[i]) {
+                            checkedItemIndex = i;
+                            break;
+                        }
+                    }
+                    DialogInterface.OnClickListener dialogListener = (dialog, which) -> {
+                        for (int i = 0; i < checkedItems.length; i++) {
+                            checkedItems[i] = which == i;
+                        }
+                    };
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    builder.setTitle("");
+                    builder.setSingleChoiceItems(items, checkedItemIndex, dialogListener);
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            onSelectionRunnable.run();
+                        }
+                    });
+                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in singleOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }.execute((String) null);

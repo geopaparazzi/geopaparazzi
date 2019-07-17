@@ -178,5 +178,6 @@
     <string name="upload_Error">An error occurred: </string>
     <string name="upload_NonOK">Server returned non-OK status: </string>
     <string name="upload_Uploaded">File uploaded.</string>
+    <string name="also_save_to_bookmarks">also save to bookmarks</string>
 
 </resources>

@@ -41,9 +41,22 @@ public class DefaultHelperClasses {
      */
     public static String GPSLOG_HELPER_CLASS = "eu.geopaparazzi.core.database.DaoGpsLog";
 
+    /**
+     * Helper class for notes.
+     * <p/>
+     * <P>Follows interface {@link INotesDbHelper}</P>
+     */
+    public static String NOTES_HELPER_CLASS = "eu.geopaparazzi.core.database.DaoNotes";
+
     public static IImagesDbHelper getDefaulfImageHelper() throws Exception {
         Class<?> logHelper = Class.forName(IMAGE_HELPER_CLASS);
         IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
         return imagesDbHelper;
+    }
+
+    public static INotesDbHelper getDefaulfNotesHelper() throws Exception {
+        Class<?> logHelper = Class.forName(NOTES_HELPER_CLASS);
+        INotesDbHelper notesDbHelper = (INotesDbHelper) logHelper.newInstance();
+        return notesDbHelper;
     }
 }

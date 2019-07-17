@@ -123,7 +123,7 @@ public class ImportBookmarksMenuEntry extends MenuEntry {
                         }
                         double lat = Double.parseDouble(split[1]);
                         double lon = Double.parseDouble(split[2]);
-                        DaoBookmarks.addBookmark(lon, lat, name, zoom, -1, -1, -1, -1);
+                        DaoBookmarks.addBookmark(lon, lat, name, zoom);
                         imported++;
                     } catch (Exception e) {
                         GPLog.error(this, null, e);

@@ -34,7 +34,6 @@ public class FormInfoHolder implements Serializable {
     public long noteId;
     public double longitude;
     public double latitude;
-    public double elevation;
     public boolean objectExists;
 
     // ADDED INFO FOR RENDERING AND UPDATE

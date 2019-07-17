@@ -37,9 +37,6 @@ import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 
@@ -197,13 +194,14 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
      */
     public void resetStyleTables(View view) {
         try {
-            Collection<SpatialiteDatabaseHandler> spatialDatabaseHandlers = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap().values();
-            for (AbstractSpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers) {
-                if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
-                    SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
-                    sdHandler.resetStyleTable();
-                }
-            }
+            // FIXME
+//            Collection<SpatialiteDatabaseHandler> spatialDatabaseHandlers = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps2DbHandlersMap().values();
+//            for (AbstractSpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers) {
+//                if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
+//                    SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
+//                    sdHandler.resetStyleTable();
+//                }
+//            }
             GPDialogs.infoDialog(this, "Style reset performed.", null);
         } catch (Exception e) {
             GPLog.error(this, null, e);

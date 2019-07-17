@@ -35,8 +35,6 @@ import java.util.List;
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 import static eu.geopaparazzi.library.core.maps.BaseMap.MAP_TYPE;
 import static eu.geopaparazzi.library.core.maps.BaseMap.PARENT_FOLDER;
@@ -101,33 +99,34 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        MatrixCursor mc;
+        MatrixCursor mc = null;
 
-        switch (uriMatcher.match(uri)) {
-            case SPATIALITE_ID:
-                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_SPATIALITE);
-                List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
-                int id = 0;
-                for (SpatialiteMap spatialiteMap : spatialiteMaps) {
-                    Object[] objs = new Object[]{id++, spatialiteMap.databasePath, spatialiteMap.tableType, spatialiteMap.geometryType, spatialiteMap.isVisible ? 1 : 0, spatialiteMap.order, spatialiteMap.tableName};
-                    mc.addRow(objs);
-                }
-                break;
-            case BASEMAPS_ID:
-                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_BASEMAPS);
-                List<BaseMap> baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
-                int bmId = 1;
-                for (BaseMap baseMap : baseMaps) {
-                    Object[] objs = new Object[]{bmId++, baseMap.parentFolder, baseMap.databasePath, baseMap.mapType, baseMap.title};
-                    mc.addRow(objs);
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("Invalid query uri: " + uri);
-        }
-
-        // configure to watch for content changes
-        mc.setNotificationUri(getContext().getContentResolver(), uri);
+        // FIXME
+//        switch (uriMatcher.match(uri)) {
+//            case SPATIALITE_ID:
+//                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_SPATIALITE);
+//                List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+//                int id = 0;
+//                for (SpatialiteMap spatialiteMap : spatialiteMaps) {
+//                    Object[] objs = new Object[]{id++, spatialiteMap.databasePath, spatialiteMap.tableType, spatialiteMap.geometryType, spatialiteMap.isVisible ? 1 : 0, spatialiteMap.order, spatialiteMap.tableName};
+//                    mc.addRow(objs);
+//                }
+//                break;
+//            case BASEMAPS_ID:
+//                mc = new MatrixCursor(CONTENT_PROVIDER_FIELDS_BASEMAPS);
+//                List<BaseMap> baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
+//                int bmId = 1;
+//                for (BaseMap baseMap : baseMaps) {
+//                    Object[] objs = new Object[]{bmId++, baseMap.parentFolder, baseMap.databasePath, baseMap.mapType, baseMap.title};
+//                    mc.addRow(objs);
+//                }
+//                break;
+//            default:
+//                throw new UnsupportedOperationException("Invalid query uri: " + uri);
+//        }
+//
+//        // configure to watch for content changes
+//        mc.setNotificationUri(getContext().getContentResolver(), uri);
         return mc;
     }
 
@@ -135,16 +134,16 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        String pathToAdd = values.getAsString(CONTENTVALUES_ADD_PATH);
-        switch (uriMatcher.match(uri)) {
-            case SPATIALITE_ID:
-                SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(new File(pathToAdd));
-                break;
-            case BASEMAPS_ID:
-                BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(new File(pathToAdd));
-            default:
-                throw new UnsupportedOperationException("Invalid query uri: " + uri);
-        }
+//        String pathToAdd = values.getAsString(CONTENTVALUES_ADD_PATH);
+//        switch (uriMatcher.match(uri)) {
+//            case SPATIALITE_ID:
+//                SpatialiteSourcesManager.INSTANCE.addSpatialiteMapFromFile(new File(pathToAdd));
+//                break;
+//            case BASEMAPS_ID:
+//                BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(new File(pathToAdd));
+//            default:
+//                throw new UnsupportedOperationException("Invalid query uri: " + uri);
+//        }
 
         return null;
     }
@@ -152,22 +151,22 @@ public class AvailableDataContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         try {
-            String idStr = uri.getLastPathSegment();
-            int idToRemove = Integer.parseInt(idStr);
-            switch (uriMatcher.match(uri)) {
-                case SPATIALITE_ID:
-                    List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
-                    SpatialiteMap spatialiteMapToRemove = spatialiteMaps.get(idToRemove);
-
-                    SpatialiteSourcesManager.INSTANCE.removeSpatialiteMap(spatialiteMapToRemove);
-                    break;
-                case BASEMAPS_ID:
-                    List<BaseMap> baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
-                    BaseMap baseMapToRemove = baseMaps.get(idToRemove);
-                    BaseMapSourcesManager.INSTANCE.removeBaseMap(baseMapToRemove);
-                default:
-                    throw new UnsupportedOperationException("Invalid query uri: " + uri);
-            }
+//            String idStr = uri.getLastPathSegment();
+//            int idToRemove = Integer.parseInt(idStr);
+//            switch (uriMatcher.match(uri)) {
+//                case SPATIALITE_ID:
+//                    List<SpatialiteMap> spatialiteMaps = SpatialiteSourcesManager.INSTANCE.getSpatialiteMaps();
+//                    SpatialiteMap spatialiteMapToRemove = spatialiteMaps.get(idToRemove);
+//
+//                    SpatialiteSourcesManager.INSTANCE.removeSpatialiteMap(spatialiteMapToRemove);
+//                    break;
+//                case BASEMAPS_ID:
+//                    List<BaseMap> baseMaps = BaseMapSourcesManager.INSTANCE.getBaseMaps();
+//                    BaseMap baseMapToRemove = baseMaps.get(idToRemove);
+//                    BaseMapSourcesManager.INSTANCE.removeBaseMap(baseMapToRemove);
+//                default:
+//                    throw new UnsupportedOperationException("Invalid query uri: " + uri);
+//            }
 
             return 1;
         } catch (Exception e) {

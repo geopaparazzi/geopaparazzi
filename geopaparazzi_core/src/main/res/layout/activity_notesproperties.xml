@@ -132,20 +132,30 @@
                     android:textColor="@color/main_text_color" />
 
                 <CheckBox
-                    android:id="@+id/checkShowLabels"
+                    android:id="@+id/checkShowNotesLabels"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/labels_title"
                     android:layout_margin="5dp"
-                    android:text="@string/show_labels"
+                    android:text="@string/show_notes_labels"
+                    android:textColor="@color/main_text_color" />
+
+                <CheckBox
+                    android:id="@+id/checkShowImageLabels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/checkShowNotesLabels"
+                    android:layout_margin="5dp"
+                    android:text="@string/show_image_labels"
                     android:textColor="@color/main_text_color" />
 
                 <TextView
                     android:id="@+id/fontSizeLabel"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/checkShowLabels"
+                    android:layout_below="@+id/checkShowImageLabels"
                     android:layout_margin="5dp"
                     android:text="@string/size"
                     android:textColor="@color/main_text_color" />

@@ -49,6 +49,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
 
 /**
@@ -132,15 +133,15 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             shapeSizeView.setVisibility(View.GONE);
         } else {
 //            mShapeSizeImageView = (ImageView) colorStrokeDialogView.findViewById(R.id.shapeSizeImageView);
-            mShapeSizeTextView = (TextView) colorStrokeDialogView.findViewById(R.id.shapeSizeTextView);
-            mShapeSizeSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.shapeSizeSeekBar);
+            mShapeSizeTextView = colorStrokeDialogView.findViewById(R.id.shapeSizeTextView);
+            mShapeSizeSeekBar = colorStrokeDialogView.findViewById(R.id.shapeSizeSeekBar);
 
             mShapeSizeSeekBar.setOnSeekBarChangeListener(shapeSizeChanged);
             mShapeSizeSeekBar.setProgress(mCurrentColorStrokeObject.shapeSize);
             mShapeSizeTextView.setText(String.valueOf(mCurrentColorStrokeObject.shapeSize));
 
 
-            mShapeSpinner = (Spinner) colorStrokeDialogView.findViewById(R.id.shape_spinner);
+            mShapeSpinner = colorStrokeDialogView.findViewById(R.id.shape_spinner);
             int count = mShapeSpinner.getCount();
             for (int i = 0; i < count; i++) {
                 if (mShapeSpinner.getItemAtPosition(i).equals(mCurrentColorStrokeObject.shapeWKT)) {
@@ -169,18 +170,18 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             View lineWidthView = colorStrokeDialogView.findViewById(R.id.lineWidthDialogGridLayout);
             lineWidthView.setVisibility(View.GONE);
         } else {
-            mWidthImageView = (ImageView) colorStrokeDialogView.findViewById(R.id.widthImageView);
-            mWidthTextView = (TextView) colorStrokeDialogView.findViewById(R.id.widthTextView);
-            mWidthSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.widthSeekBar);
+            mWidthImageView = colorStrokeDialogView.findViewById(R.id.widthImageView);
+            mWidthTextView = colorStrokeDialogView.findViewById(R.id.widthTextView);
+            mWidthSeekBar = colorStrokeDialogView.findViewById(R.id.widthSeekBar);
 
             mWidthSeekBar.setOnSeekBarChangeListener(lineWidthChanged);
             mWidthSeekBar.setProgress(mCurrentColorStrokeObject.strokeWidth);
             mWidthTextView.setText(String.valueOf(mCurrentColorStrokeObject.strokeWidth));
         }
 
-        RadioButton fillRadioButton = (RadioButton) colorStrokeDialogView.findViewById(R.id.doFillRadioButton);
+        RadioButton fillRadioButton = colorStrokeDialogView.findViewById(R.id.doFillRadioButton);
         fillRadioButton.setChecked(true);
-        RadioGroup radioGroup = (RadioGroup) colorStrokeDialogView.findViewById(R.id.radioDo);
+        RadioGroup radioGroup = colorStrokeDialogView.findViewById(R.id.radioDo);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -191,7 +192,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
         /*
          * The fill/stroke color picker part
          */
-        TextView title2 = (TextView) colorStrokeDialogView.findViewById(R.id.title2);
+        TextView title2 = colorStrokeDialogView.findViewById(R.id.title2);
         if (!mCurrentColorStrokeObject.hasFill && !mCurrentColorStrokeObject.hasStroke) {
             View colorView = colorStrokeDialogView.findViewById(R.id.colorDialogGridLayout);
             colorView.setVisibility(View.GONE);
@@ -212,10 +213,10 @@ public class ColorStrokeDialogFragment extends DialogFragment {
             title2.setText(title);
 
             // get the color SeekBars and set their onChange listeners
-            mAlphaSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.alphaSeekBar);
-            mRedSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.redSeekBar);
-            mGreenSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.greenSeekBar);
-            mBlueSeekBar = (SeekBar) colorStrokeDialogView.findViewById(R.id.blueSeekBar);
+            mAlphaSeekBar = colorStrokeDialogView.findViewById(R.id.alphaSeekBar);
+            mRedSeekBar = colorStrokeDialogView.findViewById(R.id.redSeekBar);
+            mGreenSeekBar = colorStrokeDialogView.findViewById(R.id.greenSeekBar);
+            mBlueSeekBar = colorStrokeDialogView.findViewById(R.id.blueSeekBar);
             mColorView = colorStrokeDialogView.findViewById(R.id.colorView);
 
             // register SeekBar event listeners
@@ -242,7 +243,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
             final ColorUtilities[] availableColors = ColorUtilities.values();
 
-            GridView gridview = (GridView) colorStrokeDialogView.findViewById(R.id.availableColors);
+            GridView gridview = colorStrokeDialogView.findViewById(R.id.availableColors);
             ArrayAdapter<ColorUtilities> colorsAdapter = new ArrayAdapter<ColorUtilities>(getActivity(), android.R.layout.simple_list_item_1, availableColors) {
                 class ViewHolder {
                     Button button;
@@ -256,7 +257,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         rowView = inflater.inflate(R.layout.fragment_dialog_color_stroke_row, parent, false);
                         holder = new ViewHolder();
-                        holder.button = (Button) rowView.findViewById(R.id.button);
+                        holder.button = rowView.findViewById(R.id.button);
                         rowView.setTag(holder);
                     } else {
                         holder = (ViewHolder) rowView.getTag();
@@ -301,20 +302,15 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
         }
 
-        // add Set Line Width Button
         builder.setPositiveButton(R.string.set_properties,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (colorStrokePropertiesChangeListener != null) {
-                            colorStrokePropertiesChangeListener.onPropertiesChanged(mCurrentColorStrokeObject);
-                        }
+                (dialog, id) -> {
+                    if (colorStrokePropertiesChangeListener != null) {
+                        colorStrokePropertiesChangeListener.onPropertiesChanged(mCurrentColorStrokeObject);
                     }
                 }
         );
         builder.setNegativeButton(getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                (dialog, id) -> {
                 }
         );
 
@@ -324,11 +320,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
 
     public void onRadioButtonClicked(int id) {
         // Check which radio button was clicked
-        if (id == R.id.doFillRadioButton) {
-            handlingFillColor = true;
-        } else {
-            handlingFillColor = false;
-        }
+        handlingFillColor = id == R.id.doFillRadioButton;
 
         int fill;
         int alpha;

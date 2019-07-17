@@ -20,8 +20,12 @@ package eu.geopaparazzi.library.images;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.ExifInterface;
+import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -87,7 +91,7 @@ public class ImageUtilities {
      */
     public static String getExtension(String fileName) {
         int pos = fileName.lastIndexOf(".");
-        if (pos>0) {
+        if (pos > 0) {
             return fileName.substring(pos);
         }
         return ".";
@@ -105,18 +109,18 @@ public class ImageUtilities {
      */
     public static String getExtension(String fileName, String mimeType) {
         // try to get extension from file name
-        if (fileName!=null && !fileName.equals("")) {
+        if (fileName != null && !fileName.equals("")) {
             int pos = fileName.lastIndexOf(".");
-            if (pos>0) {
+            if (pos > 0) {
                 return fileName.substring(pos);
             }
         }
 
         // try to get the extension from mimeType
         int pos = mimeType.lastIndexOf("/");
-        if (pos>0) {
+        if (pos > 0) {
             // get extension and remove non alphanumeric chars
-            return "." + mimeType.substring(pos+1).replaceAll("[^A-Za-z0-9]", "");
+            return "." + mimeType.substring(pos + 1).replaceAll("[^A-Za-z0-9]", "");
         }
         return ".";
 
@@ -171,7 +175,7 @@ public class ImageUtilities {
         byte[][] imageAndThumbNail = new byte[2][];
 
         RandomAccessFile f = new RandomAccessFile(imageFilePath, "r");
-        byte[] imageByteArray = new byte[(int)f.length()];
+        byte[] imageByteArray = new byte[(int) f.length()];
         f.readFully(imageByteArray);
 
         // first read full image and check existence
@@ -286,6 +290,35 @@ public class ImageUtilities {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(imgPath, options);
+    }
+
+    @NonNull
+    public static Bitmap makeBitmapTransparent(Bitmap originalBitmap, int alpha) {
+        Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newBitmap);
+        Paint alphaPaint = new Paint();
+        alphaPaint.setAlpha(alpha);
+        canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
+        return newBitmap;
+    }
+
+
+    // Convert transparentColor to be transparent in a Bitmap.
+    public static Bitmap makeTransparent(Bitmap bit, int colorToRemove) {
+        int width = bit.getWidth();
+        int height = bit.getHeight();
+        Bitmap myBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        int[] allpixels = new int[myBitmap.getHeight() * myBitmap.getWidth()];
+        bit.getPixels(allpixels, 0, myBitmap.getWidth(), 0, 0, myBitmap.getWidth(), myBitmap.getHeight());
+        myBitmap.setPixels(allpixels, 0, width, 0, 0, width, height);
+
+        for (int i = 0; i < myBitmap.getHeight() * myBitmap.getWidth(); i++) {
+            if (allpixels[i] == colorToRemove)
+                allpixels[i] = Color.alpha(Color.TRANSPARENT);
+        }
+
+        myBitmap.setPixels(allpixels, 0, myBitmap.getWidth(), 0, 0, myBitmap.getWidth(), myBitmap.getHeight());
+        return myBitmap;
     }
 
     public static float getRotation(String imagePath) {

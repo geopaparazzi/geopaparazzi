@@ -32,15 +32,15 @@ public interface LibraryConstants {
     String GEOPAPARAZZI_DB_EXTENSION = ".gpap";
 
     /**
-     * The epsg for lat/long wgs84. 
+     * The epsg for lat/long wgs84.
      */
-    String SRID_WGS84_4326 = "4326"; //$NON-NLS-1$
+    int SRID_WGS84_4326 = 4326;
     /**
-     * The epsg Sperical Mercator used by OSM. 
+     * The epsg Sperical Mercator used by OSM.
      */
-    String SRID_MERCATOR_3857 = "3857"; //$NON-NLS-1$
+    int SRID_MERCATOR_3857 = 3857;
     /**
-     * 
+     *
      */
     float E6 = 1000000f;
 
@@ -136,7 +136,6 @@ public interface LibraryConstants {
 
     /**
      * Key used to store the mapview zoom level.
-     *
      */
     String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM"; //$NON-NLS-1$
 
@@ -321,15 +320,15 @@ public interface LibraryConstants {
      */
     float GPS_LOGGING_DISTANCE = 1f;
     /**
-     * Key for tilesource in preferences. 
+     * Key for tilesource in preferences.
      */
     String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
     /**
-     * Key for tilesource file in preferences. 
+     * Key for tilesource file in preferences.
      */
     String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
     /**
-     * Key for tilesource title in preferences. 
+     * Key for tilesource title in preferences.
      */
     String PREFS_KEY_TILESOURCE_TITLE = "PREFS_KEY_TILESOURCE_TITLE";
 
@@ -356,4 +355,29 @@ public interface LibraryConstants {
     String PREFS_KEY_CAMERA_WARNING_SHOWN = "PREFS_KEY_CAMERA_WARNING_SHOWN";
 
     String PREFS_KEY_RESTART_APPLICATION = "PREFS_KEY_RESTART_APPLICATION";
+
+
+    String PREFS_KEY_IMAGES_VISIBLE = "PREFS_KEY_IMAGES_VISIBLE";
+    String PREFS_KEY_NOTES_VISIBLE = "PREFS_KEY_NOTES_VISIBLE";
+    /*
+     * notes text properties
+     */
+    String PREFS_KEY_NOTES_TEXT_VISIBLE = "PREFS_KEY_NOTES_TEXT_VISIBLE";
+    String PREFS_KEY_IMAGES_TEXT_VISIBLE = "PREFS_KEY_IMAGES_TEXT_VISIBLE";
+    String PREFS_KEY_NOTES_TEXT_DOHALO = "PREFS_KEY_NOTES_TEXT_DOHALO";
+    String PREFS_KEY_NOTES_TEXT_SIZE = "PREFS_KEY_NOTES_TEXT_SIZE";
+    /*
+     * custom notes icon properties
+     */
+    String PREFS_KEY_NOTES_CHECK = "PREFS_KEY_NOTES_CHECK";
+    String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
+    String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
+    String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
+
+
+    String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
+    String PREFS_KEY_ROTATE_MAP_WITH_GPS = "rotate_map_with_gps";
+    String PREFS_KEY_SHOW_GPS_INFO = "show_gps_info";
+    String PREFS_KEY_IGNORE_GPS_ACCURACY = "ignore_gps_accuracy";
+
 }

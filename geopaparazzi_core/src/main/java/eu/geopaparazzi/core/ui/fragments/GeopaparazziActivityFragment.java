@@ -21,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.system.Os;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -46,7 +48,6 @@ import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.TableDescriptions;
 import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
@@ -69,6 +70,7 @@ import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -78,18 +80,16 @@ import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.mapsforge.sourcesview.SourcesTreeListActivity;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
+import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -111,27 +111,39 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     private ImageButton mImportButton;
 
-    private MenuItem mGpsMenuItem;
     private OrientationSensor mOrientationSensor;
     private IApplicationChangeListener appChangeListener;
 
     private BroadcastReceiver mGpsServiceBroadcastReceiver;
     private static boolean sCheckedGps = false;
     private GpsServiceStatus mLastGpsServiceStatus;
-    private int[] mLastGpsStatusExtras;
     private GpsLoggingStatus mLastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private double[] mLastGpsPosition;
     private FloatingActionButton mPanicFAB;
     private ResourcesManager mResourcesManager;
+    private boolean hasProfilesProvider = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_geopaparazzi, container, false);
 
         // this fragment adds to the menu
         setHasOptionsMenu(true);
+        FragmentActivity activity = getActivity();
+        if (activity != null)
+            for (PackageInfo pack : activity.getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+                ProviderInfo[] providers = pack.providers;
+                if (providers != null) {
+                    for (ProviderInfo provider : providers) {
+                        String authority = provider.authority;
+                        if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {
+                            hasProfilesProvider = true;
+                        }
+                    }
+                }
+            }
 
         try {
             initializeResourcesManager();
@@ -140,29 +152,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             GpsServiceUtilities.startGpsService(getActivity());
         } catch (Exception e) {
             e.printStackTrace();
+
+            GPLog.error(this, null, e);
         }
-
-
-        StringAsyncTask task = new StringAsyncTask(getActivity()) {
-            protected String doBackgroundWork() {
-                try {
-                    BaseMapSourcesManager.INSTANCE.getBaseMaps();
-                } catch (Exception e) {
-                    return "ERROR: " + e.getLocalizedMessage();
-                }
-                return "";
-            }
-
-            protected void doUiPostWork(String response) {
-                dispose();
-                if (response.length() != 0) {
-                    GPDialogs.warningDialog(getActivity(), response, null);
-                }
-                // do UI stuff
-            }
-        };
-        task.setProgressDialog("LOADING..", "Gathering basemaps...", false, null);
-        task.execute();
         return v; // return the fragment's view for display
     }
 
@@ -261,21 +253,24 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             appChangeListener = (IApplicationChangeListener) context;
         }
 
-        if (mOrientationSensor == null) {
-            SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-            mOrientationSensor = new OrientationSensor(sensorManager, null);
-        }
-        mOrientationSensor.register(getActivity(), SensorManager.SENSOR_DELAY_NORMAL);
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            if (mOrientationSensor == null) {
+                SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+                mOrientationSensor = new OrientationSensor(sensorManager, null);
+            }
+            mOrientationSensor.register(activity, SensorManager.SENSOR_DELAY_NORMAL);
 
-        if (mGpsServiceBroadcastReceiver == null) {
-            mGpsServiceBroadcastReceiver = new BroadcastReceiver() {
-                public void onReceive(Context context, Intent intent) {
-                    onGpsServiceUpdate(intent);
-                    checkFirstTimeGps(context);
-                }
-            };
+            if (mGpsServiceBroadcastReceiver == null) {
+                mGpsServiceBroadcastReceiver = new BroadcastReceiver() {
+                    public void onReceive(Context context, Intent intent) {
+                        onGpsServiceUpdate(intent);
+                        checkFirstTimeGps(context);
+                    }
+                };
+            }
+            GpsServiceUtilities.registerForBroadcasts(activity, mGpsServiceBroadcastReceiver);
         }
-        GpsServiceUtilities.registerForBroadcasts(getActivity(), mGpsServiceBroadcastReceiver);
 
     }
 
@@ -296,63 +291,36 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_main, menu);
-
-        mGpsMenuItem = menu.getItem(3);
-
-        Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
-                // hide new project and open project
-                menu.getItem(1).setEnabled(false);
-                menu.getItem(2).setEnabled(false);
-            }
-        }
-
-        boolean hasProfilesProvider = false;
-        for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
-            ProviderInfo[] providers = pack.providers;
-            if (providers != null) {
-                for (ProviderInfo provider : providers) {
-                    String authority = provider.authority;
-                    if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {
-                        hasProfilesProvider = true;
-                    }
-                }
-            }
-        }
-        if (!hasProfilesProvider)
-            menu.getItem(7).setVisible(false);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
         Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
-        if (activeProfile != null) {
-            if (activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
-                // hide new project and open project
-                menu.getItem(1).setEnabled(false);
-                menu.getItem(2).setEnabled(false);
-            }
+        if (activeProfile != null && activeProfile.profileProject != null && activeProfile.getFile(activeProfile.profileProject.getRelativePath()).exists()) {
+            // hide new project and open project
+            menu.findItem(R.id.action_load).setEnabled(false);
+            menu.findItem(R.id.action_new).setEnabled(false);
         } else {
-            menu.getItem(1).setEnabled(true);
-            menu.getItem(2).setEnabled(true);
+            menu.findItem(R.id.action_load).setEnabled(true);
+            menu.findItem(R.id.action_new).setEnabled(true);
         }
+        menu.findItem(R.id.action_profiles).setVisible(hasProfilesProvider);
 
+        MenuItem gpsItem = menu.findItem(R.id.action_gps);
+        checkGpsItemStatus(gpsItem);
 
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.action_tilesource) {
-            Intent preferencesIntent = new Intent(this.getActivity(), SourcesTreeListActivity.class);
-            startActivity(preferencesIntent);
-            return true;
-        } else if (i == R.id.action_new) {
-            NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
-            newProjectDialogFragment.show(getFragmentManager(), "new project dialog");
+        if (i == R.id.action_new) {
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) {
+                NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
+                newProjectDialogFragment.show(fragmentManager, "new project dialog");
+            }
             return true;
         } else if (i == R.id.action_load) {
             try {
@@ -363,8 +331,11 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             }
             return true;
         } else if (i == R.id.action_gps) {
-            GpsInfoDialogFragment gpsInfoDialogFragment = new GpsInfoDialogFragment();
-            gpsInfoDialogFragment.show(getFragmentManager(), "gpsinfo dialog");
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) {
+                GpsInfoDialogFragment gpsInfoDialogFragment = new GpsInfoDialogFragment();
+                gpsInfoDialogFragment.show(fragmentManager, "gpsinfo dialog");
+            }
             return true;
         } else if (i == R.id.action_gpsstatus) {
             AppsUtilities.checkAndOpenGpsStatus(getActivity());
@@ -387,7 +358,10 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             return true;
         } else if (i == R.id.action_exit) {
             appChangeListener.onAppIsShuttingDown();
-            getActivity().finish();
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                activity.finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -395,6 +369,8 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        FragmentActivity activity = getActivity();
+        if (activity == null) return;
         switch (requestCode) {
             case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
                 if (resultCode == Activity.RESULT_OK) {
@@ -402,25 +378,25 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                         String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         if (filePath == null) return;
                         if (!filePath.endsWith(FileTypes.GPAP.getExtension())) {
-                            GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.selected_file_is_no_geopap_project), null);
+                            GPDialogs.warningDialog(activity, activity.getString(R.string.selected_file_is_no_geopap_project), null);
                             return;
                         }
                         File file = new File(filePath);
                         if (file.exists()) {
-                            Utilities.setLastFilePath(getActivity(), filePath);
+                            Utilities.setLastFilePath(activity, filePath);
                             try {
-                                DatabaseUtilities.setNewDatabase(getActivity(), GeopaparazziApplication.getInstance(), file.getAbsolutePath());
+                                DatabaseUtilities.setNewDatabase(activity, GeopaparazziApplication.getInstance(), file.getAbsolutePath());
 
                                 if (appChangeListener != null) {
                                     appChangeListener.onApplicationNeedsRestart();
                                 }
                             } catch (IOException e) {
                                 GPLog.error(this, null, e);
-                                GPDialogs.warningDialog(getActivity(), getActivity().getString(R.string.error_while_setting_project), null);
+                                GPDialogs.warningDialog(activity, activity.getString(R.string.error_while_setting_project), null);
                             }
                         }
                     } catch (Exception e) {
-                        GPDialogs.errorDialog(getActivity(), e, null);
+                        GPDialogs.errorDialog(activity, e, null);
                     }
                 }
                 break;
@@ -430,7 +406,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                     try {
                         boolean restart = data.getBooleanExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, false);
                         if (restart) {
-                            FragmentActivity activity = getActivity();
                             if (activity instanceof GeopaparazziCoreActivity) {
                                 GeopaparazziCoreActivity geopaparazziCoreActivity = (GeopaparazziCoreActivity) activity;
                                 geopaparazziCoreActivity.onApplicationNeedsRestart();
@@ -438,7 +413,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                         }
 
                     } catch (Exception e) {
-                        GPDialogs.errorDialog(getActivity(), e, null);
+                        GPDialogs.errorDialog(activity, e, null);
                     }
                 }
                 break;
@@ -491,17 +466,19 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
 
         if (v == mNotesButton) {
-            String tooltip = "Available providers:";
-            for (PackageInfo pack : getActivity().getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
-                ProviderInfo[] providers = pack.providers;
-                if (providers != null) {
-                    for (ProviderInfo provider : providers) {
-                        Log.d("Example", "provider: " + provider.authority);
-                        tooltip = tooltip + "\n" + provider.authority;
+            StringBuilder tooltip = new StringBuilder("Available providers:");
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                for (PackageInfo pack : activity.getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
+                    ProviderInfo[] providers = pack.providers;
+                    if (providers != null) {
+                        for (ProviderInfo provider : providers) {
+                            tooltip.append("\n").append(provider.authority);
+                        }
                     }
                 }
+                Snackbar.make(v, tooltip.toString(), Snackbar.LENGTH_SHORT).show();
             }
-            Snackbar.make(v, tooltip, Snackbar.LENGTH_SHORT).show();
         }
 
 
@@ -518,7 +495,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 GPLog.error(this, null, e); //$NON-NLS-1$
             }
         } else if (v == mMapviewButton) {
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead(); // ugly, needs to be reviewed
             Intent importIntent = new Intent(getActivity(), MapviewActivity.class);
             startActivity(importIntent);
         } else if (v == mGpslogButton) {
@@ -552,10 +528,31 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
     }
 
+
+    private void checkGpsItemStatus(MenuItem gpsItem) {
+        if (mLastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {
+            if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                gpsItem.setIcon(R.drawable.actionbar_gps_logging);
+                enablePanic(true);
+            } else {
+                if (mLastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                    gpsItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
+                    enablePanic(true);
+                } else {
+                    gpsItem.setIcon(R.drawable.actionbar_gps_nofix);
+                    enablePanic(false);
+                }
+            }
+        } else {
+            gpsItem.setIcon(R.drawable.actionbar_gps_off);
+            enablePanic(false);
+        }
+    }
+
     private void onGpsServiceUpdate(Intent intent) {
         mLastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         mLastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
-        mLastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
+        int[] mLastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
         mLastGpsPosition = GpsServiceUtilities.getPosition(intent);
 //        lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
 //        lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
@@ -567,37 +564,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             int satForFixCount = mLastGpsStatusExtras[2];
             GPLog.addLogEntry(this, "satellites: " + satCount + " of which for fix: " + satForFixCount);
         }
-
-        if (mGpsMenuItem != null)
-            if (mLastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {
-                if (doLog)
-                    GPLog.addLogEntry(this, "GPS seems to be on");
-                if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                    if (doLog)
-                        GPLog.addLogEntry(this, "GPS seems to be also logging");
-                    mGpsMenuItem.setIcon(R.drawable.actionbar_gps_logging);
-                    enablePanic(true);
-                } else {
-                    if (mLastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                        if (doLog) {
-                            GPLog.addLogEntry(this, "GPS has fix");
-                        }
-                        mGpsMenuItem.setIcon(R.drawable.actionbar_gps_fix_nologging);
-                        enablePanic(true);
-                    } else {
-                        if (doLog) {
-                            GPLog.addLogEntry(this, "GPS doesn't have a fix");
-                        }
-                        mGpsMenuItem.setIcon(R.drawable.actionbar_gps_nofix);
-                        enablePanic(false);
-                    }
-                }
-            } else {
-                if (doLog)
-                    GPLog.addLogEntry(this, "GPS seems to be off");
-                mGpsMenuItem.setIcon(R.drawable.actionbar_gps_off);
-                enablePanic(false);
-            }
+        FragmentActivity activity = getActivity();
+        if (activity != null)
+            activity.invalidateOptionsMenu();
     }
 
     private void checkFirstTimeGps(Context context) {
@@ -605,11 +574,9 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             sCheckedGps = true;
             if (mLastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
                 String prompt = getResources().getString(R.string.prompt_gpsenable);
-                GPDialogs.yesNoMessageDialog(context, prompt, new Runnable() {
-                    public void run() {
-                        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(gpsOptionsIntent);
-                    }
+                GPDialogs.yesNoMessageDialog(context, prompt, () -> {
+                    Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(gpsOptionsIntent);
                 }, null);
             }
         }
@@ -636,48 +603,73 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
     private void initializeResourcesManager() throws Exception {
         mResourcesManager = ResourcesManager.getInstance(getContext());
 
-        if (mResourcesManager == null) {
-            GPDialogs.yesNoMessageDialog(getActivity(), getString(eu.geopaparazzi.core.R.string.no_sdcard_use_internal_memory),
-                    new Runnable() {
-                        public void run() {
-                            ResourcesManager.setUseInternalMemory(true);
-                            try {
-                                mResourcesManager = ResourcesManager.getInstance(getContext());
-                                initIfOk();
-                            } catch (Exception e) {
-                                GPLog.error(this, null, e); //$NON-NLS-1$
+        final FragmentActivity activity = getActivity();
+        if (activity != null)
+            if (mResourcesManager == null) {
+                GPDialogs.yesNoMessageDialog(activity, getString(eu.geopaparazzi.core.R.string.no_sdcard_use_internal_memory),
+                        new Runnable() {
+                            public void run() {
+                                ResourcesManager.setUseInternalMemory(true);
+                                try {
+                                    mResourcesManager = ResourcesManager.getInstance(getContext());
+                                    initIfOk();
+                                } catch (Exception e) {
+                                    GPLog.error(this, null, e); //$NON-NLS-1$
+                                }
                             }
-                        }
-                    }, new Runnable() {
-                        public void run() {
-                            getActivity().finish();
-                        }
-                    }
-            );
-        } else {
-            // create the default mapsforge data extraction db
-            File applicationSupporterDir = mResourcesManager.getApplicationSupporterDir();
-            File newDbFile = new File(applicationSupporterDir, MAPSFORGE_EXTRACTED_DB_NAME);
-            if (!newDbFile.exists()) {
-                AssetManager assetManager = getActivity().getAssets();
-                InputStream inputStream = assetManager.open(MAPSFORGE_EXTRACTED_DB_NAME);
-                FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
+                        }, activity::finish
+                );
+            } else {
+                // create the default mapsforge data extraction db
+                File applicationSupporterDir = mResourcesManager.getApplicationSupporterDir();
+                File newDbFile = new File(applicationSupporterDir, MAPSFORGE_EXTRACTED_DB_NAME);
+                if (!newDbFile.exists()) {
+                    AssetManager assetManager = activity.getAssets();
+                    InputStream inputStream = assetManager.open(MAPSFORGE_EXTRACTED_DB_NAME);
+                    FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
+                }
+                // initialize rest of resources
+                initIfOk();
             }
-            // initialize rest of resources
-            initIfOk();
-        }
     }
 
 
     private void initIfOk() {
+        final FragmentActivity activity = getActivity();
+        if (activity == null)
+            return;
         if (mResourcesManager == null) {
-            GPDialogs.warningDialog(getActivity(), getString(R.string.sdcard_notexist), new Runnable() {
-                public void run() {
-                    getActivity().finish();
-                }
-            });
+            GPDialogs.warningDialog(activity, getString(R.string.sdcard_notexist), activity::finish);
             return;
         }
+
+
+        try {
+            File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
+            File projFolder = new File(applicationDir, "proj");
+            File projFolderWithDate = new File(applicationDir, "proj20190708"); // to keep versions
+            File projDbFile = new File(projFolderWithDate, "proj.db");
+            if (!projDbFile.exists()) {
+                GPLog.addLogEntry("Proj 6 folder doesn't exist: " + projFolderWithDate.getAbsolutePath());
+                File zipFile = new File(applicationDir, "proj.zip");
+                AssetManager assetManager = activity.getAssets();
+                InputStream inputStream = assetManager.open("proj.zip");
+                FileUtilities.copyFile(inputStream, new FileOutputStream(zipFile));
+                GPLog.addLogEntry("Copied proj defs from asset to: " + zipFile.getAbsolutePath());
+                try {
+                    CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), applicationDir.getAbsolutePath(), false);
+                    projFolder.renameTo(projFolderWithDate);
+                    GPLog.addLogEntry("Uncompressed and renamed to: " + projFolderWithDate.getAbsolutePath());
+                } finally {
+                    zipFile.delete();
+                }
+
+            }
+            Os.setenv("PROJ_LIB", projFolderWithDate.getAbsolutePath(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         /*
          * check the logging system
@@ -692,7 +684,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         // check for screen on
         boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
         if (keepScreenOn) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
         try {
@@ -713,35 +705,35 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
-            GPDialogs.toast(getActivity(), R.string.databaseError, Toast.LENGTH_LONG);
+            GPDialogs.toast(activity, R.string.databaseError, Toast.LENGTH_LONG);
         }
     }
 
     private void checkLogButton() {
-        if (mGpslogButton != null)
-            if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
-                mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
-            } else {
-                mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
-            }
+        if (mGpslogButton != null) {
+            Context context = getContext();
+            if (context != null)
+                if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
+                    mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(context));
+                } else {
+                    mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(context));
+                }
+        }
     }
 
     private void handleGpsLogAction() {
         final GPApplication appContext = GeopaparazziApplication.getInstance();
+        final FragmentActivity activity = getActivity();
+        if (activity == null)
+            return;
         if (mLastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.do_you_want_to_stop_logging),
-                    new Runnable() {
-                        public void run() {
-                            getActivity().runOnUiThread(new Runnable() {
-                                public void run() {
-                                    // stop logging
-                                    GpsServiceUtilities.stopDatabaseLogging(appContext);
-                                    mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(getContext()));
-                                    GpsServiceUtilities.triggerBroadcast(getActivity());
-                                }
-                            });
-                        }
-                    }, null
+                    () -> activity.runOnUiThread(() -> {
+                        // stop logging
+                        GpsServiceUtilities.stopDatabaseLogging(appContext);
+                        mGpslogButton.setBackgroundColor(ColorUtilities.getPrimaryColor(activity));
+                        GpsServiceUtilities.triggerBroadcast(getActivity());
+                    }), null
             );
 
         } else {
@@ -752,18 +744,16 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 GPDialogs.inputMessageAndCheckboxDialog(getActivity(), getString(R.string.gps_log_name),
                         defaultLogName, getString(R.string.continue_last_log), false, new TextAndBooleanRunnable() {
                             public void run() {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        String newName = theTextToRunOn;
-                                        if (newName == null || newName.length() < 1) {
-                                            newName = defaultLogName;
-                                        }
-
-                                        mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(getContext()));
-                                        GpsServiceUtilities.startDatabaseLogging(appContext, newName, theBooleanToRunOn,
-                                                DefaultHelperClasses.GPSLOG_HELPER_CLASS);
-                                        GpsServiceUtilities.triggerBroadcast(getActivity());
+                                activity.runOnUiThread(() -> {
+                                    String newName = theTextToRunOn;
+                                    if (newName == null || newName.length() < 1) {
+                                        newName = defaultLogName;
                                     }
+
+                                    mGpslogButton.setBackgroundColor(ColorUtilities.getAccentColor(activity));
+                                    GpsServiceUtilities.startDatabaseLogging(appContext, newName, theBooleanToRunOn,
+                                            DefaultHelperClasses.GPSLOG_HELPER_CLASS);
+                                    GpsServiceUtilities.triggerBroadcast(getActivity());
                                 });
                             }
                         }

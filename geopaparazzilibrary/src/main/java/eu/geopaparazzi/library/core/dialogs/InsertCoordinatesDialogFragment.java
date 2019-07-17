@@ -81,8 +81,8 @@ public class InsertCoordinatesDialogFragment extends DialogFragment {
             builder.setView(newProjectDialogView); // add GUI to dialog
             builder.setTitle(title);
 
-            longitudeText = (EditText) newProjectDialogView.findViewById(R.id.longitudetext);
-            latitudeText = (EditText) newProjectDialogView.findViewById(R.id.latitudetext);
+            longitudeText = newProjectDialogView.findViewById(R.id.longitudetext);
+            latitudeText = newProjectDialogView.findViewById(R.id.latitudetext);
 
             builder.setPositiveButton(getString(android.R.string.ok),
                     new DialogInterface.OnClickListener() {

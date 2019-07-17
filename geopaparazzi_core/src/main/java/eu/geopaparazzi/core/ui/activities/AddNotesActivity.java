@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.DaoImages;
 import eu.geopaparazzi.core.database.DaoNotes;
 import eu.geopaparazzi.core.database.objects.Note;
@@ -59,6 +60,7 @@ import eu.geopaparazzi.core.ui.dialogs.AddNoteLayoutDialogFragment;
 import eu.geopaparazzi.library.camera.CameraNoteActivity;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.NoteDialogFragment;
+import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.FormInfoHolder;
@@ -111,7 +113,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         super.onCreate(icicle);
         setContentView(R.layout.activity_addnotes);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -245,7 +247,6 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                                 formInfoHolder.noteId = noteId;
                                 formInfoHolder.longitude = longitude;
                                 formInfoHolder.latitude = latitude;
-                                formInfoHolder.elevation = elevation;
                                 formInfoHolder.objectExists = false;
                                 formIntent.putExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER, formInfoHolder);
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
@@ -353,8 +354,9 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 // this note needs to be removed, since is was created but then
                 // cancel was pressed
                 try {
-                    Note note = DaoNotes.getNoteById(noteId);
-                    DaoNotes.deleteComplexNote(note);
+                    DaoNotes daoNotes = new DaoNotes();
+                    ANote note = daoNotes.getNoteById(noteId);
+                    daoNotes.deleteComplexNote((Note) note);
                     return;
                 } catch (IOException e) {
                     GPLog.error(this, null, e);
@@ -425,10 +427,18 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
     }
 
     @Override
-    public void addNote(double lon, double lat, double elev, long timestamp, String note) {
+    public void addNote(double lon, double lat, double elev, long timestamp, String note, boolean alsoAsBookmark) {
         try {
-            DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "",
-                    null);
+            DaoNotes.addNote(lon, lat, elev, timestamp, note, "POI", "", null);
+            if (alsoAsBookmark) {
+                final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                double[] mapCenterFromPreferences = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+                int zoom = 16;
+                if (mapCenterFromPreferences != null) {
+                    zoom = (int) mapCenterFromPreferences[2];
+                }
+                DaoBookmarks.addBookmark(lon, lat, note, zoom);
+            }
             boolean returnToViewAfterNote = returnToViewAfterNoteCheckBox.isChecked();
             if (!returnToViewAfterNote) {
                 finish();

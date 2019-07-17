@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Geopaparazzi - Digital field mapping on Android based devices
+  ~ Copyright (C) 2016  HydroloGIS (www.hydrologis.com)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:id="@+id/shapeSizeDialogGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:useDefaultMargins="true">
+
+            <TextView
+                android:id="@+id/shapeSizeTitle"
+                style="@style/GPTitleTextViewStyle"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginTop="10dp"
+                android:layout_row="0"
+                android:text="Shape Size" />
+
+            <Spinner
+                android:id="@+id/shape_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="1"
+                android:entries="@array/array_shapes"
+                android:padding="5dp" />
+
+            <!--<ImageView-->
+            <!--android:id="@+id/shapeSizeImageView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_column="0"-->
+            <!--android:layout_gravity="fill_horizontal"-->
+            <!--android:layout_row="2" />-->
+
+            <TextView
+                android:id="@+id/shapeSizeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="2"
+                android:gravity="center_vertical"
+                android:text="5"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <SeekBar
+                android:id="@+id/shapeSizeSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="2"
+                android:gravity="center_vertical"
+                android:max="150" />
+        </GridLayout>
+
+        <GridLayout
+            android:id="@+id/lineWidthDialogGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:useDefaultMargins="true">
+
+            <TextView
+                android:id="@+id/title1"
+                style="@style/GPTitleTextViewStyle"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginTop="10dp"
+                android:layout_row="0"
+                android:text="Stroke width" />
+
+            <ImageView
+                android:id="@+id/widthImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_column="0"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="1"
+                android:contentDescription="Set line width" />
+
+            <TextView
+                android:id="@+id/widthTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/widthSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="2"
+                android:max="50" />
+        </GridLayout>
+
+        <GridLayout
+            android:id="@+id/colorDialogGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:useDefaultMargins="true">
+
+            <TextView
+                android:id="@+id/title2"
+                style="@style/GPTitleTextViewStyle"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginTop="10dp"
+                android:layout_row="0"
+                android:text="" />
+
+            <LinearLayout
+                android:id="@+id/radioDoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="1"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/radioDo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/doFillRadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="fill"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <RadioButton
+                        android:id="@+id/doStrokeRadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="stroke"
+                        android:textColor="?attr/colorPrimary" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/colorView"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="2" />
+
+            <View
+                android:id="@+id/filler"
+                android:layout_width="wrap_content"
+                android:layout_height="4dp"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="3" />
+
+            <GridView
+                android:id="@+id/availableColors"
+                android:layout_width="match_parent"
+                android:layout_height="101dp"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="4"
+                android:columnWidth="@dimen/color_buttons_size"
+                android:gravity="center"
+                android:horizontalSpacing="1dp"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="1dp" />
+
+            <TextView
+                android:id="@+id/alphaTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical|right"
+                android:layout_row="5"
+                android:text="@string/label_alpha" />
+
+            <SeekBar
+                android:id="@+id/alphaSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="5"
+                android:max="255" />
+
+            <TextView
+                android:id="@+id/redTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical|right"
+                android:layout_row="6"
+                android:text="@string/label_red" />
+
+            <SeekBar
+                android:id="@+id/redSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="6"
+                android:max="255" />
+
+            <TextView
+                android:id="@+id/greenTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical|right"
+                android:layout_row="7"
+                android:text="@string/label_green" />
+
+            <SeekBar
+                android:id="@+id/greenSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="7"
+                android:max="255" />
+
+            <TextView
+                android:id="@+id/blueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical|right"
+                android:layout_row="8"
+                android:text="@string/label_blue" />
+
+            <SeekBar
+                android:id="@+id/blueSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_row="8"
+                android:max="255" />
+
+
+        </GridLayout>
+    </LinearLayout>
+</ScrollView>

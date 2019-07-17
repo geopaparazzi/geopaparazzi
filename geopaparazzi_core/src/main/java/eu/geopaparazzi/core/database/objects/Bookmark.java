@@ -34,10 +34,6 @@ public class Bookmark implements KmlRepresenter {
     private double lat;
     private long id;
     private double zoom;
-    private double north;
-    private double south;
-    private double west;
-    private double east;
 
     /**
      * A wrapper for a Bookmark.
@@ -66,19 +62,10 @@ public class Bookmark implements KmlRepresenter {
      * @param lon lon
      * @param lat lat
      * @param zoom zoom
-     * @param north north
-     * @param south south
-     * @param west west 
-     * @param east east
      */
-    public Bookmark( long id, String name, double lon, double lat, double zoom, double north, double south, double west,
-            double east ) {
+    public Bookmark( long id, String name, double lon, double lat, double zoom) {
         this.id = id;
         this.zoom = zoom;
-        this.north = north;
-        this.south = south;
-        this.west = west;
-        this.east = east;
         if (name != null) {
             this.name = name;
         } else {
@@ -143,38 +130,9 @@ public class Bookmark implements KmlRepresenter {
         return zoom;
     }
 
-    /**
-     * @return the north.
-     */
-    public double getNorth() {
-        return north;
-    }
-
-    /**
-     * @return teh south.
-     */
-    public double getSouth() {
-        return south;
-    }
-
-    /**
-     * @return the west.
-     */
-    public double getWest() {
-        return west;
-    }
-
-    /**
-     * @return the east.
-     */
-    public double getEast() {
-        return east;
-    }
-
     @SuppressWarnings("nls")
     public String toString() {
-        return "Bookmark [name=" + name + ", lon=" + lon + ", lat=" + lat + ", id=" + id + ", zoom=" + zoom + ", north=" + north
-                + ", south=" + south + ", west=" + west + ", east=" + east + "]";
+        return "Bookmark [name=" + name + ", lon=" + lon + ", lat=" + lat + ", id=" + id + ", zoom=" + zoom + "]";
     }
 
     public boolean hasImages() {

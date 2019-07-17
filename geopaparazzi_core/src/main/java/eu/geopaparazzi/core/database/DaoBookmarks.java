@@ -19,21 +19,18 @@ package eu.geopaparazzi.core.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.core.model.GeoPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.Bookmark;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -46,10 +43,6 @@ public class DaoBookmarks {
     private static final String COLUMN_LAT = "lat";
     private static final String COLUMN_TEXT = "text";
     private static final String COLUMN_ZOOM = "zoom";
-    private static final String COLUMN_NORTHBOUND = "bnorth";
-    private static final String COLUMN_SOUTHBOUND = "bsouth";
-    private static final String COLUMN_WESTBOUND = "bwest";
-    private static final String COLUMN_EASTBOUND = "beast";
 
     /**
      * Bookmarks table name.
@@ -58,19 +51,14 @@ public class DaoBookmarks {
 
     /**
      * Add a bookmark.
-     * 
-     * @param lon lon
-     * @param lat lat
-     * @param text a text 
+     *
+     * @param lon  lon
+     * @param lat  lat
+     * @param text a text
      * @param zoom zoom level
-     * @param north north
-     * @param south south
-     * @param west west
-     * @param east east
      * @throws IOException if something goes wrong.
      */
-    public static void addBookmark( double lon, double lat, String text, double zoom, double north, double south, double west,
-            double east ) throws IOException {
+    public static void addBookmark(double lon, double lat, String text, double zoom) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -79,12 +67,23 @@ public class DaoBookmarks {
             values.put(COLUMN_LAT, lat);
             values.put(COLUMN_TEXT, text);
             values.put(COLUMN_ZOOM, zoom);
-            values.put(COLUMN_NORTHBOUND, north);
-            values.put(COLUMN_SOUTHBOUND, south);
-            values.put(COLUMN_WESTBOUND, west);
-            values.put(COLUMN_EASTBOUND, east);
             sqliteDatabase.insertOrThrow(TABLE_BOOKMARKS, null, values);
 
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (SQLiteConstraintException e) {
+            sqliteDatabase.endTransaction();
+            sqliteDatabase.beginTransaction();
+            // db still has bounds columns, dummy fill them, they are never used
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_LON, lon);
+            values.put(COLUMN_LAT, lat);
+            values.put(COLUMN_TEXT, text);
+            values.put(COLUMN_ZOOM, zoom);
+            values.put("bnorth", -1);
+            values.put("bsouth", -1);
+            values.put("beast", -1);
+            values.put("bwest", -1);
+            sqliteDatabase.insertOrThrow(TABLE_BOOKMARKS, null, values);
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             GPLog.error("DAOBOOKMARKS", e.getLocalizedMessage(), e);
@@ -96,11 +95,11 @@ public class DaoBookmarks {
 
     /**
      * Delete bookmark.
-     * 
+     *
      * @param id the id of the bookmark to delete.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static void deleteBookmark( long id ) throws IOException {
+    public static void deleteBookmark(long id) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -120,12 +119,12 @@ public class DaoBookmarks {
 
     /**
      * Chaneg bm name.
-     * 
-     * @param id id of bm to change.
+     *
+     * @param id      id of bm to change.
      * @param newName new name.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static void updateBookmarkName( long id, String newName ) throws IOException {
+    public static void updateBookmarkName(long id, String newName) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -154,16 +153,15 @@ public class DaoBookmarks {
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * 
-     * @param n north 
+     *
+     * @param n north
      * @param s south
-     * @param w west 
+     * @param w west
      * @param e east
-     * 
      * @return the list of notes inside the bounds.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static List<Bookmark> getBookmarksInWorldBounds( float n, float s, float w, float e ) throws IOException {
+    public static List<Bookmark> getBookmarksInWorldBounds(double n, double s, double w, double e) throws IOException {
 
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
@@ -181,7 +179,7 @@ public class DaoBookmarks {
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Bookmark> bookmarks = new ArrayList<>();
         c.moveToFirst();
-        while( !c.isAfterLast() ) {
+        while (!c.isAfterLast()) {
             long id = c.getLong(0);
             double lon = c.getDouble(1);
             double lat = c.getDouble(2);
@@ -196,31 +194,26 @@ public class DaoBookmarks {
     }
 
     /**
-     * 
      * @return all bookmarks.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
     public static List<Bookmark> getAllBookmarks() throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
+        String query = "SELECT _id, lon, lat, text, zoom FROM " + TABLE_BOOKMARKS;
 
         // Logger.i("DAOBOOKMARKS", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Bookmark> bookmarks = new ArrayList<>();
         c.moveToFirst();
-        while( !c.isAfterLast() ) {
+        while (!c.isAfterLast()) {
             long id = c.getLong(0);
             double lon = c.getDouble(1);
             double lat = c.getDouble(2);
             String text = c.getString(3);
             double zoom = c.getDouble(4);
-            double n = c.getDouble(5);
-            double s = c.getDouble(6);
-            double w = c.getDouble(7);
-            double e = c.getDouble(8);
 
-            Bookmark note = new Bookmark(id, text, lon, lat, zoom, n, s, w, e);
+            Bookmark note = new Bookmark(id, text, lon, lat, zoom);
             bookmarks.add(note);
             c.moveToNext();
         }
@@ -228,40 +221,40 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
-    /**
-     * @param marker the marker to use.
-     * @return the list of {@link OverlayItem}s
-     * @throws IOException  if something goes wrong.
-     */
-    public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
-
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(query, null);
-            List<OverlayItem> bookmarks = new ArrayList<>();
-            c.moveToFirst();
-            while( !c.isAfterLast() ) {
-                double lon = c.getDouble(0);
-                double lat = c.getDouble(1);
-                String text = c.getString(2);
-                text = text + "\n";
-                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
-                bookmarks.add(bookmark);
-                c.moveToNext();
-            }
-            return bookmarks;
-        } finally {
-            if (c != null)
-                c.close();
-        }
-    }
+//    /**
+//     * @param marker the marker to use.
+//     * @return the list of {@link OverlayItem}s
+//     * @throws IOException  if something goes wrong.
+//     */
+//    public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
+//
+//        Cursor c = null;
+//        try {
+//            c = sqliteDatabase.rawQuery(query, null);
+//            List<OverlayItem> bookmarks = new ArrayList<>();
+//            c.moveToFirst();
+//            while( !c.isAfterLast() ) {
+//                double lon = c.getDouble(0);
+//                double lat = c.getDouble(1);
+//                String text = c.getString(2);
+//                text = text + "\n";
+//                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
+//                bookmarks.add(bookmark);
+//                c.moveToNext();
+//            }
+//            return bookmarks;
+//        } finally {
+//            if (c != null)
+//                c.close();
+//        }
+//    }
 
     /**
      * Create bookmarks tables.
-     * 
-     * @throws IOException  if something goes wrong.
+     *
+     * @throws IOException if something goes wrong.
      */
     public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
@@ -275,10 +268,6 @@ public class DaoBookmarks {
         sB.append(COLUMN_LON).append(" REAL NOT NULL, ");
         sB.append(COLUMN_LAT).append(" REAL NOT NULL,");
         sB.append(COLUMN_ZOOM).append(" REAL NOT NULL,");
-        sB.append(COLUMN_NORTHBOUND).append(" REAL NOT NULL,");
-        sB.append(COLUMN_SOUTHBOUND).append(" REAL NOT NULL,");
-        sB.append(COLUMN_WESTBOUND).append(" REAL NOT NULL,");
-        sB.append(COLUMN_EASTBOUND).append(" REAL NOT NULL,");
         sB.append(COLUMN_TEXT).append(" TEXT NOT NULL ");
         sB.append(");");
         String CREATE_TABLE_BOOKMARKS = sB.toString();

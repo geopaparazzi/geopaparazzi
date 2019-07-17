@@ -20,7 +20,7 @@ package eu.geopaparazzi.core.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Applies a sliding average on linear geometries for smoothing.

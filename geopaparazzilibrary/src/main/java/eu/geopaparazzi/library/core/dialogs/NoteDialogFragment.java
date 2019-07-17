@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import eu.geopaparazzi.library.R;
@@ -46,12 +47,21 @@ public class NoteDialogFragment extends DialogFragment {
     private double longitude;
     private double elevation;
     private IAddNote iAddNote;
+    private CheckBox alsoBookmarkCheck;
 
     /**
      * Interface to allow adding notes from non library classes.
      */
     public interface IAddNote {
-        void addNote(double lon, double lat, double elev, long timestamp, String note);
+        /**
+         * @param lon the longitude of the point.
+         * @param lat the latitude of the point.
+         * @param elev the elevation of the point.
+         * @param timestamp the timestamp of the point.
+         * @param note the text of the note.
+         * @param alsoAsBookmark if true, then the note is also saved to bookmarks.
+         */
+        void addNote(double lon, double lat, double elev, long timestamp, String note, boolean alsoAsBookmark);
     }
 
     public static NoteDialogFragment newInstance(double lon, double lat, double elev) {
@@ -84,7 +94,8 @@ public class NoteDialogFragment extends DialogFragment {
                     R.layout.fragment_dialog_note, null);
             builder.setView(newProjectDialogView); // add GUI to dialog
 
-            noteText = (EditText) newProjectDialogView.findViewById(R.id.noteentry);
+            noteText = newProjectDialogView.findViewById(R.id.noteentry);
+            alsoBookmarkCheck = newProjectDialogView.findViewById(R.id.alsoBookmarksCheck);
 
             builder.setPositiveButton(getString(android.R.string.ok),
                     new DialogInterface.OnClickListener() {
@@ -92,9 +103,10 @@ public class NoteDialogFragment extends DialogFragment {
                             try {
                                 long ts = System.currentTimeMillis();
                                 String noteString = noteText.getText().toString();
+                                boolean alsoAsBookmark = alsoBookmarkCheck.isChecked();
 
                                 if (iAddNote != null)
-                                    iAddNote.addNote(longitude, latitude, elevation, ts, noteString);
+                                    iAddNote.addNote(longitude, latitude, elevation, ts, noteString, alsoAsBookmark);
 
                             } catch (Exception e) {
                                 GPLog.error(this, e.getLocalizedMessage(), e);
@@ -105,9 +117,7 @@ public class NoteDialogFragment extends DialogFragment {
             );
 
             builder.setNegativeButton(getString(android.R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
+                    (dialog, id) -> {
                     }
             );
 

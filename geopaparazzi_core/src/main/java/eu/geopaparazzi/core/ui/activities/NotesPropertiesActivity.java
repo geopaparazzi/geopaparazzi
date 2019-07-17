@@ -34,17 +34,23 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.utilities.Constants;
 
-import static eu.geopaparazzi.core.utilities.Constants.PREFS_KEY_NOTES_CUSTOMCOLOR;
-import static eu.geopaparazzi.core.utilities.Constants.PREFS_KEY_NOTES_OPACITY;
-import static eu.geopaparazzi.core.utilities.Constants.PREFS_KEY_NOTES_TEXT_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_TEXT_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_IMAGES_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_CHECK;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_CUSTOMCOLOR;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_OPACITY;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_SIZE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_TEXT_DOHALO;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_TEXT_SIZE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_TEXT_VISIBLE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_NOTES_VISIBLE;
 
 /**
  * Notes properties activity.
@@ -59,20 +65,20 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         super.onCreate(icicle);
         setContentView(R.layout.activity_notesproperties);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication.getInstance());
 
         // notes selection
-        boolean notesVisible = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, true);
+        boolean notesVisible = mPreferences.getBoolean(PREFS_KEY_NOTES_VISIBLE, true);
         CheckBox notesVisibilityCheckbox = findViewById(R.id.checkVisibility);
         notesVisibilityCheckbox.setChecked(notesVisible);
         notesVisibilityCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean(Constants.PREFS_KEY_NOTES_VISIBLE, isChecked);
+                editor.putBoolean(PREFS_KEY_NOTES_VISIBLE, isChecked);
                 editor.apply();
             }
         });
@@ -81,31 +87,31 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         // images selection
         CheckBox imagesView = findViewById(R.id.imagesvisible);
 
-        boolean imagesVisible = mPreferences.getBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, true);
+        boolean imagesVisible = mPreferences.getBoolean(PREFS_KEY_IMAGES_VISIBLE, true);
         imagesView.setChecked(imagesVisible);
         imagesView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean(Constants.PREFS_KEY_IMAGES_VISIBLE, isChecked);
+                editor.putBoolean(PREFS_KEY_IMAGES_VISIBLE, isChecked);
                 editor.apply();
             }
         });
 
         // use custom
         final CheckBox useCustomCheckbox = findViewById(R.id.checkUseCustom);
-        boolean doCustom = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, true);
+        boolean doCustom = mPreferences.getBoolean(PREFS_KEY_NOTES_CHECK, true);
         useCustomCheckbox.setChecked(doCustom);
         useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor editor = mPreferences.edit();
-                editor.putBoolean(Constants.PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
+                editor.putBoolean(PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
                 editor.apply();
             }
         });
 
         int arraySizeId = R.array.array_size;
         int sizespinnerId = R.id.sizeSpinner;
-        String prefsKey = Constants.PREFS_KEY_NOTES_SIZE;
+        String prefsKey = PREFS_KEY_NOTES_SIZE;
         String defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
 
@@ -128,29 +134,39 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         });
 
         // show labels
-        final CheckBox showLabelsCheckbox = findViewById(R.id.checkShowLabels);
-        boolean showLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
-        showLabelsCheckbox.setChecked(showLabels);
-        showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        final CheckBox showNotesLabelsCheckbox = findViewById(R.id.checkShowNotesLabels);
+        boolean showNotesLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
+        showNotesLabelsCheckbox.setChecked(showNotesLabels);
+        showNotesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showLabelsCheckbox.isChecked());
+                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showNotesLabelsCheckbox.isChecked());
+                editor.apply();
+            }
+        });
+        final CheckBox showImagesLabelsCheckbox = findViewById(R.id.checkShowImageLabels);
+        boolean showImagesLabels = mPreferences.getBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, true);
+        showImagesLabelsCheckbox.setChecked(showImagesLabels);
+        showImagesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Editor editor = mPreferences.edit();
+                editor.putBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, showImagesLabelsCheckbox.isChecked());
                 editor.apply();
             }
         });
 
         int fontSizeSpinnerId = R.id.fontSizeSpinner;
-        prefsKey = Constants.PREFS_KEY_NOTES_TEXT_SIZE;
+        prefsKey = PREFS_KEY_NOTES_TEXT_SIZE;
         defaultStr = "" + LibraryConstants.DEFAULT_NOTES_SIZE;
         makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
 
         final CheckBox haloCheckbox = findViewById(R.id.checkHalo);
-        boolean doHalo = mPreferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, true);
+        boolean doHalo = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_DOHALO, true);
         haloCheckbox.setChecked(doHalo);
         haloCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Editor editor = mPreferences.edit();
-                editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
+                editor.putBoolean(PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
                 editor.apply();
             }
         });

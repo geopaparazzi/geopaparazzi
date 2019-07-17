@@ -1,4 +1,4 @@
-// MainActivity.java
+// MapLayerListActivity.java
 // Hosts the GeopaparazziActivityFragment on a phone and both the
 // GeopaparazziActivityFragment and SettingsActivityFragment on a tablet
 package eu.geopaparazzi.core;
@@ -36,8 +36,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.SimplePosition;
 import eu.geopaparazzi.library.util.UrlUtilities;
-import eu.geopaparazzi.mapsforge.BaseMapSourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteSourcesManager;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -58,20 +56,16 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         permissionHelper = new PermissionWriteStorage();
         permissionHelper.add(new PermissionFineLocation()).add(new PermissionForegroundService());
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            // PERMISSIONS START
-            if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
-                completeInit();
-            } else {
-                if (permissionHelper.hasPermission(this)) {
-                    permissionHelper = permissionHelper.getNextWithoutPermission(this);
-                }
-                permissionHelper.requestPermission(this);
-            }
-            // PERMISSIONS STOP
-        } else {
+        // PERMISSIONS START
+        if (permissionHelper.hasPermission(this) && permissionHelper.getNextWithoutPermission(this) == null) {
             completeInit();
+        } else {
+            if (permissionHelper.hasPermission(this)) {
+                permissionHelper = permissionHelper.getNextWithoutPermission(this);
+            }
+            permissionHelper.requestPermission(this);
         }
+        // PERMISSIONS STOP
 
         setContentView(R.layout.activity_geopaparazzi);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -80,13 +74,13 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     }
 
     private void checkAvailableProfiles() {
-//        try {
-//            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
-            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
-            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+////        try {
+////            ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
+//            BaseMapSourcesManager.INSTANCE.forceBasemapsreRead();
+//            SpatialiteSourcesManager.INSTANCE.forceSpatialitemapsreRead();
+////        } catch (JSONException e) {
+////            e.printStackTrace();
+////        }
     }
 
     private void init() {
@@ -126,7 +120,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                     public void run() {
                         GeopaparazziCoreActivity activity = GeopaparazziCoreActivity.this;
                         try {
-                            DaoBookmarks.addBookmark(simplePosition.longitude, simplePosition.latitude, simplePosition.text, simplePosition.zoomLevel, -1, -1, -1, -1);
+                            DaoBookmarks.addBookmark(simplePosition.longitude, simplePosition.latitude, simplePosition.text, simplePosition.zoomLevel);
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                             PositionUtilities.putMapCenterInPreferences(preferences, simplePosition.longitude, simplePosition.latitude, 16);
                             Intent mapIntent = new Intent(activity, MapviewActivity.class);
@@ -181,19 +175,10 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         checkAvailableProfiles();
     }
 
-    // called after onCreate completes execution
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // force to exit through the exit button
-        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

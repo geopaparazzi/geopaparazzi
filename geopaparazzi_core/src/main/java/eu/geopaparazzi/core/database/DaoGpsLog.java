@@ -21,16 +21,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Paint;
 import android.location.Location;
 import android.util.Log;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.index.strtree.STRtree;
-
-import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.model.GeoPoint;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.index.strtree.STRtree;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -40,6 +36,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
@@ -52,14 +49,15 @@ import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.database.objects.GpsLogInfo;
 import eu.geopaparazzi.core.database.objects.Line;
 import eu.geopaparazzi.core.database.objects.LogMapItem;
+import eu.geopaparazzi.map.GPGeoPoint;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsDataTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsPropertiesTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.GpsLogsTableFields;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOGS;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOG_DATA;
-import static eu.geopaparazzi.core.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsDataTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsPropertiesTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsTableFields;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_DATA;
+import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -110,7 +108,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName()).append(" REAL NOT NULL, ");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName()).append(" REAL NOT NULL,");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName()).append(" REAL NOT NULL,");
-        sB.append(GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()).append(" DATE NOT NULL,");
+        sB.append(GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(GpsLogsDataTableFields.COLUMN_LOGID.getFieldName()).append(" INTEGER NOT NULL ");
         sB.append("CONSTRAINT ");
         sB.append(GpsLogsDataTableFields.COLUMN_LOGID.getFieldName());
@@ -250,7 +248,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                                    long timestamp) throws IOException {
 
         try {
-            new GeoPoint(lat, lon);
+            new GPGeoPoint(lat, lon);
         } catch (Exception e) {
             // if the point is not valid, do not insert it
             return;
@@ -460,139 +458,139 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return -1;
     }
 
-    /**
-     * Get the gps logs.
-     *
-     * @return the logs list
-     * @throws IOException if something goes wrong.
-     */
-    public static List<OverlayWay> getGpslogOverlays() throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        List<OverlayWay> logsList = new ArrayList<>();
-
-        StringBuilder sB = new StringBuilder();
-        sB.append("select l.");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(" AS ");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_COLOR.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_WIDTH.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName());
-        sB.append(" from ");
-        sB.append(TABLE_GPSLOGS);
-        sB.append(" l, ");
-        sB.append(TABLE_GPSLOG_PROPERTIES);
-        sB.append(" p where l.");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(" = p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName());
-        sB.append(" order by ");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        String query = sB.toString();
-
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(query, null);
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                int visible = c.getInt(3);
-                if (visible == 1) {
-                    long logid = c.getLong(0);
-                    String color = c.getString(1);
-                    double width = c.getDouble(2);
-
-                    Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    wayPaintOutline.setStyle(Paint.Style.STROKE);
-                    int lineColor = ColorUtilities.toColor(color);
-                    wayPaintOutline.setColor(lineColor);
-                    wayPaintOutline.setAlpha(255);
-                    wayPaintOutline.setStrokeWidth((float) width);
-                    wayPaintOutline.setStrokeJoin(Paint.Join.ROUND);
-
-                    OverlayWay way = new OverlayWay();
-                    List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
-                    if (gpslogGeoPoints.size() > 1) {
-                        way.setPaint(null, wayPaintOutline);
-                        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[gpslogGeoPoints.size()]);
-                        way.setWayNodes(new GeoPoint[][]{geoPoints});
-                        // item.setId(logid);
-                        // item.setVisible(visible == 1 ? true : false);
-                        logsList.add(way);
-                    }
-                }
-                c.moveToNext();
-            }
-        } finally {
-            if (c != null)
-                c.close();
-        }
-
-        // Logger.d(DEBUG_TAG, "Query: " + query);
-        // Logger.d(DEBUG_TAG, "gave logs: " + logsList.size());
-
-        return logsList;
-    }
-
-    /**
-     * Get a gpslog by id.
-     *
-     * @param logId        the log id.
-     * @param paintOutline the paint to use.
-     * @return the way overlay.
-     * @throws IOException if something goes wrong.
-     */
-    public static OverlayWay getGpslogOverlayById(long logId, Paint paintOutline) throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        OverlayWay way = new OverlayWay();
-        List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logId, -1);
-        way.setPaint(null, paintOutline);
-        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
-        way.setWayNodes(new GeoPoint[][]{geoPoints});
-        return way;
-    }
-
-    private static List<GeoPoint> getGpslogGeoPoints(SQLiteDatabase sqliteDatabase, long logId, int pointsNum)
-            throws IOException {
-
-        String asColumnsToReturn[] = {GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName()};
-        String strSortOrder = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
-        String strWhere = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "=" + logId;
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
-            int count = c.getCount();
-            int jump = 0;
-            if (pointsNum != -1 && count > pointsNum) {
-                jump = (int) Math.ceil((double) count / pointsNum);
-            }
-
-            c.moveToFirst();
-            List<GeoPoint> line = new ArrayList<>();
-            while (!c.isAfterLast()) {
-                double lon = c.getDouble(0);
-                double lat = c.getDouble(1);
-                try {
-                    line.add(new GeoPoint(lat, lon));
-                } catch (Exception e) {
-                    // ignore invalid coordinates
-                }
-                c.moveToNext();
-                for (int i = 1; i < jump; i++) {
-                    c.moveToNext();
-                    if (c.isAfterLast()) {
-                        break;
-                    }
-                }
-            }
-            return line;
-        } finally {
-            if (c != null)
-                c.close();
-        }
-    }
+//    /**
+//     * Get the gps logs.
+//     *
+//     * @return the logs list
+//     * @throws IOException if something goes wrong.
+//     */
+//    public static List<OverlayWay> getGpslogOverlays() throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        List<OverlayWay> logsList = new ArrayList<>();
+//
+//        StringBuilder sB = new StringBuilder();
+//        sB.append("select l.");
+//        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
+//        sB.append(" AS ");
+//        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
+//        sB.append(", p.");
+//        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_COLOR.getFieldName());
+//        sB.append(", p.");
+//        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_WIDTH.getFieldName());
+//        sB.append(", p.");
+//        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName());
+//        sB.append(" from ");
+//        sB.append(TABLE_GPSLOGS);
+//        sB.append(" l, ");
+//        sB.append(TABLE_GPSLOG_PROPERTIES);
+//        sB.append(" p where l.");
+//        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
+//        sB.append(" = p.");
+//        sB.append(GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName());
+//        sB.append(" order by ");
+//        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
+//        String query = sB.toString();
+//
+//        Cursor c = null;
+//        try {
+//            c = sqliteDatabase.rawQuery(query, null);
+//            c.moveToFirst();
+//            while (!c.isAfterLast()) {
+//                int visible = c.getInt(3);
+//                if (visible == 1) {
+//                    long logid = c.getLong(0);
+//                    String color = c.getString(1);
+//                    double width = c.getDouble(2);
+//
+//                    Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+//                    wayPaintOutline.setStyle(Paint.Style.STROKE);
+//                    int lineColor = ColorUtilities.toColor(color);
+//                    wayPaintOutline.setColor(lineColor);
+//                    wayPaintOutline.setAlpha(255);
+//                    wayPaintOutline.setStrokeWidth((float) width);
+//                    wayPaintOutline.setStrokeJoin(Paint.Join.ROUND);
+//
+//                    OverlayWay way = new OverlayWay();
+//                    List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
+//                    if (gpslogGeoPoints.size() > 1) {
+//                        way.setPaint(null, wayPaintOutline);
+//                        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[gpslogGeoPoints.size()]);
+//                        way.setWayNodes(new GeoPoint[][]{geoPoints});
+//                        // item.setId(logid);
+//                        // item.setVisible(visible == 1 ? true : false);
+//                        logsList.add(way);
+//                    }
+//                }
+//                c.moveToNext();
+//            }
+//        } finally {
+//            if (c != null)
+//                c.close();
+//        }
+//
+//        // Logger.d(DEBUG_TAG, "Query: " + query);
+//        // Logger.d(DEBUG_TAG, "gave logs: " + logsList.size());
+//
+//        return logsList;
+//    }
+//
+//    /**
+//     * Get a gpslog by id.
+//     *
+//     * @param logId        the log id.
+//     * @param paintOutline the paint to use.
+//     * @return the way overlay.
+//     * @throws IOException if something goes wrong.
+//     */
+//    public static OverlayWay getGpslogOverlayById(long logId, Paint paintOutline) throws IOException {
+//        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+//        OverlayWay way = new OverlayWay();
+//        List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logId, -1);
+//        way.setPaint(null, paintOutline);
+//        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+//        way.setWayNodes(new GeoPoint[][]{geoPoints});
+//        return way;
+//    }
+//
+//    private static List<GeoPoint> getGpslogGeoPoints(SQLiteDatabase sqliteDatabase, long logId, int pointsNum)
+//            throws IOException {
+//
+//        String asColumnsToReturn[] = {GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName()};
+//        String strSortOrder = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
+//        String strWhere = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "=" + logId;
+//        Cursor c = null;
+//        try {
+//            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+//            int count = c.getCount();
+//            int jump = 0;
+//            if (pointsNum != -1 && count > pointsNum) {
+//                jump = (int) Math.ceil((double) count / pointsNum);
+//            }
+//
+//            c.moveToFirst();
+//            List<GeoPoint> line = new ArrayList<>();
+//            while (!c.isAfterLast()) {
+//                double lon = c.getDouble(0);
+//                double lat = c.getDouble(1);
+//                try {
+//                    line.add(new GeoPoint(lat, lon));
+//                } catch (Exception e) {
+//                    // ignore invalid coordinates
+//                }
+//                c.moveToNext();
+//                for (int i = 1; i < jump; i++) {
+//                    c.moveToNext();
+//                    if (c.isAfterLast()) {
+//                        break;
+//                    }
+//                }
+//            }
+//            return line;
+//        } finally {
+//            if (c != null)
+//                c.close();
+//        }
+//    }
 
     /**
      * Update the properties of a log.

@@ -106,7 +106,7 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
 
         setContentView(eu.geopaparazzi.plugins.pdfexport.R.layout.activity_pdfexportnoteslist);
 
-        Toolbar toolbar = findViewById(eu.geopaparazzi.mapsforge.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
