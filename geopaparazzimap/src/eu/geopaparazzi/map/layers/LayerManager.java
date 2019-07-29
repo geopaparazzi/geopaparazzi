@@ -17,7 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.core.ResourcesManager;
+import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
+import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
+import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
@@ -158,9 +164,91 @@ public enum LayerManager {
      * @throws JSONException
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
+        //--  Remove all the layers From Map:
         mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
-        EditManager.INSTANCE.setEditLayer(null);
-        for (JSONObject layerDefinition : userLayersDefinitions) {
+
+        if (ProfilesHandler.INSTANCE.ProfileChanged) {
+            ProfilesHandler.INSTANCE.ProfileChanged = false;  // reset it
+
+            // Remove all the layers From LayerManager List:
+            userLayersDefinitions.clear();
+            EditManager.INSTANCE.setEditLayer(null);
+
+            //-- Add all the layers from the profile --
+            Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
+            if (activeProfile != null) {
+                GPApplication gpApplication = GPApplication.getInstance();
+                ResourcesManager resourcesManager = ResourcesManager.getInstance(gpApplication);
+                File sdcardDir = resourcesManager.getMainStorageDir();
+                for (ProfileBasemaps currentBasemap : activeProfile.basemapsList) {
+                    String filePath = currentBasemap.getRelativePath();
+                    File basemap = new File(sdcardDir, filePath);
+                    int index = addMapFile(basemap, null);  // adds to local list (and map?)
+                }
+                List<ProfileSpatialitemaps> spatialiteList = activeProfile.spatialiteList;
+                for (ProfileSpatialitemaps currentSpatialite : spatialiteList) {
+                    String filePath = currentSpatialite.getRelativePath();
+                    File spatialite = new File(sdcardDir, filePath);
+                    if (currentSpatialite.visibleLayerNames != null){
+                        for ( String tableName : currentSpatialite.visibleLayerNames ) {
+                            int index = addSpatialiteTable(spatialite, tableName, null);
+                        }
+                    }
+                }
+            }
+        }
+        //
+        loadMapLayers(mapView, userLayersDefinitions);
+        //-- Add system layers --
+        if (systemLayersDefinitions.size() > 0) {
+            for (JSONObject layerDefinition : systemLayersDefinitions) {
+                String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
+                boolean isEnabled = true;
+                boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
+                if (hasEnabled)
+                    isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+
+                if (layerClass.equals(GpsLogsLayer.class.getCanonicalName())) {
+                    GpsLogsLayer sysLayer = new GpsLogsLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(CurrentGpsLogLayer.class.getCanonicalName())) {
+                    CurrentGpsLogLayer sysLayer = new CurrentGpsLogLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(BookmarkLayer.class.getCanonicalName())) {
+                    BookmarkLayer sysLayer = new BookmarkLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(ImagesLayer.class.getCanonicalName())) {
+                    ImagesLayer sysLayer = new ImagesLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(NotesLayer.class.getCanonicalName())) {
+                    NotesLayer sysLayer = new NotesLayer(mapView, activitySupporter);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(GpsPositionLayer.class.getCanonicalName())) {
+                    GpsPositionLayer sysLayer = new GpsPositionLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(GpsPositionTextLayer.class.getCanonicalName())) {
+                    GpsPositionTextLayer sysLayer = new GpsPositionTextLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                } else if (layerClass.equals(GPMapScaleBarLayer.class.getCanonicalName())) {
+                    GPMapScaleBarLayer sysLayer = new GPMapScaleBarLayer(mapView);
+                    sysLayer.load();
+                    sysLayer.setEnabled(isEnabled);
+                }
+            }
+        } else {
+            loadSystemLayers(mapView, activitySupporter, systemLayersDefinitions);
+        }
+    }
+
+    public void loadMapLayers(GPMapView mapView,List<JSONObject> mapLayersDefinitions) throws Exception {
+        for (JSONObject layerDefinition : mapLayersDefinitions) {
             try {
                 String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
                 String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
@@ -240,51 +328,7 @@ public enum LayerManager {
                 GPLog.error(this, "Unable to load layer: " + layerDefinition.toString(2), e);
             }
         }
-        if (systemLayersDefinitions.size() > 0) {
-            for (JSONObject layerDefinition : systemLayersDefinitions) {
-                String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
-                boolean isEnabled = true;
-                boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
-                if (hasEnabled)
-                    isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
 
-                if (layerClass.equals(GpsLogsLayer.class.getCanonicalName())) {
-                    GpsLogsLayer sysLayer = new GpsLogsLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(CurrentGpsLogLayer.class.getCanonicalName())) {
-                    CurrentGpsLogLayer sysLayer = new CurrentGpsLogLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(BookmarkLayer.class.getCanonicalName())) {
-                    BookmarkLayer sysLayer = new BookmarkLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(ImagesLayer.class.getCanonicalName())) {
-                    ImagesLayer sysLayer = new ImagesLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(NotesLayer.class.getCanonicalName())) {
-                    NotesLayer sysLayer = new NotesLayer(mapView, activitySupporter);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(GpsPositionLayer.class.getCanonicalName())) {
-                    GpsPositionLayer sysLayer = new GpsPositionLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(GpsPositionTextLayer.class.getCanonicalName())) {
-                    GpsPositionTextLayer sysLayer = new GpsPositionTextLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                } else if (layerClass.equals(GPMapScaleBarLayer.class.getCanonicalName())) {
-                    GPMapScaleBarLayer sysLayer = new GPMapScaleBarLayer(mapView);
-                    sysLayer.load();
-                    sysLayer.setEnabled(isEnabled);
-                }
-            }
-        } else {
-            loadSystemLayers(mapView, activitySupporter, systemLayersDefinitions);
-        }
     }
 
     public void loadSystemLayers(GPMapView mapView, IActivitySupporter activitySupporter, List<JSONObject> systemLayersDefinitions) throws Exception {
@@ -463,33 +507,48 @@ public enum LayerManager {
         String name = FileUtilities.getNameWithoutExtention(finalFile);
         checkSameNameLayerExists(name);
 
+        JSONObject jo = null;
+
         ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
         if (layerType == null) {
-            throw new RuntimeException();
-        }
+//            throw new RuntimeException();
+        } else {
 
-        JSONObject jo = null;
-        switch (layerType) {
-            case MAPSFORGE: {
-                JSONObject existingObj = null;
-                for (JSONObject def : userLayersDefinitions) {
-                    String type = def.getString(IGpLayer.LAYERTYPE_TAG);
-                    ELayerTypes layerTypes = ELayerTypes.fromType(type);
-                    if (layerTypes == ELayerTypes.MAPSFORGE) {
-                        existingObj = def;
-                        break;
+            switch (layerType) {
+                case MAPSFORGE: {
+                    JSONObject existingObj = null;
+                    for (JSONObject def : userLayersDefinitions) {
+                        String type = def.getString(IGpLayer.LAYERTYPE_TAG);
+                        ELayerTypes layerTypes = ELayerTypes.fromType(type);
+                        if (layerTypes == ELayerTypes.MAPSFORGE) {
+                            existingObj = def;
+                            break;
+                        }
                     }
-                }
 
-                if (existingObj != null) {
-                    String existingName = existingObj.getString(IGpLayer.LAYERNAME_TAG);
-                    String existingPath = existingObj.getString(IGpLayer.LAYERPATH_TAG);
-                    existingName += IGpLayer.PATHS_DELIMITER + name;
-                    existingPath += IGpLayer.PATHS_DELIMITER + finalFile.getAbsolutePath();
-                    existingObj.put(IGpLayer.LAYERNAME_TAG, existingName);
-                    existingObj.put(IGpLayer.LAYERPATH_TAG, existingPath);
-                    return -1;
-                } else {
+                    if (existingObj != null) {
+                        String existingName = existingObj.getString(IGpLayer.LAYERNAME_TAG);
+                        String existingPath = existingObj.getString(IGpLayer.LAYERPATH_TAG);
+                        existingName += IGpLayer.PATHS_DELIMITER + name;
+                        existingPath += IGpLayer.PATHS_DELIMITER + finalFile.getAbsolutePath();
+                        existingObj.put(IGpLayer.LAYERNAME_TAG, existingName);
+                        existingObj.put(IGpLayer.LAYERPATH_TAG, existingPath);
+                        return -1;
+                    } else {
+                        jo = new JSONObject();
+                        jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
+                        jo.put(IGpLayer.LAYERNAME_TAG, name);
+                        jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
+                        if (!userLayersDefinitions.contains(jo))
+                            if (index != null) {
+                                userLayersDefinitions.add(index, jo);
+                            } else {
+                                userLayersDefinitions.add(jo);
+                            }
+                    }
+                    break;
+                }
+                case MBTILES: {
                     jo = new JSONObject();
                     jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
                     jo.put(IGpLayer.LAYERNAME_TAG, name);
@@ -501,19 +560,6 @@ public enum LayerManager {
                             userLayersDefinitions.add(jo);
                         }
                 }
-                break;
-            }
-            case MBTILES: {
-                jo = new JSONObject();
-                jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
-                jo.put(IGpLayer.LAYERNAME_TAG, name);
-                jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
-                if (!userLayersDefinitions.contains(jo))
-                    if (index != null) {
-                        userLayersDefinitions.add(index, jo);
-                    } else {
-                        userLayersDefinitions.add(jo);
-                    }
             }
         }
         if (jo != null) {

@@ -39,3 +39,6 @@ ant.properties
 
 geopaparazzi.app/release/
 geopaparazzi.app/debug/
+
+# Project specific
+wms_nww/
