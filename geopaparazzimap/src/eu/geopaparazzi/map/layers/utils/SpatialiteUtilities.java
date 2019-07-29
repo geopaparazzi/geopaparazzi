@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -253,6 +254,21 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
      */
     public static Style getStyle4Table(ASpatialDb database, String tableName, String labelField)
             throws Exception {
+
+        StringBuilder sbTableInfo = new StringBuilder();
+        sbTableInfo.append("PRAGMA table_info('").append(PROPERTIESTABLE).append("')");
+//        sbTableInfo.append("PRAGMA table_info('dataproperties')");
+        String tableInfo = sbTableInfo.toString();
+        boolean hasThemeColumn = database.execOnConnection(connection -> {
+            try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(tableInfo)) {
+                while (rs.next()) {
+                    String columnName = rs.getString(2); //("name");
+                    if( columnName.equalsIgnoreCase(THEME )) return true;
+                }
+            }
+            return false;
+        });
+
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("select ");
         sbSel.append(ID).append(" , ");
@@ -271,8 +287,11 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
         sbSel.append(DASH).append(" , ");
         sbSel.append(MINZOOM).append(" , ");
         sbSel.append(MAXZOOM).append(" , ");
-        sbSel.append(DECIMATION).append(" , ");
-        sbSel.append(THEME);
+        sbSel.append(DECIMATION);
+        if (hasThemeColumn) {
+            sbSel.append(" , ");
+            sbSel.append(THEME);
+        }
         sbSel.append(" from ");
         sbSel.append(PROPERTIESTABLE);
         sbSel.append(" where ");
@@ -305,7 +324,10 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
                     st.maxZoom = rs.getInt(i++);
                     st.decimationFactor = rs.getFloat(i++);
 
-                    String theme = rs.getString(i++);
+                    String theme = null;
+                    if (hasThemeColumn) {
+                        theme = rs.getString(i++);
+                    }
                     if (theme != null && theme.trim().length() > 0) {
                         try {
                             JSONObject root = new JSONObject(theme);
