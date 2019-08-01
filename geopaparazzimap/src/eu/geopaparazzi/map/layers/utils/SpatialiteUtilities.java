@@ -255,19 +255,12 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
     public static Style getStyle4Table(ASpatialDb database, String tableName, String labelField)
             throws Exception {
 
-        StringBuilder sbTableInfo = new StringBuilder();
-        sbTableInfo.append("PRAGMA table_info('").append(PROPERTIESTABLE).append("')");
-//        sbTableInfo.append("PRAGMA table_info('dataproperties')");
-        String tableInfo = sbTableInfo.toString();
-        boolean hasThemeColumn = database.execOnConnection(connection -> {
-            try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(tableInfo)) {
-                while (rs.next()) {
-                    String columnName = rs.getString(2); //("name");
-                    if( columnName.equalsIgnoreCase(THEME )) return true;
-                }
-            }
-            return false;
-        });
+        boolean themeColumn = false;
+        List<String[]> tableColumnInfos = database.getTableColumns(PROPERTIESTABLE);
+        for (String[] columnInfo : tableColumnInfos) {
+            if (columnInfo[0].equalsIgnoreCase(THEME )) themeColumn = true;
+        }
+        final boolean hasThemeColumn = themeColumn;
 
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("select ");
