@@ -12,7 +12,9 @@ import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Layers;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -189,8 +191,8 @@ public enum LayerManager {
                 for (ProfileSpatialitemaps currentSpatialite : spatialiteList) {
                     String filePath = currentSpatialite.getRelativePath();
                     File spatialite = new File(sdcardDir, filePath);
-                    if (currentSpatialite.visibleLayerNames != null){
-                        for ( String tableName : currentSpatialite.visibleLayerNames ) {
+                    if (currentSpatialite.visibleLayerNames != null) {
+                        for (String tableName : currentSpatialite.visibleLayerNames) {
                             int index = addSpatialiteTable(spatialite, tableName, null);
                         }
                     }
@@ -247,7 +249,7 @@ public enum LayerManager {
         }
     }
 
-    public void loadMapLayers(GPMapView mapView,List<JSONObject> mapLayersDefinitions) throws Exception {
+    public void loadMapLayers(GPMapView mapView, List<JSONObject> mapLayersDefinitions) throws Exception {
         for (JSONObject layerDefinition : mapLayersDefinitions) {
             try {
                 String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);
@@ -600,6 +602,48 @@ public enum LayerManager {
                 userLayersDefinitions.add(jo);
             }
         return userLayersDefinitions.indexOf(jo);
+    }
+
+    public int addMapurlBitmapTileService(File mapurlFile, Integer index) throws Exception {
+//        url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
+//        minzoom=0
+//        maxzoom=19
+//        center=11.42 46.8
+//        type=google
+//        format=png
+//        defaultzoom=13
+//        mbtiles=defaulttiles/_mapnik.mbtiles
+//        description=Mapnik - Openstreetmap Slippy Map Tileserver - Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL.
+
+        String name = FileUtilities.getNameWithoutExtention(mapurlFile);
+        checkSameNameLayerExists(name);
+        LinkedHashMap<String, String> paramsMap = FileUtilities.readFileToHashMap(mapurlFile, null, false);
+
+        String url = paramsMap.get("url");
+        if (url != null) {
+            int firstSlash = url.indexOf('/', 9);
+            if (firstSlash != -1) {
+                String newUrl = url.substring(0, firstSlash);
+                String path = url.substring(firstSlash);
+                path = path.replace("ZZZ", "{Z}");
+                path = path.replace("YYY", "{Y}");
+                path = path.replace("XXX", "{X}");
+
+                String maxZoomStr = paramsMap.get("maxzoom");
+                int maxZoom = 19;
+                try {
+                    if (maxZoomStr != null) {
+                        maxZoom = (int) Double.parseDouble(maxZoomStr);
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+
+                return addBitmapTileService(name, newUrl, path, maxZoom, 1f, null);
+            }
+        }
+
+        throw new Exception("Mapurl file format not recognized.");
     }
 
     public int addBitmapTileService(String name, String url, String tilePath, int maxZoom, float alpha, Integer index) throws Exception {

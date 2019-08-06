@@ -12,7 +12,6 @@ import android.view.View;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
 import org.oscim.layers.Layer;
-import org.oscim.map.Layers;
 import org.oscim.renderer.MapRenderer;
 import org.oscim.theme.VtmThemes;
 
@@ -29,8 +28,6 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
-import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
-import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
@@ -284,4 +281,25 @@ public class GPMapView extends org.oscim.android.MapView {
     public void setMapTilt(double tilt) {
         map().viewport().setTilt((float) tilt);
     }
+
+    public void blockMap(boolean resetRotation, boolean resetTilt) {
+        if (resetRotation) {
+            setMapRotation(0.0d);
+        }
+        if (resetTilt) {
+            setMapTilt(0);
+        }
+        enableRotationGesture(false);
+        enableTiltGesture(false);
+    }
+
+    public void blockMap() {
+        blockMap(true, true);
+    }
+
+    public void releaseMapBlock() {
+        enableRotationGesture(true);
+        enableTiltGesture(true);
+    }
 }
+

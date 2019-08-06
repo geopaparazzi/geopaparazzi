@@ -991,9 +991,11 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 } catch (Exception e) {
                     GPLog.error(this, null, e);
                 }
+                mapView.blockMap();
             } else {
                 toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
                 EditManager.INSTANCE.setActiveTool(null);
+                mapView.releaseMapBlock();
             }
         } else if (i == R.id.toggleEditingButton) {
             toggleEditing();
@@ -1007,6 +1009,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         if (isEditing) {
             disableEditing();
+            mapView.releaseMapBlock();
         } else {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
@@ -1024,11 +1027,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
 
-            mapView.setMapRotation(0.0d);
-            mapView.setMapTilt(0);
+            mapView.blockMap();
         }
-        mapView.enableRotationGesture(isEditing);
-        mapView.enableTiltGesture(isEditing);
     }
 
     private void disableEditing() {

@@ -401,6 +401,8 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                         String filePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                         File file = new File(filePath);
                         if (file.exists()) {
+                            int focusedColumn = mBoardView.getFocusedColumn();
+                            int itemCount = mBoardView.getItemCount(focusedColumn);
                             Utilities.setLastFilePath(getActivity(), filePath);
                             final File finalFile = file;
                             ELayerTypes layerType = ELayerTypes.fromFileExt(finalFile.getName());
@@ -408,8 +410,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                 case MAPSFORGE:
                                 case MBTILES:
                                     int index = LayerManager.INSTANCE.addMapFile(finalFile, null);
-                                    int focusedColumn = mBoardView.getFocusedColumn();
-                                    int itemCount = mBoardView.getItemCount(focusedColumn);
+
                                     if (index >= 0) {
                                         MapLayerItem item = new MapLayerItem();
                                         item.type = layerType.getType();
@@ -433,6 +434,37 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                         adapter.setItemList(mItemArray);
                                     }
                                     break;
+                                case MAPURL: {
+                                    String readfile = FileUtilities.readfile(finalFile);
+                                    if (readfile.replace(" ", "").contains("type=wms")) {
+                                        GPDialogs.warningDialog(getActivity(), "WMS mapurl is not yet supported in this version.", null);
+                                    } else {
+                                        int index1 = LayerManager.INSTANCE.addMapurlBitmapTileService(finalFile, null);
+                                        if (index1 >= 0) {
+                                            MapLayerItem item = new MapLayerItem();
+                                            item.type = layerType.getType();
+                                            item.position = index1;
+                                            item.name = FileUtilities.getNameWithoutExtention(finalFile);
+                                            item.path = finalFile.getAbsolutePath();
+                                            item.enabled = true;
+
+                                            mBoardView.addItem(focusedColumn, itemCount, item, true);
+                                        } else {
+                                            // reload list to show changes in existing item
+                                            DragItemAdapter adapter = mBoardView.getAdapter(focusedColumn);
+                                            List<JSONObject> layerDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                            int i = 0;
+                                            List<MapLayerItem> mItemArray = new ArrayList<>();
+                                            for (JSONObject layerDefinition : layerDefinitions) {
+                                                MapLayerItem layerItem = getMapLayerItem(i, layerDefinition);
+                                                mItemArray.add(layerItem);
+                                                i++;
+                                            }
+                                            adapter.setItemList(mItemArray);
+                                        }
+                                    }
+                                    break;
+                                }
                                 case SPATIALITE: {
                                     // ask for table
                                     List<String> tableNames = null;

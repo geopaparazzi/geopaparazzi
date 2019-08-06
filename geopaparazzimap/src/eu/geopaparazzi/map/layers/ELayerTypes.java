@@ -11,6 +11,7 @@ public enum ELayerTypes {
     VECTORTILESSERVICE("VectorTilesService", VectorTilesServiceLayer.class.getCanonicalName()),
     BITMAPTILESERVICE("BitmapTileService", BitmapTileServiceLayer.class.getCanonicalName()),
     MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName()),
+    MAPURL("mapurl", BitmapTileServiceLayer.class.getCanonicalName()),
     SPATIALITE("sqlite", SpatialiteTableLayer.class.getCanonicalName());
 
     public static final int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
@@ -51,6 +52,8 @@ public enum ELayerTypes {
             return ELayerTypes.MAPSFORGE;
         } else if (fileName.endsWith(SPATIALITE_EXT)) {
             return ELayerTypes.SPATIALITE;
+        } else if (fileName.endsWith(MAPURL_EXT)) {
+            return ELayerTypes.MAPURL;
         }
 
         return null;

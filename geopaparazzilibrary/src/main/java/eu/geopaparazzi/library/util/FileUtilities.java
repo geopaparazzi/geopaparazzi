@@ -30,10 +30,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -43,12 +45,12 @@ public class FileUtilities {
 
     /**
      * Copy a file.
-     * 
+     *
      * @param fromFile source file.
-     * @param toFile dest file.
-     * @throws IOException  if something goes wrong. 
+     * @param toFile   dest file.
+     * @throws IOException if something goes wrong.
      */
-    public static void copyFile( String fromFile, String toFile ) throws IOException {
+    public static void copyFile(String fromFile, String toFile) throws IOException {
         File in = new File(fromFile);
         File out = new File(toFile);
         copyFile(in, out);
@@ -56,12 +58,12 @@ public class FileUtilities {
 
     /**
      * Copy a file.
-     * 
-     * @param in source file.
+     *
+     * @param in  source file.
      * @param out dest file.
-     * @throws IOException  if something goes wrong. 
+     * @throws IOException if something goes wrong.
      */
-    public static void copyFile( File in, File out ) throws IOException {
+    public static void copyFile(File in, File out) throws IOException {
         FileInputStream fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
         copyFile(fis, fos);
@@ -69,16 +71,16 @@ public class FileUtilities {
 
     /**
      * Copy a file.
-     * 
+     *
      * @param fis source file.
      * @param fos dest file.
-     * @throws IOException  if something goes wrong. 
+     * @throws IOException if something goes wrong.
      */
-    public static void copyFile( InputStream fis, OutputStream fos ) throws IOException {
+    public static void copyFile(InputStream fis, OutputStream fos) throws IOException {
         try {
             byte[] buf = new byte[1024];
             int i = 0;
-            while( (i = fis.read(buf)) != -1 ) {
+            while ((i = fis.read(buf)) != -1) {
                 fos.write(buf, 0, i);
             }
         } finally {
@@ -91,31 +93,31 @@ public class FileUtilities {
 
     /**
      * Get the file name without extension.
-     * 
+     *
      * @param file the file.
      * @return the name.
      */
-    public static String getNameWithoutExtention( File file ) {
+    public static String getNameWithoutExtention(File file) {
         String name = file.getName();
         int lastDot = name.lastIndexOf("."); //$NON-NLS-1$
         name = name.substring(0, lastDot);
         return name;
     }
 
-    /** 
+    /**
      * Read a file to string.
-     * 
+     *
      * @param file file to read.
      * @return the read string.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static String readfile( File file ) throws IOException {
+    public static String readfile(File file) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
             String line = null;
-            while( (line = br.readLine()) != null ) {
+            while ((line = br.readLine()) != null) {
                 if (line.length() == 0 || line.startsWith("#")) { //$NON-NLS-1$
                     continue;
                 }
@@ -134,20 +136,20 @@ public class FileUtilities {
         }
     }
 
-    /** 
+    /**
      * Read a file to a list of line strings.
-     * 
+     *
      * @param file file to read.
      * @return the read lines list.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static List<String> readfileToList( File file ) throws IOException {
+    public static List<String> readfileToList(File file) throws IOException {
         BufferedReader br = null;
         List<String> linesList = new ArrayList<String>();
         try {
             br = new BufferedReader(new FileReader(file));
             String line = null;
-            while( (line = br.readLine()) != null ) {
+            while ((line = br.readLine()) != null) {
                 if (line.length() == 0 || line.startsWith("#")) { //$NON-NLS-1$
                     continue;
                 }
@@ -168,12 +170,12 @@ public class FileUtilities {
 
     /**
      * Write a string to file.
-     * 
+     *
      * @param text the string.
      * @param file the file.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static void writefile( String text, File file ) throws IOException {
+    public static void writefile(String text, File file) throws IOException {
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(file));
@@ -192,12 +194,12 @@ public class FileUtilities {
 
     /**
      * Write a byte[] to file.
-     * 
-     * @param data byte[].
+     *
+     * @param data     byte[].
      * @param fileName the fileName.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static void writefiledata( byte[] data, String fileName ) throws IOException {
+    public static void writefiledata(byte[] data, String fileName) throws IOException {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(fileName);
@@ -222,11 +224,11 @@ public class FileUtilities {
      * @param filehandle file to remove.
      * @return true if all deletions were successful
      */
-    public static boolean deleteFileOrDir( File filehandle ) {
+    public static boolean deleteFileOrDir(File filehandle) {
 
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
-            for( int i = 0; i < children.length; i++ ) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteFileOrDir(new File(filehandle, children[i]));
                 if (!success) {
                     return false;
@@ -251,10 +253,10 @@ public class FileUtilities {
      * @param filehandle file to remove.
      * @return true if all went well
      */
-    public static boolean deleteFileOrDirOnExit( File filehandle ) {
+    public static boolean deleteFileOrDirOnExit(File filehandle) {
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
-            for( int i = 0; i < children.length; i++ ) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteFileOrDir(new File(filehandle, children[i]));
                 if (!success) {
                     return false;
@@ -269,12 +271,12 @@ public class FileUtilities {
      * Checks if a given file exists in a supplied folder.
      *
      * @param fileName the name of the file to check.
-     * @param folder the folder.
+     * @param folder   the folder.
      * @return <code>true</code>, if the file exists
      */
-    public static boolean fileExistsInFolder( final String fileName, File folder ) {
-        File[] listFiles = folder.listFiles(new FilenameFilter(){
-            public boolean accept( File arg0, String tmpName ) {
+    public static boolean fileExistsInFolder(final String fileName, File folder) {
+        File[] listFiles = folder.listFiles(new FilenameFilter() {
+            public boolean accept(File arg0, String tmpName) {
                 return fileName.trim().equals(tmpName.trim());
             }
         });
@@ -287,9 +289,9 @@ public class FileUtilities {
      *
      * @param file the file to read.
      * @return the read byte array.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static byte[] readFileToByte( File file ) throws IOException {
+    public static byte[] readFileToByte(File file) throws IOException {
         RandomAccessFile f = new RandomAccessFile(file, "r");
         try {
             long length = f.length();
@@ -300,19 +302,20 @@ public class FileUtilities {
             f.close();
         }
     }
+
     /**
      * Recursive search of files with a specific extension.
      *
      * <p>This can be called multiple times, adding to the same list
      *
-     * @param searchDir the directory to read.
+     * @param searchDir        the directory to read.
      * @param searchExtentions the extensions of the files to search for.
-     * @param returnFiles the List<File> where the found files will be added to.
+     * @param returnFiles      the List<File> where the found files will be added to.
      * @return the number of files found.
      */
-    public static int searchDirectoryRecursive( File searchDir, String[] searchExtentions, List<File> returnFiles ) {
+    public static int searchDirectoryRecursive(File searchDir, String[] searchExtentions, List<File> returnFiles) {
         File[] listFiles = searchDir.listFiles();
-        for( File thisFile : listFiles ) {
+        for (File thisFile : listFiles) {
             // mj10777: collect desired extension
             if (thisFile.isDirectory()) {
                 // mj10777: read recursive directories inside the
@@ -327,5 +330,49 @@ public class FileUtilities {
             }
         }
         return returnFiles.size();
+    }
+
+    /**
+     * Method to read a properties file into a {@link LinkedHashMap}. <p/> <p>Empty lines are ignored, as well as lines
+     * that do not contain the separator.</p>
+     *
+     * @param file       the file to read.
+     * @param separator  the separator or <code>null</code>. Defaults to '='.
+     * @param valueFirst if <code>true</code>, the second part of the string is used as key.
+     * @return the read map.
+     * @throws IOException
+     */
+    public static LinkedHashMap<String, String> readFileToHashMap(File file, String separator, boolean valueFirst)
+            throws IOException {
+        if (separator == null) {
+            separator = "=";
+        }
+        List<String> lines = readfileToList(file);
+        LinkedHashMap<String, String> propertiesMap = new LinkedHashMap<>();
+        for (String line : lines) {
+            line = line.trim();
+            if (line.length() == 0) {
+                continue;
+            }
+            if (!line.contains(separator)) {
+                continue;
+            }
+            String[] lineSplit = line.split(separator);
+            if (!valueFirst) {
+                String key = lineSplit[0].trim();
+                String value = "";
+                if (lineSplit.length > 1) {
+                    value = lineSplit[1].trim();
+                }
+                propertiesMap.put(key, value);
+            } else {
+                if (lineSplit.length > 1) {
+                    String key = lineSplit[0].trim();
+                    String value = lineSplit[1].trim();
+                    propertiesMap.put(value, key);
+                }
+            }
+        }
+        return propertiesMap;
     }
 }
