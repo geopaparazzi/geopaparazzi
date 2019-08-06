@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -253,6 +254,14 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
      */
     public static Style getStyle4Table(ASpatialDb database, String tableName, String labelField)
             throws Exception {
+
+        boolean themeColumn = false;
+        List<String[]> tableColumnInfos = database.getTableColumns(PROPERTIESTABLE);
+        for (String[] columnInfo : tableColumnInfos) {
+            if (columnInfo[0].equalsIgnoreCase(THEME )) themeColumn = true;
+        }
+        final boolean hasThemeColumn = themeColumn;
+
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("select ");
         sbSel.append(ID).append(" , ");
@@ -271,8 +280,11 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
         sbSel.append(DASH).append(" , ");
         sbSel.append(MINZOOM).append(" , ");
         sbSel.append(MAXZOOM).append(" , ");
-        sbSel.append(DECIMATION).append(" , ");
-        sbSel.append(THEME);
+        sbSel.append(DECIMATION);
+        if (hasThemeColumn) {
+            sbSel.append(" , ");
+            sbSel.append(THEME);
+        }
         sbSel.append(" from ");
         sbSel.append(PROPERTIESTABLE);
         sbSel.append(" where ");
@@ -305,7 +317,10 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
                     st.maxZoom = rs.getInt(i++);
                     st.decimationFactor = rs.getFloat(i++);
 
-                    String theme = rs.getString(i++);
+                    String theme = null;
+                    if (hasThemeColumn) {
+                        theme = rs.getString(i++);
+                    }
                     if (theme != null && theme.trim().length() > 0) {
                         try {
                             JSONObject root = new JSONObject(theme);

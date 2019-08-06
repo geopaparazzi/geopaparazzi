@@ -53,8 +53,7 @@ public enum ELayerTypes {
             return ELayerTypes.SPATIALITE;
         }
 
-
-        throw new IllegalArgumentException("No layer type supported for file type: " + fileName);
+        return null;
     }
 
 }
