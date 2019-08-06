@@ -234,7 +234,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
 
                 for (OGCBoundingBox bbox : layerCapability.getBoundingBoxes()) {
                     String crs = bbox.getCRS();
-                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
+                    if (crs != null && (crs.equals("CRS:84") || crs.equals("EPSG:4326"))) {
                         double centerX = bbox.getMinx() + (bbox.getMaxx() - bbox.getMinx()) / 2.0;
                         double centerY = bbox.getMiny() + (bbox.getMaxy() - bbox.getMiny()) / 2.0;
                         sb.append("center=");
