@@ -538,4 +538,44 @@ public enum ProfilesHandler {
         return profileList;
     }
 
+    public static String absoluteCloudProfileUrl(String url, String cloudProfileServer) {
+        String sNewURL = "";
+        URL aServer = null;
+        URL aUrl;
+        String urlProtocol;
+
+        if (url == null){
+            url = "";
+        };
+        if (url.isEmpty()){ // just return an empty url (do not prepend the cloudProfileServer)
+            sNewURL = url;
+        } else {
+            try {
+                aServer = new URL(cloudProfileServer);
+            } catch (MalformedURLException e) {
+                if (cloudProfileServer != null && !cloudProfileServer.isEmpty()) {
+                    GPLog.error("absoluteCloudProfileUrl: " + "", "Bad server URL: " + cloudProfileServer, e);
+                } else {
+                    sNewURL = url;
+                }
+            }
+
+            try {
+                aUrl = new URL(url);
+                sNewURL = url;  // if try succeeds, then it is an absolute (fully qualified) URL, so use it as is
+            } catch (MalformedURLException e) {  // not a full url, so we need to form a url from the server and file parts
+                if (aServer != null) {
+                    sNewURL = aServer.getProtocol() + ":";
+                    if (!url.startsWith("//"))
+                        sNewURL += "//" + aServer.getAuthority(); // consists of host with an optional port number, username and password
+                    if (!url.startsWith("/"))   // an unusual case: relative to entire server url so add the server path
+                        sNewURL += aServer.getPath();  // getPath includes a leading "/"
+                }
+                if (!url.isEmpty() && !url.startsWith("/")) sNewURL += "/";
+                sNewURL += url;
+            }
+
+        }
+        return sNewURL;
+    }
 }
