@@ -81,6 +81,8 @@ public enum ProfilesHandler {
     public static final String MAINSTORAGE = "MAINSTORAGE";
     public static final String SECONDARYSTORAGE = "SECONDARYSTORAGE";
 
+    public boolean ProfileChanged;
+
     /**
      * The active profile.
      */
