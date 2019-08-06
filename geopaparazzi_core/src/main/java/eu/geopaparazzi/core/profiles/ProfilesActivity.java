@@ -111,23 +111,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
                 if (activeProfile != null) {
                     if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {
-                        if (activeProfile.basemapsList.size() > 0) {
-                            try {
-                                GPApplication gpApplication = GPApplication.getInstance();
-                                ResourcesManager resourcesManager = ResourcesManager.getInstance(gpApplication);
-                                File sdcardDir = resourcesManager.getMainStorageDir();
-
-                                for (ProfileBasemaps currentBasemap : activeProfile.basemapsList) {
-                                    String filePath = currentBasemap.getRelativePath();
-                                    File basemap = new File(sdcardDir, filePath);
-                                    // FIXME
-//                                    BaseMapSourcesManager.INSTANCE.addBaseMapsFromFile(basemap);
-                                }
-                            } catch (Exception e) {
-                                GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
-                                Log.e("Profiles", "", e);
-                            }
-                        }
+                        ProfilesHandler.INSTANCE.ProfileChanged = true;  // used to set map layers to profile's layers
                         String mapViewJson = activeProfile.mapView;
                         String[] coordinates = mapViewJson.split(",");
                         if (coordinates.length == 3) {
