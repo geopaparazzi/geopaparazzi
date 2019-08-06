@@ -44,10 +44,10 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         locationRenderer.setAccuracyColor(Color.get(50, 50, 255));
 
         // set color of indicator circle (Color.RED is default)
-        locationRenderer.setIndicatorColor(Color.MAGENTA);
+        locationRenderer.setIndicatorColor(Color.get(0, 0, 0, 0));
 
         // set billboard rendering for TextureRegion (false is default)
-        locationRenderer.setBillboard(false);
+        locationRenderer.setBillboard(true); // TODO check this and in case put false
     }
 
     private static TextureRegion createTextures(Context context) throws IOException {
@@ -66,17 +66,17 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         super(map, textureRegion);
     }
 
-    public void setActive() {
-        locationRenderer.setTextureRegion(activeTexture);
-    }
-
-    public void setStale() {
-        locationRenderer.setTextureRegion(staleTexture);
-    }
-
-    public void setMoving() {
-        locationRenderer.setTextureRegion(movingTexture);
-    }
+//    public void setActive() {
+//        locationRenderer.setTextureRegion(activeTexture);
+//    }
+//
+//    public void setStale() {
+//        locationRenderer.setTextureRegion(staleTexture);
+//    }
+//
+//    public void setMoving() {
+//        locationRenderer.setTextureRegion(movingTexture);
+//    }
 
 
     /**
@@ -87,15 +87,16 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
      * @param lastGpsLoggingStatus
      */
     public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus) {
-        if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-            if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
-                setMoving();
-            } else {
-                setActive();
-            }
-        } else {
-            setStale();
-        }
+        // TODO check if this makes everything better
+//        if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+//            if (lastGpsPositionExtras != null && lastGpsPositionExtras[2] != 0) {
+//                setMoving();
+//            } else {
+//                setActive();
+//            }
+//        } else {
+//            setStale();
+//        }
 
         float bearing = 0;
         float accuracy = 0;

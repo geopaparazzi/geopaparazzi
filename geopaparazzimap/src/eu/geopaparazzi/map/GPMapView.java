@@ -277,11 +277,11 @@ public class GPMapView extends org.oscim.android.MapView {
         map().getEventLayer().enableTilt(enable);
     }
 
-    public void setRotation(double degrees) {
+    public void setMapRotation(double degrees) {
         map().viewport().setRotation(degrees);
     }
 
-    public void setTilt(double tilt) {
+    public void setMapTilt(double tilt) {
         map().viewport().setTilt((float) tilt);
     }
 }

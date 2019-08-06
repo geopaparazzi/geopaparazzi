@@ -1005,8 +1005,6 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         boolean isEditing = activeToolGroup != null;
 
-        mapView.enableRotationGesture(isEditing);
-        mapView.enableTiltGesture(isEditing);
         if (isEditing) {
             disableEditing();
         } else {
@@ -1026,9 +1024,11 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
             setLeftButtoonsEnablement(false);
 
-            mapView.setRotation(0);
-            mapView.setTilt(0);
+            mapView.setMapRotation(0.0d);
+            mapView.setMapTilt(0);
         }
+        mapView.enableRotationGesture(isEditing);
+        mapView.enableTiltGesture(isEditing);
     }
 
     private void disableEditing() {
