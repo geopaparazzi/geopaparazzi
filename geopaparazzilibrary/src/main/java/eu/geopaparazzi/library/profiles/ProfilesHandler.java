@@ -29,12 +29,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileOtherfiles;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
