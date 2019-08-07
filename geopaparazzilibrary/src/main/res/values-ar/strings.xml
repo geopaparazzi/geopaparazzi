@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">نعم</string>
+  <string name="no">لا</string>
+  <string name="label_red">أحمر</string>
+  <string name="label_green">أخضر</string>
+  <string name="label_blue">ازرق</string>
+  <string name="osmbonuspack.format_distance_kilometers">%sكم</string>
+  <string name="osmbonuspack.format_distance_meters">%sم</string>
+</resources>
