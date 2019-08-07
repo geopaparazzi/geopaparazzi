@@ -220,7 +220,7 @@ public class GeocodeActivity extends AppCompatActivity {
                         return getString(R.string.routing_failure_with_url) + "\n" + url;
                     }
 
-                    String distance = " (" + ((int) (road.mLength * 10)) / 10.0 + "km )";
+                    String distance = " (" + ((int) (road.mLength * 10)) / 10.0 + "km )"; //NON-NLS
                     ArrayList<GeoPoint> routeNodes = road.mRouteHigh;
                     float[] routePoints = new float[routeNodes.size() * 2];
                     int index = 0;

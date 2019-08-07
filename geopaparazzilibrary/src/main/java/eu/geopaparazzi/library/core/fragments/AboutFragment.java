@@ -89,7 +89,7 @@ public class AboutFragment extends Fragment {
         try {
             AssetManager assetManager = getActivity().getAssets();
             InputStream inputStream = assetManager.open("about.html");//NON-NLS
-            String htmlText = new Scanner(inputStream).useDelimiter("\\A").next();
+            String htmlText = new Scanner(inputStream).useDelimiter("\\A").next();//NON-NLS
 
             String applicationName= "Geopaparazzi";//NON-NLS
             try {

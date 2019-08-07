@@ -31,6 +31,7 @@ import java.util.ArrayList;
  * 
  * @author M.Kergall
  */
+@SuppressWarnings("ALL")
 public class Road  implements Parcelable {
 	/** 
 	 * STATUS_OK = road properly retrieved and built. 

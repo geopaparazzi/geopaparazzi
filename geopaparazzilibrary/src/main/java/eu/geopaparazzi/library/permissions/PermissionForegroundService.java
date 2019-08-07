@@ -26,6 +26,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -35,7 +37,7 @@ public class PermissionForegroundService extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Foreground Service";
+        return "Foreground Service";//NON-NLS
     }
 
     @Override
@@ -64,7 +66,7 @@ public class PermissionForegroundService extends AChainedPermissionHelper {
                             Manifest.permission.FOREGROUND_SERVICE)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("The application needs to run as forground service to be able to keep the GPS logging precise when in background mode. To do so it needs the related permission granted.");
+                        builder.setMessage(activity.getString(R.string.permissions_foreground_service));
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override

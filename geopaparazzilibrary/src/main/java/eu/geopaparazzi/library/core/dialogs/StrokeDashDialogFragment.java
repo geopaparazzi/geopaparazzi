@@ -63,8 +63,8 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
         void onDashChanged(float[] dash, float shift);
     }
 
-    private final static String PREFS_KEY_STROKEDASH = "PREFS_KEY_STROKEDASH";
-    private final static String PREFS_KEY_STROKEDASHSHIFT = "PREFS_KEY_STROKEDASHSHIFT";
+    private final static String PREFS_KEY_STROKEDASH = "PREFS_KEY_STROKEDASH";//NON-NLS
+    private final static String PREFS_KEY_STROKEDASHSHIFT = "PREFS_KEY_STROKEDASHSHIFT";//NON-NLS
 
     private float[] mCurrentDash;
     private float mDashShift = 0;

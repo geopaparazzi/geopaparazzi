@@ -63,6 +63,7 @@ import eu.geopaparazzi.library.util.UrlUtilities;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GSketchView extends View implements GView {
 
     private long noteId;

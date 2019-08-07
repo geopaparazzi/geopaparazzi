@@ -57,7 +57,7 @@ public class LabelDialogFragment extends DialogFragment {
         void onPropertiesChanged(LabelObject newLabelObject);
     }
 
-    private final static String PREFS_KEY_LABELPROPERTIES = "PREFS_KEY_LABELPROPERTIES";
+    private final static String PREFS_KEY_LABELPROPERTIES = "PREFS_KEY_LABELPROPERTIES";//NON-NLS
 
     private LabelObject mCurrentLabelObject;
 

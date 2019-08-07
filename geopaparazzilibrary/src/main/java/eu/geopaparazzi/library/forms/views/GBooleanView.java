@@ -35,6 +35,7 @@ import eu.geopaparazzi.library.util.Compat;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GBooleanView extends View implements GView {
 
     private CheckBox checkbox;

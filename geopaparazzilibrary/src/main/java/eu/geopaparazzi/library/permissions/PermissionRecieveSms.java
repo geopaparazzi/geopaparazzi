@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -36,7 +38,7 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Recieve SMS";
+        return "Recieve SMS"; //NON-NLS
     }
 
     @Override
@@ -64,7 +66,7 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
                             Manifest.permission.RECEIVE_SMS)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("Geopaparazzi needs to be able to recieve sms to enable certain functionalities.");
+                        builder.setMessage(activity.getString(R.string.permissions_sms));
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override

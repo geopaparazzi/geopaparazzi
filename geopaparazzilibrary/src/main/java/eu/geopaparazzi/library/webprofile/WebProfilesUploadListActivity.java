@@ -218,7 +218,7 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
 
         progressBarUploadDialogFragment = ProgressBarUploadDialogFragment.newInstance(uploadables.toArray(new Parcelable[uploadables.size()]));
         progressBarUploadDialogFragment.setCancelable(true);
-        progressBarUploadDialogFragment.show(getSupportFragmentManager(), "Upload Profile");
+        progressBarUploadDialogFragment.show(getSupportFragmentManager(), "Upload Profile"); //NON-NLS
     }
 
     @Override

@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.R;
  *
  * @author M.Kergall
  */
+@SuppressWarnings("ALL")
 public class OSRMRoadManager extends RoadManager {
 
     static final String SERVICE = "http://router.project-osrm.org/route/v1/driving/";

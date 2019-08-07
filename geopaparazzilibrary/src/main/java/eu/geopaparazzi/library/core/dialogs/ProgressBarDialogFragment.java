@@ -44,8 +44,8 @@ import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.ma
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ProgressBarDialogFragment extends DialogFragment {
-    public static final String DOWNLOADABLES = "DOWNLOADABLES";
-    public static final String LASTMESSAGE = "lastmessage";
+    public static final String DOWNLOADABLES = "DOWNLOADABLES";//NON-NLS
+    public static final String LASTMESSAGE = "lastmessage";//NON-NLS
     private Parcelable[] downloadables;
 
     private IProgressChangeListener iProgressChangeListener;

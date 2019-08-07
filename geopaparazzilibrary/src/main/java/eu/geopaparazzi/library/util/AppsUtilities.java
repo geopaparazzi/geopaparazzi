@@ -43,6 +43,7 @@ import eu.geopaparazzi.library.images.ImageUtilities;
  * @author Andrea Antonello (www.hydrologis.com)
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
+@SuppressWarnings("ALL")
 public class AppsUtilities {
     public static final String AMAZE_PACKAGE = "com.amaze.filemanager";
     public static final String AMAZE_TITLE = "com.amaze.filemanager.extra.TITLE";

@@ -52,7 +52,7 @@ public class ZoomlevelDialogFragment extends DialogFragment {
         void onPropertiesChanged(int minZoomlevel, int maxZoomlevel);
     }
 
-    private final static String PREFS_KEY_ZOOMLEVELPROPERTIES = "PREFS_KEY_ZOOMLEVELPROPERTIES";
+    private final static String PREFS_KEY_ZOOMLEVELPROPERTIES = "PREFS_KEY_ZOOMLEVELPROPERTIES";//NON-NLS
 
     private int[] mMinMaxZoomlevels = new int[]{0, 22};
     private String[] allZoomlevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"};

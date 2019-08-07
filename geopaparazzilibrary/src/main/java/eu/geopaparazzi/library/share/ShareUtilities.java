@@ -37,6 +37,7 @@ import eu.geopaparazzi.library.util.Utilities;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class ShareUtilities {
 
     /**

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import eu.geopaparazzi.library.core.dialogs.ProgressBarDialogFragment;
 
+@SuppressWarnings("ALL")
 abstract public class DownloadResultReceiver extends ResultReceiver {
     public static final int RESULT_CODE = 1;
     public static final String DOWNLOAD_ACTION = "eu.geopaparazzi.library.network.download.action";

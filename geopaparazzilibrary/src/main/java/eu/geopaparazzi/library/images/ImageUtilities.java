@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class ImageUtilities {
     public static final int MAXBLOBSIZE = 1900000;
     public static final int THUMBNAILWIDTH = 100;

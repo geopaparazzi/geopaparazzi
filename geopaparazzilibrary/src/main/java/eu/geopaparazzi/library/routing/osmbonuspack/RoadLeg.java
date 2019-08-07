@@ -29,6 +29,7 @@ import java.util.ArrayList;
  * @author M.Kergall
  * 
  */
+@SuppressWarnings("ALL")
 public class RoadLeg implements Parcelable {
 	/** in km */
 	public double mLength; 

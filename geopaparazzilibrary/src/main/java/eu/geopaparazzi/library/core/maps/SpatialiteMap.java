@@ -32,14 +32,14 @@ import java.util.List;
  * @author Andrea Antonello
  */
 public class SpatialiteMap {
-    public static final String SPATIALITEMAPS_PREF_KEY = "SPATIALITEMAPS_PREF_KEY";
+    public static final String SPATIALITEMAPS_PREF_KEY = "SPATIALITEMAPS_PREF_KEY";//NON-NLS
 
-    public static final String DATABASE_PATH = "databasePath";
-    public static final String TABLE_TYPE = "tableType";
-    public static final String GEOMETRY_TYPE = "geometryType";
-    public static final String ISVISIBLE = "isVisible";
-    public static final String ORDER = "order";
-    public static final String TABLENAME = "tableName";
+    public static final String DATABASE_PATH = "databasePath";//NON-NLS
+    public static final String TABLE_TYPE = "tableType";//NON-NLS
+    public static final String GEOMETRY_TYPE = "geometryType";//NON-NLS
+    public static final String ISVISIBLE = "isVisible";//NON-NLS
+    public static final String ORDER = "order";//NON-NLS
+    public static final String TABLENAME = "tableName";//NON-NLS
 
     public String databasePath;
     public String tableType;
@@ -92,14 +92,14 @@ public class SpatialiteMap {
 
     @Override
     public String toString() {
-        return "SpatialiteMap{" +
-                "tableName='" + tableName + '\'' +
-                ", tableType='" + tableType + '\'' +
-                ", geometryType='" + geometryType + '\'' +
-                ", databasePath='" + databasePath + '\'' +
-                ", isVisible='" + isVisible + '\'' +
-                ", order='" + order + '\'' +
-                '}';
+        return "SpatialiteMap{" +//NON-NLS
+                "tableName='" + tableName + '\'' +//NON-NLS
+                ", tableType='" + tableType + '\'' +//NON-NLS
+                ", geometryType='" + geometryType + '\'' +//NON-NLS
+                ", databasePath='" + databasePath + '\'' +//NON-NLS
+                ", isVisible='" + isVisible + '\'' +//NON-NLS
+                ", order='" + order + '\'' +//NON-NLS
+                '}';//NON-NLS
     }
 
     @Override

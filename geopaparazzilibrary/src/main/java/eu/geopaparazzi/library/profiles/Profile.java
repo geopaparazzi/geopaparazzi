@@ -39,6 +39,7 @@ import eu.geopaparazzi.library.profiles.objects.ProfileTags;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public class Profile implements Parcelable {
     public String name = "new profile";
     public String description = "new profile description";

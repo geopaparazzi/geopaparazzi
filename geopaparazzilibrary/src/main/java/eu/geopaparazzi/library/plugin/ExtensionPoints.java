@@ -21,6 +21,7 @@ package eu.geopaparazzi.library.plugin;
  * Created by hydrologis on 14/02/17.
  */
 
+@SuppressWarnings("ALL")
 public interface ExtensionPoints {
     String MENU_IMPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.importer.MENU_PROVIDER";
     String MENU_EXPORT_PROVIDER = "eu.geopaparazzi.core.extension.ep.exporter.MENU_PROVIDER";

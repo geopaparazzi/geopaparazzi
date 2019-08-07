@@ -31,8 +31,8 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
  */
 public class ProgressBarUploadDialogFragment extends DialogFragment {
 
-    public static final String UPLOADABLES = "UPLOADABLES";
-    public static final String LASTMESSAGE = "lastmessage";
+    public static final String UPLOADABLES = "UPLOADABLES";//NON-NLS
+    public static final String LASTMESSAGE = "lastmessage";//NON-NLS
 
     private Parcelable[] uploadables;
 

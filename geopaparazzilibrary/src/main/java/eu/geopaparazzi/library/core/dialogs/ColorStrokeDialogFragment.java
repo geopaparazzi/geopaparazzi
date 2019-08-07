@@ -69,7 +69,7 @@ public class ColorStrokeDialogFragment extends DialogFragment {
         void onPropertiesChanged(ColorStrokeObject newColorStrokeObject);
     }
 
-    private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
+    private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";//NON-NLS
 
     private ImageView mWidthImageView;
     private ColorStrokeObject mCurrentColorStrokeObject;

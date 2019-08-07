@@ -126,7 +126,7 @@ public class GDateView extends View implements GView {
 
                 DatePickerDialogFragment newFragment = new DatePickerDialogFragment();
                 newFragment.setAttributes(year, month, day, button);
-                newFragment.show(fragment.getFragmentManager(), "datePicker");
+                newFragment.show(fragment.getFragmentManager(), "datePicker"); //NON-NLS
             }
         });
         button.setEnabled(!readonly);

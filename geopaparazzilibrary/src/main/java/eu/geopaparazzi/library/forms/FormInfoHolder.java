@@ -25,6 +25,7 @@ import java.io.Serializable;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public class FormInfoHolder implements Serializable {
     public static final String BUNDLE_KEY_INFOHOLDER = "BUNDLE_KEY_INFOHOLDER";
 

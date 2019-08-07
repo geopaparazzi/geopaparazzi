@@ -28,6 +28,7 @@ import java.util.HashMap;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public class UrlUtilities {
 
     public static final String OSM_MAPS_URL = "http://www.openstreetmap.org";

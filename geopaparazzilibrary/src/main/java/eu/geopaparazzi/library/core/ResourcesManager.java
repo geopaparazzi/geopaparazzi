@@ -50,6 +50,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_T
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("HardCodedStringLiteral")
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -148,7 +149,7 @@ public class ResourcesManager implements Serializable {
             applicationLabel = packageName.substring(lastDot + 1, packageName.length());
         }
         applicationLabel = applicationLabel.toLowerCase();
-        relativeAppDataFolder = "/Android/data/" + packageName + "/files";
+        relativeAppDataFolder = "/Android/data/" + packageName + "/files";//NON-NLS //NON-NLS
 
         /*
          * take care to create all the folders needed
@@ -269,7 +270,7 @@ public class ResourcesManager implements Serializable {
      * @return the export folder.
      */
     public File getApplicationExportDir() {
-        File exportFolder = new File(applicationSupportFolder, "export");
+        File exportFolder = new File(applicationSupportFolder, "export");//NON-NLS
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdir()) {
                 return applicationSupportFolder;

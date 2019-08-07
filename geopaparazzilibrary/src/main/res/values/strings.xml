@@ -179,5 +179,13 @@
     <string name="upload_NonOK">Server returned non-OK status: </string>
     <string name="upload_Uploaded">File uploaded.</string>
     <string name="also_save_to_bookmarks">also save to bookmarks</string>
+    <string name="no_files_in_folder">No files are contained in the folder.</string>
+    <string name="error_launching_query">An error occurred while launching the query:</string>
+    <string name="permissions_location">Geopaparazzi needs to access the gps on your device to get the current location.</string>
+    <string name="permissions_foreground_service">The application needs to run as forground service to be able to keep the GPS logging precise when in background mode. To do so it needs the related permission granted.</string>
+    <string name="permissions_accounts">The application needs to get account information from your device. To do so it needs the related permission granted.</string>
+    <string name="permissions_sms">Geopaparazzi needs to be able to recieve sms to enable certain functionalities.</string>
+    <string name="permissions_send_sms">Geopaparazzi needs to be able to send sms to enable certain functionalities.</string>
+    <string name="permissions_write_disk">Geopaparazzi needs to write data to your device. To do so it needs the related permission granted.</string>
 
 </resources>

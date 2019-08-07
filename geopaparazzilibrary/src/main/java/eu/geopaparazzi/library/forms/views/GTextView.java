@@ -36,6 +36,7 @@ import eu.geopaparazzi.library.util.Compat;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GTextView extends View implements GView {
 
     private TextView textView;

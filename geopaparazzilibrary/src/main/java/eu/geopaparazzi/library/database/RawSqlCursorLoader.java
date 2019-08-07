@@ -61,7 +61,7 @@ public class RawSqlCursorLoader extends CursorLoader {
             try {
                 cursor = mDatabase.rawQuery(mSql, null);
             } catch (Exception e) {
-                errorMsg = "cannot run query: " + mSql;
+                errorMsg = "cannot run query: " + mSql;//NON-NLS
             }
             if (cursor != null) {
                 try {
@@ -74,7 +74,7 @@ public class RawSqlCursorLoader extends CursorLoader {
                 }
             }
             if (cursor == null && errorMsg != null) {
-                cursor = mDatabase.rawQuery("select 'asd' as _id, '" + errorMsg + "' as ERROR", null);
+                cursor = mDatabase.rawQuery("select 'asd' as _id, '" + errorMsg + "' as ERROR", null);//NON-NLS NON-NLS
             }
             return cursor;
         } finally {
@@ -168,10 +168,10 @@ public class RawSqlCursorLoader extends CursorLoader {
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         super.dump(prefix, fd, writer, args);
         writer.print(prefix);
-        writer.print("mSql=");
+        writer.print("mSql="); //NON-NLS
         writer.println(mSql);
         writer.print(prefix);
-        writer.print("mCursor=");
+        writer.print("mCursor="); //NON-NLS
         writer.println(mCursor);
     }
 }

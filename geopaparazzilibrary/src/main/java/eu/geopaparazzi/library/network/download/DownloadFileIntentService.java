@@ -33,6 +33,7 @@ import static eu.geopaparazzi.library.network.download.DownloadResultReceiver.ma
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class DownloadFileIntentService extends IntentService {
     public static final int PERCENTAGE_UNIT = 5;
     ResultReceiver resultReceiver;

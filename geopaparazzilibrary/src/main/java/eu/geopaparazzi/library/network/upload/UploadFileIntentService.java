@@ -42,6 +42,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class UploadFileIntentService extends IntentService {
     public static final int PERCENTAGE_UNIT = 5;
     ResultReceiver resultReceiver;

@@ -46,7 +46,7 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class Utilities {
 
-    public static final String GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS = ".library.fileprovider";
+    public static final String GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS = ".library.fileprovider"; //NON-NLS
 
     public static String getLastFilePath(Context context) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

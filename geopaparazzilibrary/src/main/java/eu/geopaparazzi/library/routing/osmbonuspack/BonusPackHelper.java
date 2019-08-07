@@ -31,6 +31,7 @@ import java.util.HashMap;
 /** Useful functions and common constants.
  * @author M.Kergall
  */
+@SuppressWarnings("ALL")
 public class BonusPackHelper {
 
     /** Log tag. */

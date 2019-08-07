@@ -129,7 +129,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             currentDir = sdcardDir;
         } catch (Exception e) {
             e.printStackTrace();
-            GPLog.error(this, "Error retrieving sdcard dir", e);
+            GPLog.error(this, "Error retrieving sdcard dir", e);//NON-NLS
         }
 
         Bundle extras = getIntent().getExtras();
@@ -215,7 +215,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             File[] filesArray = file.listFiles(fileFilter);
             if (filesArray != null) {
                 if (filesArray.length == 0) {
-                    GPDialogs.quickInfo(v, "No files are contained in the folder.");
+                    GPDialogs.quickInfo(v, getString(R.string.no_files_in_folder));
                 } else {
                     currentDir = file;
                     getFiles(currentDir, filesArray);

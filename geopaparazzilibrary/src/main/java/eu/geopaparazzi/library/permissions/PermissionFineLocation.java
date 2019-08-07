@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -34,7 +36,7 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Fine Location";
+        return "Fine Location";//NON-NLS
     }
 
     @Override
@@ -61,7 +63,7 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                     AlertDialog.Builder builder =
                             new AlertDialog.Builder(activity);
-                    builder.setMessage("Geopaparazzi needs to access the gps on your device to get the current location.");
+                    builder.setMessage(activity.getString(R.string.permissions_location));
                     builder.setPositiveButton(android.R.string.ok,
                             new DialogInterface.OnClickListener() {
                                 @Override

@@ -36,7 +36,7 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class PositionUtilities {
 
-    private static final String LOG_TAG = "POSITIONUTILITIES";
+    private static final String LOG_TAG = "POSITIONUTILITIES"; //NON-NLS
     private static final float NOVALUE_CHECKVALUE = -9998f;
     private static final float NOVALUE = -9999f;
 

@@ -30,6 +30,7 @@ import java.util.Locale;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public class LocaleUtils {
 
 

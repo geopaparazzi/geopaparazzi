@@ -47,6 +47,7 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GTimeView extends View implements GView {
 
     private Button button;

@@ -38,7 +38,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class InsertCoordinatesDialogFragment extends DialogFragment {
-    public static final String TITLE = "TITLE";
+    public static final String TITLE = "TITLE";//NON-NLS
     private EditText longitudeText;
     private IInsertCoordinateListener insertCoordinateListener;
     private String title;

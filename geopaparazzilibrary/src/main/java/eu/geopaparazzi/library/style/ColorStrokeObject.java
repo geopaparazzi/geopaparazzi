@@ -42,7 +42,7 @@ public class ColorStrokeObject implements Serializable {
 
     public boolean hasShape = false;
     public int shapeSize = 50;
-    public String shapeWKT = "circle";
+    public String shapeWKT = "circle"; //NON-NLS
 
     public ColorStrokeObject duplicate() {
         ColorStrokeObject dup = new ColorStrokeObject();

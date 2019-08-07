@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import eu.geopaparazzi.library.core.dialogs.ProgressBarUploadDialogFragment;
 
+@SuppressWarnings("ALL")
 abstract public class UploadResultReceiver extends ResultReceiver {
     public static final int RESULT_CODE = 1;
     public static final String UPLOAD_ACTION = "eu.geopaparazzi.library.network.upload.action";

@@ -203,7 +203,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         if (GPLog.LOG)
-            GPLog.addLogEntry(this, "Recreating bitmap");
+            GPLog.addLogEntry(this, "Recreating bitmap"); //NON-NLS
     }
 
     public void surfaceCreated( SurfaceHolder holder ) {

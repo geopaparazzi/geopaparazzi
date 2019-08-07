@@ -67,6 +67,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class WebProfilesListActivity extends AppCompatActivity implements ProgressBarDialogFragment.IProgressChangeListener {
     private static final String ERROR = "error"; //$NON-NLS-1$
 

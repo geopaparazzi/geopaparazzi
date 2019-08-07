@@ -85,6 +85,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("HardCodedStringLiteral")
 public class FormDetailFragment extends android.support.v4.app.Fragment {
     public static final String ARGS_FORMINFO = "args_forminfo";
 

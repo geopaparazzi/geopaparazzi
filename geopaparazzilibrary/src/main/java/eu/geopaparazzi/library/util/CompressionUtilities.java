@@ -38,6 +38,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class CompressionUtilities {
 
     /**

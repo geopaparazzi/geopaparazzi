@@ -45,7 +45,7 @@ public class DbCursorAdapter extends CursorAdapter {
         TextView textView = (TextView) view;
         for( int i = 0; i < cursor.getColumnCount(); i++ ) {
             String field = cursor.getColumnName(i);
-            if (field.equals("_id")) {
+            if (field.equals("_id")) {//NON-NLS
                 continue;
             }
             String value = cursor.getString(i);
@@ -55,7 +55,7 @@ public class DbCursorAdapter extends CursorAdapter {
             String text = sb.substring(1);
             textView.setText(text);
         } else {
-            textView.setText(" - nv - ");
+            textView.setText(" - nv - ");//NON-NLS
         }
         textView.setTextColor(Compat.getColor(context, R.color.main_text_color));
         textView.setPadding(5, 5, 5, 5);

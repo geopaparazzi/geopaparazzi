@@ -21,6 +21,7 @@ package eu.geopaparazzi.library.util;
 /**
  * Created by hydrologis on 31/01/16.
  */
+@SuppressWarnings("ALL")
 public enum FileTypes {
     GPAP("gpap", "Geopaparazzi Project", "gpap"),
     GPX("gpx", "GPX gps file", "gpx"),

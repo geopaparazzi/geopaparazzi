@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -34,8 +36,8 @@ public class PermissionWriteStorage extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Write External Storage";
-    }
+        return "Write External Storage"; //NON-NLS
+    }//NON-NLS
 
     @Override
     public boolean hasPermission(Context context) {
@@ -61,7 +63,7 @@ public class PermissionWriteStorage extends AChainedPermissionHelper {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("Geopaparazzi needs to write data to your device. To do so it needs the related permission granted.");
+                        builder.setMessage(activity.getString(R.string.permissions_write_disk));
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override

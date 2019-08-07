@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -34,7 +36,7 @@ public class PermissionGetAccounts extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Get Accounts";
+        return "Get Accounts";//NON-NLS
     }
 
     @Override
@@ -61,7 +63,7 @@ public class PermissionGetAccounts extends AChainedPermissionHelper {
                             Manifest.permission.GET_ACCOUNTS)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("The application needs to get account information from your device. To do so it needs the related permission granted.");
+                        builder.setMessage(activity.getString(R.string.permissions_accounts));
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override

@@ -23,6 +23,7 @@ package eu.geopaparazzi.library.style;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public enum ToolColors {
     selection_stroke("#ffff00"), //
     selection_fill("#ff0000"), //

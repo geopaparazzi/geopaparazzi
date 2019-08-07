@@ -25,6 +25,7 @@ import java.util.HashMap;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public enum ColorUtilitiesCompat {
     black("#000000"), //
     blue("#0000ff"), //

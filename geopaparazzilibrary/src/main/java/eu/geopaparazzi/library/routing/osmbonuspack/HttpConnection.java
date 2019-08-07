@@ -42,6 +42,7 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
  * }
  * connection.close();</pre>
  */
+@SuppressWarnings("ALL")
 public class HttpConnection {
 
     private InputStream stream;

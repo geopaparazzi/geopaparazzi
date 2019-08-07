@@ -34,6 +34,7 @@ import android.os.Parcelable;
  * @author Nicolas Gramlich
  *
  */
+@SuppressWarnings("ALL")
 public class BoundingBox implements Parcelable, Serializable {
 
 	// ===========================================================

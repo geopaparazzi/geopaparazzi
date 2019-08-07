@@ -30,17 +30,17 @@ public class GPLogPreferencesHandler {
     /**
      * Preferences key for log.
      */
-    public static String PREFS_KEY_LOG = "PREFS_KEY_LOG";
+    public static String PREFS_KEY_LOG = "PREFS_KEY_LOG";//NON-NLS
 
     /**
      * Preferences key for log heavy.
      */
-    public static String PREFS_KEY_LOG_HEAVY = "PREFS_KEY_LOG_HEAVY";
+    public static String PREFS_KEY_LOG_HEAVY = "PREFS_KEY_LOG_HEAVY";//NON-NLS
 
     /**
      * Preferences key for all log.
      */
-    public static String PREFS_KEY_LOG_ABSURD = "PREFS_KEY_LOG_ABSURD";
+    public static String PREFS_KEY_LOG_ABSURD = "PREFS_KEY_LOG_ABSURD";//NON-NLS
 
     /**
      * @param doLog log flag.

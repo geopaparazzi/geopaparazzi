@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
+import eu.geopaparazzi.library.R;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -35,7 +37,7 @@ public class PermissionSendSms extends AChainedPermissionHelper {
 
     @Override
     public String getDescription() {
-        return "Send SMS";
+        return "Send SMS";//NON-NLS
     }
 
     @Override
@@ -63,7 +65,7 @@ public class PermissionSendSms extends AChainedPermissionHelper {
                             Manifest.permission.SEND_SMS)) {
                         AlertDialog.Builder builder =
                                 new AlertDialog.Builder(activity);
-                        builder.setMessage("Geopaparazzi needs to be able to send sms to enable certain functionalities.");
+                        builder.setMessage(activity.getString(R.string.permissions_send_sms));
                         builder.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     @Override

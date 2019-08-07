@@ -292,7 +292,7 @@ public class FileUtilities {
      * @throws IOException if something goes wrong.
      */
     public static byte[] readFileToByte(File file) throws IOException {
-        RandomAccessFile f = new RandomAccessFile(file, "r");
+        RandomAccessFile f = new RandomAccessFile(file, "r"); //NON-NLS
         try {
             long length = f.length();
             byte[] data = new byte[(int) length];

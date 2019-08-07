@@ -51,6 +51,7 @@ import eu.geopaparazzi.library.util.types.ESpatialDataSources;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public enum ProfilesHandler {
     INSTANCE;
 

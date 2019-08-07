@@ -32,12 +32,12 @@ import java.util.List;
  * @author Andrea Antonello
  */
 public class BaseMap {
-    public static final String BASEMAPS_PREF_KEY = "BASEMAPS_PREF_KEY";
+    public static final String BASEMAPS_PREF_KEY = "BASEMAPS_PREF_KEY";//NON-NLS
 
-    public static final String PARENT_FOLDER = "parentFolder";
-    public static final String DATABASE_PATH = "databasePath";
-    public static final String MAP_TYPE = "mapType";
-    public static final String TITLE = "title";
+    public static final String PARENT_FOLDER = "parentFolder";//NON-NLS
+    public static final String DATABASE_PATH = "databasePath";//NON-NLS
+    public static final String MAP_TYPE = "mapType";//NON-NLS
+    public static final String TITLE = "title";//NON-NLS
 
     public String parentFolder;
     public String databasePath;
@@ -84,12 +84,12 @@ public class BaseMap {
 
     @Override
     public String toString() {
-        return "BaseMap{" +
-                "title='" + title + '\'' +
-                ", mapType='" + mapType + '\'' +
-                ", databasePath='" + databasePath + '\'' +
-                ", parentFolder='" + parentFolder + '\'' +
-                '}';
+        return "BaseMap{" +//NON-NLS
+                "title='" + title + '\'' +//NON-NLS
+                ", mapType='" + mapType + '\'' +//NON-NLS
+                ", databasePath='" + databasePath + '\'' +//NON-NLS
+                ", parentFolder='" + parentFolder + '\'' +//NON-NLS
+                '}';//NON-NLS
     }
 
     @Override

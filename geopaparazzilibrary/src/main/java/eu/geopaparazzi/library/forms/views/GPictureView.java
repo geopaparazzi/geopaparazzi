@@ -61,6 +61,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class GPictureView extends View implements GView {
 
     public static final String IMAGE_ID_SEPARATOR = ";";

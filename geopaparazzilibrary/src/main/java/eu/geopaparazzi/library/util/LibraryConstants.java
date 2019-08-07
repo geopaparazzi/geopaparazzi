@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public interface LibraryConstants {
 
     /**

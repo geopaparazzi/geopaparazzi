@@ -31,6 +31,7 @@ import eu.geopaparazzi.library.R;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public enum ColorUtilities {
     // MATERIAL DESIGN COLORS
     RED("#D32F2F"), //
