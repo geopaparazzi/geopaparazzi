@@ -57,6 +57,7 @@ import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class FeaturePagerActivity extends AppCompatActivity implements OnPageChangeListener {
 
     private TextView tableNameView;

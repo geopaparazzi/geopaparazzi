@@ -21,13 +21,14 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.vtm.VtmUtilities;
 
 public class GpsPositionLayer extends LocationTextureLayer implements IPositionLayer, ISystemLayer {
-    public static final String NAME = "Gps Position";
+    public static String NAME = null;
 //    private static TextureRegion activeTexture;
 //    private static TextureRegion staleTexture;
 //    private static TextureRegion movingTexture;
@@ -36,6 +37,8 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
 
     public GpsPositionLayer(GPMapView mapView) throws IOException {
         super(mapView.map(), createTextures(mapView.getContext()));
+        getName(mapView.getContext());
+
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
         this.mapView = mapView;
 
@@ -49,6 +52,13 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         // set billboard rendering for TextureRegion (false is default)
         locationRenderer.setBillboard(false);
 
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_gpsposition);
+        }
+        return NAME;
     }
 
     private static TextureRegion createTextures(Context context) throws IOException {

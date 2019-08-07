@@ -2,6 +2,7 @@ package eu.geopaparazzi.map.layers.interfaces;
 
 import org.oscim.tiling.source.bitmap.BitmapTileSource;
 
+@SuppressWarnings("ALL")
 public interface IRasterTileOnlineLayer extends IGpLayer {
 //    public String name;
 //

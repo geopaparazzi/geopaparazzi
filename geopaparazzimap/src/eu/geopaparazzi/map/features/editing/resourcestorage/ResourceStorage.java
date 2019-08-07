@@ -25,6 +25,7 @@ import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class ResourceStorage {
     // the auxiliary table used to store the resources
     public static final String AUX_TABLE_NAME = "geopap_resource";

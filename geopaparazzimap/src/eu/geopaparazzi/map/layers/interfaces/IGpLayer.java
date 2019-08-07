@@ -1,5 +1,7 @@
 package eu.geopaparazzi.map.layers.interfaces;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +13,7 @@ import java.io.IOException;
 
 import eu.geopaparazzi.map.GPMapView;
 
+@SuppressWarnings("ALL")
 public interface IGpLayer {
     String PATHS_DELIMITER = ";";
 
@@ -58,6 +61,10 @@ public interface IGpLayer {
         jo.put(LAYERNAME_TAG, getName());
         jo.put(LAYERENABLED_TAG, isEnabled());
         return jo;
+    }
+
+    static String getName(Context context){
+        return "";
     }
 
 }

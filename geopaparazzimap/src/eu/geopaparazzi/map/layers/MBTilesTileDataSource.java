@@ -26,6 +26,7 @@ import static org.oscim.tiling.QueryResult.FAILED;
  *
  * @author Andrea Antonello
  */
+@SuppressWarnings("ALL")
 public class MBTilesTileDataSource implements ITileDataSource {
     static final Logger log = LoggerFactory.getLogger(MBTilesTileDataSource.class);
 

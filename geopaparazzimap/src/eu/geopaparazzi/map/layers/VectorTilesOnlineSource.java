@@ -7,10 +7,11 @@ import org.oscim.tiling.source.UrlTileSource;
 import org.oscim.tiling.source.mvt.MvtTileDecoder;
 import org.oscim.tiling.source.mvt.TileDecoder;
 
+@SuppressWarnings("ALL")
 public class VectorTilesOnlineSource extends UrlTileSource {
 
-    private static final String DEFAULT_URL = "https://api.maptiler.com/tiles/v3";
-    private static final String DEFAULT_PATH = "/{Z}/{X}/{Y}.pbf";
+    private static final String DEFAULT_URL = "https://api.maptiler.com/tiles/v3";//NON-NLS
+    private static final String DEFAULT_PATH = "/{Z}/{X}/{Y}.pbf";//NON-NLS
 
     public static class Builder<T extends Builder<T>> extends UrlTileSource.Builder<T> {
         private String locale = "";

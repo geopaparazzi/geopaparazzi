@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -42,6 +43,7 @@ import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
@@ -52,7 +54,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
-    public static final String NAME = "Project Notes";
+    private static String NAME = null;
     public static final String NONFORMSTART = "@";
 
     public static final int FORMUPDATE_RETURN_CODE = 669;
@@ -66,6 +68,8 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     public NotesLayer(GPMapView mapView, IActivitySupporter activitySupporter) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
+        getName(mapView.getContext());
+
         this.activitySupporter = activitySupporter;
         setOnItemGestureListener(this);
 
@@ -82,6 +86,13 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
         }
 
 
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_notes);
+        }
+        return NAME;
     }
 
     private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
@@ -126,7 +137,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
     public void reloadData() throws IOException {
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
-        String query = "SELECT " +//
+        String query = "SELECT " +//NON-NLS
                 TableDescriptions.NotesTableFields.COLUMN_ID.getFieldName() +
                 ", " +//
                 TableDescriptions.NotesTableFields.COLUMN_LON.getFieldName() +
@@ -140,8 +151,8 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
                 TableDescriptions.NotesTableFields.COLUMN_TS.getFieldName() +
                 ", " +//
                 TableDescriptions.NotesTableFields.COLUMN_FORM.getFieldName() +//
-                " FROM " + TableDescriptions.TABLE_NOTES;
-        query = query + " WHERE " + TableDescriptions.NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";
+                " FROM " + TableDescriptions.TABLE_NOTES;//NON-NLS
+        query = query + " WHERE " + TableDescriptions.NotesTableFields.COLUMN_ISDIRTY.getFieldName() + " = 1";//NON-NLS
 
         List<MarkerItem> pts = new ArrayList<>();
         try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
@@ -160,12 +171,12 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
 
                 String descr;
                 if (!hasForm) {
-                    descr = NONFORMSTART + "note: " + text + "\n" +
-                            "id: " + id + "\n" +
-                            "longitude: " + lon + "\n" +
-                            "latitude: " + lat + "\n" +
-                            "elevation: " + elev + "\n" +
-                            "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));
+                    descr = NONFORMSTART + "note: " + text + "\n" +//NON-NLS
+                            "id: " + id + "\n" +//NON-NLS
+                            "longitude: " + lon + "\n" +//NON-NLS
+                            "latitude: " + lat + "\n" +//NON-NLS
+                            "elevation: " + elev + "\n" +//NON-NLS
+                            "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));//NON-NLS
                 } else {
                     descr = form;
                 }
@@ -200,7 +211,7 @@ public class NotesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLay
             String description = item.getSnippet();
             if (description.startsWith(NONFORMSTART)) {
                 GPDialogs.infoDialog(mapView.getContext(), description.substring(1), null);
-            }else{
+            } else {
                 try {
                     long uid = (long) item.getUid();
                     ANote note = DefaultHelperClasses.getDefaulfNotesHelper().getNoteById(uid);

@@ -302,6 +302,6 @@ public class FeaturePageAdapter extends PagerAdapter {
 
         DatePickerDialogFragment newFragment = new DatePickerDialogFragment();
         newFragment.setAttributes(year, month, day, editView);
-        newFragment.show(this.fragmentManager, "datePicker");
+        newFragment.show(this.fragmentManager, "datePicker"); //NON-NLS
     }
 }

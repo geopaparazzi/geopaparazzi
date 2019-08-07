@@ -54,7 +54,7 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
-    public static final String NAME = "Project Images";
+    public static String NAME = null;
     private static Bitmap imagesBitmap;
     private boolean showLabels;
     private GPMapView mapView;
@@ -64,6 +64,8 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
     public ImagesLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
+        getName(mapView.getContext());
+
         setOnItemGestureListener(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
@@ -78,6 +80,13 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
         }
 
 
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_images);
+        }
+        return NAME;
     }
 
     private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
@@ -108,7 +117,7 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
                 TableDescriptions.ImageTableFields.COLUMN_TS.getFieldName(),//
                 TableDescriptions.ImageTableFields.COLUMN_TEXT.getFieldName()//
         };
-        String strSortOrder = "_id ASC";
+        String strSortOrder = "_id ASC"; //NON-NLS
         String whereString = TableDescriptions.ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " < 0";
         Cursor c = sqliteDatabase.query(TableDescriptions.TABLE_IMAGES, asColumnsToReturn, whereString, null, null, null, strSortOrder);
         c.moveToFirst();
@@ -120,12 +129,12 @@ public class ImagesLayer extends ItemizedLayer<MarkerItem> implements ItemizedLa
             long ts = c.getLong(4);
             String text = c.getString(5);
 
-            String descr = "note: " + text + "\n" +
-                    "id: " + imageDataId + "\n" +
-                    "longitude: " + lon + "\n" +
-                    "latitude: " + lat + "\n" +
-                    "elevation: " + elev + "\n" +
-                    "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));
+            String descr = "note: " + text + "\n" + //NON-NLS
+                    "id: " + imageDataId + "\n" +//NON-NLS
+                    "longitude: " + lon + "\n" +//NON-NLS
+                    "latitude: " + lat + "\n" +//NON-NLS
+                    "elevation: " + elev + "\n" +//NON-NLS
+                    "timestamp: " + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(ts));//NON-NLS
 
             images.add(new MarkerItem(imageDataId, text, descr, new GeoPoint(lat, lon)));
             c.moveToNext();

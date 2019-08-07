@@ -48,7 +48,7 @@ public class ResourceBrowserActivity extends AppCompatActivity {
     private File imageSaveFolder;
     private boolean isReadOnly = true;
 
-    public final static String TABLEVIEW_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.resourceviews.TABLEVIEW";
+    public final static String TABLEVIEW_EXTRA_MESSAGE = "eu.hydrologis.geopaparazzi.maptools.resourceviews.TABLEVIEW";//NON-NLS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class ResourceBrowserActivity extends AppCompatActivity {
 
         try {
             storage = ResourceStorage.getStorage(tableName, dbPath);
-            imageSaveFolder = new File(ResourcesManager.getInstance(this).getApplicationSupporterDir(), "sqlite_res");
+            imageSaveFolder = new File(ResourcesManager.getInstance(this).getApplicationSupporterDir(), "sqlite_res");//NON-NLS
             if (!imageSaveFolder.exists()) {
                 imageSaveFolder.mkdirs();
             }

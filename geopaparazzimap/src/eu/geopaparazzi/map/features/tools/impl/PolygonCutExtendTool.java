@@ -251,8 +251,8 @@ public class PolygonCutExtendTool extends MapTool {
         final Context context = EditManager.INSTANCE.getEditingView().getContext();
         final ProgressDialog infoProgressDialog = new ProgressDialog(context);
         infoProgressDialog.setCancelable(true);
-        infoProgressDialog.setTitle("SELECT");
-        infoProgressDialog.setMessage("Selecting features...");
+        infoProgressDialog.setTitle(context.getString(R.string.select_title));
+        infoProgressDialog.setMessage(context.getString(R.string.selecting_features));
         infoProgressDialog.setCancelable(false);
         infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         infoProgressDialog.setIndeterminate(true);
@@ -307,11 +307,11 @@ public class PolygonCutExtendTool extends MapTool {
                         }
                         return "";
                     } else {
-                        return "ERROR: no start or end geometry touched.";
+                        return "ERROR: no start or end geometry touched.";//NON-NLS
                     }
                 } catch (Exception e) {
                     GPLog.error(this, null, e); //$NON-NLS-1$
-                    return "ERROR: " + e.getLocalizedMessage();
+                    return "ERROR: " + e.getLocalizedMessage();//NON-NLS
                 }
 
             }
@@ -323,7 +323,7 @@ public class PolygonCutExtendTool extends MapTool {
 
             protected void onPostExecute(String response) { // on UI thread!
                 GPDialogs.dismissProgressDialog(infoProgressDialog);
-                if (response.startsWith("ERROR")) {
+                if (response.startsWith("ERROR")) {//NON-NLS
                     GPDialogs.warningDialog(context, response, null);
                     disable();
                 } else {
@@ -356,9 +356,9 @@ public class PolygonCutExtendTool extends MapTool {
             startFeature.getAttributeValues().set(startFeature.getGeometryIndex(), previewGeometry);
             return new Feature[]{startFeature, endFeature}; // new geom feature + feature to remove
         } catch (Exception e) {
-            String msg = "Unable to write geometry" + (previewGeometry == null ? "." : ": " + previewGeometry.toText());
-            GPLog.error(this, msg, e);
             final Context context = EditManager.INSTANCE.getEditingView().getContext();
+            String msg = context.getString(R.string.unable_write_geometry) + (previewGeometry == null ? "." : ": " + previewGeometry.toText());
+            GPLog.error(this, msg, e);
             GPDialogs.warningDialog(context, msg, null);
             return null;
         }

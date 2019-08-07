@@ -3,6 +3,7 @@ package eu.geopaparazzi.map.features.editing.resourcestorage;
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
+@SuppressWarnings("ALL")
 public class Resource {
     private long id;
     private String name;

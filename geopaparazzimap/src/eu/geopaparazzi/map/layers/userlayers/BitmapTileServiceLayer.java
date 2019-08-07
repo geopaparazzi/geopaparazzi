@@ -50,10 +50,10 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
 
         String cacheFile = tileSource.getUrl()
                 .toString()
-                .replaceFirst("https?://", "")
+                .replaceFirst("https?://", "")//NON-NLS
                 .replaceAll("/", "-");
 
-        log.debug("use bitmap cache {}", cacheFile);
+        log.debug("use bitmap cache {}", cacheFile);//NON-NLS
         TileCache mCache = new TileCache(mapView.getContext(), null, cacheFile);
         mCache.setCacheSize(512 * (1 << 10));
         tileSource.setCache(mCache);

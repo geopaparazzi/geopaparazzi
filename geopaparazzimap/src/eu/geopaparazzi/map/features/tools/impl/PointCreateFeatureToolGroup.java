@@ -277,7 +277,7 @@ public class PointCreateFeatureToolGroup implements ToolGroup, OnClickListener, 
                     intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
                     context.startService(intent);
                 } catch (Exception e) {
-                    if (e.getMessage().contains("UNIQUE constraint failed")) {
+                    if (e.getMessage().contains("UNIQUE constraint failed")) { //NON-NLS
                         GPDialogs.warningDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);
                         coordinatesList.clear();
                         this.pointGeometry = null;

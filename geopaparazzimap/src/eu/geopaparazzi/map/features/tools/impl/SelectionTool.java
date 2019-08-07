@@ -183,8 +183,8 @@ public class SelectionTool extends MapTool {
         final Context context = EditManager.INSTANCE.getEditingView().getContext();
         infoProgressDialog = new ProgressDialog(context);
         infoProgressDialog.setCancelable(true);
-        infoProgressDialog.setTitle("SELECT");
-        infoProgressDialog.setMessage("Selecting features...");
+        infoProgressDialog.setTitle(context.getString(R.string.select_title));
+        infoProgressDialog.setMessage(context.getString(R.string.selecting_features));
         infoProgressDialog.setCancelable(false);
         infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         infoProgressDialog.setIndeterminate(true);
@@ -223,7 +223,7 @@ public class SelectionTool extends MapTool {
                     return "";
                 } catch (Exception e) {
                     GPLog.error(this, null, e); //$NON-NLS-1$
-                    return "ERROR: " + e.getLocalizedMessage();
+                    return "ERROR: " + e.getLocalizedMessage();//NON-NLS
                 }
 
             }
@@ -235,9 +235,9 @@ public class SelectionTool extends MapTool {
 
             protected void onPostExecute(String response) { // on UI thread!
                 GPDialogs.dismissProgressDialog(infoProgressDialog);
-                if (response.startsWith("ERROR")) {
+                if (response.startsWith("ERROR")) {//NON-NLS
                     GPDialogs.warningDialog(context, response, null);
-                } else if (response.startsWith("CANCEL")) {
+                } else if (response.startsWith("CANCEL")) {//NON-NLS
                     return;
                 } else {
                     if (features.size() > 0) {

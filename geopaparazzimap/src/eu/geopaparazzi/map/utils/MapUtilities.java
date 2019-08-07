@@ -20,6 +20,7 @@ import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_DATA;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
 
+@SuppressWarnings("ALL")
 public class MapUtilities {
 
     public static final int SELECTED_FEATURES_UPDATED_RETURN_CODE = 672;

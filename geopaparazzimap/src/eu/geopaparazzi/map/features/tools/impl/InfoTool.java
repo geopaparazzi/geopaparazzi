@@ -63,6 +63,7 @@ import static java.lang.Math.round;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class InfoTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 

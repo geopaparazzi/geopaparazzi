@@ -45,7 +45,7 @@ public class SpatialiteColorStrokeObject implements Serializable {
 
     public boolean hasShape = false;
     public int shapeSize = 50;
-    public String shapeWKT = "circle";
+    public String shapeWKT = "circle"; //NON-NLS
 
     public SpatialiteColorStrokeObject duplicate() {
         SpatialiteColorStrokeObject dup = new SpatialiteColorStrokeObject();

@@ -1,13 +1,14 @@
 package eu.geopaparazzi.map;
 
+@SuppressWarnings("ALL")
 public enum GPMapThemes {
-    DEFAULT("Default"),
-    MAPZEN("Mapzen"),
-    NEWTRON("Newtron"),
-    OPENMAPTILES("Openmaptiles"),
-    OSMAGRAY("Osmgray"),
-    OSMARENDER("Osmarender"),
-    TRONRENDER("Tubes");
+    DEFAULT("Default"),//NON-NLS
+    MAPZEN("Mapzen"),//NON-NLS
+    NEWTRON("Newtron"),//NON-NLS
+    OPENMAPTILES("Openmaptiles"),//NON-NLS
+    OSMAGRAY("Osmgray"),//NON-NLS
+    OSMARENDER("Osmarender"),//NON-NLS
+    TRONRENDER("Tubes");//NON-NLS
 
     private String themeLabel;
 

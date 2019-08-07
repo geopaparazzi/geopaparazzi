@@ -278,7 +278,7 @@ public class PolygonCreateFeatureToolGroup implements ToolGroup, OnClickListener
                      */
 
                 } catch (Exception e) {
-                    if (e.getMessage().contains("UNIQUE constraint failed")) {
+                    if (e.getMessage().contains("UNIQUE constraint failed")) { //NON-NLS
                         GPDialogs.warningDialog(commitButton.getContext(), commitButton.getContext().getString(R.string.unique_constraint_violation_message), null);
                         coordinatesList.clear();
                         this.polygonGeometry = null;

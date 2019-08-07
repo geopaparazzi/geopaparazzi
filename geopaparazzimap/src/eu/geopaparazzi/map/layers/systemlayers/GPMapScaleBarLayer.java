@@ -1,5 +1,7 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.backend.CanvasAdapter;
@@ -9,22 +11,30 @@ import org.oscim.scalebar.DefaultMapScaleBar;
 import org.oscim.scalebar.MapScaleBarLayer;
 
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
 public class GPMapScaleBarLayer extends MapScaleBarLayer implements ISystemLayer {
 
     private GPMapView mapView;
-    public static final String NAME = "Map Scale Bar";
+    public static String NAME = null;
 
     public GPMapScaleBarLayer(GPMapView mapView) {
         super(mapView.map(), new DefaultMapScaleBar(mapView.map()));
         this.mapView = mapView;
+        getName(mapView.getContext());
 
         getRenderer().setPosition(GLViewport.Position.TOP_CENTER);
         getRenderer().setOffset(5 * CanvasAdapter.getScale(), 0);
     }
 
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_scalebar);
+        }
+        return NAME;
+    }
 
     @Override
     public String getId() {

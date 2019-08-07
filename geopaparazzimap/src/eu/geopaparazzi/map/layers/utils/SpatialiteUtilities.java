@@ -45,6 +45,7 @@ import eu.geopaparazzi.library.style.Style;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
     public static final String DUMMY = "dummy";
     public static final String ROWID_PK = "ROWID";

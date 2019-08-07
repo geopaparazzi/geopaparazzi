@@ -78,6 +78,7 @@ import eu.geopaparazzi.map.jts.android.geom.PolygonShape;
  * <p>Modified for Android use.</p>
  * 
  */
+@SuppressWarnings("ALL")
 public class ShapeWriter {
     /**
      * The point transformation used by default.

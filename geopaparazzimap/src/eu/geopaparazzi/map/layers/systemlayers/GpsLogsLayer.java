@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
@@ -25,6 +26,7 @@ import eu.geopaparazzi.library.database.GPLog;
 
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
@@ -32,7 +34,7 @@ import eu.geopaparazzi.map.layers.utils.GpsLog;
 
 public class GpsLogsLayer extends VectorLayer implements ISystemLayer {
 
-    public static final String NAME = "Gps Log";
+    public static String NAME = null;
     private final SharedPreferences peferences;
     private GPMapView mapView;
 
@@ -41,11 +43,20 @@ public class GpsLogsLayer extends VectorLayer implements ISystemLayer {
 
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
         this.mapView = mapView;
+        getName(mapView.getContext());
+
         try {
             reloadData();
         } catch (IOException e) {
             GPLog.error(this, null, e);
         }
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_gpslogs);
+        }
+        return NAME;
     }
 
     public void reloadData() throws IOException {

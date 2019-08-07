@@ -347,23 +347,23 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         }
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("insert into \"").append(tableName);
+        sbIn.append("insert into \"").append(tableName);//NON-NLS
         sbIn.append("\" (");
         sbIn.append(geometryFieldName);
         // add fields
         if (nonGeomFieldsNames.length() > 0) {
             sbIn.append(nonGeomFieldsNames);
         }
-        sbIn.append(") values (");
+        sbIn.append(") values (");//NON-NLS
         if (doTransform)
-            sbIn.append("ST_Transform(");
+            sbIn.append("ST_Transform(");//NON-NLS
         if (multiSingleCast != null)
             sbIn.append(multiSingleCast).append("(");
         if (spaceDimensionsCast != null)
             sbIn.append(spaceDimensionsCast).append("(");
         if (geometryTypeCast != null)
             sbIn.append(geometryTypeCast).append("(");
-        sbIn.append("GeomFromText('");
+        sbIn.append("GeomFromText('");//NON-NLS
         sbIn.append(geometry.toText());
         sbIn.append("' , ");
         sbIn.append(geometrySrid);
@@ -444,19 +444,19 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         }
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("update \"").append(tableName);
-        sbIn.append("\" set ");
+        sbIn.append("update \"").append(tableName);//NON-NLS
+        sbIn.append("\" set ");//NON-NLS
         sbIn.append(geometryFieldName);
         sbIn.append(" = ");
         if (doTransform)
-            sbIn.append("ST_Transform(");
+            sbIn.append("ST_Transform(");//NON-NLS
         if (multiSingleCast != null)
             sbIn.append(multiSingleCast).append("(");
         if (spaceDimensionsCast != null)
             sbIn.append(spaceDimensionsCast).append("(");
         if (geometryTypeCast != null)
             sbIn.append(geometryTypeCast).append("(");
-        sbIn.append("GeomFromText('");
+        sbIn.append("GeomFromText('");//NON-NLS
         sbIn.append(geometry.toText());
         sbIn.append("' , ");
         sbIn.append(geometrySrid);
@@ -473,7 +473,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
             sbIn.append(")");
         }
         sbIn.append("");
-        sbIn.append(" where ");
+        sbIn.append(" where ");//NON-NLS
         sbIn.append(feature.getIdFieldName()).append("=");
         sbIn.append(feature.getIdFieldValue());
         String insertQuery = sbIn.toString();
@@ -505,15 +505,15 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         String tableName = firstFeature.getTableName();
 
         StringBuilder sbIn = new StringBuilder();
-        sbIn.append("delete from \"").append(tableName);
-        sbIn.append("\" where ");
+        sbIn.append("delete from \"").append(tableName);//NON-NLS
+        sbIn.append("\" where ");//NON-NLS
 
         int idIndex = firstFeature.getIdIndex();
         String indexName = firstFeature.getAttributeNames().get(idIndex);
 
         StringBuilder sb = new StringBuilder();
         for (Feature feature : features) {
-            sb.append(" OR ");
+            sb.append(" OR ");//NON-NLS
             sb.append(indexName).append("=");
             sb.append(feature.getAttributeValues().get(idIndex));
         }

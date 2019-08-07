@@ -210,7 +210,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
     public void addMap() {
         try {
-            String title = "Add map...";// getString(R.string.select_basemap_source);
+            String title = getString(R.string.add_map);
             String[] supportedExtensions = ESpatialDataSources.getAllSupportedExtensions();
             AppsUtilities.pickFile(this, PICKFILE_REQUEST_CODE, title, supportedExtensions, null);
         } catch (Exception e) {
@@ -221,7 +221,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
     public void addMapFolder() {
         try {
-            String title = "Add maps folder...";//getString(R.string.select_basemap_source_folder);
+            String title = getString(R.string.add_maps_folder);
             String[] supportedExtensions = ESpatialDataSources.getAllSupportedExtensions();
             AppsUtilities.pickFolder(this, PICKFOLDER_REQUEST_CODE, title, null, supportedExtensions);
         } catch (Exception e) {
@@ -297,7 +297,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
         final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
-        ((TextView) header.findViewById(R.id.text)).setText("user layers");
+        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.user_layers));
         ((TextView) header.findViewById(R.id.item_count)).setText("");
 
         mBoardView.addColumn(listAdapter, header, header, false);
@@ -317,7 +317,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
         final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
-        ((TextView) header.findViewById(R.id.text)).setText("system");
+        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.system));
         ((TextView) header.findViewById(R.id.item_count)).setText("");
 
         mBoardView.addColumn(listAdapter, header, header, false);
@@ -436,8 +436,8 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                     break;
                                 case MAPURL: {
                                     String readfile = FileUtilities.readfile(finalFile);
-                                    if (readfile.replace(" ", "").contains("type=wms")) {
-                                        GPDialogs.warningDialog(getActivity(), "WMS mapurl is not yet supported in this version.", null);
+                                    if (readfile.replace(" ", "").contains("type=wms")) {//NON-NLS
+                                        GPDialogs.warningDialog(getActivity(), getString(R.string.wms_unsupported), null);
                                     } else {
                                         int index1 = LayerManager.INSTANCE.addMapurlBitmapTileService(finalFile, null);
                                         if (index1 >= 0) {
@@ -536,7 +536,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                             }
                                         });
                                     } else {
-                                        GPDialogs.warningDialog(getActivity(), "Unable to find tables in the selected database.", null);
+                                        GPDialogs.warningDialog(getActivity(), getString(R.string.unable_to_find_tables_in_db), null);
                                     }
 
                                 }
@@ -669,7 +669,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         @Override
         public void onStartDragAnimation(View dragView) {
             CardView dragCard = dragView.findViewById(R.id.card);
-            ObjectAnimator anim = ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.getCardElevation(), 40);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.getCardElevation(), 40); //NON-NLS
             anim.setInterpolator(new DecelerateInterpolator());
             anim.setDuration(ANIMATION_DURATION);
             anim.start();
@@ -678,7 +678,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
         @Override
         public void onEndDragAnimation(View dragView) {
             CardView dragCard = dragView.findViewById(R.id.card);
-            ObjectAnimator anim = ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.getCardElevation(), 6);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.getCardElevation(), 6); //NON-NLS
             anim.setInterpolator(new DecelerateInterpolator());
             anim.setDuration(ANIMATION_DURATION);
             anim.start();

@@ -6,6 +6,7 @@ import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
 
+@SuppressWarnings("ALL")
 public enum ELayerTypes {
     MAPSFORGE("mapsforge", MapsforgeLayer.class.getCanonicalName()),
     VECTORTILESSERVICE("VectorTilesService", VectorTilesServiceLayer.class.getCanonicalName()),

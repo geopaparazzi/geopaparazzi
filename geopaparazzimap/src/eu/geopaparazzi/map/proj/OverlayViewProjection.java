@@ -14,7 +14,7 @@ import eu.geopaparazzi.map.GPMapView;
  *
  */
 public class OverlayViewProjection {
-    private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
+    private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions"; //NON-NLS
 
     private final GPMapView mapView;
 

@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
@@ -35,7 +37,7 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
-    public static final String NAME = "Gps Info";
+    public static String NAME = null;
     private static Bitmap notesBitmap;
     private GPMapView mapView;
 
@@ -48,8 +50,16 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
     public GpsPositionTextLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
+        getName(mapView.getContext());
         setOnItemGestureListener(this);
 
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_gpsinfo);
+        }
+        return NAME;
     }
 
     private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
@@ -96,22 +106,22 @@ public class GpsPositionTextLayer extends ItemizedLayer<MarkerItem> implements I
 
 
         List<String> lines = new ArrayList<>();
-        lines.add("lon: " + COORDINATE_FORMATTER.format(lastGpsPosition[0]));
-        lines.add("lat: " + COORDINATE_FORMATTER.format(lastGpsPosition[1]));
-        lines.add("elev: " + (int) lastGpsPosition[2] + " m");
+        lines.add("lon: " + COORDINATE_FORMATTER.format(lastGpsPosition[0]));//NON-NLS
+        lines.add("lat: " + COORDINATE_FORMATTER.format(lastGpsPosition[1]));//NON-NLS
+        lines.add("elev: " + (int) lastGpsPosition[2] + " m");//NON-NLS
 
         if (lastGpsPositionExtras != null) {
-            lines.add("accuracy: " + DECIMAL_FORMATTER_1.format(lastGpsPositionExtras[0]) + " m");
-            lines.add("speed: " + DECIMAL_FORMATTER_1.format(lastGpsPositionExtras[1]) + " m/s");
-            lines.add("bearing: " + (int) lastGpsPositionExtras[2]);
+            lines.add("accuracy: " + DECIMAL_FORMATTER_1.format(lastGpsPositionExtras[0]) + " m");//NON-NLS
+            lines.add("speed: " + DECIMAL_FORMATTER_1.format(lastGpsPositionExtras[1]) + " m/s");//NON-NLS
+            lines.add("bearing: " + (int) lastGpsPositionExtras[2]);//NON-NLS
         }
         if (lastGpsStatusExtras != null) {
-            lines.add("sats: " + lastGpsStatusExtras[1]);
-            lines.add("fixsats: " + lastGpsStatusExtras[2]);
+            lines.add("sats: " + lastGpsStatusExtras[1]);//NON-NLS
+            lines.add("fixsats: " + lastGpsStatusExtras[2]);//NON-NLS
         }
         if (lastGpsLoggingStatus != null) {
-            String msg = lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON ? "on" : "off";
-            lines.add("logging is " + msg);
+            String msg = lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON ? "on" : "off";//NON-NLS //NON-NLS
+            lines.add("logging is " + msg);//NON-NLS
         }
 
         float refHeight = textPainter.getTextHeight(lines.get(0)) * 1.5f;

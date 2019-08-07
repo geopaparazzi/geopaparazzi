@@ -59,7 +59,7 @@ import eu.geopaparazzi.library.util.Compat;
  */
 public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
 
-    private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES";
+    private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES"; //NON-NLS
 
     private ImageView mWidthImageView;
     private SpatialiteColorStrokeObject mCurrentColorStrokeObject;

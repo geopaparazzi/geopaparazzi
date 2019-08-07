@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.utils;
 
+@SuppressWarnings("ALL")
 public enum LayerGroups {
     SYSTEM(0, "System layers"),
     USER(1, "User layers");

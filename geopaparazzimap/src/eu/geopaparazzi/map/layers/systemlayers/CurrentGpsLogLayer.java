@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
@@ -28,7 +30,7 @@ import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.utils.GpsLog;
 
 public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, ISystemLayer {
-    public static final String NAME = "Current Log";
+    public static String NAME = null;
     private GeometryFactory gf = new GeometryFactory();
     private GpsLog lastLog;
     private Style lineStyle;
@@ -37,6 +39,14 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
     public CurrentGpsLogLayer(GPMapView mapView) {
         super(mapView.map());
         this.mapView = mapView;
+        getName(mapView.getContext());
+    }
+
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_current_log);
+        }
+        return NAME;
     }
 
     private void preLoadData() throws IOException {
@@ -62,7 +72,7 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
         try {
             createLogAndStyle();
         } catch (IOException e) {
-            GPLog.error(this, "ERRROR loading log/style", e);
+            GPLog.error(this, "ERRROR loading log/style", e);//NON-NLS
         }
         if (lastLog.gpslogGeoPoints.size() > 1) {
             LineString lineString = gf.createLineString(lastLog.gpslogGeoPoints.toArray(new Coordinate[0]));

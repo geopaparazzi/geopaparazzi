@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,11 +60,32 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     private int mGrabHandleId;
     private boolean mDragOnLongPress;
 
+    private String remove_layer;
+    private String toggle3d;
+    private String toggleLabels;
+    private String setAlpha;
+    private String setStyle;
+    private String enableEditing;
+    private String disableEditing;
+    private String setTheme;
+
+
     MapLayerAdapter(MapLayerListFragment mapLayerListFragment, ArrayList<MapLayerItem> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
         this.mapLayerListFragment = mapLayerListFragment;
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
         mDragOnLongPress = dragOnLongPress;
+
+        FragmentActivity activity = mapLayerListFragment.getActivity();
+        remove_layer = activity.getString(R.string.menu_remove_layer);
+        toggle3d = activity.getString(R.string.menu_toggle_3d);
+        toggleLabels = activity.getString(R.string.menu_toggle_labels);
+        setAlpha = activity.getString(R.string.menu_set_opacity);
+        setStyle = activity.getString(R.string.menu_set_style);
+        enableEditing = activity.getString(R.string.menu_enable_editing);
+        disableEditing = activity.getString(R.string.menu_disable_editing);
+        setTheme = activity.getString(R.string.menu_select_theme);
+
         setItemList(list);
     }
 
@@ -88,14 +110,6 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         });
         holder.moreButton.setOnClickListener(e -> {
             PopupMenu popup = new PopupMenu(mapLayerListFragment.getActivity(), holder.moreButton);
-            String remove_layer = "Remove Layer";
-            String toggle3d = "Toggle 3D";
-            String toggleLabels = "Toggle Labels";
-            String setAlpha = "Set Opacity";
-            String setStyle = "Set Style";
-            String enableEditing = "Enable editing";
-            String disableEditing = "Disable editing";
-            String setTheme = "Select theme";
 
             List<MapLayerItem> itemList = getItemList();
             MapLayerItem selMapLayerItem_ = null;
@@ -249,7 +263,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                 colorStrokeObject.shapeSize = (int) style.size;
                             }
                             SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
-                            colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");
+                            colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
                         } else if (actionName.equals(setTheme)) {
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
                             String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());

@@ -8,6 +8,7 @@ import java.util.List;
  *
  * @author Antonello Andrea (www.hydrologis.com)
  */
+@SuppressWarnings("ALL")
 public enum EOnlineTileSources {
     //    Google_Maps("Google Maps", "", "", "Google", "https://mt1.google.com/vt/lyrs=m&x={X}&y={Y}&z={Z}", "", "19", "0"), //       
 //    Google_Satellite("Google Satellite", "", "", "Google", "https://mt1.google.com/vt/lyrs=s&x={X}&y={Y}&z={Z}", "", "19", "0"), //       

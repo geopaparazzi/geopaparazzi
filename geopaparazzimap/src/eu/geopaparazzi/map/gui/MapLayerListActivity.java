@@ -27,7 +27,7 @@ public class MapLayerListActivity extends AppCompatActivity implements ColorStro
 
     private void showFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment, "fragment").commit();
+        transaction.replace(R.id.container, fragment, "fragment").commit(); //NON-NLS
     }
 
     @Override

@@ -1,5 +1,6 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,6 +32,7 @@ import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 
@@ -38,16 +40,18 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
     private static final int FG_COLOR = 0xFF000000; // 100 percent black. AARRGGBB
     private static final int BG_COLOR = 0x80FF69B4; // 50 percent pink. AARRGGBB
     private static final int TRANSP_WHITE = 0x80FFFFFF; // 50 percent white. AARRGGBB
-    public static final String NAME = "Project Bookmarks";
+    public static String NAME = null;
     private static Bitmap imagesBitmap;
     private GPMapView mapView;
     private static String colorStr;
 
-    public static final String TABLE_BOOKMARKS = "bookmarks";
+    public static final String TABLE_BOOKMARKS = "bookmarks";//NON-NLS
 
     public BookmarkLayer(GPMapView mapView) {
         super(mapView.map(), getMarkerSymbol(mapView));
         this.mapView = mapView;
+        getName(mapView.getContext());
+
         setOnItemGestureListener(this);
 
         try {
@@ -55,8 +59,13 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
+    }
 
-
+    public static String getName(Context context) {
+        if (NAME == null) {
+            NAME = context.getString(R.string.layername_bookmarks);
+        }
+        return NAME;
     }
 
     private static MarkerSymbol getMarkerSymbol(GPMapView mapView) {
@@ -78,7 +87,7 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
         SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
 
         List<MarkerItem> bookmarks = new ArrayList<>();
-        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
+        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;//NON-NLS
 
         try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
@@ -87,9 +96,9 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
                 double lat = c.getDouble(1);
                 String text = c.getString(2);
 
-                String descr = "bookmark: " + text + "\n" +
-                        "longitude: " + lon + "\n" +
-                        "latitude: " + lat;
+                String descr = "bookmark: " + text + "\n" +//NON-NLS
+                        "longitude: " + lon + "\n" +//NON-NLS
+                        "latitude: " + lat;//NON-NLS
                 bookmarks.add(new MarkerItem(text, descr, new GeoPoint(lat, lon)));
                 c.moveToNext();
             }

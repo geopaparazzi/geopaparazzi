@@ -54,6 +54,7 @@ import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
 
+@SuppressWarnings("ALL")
 public enum LayerManager {
     INSTANCE;
 
@@ -68,7 +69,8 @@ public enum LayerManager {
      * Initialize the layers from preferences
      */
     public void init() throws Exception {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+        GPApplication context = GPApplication.getInstance();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String loadedUserMapsJson = preferences.getString(GP_LOADED_USERMAPS_KEY, "{}");
 
         JSONObject root = new JSONObject(loadedUserMapsJson);
@@ -94,49 +96,49 @@ public enum LayerManager {
             // define system layers
             JSONObject jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, GpsLogsLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, GpsLogsLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, GpsLogsLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, CurrentGpsLogLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, CurrentGpsLogLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, CurrentGpsLogLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, BookmarkLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, BookmarkLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, BookmarkLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, ImagesLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, ImagesLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, ImagesLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, NotesLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, NotesLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, NotesLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, GpsPositionLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, GpsPositionLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, GpsPositionLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, GpsPositionTextLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, GpsPositionTextLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, GpsPositionTextLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, false);
             systemLayersDefinitions.add(jo);
 
             jo = new JSONObject();
             jo.put(IGpLayer.LAYERTYPE_TAG, GPMapScaleBarLayer.class.getCanonicalName());
-            jo.put(IGpLayer.LAYERNAME_TAG, GPMapScaleBarLayer.NAME);
+            jo.put(IGpLayer.LAYERNAME_TAG, GPMapScaleBarLayer.getName(context));
             jo.put(IGpLayer.LAYERENABLED_TAG, true);
             systemLayersDefinitions.add(jo);
         }

@@ -3,6 +3,7 @@ package eu.geopaparazzi.map.layers.utils;
 /**
  * Created by hydrologis on 18/07/14.
  */
+@SuppressWarnings("ALL")
 public interface ISpatialiteTableAndFieldsNames {
     /**
      * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
