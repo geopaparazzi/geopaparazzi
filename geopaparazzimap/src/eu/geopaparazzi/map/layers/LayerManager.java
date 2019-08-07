@@ -50,6 +50,7 @@ import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.VectorTilesServiceLayer;
+import eu.geopaparazzi.map.layers.utils.EOnlineTileSources;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
 
@@ -198,6 +199,11 @@ public enum LayerManager {
                     }
                 }
             }
+        }
+
+        if (userLayersDefinitions.size() == 0) {
+            EOnlineTileSources source = EOnlineTileSources.Open_Street_Map_Standard;
+            LayerManager.INSTANCE.addBitmapTileService(source.getName(), source.getUrl(), source.getTilePath(), source.getMaxZoom(), 1f, null);
         }
         //
         loadMapLayers(mapView, userLayersDefinitions);

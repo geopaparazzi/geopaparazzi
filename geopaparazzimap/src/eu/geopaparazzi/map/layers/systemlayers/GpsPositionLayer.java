@@ -28,9 +28,9 @@ import eu.geopaparazzi.map.vtm.VtmUtilities;
 
 public class GpsPositionLayer extends LocationTextureLayer implements IPositionLayer, ISystemLayer {
     public static final String NAME = "Gps Position";
-    private static TextureRegion activeTexture;
-    private static TextureRegion staleTexture;
-    private static TextureRegion movingTexture;
+//    private static TextureRegion activeTexture;
+//    private static TextureRegion staleTexture;
+//    private static TextureRegion movingTexture;
     private SharedPreferences peferences = null;
     private GPMapView mapView;
 
@@ -47,19 +47,22 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         locationRenderer.setIndicatorColor(Color.get(0, 0, 0, 0));
 
         // set billboard rendering for TextureRegion (false is default)
-        locationRenderer.setBillboard(true); // TODO check this and in case put false
+        locationRenderer.setBillboard(false);
+
     }
 
     private static TextureRegion createTextures(Context context) throws IOException {
-        if (staleTexture == null) {
-            Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_black_24dp);
-            Bitmap staleGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_grey_24dp);
-            Bitmap movingGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
-            activeTexture = new TextureRegion(new TextureItem(activeGpsBitmap), new TextureAtlas.Rect(0, 0, activeGpsBitmap.getWidth(), activeGpsBitmap.getHeight()));
-            staleTexture = new TextureRegion(new TextureItem(staleGpsBitmap), new TextureAtlas.Rect(0, 0, staleGpsBitmap.getWidth(), staleGpsBitmap.getHeight()));
-            movingTexture = new TextureRegion(new TextureItem(movingGpsBitmap), new TextureAtlas.Rect(0, 0, movingGpsBitmap.getWidth(), movingGpsBitmap.getHeight()));
-        }
-        return staleTexture;
+        Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
+        return new TextureRegion(new TextureItem(activeGpsBitmap), new TextureAtlas.Rect(0, 0, activeGpsBitmap.getWidth(), activeGpsBitmap.getHeight()));
+//        if (staleTexture == null) {
+//            Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_black_24dp);
+//            Bitmap staleGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_grey_24dp);
+//            Bitmap movingGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
+//            activeTexture = new TextureRegion(new TextureItem(activeGpsBitmap), new TextureAtlas.Rect(0, 0, activeGpsBitmap.getWidth(), activeGpsBitmap.getHeight()));
+//            staleTexture = new TextureRegion(new TextureItem(staleGpsBitmap), new TextureAtlas.Rect(0, 0, staleGpsBitmap.getWidth(), staleGpsBitmap.getHeight()));
+//            movingTexture = new TextureRegion(new TextureItem(movingGpsBitmap), new TextureAtlas.Rect(0, 0, movingGpsBitmap.getWidth(), movingGpsBitmap.getHeight()));
+//        }
+//        return staleTexture;
     }
 
     public GpsPositionLayer(Map map, TextureRegion textureRegion) {
