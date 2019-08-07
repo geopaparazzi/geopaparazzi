@@ -39,10 +39,14 @@
   <string name="error_projects_list">A apărut o eroare la preluarea listei de proiecte.</string>
   <string name="error_data_list">A apărut o eroare la preluarea listei straturilor cu date.</string>
   <string name="downloading_project">Descărcare proiect...</string>
+  <string name="downloading_profile">Descărcare profil...</string>
   <string name="downloading_data">Descărcare date...</string>
   <string name="downloading_data_to_the_device">Se descarcă pe dispozitiv straturile selectate, sub forma de bază de date spatialite.</string>
   <string name="project_successfully_downloaded">Proiectul a fost descărcat cu succes.</string>
+  <string name="profile_successfully_downloaded">Proiectul a fost descărcat cu succes.</string>
   <string name="data_successfully_downloaded">Proiectul a fost descărcat cu succes.</string>
+  <string name="profile_status_exists">(Descărcat deja)</string>
+  <string name="profile_status_update">(Va actualiza profilul dvs. existent)</string>
   <string name="proximity_alert">Alertă de Proximitate!</string>
   <string name="approaching_poi">Apropiere de un punct de interes.</string>
   <string name="form_field_check">Verificați dacă este valid câmpul \"%1$s\" din secțiunea \"%2$s\". Nu au fost validate constrângerile: %3$s.</string>
@@ -94,8 +98,11 @@
   <string name="label_green">verde</string>
   <string name="label_blue">albastru</string>
   <string name="label_size">Dimensiunea etichetei</string>
+  <string name="label_field">Câmpul etichetei</string>
   <string name="set_properties">Setare proprietăți</string>
   <string name="unauthorized_api_key">Acces neautorizat. Verificați-vă cheia API.</string>
+  <string name="sd_card_foldername">Card SD Extern</string>
+  <string name="internal_card_foldername">Stocare Internă</string>
   <string name="fill_and_stroke_color_title">Culoarea Umplerii și a Conturului</string>
   <string name="fill_color_title">Culoarea de umplere</string>
   <string name="fill_alpha_title">Transparența umplerii</string>
@@ -118,4 +125,14 @@
   <string name="osmbonuspack.format_minutes">%smin</string>
   <string name="osmbonuspack.format_seconds">%ssec</string>
   <string name="first_camera_open_warning">IMPORTANT: Dacă întâmpinați erori ale aplicației pe durata fotografierii, încercați să reduceți rezoluția din setările aparatului foto.\n\nErorile se datorează probabil unui consum ridicat de memorie la momentul procesării imaginii, pentru a o insera în baza de date.\n\nÎntre timp, căutăm o soluție viabilă.</string>
+  <string name="gps_status_unknown">Starea GPS-ului nu este cunoscută</string>
+  <string name="note_in_gps">GPS</string>
+  <string name="download_Canceled">Descărcarea a fost anulată de utilizator.</string>
+  <string name="download_CannotWrite">Nu se poate scrie în fișier:</string>
+  <string name="download_Downloading">Descărcare...</string>
+  <string name="download_Error">A apărut o eroare:</string>
+  <string name="download_Downloaded">Fișier descărcat.</string>
+  <string name="upload_Uploading">Încărcare:</string>
+  <string name="upload_Error">A apărut o eroare:</string>
+  <string name="upload_Uploaded">Fișier încărcat.</string>
 </resources>

@@ -160,7 +160,6 @@
   <string name="custom_icon_properties">Proizvoljna svojstva ikonice</string>
   <string name="use_custom">koristi proizvoljno</string>
   <string name="labels">Oznake</string>
-  <string name="show_labels">pokaži oznake</string>
   <string name="halo">halo</string>
   <string name="cross_properties_summary">Svojstva krstića koji obeležava mesto beleške</string>
   <string name="cross_properties">Centrirati Krstić</string>
@@ -181,7 +180,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projekat</string>
   <string name="gps_status">GPS Status</string>
-  <string name="no_queriable_layer_is_visible">Sloj za upite nije vidljiv</string>
   <string name="set_path_manually">Postaviti putanju manualno (ukoliko je već postavljena, ona ima prednost nad izbornom listom)</string>
   <string name="choose_from_suggested">ili izaberite iz predloženog</string>
   <string name="reset_style_tables">Resetovati tabele sa stilovima</string>
@@ -215,21 +213,8 @@
   <string name="creation_date">Datum kreiranja</string>
   <string name="creation_user">Korisnik kreiranog projekta</string>
   <string name="last_modification_user">Korisnik promena poslednjeg projekta</string>
-  <string name="preview_mode_save_warning">Režim pregleda. U trenutku pritiska Sačuvaj dugmeta, geometrija će biti sačuvana u bazi podataka</string>
   <string name="reset_string">resetovanje</string>
   <string name="avaiable_layers">Dostupni slojevi</string>
-  <string name="geometry_saved">Geometrija sačuvana.</string>
-  <string name="unique_constraint_violation_message">Pojavio se prekršaj jedinstvenog ograničenja. Baze podataka sa jedinstvenim ograničenjima nisu podržane.</string>
-  <string name="selfintersection_message">Dodata najviša tačka je kreirala presek poligona i Vaš sloj ne podržava to.</string>
-  <string name="no_gps_coordinate_acquired_yet">GPS koordinata još uvek nije prikupljena.</string>
-  <string name="info_uppercase">INFORMACIJE</string>
-  <string name="extracting_info">Raspakivanje informacija...</string>
-  <string name="geom_incompatible_with_layer">Dobijena geometrija nije odgovarajuća sa slojem sa odredištima</string>
-  <string name="selected_features_in_layer">Odabrana %1$d karakteristika sa %2$d poligonom</string>
-  <string name="no_compatible_layers_found">Nisu pronadjeni odgovarajući slojevi</string>
-  <string name="copied_features_to_layer">Kopirane %1$d geometrije u sloj: %2$s</string>
-  <string name="area_colon">Površina:</string>
-  <string name="length_colon">Dužina:</string>
   <string name="save_uppercase">SAČUVAJ</string>
   <string name="saving_to_database">Čuvanje podataka u bazu podataka...</string>
   <string name="downloading">Preuzimanje...</string>

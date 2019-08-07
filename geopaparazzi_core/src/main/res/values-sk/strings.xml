@@ -160,7 +160,6 @@
   <string name="custom_icon_properties">Vlastnosti užívateľských ikon</string>
   <string name="use_custom">použi vlastné</string>
   <string name="labels">Popisy</string>
-  <string name="show_labels">ukázať popisy</string>
   <string name="halo">halo</string>
   <string name="cross_properties_summary">Nastavenia kríža použitého k umiestneniu poznámok.</string>
   <string name="cross_properties">Centruj kríž</string>
@@ -181,7 +180,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projekt</string>
   <string name="gps_status">GPS Status</string>
-  <string name="no_queriable_layer_is_visible">Žiadna dotazovateľná vrstva nie je viditeľná.</string>
   <string name="set_path_manually">Nastavenie cesty (ak je nastavené, má prednosť pre comboboxom)</string>
   <string name="choose_from_suggested">alebo vybrať z navrhovaného</string>
   <string name="reset_style_tables">Resetovať tabuľky štýlov</string>
@@ -215,21 +213,8 @@
   <string name="creation_date">Dátum založenia</string>
   <string name="creation_user">Projekt vytvoril</string>
   <string name="last_modification_user">Projekt naposledy modifikoval</string>
-  <string name="preview_mode_save_warning">Preview mode. Pri stlačení tlačidla Uložiť bude geometria uložená do databázy.</string>
   <string name="reset_string">reset</string>
   <string name="avaiable_layers">Dostupné vrstvy</string>
-  <string name="geometry_saved">Geometria uložená.</string>
-  <string name="unique_constraint_violation_message">Vyskytlo sa narušenie jedinečného obmedzenia. Databázy s jedinečným obmedzením nie sú podporované.</string>
-  <string name="selfintersection_message">Pridaný bod vytvoril samo-priesečník polygónu a tvoja vrstva to nepodporuje.</string>
-  <string name="no_gps_coordinate_acquired_yet">Žiadne GPS súradnice zatiaľ neboli získané.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Získavanie informácií...</string>
-  <string name="geom_incompatible_with_layer">Výsledná geometria nie je kompatibilná s cieľovou vrstvou.</string>
-  <string name="selected_features_in_layer">Vybraných %1$d prvkov s %2$d polygónmi.</string>
-  <string name="no_compatible_layers_found">Žiadne kompatibilné vrstvy neboli nájdené.</string>
-  <string name="copied_features_to_layer">Skopírovaných %1$d geometrií do vrstvy: %2$s</string>
-  <string name="area_colon">Výmera:</string>
-  <string name="length_colon">Dĺžka:</string>
   <string name="save_uppercase">ULOŽIŤ</string>
   <string name="saving_to_database">Ukladanie údajov do databázy...</string>
   <string name="downloading">Sťahovanie...</string>

@@ -184,7 +184,6 @@
   <string name="custom_icon_properties">Propriétés de l\'icône personnalisée</string>
   <string name="use_custom">utiliser personnalisé</string>
   <string name="labels">Étiquettes</string>
-  <string name="show_labels">afficher les étiquettes</string>
   <string name="halo">halo</string>
   <string name="screen_preferences">Paramètres écran</string>
   <string name="screen_preferences_summary">Définissez les préférences de l\'écran comme la croix centrale ou la densité de l\'écran.</string>
@@ -208,7 +207,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projet</string>
   <string name="gps_status">Statut GPS</string>
-  <string name="no_queriable_layer_is_visible">Aucune couche interrogeable n\'est visible.</string>
   <string name="set_path_manually">Réglez manuellement le chemin (si il est défini, il a préséance sur la liste déroulante)</string>
   <string name="choose_from_suggested">ou choisir parmi ce qui est suggéré</string>
   <string name="reset_style_tables">Réinitialiser les tables de style</string>
@@ -245,23 +243,8 @@
   <string name="creation_date">Date de création</string>
   <string name="creation_user">Utilisateur de création de projet</string>
   <string name="last_modification_user">Utilisateur de modification du dernier projet </string>
-  <string name="preview_mode_save_warning">Mode Aperçu. Une fois le bouton de sauvegarde tapé, la géométrie sera sauvegardée dans la base de données</string>
   <string name="reset_string">remettre en place</string>
   <string name="avaiable_layers">Couches disponibles</string>
-  <string name="geometry_saved">Géométrie sauvegardée.</string>
-  <string name="unique_constraint_violation_message">Une violation de contrainte unique s\'est produite. Les bases de données avec des contraintes uniques sont pas pris en charge.</string>
-  <string name="selfintersection_message">Le vertex ajouté a créé une autointersection du polygone et votre couche ne peut pas la gérer.</string>
-  <string name="no_gps_coordinate_acquired_yet">Pas encore de coordonnées GPS disponible.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Extraction d\'informations ...</string>
-  <string name="geom_incompatible_with_layer">La géométrie résultante n\'est pas compatible avec la couche de destination.</string>
-  <string name="selected_features_in_layer">%1$d caractéristiques avec %2$d polygones ont été sélectionnées.</string>
-  <string name="selected_line_features_in_layer">%1$d caractéristiques avec %2$d lignes ont été sélectionnées.</string>
-  <string name="selected_point_features_in_layer">%1$d caractéristiques avec %2$d points ont été sélectionnées.</string>
-  <string name="no_compatible_layers_found">Pas de couches compatibles trouvées</string>
-  <string name="copied_features_to_layer">Copié %1$d géométries dans la couche: %2$s</string>
-  <string name="area_colon">Surface :</string>
-  <string name="length_colon">Longueur :</string>
   <string name="save_uppercase">SAUVEGARDER</string>
   <string name="saving_to_database">Sauvegarde des données dans la base de données ...</string>
   <string name="downloading">Téléchargement ...</string>

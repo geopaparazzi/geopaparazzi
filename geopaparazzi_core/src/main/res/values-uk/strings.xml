@@ -180,7 +180,6 @@
   <string name="custom_icon_properties">Власні властивості іконки</string>
   <string name="use_custom">використовувати власні</string>
   <string name="labels">Мітки</string>
-  <string name="show_labels">показ міток</string>
   <string name="halo">гало</string>
   <string name="screen_preferences">Налаштування екрану</string>
   <string name="cross_properties">Центральний перетин</string>
@@ -233,18 +232,8 @@
   <string name="creation_date">Дата створення</string>
   <string name="creation_user">Користувач-творець проекту</string>
   <string name="last_modification_user">Останній користувач, який змінював проект</string>
-  <string name="preview_mode_save_warning">Режим перегляду. Як тільки натиснуто кнопку запису, геометрія буде збережена в базу даних</string>
   <string name="reset_string">скидання</string>
   <string name="avaiable_layers">Доступні шари</string>
-  <string name="geometry_saved">Геометрію збережено.</string>
-  <string name="no_gps_coordinate_acquired_yet">Ще не отримано жодних координат GPS.</string>
-  <string name="info_uppercase">ІНФО</string>
-  <string name="extracting_info">Видобування інформації...</string>
-  <string name="geom_incompatible_with_layer">Вихідна геометрія неузгоджена з вихідним шаром.</string>
-  <string name="no_compatible_layers_found">Не знайдено сумісного шару</string>
-  <string name="copied_features_to_layer">Скопійовано %1$d геометрій до шару: %2$s</string>
-  <string name="area_colon">Ділянка:</string>
-  <string name="length_colon">Довжина:</string>
   <string name="save_uppercase">ЗБЕРЕГТИ</string>
   <string name="saving_to_database">Збереження даних до бази...</string>
   <string name="downloading">Звантаження...</string>
@@ -288,7 +277,6 @@
   <string name="export_img_processing">Експорт зображень...</string>
   <string name="routing_pref_title">Ключ маршрутування api</string>
   <string name="routing_pref_summary">Для використання сервісів  MapQuest і Graphhopper введіть відповідний ключ Api.</string>
-  <string name="gps_info_dialog_title">Інформація про Мапу/Gps </string>
   <string name="open_gps_settings">Відкрити налаштування GPS</string>
   <string name="dashboard_note_action_description">Додавання тексту, малюнку або нотатки з начерком</string>
   <string name="dashboard_metadata_action_description">Перегляд інформації про проект</string>

@@ -140,7 +140,6 @@
   <string name="custom_icon_properties">Egendefinerte ikon-egenskaper</string>
   <string name="use_custom">bruk egendefinert</string>
   <string name="labels">Etiketter</string>
-  <string name="show_labels">Vis etiketter</string>
   <string name="halo">halo</string>
   <string name="cross_properties_summary">Egenskaper for krysset som brukes til å plassere notater.</string>
   <string name="color">Farge</string>

@@ -162,7 +162,6 @@
   <string name="custom_icon_properties">Свои настройки иконок</string>
   <string name="use_custom">использовать свой</string>
   <string name="labels">Подписи</string>
-  <string name="show_labels">подписывать заметки на карте</string>
   <string name="halo">ореол</string>
   <string name="screen_preferences">Настройки экрана:</string>
   <string name="cross_properties_summary">Настройки креста, используемого для размещения заметок.</string>
@@ -184,7 +183,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Проект</string>
   <string name="gps_status">Статус GPS</string>
-  <string name="no_queriable_layer_is_visible">Включите векторные слои для запроса информации.</string>
   <string name="reset_style_tables">Сбросить стили отображения</string>
   <string name="menu_button">кнопка меню</string>
   <string name="track_length">Длина трека:</string>
@@ -213,16 +211,6 @@
   <string name="last_modification_user">Последний редактировавший пользователь</string>
   <string name="reset_string">сбросить</string>
   <string name="avaiable_layers">Доступные слои</string>
-  <string name="geometry_saved">Геометрия сохранена.</string>
-  <string name="selfintersection_message">Последняя добавленная точка приводит к самопересечению полигона, но ваш слой не поддерживает такое.</string>
-  <string name="info_uppercase">ИНФОРМАЦИЯ</string>
-  <string name="extracting_info">Получение информации...</string>
-  <string name="geom_incompatible_with_layer">Тип геометрии не совместим с заданным слоем.</string>
-  <string name="selected_features_in_layer">Выделено %1$d объектов с %2$d полигонами.</string>
-  <string name="no_compatible_layers_found">Не найдено подходящих слоёв</string>
-  <string name="copied_features_to_layer">Скопировано %1$d объектов на слой %2$s</string>
-  <string name="area_colon">Площадь:</string>
-  <string name="length_colon">Длина:</string>
   <string name="save_uppercase">СОХРАНИТЬ</string>
   <string name="saving_to_database">Сохранение данных...</string>
   <string name="downloading">Загрузка...</string>

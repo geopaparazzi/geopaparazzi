@@ -140,7 +140,6 @@
   <string name="notes_properties">Proprietățile etichetei</string>
   <string name="visibility">Vizibilitate</string>
   <string name="labels">Etichete</string>
-  <string name="show_labels">arată etichete</string>
   <string name="screen_preferences">Setările ecranului</string>
   <string name="color">Culoare</string>
   <string name="prompt_delete_note">Sigur doriți să ștergeți nota? Acest lucru nu poate fi anulat.</string>
@@ -154,14 +153,15 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Proiect</string>
   <string name="gps_status">Starea GPS-ului</string>
-  <string name="no_queriable_layer_is_visible">Nu este vizibil nici un strat interogabil.</string>
   <string name="set_path_manually">Setați manual calea (dacă este setată, ea are prioritate față de caseta combinată)</string>
   <string name="choose_from_suggested">sau alegeți dintre variantele sugerate</string>
   <string name="reset_style_tables">Resetează tabelele cu stiluri</string>
   <string name="gpslog_updateLogLength">Actualizare</string>
   <string name="tanto_service_query">interogare</string>
+  <string name="service_name_propmt">Introduceți un nume pentru serviciu. Dacă nu este completat, numele va fi preluat din serviciu.</string>
   <string name="info">INFO</string>
   <string name="calculate_length">Calculează lungimea...</string>
+  <string name="spatialite_preferences">Setări Spatialite</string>
   <string name="map">Hartă</string>
   <string name="name_lc">nume</string>
   <string name="name_uc">Numele proiectului</string>
@@ -174,20 +174,27 @@
   <string name="notes">Note</string>
   <string name="reset_string">resetare</string>
   <string name="avaiable_layers">Straturi disponibile</string>
-  <string name="geometry_saved">Geometrie salvată.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="area_colon">Suprafața:</string>
-  <string name="length_colon">Lungimea:</string>
   <string name="save_uppercase">SALVARE</string>
+  <string name="downloading">Descărcare...</string>
   <string name="edit">Editare</string>
   <string name="delete">Ștergere</string>
+  <string name="invert_selection">Inversare Selecție</string>
+  <string name="delete_selected">Ștergere selectate</string>
   <string name="import_uc">IMPORT</string>
   <string name="gpx">GPX</string>
+  <string name="bookmarks">Semne de carte</string>
+  <string name="default_database">Baza de date implicită</string>
   <string name="kmz">KMZ</string>
   <string name="export_uc">EXPORT</string>
   <string name="pois">Puncte de interes</string>
+  <string name="extract_contours">Extragere curbe de nivel</string>
+  <string name="extract_waterways">Extragere cursuri de apă</string>
   <string name="export_images">Imagini</string>
+  <string name="table_name">Numele tabelei</string>
+  <string name="db_name">Numele Db</string>
   <string name="path_lc">cale</string>
+  <string name="basemaps">Hărți de bază</string>
+  <string name="gps_data">Date GPS</string>
   <string name="Images">Imagini</string>
   <!--geoss2go profiles-->
 </resources>

@@ -49,6 +49,7 @@
   <string name="gps_use_android_level">省電力利用 (バッテリ節約, 再起動後に有効)</string>
   <string name="gps_use_android_level_summary">チェックすると、GPS設定はオペレーティングシステムレベルのバッテリセーブが適用されますが、長い間隔を選択している場合に信号が不安定になります。（チェックをした場合にGPS接続に問題がある場合は、チェックを外します）100秒未満の間隔で継続した電力がGPSに供給されるということに注意してください。バッテリー節約のためには長い間隔を選択します。</string>
   <string name="sms_preferences">SMS設定</string>
+  <string name="sms_preferences_summary">緊急電話番号の設定</string>
   <string name="databaseError">データベース接続中にエラーが発生しました</string>
   <string name="chart_profile_view">プロフィール</string>
   <string name="gpx_import_processing">gpx をインポートしています...</string>
@@ -197,7 +198,6 @@
   <string name="custom_icon_properties">カスタムアイコンプロパティ</string>
   <string name="use_custom">カスタムを使用</string>
   <string name="labels">ラベル</string>
-  <string name="show_labels">ラベルを表示します。</string>
   <string name="halo">輪郭</string>
   <string name="screen_preferences">画面設定</string>
   <string name="screen_preferences_summary">センタークロス、スクリーン比率の優先設定</string>
@@ -222,7 +222,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">プロジェクト</string>
   <string name="gps_status">GPS Status</string>
-  <string name="no_queriable_layer_is_visible">クエリー可能なレイヤがありません。</string>
   <string name="set_path_manually">パスを手動で設定（コンボボックスよりも優先されます）</string>
   <string name="choose_from_suggested">または候補から選択する</string>
   <string name="reset_style_tables">スタイルテーブルをリセットする</string>
@@ -259,23 +258,8 @@
   <string name="creation_date">作成日</string>
   <string name="creation_user">プロジェクト作成者</string>
   <string name="last_modification_user">プロジェクト変更者</string>
-  <string name="preview_mode_save_warning">プレビューモード。保存ボタンをタップすると、ジオメトリはデータベースに保存されます。</string>
   <string name="reset_string">リセット</string>
   <string name="avaiable_layers">利用可能なレイヤー</string>
-  <string name="geometry_saved">ジオメトリが保存されました</string>
-  <string name="unique_constraint_violation_message">一意制約違反が発生しました。ユニーク制約を持つデータベースがサポートされていません。</string>
-  <string name="selfintersection_message">追加された頂点は、ポリゴンの自己交差が作成されており、レイヤーは自己交差をサポートしていません。</string>
-  <string name="no_gps_coordinate_acquired_yet">GPS座標はまだ取得されていません。</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">情報抽出...</string>
-  <string name="geom_incompatible_with_layer">結果のジオメトリは追加先のレイヤーと互換性がありません。</string>
-  <string name="selected_features_in_layer">%2$d ポリゴンの %1$d 地物が選択されました。</string>
-  <string name="selected_line_features_in_layer">%2$d ラインの %1$d 地物が選択されました。</string>
-  <string name="selected_point_features_in_layer">%2$d ポイントの %1$d 地物が選択されました。</string>
-  <string name="no_compatible_layers_found">互換性のあるレイヤーがありません</string>
-  <string name="copied_features_to_layer">%1$d のジオメトリがレイヤ: %2$s にコピーされました</string>
-  <string name="area_colon">面積: </string>
-  <string name="length_colon">距離: </string>
   <string name="save_uppercase">保存</string>
   <string name="saving_to_database">データベースへ保存中...</string>
   <string name="downloading">ダウンロード中...</string>
@@ -322,7 +306,6 @@
   <string name="export_img_processing">画像をエクスポート中...</string>
   <string name="routing_pref_title">経路検索 api キー</string>
   <string name="routing_pref_summary">MapQuest と Graphhopper の経路検索サービスを利用するための適切なApiキーを入れます。</string>
-  <string name="gps_info_dialog_title">Map/GPS情報</string>
   <string name="open_gps_settings">GPS設定を開く</string>
   <string name="dashboard_note_action_description">テキスト、画像、スケッチノートを追加</string>
   <string name="dashboard_metadata_action_description">プロジェクト情報の表示</string>
@@ -396,15 +379,11 @@
   <string name="browse_documents">ドキュメント参照</string>
   <string name="new_picture">新規画像</string>
   <string name="Documents">ドキュメント</string>
-  <string name="Document_title">Document#</string>
   <string name="Images">画像</string>
   <string name="confirm_remove_document">本当にドキュメントを削除しますか？</string>
   <string name="upload_to_cloud_prompt">現在のプロジェクトをクラウドにアップロードしますか？</string>
   <string name="data_to_pdf_label">プロジェクトフォームをPDF出力</string>
   <string name="exporting_data_to_pdf">フォームデータをPDFに出力する</string>
-  <plurals name="n_images">
-    <item quantity="other"> %d ドキュメント</item>
-  </plurals>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">設定</string>
   <string name="profiles_action_cloud_import">クラウドプロジェクトのインポート</string>
@@ -433,6 +412,5 @@
   <string name="name_of_the_new_profile">新規プロファイル名</string>
   <string name="description_of_the_new_profile">新規プロファイル名の説明</string>
   <string name="browse_images">画像参照</string>
-  <string name="confirm_remove_image">画像を削除しますか？</string>
   <string name="return_to_view_after_note">ノート作成後にビューに戻る</string>
 </resources>

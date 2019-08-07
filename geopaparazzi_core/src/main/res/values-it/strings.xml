@@ -199,7 +199,6 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="custom_icon_properties">Proprietà icone personalizzata</string>
   <string name="use_custom">utilizzare custom</string>
   <string name="labels">Etichette</string>
-  <string name="show_labels">visualizza etichette</string>
   <string name="halo">halo</string>
   <string name="screen_preferences">Impostazioni Schermo</string>
   <string name="screen_preferences_summary">Definisce le impostazioni dello schermo come la croce centrale e la densità</string>
@@ -224,7 +223,6 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <!--ellipsis character instead of three dots-->
   <string name="project">Progetto</string>
   <string name="gps_status">Stato del GPS</string>
-  <string name="no_queriable_layer_is_visible">Non è visibile alcun piano interrogabile</string>
   <string name="set_path_manually">Impostare manualmente il percorso (se inserito, ha precedenza sul menu a tendina)</string>
   <string name="choose_from_suggested">oppure scegli fra i suggeriti</string>
   <string name="reset_style_tables">Resetta tabelle di stile</string>
@@ -261,23 +259,8 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="creation_date">Data di creazione</string>
   <string name="creation_user">Autore del progetto</string>
   <string name="last_modification_user">Utente dell\'ultima modifica</string>
-  <string name="preview_mode_save_warning">Modalità di preview. Se premuto il pulsante di salvataggio, la geometria sarà salvata nel database.</string>
   <string name="reset_string">reset</string>
   <string name="avaiable_layers">Piani disponibili</string>
-  <string name="geometry_saved">Geometria salvata.</string>
-  <string name="unique_constraint_violation_message">È avvenuta una violazione di unique constraint. Non sono supportati database con unique contraints.</string>
-  <string name="selfintersection_message">Il vertice aggiunto ha creato una auto-intersezione del poligono e il piano non la supporta.</string>
-  <string name="no_gps_coordinate_acquired_yet">Non sono state ancora acquisite coordinate GPS.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Estrazione informazioni...</string>
-  <string name="geom_incompatible_with_layer">La geometria risultante non è compatibile con il piano di destinazione.</string>
-  <string name="selected_features_in_layer">Selezionate %1$d features con %2$d polygoni.</string>
-  <string name="selected_line_features_in_layer">Selezionate %1$d features con %2$d linee.</string>
-  <string name="selected_point_features_in_layer">Selezionate %1$d features con %2$d punti.</string>
-  <string name="no_compatible_layers_found">Non sono stati trovati piani compatibili.</string>
-  <string name="copied_features_to_layer">Copiate %1$d geometrie nel piano: %2$s</string>
-  <string name="area_colon">Area:</string>
-  <string name="length_colon">Lunghezza:</string>
   <string name="save_uppercase">SALVA</string>
   <string name="saving_to_database">Salvataggio nel database...</string>
   <string name="downloading">Download in corso...</string>
@@ -324,7 +307,6 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="export_img_processing">Esportazione immagini...</string>
   <string name="routing_pref_title">Chiave per l\'api di routing</string>
   <string name="routing_pref_summary">Per utilizzare i servizi di routing di MapQuest e Graphhopper inserire la relative chiave api.</string>
-  <string name="gps_info_dialog_title">informazioni mappa/GPS</string>
   <string name="open_gps_settings">Apri le impostazioni del GPS</string>
   <string name="dashboard_note_action_description">Aggiungi una nota come testo, foto o schizzo</string>
   <string name="dashboard_metadata_action_description">Visualizza le informazioni sul progetto</string>
@@ -397,16 +379,11 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="browse_documents">Sfoglia documenti</string>
   <string name="new_picture">Nuova immagine</string>
   <string name="Documents">Documenti</string>
-  <string name="Document_title">Documento#</string>
   <string name="Images">Immagini</string>
   <string name="confirm_remove_document">Sei sicuro di volere cancellare il documento?</string>
   <string name="upload_to_cloud_prompt">Caricare il progetto corrente?</string>
   <string name="data_to_pdf_label">Schede del Progetto a PDF</string>
   <string name="exporting_data_to_pdf">Sto esportando le schede in formato PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 documento</item>
-    <item quantity="other">%d documenti</item>
-  </plurals>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">Impostazioni</string>
   <string name="profiles_action_cloud_import">Importa Profili Cloud</string>
@@ -435,6 +412,5 @@ Inserire un numero di telefono valido per inviare i dati.</string>
   <string name="name_of_the_new_profile">Nome del nuovo Profilo</string>
   <string name="description_of_the_new_profile">Descrizione del nuovo Profilo</string>
   <string name="browse_images">Sfoglia immagini</string>
-  <string name="confirm_remove_image">Rimuovere l\'immagine?</string>
   <string name="return_to_view_after_note">Torna alla vista dopo inserimento nota</string>
 </resources>

@@ -151,7 +151,6 @@
   <string name="visibility">Vidljivost</string>
   <string name="use_custom">koristi prilagođeno</string>
   <string name="labels">Oznake</string>
-  <string name="show_labels">prikaz oznaka</string>
   <string name="screen_preferences">Postavke ekrana</string>
   <string name="color">Boja</string>
   <string name="start">početak</string>
@@ -179,17 +178,6 @@
   <string name="notes">Bilješke</string>
   <string name="creation_date">Datum kreiranja</string>
   <string name="avaiable_layers">Dostupni slojevi</string>
-  <string name="geometry_saved">Geometrija spremljena.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Dohvaćanje informacija...</string>
-  <string name="geom_incompatible_with_layer">Rezultirajuća geometrija nije odgovarajuća odredišnom sloju.</string>
-  <string name="selected_features_in_layer">Odabrano %1$d objekata s %2$d poligona.</string>
-  <string name="selected_line_features_in_layer">Odabrano %1$d objekata s %2$d linija.</string>
-  <string name="selected_point_features_in_layer">Odabrano %1$d objekata s %2$d točaka.</string>
-  <string name="no_compatible_layers_found">Ne postoji odgovarajući sloj</string>
-  <string name="copied_features_to_layer">Kopirano %1$d geometrija u sloj: %2$s</string>
-  <string name="area_colon">Površina:</string>
-  <string name="length_colon">Duljina:</string>
   <string name="save_uppercase">SPREMI</string>
   <string name="saving_to_database">Spremanje podataka u bazu...</string>
   <string name="downloading">Preuzimanje...</string>
@@ -229,7 +217,6 @@
   <string name="export_img_processing">Izvoz slika...</string>
   <string name="routing_pref_title">Routing API ključ</string>
   <string name="routing_pref_summary">Za korištenje MapQuest i Graphhopper routing servisa umetnite odgovarajući Api ključ.</string>
-  <string name="gps_info_dialog_title">Karta/GPS informacije</string>
   <string name="open_gps_settings">Spatialite postavke</string>
   <string name="dashboard_note_action_description">Dodaj tekst, sliku ili skiciraj bilješku</string>
   <string name="dashboard_metadata_action_description">Pregledaj informacije o projektu</string>

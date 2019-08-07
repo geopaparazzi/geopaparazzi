@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">Geopaparazzi</string>
-  <string name="action_settings">Configuraciones</string>
+  <string name="action_settings">Configuración</string>
   <string name="action_advanced_settings">Avanzado</string>
   <string name="label_green">Verde</string>
   <string name="label_blue">Azul</string>
@@ -49,6 +49,7 @@
   <string name="gps_use_android_level">Utilizar en el nivel de Android (ahorra batería, requiere inicializar)</string>
   <string name="gps_use_android_level_summary">Si se selecciona, las preferencias gps se aplican a nivel de sistema operativo. Esto puede ahorrar batería, pero podría generar una señal menos estable cuando seleccione intervalos grandes (si al comprobar los dispositivos tiene problemas de conexión gps, deje esta casilla sin marcar). Tenga en cuenta que el sistema operativo alimenta el gps de forma continua para intervalos de envío menores de 100 segundos. Para lograr una mayor duración de la batería seleccione intervalos mayores.</string>
   <string name="sms_preferences">Ajustes de SMS</string>
+  <string name="sms_preferences_summary">Configura el número de pánico</string>
   <string name="databaseError">Se ha producido un error al conectar con la base de datos</string>
   <string name="chart_profile_view">Vista perfil</string>
   <string name="gpx_import_processing">Importando gpx...</string>
@@ -128,9 +129,17 @@
   <string name="view_in_mixare">Visualizar en mixware</string>
   <string name="gps_use_coarse">Utilizar la posición basada en red, en lugar de la posición gps (necesita reiniciar)</string>
   <string name="type_to_filter">Escribir para filtrar</string>
+  <string name="geopapcloud_preferences">Configuración del servidor en la nube</string>
+  <string name="geopapcloud_preferences_summary">Establecer credenciales del servidor y la configuración de los Servicios en la Nube</string>
   <string name="geopapcloud_user_label">Nombre de usuario</string>
   <string name="geopapcloud_password_label">Contraseña</string>
+  <string name="geopapcloud_server_label">Servidor de Proyectos en la Nube</string>
+  <string name="cloud_profile_url_label">URL de los Perfiles en la Nube</string>
   <string name="exporting_data">Exportando datos</string>
+  <string name="error_set_cloud_settings">Tus parámetros de la Nube no están correctamente configurados. Comprueba tu configuración del servidor en la Nube.</string>
+  <string name="exporting_data_to_the_cloud">Exportar datos al servidor de Proyectos en la Nube</string>
+  <string name="error_uploadig_project_to_cloud">Ocurrió un error mientras se transfería el proyecto al servidor de Proyectos en la Nube.</string>
+  <string name="project_succesfully_uploaded_to_cloud">El proyecto se transfirió correctamente al servidor de Proyectos en la Nube.</string>
   <string name="exporting_data_to_kmz">Exportando datos a KMZ.</string>
   <string name="exporting_data_to_gpx">Exportando datos a GPX</string>
   <string name="media_upload">FICHEROS DE MEDIOS TRANSFERIDOS</string>
@@ -147,6 +156,7 @@
   <string name="select_map_to_use">Seleccionar mapa a utilizar</string>
   <string name="no_map_file_found_going_to_mapnik">No se ha podido encontrar el fichero mapa, cambiando a origen de teselas MAPNIK.</string>
   <string name="enter_project_description">Introducir una descripción para el proyecto</string>
+  <string name="no_images">Sin Documentos</string>
   <string name="with_images">Con imágenes</string>
   <string name="successfully_imported_bookmarks">Marcadores importados correctamente:</string>
   <string name="error_bookmarks_import">Se ha producido un error en la importación de marcadores.</string>
@@ -184,7 +194,6 @@
   <string name="custom_icon_properties">Propiedades de los Iconos personalizados</string>
   <string name="use_custom">Utilización personalizada</string>
   <string name="labels">Etiquetas</string>
-  <string name="show_labels">mostrar etiquetas</string>
   <string name="halo">aureola</string>
   <string name="screen_preferences">Configuración de pantalla</string>
   <string name="screen_preferences_summary">Establecer las preferencias de la pantalla, como la cruz filar central o la densidad de visualización.</string>
@@ -209,7 +218,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Proyecto</string>
   <string name="gps_status">Estado del GPS</string>
-  <string name="no_queriable_layer_is_visible">Ninguna capas de consulta es visible.</string>
   <string name="set_path_manually">Configure manualmente la ruta (si ya está establecida, tendrá precedencia sobre la del combobox)</string>
   <string name="choose_from_suggested">o elija entre las sugerencias</string>
   <string name="reset_style_tables">Reiniciar tablas de estilo</string>
@@ -246,23 +254,8 @@
   <string name="creation_date">Fecha de creación</string>
   <string name="creation_user">Usuario autor del proyecto</string>
   <string name="last_modification_user">Usuario que modificado el proyecto por última vez</string>
-  <string name="preview_mode_save_warning">Modo de vista previa. Una vez que se pulse el botón de guardar, la geometría se guardará en la base de datos</string>
   <string name="reset_string">reinicio</string>
   <string name="avaiable_layers">Capas disponibles</string>
-  <string name="geometry_saved">Geometría guardada.</string>
-  <string name="unique_constraint_violation_message">Se ha producido una violación por el uso de restricción única. Las bases de datos con restricciones únicas no son compatibles.</string>
-  <string name="selfintersection_message">El vértice añadido ha creado una autointersercción del polígono que no es soportada por su capa.</string>
-  <string name="no_gps_coordinate_acquired_yet">Todavía no se han obtenido coordenadas GPS.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Extrayendo información...</string>
-  <string name="geom_incompatible_with_layer">El resultado geométrico no es compatible con la capa de destino.</string>
-  <string name="selected_features_in_layer">Se han seleccionado %1$d entidades con %2$d polígonos.</string>
-  <string name="selected_line_features_in_layer">Se han seleccionado %1$d entidades con %2$d líneas.</string>
-  <string name="selected_point_features_in_layer">Se han seleccionado %1$d entidades con %2$d puntos.</string>
-  <string name="no_compatible_layers_found">No se han encontrado capas compatibles</string>
-  <string name="copied_features_to_layer">Se han copiado %1$d geometrías a la capa: %2$s</string>
-  <string name="area_colon">Área:</string>
-  <string name="length_colon">Longitud:</string>
   <string name="save_uppercase">GUARDAR</string>
   <string name="saving_to_database">Guardando datos en la base de datos...</string>
   <string name="downloading">Descargando...</string>
@@ -282,6 +275,7 @@
   <string name="mapurls">Urls de mapas</string>
   <string name="gpx">GPX</string>
   <string name="geopap_browser">Proyectos en la nube</string>
+  <string name="profiles_browser">Perfiles en la Nube</string>
   <string name="bookmarks">Marcadores</string>
   <string name="default_database">Base de datos por defecto</string>
   <string name="kmz">KMZ</string>
@@ -308,7 +302,6 @@
   <string name="export_img_processing">Exportando imágenes...</string>
   <string name="routing_pref_title">ApiKey de enrutamiento</string>
   <string name="routing_pref_summary">Para utilizar MapQuest y los servicios de enrutamiento Graphhopper inserte la ApiKey adecuada.</string>
-  <string name="gps_info_dialog_title">Información de Mapa y GPS</string>
   <string name="open_gps_settings">Acceder a la configuración del GPS</string>
   <string name="dashboard_note_action_description">Añadir un texto, una imagen o un croquis</string>
   <string name="dashboard_metadata_action_description">Ver la información del proyecto</string>
@@ -378,10 +371,41 @@
   <string name="removing_notes">Borrando notas...</string>
   <string name="interrupted_by_user">Interrumpido por el usuario</string>
   <string name="import_cloud_data">Datos en la nube</string>
+  <string name="browse_documents">Buscar documentos</string>
   <string name="new_picture">Nueva imagen</string>
+  <string name="Documents">Documentos</string>
   <string name="Images">Imágenes</string>
+  <string name="confirm_remove_document">¿Realmente quieres elimintar el documento?</string>
   <string name="upload_to_cloud_prompt">¿Subir el proyecto actual a la nube?</string>
   <string name="data_to_pdf_label">Formularios de proyecto a Pdf</string>
   <string name="exporting_data_to_pdf">Exportando los datos de formulario a PDF</string>
   <!--geoss2go profiles-->
+  <string name="profiles_action_settings">Configuración</string>
+  <string name="profiles_action_cloud_import">Importar Perfiles en la Nube</string>
+  <string name="profiles_action_import">Importar Perfiles</string>
+  <string name="profiles_action_export">Exportar Perfiles</string>
+  <string name="profiles_action_delete">Borrar todos los Perfiles</string>
+  <string name="profiles_title_activity_profile_settings">Configuración de los Perfiles</string>
+  <string name="profiles_section_format">Hola Mundo de la sección: %1$d</string>
+  <string name="profiles_deactivate_profile">Desactivar Perfil</string>
+  <string name="profiles_activate_profile">Activar Perfil</string>
+  <string name="profiles_menu_entry">Perfiles</string>
+  <string name="profiles">Perfiles</string>
+  <string name="layout_settings">Configuración de la Vista</string>
+  <string name="layout_columns">Diseño de las Columnas</string>
+  <string name="text_factor">Factor de Tamaño del Texto</string>
+  <string name="GPS">GPS</string>
+  <string name="add_wms">Añadir WMS</string>
+  <string name="name">Nombre</string>
+  <string name="path">Ruta</string>
+  <string name="contained_forms">Formularios incrustados</string>
+  <string name="map_center">centro del mapa</string>
+  <string name="gps_position">posición gps</string>
+  <string name="set_line_width">Definir anchura de la línea</string>
+  <string name="profile_name">Nombre del Perfil</string>
+  <string name="profile_description">Descripción del Perfil</string>
+  <string name="name_of_the_new_profile">Nombre del nuevo Perfil</string>
+  <string name="description_of_the_new_profile">Descripción del nuevo Perfil</string>
+  <string name="browse_images">Buscar imágenes</string>
+  <string name="return_to_view_after_note">Volver a la vista tras la nota</string>
 </resources>

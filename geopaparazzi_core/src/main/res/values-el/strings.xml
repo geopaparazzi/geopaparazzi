@@ -165,7 +165,6 @@
   <string name="custom_icon_properties">Προσαρμοσμένες ιδιότητες εικονιδίων</string>
   <string name="use_custom">χρησιμοποίηση προσαρμοσμένου</string>
   <string name="labels">Ετικέτες</string>
-  <string name="show_labels">εμφάνιση ετικετών</string>
   <string name="halo">halo</string>
   <string name="cross_properties_summary">Οι ιδιότητες του σταυρού χρησιμοποιήθηκαν στην τοποθέτηση σημειώσεων.</string>
   <string name="cross_properties">Κεντρικός Σταυρός</string>
@@ -187,7 +186,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Έργο</string>
   <string name="gps_status">Κατάσταση GPS</string>
-  <string name="no_queriable_layer_is_visible">Δεν υπάρχει ορατό queriable layer.</string>
   <string name="set_path_manually">Ορίστε χειρονακτικά το μονοπάτι (εάν οριστεί, έχει προτεραιότητα έναντι του combobox)</string>
   <string name="choose_from_suggested">ή επιλέξτε από τα προτεινόμενα</string>
   <string name="reset_style_tables">Επαναφορά style tables</string>
@@ -222,21 +220,8 @@
   <string name="creation_date">Ημερομηνία δημιουργίας</string>
   <string name="creation_user">Χρήστης δημιουργίας έργου</string>
   <string name="last_modification_user">Τελευταία τροποποίηση του σχεδίου χρήστη</string>
-  <string name="preview_mode_save_warning">Τρόπος λειτουργίας προεπισκόπησης. Μόλις έχετε πατήσει το κουμπί αποθήκευσης, η γεωμετρία θα αποθηκευτεί στη βάση δεδομένων</string>
   <string name="reset_string">επαναφορά</string>
   <string name="avaiable_layers">Διαθέσιμες στρώσεις</string>
-  <string name="geometry_saved">Η γεωμετρία αποθηκεύθηκε.</string>
-  <string name="unique_constraint_violation_message">Μια μοναδική παραβίαση περιορισμών συνέβη. Βάσεις δεδομένων με μοναδικους περιορισμούς δεν υποστηρίζονται.</string>
-  <string name="selfintersection_message">Η προστιθέμενη κορυφή έχει δημιουργήσει μια αυτόνομη διασταύρωση του πολυγώνου και το επίπεδο σας δεν την υποστηρίζει.</string>
-  <string name="no_gps_coordinate_acquired_yet">GPS συντεταγμένες δεν έχουν αποκτηθει ακόμα.</string>
-  <string name="info_uppercase">ΠΛΗΡΟΦΟΡΙΑ</string>
-  <string name="extracting_info">Εξαγωγή πληροφοριών...</string>
-  <string name="geom_incompatible_with_layer">Η προκύπτουσα γεωμετρία δεν είναι συμβατή με τη στρώση προορισμού.</string>
-  <string name="selected_features_in_layer">Επιλεγμένα %1$d χαρακτηριστικά με %2$d πολύγωνα.</string>
-  <string name="no_compatible_layers_found">Δεν βρέθηκαν συμβατές στρώσεις</string>
-  <string name="copied_features_to_layer">Αντιγραφή %1$d γεωμετρίες σε στρώμα: %2$s</string>
-  <string name="area_colon">Περιοχή:</string>
-  <string name="length_colon">Μήκος:</string>
   <string name="save_uppercase">ΑΠΟΘΗΚΕΥΣΗ</string>
   <string name="saving_to_database">Αποθήκευση δεδομένων στη βάση δεδομένων...</string>
   <string name="downloading">Μεταφόρτωση...</string>

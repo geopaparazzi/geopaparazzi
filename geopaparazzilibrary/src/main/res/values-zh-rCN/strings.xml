@@ -26,6 +26,7 @@
   <string name="downloading">下载中...</string>
   <string name="downloading_projects_list_from_server">從服務器下載項目列表。</string>
   <string name="downloading_project">项目下载中...</string>
+  <string name="downloading_data">数据下载中...</string>
   <string name="project_successfully_downloaded">项目被成功下载。</string>
   <string name="proximity_alert">鄰近警報！</string>
   <string name="enterLocationLabel">输入位置：</string>

@@ -50,6 +50,7 @@
   <string name="gps_use_android_level">안드로이드 수준에서 사용 (배터리 절약, 재시작 필요)</string>
   <string name="gps_use_android_level_summary">이 옵션을 선택하면, GPS 설정은 운영체제 수준에서 적용되며, 송신 간격을 늘리면 베터리를 절약할 수 있지만 불안정한 신호가 사용될 수 있습니다(이 장치에서 GPS 연결 문제가 있는 경우 선택하지 마십시오). 운영체제에서 GPS는 100초 이하의 송신 간격으로 연속 구동됩니다. 베터리 수명을 위해 더 큰 간격을 선택하십시오.</string>
   <string name="sms_preferences">SMS 설정</string>
+  <string name="sms_preferences_summary">패닉 번호 설정.</string>
   <string name="databaseError">데이터베이스에 연결 중 오류가 발생했습니다</string>
   <string name="chart_profile_view">프로필 보기</string>
   <string name="gpx_import_processing">GPX 가져오는 중...</string>
@@ -194,7 +195,6 @@
   <string name="custom_icon_properties">사용자정의 아이콘 속성</string>
   <string name="use_custom">사용자정의 사용</string>
   <string name="labels">레이블</string>
-  <string name="show_labels">레이블 보기</string>
   <string name="halo">헤일로</string>
   <string name="screen_preferences">화면 설정</string>
   <string name="screen_preferences_summary">중앙 십자표시 또는 화면 밀도에 대한 환경을 설정합니다.</string>
@@ -219,7 +219,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">프로젝트</string>
   <string name="gps_status">GPS 상태</string>
-  <string name="no_queriable_layer_is_visible">쿼리가능한 레이어가 없습니다.</string>
   <string name="set_path_manually">수동으로 경로를 설정(설정하면 콤보박스에 우선순위로 표시)</string>
   <string name="choose_from_suggested">또는 제안된 목록에서 선택</string>
   <string name="reset_style_tables">스타일 테이블 초기화</string>
@@ -256,23 +255,8 @@
   <string name="creation_date">생성 날짜</string>
   <string name="creation_user">프로젝트 생성 사용자</string>
   <string name="last_modification_user">마지막 프로젝트 수정 사용자</string>
-  <string name="preview_mode_save_warning">미리보기 보드. 저장 버튼을 탭하면, 지오메트리가 데이터베이스에 저장됩니다.</string>
   <string name="reset_string">초기화</string>
   <string name="avaiable_layers">사용가능한 레이어</string>
-  <string name="geometry_saved">지오메트리가 저장되었습니다.</string>
-  <string name="unique_constraint_violation_message">고유값 제약사항 위반이 발생했습니다. 데이터베이스는 이를 지원하지 않습니다.</string>
-  <string name="selfintersection_message">추가된 버텍스가 폴리곤과 셀프인터섹션 관계에 있으며 대상 레이어는 이를 지원하지 않습니다.</string>
-  <string name="no_gps_coordinate_acquired_yet">아직 GPS에서 취득된 좌표가 없습니다.</string>
-  <string name="info_uppercase">정보</string>
-  <string name="extracting_info">정보를 추출 중...</string>
-  <string name="geom_incompatible_with_layer">이 지오메트리는 대상 레이어와 호환되지 않습니다.</string>
-  <string name="selected_features_in_layer">%2$d 폴리곤을 가진 %1$d 선택된 피처.</string>
-  <string name="selected_line_features_in_layer">%2$d 라인을 가진 %1$d 선택된 피처.</string>
-  <string name="selected_point_features_in_layer">%2$d 포인트를 가진 %1$d 선택된 피처.</string>
-  <string name="no_compatible_layers_found">호환되는 레이어를 찾을 수 없습니다</string>
-  <string name="copied_features_to_layer">%1$d 지오메트리를 %2$s 레이어에 복사</string>
-  <string name="area_colon">면적:</string>
-  <string name="length_colon">길이:</string>
   <string name="save_uppercase">저장</string>
   <string name="saving_to_database">데이터베이스에 저장하는 중...</string>
   <string name="downloading">다운로드 중...</string>
@@ -319,7 +303,6 @@
   <string name="export_img_processing">이미지 내보내는 중...</string>
   <string name="routing_pref_title">경로탐색 API 키</string>
   <string name="routing_pref_summary">MapQuest와 Graphhopper 경로탐색 서비스를 사용하기 위해 API 키를 입력하십시오.</string>
-  <string name="gps_info_dialog_title">지도/GPS 정보</string>
   <string name="open_gps_settings">GPS 설정 열기</string>
   <string name="dashboard_note_action_description">텍스트, 사진 또는 스케치 메모 추가</string>
   <string name="dashboard_metadata_action_description">프로젝트 정보 보기</string>
@@ -392,15 +375,11 @@
   <string name="browse_documents">문서 탐색</string>
   <string name="new_picture">새 사진</string>
   <string name="Documents">문서</string>
-  <string name="Document_title">문서#</string>
   <string name="Images">이미지</string>
   <string name="confirm_remove_document">이 문서를 정말로 삭제하시겠습니까?</string>
   <string name="upload_to_cloud_prompt">현재 프로젝트를 클라우드에 업로드하시겠습니까?</string>
   <string name="data_to_pdf_label">프로젝트 양식을 PDF로</string>
   <string name="exporting_data_to_pdf">양식 데이터를 PDF로 변환합니다</string>
-  <plurals name="n_images">
-    <item quantity="other">%d 문서</item>
-  </plurals>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">설정</string>
   <string name="profiles_action_cloud_import">클라우드 프로필 가져오기</string>
@@ -429,6 +408,5 @@
   <string name="name_of_the_new_profile">새로운 프로필 이름</string>
   <string name="description_of_the_new_profile">새로운 프로필 설명</string>
   <string name="browse_images">이미지 탐색</string>
-  <string name="confirm_remove_image">이미지를 삭제하시겠습니까?</string>
   <string name="return_to_view_after_note">메모 후 뷰로 돌아가기</string>
 </resources>

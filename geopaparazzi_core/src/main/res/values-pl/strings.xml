@@ -184,7 +184,6 @@
   <string name="custom_icon_properties">Preferencje własnych ikon</string>
   <string name="use_custom">użyj własnych</string>
   <string name="labels">Etykiety</string>
-  <string name="show_labels">pokaż etykiety</string>
   <string name="halo">poświata</string>
   <string name="screen_preferences">Ustawienia ekranu</string>
   <string name="screen_preferences_summary">Ustaw preferencje ekranu, takie jak centrowanie krzyża lub gęstość wyświetlacza.</string>
@@ -209,7 +208,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Project</string>
   <string name="gps_status">Status GPS</string>
-  <string name="no_queriable_layer_is_visible">Nie są widoczne żadne warstwy możliwe do przepytania.</string>
   <string name="set_path_manually">Ustaw samodzielnie ścieżkę (jeżeli ustawiona, to ma pierwszeństwo przed listą wyboru)</string>
   <string name="choose_from_suggested">lub wybierz spośród sugerowanych</string>
   <string name="reset_style_tables">Resetuj tabele stylów.</string>
@@ -246,23 +244,8 @@
   <string name="creation_date">Data utworzenia</string>
   <string name="creation_user">Twórca projektu</string>
   <string name="last_modification_user">Twórca ostatnio zmodyfikowanego projektu</string>
-  <string name="preview_mode_save_warning">Tryb podglądu. Gdy tylko wybrany zostanie przycisk zapisz, geometria zostanie zapisana do bazy.</string>
   <string name="reset_string">resetuj</string>
   <string name="avaiable_layers">Dostępne warstwy</string>
-  <string name="geometry_saved">Zapisano geometrię.</string>
-  <string name="unique_constraint_violation_message">Nastąpiło zdublowanie wartości. Bazy danych z unikalnymi wartościami nie są obsługiwane.</string>
-  <string name="selfintersection_message">Dodany węzeł tworzy samoprzecięcie w poligonie które nie jest obsługiwane przez twoją warstwę. </string>
-  <string name="no_gps_coordinate_acquired_yet">Nie uzyskano jeszcze współrzędnych GPS.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Wyciąganie informacji...</string>
-  <string name="geom_incompatible_with_layer">Wynikowa geometria nie jest zgodna z docelową warstwą.</string>
-  <string name="selected_features_in_layer">Wybrano %1$d obiektów z %2$d poligonów.</string>
-  <string name="selected_line_features_in_layer">Wybrano %1$d obiektów z %2$d linii.</string>
-  <string name="selected_point_features_in_layer">Wybrano %1$d obiektów z %2$d punktów.</string>
-  <string name="no_compatible_layers_found">Nie znaleziono kompatybilnych warstw</string>
-  <string name="copied_features_to_layer">Skopiowano %1$d geometrii do warstwy: %2$s</string>
-  <string name="area_colon">Powierzchnia:</string>
-  <string name="length_colon">Długość:</string>
   <string name="save_uppercase">ZAPISZ</string>
   <string name="saving_to_database">Zapisywanie danych do bazy...</string>
   <string name="downloading">Pobieranie...</string>
@@ -308,7 +291,6 @@
   <string name="export_img_processing">Eksportowanie obrazków...</string>
   <string name="routing_pref_title">Klucz API wyznaczania trasy</string>
   <string name="routing_pref_summary">Aby używać systemów wyznaczania trasy MapQuest i Graphhopper musisz podać poprawny klucz API.</string>
-  <string name="gps_info_dialog_title">Informacje o Mapie/GPS</string>
   <string name="open_gps_settings">Otwórz Ustawienia GPS</string>
   <string name="dashboard_note_action_description">Dodaj notatkę tekstową, zdjęcie lub szkic </string>
   <string name="dashboard_metadata_action_description">Pokaż informacje o projekcie</string>

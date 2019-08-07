@@ -164,7 +164,6 @@
   <string name="custom_icon_properties">Benutzerdefinierte Symbol-Eigenschaften</string>
   <string name="use_custom">benutzerdefinierte</string>
   <string name="labels">Beschriftung</string>
-  <string name="show_labels">Zeige Beschriftung</string>
   <string name="halo">Halo</string>
   <string name="cross_properties_summary">Eigenschaften des Kreuzes, das für platzierte Notizen verwendet wird.</string>
   <string name="cross_properties">Fadenkreuz</string>
@@ -186,7 +185,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projekt</string>
   <string name="gps_status">GPS-Status</string>
-  <string name="no_queriable_layer_is_visible">Es ist kein abfragbares Layer sichtbar.</string>
   <string name="set_path_manually">Setze den Pfad manuell (falls gesetzt, hat er Vorrang vor der Auswahlbox)</string>
   <string name="choose_from_suggested">oder wählen von Vorschlägen</string>
   <string name="reset_style_tables">Zurücksetzen der Style Tabellen</string>
@@ -221,22 +219,8 @@
   <string name="creation_date">Erstellungsdatum</string>
   <string name="creation_user">Projekterstellung durch Benutzer</string>
   <string name="last_modification_user">Letzte Projektänderung  durch Benutzer</string>
-  <string name="preview_mode_save_warning">Vorschaumodus. Sobald der \"Sichern\" Button angetippt wird, wird die Geometrie in der Datenbank gespeichert.</string>
   <string name="reset_string">zurücksetzen</string>
   <string name="avaiable_layers">Verfügbare Layer</string>
-  <string name="geometry_saved">Geometrie gespeichert.</string>
-  <string name="unique_constraint_violation_message">Eine eindeutige Integritätsverletzung ist aufgetreten. Datenbanken mit eindeutigen Integritätsbedingungen werden nicht unterstützt.</string>
-  <string name="selfintersection_message">Der hinzugefügte Punkt hat einen Schnittpunkt  des Polygons mit sich selbst zur Folge und Ihr Layer unterstützt dies nicht.</string>
-  <string name="no_gps_coordinate_acquired_yet">Es wurde bisher keine GPS-Koordinate erhalten.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Extrahiere Informationen...</string>
-  <string name="geom_incompatible_with_layer">Die resultierende Geometrie ist nicht mit dem Ziel-Layer kompatibel.</string>
-  <string name="selected_features_in_layer">%1$d Features mit %2$d Polygonen ausgewählt.</string>
-  <string name="selected_line_features_in_layer">%1$d Eigenschaften mit %2$d Zeilen ausgewählt.</string>
-  <string name="no_compatible_layers_found">Es wurden keine kompatiblen Layer gefunden</string>
-  <string name="copied_features_to_layer">%1$d Geometrien wurde zu Layer kopiert: %2$s</string>
-  <string name="area_colon">Fläche:</string>
-  <string name="length_colon">Länge:</string>
   <string name="save_uppercase">SPEICHERN</string>
   <string name="saving_to_database">Speichern der Daten in der Datenbank...</string>
   <string name="downloading">Herunterladen...</string>

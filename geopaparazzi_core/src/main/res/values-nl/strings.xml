@@ -188,7 +188,6 @@
   <string name="custom_icon_properties">Eigen Icon eigenschappen</string>
   <string name="use_custom">gebruik eigen</string>
   <string name="labels">Labels</string>
-  <string name="show_labels">Labels zichtbaar</string>
   <string name="halo">halo</string>
   <string name="screen_preferences">Scherm instellingen</string>
   <string name="screen_preferences_summary">Instellingen voor het centrale kaartkruis of de scherm resolutie. </string>
@@ -213,7 +212,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Project</string>
   <string name="gps_status">GPS status</string>
-  <string name="no_queriable_layer_is_visible">Geen bevraagbare lagen beschikbaar.</string>
   <string name="set_path_manually">Type het pad ( indien gebruikt heeft het voorrang op de combobox)</string>
   <string name="choose_from_suggested">of kies uit de gesuggereerde</string>
   <string name="reset_style_tables">Opnieuw zetten van stijl instellingen</string>
@@ -250,23 +248,8 @@
   <string name="creation_date">Creatie dag</string>
   <string name="creation_user">Project creatie gebruiker</string>
   <string name="last_modification_user">Project laatste modificatie gebruiker</string>
-  <string name="preview_mode_save_warning">Voorvertoning modus. Nadat de bewaar knop is geklikt zal de  geometry in de databank worden opgeslagen</string>
   <string name="reset_string">herstart</string>
   <string name="avaiable_layers">beschikbare lagen</string>
-  <string name="geometry_saved">Geometrie opgeslagen</string>
-  <string name="unique_constraint_violation_message">Een uniek beperkende overtreding is opgetreden. Databanken met unieke beperkingen worden niet ondersteund.</string>
-  <string name="selfintersection_message">De toegevoegde vertex heeft een zelfintersectie van de polygoon gemaakt en uw laag ondersteunt dit niet.</string>
-  <string name="no_gps_coordinate_acquired_yet">Er is nog geen GPS coördinaat beschibaar.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Extraheren van informatie...</string>
-  <string name="geom_incompatible_with_layer">De resulterende geometrie is niet compatibel met de bestemmingslaag.</string>
-  <string name="selected_features_in_layer">Geselecteerd %1$ditems met %2$dpolygonen.</string>
-  <string name="selected_line_features_in_layer">Geselecteerd %1$ditems met %2$dlijnen.</string>
-  <string name="selected_point_features_in_layer">Geselecteerd %1$ditems met %2$dpunten.</string>
-  <string name="no_compatible_layers_found">Geen compatibele lagen gevonden</string>
-  <string name="copied_features_to_layer"> %1$dgeometrieën gekopieerd naar de laag: %2$s </string>
-  <string name="area_colon">Gebied:</string>
-  <string name="length_colon">Lengte:</string>
   <string name="save_uppercase">BEWAAR</string>
   <string name="saving_to_database">Data aan het opslaan in de databank... </string>
   <string name="downloading">Downloaden...</string>
@@ -312,7 +295,6 @@
   <string name="export_img_processing">Afbeeldingen worden geëxporteerd...</string>
   <string name="routing_pref_title">Routing api key</string>
   <string name="routing_pref_summary">Om de MapQuest en Graphhopper routing service te kunnen gebruiken moet je een ApiKey invoeren.</string>
-  <string name="gps_info_dialog_title">Kaart / GPS informatie</string>
   <string name="open_gps_settings">Open de GPS instellingen</string>
   <string name="dashboard_note_action_description">Voeg een tekst, foto of schets notitie toe</string>
   <string name="dashboard_metadata_action_description">Bekijk de project informatie</string>
@@ -385,7 +367,6 @@
   <string name="import_cloud_data">Cloud data</string>
   <string name="new_picture">Nieuwe foto</string>
   <string name="Documents">Dokumenten</string>
-  <string name="Document_title">Dokument#</string>
   <string name="Images">Afbeeldingen</string>
   <string name="upload_to_cloud_prompt">Het huidige project uploaden naar de cloud?</string>
   <string name="data_to_pdf_label">Project formulieren omzetten naar PDF</string>

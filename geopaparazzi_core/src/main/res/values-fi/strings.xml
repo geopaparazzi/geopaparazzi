@@ -184,7 +184,6 @@
   <string name="custom_icon_properties">Mukautetut kuvakeasetukset</string>
   <string name="use_custom">Käytä mukautettuja</string>
   <string name="labels">Lipuke</string>
-  <string name="show_labels">näytä lipukkeet</string>
   <string name="halo">Halo</string>
   <string name="screen_preferences">Näytön asetukset</string>
   <string name="screen_preferences_summary">Aseta näytön ominaisuudet kun keskustan risti tai näytön erotuskyky.</string>
@@ -209,7 +208,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projekti</string>
   <string name="gps_status">GPS Status</string>
-  <string name="no_queriable_layer_is_visible">Ei kyseltävä taso on näkyvissä.</string>
   <string name="set_path_manually">Aseta polku käsin (jos asetettu, on se etusijalla comboboxiin nähden)</string>
   <string name="choose_from_suggested">tai valitse ehdotetuista</string>
   <string name="reset_style_tables">Aseta tyylitaulut oletusarvoihin</string>
@@ -246,23 +244,8 @@
   <string name="creation_date">Luontipäiväys</string>
   <string name="creation_user">Projektin luonut henkilö</string>
   <string name="last_modification_user">Viimeinen projektia muokannut henkilö</string>
-  <string name="preview_mode_save_warning">Esikatselutila. Kun tallennusnäppäintä on painettu, geometria talletetaan tietokantaan</string>
   <string name="reset_string">resetoi</string>
   <string name="avaiable_layers">Saatavilla olevat tasot</string>
-  <string name="geometry_saved">Geometria tallennettu.</string>
-  <string name="unique_constraint_violation_message">Ainutkertaisuusrajoitteen rikkominen tapahtui. Tietokantoja ainutkertaisuusrajoitteilla ei tueta.</string>
-  <string name="selfintersection_message">Lisätty kärkipiste on luonut sisäisen risteämän monikulmioon eikä tasosi tue sitä.</string>
-  <string name="no_gps_coordinate_acquired_yet">GPS koordinaatteja ei ole saatu vielä.</string>
-  <string name="info_uppercase">INFO</string>
-  <string name="extracting_info">Ladataan tietoja...</string>
-  <string name="geom_incompatible_with_layer">Tulosgeometria ei ole yhteensopiva kohdetason kanssa.</string>
-  <string name="selected_features_in_layer">Valittu %1$d ominaisuutta %2$d monikulmiossa.</string>
-  <string name="selected_line_features_in_layer">Valittu %1$d ominaisuutta mukana %2$d riviä.</string>
-  <string name="selected_point_features_in_layer">Valitut %1$d ominaisuudet joissa %2$d pistettä.</string>
-  <string name="no_compatible_layers_found">Yhteensopivia tasoja ei löytynyt</string>
-  <string name="copied_features_to_layer">Kopioitiin %1$d geometraa tasolle: %2$s</string>
-  <string name="area_colon">Ala:</string>
-  <string name="length_colon">Pituus:</string>
   <string name="save_uppercase">TALLENNA</string>
   <string name="saving_to_database">Talletetaan dataa tietokantaan...</string>
   <string name="downloading">Ladataan...</string>
@@ -308,7 +291,6 @@
   <string name="export_img_processing">Viedään kuvia...</string>
   <string name="routing_pref_title">Reititys api:n avain</string>
   <string name="routing_pref_summary">Käyttääksesi MapQuest ja Graphhopper reititys palveluita aseta oikea api avain.</string>
-  <string name="gps_info_dialog_title">Kartta/GPS informaatio</string>
   <string name="open_gps_settings">Avaa GPS asetukset</string>
   <string name="dashboard_note_action_description">Lisää teksti, kuva tai luonnos huomautus</string>
   <string name="dashboard_metadata_action_description">Tarkastele projektitietoja</string>

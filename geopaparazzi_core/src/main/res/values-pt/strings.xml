@@ -193,7 +193,6 @@
   <string name="custom_icon_properties">Propriedades de ícone personalizado</string>
   <string name="use_custom">usar personalizado</string>
   <string name="labels">Etiquetas</string>
-  <string name="show_labels">mostrar etiquetas</string>
   <string name="halo">auréola</string>
   <string name="screen_preferences">Configuração do ecrã</string>
   <string name="screen_preferences_summary">Definir as configurações do ecrã como a cruz central ou a resolução do ecrã.</string>
@@ -218,7 +217,6 @@
   <!--ellipsis character instead of three dots-->
   <string name="project">Projeto</string>
   <string name="gps_status">Estado do GPS</string>
-  <string name="no_queriable_layer_is_visible">Não está visível nenhuma camada de consulta.</string>
   <string name="set_path_manually">Definir manualmente o caminho (se definido, tem precedência sobre a caixa de combinação)</string>
   <string name="choose_from_suggested">ou escolha dos sugeridos</string>
   <string name="reset_style_tables">Limpar tabelas de estilo</string>
@@ -255,23 +253,8 @@
   <string name="creation_date">Data de criação</string>
   <string name="creation_user">Utilizador que criou o projeto</string>
   <string name="last_modification_user">Último utilizador que alterou o projeto</string>
-  <string name="preview_mode_save_warning">Modo de pré-visualização. Quando o botão de gravar for pressionado, a geometria será gravada na base de dados.</string>
   <string name="reset_string">limpar</string>
   <string name="avaiable_layers">Camadas disponíveis</string>
-  <string name="geometry_saved">Geometria gravada.</string>
-  <string name="unique_constraint_violation_message">Ocorreu uma violação de restrição única. Não são suportadas bases de dados com violações de restrição únicas.</string>
-  <string name="selfintersection_message">O vértice adicionado criou uma auto-interseção do polígono e a camada não suporta isto.</string>
-  <string name="no_gps_coordinate_acquired_yet">Ainda não foi adquirida nenhuma coordenada GPS.</string>
-  <string name="info_uppercase">INFORMAÇÃO</string>
-  <string name="extracting_info">A extrair a informação...</string>
-  <string name="geom_incompatible_with_layer">A geometria resultante não é compatível com a camada de destino.</string>
-  <string name="selected_features_in_layer">%1$d elementos selecionados com %2$d polígonos.</string>
-  <string name="selected_line_features_in_layer">%1$d elementos selecionados com %2$d linhas.</string>
-  <string name="selected_point_features_in_layer">%1$d elementos selecionados com %2$d pontos.</string>
-  <string name="no_compatible_layers_found">Não foi encontrada nenhuma camada compatível</string>
-  <string name="copied_features_to_layer">Copiadas %1$d geometrias para a camada: %2$s</string>
-  <string name="area_colon">Área:</string>
-  <string name="length_colon">Comprimento:</string>
   <string name="save_uppercase">GRAVAR</string>
   <string name="saving_to_database">A gravar os dados na base de dados...</string>
   <string name="downloading">A descarregar...</string>
@@ -318,7 +301,6 @@
   <string name="export_img_processing">A exportar imagens...</string>
   <string name="routing_pref_title">Chave da API de roteamento</string>
   <string name="routing_pref_summary">Para usar os serviços de roteamento MapQuest e Graphhopper insira a Chave da API apropriada.</string>
-  <string name="gps_info_dialog_title">Informação do Mapa/GPS</string>
   <string name="open_gps_settings">Abrir configuração do GPS</string>
   <string name="dashboard_note_action_description">Adicionar texto, imagem ou nota de esboço</string>
   <string name="dashboard_metadata_action_description">Ver informação do projeto</string>
@@ -391,16 +373,11 @@
   <string name="browse_documents">Navegar pelos documentos</string>
   <string name="new_picture">Nova imagem</string>
   <string name="Documents">Documentos</string>
-  <string name="Document_title">Documento#</string>
   <string name="Images">Imagens</string>
   <string name="confirm_remove_document">Quer mesmo remover o documento?</string>
   <string name="upload_to_cloud_prompt">Enviar o projeto atual para a nuvem?</string>
   <string name="data_to_pdf_label">Formulários do Projeto para PDF</string>
   <string name="exporting_data_to_pdf">A exportar dados de formulário para PDF</string>
-  <plurals name="n_images">
-    <item quantity="one">1 documento</item>
-    <item quantity="other">%d documentos</item>
-  </plurals>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">Configurações</string>
   <string name="profiles_action_cloud_import">Importar Perfis da Nuvem</string>
@@ -429,6 +406,5 @@
   <string name="name_of_the_new_profile">Nome do novo perfil</string>
   <string name="description_of_the_new_profile">Descrição do novo perfil</string>
   <string name="browse_images">Navegar pelas imagens</string>
-  <string name="confirm_remove_image">Remover imagem?</string>
   <string name="return_to_view_after_note">Voltar à visualização após a nota</string>
 </resources>
