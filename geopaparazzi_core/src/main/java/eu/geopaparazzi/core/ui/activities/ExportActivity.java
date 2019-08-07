@@ -176,14 +176,9 @@ public class ExportActivity extends AppCompatActivity implements
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter != null) {
-            if (Build.VERSION.SDK_INT >
-                    Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                mNfcAdapter.setBeamPushUrisCallback(this, this);
-                File databaseFile = ResourcesManager.getInstance(this).getDatabaseFile();
-                mFileUris[0] = Uri.fromFile(databaseFile);
-            } else {
-                mNfcAdapter = null;
-            }
+            mNfcAdapter.setBeamPushUrisCallback(this, this);
+            File databaseFile = ResourcesManager.getInstance(this).getDatabaseFile();
+            mFileUris[0] = Uri.fromFile(databaseFile);
         }
     }
 
@@ -199,7 +194,7 @@ public class ExportActivity extends AppCompatActivity implements
 
     @Override
     public Uri[] createBeamUris(NfcEvent nfcEvent) {
-        GPLog.addLogEntry(this, "URI SENT: " + mFileUris[0]);
+        GPLog.addLogEntry(this, "URI SENT: " + mFileUris[0]); //NON-NLS
         return mFileUris;
     }
 
@@ -212,7 +207,7 @@ public class ExportActivity extends AppCompatActivity implements
         // Check to see that the Activity started due to an Android Beam
         String action = getIntent().getAction();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-            GPLog.addLogEntry(this, "Incoming NFC event.");
+            GPLog.addLogEntry(this, "Incoming NFC event.");//NON-NLS
             processIntent(getIntent());
         }
     }
@@ -226,9 +221,9 @@ public class ExportActivity extends AppCompatActivity implements
     void processIntent(Intent intent) {
         Uri beamUri = intent.getData();
         String path = beamUri.getPath();
-        GPLog.addLogEntry(this, "Incoming URI path: " + path);
-        if (TextUtils.equals(beamUri.getScheme(), "file") &&
-                path.endsWith("gpap")) {
+        GPLog.addLogEntry(this, "Incoming URI path: " + path);//NON-NLS
+        if (TextUtils.equals(beamUri.getScheme(), "file") &&//NON-NLS
+                path.endsWith("gpap")) {//NON-NLS
             System.out.println(path);
             File pathFile = new File(path);
             boolean exists = pathFile.exists();

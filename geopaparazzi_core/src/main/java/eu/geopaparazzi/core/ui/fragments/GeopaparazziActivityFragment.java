@@ -138,7 +138,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                 if (providers != null) {
                     for (ProviderInfo provider : providers) {
                         String authority = provider.authority;
-                        if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {
+                        if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {//NON-NLS
                             hasProfilesProvider = true;
                         }
                     }
@@ -319,7 +319,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null) {
                 NewProjectDialogFragment newProjectDialogFragment = new NewProjectDialogFragment();
-                newProjectDialogFragment.show(fragmentManager, "new project dialog");
+                newProjectDialogFragment.show(fragmentManager, "new project dialog");//NON-NLS
             }
             return true;
         } else if (i == R.id.action_load) {
@@ -334,7 +334,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null) {
                 GpsInfoDialogFragment gpsInfoDialogFragment = new GpsInfoDialogFragment();
-                gpsInfoDialogFragment.show(fragmentManager, "gpsinfo dialog");
+                gpsInfoDialogFragment.show(fragmentManager, "gpsinfo dialog");//NON-NLS
             }
             return true;
         } else if (i == R.id.action_gpsstatus) {
@@ -466,7 +466,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
 
         if (v == mNotesButton) {
-            StringBuilder tooltip = new StringBuilder("Available providers:");
+            StringBuilder tooltip = new StringBuilder("Available providers:");//NON-NLS
             FragmentActivity activity = getActivity();
             if (activity != null) {
                 for (PackageInfo pack : activity.getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS)) {
@@ -562,7 +562,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         if (doLog && mLastGpsStatusExtras != null) {
             int satCount = mLastGpsStatusExtras[1];
             int satForFixCount = mLastGpsStatusExtras[2];
-            GPLog.addLogEntry(this, "satellites: " + satCount + " of which for fix: " + satForFixCount);
+            GPLog.addLogEntry(this, "satellites: " + satCount + " of which for fix: " + satForFixCount);//NON-NLS
         }
         FragmentActivity activity = getActivity();
         if (activity != null)
@@ -646,26 +646,26 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
 
         try {
             File applicationDir = ResourcesManager.getInstance(activity).getApplicationSupporterDir();
-            File projFolder = new File(applicationDir, "proj");
-            File projFolderWithDate = new File(applicationDir, "proj20190708"); // to keep versions
-            File projDbFile = new File(projFolderWithDate, "proj.db");
+            File projFolder = new File(applicationDir, "proj");//NON-NLS
+            File projFolderWithDate = new File(applicationDir, "proj20190708"); // to keep versions//NON-NLS
+            File projDbFile = new File(projFolderWithDate, "proj.db");//NON-NLS
             if (!projDbFile.exists()) {
-                GPLog.addLogEntry("Proj 6 folder doesn't exist: " + projFolderWithDate.getAbsolutePath());
-                File zipFile = new File(applicationDir, "proj.zip");
+                GPLog.addLogEntry("Proj 6 folder doesn't exist: " + projFolderWithDate.getAbsolutePath());//NON-NLS
+                File zipFile = new File(applicationDir, "proj.zip");//NON-NLS
                 AssetManager assetManager = activity.getAssets();
-                InputStream inputStream = assetManager.open("proj.zip");
+                InputStream inputStream = assetManager.open("proj.zip");//NON-NLS
                 FileUtilities.copyFile(inputStream, new FileOutputStream(zipFile));
-                GPLog.addLogEntry("Copied proj defs from asset to: " + zipFile.getAbsolutePath());
+                GPLog.addLogEntry("Copied proj defs from asset to: " + zipFile.getAbsolutePath());//NON-NLS
                 try {
                     CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), applicationDir.getAbsolutePath(), false);
                     projFolder.renameTo(projFolderWithDate);
-                    GPLog.addLogEntry("Uncompressed and renamed to: " + projFolderWithDate.getAbsolutePath());
+                    GPLog.addLogEntry("Uncompressed and renamed to: " + projFolderWithDate.getAbsolutePath());//NON-NLS
                 } finally {
                     zipFile.delete();
                 }
 
             }
-            Os.setenv("PROJ_LIB", projFolderWithDate.getAbsolutePath(), true);
+            Os.setenv("PROJ_LIB", projFolderWithDate.getAbsolutePath(), true);//NON-NLS
         } catch (Exception e) {
             e.printStackTrace();
         }

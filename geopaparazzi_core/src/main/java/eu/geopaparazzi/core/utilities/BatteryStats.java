@@ -44,7 +44,7 @@ public class BatteryStats extends Activity {
                 scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
                 temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
                 voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
-                Log.e("BatteryManager", "level is " + level + "/" + scale + ", temp is " + temp + ", voltage is " + voltage);
+                Log.e("BatteryManager", "level is " + level + "/" + scale + ", temp is " + temp + ", voltage is " + voltage);//NON-NLS
             }
         };
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);

@@ -126,11 +126,9 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         notesColorStrokeObject.fillAlpha = opacity;
 
         final ImageButton paletteButton = findViewById(R.id.gpslog_palette);
-        paletteButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(notesColorStrokeObject);
-                colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");
-            }
+        paletteButton.setOnClickListener(v -> {
+            ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(notesColorStrokeObject);
+            colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
         });
 
         // show labels

@@ -130,7 +130,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
                             GPDialogs
                                     .warningDialog(
                                             activity,
-                                            "Unable to parse the url: " + path,
+                                            getString(R.string.unable_parse_url) + path,
                                             null);
                         }
                     }
@@ -167,7 +167,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         try {
             ResourcesManager.getInstance(this);
         } catch (Exception e) {
-            GPLog.error(this, "Error", e);
+            GPLog.error(this, "Error", e); //NON-NLS
         }
         checkIncomingProject();
         init();

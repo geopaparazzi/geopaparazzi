@@ -14,8 +14,8 @@ source_file = geopaparazzilibrary/src/main/res/values/strings.xml
 source_lang = en
 
 [geopaparazzi.geopaparazzi-spatialite-stringsxml]
-file_filter = geopaparazzispatialitelibrary/res/values-<lang>/strings.xml
-source_file = geopaparazzispatialitelibrary/res/values/strings.xml
+file_filter = geopaparazzimap/res/values-<lang>/strings.xml
+source_file = geopaparazzimap/res/values/strings.xml
 source_lang = en
 
 

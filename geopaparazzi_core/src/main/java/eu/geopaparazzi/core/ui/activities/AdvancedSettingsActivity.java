@@ -202,7 +202,7 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
 //                    sdHandler.resetStyleTable();
 //                }
 //            }
-            GPDialogs.infoDialog(this, "Style reset performed.", null);
+            GPDialogs.infoDialog(this, getString(R.string.style_reset_performed), null);
         } catch (Exception e) {
             GPLog.error(this, null, e);
             GPDialogs.errorDialog(this, e, null);

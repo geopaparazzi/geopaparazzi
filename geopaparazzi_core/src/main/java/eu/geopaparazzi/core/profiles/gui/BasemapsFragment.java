@@ -35,14 +35,14 @@ import eu.geopaparazzi.library.util.Utilities;
 import gov.nasa.worldwind.AddWMSDialog;
 
 public class BasemapsFragment extends Fragment {
-    private static final String ARG_PROFILE = "profile";
+    private static final String ARG_PROFILE = "profile";//NON-NLS
     public static final int RETURNCODE_BROWSE = 666;
 
 
     private List<ProfileBasemaps> mBasemapsList = new ArrayList<>();
     private ListView listView;
 
-    private String[] supportedExtensions = {"mapurl", "map", "sqlite", "mbtiles"};
+    private String[] supportedExtensions = {"mapurl", "map", "sqlite", "mbtiles"};//NON-NLS
 
     public BasemapsFragment() {
     }
@@ -79,7 +79,7 @@ public class BasemapsFragment extends Fragment {
                 GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
             } else {
                 AddWMSDialog addWMSDialog = AddWMSDialog.newInstance(null);
-                addWMSDialog.show(getFragmentManager(), "wms import");
+                addWMSDialog.show(getFragmentManager(), "wms import"); //NON-NLS
             }
             return true;
         }
@@ -173,7 +173,7 @@ public class BasemapsFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final ProfileBasemaps baseMap = mBasemapsList.get(position);
                 File file = profile.getFile(baseMap.getRelativePath());
-                GPDialogs.yesNoMessageDialog(getActivity(), "Do you want to remove: " + file.getName() + "?", new Runnable() {
+                GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.you_want_to_remove) + file.getName() + "?", new Runnable() {
                     @Override
                     public void run() {
                         mBasemapsList.remove(position);
@@ -216,7 +216,7 @@ public class BasemapsFragment extends Fragment {
                             String sdcardPath = profile.getSdcardPath();
 
                             if (!path.contains(sdcardPath)) {
-                                GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                                GPDialogs.warningDialog(activity, getString(R.string.data_need_to_reside_in_same_path), null);
                                 return;
                             }
 

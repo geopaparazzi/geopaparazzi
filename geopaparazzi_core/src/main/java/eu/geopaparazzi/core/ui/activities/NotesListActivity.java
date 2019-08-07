@@ -85,7 +85,7 @@ import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends AppCompatActivity {
-    public static final String CURRENT_NOTES_COMPARATOR_INDEX = "CURRENT_NOTES_COMPARATOR_INDEX";
+    public static final String CURRENT_NOTES_COMPARATOR_INDEX = "CURRENT_NOTES_COMPARATOR_INDEX";//NON-NLS
     private String SHARE_NOTE_WITH = "";
     private List<ANote> allNotesList = new ArrayList<>();
     private List<ANote> visibleNotesList = new ArrayList<>();
@@ -463,9 +463,9 @@ public class NotesListActivity extends AppCompatActivity {
             Image image = (Image) currentNote;
             try {
                 File tempDir = ResourcesManager.getInstance(NotesListActivity.this).getTempDir();
-                String ext = ".jpg";
-                if (image.getName().endsWith(".png"))
-                    ext = ".png";
+                String ext = ".jpg";//NON-NLS
+                if (image.getName().endsWith(".png"))//NON-NLS
+                    ext = ".png";//NON-NLS
                 File imageFile = new File(tempDir, ImageUtilities.getTempImageName(ext));
                 byte[] imageData = new DaoImages().getImageData(image.getId());
                 ImageUtilities.writeImageDataToFile(imageData, imageFile.getAbsolutePath());

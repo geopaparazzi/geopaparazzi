@@ -36,7 +36,7 @@ import eu.geopaparazzi.core.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ForceLocalePreference extends DialogPreference {
-    public static final String PREFS_KEY_FORCELOCALE = "PREFS_KEY_FORCELOCALE";
+    public static final String PREFS_KEY_FORCELOCALE = "PREFS_KEY_FORCELOCALE";//NON-NLS
     private Context context;
     private Spinner localesSpinner;
 

@@ -24,20 +24,20 @@ package eu.geopaparazzi.core.utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface Constants {
-    String ID = "ID";
+    String ID = "ID";//NON-NLS
 
-    String PANICKEY = "panic_number";
+    String PANICKEY = "panic_number";//NON-NLS
 
-    String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+    String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";//NON-NLS
 
-    String PREFS_KEY_IMPERIAL = "PREFS_KEY_IMPERIAL";
+    String PREFS_KEY_IMPERIAL = "PREFS_KEY_IMPERIAL";//NON-NLS
 
-    String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
+    String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";//NON-NLS
 
-    String PREFS_KEY_RETINA = "PREFS_KEY_RETINA";
+    String PREFS_KEY_RETINA = "PREFS_KEY_RETINA";//NON-NLS
 
 
-    String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
+    String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";//NON-NLS
 
     /*
      * CLOUD
@@ -51,9 +51,9 @@ public interface Constants {
     /*
      * cross properties
      */
-    String PREFS_KEY_CROSS_WIDTH = "PREFS_KEY_CROSS_WIDTH";
-    String PREFS_KEY_CROSS_COLOR = "PREFS_KEY_CROSS_COLOR";
-    String PREFS_KEY_CROSS_SIZE = "PREFS_KEY_CROSS_SIZE";
+    String PREFS_KEY_CROSS_WIDTH = "PREFS_KEY_CROSS_WIDTH";//NON-NLS
+    String PREFS_KEY_CROSS_COLOR = "PREFS_KEY_CROSS_COLOR";//NON-NLS
+    String PREFS_KEY_CROSS_SIZE = "PREFS_KEY_CROSS_SIZE";//NON-NLS
 
 
 }

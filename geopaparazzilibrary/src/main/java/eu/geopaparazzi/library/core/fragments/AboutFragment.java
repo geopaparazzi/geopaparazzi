@@ -47,7 +47,7 @@ import eu.geopaparazzi.library.core.ResourcesManager;
  */
 public class AboutFragment extends Fragment {
 
-    public static final String ARG_PACKAGE = "ARG_PACKAGE";
+    public static final String ARG_PACKAGE = "ARG_PACKAGE"; //NON-NLS
     private String packageName;
 
     /**
@@ -88,10 +88,10 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         try {
             AssetManager assetManager = getActivity().getAssets();
-            InputStream inputStream = assetManager.open("about.html");
+            InputStream inputStream = assetManager.open("about.html");//NON-NLS
             String htmlText = new Scanner(inputStream).useDelimiter("\\A").next();
 
-            String applicationName= "Geopaparazzi";
+            String applicationName= "Geopaparazzi";//NON-NLS
             try {
                 applicationName = ResourcesManager.getInstance(getActivity()).getApplicationName();
             } catch (Exception e) {
@@ -106,15 +106,15 @@ public class AboutFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                htmlText = htmlText.replaceFirst("VERSION", version);
+                htmlText = htmlText.replaceFirst("VERSION", version);//NON-NLS
             } else {
-                htmlText = htmlText.replaceFirst("VERSION", "");
+                htmlText = htmlText.replaceFirst("VERSION", "");//NON-NLS
             }
 
-            htmlText = htmlText.replaceAll("Geopaparazzi", applicationName);
+            htmlText = htmlText.replaceAll("Geopaparazzi", applicationName);//NON-NLS
 
             WebView aboutView = (WebView) view;
-            aboutView.loadData(htmlText, "text/html", "utf-8");
+            aboutView.loadData(htmlText, "text/html", "utf-8");//NON-NLS
         } catch (IOException e) {
             e.printStackTrace();
         }

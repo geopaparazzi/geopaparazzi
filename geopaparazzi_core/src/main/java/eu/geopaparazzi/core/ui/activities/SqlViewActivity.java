@@ -109,8 +109,8 @@ public class SqlViewActivity extends AppCompatActivity {
         queriesMap = new HashMap<>();
 
         AssetManager assetManager = getAssets();
-        InputStream inputStream = assetManager.open("queries_select.txt");
-        String viewQueriesString = new Scanner(inputStream).useDelimiter("\\A").next();
+        InputStream inputStream = assetManager.open("queries_select.txt");//NON-NLS
+        String viewQueriesString = new Scanner(inputStream).useDelimiter("\\A").next();//NON-NLS
         String[] queriesSplit = viewQueriesString.split("\n");
         for (String queryLine : queriesSplit) {
             String[] lineSplit = queryLine.split(";");

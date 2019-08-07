@@ -84,7 +84,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
 
     private LogMapItem[] gpslogItems;
     private Comparator<MapItem> mapItemSorter = new ItemComparators.MapItemIdComparator(true);
-    private String logSendingMimeType = "application/eu.geopaparazzi.gpsdatalog_msg";
+    private String logSendingMimeType = "application/eu.geopaparazzi.gpsdatalog_msg";//NON-NLS
     private SharedPreferences mPeferences;
     private ListView mListView;
 
@@ -217,7 +217,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
             );
             return msg;
         } catch (IOException e) {
-            GPLog.error(this, "Error in sending logs.", e);
+            GPLog.error(this, "Error in sending logs.", e);//NON-NLS
         }
         return null;
     }

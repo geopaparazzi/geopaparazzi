@@ -39,8 +39,8 @@ import eu.geopaparazzi.core.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NewProfileDialogFragment extends DialogFragment {
-    public static final String KEY_PROFILENAME = "KEY_PROFILENAME";
-    public static final String KEY_PROFILEDESCR = "KEY_PROFILEDESCR";
+    public static final String KEY_PROFILENAME = "KEY_PROFILENAME";//NON-NLS
+    public static final String KEY_PROFILEDESCR = "KEY_PROFILEDESCR";//NON-NLS
 
     private INewProfileCreatedListener iNewProfileCreatedListener;
     private String name;
@@ -98,7 +98,7 @@ public class NewProfileDialogFragment extends DialogFragment {
                         public void onClick(DialogInterface dialog, int id) {
                             String name = newProfileNameText.getText().toString();
                             if (name.trim().length() == 0)
-                                name = "no name: " + new Date();
+                                name = "no name: " + new Date();//NON-NLS
                             String description = newProfileDescriptionText.getText().toString();
 
                             if (iNewProfileCreatedListener != null)

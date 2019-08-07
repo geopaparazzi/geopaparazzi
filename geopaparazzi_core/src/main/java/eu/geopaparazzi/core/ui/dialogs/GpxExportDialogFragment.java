@@ -58,9 +58,9 @@ import eu.geopaparazzi.core.database.objects.Note;
  * @author Andrea Antonello
  */
 public class GpxExportDialogFragment extends DialogFragment {
-    public static final String NODATA = "NODATA";
-    public static final String GPX_PATH = "exportPath";
-    public static final String INTERRUPTED = "INTERRUPTED";
+    public static final String NODATA = "NODATA";//NON-NLS
+    public static final String GPX_PATH = "exportPath";//NON-NLS
+    public static final String INTERRUPTED = "INTERRUPTED";//NON-NLS
     private ProgressBar progressBar;
     private String exportPath;
 
@@ -159,12 +159,12 @@ public class GpxExportDialogFragment extends DialogFragment {
                     if (isInterrupted) return INTERRUPTED;
                     String projectName = DaoMetadata.getProjectName();
                     if (projectName == null) {
-                        projectName = "geopaparazzi_gpx_";
+                        projectName = "geopaparazzi_gpx_";//NON-NLS
                     } else {
-                        projectName += "_gpx_";
+                        projectName += "_gpx_";//NON-NLS
                     }
                     File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
-                    File gpxOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx");
+                    File gpxOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx");//NON-NLS
                     if (exportPath != null) {
                         gpxOutputFile = new File(exportPath);
                     }
@@ -186,7 +186,7 @@ public class GpxExportDialogFragment extends DialogFragment {
                     alertDialog.setMessage(msg);
                     positiveButton.setEnabled(true);
                 } else if (response.equals(INTERRUPTED)) {
-                    alertDialog.setMessage("Interrupted by user");
+                    alertDialog.setMessage("Interrupted by user");//NON-NLS
                     positiveButton.setEnabled(true);
                 } else if (response.length() > 0) {
                     String msg = context.getString(R.string.datasaved) + response;

@@ -531,7 +531,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             int selectedPosition = checked[1] ? 1 : 0;
             if (selectedPosition == 0) {
                 InsertCoordinatesDialogFragment insertCoordinatesDialogFragment = InsertCoordinatesDialogFragment.newInstance(null);
-                insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord");
+                insertCoordinatesDialogFragment.show(getSupportFragmentManager(), "Insert Coord"); //NON-NLS
             } else {
                 Intent intent = new Intent(MapviewActivity.this, GeocodeActivity.class);
                 startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
@@ -651,7 +651,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         final double centerLon = mapPosition.getLongitude();
 
         final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
-        final String proposedName = "bookmark " + newDate;
+        final String proposedName = "bookmark " + newDate;//NON-NLS
 
         String message = getString(R.string.mapsactivity_enter_bookmark_name);
         GPDialogs.inputMessageDialog(this, message, proposedName, new TextRunnable() {
@@ -845,7 +845,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             edit2.apply();
             return true;
         } else if (i == R.id.center_on_gps_btn) {
-            String[] items = new String[]{"center on gps", "rotate with bearing", "show info", "hide accuracy"};
+            Context context = getContext();
+            String[] items = new String[]{context.getString(R.string.option_center_on_gps), context.getString(R.string.option_rotate_with_bearing), context.getString(R.string.option_show_gps_info), context.getString(R.string.option_hide_gps_accuracy)};
             boolean[] checkedItems = new boolean[items.length];
             checkedItems[0] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
             checkedItems[1] = mPeferences.getBoolean(LibraryConstants.PREFS_KEY_ROTATE_MAP_WITH_GPS, false);
@@ -875,7 +876,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                     edit.apply();
 
                     mapView.toggleLocationTextLayer(showGpsInfo);
-                } else if (which == 3) {
+                } else {
                     // check ignore gps
                     boolean ignoreAccuracy = checkedItems[3];
                     Editor edit = mPeferences.edit();

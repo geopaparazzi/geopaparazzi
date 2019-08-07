@@ -419,6 +419,40 @@
     <string name="description_of_the_new_profile">Description of the new profile</string>
     <string name="browse_images" >Browse images</string>
     <string name="return_to_view_after_note">Return to view after note</string>
+    <string name="unable_parse_url">Unable to parse the url:</string>
+    <string name="option_center_on_gps">center on gps</string>
+    <string name="option_rotate_with_bearing">rotate with bearing</string>
+    <string name="option_show_gps_info">show info</string>
+    <string name="option_hide_gps_accuracy">hide accuracy</string>
+    <string name="basemaps_colon">Basemaps:</string>
+    <string name="spatialita_dbs_colon">Spatialite dbs:</string>
+    <string name="forms_colon">Forms:</string>
+    <string name="has_project_colon">Has project:</string>
+    <string name="no">no</string>
+    <string name="yes">yes</string>
+    <string name="prompt_remove_profile">Are you sure you want to remove the profile: \'%s\'? This can\'t be undone.</string>
+    <string name="profiles_imported">Profiles properly imported.</string>
+    <string name="no_profiles_in_path">No profiles file exist in the relativePath:</string>
+    <string name="an_error_occurred">An error occurred:</string>
+    <string name="profiles_exported_to">Profiles exported to:</string>
+    <string name="an_error_occurred">An error occurred:</string>
+    <string name="you_want_to_remove">Do you want to remove:</string>
+    <string name="data_need_to_reside_in_same_path">All data of the same profile have to reside in the same root path.</string>
+    <string name="wms_mapurl_added_to_basemaps">WMS mapurl file successfully added to the basemaps and saved in:</string>
+    <string name="profile_info_title">Profile info</string>
+    <string name="profile_basemap_title">Basemaps</string>
+    <string name="profile_spatialite_title">Spatialite Databases</string>
+    <string name="profile_forms_title">Forms</string>
+    <string name="profile_project_title">Project</string>
+    <string name="profiles_want_clear_project_form">Do you want to clear the project form?</string>
+    <string name="want_to_remove">Do you want to remove:</string>
+    <string name="style_reset_performed">Style reset performed.</string>
+    <string name="log_will_be_removed">The log will be removed. This can\'t be undone.</string>
+    <string name="chart_elev">Elev [m]</string>
+    <string name="chart_speed">Speed [km/h]</string>
+    <string name="loading_data_process">Loading data...</string>
+    <string name="metadata_sure_remove_entry">Are you sure you want to remove the entry:</string>
+    <string name="add_new_metadata_title">Add new metadata item</string>
 
 
 </resources>

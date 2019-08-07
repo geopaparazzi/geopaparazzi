@@ -57,7 +57,7 @@ public class AddMetadataDialogFragment extends DialogFragment implements TextWat
             View newProjectDialogView = getActivity().getLayoutInflater().inflate(
                     R.layout.fragment_dialog_addmetadata, null);
             builder.setView(newProjectDialogView); // add GUI to dialog
-            builder.setTitle("Add new metadata item");
+            builder.setTitle(getString(R.string.add_new_metadata_title));
 
 
             metadataKeyEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataKeyEditText);

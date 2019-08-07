@@ -38,11 +38,11 @@ import eu.geopaparazzi.core.R;
  * @author Andrea Antonello
  */
 public class CloudProfileExportDialogFragment extends DialogFragment {
-    public static final String NODATA = "NODATA";
+    public static final String NODATA = "NODATA";//NON-NLS
 
-    public static final String KEY_URL = "KEY_URL";
-    public static final String KEY_USER = "KEY_USER";
-    public static final String KEY_PWD = "KEY_PWD";
+    public static final String KEY_URL = "KEY_URL";//NON-NLS
+    public static final String KEY_USER = "KEY_USER";//NON-NLS
+    public static final String KEY_PWD = "KEY_PWD";//NON-NLS
 
     private ProgressBar progressBar;
 
@@ -117,7 +117,7 @@ public class CloudProfileExportDialogFragment extends DialogFragment {
                     return message;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    return "ERROR" + e.getLocalizedMessage();
+                    return "ERROR" + e.getLocalizedMessage();//NON-NLS
                 }
             }
 

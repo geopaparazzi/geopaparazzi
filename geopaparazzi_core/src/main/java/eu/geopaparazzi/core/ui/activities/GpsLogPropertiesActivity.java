@@ -137,62 +137,56 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
 
             // button to update the log (track) length field
             final ImageButton refreshLogLenButton = findViewById(R.id.gpslog_refreshLogLength);
-            refreshLogLenButton.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    final long logID = item.getLogID();
-                    task = new StringAsyncTask(GpsLogPropertiesActivity.this) {
-                        @Override
-                        protected void doUiPostWork(String response) {
-                            trackLengthTextView.setText(response);
-                            dispose();
-                        }
+            refreshLogLenButton.setOnClickListener(v -> {
+                final long logID = item.getLogID();
+                task = new StringAsyncTask(GpsLogPropertiesActivity.this) {
+                    @Override
+                    protected void doUiPostWork(String response) {
+                        trackLengthTextView.setText(response);
+                        dispose();
+                    }
 
-                        @Override
-                        protected String doBackgroundWork() {
-                            try {
-                                newLengthm = DaoGpsLog.updateLogLength(logID);
-                            } catch (IOException e) {
-                                GPLog.error(GpsLogPropertiesActivity.this, "ERROR", e);
-                                return "ERROR";
-                            }
-                            String newLen = Long.toString(Math.round(newLengthm));
-                            return lengthText + " " + newLen + "m";
+                    @Override
+                    protected String doBackgroundWork() {
+                        try {
+                            newLengthm = DaoGpsLog.updateLogLength(logID);
+                        } catch (IOException e) {
+                            GPLog.error(GpsLogPropertiesActivity.this, "ERROR", e);//NON-NLS
+                            return "ERROR";//NON-NLS
                         }
-                    };
-                    task.setProgressDialog(null, getString(R.string.calculate_length), false, null);
-                    task.execute();
+                        String newLen = Long.toString(Math.round(newLengthm));
+                        return lengthText + " " + newLen + "m";//NON-NLS
+                    }
+                };
+                task.setProgressDialog(null, getString(R.string.calculate_length), false, null);
+                task.execute();
 
-                }
             });
 
             newColor = item.getColor();
             newWidth = item.getWidth();
             final ImageButton paletteButton = findViewById(R.id.gpslog_palette);
-            paletteButton.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    int color = ColorUtilities.toColor(newColor);
-                    ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
-                    colorStrokeObject.hasFill = false;
+            paletteButton.setOnClickListener(v -> {
+                int color = ColorUtilities.toColor(newColor);
+                ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
+                colorStrokeObject.hasFill = false;
 
-                    colorStrokeObject.hasStroke = true;
-                    colorStrokeObject.strokeColor = color;
-                    colorStrokeObject.strokeAlpha = 255;
+                colorStrokeObject.hasStroke = true;
+                colorStrokeObject.strokeColor = color;
+                colorStrokeObject.strokeAlpha = 255;
 
-                    colorStrokeObject.hasStrokeWidth = true;
-                    colorStrokeObject.strokeWidth = (int) newWidth;
+                colorStrokeObject.hasStrokeWidth = true;
+                colorStrokeObject.strokeWidth = (int) newWidth;
 
-                    ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
-                    colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");
-                }
+                ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
             });
 
             final ImageButton chartButton = findViewById(R.id.gpslog_chart);
-            chartButton.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(GpsLogPropertiesActivity.this, ProfileChartActivity.class);
-                    intent.putExtra(Constants.ID, item.getId());
-                    startActivity(intent);
-                }
+            chartButton.setOnClickListener(v -> {
+                Intent intent = new Intent(GpsLogPropertiesActivity.this, ProfileChartActivity.class);
+                intent.putExtra(Constants.ID, item.getId());
+                startActivity(intent);
             });
             final ImageButton zoomToStartButton = findViewById(R.id.gpslog_zoom_start);
             zoomToStartButton.setOnClickListener(new Button.OnClickListener() {
@@ -234,7 +228,7 @@ public class GpsLogPropertiesActivity extends AppCompatActivity implements Color
                 public void onClick(View v) {
 
 
-                    GPDialogs.yesNoMessageDialog(GpsLogPropertiesActivity.this, "The log will be removed. This can't be undone.", new Runnable() {
+                    GPDialogs.yesNoMessageDialog(GpsLogPropertiesActivity.this, getString(R.string.log_will_be_removed), new Runnable() {
                         @Override
                         public void run() {
                             try {

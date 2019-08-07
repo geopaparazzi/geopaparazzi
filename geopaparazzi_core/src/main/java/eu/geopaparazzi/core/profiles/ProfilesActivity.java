@@ -50,8 +50,8 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
-    public static final String PROFILES_CONFIG_JSON = "profiles_config.json";
-    public static final String KEY_SELECTED_PROFILE = "KEY_SELECTED_PROFILE";
+    public static final String PROFILES_CONFIG_JSON = "profiles_config.json"; //NON-NLS
+    public static final String KEY_SELECTED_PROFILE = "KEY_SELECTED_PROFILE"; //NON-NLS
     private LinearLayout profilesContainer;
     private LinearLayout emptyFiller;
     private SharedPreferences mPeferences;
@@ -79,7 +79,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             @Override
             public void onClick(View view) {
                 NewProfileDialogFragment newProfileDialogFragment = NewProfileDialogFragment.newInstance(null, null);
-                newProfileDialogFragment.show(getSupportFragmentManager(), "New Profile Dialog");
+                newProfileDialogFragment.show(getSupportFragmentManager(), "New Profile Dialog");//NON-NLS
             }
         });
 
@@ -94,7 +94,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
         try {
             profileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPeferences);
         } catch (JSONException e) {
-            Log.e("GEOS2GO", "", e);
+            Log.e("GEOS2GO", "", e);//NON-NLS
         }
 
         loadProfiles();
@@ -146,30 +146,27 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
             final Switch activeSwitch = newProjectCardView.findViewById(R.id.activeSwitch);
             activeSwitch.setChecked(profile.active);
-            activeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    profile.active = isChecked;
+            activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                profile.active = isChecked;
 
-                    for (int i = 0; i < profileList.size(); i++) {
-                        Profile tmpProfile = profileList.get(i);
-                        if (profile != tmpProfile) {
-                            tmpProfile.active = false;
-                        }
+                for (int i = 0; i < profileList.size(); i++) {
+                    Profile tmpProfile = profileList.get(i);
+                    if (profile != tmpProfile) {
+                        tmpProfile.active = false;
                     }
-                    if (profile.active) {
-                        activeSwitch.setText(R.string.profiles_deactivate_profile);
-                    } else {
-                        activeSwitch.setText(R.string.profiles_activate_profile);
-                    }
-                    // FIXME
+                }
+                if (profile.active) {
+                    activeSwitch.setText(R.string.profiles_deactivate_profile);
+                } else {
+                    activeSwitch.setText(R.string.profiles_activate_profile);
+                }
+                // FIXME
 //                    try {
 //                        BaseMapSourcesManager.INSTANCE.setSelectedBaseMap(null);
 //                    } catch (Exception e) {
 //                        // can be ignored
 //                    }
-                    loadProfiles();
-                }
+                loadProfiles();
             });
             if (profile.active) {
                 activeSwitch.setText(R.string.profiles_deactivate_profile);
@@ -179,8 +176,8 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
             TextView profilesummaryText = newProjectCardView.findViewById(R.id.profileSummaryText);
             StringBuilder sb = new StringBuilder();
-            sb.append("Basemaps: ").append(profile.basemapsList.size()).append("\n");
-            sb.append("Spatialite dbs: ").append(profile.spatialiteList.size()).append("\n");
+            sb.append(getString(R.string.basemaps_colon)).append(profile.basemapsList.size()).append("\n");
+            sb.append(getString(R.string.spatialita_dbs_colon)).append(profile.spatialiteList.size()).append("\n");
             int formsCount = 0;
             if (profile.profileTags != null && profile.profileTags.getRelativePath().length() != 0) {
                 File tagsFile = profile.getFile(profile.profileTags.getRelativePath());
@@ -193,56 +190,42 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                     }
                 }
             }
-            sb.append("Forms: ").append(formsCount).append("\n");
-            sb.append("Has project: ").append(profile.profileProject == null ? "no" : "yes").append("\n");
+            sb.append(getString(R.string.forms_colon)).append(formsCount).append("\n");
+            sb.append(getString(R.string.has_project_colon)).append(profile.profileProject == null ? getString(R.string.no) : getString(R.string.yes)).append("\n");
             profilesummaryText.setText(sb.toString());
 
             ImageButton settingsButton = newProjectCardView.findViewById(R.id.settingsButton);
-            settingsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent preferencesIntent = new Intent(ProfilesActivity.this, ProfileSettingsActivity.class);
-                    preferencesIntent.putExtra(KEY_SELECTED_PROFILE, profile);
-                    startActivity(preferencesIntent);
-                }
+            settingsButton.setOnClickListener(v -> {
+                Intent preferencesIntent = new Intent(ProfilesActivity.this, ProfileSettingsActivity.class);
+                preferencesIntent.putExtra(KEY_SELECTED_PROFILE, profile);
+                startActivity(preferencesIntent);
             });
             ImageButton deleteButton = newProjectCardView.findViewById(R.id.deleteButton);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String msg = String.format("Are you sure you want to remove the profile: '%s'? This can't be undone.", profile.name);
-                    GPDialogs.yesNoMessageDialog(ProfilesActivity.this, msg, new Runnable() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    profileList.remove(profile);
-                                    saveProfiles();
-                                    loadProfiles();
-                                }
-                            });
-                        }
-                    }, null);
+            deleteButton.setOnClickListener(v -> {
+                String msg = String.format(ProfilesActivity.this.getString(R.string.prompt_remove_profile), profile.name);
+                GPDialogs.yesNoMessageDialog(ProfilesActivity.this, msg, () -> runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        profileList.remove(profile);
+                        saveProfiles();
+                        loadProfiles();
+                    }
+                }), null);
 
-                }
             });
             ImageButton colorButton = newProjectCardView.findViewById(R.id.colorButton);
-            colorButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            colorButton.setOnClickListener(v -> {
 
-                    currentColorCardView = newProjectCardView;
-                    currentProfile = profile;
-                    int color = ColorUtilities.toColor(profile.color);
-                    ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
-                    colorStrokeObject.hasFill = true;
-                    colorStrokeObject.hasStroke = false;
-                    colorStrokeObject.fillColor = color;
+                currentColorCardView = newProjectCardView;
+                currentProfile = profile;
+                int color = ColorUtilities.toColor(profile.color);
+                ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
+                colorStrokeObject.hasFill = true;
+                colorStrokeObject.hasStroke = false;
+                colorStrokeObject.fillColor = color;
 
-                    ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
-                    colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Dialog");
-                }
+                ColorStrokeDialogFragment colorStrokeDialogFragment = ColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                colorStrokeDialogFragment.show(getSupportFragmentManager(), "Color Dialog"); //NON-NLS
             });
 
             String color = profile.color;
@@ -315,13 +298,13 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 saveProfiles();
                 loadProfiles();
 
-                GPDialogs.quickInfo(profilesContainer, "Profiles properly imported.");
+                GPDialogs.quickInfo(profilesContainer, getString(R.string.profiles_imported));
             } else {
-                GPDialogs.warningDialog(this, "No profiles file exist in the relativePath: " + inputFile.getAbsolutePath(), null);
+                GPDialogs.warningDialog(this, getString(R.string.no_profiles_in_path) + inputFile.getAbsolutePath(), null);
             }
         } catch (java.lang.Exception e) {
-            GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
-            Log.e("GEOS2GO", "", e);
+            GPDialogs.warningDialog(this, getString(R.string.an_error_occurred) + e.getLocalizedMessage(), null);
+            Log.e("GEOS2GO", "", e); //NON-NLS
         }
     }
 
@@ -332,9 +315,9 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             File outFile = new File(applicationSupporterDir, PROFILES_CONFIG_JSON);
             String jsonFromProfiles = ProfilesHandler.INSTANCE.getJsonFromProfilesList(profileList, true);
             FileUtilities.writefile(jsonFromProfiles, outFile);
-            GPDialogs.quickInfo(profilesContainer, "Profiles exported to: " + outFile);
+            GPDialogs.quickInfo(profilesContainer, getString(R.string.profiles_exported_to) + outFile);
         } catch (java.lang.Exception e) {
-            GPDialogs.warningDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
+            GPDialogs.warningDialog(this, getString(R.string.an_error_occurred) + e.getLocalizedMessage(), null);
             GPLog.error(this, null, e);
         }
     }
@@ -374,7 +357,7 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             intent.putExtra(LibraryConstants.PREFS_KEY_RESTART_APPLICATION, true);
             setResult(Activity.RESULT_OK, intent);
         } catch (JSONException e) {
-            Log.e("GEOS2GO", "Error saving profiles", e);
+            Log.e("GEOS2GO", "Error saving profiles", e); //NON-NLS
         }
     }
 

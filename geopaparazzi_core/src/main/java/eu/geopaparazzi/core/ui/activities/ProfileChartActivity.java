@@ -301,7 +301,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                     createDatasetFromProfile();
                 } catch (Exception e) {
                     GPLog.error(this, null, e); //$NON-NLS-1$
-                    return "ERROR";
+                    return "ERROR";//NON-NLS
                 }
                 return "";
             }
@@ -315,7 +315,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 }
             }
         };
-        resumeTask.setProgressDialog("", "Loading data...", false, null);
+        resumeTask.setProgressDialog("", getString(R.string.loading_data_process), false, null);
         resumeTask.execute();
     }
 
@@ -367,7 +367,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
                 xyPlotElev.getCalculatedMaxY().floatValue());
 
 
-        infoTextView.setText(getString(R.string.active_elevation_diff) + (int) elevDifference + "m");
+        infoTextView.setText(getString(R.string.active_elevation_diff) + (int) elevDifference + "m");//NON-NLS
     }
 
     /**
@@ -450,8 +450,8 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         }
 
         // Setup the Series
-        seriesElev = new SimpleXYSeries(finalXList1, finalYList1, "Elev [m]");
-        seriesSpeed = new SimpleXYSeries(finalXList1, finalYList2, "Speed [km/h]");
+        seriesElev = new SimpleXYSeries(finalXList1, finalYList1, getString(R.string.chart_elev));
+        seriesSpeed = new SimpleXYSeries(finalXList1, finalYList2, getString(R.string.chart_speed));
     }
 
     // Definition of the touch states

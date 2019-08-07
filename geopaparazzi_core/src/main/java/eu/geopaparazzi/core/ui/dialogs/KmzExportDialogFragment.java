@@ -63,9 +63,9 @@ import eu.geopaparazzi.core.database.objects.Note;
  * @author Andrea Antonello
  */
 public class KmzExportDialogFragment extends DialogFragment {
-    public static final String NODATA = "NODATA";
-    public static final String KMZ_PATH = "exportPath";
-    public static final String INTERRUPTED = "INTERRUPTED";
+    public static final String NODATA = "NODATA";//NON-NLS
+    public static final String KMZ_PATH = "exportPath";//NON-NLS
+    public static final String INTERRUPTED = "INTERRUPTED";//NON-NLS
     private ProgressBar progressBar;
     private String exportPath;
 
@@ -199,12 +199,12 @@ public class KmzExportDialogFragment extends DialogFragment {
 
                     String projectName = DaoMetadata.getProjectName();
                     if (projectName == null) {
-                        projectName = "geopaparazzi_kmz_";
+                        projectName = "geopaparazzi_kmz_";//NON-NLS
                     } else {
-                        projectName += "_kmz_";
+                        projectName += "_kmz_";//NON-NLS
                     }
                     File exportDir = ResourcesManager.getInstance(GeopaparazziApplication.getInstance()).getApplicationExportDir();
-                    kmlOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz");
+                    kmlOutputFile = new File(exportDir, projectName + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz");//NON-NLS
                     if (exportPath != null) {
                         kmlOutputFile = new File(exportPath);
                     }

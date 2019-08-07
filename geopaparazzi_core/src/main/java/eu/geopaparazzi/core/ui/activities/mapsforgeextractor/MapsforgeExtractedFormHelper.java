@@ -28,18 +28,18 @@ import java.util.Map;
  */
 public class MapsforgeExtractedFormHelper {
 
-    private String pre = "{\n" +
-            "    \"sectionname\": \"mapsforge note\",\n" +
-            "    \"sectiondescription\": \"a note generated from mapsforge extraction\",\n" +
-            "    \"forms\": [\n" +
-            "        {\n" +
-            "            \"formname\": \"osm poi\",\n" +
-            "            \"formitems\": [\n";
+    private String pre = "{\n" +//NON-NLS
+            "    \"sectionname\": \"mapsforge note\",\n" +//NON-NLS
+            "    \"sectiondescription\": \"a note generated from mapsforge extraction\",\n" +//NON-NLS
+            "    \"forms\": [\n" +//NON-NLS
+            "        {\n" +//NON-NLS
+            "            \"formname\": \"osm poi\",\n" +//NON-NLS
+            "            \"formitems\": [\n";//NON-NLS
 
-    private String post = "            ]\n" +
-            "        }\n" +
-            "    ]\n" +
-            "}\n";
+    private String post = "            ]\n" +//NON-NLS
+            "        }\n" +//NON-NLS
+            "    ]\n" +//NON-NLS
+            "}\n";//NON-NLS
 
     private String firstKey = null;
     private String labelKey = null;
@@ -53,7 +53,7 @@ public class MapsforgeExtractedFormHelper {
             firstKey = key;
             firstValue = value;
         }
-        if (key.equals("name")) {
+        if (key.equals("name")) {//NON-NLS
             labelKey = key;
             labelValue = value;
         }
@@ -74,14 +74,14 @@ public class MapsforgeExtractedFormHelper {
         for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
             String key = entry.getKey();
             String item = "{\n" +
-                    "                    \"key\": \"" + key + "\",\n" +
-                    "                    \"value\": \"" + entry.getValue() + "\",\n";
+                    "                    \"key\": \"" + key + "\",\n" +//NON-NLS
+                    "                    \"value\": \"" + entry.getValue() + "\",\n";//NON-NLS
             if (key.equals(labelKey)) {
-                item = item + "                    \"islabel\": \"true\",\n";
+                item = item + "                    \"islabel\": \"true\",\n";//NON-NLS
             }
             item = item +
-                    "                    \"type\": \"string\",\n" +
-                    "                    \"mandatory\": \"no\"\n" +
+                    "                    \"type\": \"string\",\n" +//NON-NLS
+                    "                    \"mandatory\": \"no\"\n" +//NON-NLS
                     "                }\n";
             if (count < size - 1) {
                 item = item + "                ,\n";
@@ -103,6 +103,6 @@ public class MapsforgeExtractedFormHelper {
 
     public String getLabelValue() {
         checkLabelValue();
-        return labelValue + " (MF)";
+        return labelValue + " (MF)";//NON-NLS
     }
 }

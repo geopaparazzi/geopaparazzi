@@ -52,17 +52,17 @@ import static eu.geopaparazzi.library.core.maps.SpatialiteMap.TABLE_TYPE;
  */
 public class AvailableDataContentProvider extends ContentProvider {
 
-    public static final String ID = "id";
+    public static final String ID = "id";//NON-NLS
     public static final String[] CONTENT_PROVIDER_FIELDS_SPATIALITE = new String[]{ID, SpatialiteMap.DATABASE_PATH, TABLE_TYPE, GEOMETRY_TYPE,
             ISVISIBLE, ORDER, TABLENAME};
     public static final String[] CONTENT_PROVIDER_FIELDS_BASEMAPS = new String[]{ID, PARENT_FOLDER, BaseMap.DATABASE_PATH, MAP_TYPE, TITLE};
-    public static final String[] CONTENT_PROVIDER_FIELDS_TAGS = new String[]{"id", "json"};
+    public static final String[] CONTENT_PROVIDER_FIELDS_TAGS = new String[]{"id", "json"};//NON-NLS
 
-    public static final String CONTENTVALUES_ADD_PATH = "CONTENTVALUES_ADD_PATH";
+    public static final String CONTENTVALUES_ADD_PATH = "CONTENTVALUES_ADD_PATH";//NON-NLS
 
-    public static final String SPATIALITE = "SPATIALITE";
-    public static final String BASEMAPS = "BASEMAPS";
-    public static final String TAGS = "TAGS";
+    public static final String SPATIALITE = "SPATIALITE";//NON-NLS
+    public static final String BASEMAPS = "BASEMAPS";//NON-NLS
+    public static final String TAGS = "TAGS";//NON-NLS
     public static final int SPATIALITE_ID = 1;
     public static final int BASEMAPS_ID = 2;
     public static final int TAGS_ID = 3;
@@ -80,8 +80,8 @@ public class AvailableDataContentProvider extends ContentProvider {
             String packageName = appInfo.packageName;
 
 
-            AUTHORITY = packageName + ".provider.availabledata";
-            BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+            AUTHORITY = packageName + ".provider.availabledata";//NON-NLS
+            BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);//NON-NLS
 
             uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
             uriMatcher.addURI(AUTHORITY, SPATIALITE, SPATIALITE_ID);

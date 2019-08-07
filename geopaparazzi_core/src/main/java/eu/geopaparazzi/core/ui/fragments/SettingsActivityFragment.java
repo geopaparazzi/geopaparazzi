@@ -71,7 +71,7 @@ public class SettingsActivityFragment
 
    private void updateSummary(EditTextPreference pref) {
       // set the EditTextPreference's summary value to its current text (except if it is a password)
-      if (pref.getTitle().toString().toLowerCase().contains("password")) {
+      if (pref.getTitle().toString().toLowerCase().contains("password")) {//NON-NLS
          StringBuilder hidden = new StringBuilder();
          for (int i=0; i< pref.getText().length(); i++) hidden.append("*");
          pref.setSummary(hidden.toString());

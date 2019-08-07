@@ -106,7 +106,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             final TextInputEditText editText = view.findViewById(R.id.metadataEditText);
             container.addView(view);
 
-            if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){
+            if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){//NON-NLS
                 String value = metadata.value;
                 try{
                     Date date = new Date(Long.parseLong(value));
@@ -163,10 +163,10 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
         int i = item.getItemId();
         if (i == R.id.action_add_metadata) {
             AddMetadataDialogFragment addMetadataDialogFragment = new AddMetadataDialogFragment();
-            addMetadataDialogFragment.show(getSupportFragmentManager(), "add metadata item");
+            addMetadataDialogFragment.show(getSupportFragmentManager(), "add metadata item");//NON-NLS
         } else if (i == R.id.action_remove_metadata) {
             if (currentSelectedMetadata != null) {
-                GPDialogs.yesNoMessageDialog(this, "Are you sure you want to remove the entry: " + currentSelectedMetadata.label, new Runnable() {
+                GPDialogs.yesNoMessageDialog(this, getString(R.string.metadata_sure_remove_entry) + currentSelectedMetadata.label, new Runnable() {
                     @Override
                     public void run() {
                         try {

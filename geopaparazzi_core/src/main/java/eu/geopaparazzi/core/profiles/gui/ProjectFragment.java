@@ -20,7 +20,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 public class ProjectFragment extends Fragment {
-    private static final String ARG_PROFILE = "profile";
+    private static final String ARG_PROFILE = "profile";//NON-NLS
     public static final int RETURNCODE_BROWSE = 666;
 
     private EditText nameEdittext;
@@ -50,27 +50,24 @@ public class ProjectFragment extends Fragment {
         profile = getArguments().getParcelable(ARG_PROFILE);
 
         nameEdittext = rootView.findViewById(R.id.projectNameEditText);
-        nameEdittext.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                GPDialogs.yesNoMessageDialog(getActivity(), "Do you want to clear the project form?", new Runnable() {
-                    @Override
-                    public void run() {
-                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onProjectPathChanged("");
+        nameEdittext.setOnLongClickListener(v -> {
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.profiles_want_clear_project_form), new Runnable() {
+                @Override
+                public void run() {
+                    ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+                    activity.onProjectPathChanged("");
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                nameEdittext.setText("");
-                                pathEdittext.setText("");
-                            }
-                        });
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            nameEdittext.setText("");
+                            pathEdittext.setText("");
+                        }
+                    });
 
-                    }
-                }, null);
-                return true;
-            }
+                }
+            }, null);
+            return true;
         });
 
         pathEdittext = rootView.findViewById(R.id.projectPathEditText);
@@ -78,18 +75,15 @@ public class ProjectFragment extends Fragment {
             setProjectData(profile.getFile(profile.profileProject.getRelativePath()).getAbsolutePath());
         }
         FloatingActionButton addFormButton = rootView.findViewById(R.id.addProjectButton);
-        addFormButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
-                    Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"gpap"});
-                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
-                    startActivityForResult(browseIntent, RETURNCODE_BROWSE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        addFormButton.setOnClickListener(v -> {
+            try {
+                File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
+                Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"gpap"});//NON-NLS
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -117,7 +111,7 @@ public class ProjectFragment extends Fragment {
                         String sdcardPath = profile.getSdcardPath();
 
                         if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
                             return;
                         }
 

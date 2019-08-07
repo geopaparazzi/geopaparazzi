@@ -49,7 +49,7 @@ import eu.geopaparazzi.core.database.DaoGpsLog;
  */
 public class GpxImportDialogFragment extends DialogFragment {
 
-    public static final String GPX_PATH = "gpxPath";
+    public static final String GPX_PATH = "gpxPath";//NON-NLS
     private ProgressBar progressBar;
     private String gpxPath;
 
@@ -173,7 +173,7 @@ public class GpxImportDialogFragment extends DialogFragment {
 
                 } catch (IOException e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    return "ERROR: " + e.getLocalizedMessage();
+                    return "ERROR: " + e.getLocalizedMessage();//NON-NLS
                 }
 
                 return "";

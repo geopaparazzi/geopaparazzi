@@ -156,7 +156,7 @@ public class GpsLogInfoTool extends MapTool {
         try {
             ts = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(logInfo.timestamp));
         } catch (Exception e) {
-            GPLog.error(this, "Error in timestamp: " + logInfo.timestamp, e);
+            GPLog.error(this, "Error in timestamp: " + logInfo.timestamp, e);//NON-NLS
         }
         String time = timeString + ts;
         Coordinate pointXYZ = logInfo.pointXYZ;

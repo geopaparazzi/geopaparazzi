@@ -74,7 +74,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         try {
             mProfileList = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPeferences);
         } catch (JSONException e) {
-            Log.e("GEOS2GO", "", e);
+            Log.e("GEOS2GO", "", e);//NON-NLS
         }
 
         mSelectedProfileIndex = mProfileList.indexOf(selectedProfile);
@@ -108,7 +108,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
             try {
                 ProfilesHandler.INSTANCE.saveProfilesToPreferences(mPeferences, mProfileList);
             } catch (JSONException e) {
-                Log.e("GEOS2GO", "Error saving profiles", e);
+                Log.e("GEOS2GO", "Error saving profiles", e);//NON-NLS
             }
         }
     }
@@ -196,31 +196,31 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
                     crsList = layerCapability.getSRS();
                 }
                 for (String crs : crsList) {
-                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {
+                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {//NON-NLS
                         srs = crs;
 
                         boolean doLonLat = false;
-                        if (crs.equals("CRS:84")) {
+                        if (crs.equals("CRS:84")) {//NON-NLS
                             doLonLat = true;
-                        } else if (crs.equals("EPSG:4326") && !wmsversion.equals("1.3.0")) {
+                        } else if (crs.equals("EPSG:4326") && !wmsversion.equals("1.3.0")) {//NON-NLS
                             doLonLat = true;
                         }
 
                         String bboxStr;
                         if (doLonLat) {
-                            bboxStr = "XXX,YYY,XXX,YYY";
+                            bboxStr = "XXX,YYY,XXX,YYY";//NON-NLS
                         } else {
-                            bboxStr = "YYY,XXX,YYY,XXX";
+                            bboxStr = "YYY,XXX,YYY,XXX";//NON-NLS
                         }
-                        sb.append("url=" + baseUrl.trim() + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //
-                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //
-                                + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");
-                        sb.append("minzoom=1\n");
-                        sb.append("maxzoom=22\n");
-                        sb.append("defaultzoom=17\n");
-                        sb.append("format=png\n");
-                        sb.append("type=wms\n");
-                        sb.append("description=").append(layerName).append("\n");
+                        sb.append("url=" + baseUrl.trim() + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //NON-NLS
+                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //NON-NLS
+                                + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");//NON-NLS
+                        sb.append("minzoom=1\n");//NON-NLS
+                        sb.append("maxzoom=22\n");//NON-NLS
+                        sb.append("defaultzoom=17\n");//NON-NLS
+                        sb.append("format=png\n");//NON-NLS
+                        sb.append("type=wms\n");//NON-NLS
+                        sb.append("description=").append(layerName).append("\n");//NON-NLS
 
 
                         break;
@@ -234,10 +234,10 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
 
                 for (OGCBoundingBox bbox : layerCapability.getBoundingBoxes()) {
                     String crs = bbox.getCRS();
-                    if (crs != null && (crs.equals("CRS:84") || crs.equals("EPSG:4326"))) {
+                    if (crs != null && (crs.equals("CRS:84") || crs.equals("EPSG:4326"))) {//NON-NLS
                         double centerX = bbox.getMinx() + (bbox.getMaxx() - bbox.getMinx()) / 2.0;
                         double centerY = bbox.getMiny() + (bbox.getMaxy() - bbox.getMiny()) / 2.0;
-                        sb.append("center=");
+                        sb.append("center=");//NON-NLS
                         sb.append(centerX).append(" ").append(centerY);
                         sb.append("\n");
 
@@ -248,9 +248,9 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
 
             try {
                 File applicationSupporterDir = ResourcesManager.getInstance(this).getApplicationSupporterDir();
-                File newMapurl = new File(applicationSupporterDir, layerName + ".mapurl");
+                File newMapurl = new File(applicationSupporterDir, layerName + ".mapurl");//NON-NLS
 
-                sb.append("mbtiles=defaulttiles/_" + newMapurl.getName() + ".mbtiles\n");
+                sb.append("mbtiles=defaulttiles/_").append(newMapurl.getName()).append(".mbtiles\n");//NON-NLS
 
                 String mapurlText = sb.toString();
                 FileUtilities.writefile(mapurlText, newMapurl);
@@ -259,7 +259,7 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
 
                 mSectionsPagerAdapter.notifyDataSetChanged();
 
-                GPDialogs.quickInfo(mViewPager, "WMS mapurl file successfully added to the basemaps and saved in: " + newMapurl.getAbsolutePath());
+                GPDialogs.quickInfo(mViewPager, getString(R.string.wms_mapurl_added_to_basemaps) + newMapurl.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -323,15 +323,15 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Profile info";
+                    return getString(R.string.profile_info_title);
                 case 1:
-                    return "Basemaps";
+                    return getString(R.string.profile_basemap_title);
                 case 2:
-                    return "Spatialite Databases";
+                    return getString(R.string.profile_spatialite_title);
                 case 3:
-                    return "Forms";
+                    return getString(R.string.profile_forms_title);
                 case 4:
-                    return "Project";
+                    return getString(R.string.profile_project_title);
             }
             return null;
         }

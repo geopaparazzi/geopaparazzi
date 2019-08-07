@@ -33,7 +33,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
 
 public class FormTagsFragment extends Fragment {
-    private static final String ARG_PROFILE = "profile";
+    private static final String ARG_PROFILE = "profile"; //NON-NLS
     public static final int RETURNCODE_BROWSE = 666;
 
     private EditText nameEdittext;
@@ -76,7 +76,7 @@ public class FormTagsFragment extends Fragment {
                 try {
                     File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
                     Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"json"});
+                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"json"});//NON-NLS
                     browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
                     startActivityForResult(browseIntent, RETURNCODE_BROWSE);
                 } catch (Exception e) {
@@ -126,7 +126,7 @@ public class FormTagsFragment extends Fragment {
                         String sdcardPath = profile.getSdcardPath();
 
                         if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
                             return;
                         }
 

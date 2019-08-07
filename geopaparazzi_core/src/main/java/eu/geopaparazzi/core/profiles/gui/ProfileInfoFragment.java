@@ -16,7 +16,7 @@ import eu.geopaparazzi.library.profiles.Profile;
 
 
 public class ProfileInfoFragment extends Fragment implements TextWatcher {
-    private static final String ARG_PROFILE = "profile";
+    private static final String ARG_PROFILE = "profile";//NON-NLS
     private EditText nameEdittext;
     private EditText descriptionEdittext;
     private EditText creationdateEdittext;

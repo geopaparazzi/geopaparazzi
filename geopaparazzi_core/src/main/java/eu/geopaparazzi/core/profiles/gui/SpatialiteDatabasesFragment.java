@@ -26,14 +26,14 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 public class SpatialiteDatabasesFragment extends Fragment {
-    private static final String ARG_PROFILE = "profile";
+    private static final String ARG_PROFILE = "profile";//NON-NLS
     public static final int RETURNCODE_BROWSE = 666;
 
 
     private List<ProfileSpatialitemaps> mSpatialiteDbsList = new ArrayList<>();
     private ListView listView;
 
-    private String[] supportedExtensions = {"sqlite"};
+    private String[] supportedExtensions = {"sqlite"};//NON-NLS
     private Profile profile;
 
     public SpatialiteDatabasesFragment() {
@@ -131,7 +131,7 @@ public class SpatialiteDatabasesFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final ProfileSpatialitemaps spatialitemap = mSpatialiteDbsList.get(position);
                 String name = profile.getFile(spatialitemap.getRelativePath()).getName();
-                GPDialogs.yesNoMessageDialog(getActivity(), "Do you want to remove: " + name + "?", new Runnable() {
+                GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.want_to_remove) + name + "?", new Runnable() {
                     @Override
                     public void run() {
                         mSpatialiteDbsList.remove(position);
@@ -168,7 +168,7 @@ public class SpatialiteDatabasesFragment extends Fragment {
                         String sdcardPath = profile.getSdcardPath();
 
                         if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), "All data of the same profile have to reside in the same root path.", null);
+                            GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
                             return;
                         }
 
