@@ -171,4 +171,8 @@
   <string name="upload_Error">Si è verificato un errore:</string>
   <string name="upload_NonOK">Il Server a restituito uno stato non-OK:</string>
   <string name="upload_Uploaded">File caricato.</string>
+  <string name="also_save_to_bookmarks">salva anche come segnalibro</string>
+  <string name="no_files_in_folder">Non sono presenti files nella cartella.</string>
+  <string name="error_launching_query">Si verificato un errore durante l\'esecuzione della query: </string>
+  <string name="permissions_location">Geopaparazzi richiede di accedere al GPS del tuo device per le informazioni sulla posizione.</string>
 </resources>

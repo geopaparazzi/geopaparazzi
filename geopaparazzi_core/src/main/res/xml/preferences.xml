@@ -95,16 +95,16 @@
             android:summary="@string/high_density_display_sum"
             android:title="@string/high_density_display" />
     </PreferenceScreen>
-    <PreferenceScreen
-        android:order="40"
-        android:title="@string/spatialite_preferences"
-        android:summary="@string/spatialite_preferences_summary">
-        <CheckBoxPreference
-            android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"
-            android:order="41"
-            android:summary="@string/spatialite_recover_mode_tooltip"
-            android:title="@string/spatialite_recovery_mode" />
-    </PreferenceScreen>
+    <!--<PreferenceScreen-->
+        <!--android:order="40"-->
+        <!--android:title="@string/spatialite_preferences"-->
+        <!--android:summary="@string/spatialite_preferences_summary">-->
+        <!--<CheckBoxPreference-->
+            <!--android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"-->
+            <!--android:order="41"-->
+            <!--android:summary="@string/spatialite_recover_mode_tooltip"-->
+            <!--android:title="@string/spatialite_recovery_mode" />-->
+    <!--</PreferenceScreen>-->
 
     <eu.geopaparazzi.core.preferences.ForceLocalePreference
         android:defaultValue="en"
