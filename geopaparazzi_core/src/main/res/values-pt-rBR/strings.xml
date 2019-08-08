@@ -194,6 +194,8 @@
   <string name="custom_icon_properties">Propriedades de ícones personalizados</string>
   <string name="use_custom">usar personalizado</string>
   <string name="labels">Rótulos</string>
+  <string name="show_notes_labels">mostrar os rótulos da nota</string>
+  <string name="show_image_labels">mostrar os rótulos da imagem</string>
   <string name="halo">círculo</string>
   <string name="screen_preferences">Configurações de tela</string>
   <string name="screen_preferences_summary">Configurar as preferências de tela como a cruz central ou a densidade de tela.</string>
@@ -302,6 +304,7 @@
   <string name="export_img_processing">Exportando imagens...</string>
   <string name="routing_pref_title">Chave da API de rotas</string>
   <string name="routing_pref_summary">Para usar os serviços de rota MapQuest e Graphhopper insira a ApiKey apropriada.</string>
+  <string name="gps_info_dialog_title">Informações do GPS</string>
   <string name="open_gps_settings">Abrir configurações do GPS</string>
   <string name="dashboard_note_action_description">Inserir um texto, figura ou nota de rascunho</string>
   <string name="dashboard_metadata_action_description">Visualizar informações do projeto</string>
@@ -408,4 +411,14 @@
   <string name="description_of_the_new_profile">Descrição do novo perfil</string>
   <string name="browse_images">Explorar imagens</string>
   <string name="return_to_view_after_note">Voltar para visão depois da nota</string>
+  <string name="unable_parse_url">Não é possível interpretar a url</string>
+  <string name="option_center_on_gps">centralizar no gps</string>
+  <string name="option_rotate_with_bearing">rotacionar com rolamento</string>
+  <string name="option_show_gps_info">mostrar informação</string>
+  <string name="option_hide_gps_accuracy">esconder precisão</string>
+  <string name="basemaps_colon">Mapas base:</string>
+  <string name="spatialita_dbs_colon">Banco de dados Spatialite:</string>
+  <string name="forms_colon">Formulários:</string>
+  <string name="has_project_colon">Tem projeto:</string>
+  <string name="prompt_remove_profile">Você tem certeza que deseja excluir o perfil: \'%s\'? Isso não pode ser desfeito.</string>
 </resources>

@@ -54,6 +54,7 @@
   <string name="text_undo_a_gps_note">anulează nota</string>
   <string name="gps_log">jurnal gps</string>
   <string name="audio_recording_stop">stop</string>
+  <string name="help_needed">Am nevoie de ajutor!</string>
   <string name="message_sent">Mesaj transmis</string>
   <string name="last_note_deleted">S-a șters ultima notă</string>
   <string name="last_note_not_deleted">Nu s-a putut șterge ultima notă</string>
@@ -94,6 +95,7 @@
   <string name="osm_do_it">Activează instrumentele OSM</string>
   <string name="osm_user_label">Numele utilizatorului</string>
   <string name="osm_password_label">Parola</string>
+  <string name="osm_server_label">Serverul la care vă veți conecta</string>
   <string name="an_error_occurred_while_uploading_osm_tags">A apărut o eroare pe durata actualizării etichetelor OSM:</string>
   <string name="enable_automatic_center_on_gps">Centrare automată pe GPS</string>
   <string name="enable_center_on_gps">Activează centrarea automată pe GPS</string>
@@ -122,6 +124,7 @@
   <string name="with_images">Cu imagini</string>
   <string name="successfully_imported_bookmarks">Marcajele au fost importate cu succes:</string>
   <string name="error_bookmarks_import">A apărut o eroare pe durata importării marcajelor.</string>
+  <string name="no_bookmarks_csv">Nu s-a putut găsi un fișier bookmarks.csv în rădăcina cardului sd. Vă rugăm să plasați marcajele acolo pentru a le importa.</string>
   <string name="center_on_map">Centrează pe harta de bază</string>
   <string name="proximity_radius">Rază de Proximitate</string>
   <string name="add_proximity_radius">Adăugați raza alertei de proximitate, în metri.</string>

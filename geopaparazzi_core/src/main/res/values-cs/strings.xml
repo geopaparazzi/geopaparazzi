@@ -302,6 +302,7 @@
   <string name="export_img_processing">Vyvádí se obrázky...</string>
   <string name="routing_pref_title">Klíč pro api směrování</string>
   <string name="routing_pref_summary">Pro používání směrovacích služeb MapQuest a Graphhopper vložte správný klíč Api.</string>
+  <string name="gps_info_dialog_title">Gps Informace</string>
   <string name="open_gps_settings">Otevřít nastavení GPS</string>
   <string name="dashboard_note_action_description">Přidat text, obrázek nebo načrtnout poznámku.</string>
   <string name="dashboard_metadata_action_description">Zobrazit informace o projektu</string>

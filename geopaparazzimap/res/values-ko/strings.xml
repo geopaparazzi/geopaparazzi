@@ -1,5 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="yes">예</string>
+  <string name="no">아니오</string>
+  <string name="up">위로</string>
+  <string name="cantwrite_gpslog">오류: GPS 로그를 쓸 수 없습니다!</string>
+  <string name="gpsloggingoff">GPS 로깅을 중지했습니다.</string>
+  <string name="gpsloggingon">GPS 로딩을 시작했습니다...</string>
+  <string name="gpsloggingalarm">알람 중지...</string>
+  <string name="last_position">마지막 위치</string>
+  <string name="gpx_import_title">라인 또는 포인트?</string>
+  <string name="gpx_import_processing">GPX 파일 불러오는 중...</string>
+  <string name="insert_note">메모를 여기에 삽입하세요</string>
+  <string name="longitude">경도</string>
+  <string name="latitude">위도</string>
+  <string name="select_dotdot">선택...</string>
+  <string name="webprojects_list_title">원격 프로젝트 목록</string>
+  <string name="webprofiles_list_title">클라우드 프로필 목록</string>
+  <string name="downloading">다운로드 중...</string>
   <string name="point_shape_">점 모양</string>
   <string name="point_size">점 크기</string>
   <string name="decimation">데시메이션</string>

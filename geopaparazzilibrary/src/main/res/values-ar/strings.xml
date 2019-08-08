@@ -2,6 +2,24 @@
 <resources>
   <string name="yes">نعم</string>
   <string name="no">لا</string>
+  <string name="sdcard_notexist">ملف كرت التخزين غير موجود أو لا يمكن الكتابة عليه
+(من المحتمل أنه ما زال على سطح المكتب؟).الخروج</string>
+  <string name="error_disk_full">القرص الذي يجب تسجيل الدخول عليه يبدو ممتلئ.
+حرر بعض الذاكرة و إبدأ من جديد</string>
+  <string name="cantwrite_gpslog">خطأ: لا يمكن كتابة تسجيل ملف تحديد الموقع</string>
+  <string name="gpsloggingoff">توقف تسجيل نظام تحديد الموقع</string>
+  <string name="gpsloggingon">تم البدء بتسجيل نظام تحديد الموقع</string>
+  <string name="gpsloggingalarm">تجنب/أوقف الإنذار</string>
+  <string name="prompt_gpsenable">جهاز تحديد الموقع غير مفعل! هل تريد تفعيله؟ </string>
+  <string name="last_position">آخر موقع</string>
+  <string name="last_position_unknown">آسف, لم يتم تعريف وتحديد الموقع بشكل ملائم.</string>
+  <string name="cantcreate_img_folder">لا يمكن إنشاء الملف الذي سيتم تخزين الصورة عليه</string>
+  <string name="gpx_import_title">خط أو نقطة؟</string>
+  <string name="gpx_import_message">إختر فيما إذا كان الملف الذي سيتم إستيراده خطوط أو نقاط.</string>
+  <string name="gpx_import_checkbox_message">أجبر الإستيراد للسمة بشكل خط؟</string>
+  <string name="gpx_import_processing">إستيراد بيانات الموقع</string>
+  <string name="insert_note">أدخل ملاحظتك هنا</string>
+  <string name="notesaved">تم تخزين الملاحظة بنجاح</string>
   <string name="label_red">أحمر</string>
   <string name="label_green">أخضر</string>
   <string name="label_blue">ازرق</string>

@@ -16,13 +16,9 @@ import org.locationtech.jts.geom.Geometry;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.Drawable;
-import org.oscim.layers.vector.geometries.LineDrawable;
-import org.oscim.layers.vector.geometries.PointDrawable;
-import org.oscim.layers.vector.geometries.PolygonDrawable;
 import org.oscim.layers.vector.geometries.Style;
 import org.oscim.map.Layers;
 
-import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -93,11 +89,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
 
         for (Feature feature : features) {
             Geometry geom = feature.getDefaultGeometry();
-            Object idFieldValue = feature.getIdFieldValue();
-            long id = -1;
-            if (idFieldValue instanceof Number) {
-                id = ((Number) idFieldValue).longValue();
-            }
+            long id = feature.getIdFieldValue();
 
             eu.geopaparazzi.library.style.Style themeStyle = null;
             if (gpStyle.themeField != null) {
@@ -480,11 +472,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         db.executeInsertUpdateDeleteSql(insertQuery);
 
 
-        Object idFieldValue = feature.getIdFieldValue();
-        long id = -1;
-        if (idFieldValue instanceof Number) {
-            id = ((Number) idFieldValue).longValue();
-        }
+        long id = feature.getIdFieldValue();
         IGPDrawable drawable = drawablesMap.get(id);
         if (drawable != null)
             remove((Drawable) drawable);
@@ -525,11 +513,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
         db.executeInsertUpdateDeleteSql(updateQuery);
 
         for (Feature feature : features) {
-            Object idFieldValue = feature.getIdFieldValue();
-            long id = -1;
-            if (idFieldValue instanceof Number) {
-                id = ((Number) idFieldValue).longValue();
-            }
+            long id = feature.getIdFieldValue();
             IGPDrawable drawable = drawablesMap.get(id);
             if (drawable != null)
                 remove((Drawable) drawable);
