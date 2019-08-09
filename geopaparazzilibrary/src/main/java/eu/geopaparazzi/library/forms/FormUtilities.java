@@ -311,10 +311,7 @@ public class FormUtilities {
     public static boolean isTypeSpecial(String type) {
         if (type.equals(TYPE_PRIMARYKEY)) {
             return true;
-        } else if (type.equals(TYPE_HIDDEN)) {
-            return true;
-        }
-        return false;
+        } else return type.equals(TYPE_HIDDEN);
     }
 
     /**

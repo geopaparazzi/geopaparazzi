@@ -3,8 +3,8 @@ package eu.geopaparazzi.map.layers;
 @SuppressWarnings("ALL")
 public enum LayerGroups {
 
-    GROUP_USERLAYERS(0, "userlayers"),//
-    GROUP_SYSTEM(1, "systemlayers"),//
+    GROUP_MAPLAYERS(0, "maplayers"),//
+    GROUP_PROJECTLAYERS(1, "projectlayers"),//
     GROUP_3D(2, "3dlayers"),//
     GROUP_SYSTEM_TOP(3, "systemtoplayers");
 

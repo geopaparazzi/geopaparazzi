@@ -56,9 +56,9 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
 
         // ProgressBar progressBar = (ProgressBar) findViewById(R.id.scanning_progressbar);
 
-        readMessageEditText = (EditText) findViewById(R.id.read_id_edittext);
-        btActivityLabel = (TextView) findViewById(R.id.bluetoothActiveLabel);
-        nfcActivityLabel = (TextView) findViewById(R.id.nfcActiveLabel);
+        readMessageEditText = findViewById(R.id.read_id_edittext);
+        btActivityLabel = findViewById(R.id.bluetoothActiveLabel);
+        nfcActivityLabel = findViewById(R.id.nfcActiveLabel);
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {

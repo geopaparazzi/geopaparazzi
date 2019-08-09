@@ -32,26 +32,26 @@ public interface IBluetoothIOHandler extends Runnable {
      * 
      * @return the name of the device.
      */
-    public String getName();
+    String getName();
 
     /**
      * Checks the requirements of the device against the operating system. 
      * 
      * @return <code>null</code> if requirements are fine. Summary of problems in case of warnings or errors.
      */
-    public String checkRequirements();
+    String checkRequirements();
 
     /**
      * Initialize the device by passing in the socket and an enablement handler.
      * 
      * @param socket the socket to use for dialog with the device.
      */
-    public abstract void initialize(BluetoothSocket socket);
+    void initialize(BluetoothSocket socket);
 
     /**
      * Close the connection to the device.
      */
-    public abstract void close();
+    void close();
 
     /**
      * Checks if the device is ready to transmit data.
@@ -60,21 +60,21 @@ public interface IBluetoothIOHandler extends Runnable {
      * 
      * @return <code>true</code> if the device is ready to transmit data.
      */
-    public abstract boolean isReady();
+    boolean isReady();
 
     /**
      * Enable or disable the device.
      * 
      * @param enabled <code>true</code> if the device should be enabled.
      */
-    public abstract void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
     /**
      * Getter for the {@link BluetoothSocket} used.
      * 
      * @return the {@link BluetoothSocket} used.
      */
-    public abstract BluetoothSocket getSocket();
+    BluetoothSocket getSocket();
 
     /**
      * Adds an {@link IBluetoothListener}.
@@ -82,14 +82,14 @@ public interface IBluetoothIOHandler extends Runnable {
      * @param listener the listener to add.
      * @return true if the listener was added.
      */
-    public abstract boolean addListener(IBluetoothListener listener);
+    boolean addListener(IBluetoothListener listener);
 
     /**
      * Removes an {@link IBluetoothListener}.
      * 
      * @param listener the listener to remove.
      */
-    public abstract void removeListener(IBluetoothListener listener);
+    void removeListener(IBluetoothListener listener);
 
     /**
      * Adapt the device.
@@ -97,5 +97,5 @@ public interface IBluetoothIOHandler extends Runnable {
      * @param adaptee the class to adapt to.
      * @return the adapted object.
      */
-    public <T> T adapt(Class<T> adaptee);
+    <T> T adapt(Class<T> adaptee);
 }

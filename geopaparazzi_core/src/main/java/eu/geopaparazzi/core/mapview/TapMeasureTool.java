@@ -124,10 +124,10 @@ public class TapMeasureTool extends MapTool {
         textBuilder.setLength(0);
         if (doImperial) {
             double distanceInFeet = MercatorUtils.toFeet(measuredDistance);
-            textBuilder.append(String.valueOf((int) distanceInFeet));
+            textBuilder.append((int) distanceInFeet);
             textBuilder.append(" ft"); //$NON-NLS-1$
         } else {
-            textBuilder.append(String.valueOf((int) measuredDistance));
+            textBuilder.append((int) measuredDistance);
             textBuilder.append(" m"); //$NON-NLS-1$
         }
         String distanceText = textBuilder.toString();

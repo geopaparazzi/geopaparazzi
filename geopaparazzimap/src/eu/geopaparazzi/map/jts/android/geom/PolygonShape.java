@@ -84,9 +84,9 @@ public class PolygonShape implements DrawableShape {
         if (ringPath == null) {
             ringPath = new Path();
             ringPath.setFillType(Path.FillType.EVEN_ODD);
-            ringPath.moveTo((float) p.x, (float) p.y);
+            ringPath.moveTo(p.x, p.y);
         } else {
-            ringPath.lineTo((float) p.x, (float) p.y);
+            ringPath.lineTo(p.x, p.y);
         }
     }
 

@@ -92,7 +92,7 @@ public class ExportActivity extends AppCompatActivity implements
         super.onCreate(icicle);
         setContentView(R.layout.activity_export);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.core.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -162,7 +162,7 @@ public class ExportActivity extends AppCompatActivity implements
             entry.setRequestCode(code);
             menuEntriesMap.put(code, entry);
             code++;
-            LinearLayout container = (LinearLayout) findViewById(R.id.scrollView);
+            LinearLayout container = findViewById(R.id.scrollView);
             container.addView(button, lp);
             button.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {

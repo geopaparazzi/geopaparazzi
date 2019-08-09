@@ -211,7 +211,7 @@ public class OrientationSensor implements SensorEventListener {
                         sin = -m_NormEastVector[1] - m_NormNorthVector[0];
                         cos = m_NormEastVector[0] - m_NormNorthVector[1];
                         float aximuth_plus_two_pitch_axis_radians = (float) (sin != 0 && cos != 0 ? Math.atan2(sin, cos) : 0);
-                        m_pitch_axis_radians = (float) (aximuth_plus_two_pitch_axis_radians - m_azimuth_radians) / 2;
+                        m_pitch_axis_radians = (aximuth_plus_two_pitch_axis_radians - m_azimuth_radians) / 2;
                         m_azimuth_radians += screen_adjustment;
                         m_pitch_axis_radians += screen_adjustment;
                         m_OrientationOK = true;

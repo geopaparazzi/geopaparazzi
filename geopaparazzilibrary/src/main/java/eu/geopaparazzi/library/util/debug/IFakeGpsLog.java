@@ -27,7 +27,7 @@ public interface IFakeGpsLog {
     /**
      * @return <code>true</code> if a record is available.
      */
-    public abstract boolean hasNext();
+    boolean hasNext();
 
     /**
      * Get the next gps record.
@@ -35,11 +35,11 @@ public interface IFakeGpsLog {
      * @return the record in the csv format: 
      *          time(long),lon,lat,altimetry,speed,accuracy(meters) 
      */
-    public abstract String next();
+    String next();
 
     /**
      * Resets to start new.
      */
-    public abstract void reset();
+    void reset();
 
 }

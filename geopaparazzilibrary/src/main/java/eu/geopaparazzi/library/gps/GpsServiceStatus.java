@@ -42,7 +42,7 @@ public enum GpsServiceStatus {
 
     private int code;
 
-    private GpsServiceStatus( int code ) {
+    GpsServiceStatus(int code) {
         this.code = code;
     }
 

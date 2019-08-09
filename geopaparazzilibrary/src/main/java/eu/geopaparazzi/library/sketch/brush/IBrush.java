@@ -33,17 +33,17 @@ public interface IBrush {
      * @param x     x    
      * @param y     y    
      */
-    public void mouseDown(Path path, float x, float y);
+    void mouseDown(Path path, float x, float y);
     /**
      * @param path path 
      * @param x    x    
      * @param y    y    
      */
-    public void mouseMove(Path path, float x, float y);
+    void mouseMove(Path path, float x, float y);
     /**
      * @param path   path 
      * @param x      x    
      * @param y      y    
      */
-    public void mouseUp(Path path, float x, float y);
+    void mouseUp(Path path, float x, float y);
 }

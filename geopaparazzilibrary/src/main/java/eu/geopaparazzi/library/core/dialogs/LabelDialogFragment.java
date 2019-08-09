@@ -99,7 +99,7 @@ public class LabelDialogFragment extends DialogFragment {
                         R.layout.fragment_dialog_label, null);
         builder.setView(labelDialogView);
 
-        CheckBox visibilityCheckBox = (CheckBox) labelDialogView.findViewById(R.id.checkVisibility);
+        CheckBox visibilityCheckBox = labelDialogView.findViewById(R.id.checkVisibility);
         visibilityCheckBox.setChecked(mCurrentLabelObject.hasLabel);
         visibilityCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -108,9 +108,9 @@ public class LabelDialogFragment extends DialogFragment {
             }
         });
 
-        mSizeTextView = (TextView) labelDialogView.findViewById(R.id.sizeTextView);
+        mSizeTextView = labelDialogView.findViewById(R.id.sizeTextView);
         mSizeTextView.setText(String.valueOf(mCurrentLabelObject.labelSize));
-        SeekBar mSizeSeekBar = (SeekBar) labelDialogView.findViewById(R.id.sizeSeekBar);
+        SeekBar mSizeSeekBar = labelDialogView.findViewById(R.id.sizeSeekBar);
         mSizeSeekBar.setOnSeekBarChangeListener(sizeChanged);
         mSizeSeekBar.setProgress(mCurrentLabelObject.labelSize);
 
@@ -123,7 +123,7 @@ public class LabelDialogFragment extends DialogFragment {
                 break;
             }
         }
-        final Spinner fieldsSpinner = (Spinner) labelDialogView.findViewById(R.id.labelFieldSpinner);
+        final Spinner fieldsSpinner = labelDialogView.findViewById(R.id.labelFieldSpinner);
         ArrayAdapter<String> fieldsSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
                 labelFieldsList);
         fieldsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

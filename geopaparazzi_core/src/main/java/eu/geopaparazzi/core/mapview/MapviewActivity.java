@@ -126,10 +126,9 @@ import static eu.geopaparazzi.library.util.LibraryConstants.ZOOMLEVEL;
 public class MapviewActivity extends AppCompatActivity implements IActivitySupporter, OnTouchListener, OnClickListener, OnLongClickListener, InsertCoordinatesDialogFragment.IInsertCoordinateListener, GPMapView.GPMapUpdateListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
-    private final int MENU_GPSDATA = 1;
-    private final int MENU_GO_TO = 2;
-    private final int MENU_COMPASS_ID = 3;
-    private final int MENU_SHAREPOSITION_ID = 4;
+    private final int MENU_GO_TO = 1;
+    private final int MENU_COMPASS_ID = 2;
+    private final int MENU_SHAREPOSITION_ID = 3;
 
     private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     public static final String MAPSCALE_X = "MAPSCALE_X"; //$NON-NLS-1$
@@ -274,6 +273,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         final ImageButton toggleLogInfoButton = findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
+        toggleLogInfoButton.setOnLongClickListener(this);
 
         toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
@@ -488,18 +488,13 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect);//.setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_COMPASS_ID, 2, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_GO_TO, 3, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 4, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 1, R.string.mapsactivity_menu_toggle_compass);//.setIcon(                android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_GO_TO, 2, R.string.go_to);//.setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_SHAREPOSITION_ID, 3, R.string.share_position);//.setIcon(android.R.drawable.ic_menu_send);
     }
 
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_GPSDATA:
-                Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
-                startActivity(gpsDatalistIntent);
-                return true;
             case MENU_COMPASS_ID:
                 AppsUtilities.checkAndOpenGpsStatus(this);
                 return true;
@@ -806,11 +801,12 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             Intent intent = new Intent(MapviewActivity.this, NotesListActivity.class);
             intent.putExtra(LibraryConstants.PREFS_KEY_MAP_ZOOM, true);
             startActivityForResult(intent, ZOOM_RETURN_CODE);
-
+        } else if (i == R.id.toggleloginfobutton) {
+            Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
+            startActivity(gpsDatalistIntent);
         } else if (i == R.id.addbookmarkbutton) {
             Intent bookmarksListIntent = new Intent(MapviewActivity.this, BookmarksListActivity.class);
             startActivityForResult(bookmarksListIntent, ZOOM_RETURN_CODE);
-
         } else if (i == R.id.menu_map_button) {
             boolean areButtonsVisible = mPeferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
             setAllButtoonsEnablement(!areButtonsVisible);

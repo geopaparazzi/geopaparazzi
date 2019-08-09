@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import eu.geopaparazzi.library.R;
@@ -210,7 +211,7 @@ public class NetworkUtilities {
             if (readResponse) {
                 StringBuilder returnMessageBuilder = new StringBuilder();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
                     while (true) {
                         String line = br.readLine();
                         if (line == null)

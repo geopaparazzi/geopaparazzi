@@ -54,7 +54,7 @@ public class OpenRouteServiceHandler {
      * preference option for routing.
      *
      */
-    public static enum Preference {
+    public enum Preference {
         /**
          * 
          */
@@ -71,7 +71,7 @@ public class OpenRouteServiceHandler {
     /**
      *
      */
-    public static enum Language {
+    public enum Language {
         /**
          * 
          */

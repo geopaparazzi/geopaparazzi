@@ -24,7 +24,7 @@ android {
     }
     signingConfigs {
         config {
-            def Properties props = new Properties()
+            Properties props = new Properties()
             def propFile = new File('geopaparazzi.app/ant.properties')
             if (propFile.canRead()) {
                 props.load(new FileInputStream(propFile))

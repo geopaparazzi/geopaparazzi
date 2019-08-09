@@ -28,19 +28,19 @@ public interface ToolGroup extends DrawingTool {
     /**
      * Create a custom UI for the tool if necessary.
      */
-    public void initUI();
+    void initUI();
 
     /**
      * Disables the toolgroup.
      */
-    public void disable();
+    void disable();
 
     /**
      * Callback when a tool finishes.
      * 
      * @param tool the tool that finished.
      */
-    public void onToolFinished(Tool tool);
+    void onToolFinished(Tool tool);
 
     /**
      * Callback for position updates. 
@@ -48,5 +48,5 @@ public interface ToolGroup extends DrawingTool {
      * @param lon longitude.
      * @param lat latitude.
      */
-    public void onGpsUpdate(double lon, double lat);
+    void onGpsUpdate(double lon, double lat);
 }

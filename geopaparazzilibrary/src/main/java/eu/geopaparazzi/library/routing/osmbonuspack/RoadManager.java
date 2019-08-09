@@ -66,10 +66,10 @@ public abstract class RoadManager {
     protected String geoPointAsString(GeoPoint p){
         StringBuilder result = new StringBuilder();
         double d = p.getLatitude();
-        result.append(Double.toString(d));
+        result.append(d);
         d = p.getLongitude();
         result.append(",");
-        result.append(Double.toString(d));
+        result.append(d);
         return result.toString();
     }
 

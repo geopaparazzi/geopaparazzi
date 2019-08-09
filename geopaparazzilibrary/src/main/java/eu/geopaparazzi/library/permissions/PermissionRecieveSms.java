@@ -44,11 +44,8 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            if (context.checkSelfPermission(
-                    Manifest.permission.RECEIVE_SMS) !=
-                    PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+            return context.checkSelfPermission(
+                    Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
         }
         return true;
     }
@@ -96,10 +93,8 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == RECIEVESMS_PERMISSION_REQUESTCODE &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
+        return requestCode == RECIEVESMS_PERMISSION_REQUESTCODE &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
 

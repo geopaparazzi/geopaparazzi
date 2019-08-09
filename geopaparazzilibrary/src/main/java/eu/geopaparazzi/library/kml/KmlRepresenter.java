@@ -35,20 +35,20 @@ public interface KmlRepresenter extends Serializable {
      * @return the kml representation.
      * @throws Exception  if something goes wrong.
      */
-    public String toKmlString() throws Exception;
+    String toKmlString() throws Exception;
 
     /**
      * Getter for image flag.
      * 
      * @return <code>true</code> if the object has also an image that needs to be embedded in the kmz.
      */
-    public boolean hasImages();
+    boolean hasImages();
 
     /**
      * Get image ids list.
      *
      * @return the list of image ids.
      */
-    public List<String> getImageIds();
+    List<String> getImageIds();
 
 }

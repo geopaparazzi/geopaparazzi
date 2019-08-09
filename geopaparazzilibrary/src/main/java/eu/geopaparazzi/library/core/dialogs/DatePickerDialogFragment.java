@@ -60,7 +60,7 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         DecimalFormat decimalFormatter = new DecimalFormat("00");
-        ; //$NON-NLS-1$
+        //$NON-NLS-1$
 
         StringBuilder sb = new StringBuilder();
         sb.append(year);

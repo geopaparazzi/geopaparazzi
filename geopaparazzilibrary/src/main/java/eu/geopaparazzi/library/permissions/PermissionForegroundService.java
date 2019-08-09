@@ -44,11 +44,8 @@ public class PermissionForegroundService extends AChainedPermissionHelper {
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                if (context.checkSelfPermission(
-                        Manifest.permission.FOREGROUND_SERVICE) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
+                return context.checkSelfPermission(
+                        Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED;
             }
         }
         return true;
@@ -101,10 +98,8 @@ public class PermissionForegroundService extends AChainedPermissionHelper {
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (requestCode == FOREGROUND_SERVICE_PERMISSION_REQUESTCODE &&
-                    grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                return true;
-            return false;
+            return requestCode == FOREGROUND_SERVICE_PERMISSION_REQUESTCODE &&
+                    grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         } else {
             return true;
         }

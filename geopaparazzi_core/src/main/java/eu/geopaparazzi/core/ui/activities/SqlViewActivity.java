@@ -55,11 +55,11 @@ public class SqlViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sqlview);
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.core.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sqlSpinner = (Spinner) findViewById(R.id.sqlQuerySpinner);
+        sqlSpinner = findViewById(R.id.sqlQuerySpinner);
         try {
             List<String> queriesNames = createQueries();
 
@@ -71,7 +71,7 @@ public class SqlViewActivity extends AppCompatActivity {
             GPLog.error(this, null, e); //$NON-NLS-1$
         }
 
-        customQueryText = (EditText) findViewById(R.id.ownQueryEditText);
+        customQueryText = findViewById(R.id.ownQueryEditText);
     }
 
     /**

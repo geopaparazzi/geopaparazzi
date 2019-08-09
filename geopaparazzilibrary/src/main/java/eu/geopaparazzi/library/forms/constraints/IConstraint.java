@@ -30,19 +30,19 @@ public interface IConstraint {
      * 
      * @param value the value to check.
      */
-    public void applyConstraint(Object value);
+    void applyConstraint(Object value);
 
     /**
      * Getter for the constraint's result.
      * 
      * @return <code>true</code> if the constraint applies.
      */
-    public boolean isValid();
+    boolean isValid();
     
     /**
      * Getter for the description of the constraint.
      * 
      * @return the description of the constraint.
      */
-    public String getDescription();
+    String getDescription();
 }

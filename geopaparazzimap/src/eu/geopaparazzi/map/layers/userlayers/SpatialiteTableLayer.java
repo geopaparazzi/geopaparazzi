@@ -65,7 +65,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer 
             reloadData();
 
             Layers layers = mapView.map().layers();
-            layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+            layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }

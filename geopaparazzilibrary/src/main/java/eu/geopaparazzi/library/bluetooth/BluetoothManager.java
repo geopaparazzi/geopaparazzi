@@ -64,7 +64,7 @@ public enum BluetoothManager {
 
     private IBluetoothIOHandler iBluetoothDevice;
 
-    private BluetoothManager() {
+    BluetoothManager() {
         _bluetooth = BluetoothAdapter.getDefaultAdapter();
     }
 
@@ -104,11 +104,7 @@ public enum BluetoothManager {
             return true;
         boolean supported = isSupported();
         boolean enabled = _bluetooth.isEnabled();
-        if (supported && enabled) {
-            return true;
-        } else {
-            return false;
-        }
+        return supported && enabled;
     }
 
     /**
@@ -370,7 +366,7 @@ public enum BluetoothManager {
      * @throws Exception
      */
     private void createSocket() throws Exception {
-        Method m = _bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}); //$NON-NLS-1$
+        Method m = _bluetoothDevice.getClass().getMethod("createRfcommSocket", int.class); //$NON-NLS-1$
         _bluetoothSocket = (BluetoothSocket) m.invoke(_bluetoothDevice, 1);
         _bluetoothSocket.connect();
         isSocketConnected = true;

@@ -32,19 +32,19 @@ public interface GView {
      * 
      * @return a value the view specialises on.
      */
-    public String getValue();
+    String getValue();
 
     /**
      * A callback in case the view was registered to react on an activity result.
      * 
      * @param data the data returned.
      */
-    public void setOnActivityResult(Intent data);
+    void setOnActivityResult(Intent data);
 
     /**
      * A method to refresh content if necessary.
      * 
      * @param context  the context to use.
      */
-    public void refresh(Context context) throws Exception;
+    void refresh(Context context) throws Exception;
 }

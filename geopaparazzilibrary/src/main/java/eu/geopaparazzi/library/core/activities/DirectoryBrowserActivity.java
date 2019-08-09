@@ -155,7 +155,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             };
         }
 
-        FloatingActionButton okButton = (FloatingActionButton) findViewById(R.id.okbutton);
+        FloatingActionButton okButton = findViewById(R.id.okbutton);
         if (doFolder) {
             okButton.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
@@ -175,7 +175,7 @@ public class DirectoryBrowserActivity extends ListActivity {
         } else {
             okButton.hide();
         }
-        FloatingActionButton upButton = (FloatingActionButton) findViewById(R.id.upbutton);
+        FloatingActionButton upButton = findViewById(R.id.upbutton);
         upButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 goUp();
@@ -325,8 +325,8 @@ public class DirectoryBrowserActivity extends ListActivity {
                 LayoutInflater inflater = context.getLayoutInflater();
                 rowView = inflater.inflate(R.layout.browse_file_row, null, true);
                 holder = new ViewHolder();
-                holder.textView = (TextView) rowView.findViewById(R.id.browselist_text);
-                holder.imageView = (ImageView) rowView.findViewById(R.id.fileIconView);
+                holder.textView = rowView.findViewById(R.id.browselist_text);
+                holder.imageView = rowView.findViewById(R.id.fileIconView);
                 rowView.setTag(holder);
             } else {
                 holder = (ViewHolder) rowView.getTag();

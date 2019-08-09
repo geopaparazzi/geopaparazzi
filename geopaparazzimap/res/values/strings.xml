@@ -214,8 +214,8 @@
     <string name="menu_select_theme">Select theme</string>
     <string name="add_map">Add map...</string>
     <string name="add_maps_folder">Add maps folder...</string>
-    <string name="system">system</string>
-    <string name="user_layers">user layers</string>
+    <string name="project_layers">Project Layers</string>
+    <string name="map_layers">Map Layers</string>
     <string name="wms_unsupported">WMS mapurl is not yet supported in this version.</string>
     <string name="unable_to_find_tables_in_db">Unable to find compatible tables in the selected database.</string>
     <string name="layername_bookmarks">Project Bookmarks</string>

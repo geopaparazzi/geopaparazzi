@@ -102,12 +102,12 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
 		if (spacerPos2 == -1) {
 			return new GeoPoint(
 					(int) (Double.parseDouble(s.substring(0, spacerPos1)) * 1E6),
-					(int) (Double.parseDouble(s.substring(spacerPos1 + 1, s.length())) * 1E6));
+					(int) (Double.parseDouble(s.substring(spacerPos1 + 1)) * 1E6));
 		} else {
 			return new GeoPoint(
 					(int) (Double.parseDouble(s.substring(0, spacerPos1)) * 1E6),
 					(int) (Double.parseDouble(s.substring(spacerPos1 + 1, spacerPos2)) * 1E6),
-					(int) Double.parseDouble(s.substring(spacerPos2 + 1, s.length())));
+					(int) Double.parseDouble(s.substring(spacerPos2 + 1)));
 		}
 	}
 
@@ -117,13 +117,13 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
 
 		if (spacerPos2 == -1) {
 			return new GeoPoint(
-					(int) (Double.parseDouble(s.substring(spacerPos1 + 1, s.length())) * 1E6),
+					(int) (Double.parseDouble(s.substring(spacerPos1 + 1)) * 1E6),
 					(int) (Double.parseDouble(s.substring(0, spacerPos1)) * 1E6));
 		} else {
 			return new GeoPoint(
 					(int) (Double.parseDouble(s.substring(spacerPos1 + 1, spacerPos2)) * 1E6),
 					(int) (Double.parseDouble(s.substring(0, spacerPos1)) * 1E6),
-					(int) Double.parseDouble(s.substring(spacerPos2 + 1, s.length())));
+					(int) Double.parseDouble(s.substring(spacerPos2 + 1)));
 
 		}
 	}
@@ -135,12 +135,12 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
 		if (commaPos2 == -1) {
 			return new GeoPoint(
 					Integer.parseInt(s.substring(0, commaPos1)),
-					Integer.parseInt(s.substring(commaPos1 + 1, s.length())));
+					Integer.parseInt(s.substring(commaPos1 + 1)));
 		} else {
 			return new GeoPoint(
 					Integer.parseInt(s.substring(0, commaPos1)),
 					Integer.parseInt(s.substring(commaPos1 + 1, commaPos2)),
-					Integer.parseInt(s.substring(commaPos2 + 1, s.length()))
+					Integer.parseInt(s.substring(commaPos2 + 1))
 			);
 		}
 	}

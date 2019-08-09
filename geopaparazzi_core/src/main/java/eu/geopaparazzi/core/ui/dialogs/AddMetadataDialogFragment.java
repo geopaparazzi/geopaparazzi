@@ -60,11 +60,11 @@ public class AddMetadataDialogFragment extends DialogFragment implements TextWat
             builder.setTitle(getString(R.string.add_new_metadata_title));
 
 
-            metadataKeyEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataKeyEditText);
+            metadataKeyEditText = newProjectDialogView.findViewById(R.id.metadataKeyEditText);
             metadataKeyEditText.addTextChangedListener(this);
-            metadataLabelEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataLabelEditText);
+            metadataLabelEditText = newProjectDialogView.findViewById(R.id.metadataLabelEditText);
             metadataLabelEditText.addTextChangedListener(this);
-            metadataValueEditText = (EditText) newProjectDialogView.findViewById(R.id.metadataValueEditText);
+            metadataValueEditText = newProjectDialogView.findViewById(R.id.metadataValueEditText);
             metadataValueEditText.addTextChangedListener(this);
 
             builder.setPositiveButton(getString(android.R.string.ok),

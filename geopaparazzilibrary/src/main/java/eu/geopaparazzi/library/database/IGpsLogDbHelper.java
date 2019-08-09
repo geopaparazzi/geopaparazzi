@@ -35,7 +35,7 @@ public interface IGpsLogDbHelper {
      * @return a writable database.
      * @throws Exception  if something goes wrong.
      */
-    public SQLiteDatabase getDatabase() throws Exception;
+    SQLiteDatabase getDatabase() throws Exception;
 
     /**
      * Creates a new gpslog entry and returns the log's new id.
@@ -50,7 +50,7 @@ public interface IGpsLogDbHelper {
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog(long startTs, long endTs, double lengthm, String text, float width, String color, boolean visible)
+    long addGpsLog(long startTs, long endTs, double lengthm, String text, float width, String color, boolean visible)
             throws IOException;
 
     /**
@@ -66,8 +66,8 @@ public interface IGpsLogDbHelper {
      * @param timestamp the timestamp of the point.
      * @throws IOException  if something goes wrong.
      */
-    public void addGpsLogDataPoint(SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
-                                   long timestamp) throws IOException;
+    void addGpsLogDataPoint(SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
+                            long timestamp) throws IOException;
 
     /**
      * Deletes a gps log from the database. 
@@ -75,7 +75,7 @@ public interface IGpsLogDbHelper {
      * @param id the log's id.
      * @throws IOException  if something goes wrong.
      */
-    public void deleteGpslog(long id) throws IOException;
+    void deleteGpslog(long id) throws IOException;
 
     /**
      * Re-sets the end timestamp, in case it changed because points were added.
@@ -84,7 +84,7 @@ public interface IGpsLogDbHelper {
      * @param end the end timestamp.
      * @throws IOException  if something goes wrong.
      */
-    public void setEndTs(long logid, long end) throws IOException;
+    void setEndTs(long logid, long end) throws IOException;
 
     /**
      * Re-sets the log (track) length.
@@ -93,7 +93,7 @@ public interface IGpsLogDbHelper {
      * @param length the length of the track log
      * @throws IOException  if something goes wrong.
      */
-    public void setTrackLengthm(long logid, double length) throws IOException;
+    void setTrackLengthm(long logid, double length) throws IOException;
 
     /**
      * Get the last available log id.
@@ -103,6 +103,6 @@ public interface IGpsLogDbHelper {
      * @return the last log id.
      * @throws Exception
      */
-    public long getLastLogId() throws Exception;
+    long getLastLogId() throws Exception;
 
 }

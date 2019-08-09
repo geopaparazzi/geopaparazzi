@@ -138,7 +138,7 @@ public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, I
     @Override
     public void load() {
         Layers layers = map().layers();
-        layers.add(this, LayerGroups.GROUP_SYSTEM.getGroupId());
+        layers.add(this, LayerGroups.GROUP_PROJECTLAYERS.getGroupId());
     }
 
     @Override

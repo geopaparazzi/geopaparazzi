@@ -14,6 +14,6 @@ public interface IPositionLayer extends IGpLayer {
      * @param lastGpsStatusExtras   maxSatellites, satCount, satUsedInFixCount.
      * @param lastGpsLoggingStatus
      */
-    public void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus);
+    void setGpsStatus(GpsServiceStatus lastGpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, GpsLoggingStatus lastGpsLoggingStatus);
 }
 

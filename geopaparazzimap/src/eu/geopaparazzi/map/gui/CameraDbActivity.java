@@ -74,7 +74,7 @@ public class CameraDbActivity extends AbstractCameraActivity {
             if (!imageSaveFolder.exists()) {
                 imageSaveFolder.mkdirs();
             }
-        } catch(Exception exc) {};
+        } catch(Exception exc) {}
         doTakePicture(icicle);
     }
 

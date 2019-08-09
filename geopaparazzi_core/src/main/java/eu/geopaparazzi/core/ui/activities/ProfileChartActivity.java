@@ -124,14 +124,14 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         final float f10 = PixelUtils.dpToPix(10);
         final SizeMetrics sm = new SizeMetrics(0, SizeLayoutType.FILL, 0, SizeLayoutType.FILL);
 
-        xyPlotSpeed = (XYPlot) findViewById(R.id.speed_plot);
-        xyPlotElev = (XYPlot) findViewById(R.id.elevation_plot);
+        xyPlotSpeed = findViewById(R.id.speed_plot);
+        xyPlotElev = findViewById(R.id.elevation_plot);
         xyPlotSpeed.setOnTouchListener(this);
 
         textLayout = findViewById(R.id.info_text_layout);
         textLayout.setVisibility(View.GONE);
-        infoTextView = (TextView) findViewById(R.id.info_text);
-        resetButton = (FloatingActionButton) findViewById(R.id.reset_chart_button);
+        infoTextView = findViewById(R.id.info_text);
+        resetButton = findViewById(R.id.reset_chart_button);
         resetButton.setOnClickListener(this);
         resetButton.hide();
 

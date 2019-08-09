@@ -42,11 +42,8 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            if (context.checkSelfPermission(
-                    Manifest.permission.ACCESS_FINE_LOCATION) !=
-                    PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+            return context.checkSelfPermission(
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         }
         return true;
     }
@@ -88,10 +85,8 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == FINE_LOCATION_PERMISSION_REQUESTCODE &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
+        return requestCode == FINE_LOCATION_PERMISSION_REQUESTCODE &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
 

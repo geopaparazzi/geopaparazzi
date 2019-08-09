@@ -46,9 +46,7 @@ public class Constraints {
      * @param constraint the constraint to remove.
      */
     public void removeConstraint( IConstraint constraint ) {
-        if (constraints.contains(constraint)) {
-            constraints.remove(constraint);
-        }
+        constraints.remove(constraint);
     }
 
     /**
