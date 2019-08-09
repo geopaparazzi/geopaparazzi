@@ -175,4 +175,9 @@
   <string name="no_files_in_folder">Non sono presenti files nella cartella.</string>
   <string name="error_launching_query">Si verificato un errore durante l\'esecuzione della query: </string>
   <string name="permissions_location">Geopaparazzi richiede di accedere al GPS del tuo device per le informazioni sulla posizione.</string>
+  <string name="permissions_foreground_service">L\'applicazione necessità di visualizzare le notifiche nella barra di stato per registrare in background il tracciato GPS preciso. Per questo è necessario fornire i permessi richiesti.</string>
+  <string name="permissions_accounts">L\'applicazione necessita delle informazioni del tuo account. Per questo è necessario fornire i permessi richiesti.</string>
+  <string name="permissions_sms">Geopaparazzi richiede di poter ricevere SMS per abilitare alcune funzionalità.</string>
+  <string name="permissions_send_sms">Geopaparazzi richiede di poter inviare SMS per abilitare alcune funzionalità.</string>
+  <string name="permissions_write_disk">L\'applicazione richiede di poter scrivere sul device. Per questo è necessario fornire i permessi richiesti.</string>
 </resources>
