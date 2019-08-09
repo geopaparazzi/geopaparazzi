@@ -25,7 +25,7 @@ allprojects {
 
     ext.mycompileSdkVersion = 28
     ext.mybuildToolsVersion = "28.0.3"
-    ext.myminSdkVersion = 24
+    ext.myminSdkVersion = 21
     ext.mytargetSdkVersion = 28
 
     ext.gdxVersion = "1.9.9"

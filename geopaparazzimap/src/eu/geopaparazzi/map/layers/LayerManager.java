@@ -170,6 +170,7 @@ public enum LayerManager {
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
         //--  Remove all the layers From Map:
+//ToDo Debug
         mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
 
         if (ProfilesHandler.INSTANCE.ProfileChanged) {
@@ -476,6 +477,7 @@ public enum LayerManager {
                     gpLayer.onResume();
                 }
             }
+            //ToDo Debug
             int count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
             if (count > 0) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
