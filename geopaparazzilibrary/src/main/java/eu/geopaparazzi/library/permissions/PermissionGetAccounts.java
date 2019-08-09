@@ -42,11 +42,8 @@ public class PermissionGetAccounts extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            if (context.checkSelfPermission(
-                    Manifest.permission.GET_ACCOUNTS) !=
-                    PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
+            return context.checkSelfPermission(
+                    Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED;
         }
         return true;
     }
@@ -93,10 +90,8 @@ public class PermissionGetAccounts extends AChainedPermissionHelper {
 
     @Override
     public boolean hasGainedPermission(int requestCode, int[] grantResults) {
-        if (requestCode == GET_ACCOUNTS_PERMISSION_REQUESTCODE &&
-                grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
+        return requestCode == GET_ACCOUNTS_PERMISSION_REQUESTCODE &&
+                grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
 

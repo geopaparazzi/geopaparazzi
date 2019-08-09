@@ -32,5 +32,5 @@ public interface IBluetoothListener {
      * @param time the timestamp.
      * @param data the data retrieved.
      */
-    public void onDataReceived(long time, Object data);
+    void onDataReceived(long time, Object data);
 }

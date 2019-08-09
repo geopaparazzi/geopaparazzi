@@ -423,7 +423,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 // "/" +
                 // text);
                 LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1, start, end,
-                        (double) lengthm);
+                        lengthm);
                 logsList.add(item);
                 c.moveToNext();
             }
@@ -833,7 +833,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<>();
 
-        String asColumnsToReturn[] = {//
+        String[] asColumnsToReturn = {//
                 GpsLogsDataTableFields.COLUMN_LOGID.getFieldName(),//
                 GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(),//
                 GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName(),//
@@ -945,7 +945,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static Line getGpslogAsLine(long logId, int pointsNum) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
-        String asColumnsToReturn[] = {//
+        String[] asColumnsToReturn = {//
                 GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName(),//
@@ -996,7 +996,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static double[] getGpslogFirstPoint(long logId) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
-        String asColumnsToReturn[] = {//
+        String[] asColumnsToReturn = {//
                 GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName(), //
@@ -1030,7 +1030,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static double[] getGpslogLastPoint(long logId) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
-        String asColumnsToReturn[] = {//
+        String[] asColumnsToReturn = {//
                 GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName(), //
                 GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName(), //
@@ -1274,7 +1274,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         try {
             // get the log data, sum up the distances
             SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-            String asColumnsToReturn[] = { //
+            String[] asColumnsToReturn = { //
                     GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName(), //
                     GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName(), //
                     GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() //
@@ -1303,10 +1303,10 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     Location prevLoc = new Location("tempLoc2"); //$NON-NLS-1$
 
                     if (GPLog.LOG_ABSURD) {
-                        GPLog.addLogEntry("DAOGPSLOG", "lon: " + String.valueOf(lon));
-                        GPLog.addLogEntry("DAOGPSLOG", "lat: " + String.valueOf(lat));
-                        GPLog.addLogEntry("DAOGPSLOG", "prevlon: " + String.valueOf(prevLon));
-                        GPLog.addLogEntry("DAOGPSLOG", "prevlat: " + String.valueOf(prevLat));
+                        GPLog.addLogEntry("DAOGPSLOG", "lon: " + lon);
+                        GPLog.addLogEntry("DAOGPSLOG", "lat: " + lat);
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlon: " + prevLon);
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlat: " + prevLat);
                     }
                     if (prevLon == 0.0) {
                         prevLon = lon;
@@ -1316,7 +1316,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     prevLoc.setLatitude(prevLat);
                     double lastDistance = newLoc.distanceTo(prevLoc);
                     if (GPLog.LOG_ABSURD) {
-                        GPLog.addLogEntry("DAOGPSLOG", "distance: " + String.valueOf(lastDistance));
+                        GPLog.addLogEntry("DAOGPSLOG", "distance: " + lastDistance);
                     }
                     summedDistance = summedDistance + lastDistance;
                     prevLon = lon;

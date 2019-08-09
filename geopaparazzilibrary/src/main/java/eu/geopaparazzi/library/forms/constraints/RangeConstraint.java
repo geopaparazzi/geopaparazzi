@@ -59,14 +59,11 @@ public class RangeConstraint implements IConstraint {
         Double adapted = Utilities.adapt(value, Double.class);
         if (adapted != null) {
             double doubleValue = adapted.doubleValue();
-            if (//
-            ((includeLow && doubleValue >= lowValue) || (!includeLow && doubleValue > lowValue)) && //
-                    ((includeHigh && doubleValue <= highValue) || (!includeHigh && doubleValue < highValue)) //
-            ) {
-                isValid = true;
-            } else {
-                isValid = false;
-            }
+            //
+//
+//
+            isValid = ((includeLow && doubleValue >= lowValue) || (!includeLow && doubleValue > lowValue)) && //
+                    ((includeHigh && doubleValue <= highValue) || (!includeHigh && doubleValue < highValue));
         } else {
             isValid = false;
         }

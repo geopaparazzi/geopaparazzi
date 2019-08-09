@@ -43,7 +43,7 @@ public interface IImagesDbHelper {
      * @return the inserted image record id.
      * @throws IOException if something goes wrong.
      */
-    public long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumbnail, long noteId)
+    long addImage(double lon, double lat, double altim, double azim, long timestamp, String text, byte[] image, byte[] thumbnail, long noteId)
             throws Exception;
 
     /**
@@ -53,7 +53,7 @@ public interface IImagesDbHelper {
      * @return the image or null.
      * @throws IOException if something goes wrong.
      */
-    public Image getImage(long imageId) throws Exception;
+    Image getImage(long imageId) throws Exception;
 
     /**
      * Get image data by image id.
@@ -62,7 +62,7 @@ public interface IImagesDbHelper {
      * @return the image data.
      * @throws IOException if something goes wrong.
      */
-    public byte[] getImageData(long imageId) throws Exception;
+    byte[] getImageData(long imageId) throws Exception;
 
     /**
      * Get an image from the db by its <b>data</b> id.
@@ -72,7 +72,7 @@ public interface IImagesDbHelper {
      * @return the image data.
      * @throws IOException
      */
-    public byte[] getImageDataById(long imageDataId, SQLiteDatabase sqliteDatabase) throws Exception;
+    byte[] getImageDataById(long imageDataId, SQLiteDatabase sqliteDatabase) throws Exception;
 
     /**
      * Get image thumbnail by image id.
@@ -81,7 +81,7 @@ public interface IImagesDbHelper {
      * @return the image thumbnail data.
      * @throws IOException if something goes wrong.
      */
-    public byte[] getImageThumbnail(long imageId) throws Exception;
+    byte[] getImageThumbnail(long imageId) throws Exception;
 
     /**
      * Get an image thumbnail from the db by its <b>data</b> id.
@@ -91,5 +91,5 @@ public interface IImagesDbHelper {
      * @return the image data.
      * @throws IOException
      */
-    public byte[] getImageThumbnailById(SQLiteDatabase sqliteDatabase, long imageDataId) throws Exception;
+    byte[] getImageThumbnailById(SQLiteDatabase sqliteDatabase, long imageDataId) throws Exception;
 }

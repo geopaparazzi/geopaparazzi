@@ -71,9 +71,6 @@ public class Webproject {
         if (date.toLowerCase().contains(pattern)) {
             return true;
         }
-        if (String.valueOf(id).toLowerCase().contains(pattern)) {
-            return true;
-        }
-        return false;
+        return String.valueOf(id).toLowerCase().contains(pattern);
     }
 }

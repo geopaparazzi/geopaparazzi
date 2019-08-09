@@ -62,7 +62,7 @@ public class GpsInfoDialogFragment extends DialogFragment {
         builder.setView(gpsinfoDialogView);
         builder.setTitle(R.string.gps_info_dialog_title);
 
-        gpsInfoTextview = (TextView) gpsinfoDialogView.findViewById(
+        gpsInfoTextview = gpsinfoDialogView.findViewById(
                 R.id.gpsinfoTextview);
 
         builder.setPositiveButton(R.string.open_gps_settings,

@@ -34,5 +34,5 @@ public interface IBluetoothStatusChangeListener {
      * @param oldStatus the previous status.
      * @param newStatus the status after the change (one of {@link BluetoothAdapter#STATE_TURNING_ON} and similar).
      */
-    public void bluetoothStatusChanged(int oldStatus, int newStatus);
+    void bluetoothStatusChanged(int oldStatus, int newStatus);
 }

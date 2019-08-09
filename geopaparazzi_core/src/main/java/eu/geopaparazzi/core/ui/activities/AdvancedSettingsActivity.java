@@ -58,13 +58,13 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
 
         checkMockSettings();
 
-        Toolbar toolbar = (Toolbar) findViewById(eu.geopaparazzi.core.R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final CheckBox demoCheckbox = (CheckBox) findViewById(R.id.demoCheckbox);
+        final CheckBox demoCheckbox = findViewById(R.id.demoCheckbox);
         final boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         demoCheckbox.setChecked(isDemoMode);
         demoCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
@@ -104,15 +104,15 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
     }
 
     private void initLogs(final SharedPreferences preferences) {
-        logCheckbox = (CheckBox) findViewById(R.id.logCheckbox);
+        logCheckbox = findViewById(R.id.logCheckbox);
         logCheckbox.setOnCheckedChangeListener(this);
         logCheckbox.setChecked(GPLogPreferencesHandler.checkLog(preferences));
 
-        logHeavyCheckbox = (CheckBox) findViewById(R.id.logHeavyCheckbox);
+        logHeavyCheckbox = findViewById(R.id.logHeavyCheckbox);
         logHeavyCheckbox.setOnCheckedChangeListener(this);
         logHeavyCheckbox.setChecked(GPLogPreferencesHandler.checkLogHeavy(preferences));
 
-        logAbsurdCheckbox = (CheckBox) findViewById(R.id.logAbsCheckbox);
+        logAbsurdCheckbox = findViewById(R.id.logAbsCheckbox);
         logAbsurdCheckbox.setOnCheckedChangeListener(this);
         logAbsurdCheckbox.setChecked(GPLogPreferencesHandler.checkLogAbsurd(preferences));
     }

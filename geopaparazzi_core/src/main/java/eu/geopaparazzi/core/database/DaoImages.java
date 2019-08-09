@@ -192,7 +192,7 @@ public class DaoImages implements IImagesDbHelper {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
+            String[] asColumnsToReturn = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
             String imageIdsWhereStr = "";
             int count = 0;
             for (long id : ids) {
@@ -248,7 +248,7 @@ public class DaoImages implements IImagesDbHelper {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            String asColumnsToReturn[] = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
+            String[] asColumnsToReturn = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
             String notesIdsWhereStr = "";
             int count = 0;
             for (long id : noteIds) {
@@ -354,7 +354,7 @@ public class DaoImages implements IImagesDbHelper {
     public static List<Image> getImagesList(boolean onlyDirty, boolean onlyStandalone) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Image> images = new ArrayList<>();
-        String asColumnsToReturn[] = { //
+        String[] asColumnsToReturn = { //
                 ImageTableFields.COLUMN_ID.getFieldName(),//
                 ImageTableFields.COLUMN_LON.getFieldName(),//
                 ImageTableFields.COLUMN_LAT.getFieldName(),//
@@ -402,7 +402,7 @@ public class DaoImages implements IImagesDbHelper {
 
     public Image getImage(long imageId) throws IOException {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        String asColumnsToReturn[] = { //
+        String[] asColumnsToReturn = { //
                 ImageTableFields.COLUMN_ID.getFieldName(),//
                 ImageTableFields.COLUMN_LON.getFieldName(),//
                 ImageTableFields.COLUMN_LAT.getFieldName(),//

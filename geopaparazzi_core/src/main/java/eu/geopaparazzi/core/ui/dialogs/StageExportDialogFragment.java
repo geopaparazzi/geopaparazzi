@@ -92,7 +92,7 @@ public class StageExportDialogFragment extends DialogFragment {
         builder.setView(gpsinfoDialogView);
         builder.setMessage(R.string.exporting_data_to_the_cloud);
 
-        progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
+        progressBar = gpsinfoDialogView.findViewById(
                 R.id.progressBar);
 
         builder.setPositiveButton(android.R.string.ok,

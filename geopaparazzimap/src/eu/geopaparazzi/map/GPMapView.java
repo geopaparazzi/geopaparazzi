@@ -31,7 +31,7 @@ import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
-    public static interface GPMapUpdateListener {
+    public interface GPMapUpdateListener {
         void onUpdate(GPMapPosition mapPosition);
     }
 
@@ -69,9 +69,7 @@ public class GPMapView extends org.oscim.android.MapView {
     }
 
     public void removeMapUpdateListener(GPMapUpdateListener mapUpdateListener) {
-        if (mapUpdateListeners.contains(mapUpdateListener)) {
-            mapUpdateListeners.remove(mapUpdateListener);
-        }
+        mapUpdateListeners.remove(mapUpdateListener);
     }
 
     public void setClickable(boolean b) {

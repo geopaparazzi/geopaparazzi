@@ -119,7 +119,7 @@ public class PdfExportDialogFragment extends DialogFragment {
         builder.setView(gpsinfoDialogView);
         builder.setMessage(eu.geopaparazzi.plugins.pdfexport.R.string.exporting_data_to_pdf);
 
-        progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
+        progressBar = gpsinfoDialogView.findViewById(
                 R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,

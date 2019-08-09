@@ -39,9 +39,7 @@ public class DefaultFakeGpsLog implements IFakeGpsLog {
     public boolean hasNext() {
         if (index < logSplit.length) {
             line = logSplit[index++];
-            if (line.trim().length() > 0) {
-                return true;
-            }
+            return line.trim().length() > 0;
         }
         return false;
     }

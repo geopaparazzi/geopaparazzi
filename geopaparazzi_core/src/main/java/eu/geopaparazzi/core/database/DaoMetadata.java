@@ -271,7 +271,7 @@ public class DaoMetadata {
         List<Metadata> metadataList = new ArrayList<>();
 
         try {
-            String asColumnsToReturn[] = { //
+            String[] asColumnsToReturn = { //
                     MetadataTableFields.COLUMN_KEY.getFieldName(), //
                     MetadataTableFields.COLUMN_LABEL.getFieldName(), //
                     MetadataTableFields.COLUMN_VALUE.getFieldName()
@@ -311,7 +311,7 @@ public class DaoMetadata {
         List<Metadata> metadataList = new ArrayList<>();
 
         try {
-            String asColumnsToReturn[] = { //
+            String[] asColumnsToReturn = { //
                     MetadataTableFields.COLUMN_KEY.getFieldName(), //
                     MetadataTableFields.COLUMN_VALUE.getFieldName()
             };// ,
@@ -342,7 +342,7 @@ public class DaoMetadata {
 
         Cursor c = null;
         try {
-            String asColumnsToReturn[] = { //
+            String[] asColumnsToReturn = { //
                     MetadataTableFields.COLUMN_VALUE.getFieldName()
             };// ,
             c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, MetadataTableFields.COLUMN_KEY.getFieldName() + "='" + MetadataTableDefaultValues.KEY_NAME.getFieldName() + "'", null, null, null, null);

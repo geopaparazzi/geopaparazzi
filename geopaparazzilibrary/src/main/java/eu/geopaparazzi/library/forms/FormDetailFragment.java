@@ -123,7 +123,7 @@ public class FormDetailFragment extends android.support.v4.app.Fragment {
         try {
 
             view = inflater.inflate(R.layout.fragment_form_detail, container, false);
-            mainView = (LinearLayout) view.findViewById(R.id.form_linear);
+            mainView = view.findViewById(R.id.form_linear);
 
             refreshView(mFormInfoHolder);
         } catch (Exception e) {

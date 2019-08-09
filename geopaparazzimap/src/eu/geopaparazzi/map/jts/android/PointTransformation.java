@@ -51,5 +51,5 @@ public interface PointTransformation {
 	 * @param src the source Coordinate 
 	 * @param dest the destination Point
 	 */
-  public void transform(Coordinate src, PointF dest);
+    void transform(Coordinate src, PointF dest);
 }

@@ -238,11 +238,7 @@ public class SmsUtilities {
      */
     public static boolean hasPhone(Context context) {
         TelephonyManager telephonyManager1 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager1.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
-            return false;
-        } else {
-            return true;
-        }
+        return telephonyManager1.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
     }
 
 }

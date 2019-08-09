@@ -88,9 +88,9 @@ public class NewProfileDialogFragment extends DialogFragment {
             builder.setView(newProjectDialogView); // add GUI to dialog
             builder.setTitle(name);
 
-            newProfileNameText = (EditText) newProjectDialogView.findViewById(R.id.profileNameEditText);
+            newProfileNameText = newProjectDialogView.findViewById(R.id.profileNameEditText);
             if (name != null) newProfileNameText.setText(name);
-            newProfileDescriptionText = (EditText) newProjectDialogView.findViewById(R.id.profileDescriptionEditText);
+            newProfileDescriptionText = newProjectDialogView.findViewById(R.id.profileDescriptionEditText);
             if (description != null) newProfileDescriptionText.setText(description);
 
             builder.setPositiveButton(getString(android.R.string.ok),

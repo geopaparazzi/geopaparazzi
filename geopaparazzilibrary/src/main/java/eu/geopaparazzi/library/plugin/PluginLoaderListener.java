@@ -26,5 +26,5 @@ public interface PluginLoaderListener<T extends PluginLoader> {
      *
      * @param loader
      */
-    public void pluginLoaded(T loader);
+    void pluginLoaded(T loader);
 }

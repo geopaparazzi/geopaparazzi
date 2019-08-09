@@ -61,7 +61,7 @@ public interface PointShapeFactory {
      */
     DrawableShape createPoint(PointF point);
 
-    public static abstract class BasePointShapeFactory implements PointShapeFactory {
+    abstract class BasePointShapeFactory implements PointShapeFactory {
         /**
          * The default size of the shape
          */
@@ -96,7 +96,7 @@ public interface PointShapeFactory {
         public abstract DrawableShape createPoint( PointF point );
     }
 
-    public static class Square extends BasePointShapeFactory {
+    class Square extends BasePointShapeFactory {
         /**
          * Creates a new factory for squares with default size.
          * 
@@ -130,7 +130,7 @@ public interface PointShapeFactory {
         }
     }
 
-    public static class Star extends BasePointShapeFactory {
+    class Star extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
          * 
@@ -158,12 +158,12 @@ public interface PointShapeFactory {
          */
         public DrawableShape createPoint( PointF point ) {
             Path path = new Path();
-            path.moveTo((float) point.x, (float) (point.y - size / 2));
+            path.moveTo(point.x, (float) (point.y - size / 2));
             path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y - size * 1 / 8));
             path.lineTo((float) (point.x + size / 2), (float) (point.y - size * 1 / 8));
             path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y + size * 1 / 8));
             path.lineTo((float) (point.x + size * 3 / 8), (float) (point.y + size / 2));
-            path.lineTo((float) (point.x), (float) (point.y + size * 2 / 8));
+            path.lineTo((point.x), (float) (point.y + size * 2 / 8));
             path.lineTo((float) (point.x - size * 3 / 8), (float) (point.y + size / 2));
             path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y + size * 1 / 8));
             path.lineTo((float) (point.x - size / 2), (float) (point.y - size * 1 / 8));
@@ -173,7 +173,7 @@ public interface PointShapeFactory {
         }
     }
 
-    public static class Triangle extends BasePointShapeFactory {
+    class Triangle extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
          * 
@@ -202,16 +202,16 @@ public interface PointShapeFactory {
         public DrawableShape createPoint( PointF point ) {
 
             Path path = new Path();
-            path.moveTo((float) (point.x), (float) (point.y - size / 2));
+            path.moveTo((point.x), (float) (point.y - size / 2));
             path.lineTo((float) (point.x + size / 2), (float) (point.y + size / 2));
             path.lineTo((float) (point.x - size / 2), (float) (point.y + size / 2));
-            path.lineTo((float) (point.x), (float) (point.y - size / 2));
+            path.lineTo((point.x), (float) (point.y - size / 2));
 
             return new PathShape(path);
         }
 
     }
-    public static class Circle extends BasePointShapeFactory {
+    class Circle extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
          * 
@@ -245,7 +245,7 @@ public interface PointShapeFactory {
         }
 
     }
-    public static class Cross extends BasePointShapeFactory {
+    class Cross extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
          * 
@@ -302,7 +302,7 @@ public interface PointShapeFactory {
         }
 
     }
-    public static class X extends BasePointShapeFactory {
+    class X extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
          * 
@@ -330,16 +330,16 @@ public interface PointShapeFactory {
          */
         public DrawableShape createPoint( PointF point ) {
             Path path = new Path();
-            path.moveTo((float) (point.x), (float) (point.y - size * 1 / 8));
+            path.moveTo((point.x), (float) (point.y - size * 1 / 8));
             path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y - size / 2));
             path.lineTo((float) (point.x + size / 2), (float) (point.y - size / 2));
-            path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y));
+            path.lineTo((float) (point.x + size * 1 / 8), (point.y));
             path.lineTo((float) (point.x + size / 2), (float) (point.y + size / 2));
             path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y + size / 2));
-            path.lineTo((float) (point.x), (float) (point.y + size * 1 / 8));
+            path.lineTo((point.x), (float) (point.y + size * 1 / 8));
             path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y + size / 2));
             path.lineTo((float) (point.x - size / 2), (float) (point.y + size / 2));
-            path.lineTo((float) (point.x - size * 1 / 8), (float) (point.y));
+            path.lineTo((float) (point.x - size * 1 / 8), (point.y));
             path.lineTo((float) (point.x - size / 2), (float) (point.y - size / 2));
             path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y - size / 2));
             path.close();

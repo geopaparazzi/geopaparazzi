@@ -34,11 +34,7 @@ public class MandatoryConstraint implements IConstraint {
             isValid = false;
         }else{
             String string = value.toString();
-            if(string.length()>0){
-                isValid = true;
-            }else{
-                isValid = false;
-            }
+            isValid = string.length() > 0;
         }
     }
 

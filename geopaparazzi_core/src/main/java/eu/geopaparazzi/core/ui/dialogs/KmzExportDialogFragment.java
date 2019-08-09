@@ -105,7 +105,7 @@ public class KmzExportDialogFragment extends DialogFragment {
         builder.setView(gpsinfoDialogView);
         builder.setMessage(R.string.exporting_data_to_kmz);
 
-        progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
+        progressBar = gpsinfoDialogView.findViewById(
                 R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,

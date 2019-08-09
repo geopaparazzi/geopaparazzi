@@ -172,8 +172,6 @@ public class MapItem implements Serializable {
             return false;
         if (type != other.type)
             return false;
-        if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
-            return false;
-        return true;
+        return Float.floatToIntBits(width) == Float.floatToIntBits(other.width);
     }
 }

@@ -71,9 +71,9 @@ public class NewProjectDialogFragment extends DialogFragment {
                     R.layout.fragment_dialog_newproject, null);
             builder.setView(newProjectDialogView); // add GUI to dialog
 
-            errorTextView = (TextView) newProjectDialogView.findViewById(R.id.newProjectErrorView);
+            errorTextView = newProjectDialogView.findViewById(R.id.newProjectErrorView);
 
-            projectEditText = (EditText) newProjectDialogView.findViewById(R.id.newProjectEditText);
+            projectEditText = newProjectDialogView.findViewById(R.id.newProjectEditText);
             projectEditText.setText(newGeopaparazziProjectName);
             projectEditText.addTextChangedListener(new TextWatcher() {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {

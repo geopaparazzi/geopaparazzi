@@ -356,7 +356,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
                 try {
                     DaoNotes daoNotes = new DaoNotes();
                     ANote note = daoNotes.getNoteById(noteId);
-                    daoNotes.deleteComplexNote((Note) note);
+                    DaoNotes.deleteComplexNote((Note) note);
                     return;
                 } catch (IOException e) {
                     GPLog.error(this, null, e);

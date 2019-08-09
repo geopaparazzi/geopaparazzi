@@ -146,7 +146,7 @@ public class ResourcesManager implements Serializable {
         int lastDot = packageName.lastIndexOf('.');
         applicationLabel = packageName.replace('.', '_');
         if (lastDot != -1) {
-            applicationLabel = packageName.substring(lastDot + 1, packageName.length());
+            applicationLabel = packageName.substring(lastDot + 1);
         }
         applicationLabel = applicationLabel.toLowerCase();
         relativeAppDataFolder = "/Android/data/" + packageName + "/files";//NON-NLS //NON-NLS

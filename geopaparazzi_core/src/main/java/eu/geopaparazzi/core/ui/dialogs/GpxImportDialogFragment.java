@@ -84,7 +84,7 @@ public class GpxImportDialogFragment extends DialogFragment {
         builder.setView(gpsinfoDialogView);
         builder.setMessage(R.string.gpx_import_processing);
 
-        progressBar = (ProgressBar) gpsinfoDialogView.findViewById(
+        progressBar = gpsinfoDialogView.findViewById(
                 R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,

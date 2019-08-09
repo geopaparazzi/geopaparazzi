@@ -34,7 +34,7 @@ public interface DrawingTool extends Tool {
      * 
      * @param canvas the {@link Canvas} to draw on.
      */
-    public void onToolDraw(Canvas canvas);
+    void onToolDraw(Canvas canvas);
 
     /**
      * Called on a touch event.
@@ -42,5 +42,5 @@ public interface DrawingTool extends Tool {
      * @param event the current triggered event.
      * @return <code>true</code> if the event has been handled.
      */
-    public boolean onToolTouchEvent(MotionEvent event);
+    boolean onToolTouchEvent(MotionEvent event);
 }

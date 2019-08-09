@@ -181,11 +181,7 @@ public class TestMock {
      * @return true if they were set.
      */
     public static boolean isMockEnabled( ContentResolver contentResolver ) {
-        if (Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0")) { //$NON-NLS-1$
-            return false;
-        } else {
-            return true;
-        }
+        return !Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0");
     }
 
 }

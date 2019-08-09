@@ -52,7 +52,7 @@ public abstract class MenuEntry implements IMenuEntry {
         return 500;
     }
 
-    public void onActivityResultExecute(int requestCode, int resultCode, Intent data){};
+    public void onActivityResultExecute(int requestCode, int resultCode, Intent data){}
 
     public void setRequestCode(int requestCode){
         this.requestCode = requestCode;

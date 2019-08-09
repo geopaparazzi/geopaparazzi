@@ -27,11 +27,11 @@ public interface Tool {
     /**
      * Activate the tool.
      */
-    public void activate();
+    void activate();
 
     /**
      * Disables the tool.
      */
-    public void disable();
+    void disable();
 
 }

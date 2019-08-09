@@ -108,7 +108,7 @@ public class ZoomlevelDialogFragment extends DialogFragment {
                 maxIndex = i;
             }
         }
-        final Spinner minSpinner = (Spinner) labelDialogView.findViewById(R.id.minZoomLevelSpinner);
+        final Spinner minSpinner = labelDialogView.findViewById(R.id.minZoomLevelSpinner);
         ArrayAdapter<String> zoomlevelSpinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item,
                 allZoomlevels);
         zoomlevelSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -126,7 +126,7 @@ public class ZoomlevelDialogFragment extends DialogFragment {
             }
         });
 
-        final Spinner maxSpinner = (Spinner) labelDialogView.findViewById(R.id.maxZoomLevelSpinner);
+        final Spinner maxSpinner = labelDialogView.findViewById(R.id.maxZoomLevelSpinner);
         zoomlevelSpinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item,
                 allZoomlevels);
         zoomlevelSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

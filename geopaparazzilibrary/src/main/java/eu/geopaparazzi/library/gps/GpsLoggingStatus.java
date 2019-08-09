@@ -34,7 +34,7 @@ public enum GpsLoggingStatus {
 
     private int code;
 
-    private GpsLoggingStatus( int code ) {
+    GpsLoggingStatus(int code) {
         this.code = code;
     }
 

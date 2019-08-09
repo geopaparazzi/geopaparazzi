@@ -95,41 +95,41 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
         messagesList = new ArrayList<String>();
 
-        LinearLayout errorToggleLayout = (LinearLayout) findViewById(R.id.errorToggleLayout);
+        LinearLayout errorToggleLayout = findViewById(R.id.errorToggleLayout);
         errorToggleLayout.setBackgroundColor(COLOR_ERROR);
-        LinearLayout gpsToggleLayout = (LinearLayout) findViewById(R.id.gpsToggleLayout);
+        LinearLayout gpsToggleLayout = findViewById(R.id.gpsToggleLayout);
         gpsToggleLayout.setBackgroundColor(COLOR_GPS);
-        LinearLayout infoToggleLayout = (LinearLayout) findViewById(R.id.infoToggleLayout);
+        LinearLayout infoToggleLayout = findViewById(R.id.infoToggleLayout);
         infoToggleLayout.setBackgroundColor(COLOR_INFO);
-        LinearLayout checkToggleLayout = (LinearLayout) findViewById(R.id.checkToggleLayout);
+        LinearLayout checkToggleLayout = findViewById(R.id.checkToggleLayout);
         checkToggleLayout.setBackgroundColor(COLOR_CHECK);
-        LinearLayout anomalyToggleLayout = (LinearLayout) findViewById(R.id.anomalieToggleLayout);
+        LinearLayout anomalyToggleLayout = findViewById(R.id.anomalieToggleLayout);
         anomalyToggleLayout.setBackgroundColor(COLOR_ANOMALY);
-        LinearLayout memoryToggleLayout = (LinearLayout) findViewById(R.id.memoryToggleLayout);
+        LinearLayout memoryToggleLayout = findViewById(R.id.memoryToggleLayout);
         memoryToggleLayout.setBackgroundColor(COLOR_MEMORY);
 
-        errorToggleButton = (ToggleButton) findViewById(R.id.errorToggleButton);
+        errorToggleButton = findViewById(R.id.errorToggleButton);
         errorToggleButton.setChecked(true);
         errorToggleButton.setOnClickListener(this);
-        gpsToggleButton = (ToggleButton) findViewById(R.id.gpsToggleButton);
+        gpsToggleButton = findViewById(R.id.gpsToggleButton);
         gpsToggleButton.setChecked(false);
         gpsToggleButton.setOnClickListener(this);
-        infoToggleButton = (ToggleButton) findViewById(R.id.infoToggleButton);
+        infoToggleButton = findViewById(R.id.infoToggleButton);
         infoToggleButton.setChecked(false);
         infoToggleButton.setOnClickListener(this);
-        checkToggleButton = (ToggleButton) findViewById(R.id.checkToggleButton);
+        checkToggleButton = findViewById(R.id.checkToggleButton);
         checkToggleButton.setChecked(false);
         checkToggleButton.setOnClickListener(this);
-        anomalyToggleButton = (ToggleButton) findViewById(R.id.anomalieToggleButton);
+        anomalyToggleButton = findViewById(R.id.anomalieToggleButton);
         anomalyToggleButton.setChecked(false);
         anomalyToggleButton.setOnClickListener(this);
-        memoryToggleButton = (ToggleButton) findViewById(R.id.memoryToggleButton);
+        memoryToggleButton = findViewById(R.id.memoryToggleButton);
         memoryToggleButton.setChecked(false);
         memoryToggleButton.setOnClickListener(this);
 
         setButtonColor(errorToggleButton);
 
-        FloatingActionButton refreshButton = (FloatingActionButton) findViewById(R.id.refreshButton);
+        FloatingActionButton refreshButton = findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -240,35 +240,20 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
                         !showMemory;
         String logMessageLC = logMessage.toLowerCase();
         if (isGps(logMessageLC)) {
-            if (allFalse || !showSession) {
-                return false;
-            }
+            return !allFalse && showSession;
         } else if (isInfo(logMessageLC, logMessage)) {
-            if (allFalse || !showEvento) {
-                return false;
-            }
+            return !allFalse && showEvento;
         } else if (isCheck(logMessageLC)) {
-            if (allFalse || !showSendCleanup) {
-                return false;
-            }
+            return !allFalse && showSendCleanup;
         } else if (isError(logMessageLC, logMessage)) {
-            if (allFalse || !showError) {
-                return false;
-            }
+            return !allFalse && showError;
         } else if (isAnomaly(logMessageLC)) {
-            if (allFalse || !showAnomalie) {
-                return false;
-            }
+            return !allFalse && showAnomalie;
         } else if (isMemory(logMessageLC)) {
-            if (allFalse || !showMemory) {
-                return false;
-            }
+            return !allFalse && showMemory;
         } else {
-            if (allFalse) {
-                return false;
-            }
+            return !allFalse;
         }
-        return true;
     }
 
     private static int getColor(String logMessage) {

@@ -394,13 +394,13 @@ public class GPDialogs {
                 eu.geopaparazzi.library.R.layout.inputdialog, null);
         builder.setView(view);
 
-        final TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(eu.geopaparazzi.library.R.id.dialogTextLayout);
+        final TextInputLayout textInputLayout = view.findViewById(R.id.dialogTextLayout);
         textInputLayout.setHint(message);
 
-        final EditText editText = (EditText) view.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
+        final EditText editText = view.findViewById(R.id.dialogEdittext);
         if (defaultText != null)
             editText.setText(defaultText);
-        final CheckBox checkBox = (CheckBox) view.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
+        final CheckBox checkBox = view.findViewById(R.id.dialogcheckBox);
         checkBox.setVisibility(View.GONE);
 
         try {
@@ -447,14 +447,14 @@ public class GPDialogs {
         View view = activity.getLayoutInflater().inflate(
                 eu.geopaparazzi.library.R.layout.inputdialog, null);
         builder.setView(view); // add GUI to dialog
-        final TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(eu.geopaparazzi.library.R.id.dialogTextLayout);
+        final TextInputLayout textInputLayout = view.findViewById(R.id.dialogTextLayout);
         textInputLayout.setHint(message);
 
-        final EditText editText = (EditText) view.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
+        final EditText editText = view.findViewById(R.id.dialogEdittext);
         if (defaultText != null)
             editText.setText(defaultText);
 
-        final CheckBox checkBox = (CheckBox) view.findViewById(eu.geopaparazzi.library.R.id.dialogcheckBox);
+        final CheckBox checkBox = view.findViewById(R.id.dialogcheckBox);
         checkBox.setText(checkBoxText);
         checkBox.setChecked(defaultCheckboxSelection);
 

@@ -297,7 +297,7 @@ public class EasyPaint extends GraphicsActivity implements
 
             public boolean isAssociatedToPointer(int idPointer) {
                 return this.idPointer != null
-                        && (int) this.idPointer == idPointer;
+                        && this.idPointer == idPointer;
             }
 
             public void disassociateFromPointer() {
@@ -522,15 +522,15 @@ public class EasyPaint extends GraphicsActivity implements
         } else if (i1 == R.id.size_menu) {
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.brush,
-                    (ViewGroup) findViewById(R.id.root));
+                    findViewById(R.id.root));
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setView(layout);
             builder.setTitle(R.string.choose_width);
             final AlertDialog alertDialog = builder.create();
             alertDialog.show();
-            SeekBar sb = (SeekBar) layout.findViewById(R.id.brushSizeSeekBar);
+            SeekBar sb = layout.findViewById(R.id.brushSizeSeekBar);
             sb.setProgress(getStrokeSize());
-            final TextView txt = (TextView) layout
+            final TextView txt = layout
                     .findViewById(R.id.sizeValueTextView);
             txt.setText(String.format(
                     getResources().getString(R.string.your_selected_size_is),
@@ -559,15 +559,15 @@ public class EasyPaint extends GraphicsActivity implements
         } else if (i1 == R.id.erase_menu) {
             LayoutInflater inflater_e = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout_e = inflater_e.inflate(R.layout.brush,
-                    (ViewGroup) findViewById(R.id.root));
+                    findViewById(R.id.root));
             AlertDialog.Builder builder_e = new AlertDialog.Builder(this)
                     .setView(layout_e);
             builder_e.setTitle(R.string.choose_width);
             final AlertDialog alertDialog_e = builder_e.create();
             alertDialog_e.show();
-            SeekBar sb_e = (SeekBar) layout_e.findViewById(R.id.brushSizeSeekBar);
+            SeekBar sb_e = layout_e.findViewById(R.id.brushSizeSeekBar);
             sb_e.setProgress(getStrokeSize());
-            final TextView txt_e = (TextView) layout_e
+            final TextView txt_e = layout_e
                     .findViewById(R.id.sizeValueTextView);
             txt_e.setText(String.format(
                     getResources().getString(R.string.your_selected_size_is),
@@ -714,7 +714,7 @@ public class EasyPaint extends GraphicsActivity implements
         String type = intent.getType();
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("image/")) {
-                setBackgroundUri((Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM));
+                setBackgroundUri(intent.getParcelableExtra(Intent.EXTRA_STREAM));
             }
 
         }

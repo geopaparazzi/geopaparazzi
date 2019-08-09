@@ -64,7 +64,7 @@ public enum ESpatialDataSources {
      * @param extension the extension used by the db type.
      * @param code      a code for the db type.
      */
-    private ESpatialDataSources(String name, String extension, int code, boolean isSpatialiteBased, String shortName) {
+    ESpatialDataSources(String name, String extension, int code, boolean isSpatialiteBased, String shortName) {
         this.name = name;
         this.extension = extension;
         this.code = code;

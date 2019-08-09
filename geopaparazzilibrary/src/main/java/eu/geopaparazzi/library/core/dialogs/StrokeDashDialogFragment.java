@@ -114,29 +114,29 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
         View dashStrokeDialogView = getActivity().getLayoutInflater().inflate(R.layout.fragment_dialog_stroke_dash, null);
         builder.setView(dashStrokeDialogView); // add GUI to dialog
 
-        Switch switch1 = (Switch) dashStrokeDialogView.findViewById(R.id.switch1);
-        Switch switch2 = (Switch) dashStrokeDialogView.findViewById(R.id.switch2);
-        Switch switch3 = (Switch) dashStrokeDialogView.findViewById(R.id.switch3);
-        Switch switch4 = (Switch) dashStrokeDialogView.findViewById(R.id.switch4);
-        Switch switch5 = (Switch) dashStrokeDialogView.findViewById(R.id.switch5);
-        Switch switch6 = (Switch) dashStrokeDialogView.findViewById(R.id.switch6);
+        Switch switch1 = dashStrokeDialogView.findViewById(R.id.switch1);
+        Switch switch2 = dashStrokeDialogView.findViewById(R.id.switch2);
+        Switch switch3 = dashStrokeDialogView.findViewById(R.id.switch3);
+        Switch switch4 = dashStrokeDialogView.findViewById(R.id.switch4);
+        Switch switch5 = dashStrokeDialogView.findViewById(R.id.switch5);
+        Switch switch6 = dashStrokeDialogView.findViewById(R.id.switch6);
         dashSwitches = new Switch[]{switch1, switch2, switch3, switch4, switch5, switch6};
         for (Switch dashSwitch : dashSwitches) {
             dashSwitch.setOnCheckedChangeListener(this);
         }
 
-        LinearLayout image1 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView1);
-        LinearLayout image2 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView2);
-        LinearLayout image3 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView3);
-        LinearLayout image4 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView4);
-        LinearLayout image5 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView5);
-        LinearLayout image6 = (LinearLayout) dashStrokeDialogView.findViewById(R.id.imageView6);
+        LinearLayout image1 = dashStrokeDialogView.findViewById(R.id.imageView1);
+        LinearLayout image2 = dashStrokeDialogView.findViewById(R.id.imageView2);
+        LinearLayout image3 = dashStrokeDialogView.findViewById(R.id.imageView3);
+        LinearLayout image4 = dashStrokeDialogView.findViewById(R.id.imageView4);
+        LinearLayout image5 = dashStrokeDialogView.findViewById(R.id.imageView5);
+        LinearLayout image6 = dashStrokeDialogView.findViewById(R.id.imageView6);
         dashImages = new LinearLayout[]{image1, image2, image3, image4, image5, image6};
 
 
-        unitText = (EditText) dashStrokeDialogView.findViewById(R.id.unitText);
-        finalDashText = (EditText) dashStrokeDialogView.findViewById(R.id.finalDashText);
-        finalShiftText = (EditText) dashStrokeDialogView.findViewById(R.id.finalDashShiftText);
+        unitText = dashStrokeDialogView.findViewById(R.id.unitText);
+        finalDashText = dashStrokeDialogView.findViewById(R.id.finalDashText);
+        finalShiftText = dashStrokeDialogView.findViewById(R.id.finalDashShiftText);
         if (mCurrentDash != null) {
             String dashStr = Style.dashToString(mCurrentDash, null);
             finalDashText.setText(dashStr);

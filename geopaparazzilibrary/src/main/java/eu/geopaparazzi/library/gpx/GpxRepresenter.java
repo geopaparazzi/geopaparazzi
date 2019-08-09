@@ -30,19 +30,19 @@ public interface GpxRepresenter extends Serializable {
     /**
      * @return min lat.
      */
-    public double getMinLat();
+    double getMinLat();
     /**
      * @return min lon.
      */
-    public double getMinLon();
+    double getMinLon();
     /**
      * @return max lat.
      */
-    public double getMaxLat();
+    double getMaxLat();
     /**
      * @return max lon.
      */
-    public double getMaxLon();
+    double getMaxLon();
 
     /**
      * Transforms the object in its gpx representation.
@@ -50,5 +50,5 @@ public interface GpxRepresenter extends Serializable {
      * @return the gpx representation.
      * @throws Exception  if something goes wrong.
      */
-    public String toGpxString() throws Exception;
+    String toGpxString() throws Exception;
 }

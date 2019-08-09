@@ -33,7 +33,7 @@ public interface DrawableShape {
      * @param canvas the {@link Canvas} on which to draw to.
      * @param paint the {@link Paint} to use.
      */
-    public void draw(Canvas canvas, Paint paint);
+    void draw(Canvas canvas, Paint paint);
 
     /**
      * Draw the current shape in fill mode.
@@ -41,7 +41,7 @@ public interface DrawableShape {
      * @param canvas the {@link Canvas} on which to draw to.
      * @param paint the {@link Paint} to use.
      */
-    public void fill(Canvas canvas, Paint paint);
+    void fill(Canvas canvas, Paint paint);
 
     /**
      * Draw the current shape in fill and stroke mode.
@@ -49,5 +49,5 @@ public interface DrawableShape {
      * @param canvas the {@link Canvas} on which to draw to.
      * @param paint the {@link Paint} to use.
      */
-    public void fillAndStroke(Canvas canvas, Paint paint);
+    void fillAndStroke(Canvas canvas, Paint paint);
 }

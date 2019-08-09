@@ -85,7 +85,7 @@ public enum TimeUtilities {
      */
     public final SimpleDateFormat EXIFFORMATTER = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", dateLocale); //$NON-NLS-1$
 
-    private TimeUtilities() {
+    TimeUtilities() {
         TIME_FORMATTER_SQLITE_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
         TIME_FORMATTER_GPX_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
         TIME_FORMATTER_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
