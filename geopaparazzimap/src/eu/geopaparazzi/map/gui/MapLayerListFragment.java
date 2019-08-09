@@ -297,7 +297,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
         final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
-        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.user_layers));
+        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.map_layers));
         ((TextView) header.findViewById(R.id.item_count)).setText("");
 
         mBoardView.addColumn(listAdapter, header, header, false);
@@ -317,7 +317,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
         final MapLayerAdapter listAdapter = new MapLayerAdapter(this, mItemArray, R.layout.column_item, R.id.item_layout, true);
         final View header = View.inflate(getActivity(), R.layout.column_header, null);
-        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.system));
+        ((TextView) header.findViewById(R.id.text)).setText(getString(R.string.project_layers));
         ((TextView) header.findViewById(R.id.item_count)).setText("");
 
         mBoardView.addColumn(listAdapter, header, header, false);

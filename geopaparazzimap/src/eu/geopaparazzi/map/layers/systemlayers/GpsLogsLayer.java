@@ -117,7 +117,7 @@ public class GpsLogsLayer extends VectorLayer implements ISystemLayer {
     @Override
     public void load() {
         Layers layers = map().layers();
-        layers.add(this, LayerGroups.GROUP_SYSTEM.getGroupId());
+        layers.add(this, LayerGroups.GROUP_PROJECTLAYERS.getGroupId());
     }
 
     @Override

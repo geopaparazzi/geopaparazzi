@@ -54,7 +54,7 @@ public class MBTilesLayer extends BitmapTileLayer implements IRasterTileOfflineL
     @Override
     public void load() {
         Layers layers = map().layers();
-        layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+        layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
     }
 
     @Override

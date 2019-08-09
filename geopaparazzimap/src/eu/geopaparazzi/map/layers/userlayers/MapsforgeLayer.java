@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerGroups;
-import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
 
 public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLayer {
@@ -63,7 +62,7 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
             setTileSource(tileSource);
 
             Layers layers = mapView.map().layers();
-            layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+            layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
 
             // Building layer
             if (do3d)

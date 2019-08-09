@@ -79,7 +79,7 @@ public class BitmapTileServiceLayer extends BitmapTileLayer implements IRasterTi
     @Override
     public void load() {
         Layers layers = map().layers();
-        layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+        layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Layers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
@@ -147,8 +145,8 @@ public enum LayerManager {
 
     public void createGroups(GPMapView mapView) {
         Layers layers = mapView.map().layers();
-        layers.addGroup(LayerGroups.GROUP_USERLAYERS.getGroupId());
-        layers.addGroup(LayerGroups.GROUP_SYSTEM.getGroupId());
+        layers.addGroup(LayerGroups.GROUP_MAPLAYERS.getGroupId());
+        layers.addGroup(LayerGroups.GROUP_PROJECTLAYERS.getGroupId());
         layers.addGroup(LayerGroups.GROUP_3D.getGroupId());
         layers.addGroup(LayerGroups.GROUP_SYSTEM_TOP.getGroupId());
     }

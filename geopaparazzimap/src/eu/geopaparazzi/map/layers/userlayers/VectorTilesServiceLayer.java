@@ -2,27 +2,14 @@ package eu.geopaparazzi.map.layers.userlayers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.OsmTileLayer;
-import org.oscim.layers.tile.vector.VectorTileLayer;
-import org.oscim.layers.tile.vector.labeling.LabelLayer;
 import org.oscim.map.Layers;
 import org.oscim.tiling.source.OkHttpEngine;
 import org.oscim.tiling.source.UrlTileSource;
-import org.oscim.tiling.source.mapfile.MapFileTileSource;
-import org.oscim.tiling.source.mapfile.MultiMapFileTileSource;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.VectorTilesOnlineSource;
-import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOnlineLayer;
 
 public class VectorTilesServiceLayer extends OsmTileLayer implements IVectorTileOnlineLayer {
@@ -59,7 +46,7 @@ public class VectorTilesServiceLayer extends OsmTileLayer implements IVectorTile
         setTileSource(tileSource);
 
         Layers layers = mapView.map().layers();
-        layers.add(this, LayerGroups.GROUP_USERLAYERS.getGroupId());
+        layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
 
 //        // Building layer
 //        layers.add(new BuildingLayer(map(), this), LayerGroups.GROUP_3D.getGroupId());
