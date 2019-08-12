@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -191,29 +192,6 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         mPanicFAB.setOnClickListener(this);
         enablePanic(false);
 
-        try {
-            int notesCount = DaoNotes.getNotesCount(false);
-            int dirtyNotesCount = DaoNotes.getNotesCount(true);
-            int logsCount = DaoGpsLog.getGpslogsCount();
-
-            TextView notesTextView = view.findViewById(R.id.dashboardTextNotes);
-            TextView logsTextView = view.findViewById(R.id.dashboardTextGpslog);
-
-            if (notesCount > 0) {
-                String notesText = String.valueOf(notesCount);
-                if (dirtyNotesCount > 0 && dirtyNotesCount != notesCount) {
-                    notesText += "/" + dirtyNotesCount;
-                }
-//bwf                notesTextView.setText(notesText);
-            }
-            if (logsCount > 0) {
-                logsTextView.setText(String.valueOf(logsCount));
-            }
-
-        } catch (IOException e) {
-            GPLog.error(this, null, e);
-        }
-
     }
 
 
@@ -225,6 +203,45 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         checkProfileColor(activeProfile);
 
         GpsServiceUtilities.triggerBroadcast(getActivity());
+
+        View view = getView();
+        try {
+            int notesCount = DaoNotes.getNotesCount(false);
+            int dirtyNotesCount = DaoNotes.getNotesCount(true);
+            int logsCount = DaoGpsLog.getGpslogsCount();
+
+            TextView notesTextView = view.findViewById(R.id.dashboardTextNotes);
+            TextView logsTextView = view.findViewById(R.id.dashboardTextGpslog);
+            TextView metadataTextView = view.findViewById(R.id.dashboardTextMetadata);
+
+//            String notesText = "Notes: " + String.valueOf(notesCount);
+            String notesText = String.format(getResources().getString(R.string.dashboard_msg_notes), notesCount);
+
+            if (dirtyNotesCount > 0 && dirtyNotesCount != notesCount) {
+                notesText += "(" + dirtyNotesCount + ")";
+            }
+            notesTextView.setText( notesText);
+
+            String gpsText = String.format(getResources().getString(R.string.dashboard_msg_gps), logsCount);
+            logsTextView.setText(gpsText);
+
+            List<Metadata> projectMetadata = DaoMetadata.getProjectMetadata();
+            String projectName = null;
+            for (final Metadata metadata : projectMetadata) {
+                if (metadata.key.equals("name") ) {
+                    projectName = metadata.value;
+                    break;
+                }
+            }
+            // ToDo: This should be handled in the fragment_geopaparazzi.xml (landscape and portrait)
+            if (projectName.length() > 18) projectName= projectName.substring(0,18);
+            metadataTextView.setText(projectName);
+
+        } catch (IOException e) {
+            GPLog.error(this, null, e);
+        }
+
+
     }
 
     private void checkProfileColor(Profile activeProfile) {
