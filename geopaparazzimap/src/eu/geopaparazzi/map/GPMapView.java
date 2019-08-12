@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.View;
 
+import org.oscim.backend.canvas.Color;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.MapPosition;
 import org.oscim.layers.Layer;
@@ -50,7 +51,7 @@ public class GPMapView extends org.oscim.android.MapView {
     public GPMapView(Context context) {
         super(context);
 
-        MapRenderer.setBackgroundColor(0x5d9d7680);
+        MapRenderer.setBackgroundColor(Color.WHITE);
         peferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         map().events.bind((e, mapPosition) -> {
