@@ -122,6 +122,17 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
             @Override
             public void onFocusedColumnChanged(int oldColumn, int newColumn) {
+                if (newColumn == 1) {
+                    addSourceButton.hide();
+                    addSourceFolderButton.hide();
+                    addDefaultTileSourcesButton.hide();
+                    toggleButton.hide();
+                } else {
+                    addSourceButton.show();
+                    addSourceFolderButton.show();
+                    addDefaultTileSourcesButton.show();
+                    toggleButton.show();
+                }
                 //Toast.makeText(getContext(), "Focused column changed from " + oldColumn + " to " + newColumn, Toast.LENGTH_SHORT).show();
             }
 
