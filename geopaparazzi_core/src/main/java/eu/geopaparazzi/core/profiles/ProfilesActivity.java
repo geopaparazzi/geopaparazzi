@@ -36,17 +36,21 @@ import eu.geopaparazzi.core.profiles.gui.ProfileSettingsActivity;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
+import eu.geopaparazzi.library.database.DatabaseUtilities;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 
@@ -110,7 +114,8 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                 ProfilesHandler.INSTANCE.checkActiveProfile(getContentResolver());
                 Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
                 if (activeProfile != null) {
-                    if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {
+                    if (previousActiveProfile == null || !previousActiveProfile.name.equals(activeProfile.name)) {  //this is a "new" active profile
+                        // --- for Map View ---
                         ProfilesHandler.INSTANCE.ProfileChanged = true;  // used to set map layers to profile's layers
                         String mapViewJson = activeProfile.mapView;
                         String[] coordinates = mapViewJson.split(",");
@@ -120,6 +125,33 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
                             float zoom = Float.parseFloat(coordinates[2]);
                             PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoom);
                         }
+
+                        // --- for Project View ---
+                        try {
+                            GPApplication gpApplication = GPApplication.getInstance();
+                            ResourcesManager resourcesManager = ResourcesManager.getInstance(gpApplication);
+                            File sdcardDir = resourcesManager.getMainStorageDir();
+                            String filePath = activeProfile.profileProject.getRelativePath(); //data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                            if (!filePath.endsWith(FileTypes.GPAP.getExtension())) {
+                                GPDialogs.warningDialog(ProfilesActivity.this, ProfilesActivity.this.getString(R.string.selected_file_is_no_geopap_project), null);
+                                return;
+                            }
+                            File file = new File(sdcardDir, filePath);
+                            if (file.exists()) {
+                                try {
+                                    DatabaseUtilities.setNewDatabase(ProfilesActivity.this, GeopaparazziApplication.getInstance(), file.getAbsolutePath());
+                                } catch (IOException e) {
+                                    GPLog.error(this, null, e);
+                                    GPDialogs.warningDialog(ProfilesActivity.this, ProfilesActivity.this.getString(R.string.error_while_setting_project), null);
+                                }
+                            }
+                        } catch (Exception e) {
+                            GPDialogs.errorDialog(ProfilesActivity.this, e, null);
+                        }
+
+                        // --- for Form/notes View ---
+                        TagsManager.reset();
+
                     }
                 }
             } catch (java.lang.Exception e) {
