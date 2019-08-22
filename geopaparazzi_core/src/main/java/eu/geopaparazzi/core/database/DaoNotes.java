@@ -48,7 +48,7 @@ public class DaoNotes implements INotesDbHelper {
      *
      * @throws IOException if something goes wrong.
      */
-    public static void createTables() throws IOException {
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
         StringBuilder sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_NOTES);
@@ -93,7 +93,8 @@ public class DaoNotes implements INotesDbHelper {
         sB.append(" );");
         String CREATE_INDEX_NOTES_ISDIRTY = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAONOTES", "Create the notes table.");
 

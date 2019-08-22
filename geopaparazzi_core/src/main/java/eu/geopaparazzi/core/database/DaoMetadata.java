@@ -92,7 +92,7 @@ public class DaoMetadata {
      * @param creationUser the user creating the project.
      * @throws java.io.IOException if something goes wrong.
      */
-    public static void initProjectMetadata(String name, String description, String notes, String creationUser, String uniqueId) throws IOException {
+    public static void initProjectMetadata(SQLiteDatabase sqliteDatabase, String name, String description, String notes, String creationUser, String uniqueId) throws IOException {
         Date creationDate = new Date();
         if (name == null) {
             name = "";
@@ -107,7 +107,8 @@ public class DaoMetadata {
             creationUser = "dummy user";
         }
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();

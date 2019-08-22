@@ -127,7 +127,7 @@ public class DatabaseManager {
                         // create table
                         DaoMetadata.createTables(db);
                         String uniqueDeviceId = Utilities.getUniqueDeviceId(context);
-                        DaoMetadata.initProjectMetadata(null, null, null, null, uniqueDeviceId);
+                        DaoMetadata.initProjectMetadata(db, null, null, null, null, uniqueDeviceId);
                     } else {
                         cursor.close();
                     }
@@ -178,13 +178,13 @@ public class DatabaseManager {
 
             // CREATE TABLES
             GPLog.createTables(db);
-            DaoMetadata.createTables(null);
+            DaoMetadata.createTables(db);
             String uniqueDeviceId = Utilities.getUniqueDeviceId(context);
-            DaoMetadata.initProjectMetadata(null, null, null, null, uniqueDeviceId);
-            DaoNotes.createTables();
-            DaoGpsLog.createTables();
-            DaoBookmarks.createTables();
-            DaoImages.createTables();
+            DaoMetadata.initProjectMetadata(db, null, null, null, null, uniqueDeviceId);
+            DaoNotes.createTables(db);
+            DaoGpsLog.createTables(db);
+            DaoBookmarks.createTables(db);
+            DaoImages.createTables(db);
         }
 
         /**

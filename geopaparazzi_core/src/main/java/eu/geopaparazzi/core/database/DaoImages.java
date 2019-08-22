@@ -51,9 +51,10 @@ public class DaoImages implements IImagesDbHelper {
     /**
      * Create the image tables.
      *
+     * @param sqliteDatabase
      * @throws IOException if something goes wrong.
      */
-    public static void createTables() throws IOException {
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
         StringBuilder sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_IMAGES);
@@ -123,7 +124,8 @@ public class DaoImages implements IImagesDbHelper {
         sB.append(");");
         String CREATE_TABLE_IMAGEDATA = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAOIMAGES", "Create the images tables.");
 
@@ -221,7 +223,7 @@ public class DaoImages implements IImagesDbHelper {
 
             // delete images
             String query = "delete from " + TABLE_IMAGES + " where " + imageIdsWhereStr;
-                SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
+            SQLiteStatement deleteStmt = sqliteDatabase.compileStatement(query);
             deleteStmt.execute();
 
             // delete images data
@@ -480,7 +482,7 @@ public class DaoImages implements IImagesDbHelper {
             }
         } catch (Exception ex) {
 //            if (ex.getLocalizedMessage().contains("Couldn't read row")) {
-              try{
+            try {
                 String sizeQuery = "SELECT " + ImageDataTableFields.COLUMN_ID.getFieldName() +//
                         ", length(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + ") " +//
                         "FROM " + TABLE_IMAGE_DATA +//
@@ -519,9 +521,9 @@ public class DaoImages implements IImagesDbHelper {
                     imageData = bout.toByteArray();
                     bout.close();
                 }
-            } catch (Exception e){
-                  Throwable throwable = e.initCause(ex);
-                  GPLog.error(this, null, throwable);
+            } catch (Exception e) {
+                Throwable throwable = e.initCause(ex);
+                GPLog.error(this, null, throwable);
             }
 
         } finally {

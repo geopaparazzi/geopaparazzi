@@ -72,9 +72,10 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * Create log tables.
      *
      * @throws IOException if something goes wrong.
+     * @param db
      */
-    public static void createTables() throws IOException {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
+        if (sqliteDatabase == null) sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
         /*
          * gps log table

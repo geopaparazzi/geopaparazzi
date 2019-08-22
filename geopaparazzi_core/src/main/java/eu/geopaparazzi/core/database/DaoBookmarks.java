@@ -254,12 +254,11 @@ public class DaoBookmarks {
     /**
      * Create bookmarks tables.
      *
+     * @param db
      * @throws IOException if something goes wrong.
      */
-    public static void createTables() throws IOException {
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
         StringBuilder sB = new StringBuilder();
-
-        sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_BOOKMARKS);
         sB.append(" (");
@@ -282,7 +281,8 @@ public class DaoBookmarks {
         sB.append(" );");
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_ANDROID)
             Log.i("DAOBOOKMARKS", "Create the bookmarks table.");
 
