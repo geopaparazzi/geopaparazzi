@@ -220,7 +220,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             if (dirtyNotesCount > 0 && dirtyNotesCount != notesCount) {
                 notesText += "(" + dirtyNotesCount + ")";
             }
-            notesTextView.setText( notesText);
+            notesTextView.setText(notesText);
 
             String gpsText = String.format(getResources().getString(R.string.dashboard_msg_gps), logsCount);
             logsTextView.setText(gpsText);
@@ -228,14 +228,16 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             List<Metadata> projectMetadata = DaoMetadata.getProjectMetadata();
             String projectName = null;
             for (final Metadata metadata : projectMetadata) {
-                if (metadata.key.equals("name") ) {
+                if (metadata.key.equals("name")) {
                     projectName = metadata.value;
                     break;
                 }
             }
             // ToDo: This should be handled in the fragment_geopaparazzi.xml (landscape and portrait)
-            if (projectName.length() > 18) projectName= projectName.substring(0,18);
-            metadataTextView.setText(projectName);
+            if (projectName != null) {
+                if (projectName.length() > 18) projectName = projectName.substring(0, 18);
+                metadataTextView.setText(projectName);
+            }
 
         } catch (IOException e) {
             GPLog.error(this, null, e);

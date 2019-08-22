@@ -18,6 +18,7 @@
 package eu.geopaparazzi.core.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -27,12 +28,13 @@ import java.util.Locale;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 
 /**
  * The database manager.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -46,8 +48,8 @@ public class DatabaseManager {
     private static final String DEBUG_TAG = "DATABASEMANAGER";
 
     /**
-    * Buffer for bounds expansion.
-    */
+     * Buffer for bounds expansion.
+     */
     public static final float BUFFER = 0.001f;
 
     private DatabaseOpenHelper databaseHelper;
@@ -55,9 +57,9 @@ public class DatabaseManager {
     /**
      * @param context the {@link Context} to use.
      * @return the db.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public SQLiteDatabase getDatabase( Context context ) throws IOException {
+    public SQLiteDatabase getDatabase(Context context) throws IOException {
         File databaseFile;
         try {
             databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
@@ -106,15 +108,42 @@ public class DatabaseManager {
 
         private File databaseFile;
 
-        private DatabaseOpenHelper( File databaseFile ) {
+        private DatabaseOpenHelper(File databaseFile) {
             this.databaseFile = databaseFile;
         }
 
-        public void open( Context context ) throws IOException {
+        public void open(Context context) throws IOException {
             if (databaseFile.exists()) {
                 if (Debug.D)
                     Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+
+                try {
+                    // check if metadata and log are here
+                    String sql = "SELECT name FROM sqlite_master WHERE type ='table' AND name='" + TableDescriptions.TABLE_METADATA + "';";
+                    Cursor cursor = db.rawQuery(sql, null);
+                    if (!cursor.moveToFirst()) {
+                        cursor.close();
+                        // create table
+                        DaoMetadata.createTables(db);
+                        String uniqueDeviceId = Utilities.getUniqueDeviceId(context);
+                        DaoMetadata.initProjectMetadata(null, null, null, null, uniqueDeviceId);
+                    } else {
+                        cursor.close();
+                    }
+                    sql = "SELECT name FROM sqlite_master WHERE type ='table' AND name='" + GPLog.TABLE_LOG + "';";
+                    cursor = db.rawQuery(sql, null);
+                    if (!cursor.moveToFirst()) {
+                        cursor.close();
+                        // create table
+                        GPLog.createTables(db);
+                    } else {
+                        cursor.close();
+                    }
+                } catch (Exception e) {
+                    Log.e("DATABASEMANAGER", "Error while creating the metadata/log tables", e);
+                }
+
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion, context);
@@ -139,17 +168,17 @@ public class DatabaseManager {
 
         /**
          * Create the db from scratch.
-         * 
-         * @param context  the context to use.
-         * @throws IOException  if something goes wrong.
+         *
+         * @param context the context to use.
+         * @throws IOException if something goes wrong.
          */
-        public void create( Context context ) throws IOException {
+        public void create(Context context) throws IOException {
             db.setLocale(Locale.getDefault());
             db.setVersion(DATABASE_VERSION);
 
             // CREATE TABLES
             GPLog.createTables(db);
-            DaoMetadata.createTables();
+            DaoMetadata.createTables(null);
             String uniqueDeviceId = Utilities.getUniqueDeviceId(context);
             DaoMetadata.initProjectMetadata(null, null, null, null, uniqueDeviceId);
             DaoNotes.createTables();
@@ -160,13 +189,13 @@ public class DatabaseManager {
 
         /**
          * Upgrade the db if necessary.
-         * 
+         *
          * @param newDbVersion the new db version.
          * @param oldDbVersion the old db version.
-         * @param context  the context to use.
-         * @throws IOException  if something goes wrong.
+         * @param context      the context to use.
+         * @throws IOException if something goes wrong.
          */
-        public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
+        public void upgrade(int newDbVersion, int oldDbVersion, Context context) throws IOException {
 //            if (oldDbVersion == 1) {
 //                Log.i(DEBUG_TAG, "Db upgrade to 2");
 //                DaoNotes.upgradeNotesFromDB1ToDB2(db);
@@ -211,7 +240,7 @@ public class DatabaseManager {
 //            }
         }
 
-        public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {
+        public SQLiteDatabase getWritableDatabase(Context context) throws IOException {
             if (db == null)
                 open(context);
             return db;

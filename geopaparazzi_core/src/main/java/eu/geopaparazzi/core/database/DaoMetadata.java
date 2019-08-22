@@ -53,7 +53,7 @@ public class DaoMetadata {
      *
      * @throws java.io.IOException if something goes wrong.
      */
-    public static void createTables() throws IOException {
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
         StringBuilder sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_METADATA);
@@ -64,7 +64,8 @@ public class DaoMetadata {
         sB.append(");");
         String CREATE_TABLE_PROJECT = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DaoProject", "Create the project table with: \n" + CREATE_TABLE_PROJECT);
 
