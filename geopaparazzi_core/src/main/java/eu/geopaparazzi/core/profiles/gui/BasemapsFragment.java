@@ -71,23 +71,6 @@ public class BasemapsFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_addwms) {
-            Context context = getActivity();
-            if (!NetworkUtilities.isNetworkAvailable(context)) {
-                GPDialogs.infoDialog(context, context.getString(R.string.available_only_with_network), null);
-            } else {
-                AddWMSDialog addWMSDialog = AddWMSDialog.newInstance(null);
-                addWMSDialog.show(getFragmentManager(), "wms import"); //NON-NLS
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profilesettings_basemaps, container, false);

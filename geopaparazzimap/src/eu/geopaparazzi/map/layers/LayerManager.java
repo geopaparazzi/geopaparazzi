@@ -3,6 +3,8 @@ package eu.geopaparazzi.map.layers;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.woxthebox.draglistview.DragItemAdapter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,10 +27,13 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.gui.MapLayerItem;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
@@ -168,6 +173,7 @@ public enum LayerManager {
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
         //--  Remove all the layers From Map:
+//ToDo Debug
         mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
 
         if (ProfilesHandler.INSTANCE.ProfileChanged) {
@@ -185,8 +191,13 @@ public enum LayerManager {
                 File sdcardDir = resourcesManager.getMainStorageDir();
                 for (ProfileBasemaps currentBasemap : activeProfile.basemapsList) {
                     String filePath = currentBasemap.getRelativePath();
-                    File basemap = new File(sdcardDir, filePath);
-                    int index = addMapFile(basemap, null);  // adds to local list (and map?)
+                    File basemapFile = new File(sdcardDir, filePath);
+                    ELayerTypes layerType = ELayerTypes.fromFileExt(basemapFile.getName());
+                    if (layerType == ELayerTypes.MAPURL) {
+                        int index = addMapurlBitmapTileService(basemapFile, null);
+                    } else {
+                        int index = addMapFile(basemapFile, null);  // adds to local list (and map?)
+                    }
                 }
                 List<ProfileSpatialitemaps> spatialiteList = activeProfile.spatialiteList;
                 for (ProfileSpatialitemaps currentSpatialite : spatialiteList) {
@@ -474,6 +485,7 @@ public enum LayerManager {
                     gpLayer.onResume();
                 }
             }
+            //ToDo Debug
             int count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
             if (count > 0) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());

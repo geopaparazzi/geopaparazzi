@@ -388,6 +388,9 @@
     <string name="data_to_pdf_label">Project Forms to Pdf</string>
     <string name="exporting_data_to_pdf">Exporting form data to PDF</string>
 
+    <string name="dashboard_msg_notes">"Notes:  %d</string>
+    <string name="dashboard_msg_gps">GPS Logs: %d</string>
+
 
     <!-- geoss2go profiles -->
 
@@ -406,7 +409,6 @@
     <string name="layout_columns">Layout Columns</string>
     <string name="text_factor">Text Factor</string>
     <string name="GPS">GPS</string>
-    <string name="add_wms">Add WMS</string>
     <string name="name">Name</string>
     <string name="path">Path</string>
     <string name="contained_forms">Contained forms</string>
