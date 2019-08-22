@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -485,26 +487,53 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                         HashMap<String, List<String>> tablesMap = db.getTablesMap(true);
                                         List<String> tableNamesTmp = tablesMap.get(ISpatialTableNames.USERDATA);
                                         if (tableNamesTmp != null) {
-                                            tableNamesTmp.removeIf(tn -> {
-                                                // also remove tables that do not have a numeric primary key
-                                                try {
-                                                    GeometryColumn gc = db.getGeometryColumnsForTable(tn);
-                                                    if (gc == null)
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                tableNamesTmp.removeIf(tn -> {
+                                                    // also remove tables that do not have a numeric primary key
+                                                    try {
+                                                        GeometryColumn gc = db.getGeometryColumnsForTable(tn);
+                                                        if (gc == null)
+                                                            return true;
+                                                        List<String[]> tableColumns = db.getTableColumns(tn);
+                                                        for (String[] tableColumn : tableColumns) {
+                                                            if (tableColumn[2].equals("1")) {
+                                                                EDataType type = EDataType.getType4Name(tableColumn[1]);
+                                                                if (type == EDataType.INTEGER || type == EDataType.LONG) {
+                                                                    return false;
+                                                                }
+                                                            }
+                                                        }
                                                         return true;
+                                                    } catch (Exception e) {
+                                                        return true;
+                                                    }
+                                                });
+                                            } else {
+                                                // TODO remove this condition when minsdk gets 24
+                                                Iterator<String> iterator = tableNamesTmp.iterator();
+                                                while (iterator.hasNext()) {
+                                                    String tn = iterator.next();
+                                                    GeometryColumn gc = db.getGeometryColumnsForTable(tn);
+                                                    if (gc == null) {
+                                                        iterator.remove();
+                                                        continue;
+                                                    }
+                                                    boolean toRemove = true;
                                                     List<String[]> tableColumns = db.getTableColumns(tn);
                                                     for (String[] tableColumn : tableColumns) {
                                                         if (tableColumn[2].equals("1")) {
                                                             EDataType type = EDataType.getType4Name(tableColumn[1]);
                                                             if (type == EDataType.INTEGER || type == EDataType.LONG) {
-                                                                return false;
+                                                                toRemove = false;
+                                                                break;
                                                             }
                                                         }
                                                     }
-                                                    return true;
-                                                } catch (Exception e) {
-                                                    return true;
+                                                    if (toRemove) {
+                                                        iterator.remove();
+                                                    }
                                                 }
-                                            });
+                                            }
                                             tableNames = tableNamesTmp;
                                         }
                                     }

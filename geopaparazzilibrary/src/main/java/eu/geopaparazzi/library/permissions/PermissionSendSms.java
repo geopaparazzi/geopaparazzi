@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import eu.geopaparazzi.library.R;
 
@@ -43,8 +44,10 @@ public class PermissionSendSms extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            return context.checkSelfPermission(
-                    Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return context.checkSelfPermission(
+                        Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+            }
         }
         return true;
     }
@@ -53,36 +56,38 @@ public class PermissionSendSms extends AChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (canAskPermission) {
-            if (activity.checkSelfPermission(
-                    Manifest.permission.SEND_SMS) !=
-                    PackageManager.PERMISSION_GRANTED) {
-    
-                if (canAskPermission) {
-                    if (activity.shouldShowRequestPermissionRationale(
-                            Manifest.permission.SEND_SMS)) {
-                        AlertDialog.Builder builder =
-                                new AlertDialog.Builder(activity);
-                        builder.setMessage(activity.getString(R.string.permissions_send_sms));
-                        builder.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (canAskPermission) {
-                                            activity.requestPermissions(new String[]{
-                                                            Manifest.permission.SEND_SMS},
-                                                    SENDSMS_PERMISSION_REQUESTCODE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity.checkSelfPermission(
+                        Manifest.permission.SEND_SMS) !=
+                        PackageManager.PERMISSION_GRANTED) {
+
+                    if (canAskPermission) {
+                        if (activity.shouldShowRequestPermissionRationale(
+                                Manifest.permission.SEND_SMS)) {
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(activity);
+                            builder.setMessage(activity.getString(R.string.permissions_send_sms));
+                            builder.setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (canAskPermission) {
+                                                activity.requestPermissions(new String[]{
+                                                                Manifest.permission.SEND_SMS},
+                                                        SENDSMS_PERMISSION_REQUESTCODE);
+                                            }
                                         }
                                     }
-                                }
-                        );
-                        // display the dialog
-                        builder.create().show();
-                    } else {
-                        // request permission
-                        if (canAskPermission) {
-                            activity.requestPermissions(
-                                    new String[]{Manifest.permission.SEND_SMS},
-                                    SENDSMS_PERMISSION_REQUESTCODE);
+                            );
+                            // display the dialog
+                            builder.create().show();
+                        } else {
+                            // request permission
+                            if (canAskPermission) {
+                                activity.requestPermissions(
+                                        new String[]{Manifest.permission.SEND_SMS},
+                                        SENDSMS_PERMISSION_REQUESTCODE);
+                            }
                         }
                     }
                 }

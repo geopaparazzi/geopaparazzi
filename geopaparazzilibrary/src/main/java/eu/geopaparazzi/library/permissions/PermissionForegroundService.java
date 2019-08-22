@@ -54,39 +54,41 @@ public class PermissionForegroundService extends AChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (canAskPermission) {
-            if (activity.checkSelfPermission(
-                    Manifest.permission.FOREGROUND_SERVICE) !=
-                    PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity.checkSelfPermission(
+                        Manifest.permission.FOREGROUND_SERVICE) !=
+                        PackageManager.PERMISSION_GRANTED) {
 
-                if (canAskPermission) {
-                    if (activity.shouldShowRequestPermissionRationale(
-                            Manifest.permission.FOREGROUND_SERVICE)) {
-                        AlertDialog.Builder builder =
-                                new AlertDialog.Builder(activity);
-                        builder.setMessage(activity.getString(R.string.permissions_foreground_service));
-                        builder.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (canAskPermission) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                                activity.requestPermissions(new String[]{
-                                                                Manifest.permission.FOREGROUND_SERVICE},
-                                                        FOREGROUND_SERVICE_PERMISSION_REQUESTCODE);
+                    if (canAskPermission) {
+                        if (activity.shouldShowRequestPermissionRationale(
+                                Manifest.permission.FOREGROUND_SERVICE)) {
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(activity);
+                            builder.setMessage(activity.getString(R.string.permissions_foreground_service));
+                            builder.setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (canAskPermission) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                                    activity.requestPermissions(new String[]{
+                                                                    Manifest.permission.FOREGROUND_SERVICE},
+                                                            FOREGROUND_SERVICE_PERMISSION_REQUESTCODE);
+                                                }
                                             }
                                         }
                                     }
+                            );
+                            // display the dialog
+                            builder.create().show();
+                        } else {
+                            // request permission
+                            if (canAskPermission) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                    activity.requestPermissions(
+                                            new String[]{Manifest.permission.FOREGROUND_SERVICE},
+                                            FOREGROUND_SERVICE_PERMISSION_REQUESTCODE);
                                 }
-                        );
-                        // display the dialog
-                        builder.create().show();
-                    } else {
-                        // request permission
-                        if (canAskPermission) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                activity.requestPermissions(
-                                        new String[]{Manifest.permission.FOREGROUND_SERVICE},
-                                        FOREGROUND_SERVICE_PERMISSION_REQUESTCODE);
                             }
                         }
                     }

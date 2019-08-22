@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import eu.geopaparazzi.library.R;
 
@@ -44,8 +45,10 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            return context.checkSelfPermission(
-                    Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return context.checkSelfPermission(
+                        Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+            }
         }
         return true;
     }
@@ -54,36 +57,38 @@ public class PermissionRecieveSms extends AChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (canAskPermission) {
-            if (activity.checkSelfPermission(
-                    Manifest.permission.RECEIVE_SMS) !=
-                    PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity.checkSelfPermission(
+                        Manifest.permission.RECEIVE_SMS) !=
+                        PackageManager.PERMISSION_GRANTED) {
 
-                if (canAskPermission) {
-                    if (activity.shouldShowRequestPermissionRationale(
-                            Manifest.permission.RECEIVE_SMS)) {
-                        AlertDialog.Builder builder =
-                                new AlertDialog.Builder(activity);
-                        builder.setMessage(activity.getString(R.string.permissions_sms));
-                        builder.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (canAskPermission) {
-                                            activity.requestPermissions(new String[]{
-                                                            Manifest.permission.RECEIVE_SMS},
-                                                    RECIEVESMS_PERMISSION_REQUESTCODE);
+                    if (canAskPermission) {
+                        if (activity.shouldShowRequestPermissionRationale(
+                                Manifest.permission.RECEIVE_SMS)) {
+                            AlertDialog.Builder builder =
+                                    new AlertDialog.Builder(activity);
+                            builder.setMessage(activity.getString(R.string.permissions_sms));
+                            builder.setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (canAskPermission) {
+                                                activity.requestPermissions(new String[]{
+                                                                Manifest.permission.RECEIVE_SMS},
+                                                        RECIEVESMS_PERMISSION_REQUESTCODE);
+                                            }
                                         }
                                     }
-                                }
-                        );
-                        // display the dialog
-                        builder.create().show();
-                    } else {
-                        // request permission
-                        if (canAskPermission) {
-                            activity.requestPermissions(
-                                    new String[]{Manifest.permission.RECEIVE_SMS},
-                                    RECIEVESMS_PERMISSION_REQUESTCODE);
+                            );
+                            // display the dialog
+                            builder.create().show();
+                        } else {
+                            // request permission
+                            if (canAskPermission) {
+                                activity.requestPermissions(
+                                        new String[]{Manifest.permission.RECEIVE_SMS},
+                                        RECIEVESMS_PERMISSION_REQUESTCODE);
+                            }
                         }
                     }
                 }

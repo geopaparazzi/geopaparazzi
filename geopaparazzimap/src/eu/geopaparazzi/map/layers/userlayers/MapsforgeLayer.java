@@ -1,5 +1,7 @@
 package eu.geopaparazzi.map.layers.userlayers;
 
+import android.os.Build;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.layers.tile.buildings.BuildingLayer;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IVectorTileOfflineLayer;
@@ -43,9 +46,16 @@ public class MapsforgeLayer extends OsmTileLayer implements IVectorTileOfflineLa
             names.add(mapName);
         }
         this.name = name;
-        if (name == null)
-            this.name = names.stream().collect(Collectors.joining("-"));
-        path = Arrays.stream(mapPaths).collect(Collectors.joining(PATHS_DELIMITER));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (name == null)
+                this.name = names.stream().collect(Collectors.joining("-"));
+            path = Arrays.stream(mapPaths).collect(Collectors.joining(PATHS_DELIMITER));
+        } else {
+            // TODO remove when minsdk gets 24
+            if (name == null)
+                this.name = Utilities.joinStrings("-", names.toArray(new String[0]));
+            path = Utilities.joinStrings(PATHS_DELIMITER, mapPaths);
+        }
     }
 
     public void load() {

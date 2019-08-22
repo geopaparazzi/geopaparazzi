@@ -18,6 +18,7 @@ package eu.geopaparazzi.map.gui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -42,6 +43,7 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.Style;
+import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.R;
@@ -330,9 +332,11 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         Context context = mapLayerListFragment.getContext();
         if (context != null) {
             if (isEditing) {
-                holder.itemView.setBackgroundColor(context.getColor(R.color.main_selection));
+                holder.itemView.setBackgroundColor(Compat.getColor(context, R.color.main_selection));
             } else {
-                holder.itemView.setBackgroundColor(context.getColor(R.color.main_background));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    holder.itemView.setBackgroundColor(Compat.getColor(context, R.color.main_background));
+                }
             }
         }
     }

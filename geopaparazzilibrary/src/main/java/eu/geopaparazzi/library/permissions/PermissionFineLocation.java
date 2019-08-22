@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import eu.geopaparazzi.library.R;
 
@@ -42,8 +43,10 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
     @Override
     public boolean hasPermission(Context context) {
         if (canAskPermission) {
-            return context.checkSelfPermission(
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return context.checkSelfPermission(
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+            }
         }
         return true;
     }
@@ -52,32 +55,34 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
     @Override
     public void requestPermission(final Activity activity) {
         if (canAskPermission) {
-            if (activity.checkSelfPermission(
-                    Manifest.permission.ACCESS_FINE_LOCATION) !=
-                    PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (activity.checkSelfPermission(
+                        Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
 
-                if (activity.shouldShowRequestPermissionRationale(
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    AlertDialog.Builder builder =
-                            new AlertDialog.Builder(activity);
-                    builder.setMessage(activity.getString(R.string.permissions_location));
-                    builder.setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    activity.requestPermissions(new String[]{
-                                                    Manifest.permission.ACCESS_FINE_LOCATION},
-                                            FINE_LOCATION_PERMISSION_REQUESTCODE);
+                    if (activity.shouldShowRequestPermissionRationale(
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        AlertDialog.Builder builder =
+                                new AlertDialog.Builder(activity);
+                        builder.setMessage(activity.getString(R.string.permissions_location));
+                        builder.setPositiveButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        activity.requestPermissions(new String[]{
+                                                        Manifest.permission.ACCESS_FINE_LOCATION},
+                                                FINE_LOCATION_PERMISSION_REQUESTCODE);
+                                    }
                                 }
-                            }
-                    );
-                    // display the dialog
-                    builder.create().show();
-                } else {
-                    // request permission
-                    activity.requestPermissions(
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            FINE_LOCATION_PERMISSION_REQUESTCODE);
+                        );
+                        // display the dialog
+                        builder.create().show();
+                    } else {
+                        // request permission
+                        activity.requestPermissions(
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                FINE_LOCATION_PERMISSION_REQUESTCODE);
+                    }
                 }
             }
         }
