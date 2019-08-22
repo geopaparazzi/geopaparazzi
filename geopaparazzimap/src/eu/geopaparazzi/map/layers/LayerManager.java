@@ -1,6 +1,7 @@
 package eu.geopaparazzi.map.layers;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.woxthebox.draglistview.DragItemAdapter;
@@ -15,6 +16,7 @@ import org.oscim.map.Layers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -173,8 +175,19 @@ public enum LayerManager {
      */
     public void loadInMap(GPMapView mapView, IActivitySupporter activitySupporter) throws Exception {
         //--  Remove all the layers From Map:
-//ToDo Debug
-        mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mapView.map().layers().removeIf(layer -> layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer);
+        } else {
+            // TODO remove when minsdk gets 24
+            Layers layers = mapView.map().layers();
+            Iterator<Layer> iterator = layers.iterator();
+            while (iterator.hasNext()) {
+                Layer layer = iterator.next();
+                if (layer instanceof IGpLayer || layer instanceof BuildingLayer || layer instanceof LabelLayer) {
+                    iterator.remove();
+                }
+            }
+        }
 
         if (ProfilesHandler.INSTANCE.ProfileChanged) {
             ProfilesHandler.INSTANCE.ProfileChanged = false;  // reset it
@@ -486,7 +499,17 @@ public enum LayerManager {
                 }
             }
             //ToDo Debug
-            int count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
+            int count = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                count = (int) layers.stream().filter(l -> l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer).count();
+            } else {
+                // TODO remove when minsdk is 24
+                for (Layer l : layers) {
+                    if (l instanceof IVectorTileOfflineLayer || l instanceof IVectorTileOnlineLayer) {
+                        count++;
+                    }
+                }
+            }
             if (count > 0) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
                 String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());
@@ -702,8 +725,17 @@ public enum LayerManager {
 
     public List<IVectorDbLayer> getEnabledVectorLayers(GPMapView mapView) {
         List<IGpLayer> layers = mapView.getLayers();
-        List<IVectorDbLayer> vectorLayers = layers.stream().filter(l -> l instanceof IVectorDbLayer && l.isEnabled()).map(l -> (IVectorDbLayer) l).collect(Collectors.toList());
-        return vectorLayers;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return layers.stream().filter(l -> l instanceof IVectorDbLayer && l.isEnabled()).map(l -> (IVectorDbLayer) l).collect(Collectors.toList());
+        } else {
+            List<IVectorDbLayer> vectorLayers = new ArrayList<>();
+            for (IGpLayer l : layers) {
+                if (l instanceof IVectorDbLayer && l.isEnabled()) {
+                    vectorLayers.add((IVectorDbLayer) l);
+                }
+            }
+            return vectorLayers;
+        }
     }
 
     /**
@@ -714,7 +746,16 @@ public enum LayerManager {
      */
     public List<IEditableLayer> getEditableLayers(GPMapView mapView) {
         List<IGpLayer> layers = mapView.getLayers();
-        List<IEditableLayer> editableLayers = layers.stream().filter(l -> l instanceof IEditableLayer && l.isEnabled() && ((IEditableLayer) l).isEditable()).map(l -> (IEditableLayer) l).collect(Collectors.toList());
-        return editableLayers;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return layers.stream().filter(l -> l instanceof IEditableLayer && l.isEnabled() && ((IEditableLayer) l).isEditable()).map(l -> (IEditableLayer) l).collect(Collectors.toList());
+        } else {
+            List<IEditableLayer> editableLayers = new ArrayList<>();
+            for (IGpLayer l : layers) {
+                if (l instanceof IEditableLayer && l.isEnabled() && ((IEditableLayer) l).isEditable()) {
+                    editableLayers.add((IEditableLayer) l);
+                }
+            }
+            return editableLayers;
+        }
     }
 }
