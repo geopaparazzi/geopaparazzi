@@ -235,7 +235,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             }
             // ToDo: This should be handled in the fragment_geopaparazzi.xml (landscape and portrait)
             if (projectName != null) {
-                if (projectName.length() > 18) projectName = projectName.substring(0, 18);
+                if (projectName.length() > 10) projectName = projectName.substring(0, 10) + "...";
                 metadataTextView.setText(projectName);
             }
 

@@ -181,7 +181,6 @@ public enum LayerManager {
 
             // Remove all the layers From LayerManager List:
             userLayersDefinitions.clear();
-            EditManager.INSTANCE.setEditLayer(null);
 
             //-- Add all the layers from the profile --
             Profile activeProfile = ProfilesHandler.INSTANCE.getActiveProfile();
@@ -267,6 +266,7 @@ public enum LayerManager {
     }
 
     public void loadMapLayers(GPMapView mapView, List<JSONObject> mapLayersDefinitions) throws Exception {
+        EditManager.INSTANCE.setEditLayer(null);
         for (JSONObject layerDefinition : mapLayersDefinitions) {
             try {
                 String layerClass = layerDefinition.getString(IGpLayer.LAYERTYPE_TAG);

@@ -351,18 +351,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     protected void onResume() {
         LayerManager.INSTANCE.onResume(mapView, this);
 
-        IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
-        if (editLayer == null) {
-            disableEditing();
-        } else {
-            // if after rotation a toolgroup is there, enable ti with its icons
-            ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
-            if (activeToolGroup != null) {
-                toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
-                activeToolGroup.initUI();
-                setLeftButtoonsEnablement(false);
-            }
-        }
+        disableEditing();
 
         super.onResume();
     }
@@ -1030,8 +1019,16 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     private void disableEditing() {
         toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_off_24dp));
-        EditManager.INSTANCE.setActiveTool(null);
-        EditManager.INSTANCE.setActiveToolGroup(null);
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool != null) {
+            activeTool.disable();
+            EditManager.INSTANCE.setActiveTool(null);
+        }
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup != null) {
+            activeToolGroup.disable();
+            EditManager.INSTANCE.setActiveToolGroup(null);
+        }
         setLeftButtoonsEnablement(true);
     }
 
