@@ -34,12 +34,8 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
-import gov.nasa.worldwind.AddWMSDialog;
-import gov.nasa.worldwind.ogc.OGCBoundingBox;
-import gov.nasa.worldwind.ogc.wms.WMSCapabilityInformation;
-import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
 
-public class ProfileSettingsActivity extends AppCompatActivity implements AddWMSDialog.OnWMSLayersAddedListener {
+public class ProfileSettingsActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -170,105 +166,6 @@ public class ProfileSettingsActivity extends AppCompatActivity implements AddWMS
         profile.spatialiteList.remove(spatialitemap);
     }
 
-    @Override
-    public void onWMSLayersAdded(String baseUrl, String forcedWmsVersion, List<AddWMSDialog.LayerInfo> layersToAdd) {
-        for (AddWMSDialog.LayerInfo li : layersToAdd) {
-            String layerName = li.getName();
-
-            StringBuilder sb = new StringBuilder();
-            String wmsversion = "1.1.1";
-
-            if (forcedWmsVersion != null) {
-                wmsversion = forcedWmsVersion;
-            } else if (li.caps.getVersion() != null) {
-                wmsversion = li.caps.getVersion();
-            }
-            WMSCapabilityInformation capabilityInformation = li.caps.getCapabilityInformation();
-
-            List<WMSLayerCapabilities> layerCapabilities = capabilityInformation.getLayerCapabilities();
-
-
-            for (WMSLayerCapabilities layerCapability : layerCapabilities) {
-                String srs = null;
-
-                Set<String> crsList = layerCapability.getCRS();
-                if (crsList.size() == 0) {
-                    crsList = layerCapability.getSRS();
-                }
-                for (String crs : crsList) {
-                    if (crs.equals("CRS:84") || crs.equals("EPSG:4326")) {//NON-NLS
-                        srs = crs;
-
-                        boolean doLonLat = false;
-                        if (crs.equals("CRS:84")) {//NON-NLS
-                            doLonLat = true;
-                        } else if (crs.equals("EPSG:4326") && !wmsversion.equals("1.3.0")) {//NON-NLS
-                            doLonLat = true;
-                        }
-
-                        String bboxStr;
-                        if (doLonLat) {
-                            bboxStr = "XXX,YYY,XXX,YYY";//NON-NLS
-                        } else {
-                            bboxStr = "YYY,XXX,YYY,XXX";//NON-NLS
-                        }
-                        sb.append("url=" + baseUrl.trim() + "?REQUEST=GetMap&SERVICE=WMS&VERSION=" + wmsversion //NON-NLS
-                                + "&LAYERS=" + layerName + "&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=" //NON-NLS
-                                + srs + "&BBOX=" + bboxStr + "&WIDTH=256&HEIGHT=256\n");//NON-NLS
-                        sb.append("minzoom=1\n");//NON-NLS
-                        sb.append("maxzoom=22\n");//NON-NLS
-                        sb.append("defaultzoom=17\n");//NON-NLS
-                        sb.append("format=png\n");//NON-NLS
-                        sb.append("type=wms\n");//NON-NLS
-                        sb.append("description=").append(layerName).append("\n");//NON-NLS
-
-
-                        break;
-                    }
-                }
-
-                if (srs == null) {
-                    // TODO
-                    return;
-                }
-
-                for (OGCBoundingBox bbox : layerCapability.getBoundingBoxes()) {
-                    String crs = bbox.getCRS();
-                    if (crs != null && (crs.equals("CRS:84") || crs.equals("EPSG:4326"))) {//NON-NLS
-                        double centerX = bbox.getMinx() + (bbox.getMaxx() - bbox.getMinx()) / 2.0;
-                        double centerY = bbox.getMiny() + (bbox.getMaxy() - bbox.getMiny()) / 2.0;
-                        sb.append("center=");//NON-NLS
-                        sb.append(centerX).append(" ").append(centerY);
-                        sb.append("\n");
-
-                    }
-                }
-
-            }
-
-            try {
-                File applicationSupporterDir = ResourcesManager.getInstance(this).getApplicationSupporterDir();
-                File newMapurl = new File(applicationSupporterDir, layerName + ".mapurl");//NON-NLS
-
-                sb.append("mbtiles=defaulttiles/_").append(newMapurl.getName()).append(".mbtiles\n");//NON-NLS
-
-                String mapurlText = sb.toString();
-                FileUtilities.writefile(mapurlText, newMapurl);
-
-                onBasemapAdded(newMapurl.getAbsolutePath());
-
-                mSectionsPagerAdapter.notifyDataSetChanged();
-
-                GPDialogs.quickInfo(mViewPager, getString(R.string.wms_mapurl_added_to_basemaps) + newMapurl.getAbsolutePath());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            break;
-        }
-
-
-    }
 
     public Profile getSelectedProfile() {
         return mProfileList.get(mSelectedProfileIndex);

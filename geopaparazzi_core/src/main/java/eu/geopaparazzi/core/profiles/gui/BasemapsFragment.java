@@ -32,7 +32,6 @@ import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import gov.nasa.worldwind.AddWMSDialog;
 
 public class BasemapsFragment extends Fragment {
     private static final String ARG_PROFILE = "profile";//NON-NLS

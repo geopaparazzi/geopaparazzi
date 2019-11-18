@@ -50,7 +50,6 @@ dependencies {
     api 'com.android.support:support-v4:28.0.0'
     api project(':geopaparazzilibrary')
     api project(':geopaparazzimap')
-    api project(':wms_nww')
     api project(':geopaparazzi_acrylicpaint')
 }
 

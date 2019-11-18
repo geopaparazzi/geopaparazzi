@@ -1,7 +1,6 @@
 include ':geopaparazzi.app'
 include ':geopaparazzi_core'
 include ':geopaparazzilibrary', ':geopaparazzimap'
-include ':wms_nww'
 include ':geopaparazzi_acrylicpaint'
 include ':geopaparazzi_default_import_plugins'
 project(':geopaparazzi_default_import_plugins').projectDir = new File('plugins/geopaparazzi_default_import_plugins/')
