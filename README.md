@@ -15,12 +15,3 @@ This repository contains the complete code of the android app geopaparazzi.
 * **geopaparazzimarkerslib** contains the markers app used for the sketches.
 * **geopaparazzispatialitelibrary** contains the spatialite support part.
 
-## The WMS Nasa World Wind module
-
-The WMS NWW module is kept in a a different repository and added to the build as a git submodule.
-
-So the cloning of the repo to work with should be done through:
-
-```
-git clone --recursive https://github.com/geopaparazzi/geopaparazzi and then build the package.
-```

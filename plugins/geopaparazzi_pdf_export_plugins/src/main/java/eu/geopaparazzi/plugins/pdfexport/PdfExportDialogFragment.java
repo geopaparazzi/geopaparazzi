@@ -89,7 +89,7 @@ public class PdfExportDialogFragment extends DialogFragment {
      * Create a dialog instance.
      *
      * @param exportPath an optional path to which to export the kmz to. If null, a default path is chosen.
-     * @param exportIds
+     * @param exportIds  the ids of the notes to be exported.
      * @return the instance.
      */
     public static PdfExportDialogFragment newInstance(String exportPath, long[] exportIds) {
@@ -273,12 +273,16 @@ public class PdfExportDialogFragment extends DialogFragment {
                 JSONArray formItems = TagsManager.getFormItems(form4Name);
                 for (int i = 0; i < formItems.length(); i++) {
                     JSONObject formItem = formItems.getJSONObject(i);
-                    if (!formItem.has(FormUtilities.TAG_KEY)) {
+                    if (!formItem.has(FormUtilities.TAG_KEY) ||
+                            !formItem.has(FormUtilities.TAG_TYPE) ||
+                            !formItem.has(FormUtilities.TAG_VALUE)
+                    ) {
                         continue;
                     }
 
                     String type = formItem.getString(FormUtilities.TAG_TYPE);
                     String key = formItem.getString(FormUtilities.TAG_KEY);
+
                     String value = formItem.getString(FormUtilities.TAG_VALUE);
 
                     String label = key;

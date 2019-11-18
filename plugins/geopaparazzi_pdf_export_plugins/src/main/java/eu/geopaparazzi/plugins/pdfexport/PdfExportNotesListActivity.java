@@ -157,7 +157,8 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
         allNotesList.clear();
         List<Note> tmpNotesList = DaoNotes.getNotesList(null, false);
         for (Note note : tmpNotesList) {
-            if (note.getForm() != null)
+            String form = note.getForm();
+            if (form != null && form.length() != 0)
                 allNotesList.add(note);
         }
     }
@@ -295,8 +296,10 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
             ids[i] = exportIds.get(i);
         }
 
-        PdfExportDialogFragment pdfExportDialogFragment = PdfExportDialogFragment.newInstance(null, ids);
-        pdfExportDialogFragment.show(getSupportFragmentManager(), "pdf export");
+        if (ids.length > 0) {
+            PdfExportDialogFragment pdfExportDialogFragment = PdfExportDialogFragment.newInstance(null, ids);
+            pdfExportDialogFragment.show(getSupportFragmentManager(), "pdf export");
+        }
 
     }
 
