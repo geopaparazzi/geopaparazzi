@@ -665,10 +665,9 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#_qgis">10.2. QGIS</a>
 <ul class="sectlevel3">
-<li><a href="#_importing_data_with_qgis_2">10.2.1. Importing Data with QGIS 2</a></li>
-<li><a href="#_viewing_data_in_qgis_3">10.2.2. Viewing Data in QGIS 3</a></li>
-<li><a href="#_other_alternative_import_methods">10.2.3. Other Alternative Import Methods</a></li>
-<li><a href="#_making_base_maps_in_qgis">10.2.4. Making Base Maps in QGIS</a></li>
+<li><a href="#_viewing_data_in_qgis_3">10.2.1. Viewing Data in QGIS 3</a></li>
+<li><a href="#_other_alternative_import_methods">10.2.2. Other Alternative Import Methods</a></li>
+<li><a href="#_making_base_maps_in_qgis">10.2.3. Making Base Maps in QGIS</a></li>
 </ul>
 </li>
 <li><a href="#_spatialite_gui">10.3. Spatialite GUI</a></li>
@@ -3658,32 +3657,18 @@ The following is created:</p>
 <div class="sect2">
 <h3 id="_qgis">10.2. QGIS</h3>
 <div class="paragraph">
-<p>Using plugins, QGIS can import Geopaparazzi databases and create mbtile base maps.  At the time of writing (July 2018), QGIS 3 is newly released and most of the plugins that work with Geopaparazzi files have not been ported over from QGIS 2.</p>
+<p>QGIS works very well with Geopaparazzi. It can also be used to prepare data for Geopaparazzi including spatialite data and mbtile base maps. Using plugins, QGIS can be used to import Geopaparazzi databases.</p>
 </div>
 <div class="sect3">
-<h4 id="_importing_data_with_qgis_2">10.2.1. Importing Data with QGIS 2</h4>
-<div class="sect4">
-<h5 id="_exportgeopaparazzi_plugin">ExportGeopaparazzi Plugin</h5>
+<h4 id="_viewing_data_in_qgis_3">10.2.1. Viewing Data in QGIS 3</h4>
 <div class="paragraph">
-<p>Install the ExportGeopaparazzi plugin from the QGIS repository. As this plugin is experimental, go to <strong>Settings</strong> in the <strong>Manage and Install Plugins</strong> dialog and check the <strong>Show also experimental plugins</strong> checkbox, or the plugin will not be displayed in the list of available plugins. The plugin actually mainly imports data from gpap files and displays the data in memory layers.  Separate layers are created for bookmarks, gpslogs, image positions and notes. Memory layers are not saved by default when the project closes so important data will need to be saved as another format. Additionally the notes layer includes all types of note. A single SVG symbol is used for all types of note. To generate different symbols for different types of note, the symbol type will need to be changed as the SVG symbol used comes in only one color. As all types of note are listed in the same layer, the attribute table does not have separate columns for each form field. All form data is presented in the style column in JSON format. Information imported this was is only useful for viewing.</p>
+<p>QGIS 3 has a plugin called <strong>IO Geopaparazzi</strong> that will automate the importation of bookmarks, notes, form data and GPS trails into QGIS. Once installed, the plugin can be found by searching the <strong>Processing Toolbox</strong> for Geoparazzi.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="_gpap_to_vector_files_process">GPAP to Vector Files Process</h5>
 <div class="paragraph">
-<p>Algorithms for importing or export to Geopaparazzi can be added to the processing toolbox. The <strong>GPAP to Vector Files</strong> algorithm creates separate layers for each type of note, and creates layers for bookmarks, image positions and tracklogs. The algorith also saves images embedded in the gpap file to disk. Attribute tables for each type of note have columns for each data field collected by the note. If these layers are persisted, by saving them or dragging into a database (or saving as a shapefile), they can be used for GIS mapping and analysis. <strong>Geopackages</strong> are the current standard data format for QGIS and have the advantage of not truncating the names of forms or form fields, so save in this format if possible. The algorithms are installed with the <strong>ExportGeopaparazzi plugin</strong>, however the algorithms are not made visible by default. To make the tools visible, open the <strong>Procession\Options</strong> menu, click <strong>providers</strong> option and then open the <strong>Import/Export to/from Geopaparazzi</strong> option and activate the algorithms.</p>
+<p>A more manual method of importing data from gpap files is to change the extension of the gpap file to <strong>sqlite3</strong>. The sqlite file can then be dragged and dropped onto the map window. The ‘Select Vector Layers to Add’ dialog will appear and all of the data tables will be displayed, including tables that are irrelevant from a GIS perspective such as the raw photo data table. Only the bookmarks, gpslogsdata, images and notes table contain data with coordinates. Select these tables and <strong>OK</strong> the dialog to add them to the Layers pane as non-spatial tables. Non-spatial tables can only be viewed as attribute tables and cannot be used as map layers.</p>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="07_maps_handling/01_qgis.png" alt="01 qgis">
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_viewing_data_in_qgis_3">10.2.2. Viewing Data in QGIS 3</h4>
 <div class="paragraph">
-<p>QGIS 3 does not at the time of writing (July 2018) have any gpap file importers. A workaround is to change the extension of the gpap file to <strong>sqlite3</strong>. The sqlite file can then be dragged and dropped onto the map window. The ‘Select Vector Layers to Add’ dialog will appear and all of the data tables will be displayed, including tables that are irrelevant from a GIS perspective such as the raw photo data table. Only the bookmarks, gpslogsdata, images and notes table contain data with coordinates. Select these tables and <strong>OK</strong> the dialog to add them to the Layers pane as non-spatial tables. Non-spatial tables can only be viewed as attribute tables and cannot be used as map layers.</p>
+<p>Importing the data manually is mainly of use for recovering from user errors in the field such as forgetting to use a form to record key points and therefore needing to recover location and time data from the track points. It can also be useful for managing and symbolising data in ways not supported by IO Geopaparazzi.</p>
 </div>
 <div class="paragraph">
 <p>To convert non-spatial tables to GIS layers, use the <strong>Create Points Layer from Table</strong> tool in the <strong>processing toolbox</strong>. Even the gpslogsdata must first be converted to points. To create a gps trail, the point layer created from the gpslogsdata can be processed with the <strong>Points to Paths</strong> algorithm. Currently, there are no tools for creating separate layers for each form type. Form data, is encoded in json format in the Forms field and there is no way to format the data to make it easily readable. However the various types of form can be symbolised differently using the form name, which is stored in the ‘text’ field. This method is useful for seeing gps trails and where various form notes were created.</p>
@@ -3698,15 +3683,18 @@ The following is created:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_other_alternative_import_methods">10.2.3. Other Alternative Import Methods</h4>
+<h4 id="_other_alternative_import_methods">10.2.2. Other Alternative Import Methods</h4>
 <div class="paragraph">
 <p>QGIS users can also install GV-SIG and use the Horton Machine spatial toolbox to convert gpap files to shapefiles which can be used in QGIS.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_making_base_maps_in_qgis">10.2.4. Making Base Maps in QGIS</h4>
+<h4 id="_making_base_maps_in_qgis">10.2.3. Making Base Maps in QGIS</h4>
 <div class="paragraph">
-<p>The <strong>QTiles</strong> plugin in QGIS 2 can be used to create base maps in mbtiles format. Base maps with as many as 30 000 tiles (~3 GB file size) work well in Geopaparazzi.</p>
+<p>QGIS 3.10 has a multi-threading tile generator which is many times faster than previous versions.  The tile generator is built in and is called <strong>generate xyz tiles</strong> and is located in the <strong>Processing Toolbox</strong>. Versions of QGIS older than 3.8 require a plugin to create mbtiles. Base maps with as many as 30 000 tiles (~3 GB file size) work well in Geopaparazzi.</p>
+</div>
+<div class="paragraph">
+<p><strong>Scale dependent visibility</strong> can be used in QGIS to turn on detailed layers only when the map is zoomed in.  When tiles are made from a GIS project that uses layers which appear only as certain scales, the tiles that are generated will also show different layers at different scales. Any vector data that is displayed when the tile is created will be included in the tiles. An example of using image and vector data with scale dependent visibility to package a lot of information in one mbtiles file is as follows: a topographic map can be displayed for scales less than 1:100 000 and to an aerial photo overlaid with contour lines can be displayed larger scales.</p>
 </div>
 </div>
 </div>
