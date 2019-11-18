@@ -1,0 +1,126 @@
+[
+    {
+        "sectionname": "fountain",
+        "sectiondescription": "fountain",
+        "forms": [
+            {
+                "formname": "General data",
+                "formitems": [
+                    {
+                        "key": "name",
+                        "value": "",
+                        "islabel": "true",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "street",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "no"
+                    }
+                ]
+            },
+            {
+                "formname": "Technical data",
+                "formitems": [
+                    {
+                        "key": "protected",
+                        "value": "true",
+                        "type": "boolean",
+                        "mandatory": "no"
+                    },
+                    {
+                        "key": "type",
+                        "values": {
+                            "items": [
+                                {
+                                    "item": ""
+                                },
+                                {
+                                    "item": "manual"
+                                },
+                                {
+                                    "item": "electrical"
+                                },
+                                {
+                                    "item": "gravity"
+                                }
+                            ]
+                        },
+                        "value": "manual",
+                        "type": "stringcombo",
+                        "mandatory": "no"
+                    },
+                    {
+                        "key": "PH",
+                        "values": {
+                            "items": [
+                                {
+                                    "item": ""
+                                },
+                                {
+                                    "item": "PH < 5"
+                                },
+                                {
+                                    "item": "5 < PH < 7"
+                                },
+                                {
+                                    "item": "PH > 7"
+                                }
+                            ]
+                        },
+                        "value": "PH < 5",
+                        "type": "stringcombo",
+                        "mandatory": "no"
+                    },
+                    {
+                        "key": "number of served people",
+                        "value": "",
+                        "type": "double",
+                        "mandatory": "no"
+                    },
+                    {
+                        "key": "is working",
+                        "value": "true",
+                        "type": "boolean",
+                        "mandatory": "no"
+                    },
+                    {
+                        "key": "needs",
+                        "values": {
+                            "items": [
+                                {
+                                    "item": ""
+                                },
+                                {
+                                    "item": "nothing"
+                                },
+                                {
+                                    "item": "maintainance"
+                                },
+                                {
+                                    "item": "rehabilitation"
+                                }
+                            ]
+                        },
+                        "value": "nothing",
+                        "type": "stringcombo",
+                        "mandatory": "no"
+                    }
+                ]
+            },
+            {
+                "formname": "Media",
+                "formitems": [
+                    {
+                        "key": "Images",
+                        "value": "",
+                        "type": "pictures",
+                        "mandatory": "no"
+                    }
+                ]
+            }
+        ]
+    }
+]
