@@ -130,10 +130,10 @@ public class GpsService extends Service implements LocationListener, Listener {
     /**
      * Intent key to use for double array position data [lon, lat, elev].
      * <p>
-     *     longitude and latitude in degrees.
+     * longitude and latitude in degrees.
      * </p>
      * <p>
-     *     elev: meters above the WGS 84 reference elipsoid.
+     * elev: meters above the WGS 84 reference elipsoid.
      * </p>
      */
     public static final String GPS_SERVICE_POSITION = "GPS_SERVICE_POSITION";
@@ -141,13 +141,13 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Intent key to use for double array position extra data [accuracy, speed, bearing].
      *
      * <p>
-     *     accuracy: estimated horizontal accuracy of this location, radial, in meters.
+     * accuracy: estimated horizontal accuracy of this location, radial, in meters.
      * </p>
      * <p>
-     *     speed:  in meters/second over ground.
+     * speed:  in meters/second over ground.
      * </p>
      * <p>
-     *     bearing:  horizontal direction of travel of th device guaranteed in the range (0.0, 360.0] if the device has a bearing.
+     * bearing:  horizontal direction of travel of th device guaranteed in the range (0.0, 360.0] if the device has a bearing.
      * </p>
      */
     public static final String GPS_SERVICE_POSITION_EXTRAS = "GPS_SERVICE_POSITION_EXTRAS";
@@ -218,10 +218,10 @@ public class GpsService extends Service implements LocationListener, Listener {
         super.onCreate();
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            title = "Geopap GPS Service";
-            text = "Geopapaparazzi is making use of the GPS.";
-            name = "Geopap Channel";
-            description = "Geopaparazzi GPS Service Channel";
+        title = "Geopap GPS Service";
+        text = "Geopapaparazzi is making use of the GPS.";
+        name = "Geopap Channel";
+        description = "Geopaparazzi GPS Service Channel";
 //
 //            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
 //                    "GPS Information",
@@ -242,8 +242,8 @@ public class GpsService extends Service implements LocationListener, Listener {
         // GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
 
         /*
-         * If startService(intent) is called while the service is running, 
-         * its onStartCommand() is also called. Therefore your service needs 
+         * If startService(intent) is called while the service is running,
+         * its onStartCommand() is also called. Therefore your service needs
          * to be prepared that onStartCommand() can be called several times.
          */
         if (preferences == null) {
@@ -421,101 +421,70 @@ public class GpsService extends Service implements LocationListener, Listener {
                     } catch (Exception e) {
                         GPLog.error(this, null, e);
                     }
+                    long minAddPointIntervalMillis = waitForSecs * 1000L;
                     if (DO_WHILE_LOOP_LOG) {
                         GPLog.addLogEntry(GpsService.this, "GPS waiting interval: " + waitForSecs);
                         GPLog.addLogEntry(GpsService.this, "GPS min distance: " + minDistance);
                     }
 
+                    long defaultWaitMillis = 300;
                     long previousGpsLocationTime = -1;
                     currentPointsNum = 0;
                     currentDistance = 0;
+                    GpsLocation previousLogLocation = null;
                     while (isDatabaseLogging) {
                         if (gotFix || isMockMode) {
-                            if (DO_WHILE_LOOP_LOG)
-                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while at: " + System.nanoTime());
                             if (lastGpsLocation == null) {
-                                if (DO_WHILE_LOOP_LOG)
-                                    GPLog.addLogEntry(GpsService.this, "GPS JUMP POINT: lastGpsLocation == null");
-                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                                // no location or no previouslocation came in, we wait
+                                if (!holdABitAndCheckLoggingMillis(defaultWaitMillis)) {
+                                    break;
+                                }
+                                continue;
+                            }
+                            if (previousLogLocation == null) {
+                                previousLogLocation = lastGpsLocation;
+                                // no location or no previouslocation came in, we wait
+                                if (!holdABitAndCheckLoggingMillis(defaultWaitMillis)) {
                                     break;
                                 }
                                 continue;
                             }
                             long time = lastGpsLocation.getTime();
-                            if (previousGpsLocationTime == time) {
-                                if (DO_WHILE_LOOP_LOG)
-                                    GPLog.addLogEntry(GpsService.this,
-                                            "GPS JUMP POINT: lastGpsLocation == previous (no new point incoming)");
-                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                            if (time - previousGpsLocationTime < minAddPointIntervalMillis) {
+                                // the min interval didn't pass, so not adding the point
+                                if (!holdABitAndCheckLoggingMillis(defaultWaitMillis)) {
                                     break;
                                 }
                                 continue;
                             }
                             previousGpsLocationTime = time;
-                            if (lastGpsLocation.getPreviousLoc() == null) {
-                                if (DO_WHILE_LOOP_LOG)
-                                    GPLog.addLogEntry(GpsService.this,
-                                            "GPS JUMP POINT: waiting for second valid point to come in.");
-                                if (!holdABitAndCheckLogging(waitForSecs)) {
-                                    break;
-                                }
-                                continue;
-                            }
+
                             double recLon = lastGpsLocation.getLongitude();
                             double recLat = lastGpsLocation.getLatitude();
                             double recAlt = lastGpsLocation.getAltitude();
 
-                            if (DO_WHILE_LOOP_LOG)
-                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 1: " + System.nanoTime());
-                            double lastDistance = lastGpsLocation.distanceToPrevious();
-                            if (DO_WHILE_LOOP_LOG) {
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("GPS\ngpsloc: ");
-                                sb.append(lastGpsLocation.getLatitude());
-                                sb.append("/");
-                                sb.append(lastGpsLocation.getLongitude());
-                                sb.append("\n");
-                                if (lastGpsLocation.getPreviousLoc() != null) {
-                                    sb.append("previousLoc: ");
-                                    sb.append(lastGpsLocation.getPreviousLoc().getLatitude());
-                                    sb.append("/");
-                                    sb.append(lastGpsLocation.getPreviousLoc().getLongitude());
-                                    sb.append("\n");
-                                }
-                                sb.append("distance: ");
-                                sb.append(lastDistance);
-                                sb.append(" - mindistance: ");
-                                sb.append(minDistance);
-                                logABS(sb.toString());
-                            }
-                            if (DO_WHILE_LOOP_LOG)
-                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 2: " + System.nanoTime());
-                            // ignore near points
+                            double lastDistance = lastGpsLocation.distanceTo(previousLogLocation);
                             if (lastDistance < minDistance) {
-                                if (DO_WHILE_LOOP_LOG)
-                                    GPLog.addLogEntry(GpsService.this, "GPS JUMP POINT: distance from previous");
-                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                                // the min distance filter didn't pass, we wait
+                                if (!holdABitAndCheckLoggingMillis(defaultWaitMillis)) {
                                     break;
                                 }
                                 continue;
                             }
-                            if (DO_WHILE_LOOP_LOG)
-                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 3: " + System.nanoTime());
                             try {
                                 if (isDatabaseLogging) {
                                     dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt,
                                             lastGpsLocation.getTime());
                                 }
+                                previousLogLocation = lastGpsLocation;
                             } catch (Exception e) {
                                 // we log the exception and try to go on
                                 GPLog.error(this, "Point in db writing error!", e);
                             }
-                            if (DO_WHILE_LOOP_LOG)
-                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 4: " + System.nanoTime());
                             currentPointsNum++;
                             currentDistance = currentDistance + lastDistance;
                         }
-                        if (!holdABitAndCheckLogging(waitForSecs)) {
+                        if (!holdABitAndCheckLoggingMillis(defaultWaitMillis)) {
                             break;
                         }
                     }
@@ -552,18 +521,13 @@ public class GpsService extends Service implements LocationListener, Listener {
             /**
              * Waits a bit before next gps query.
              *
-             * @param waitForSecs seconds to wait.
-             * @return <code>false</code> if the gps got interrupted, <code>true</code> else.
+             * @param waitForMillis millis to wait.
+             * @return <code>false</code> if the gps logging got interrupted, <code>true</code> else.
              */
-            private boolean holdABitAndCheckLogging(int waitForSecs) {
+            private boolean holdABitAndCheckLoggingMillis(long waitForMillis) {
                 try {
-                    for (int i = 0; i < waitForSecs; i++) {
-                        Thread.sleep(1000L);
-                        if (!isDatabaseLogging) {
-                            return false;
-                        }
-                    }
-                    return true;
+                    Thread.sleep(waitForMillis);
+                    return isDatabaseLogging;
                 } catch (InterruptedException e) {
                     String msg = getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
