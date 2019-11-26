@@ -733,55 +733,77 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_additional_geopaparazzi_tables_in_spatialite_databases">14.2. Additional Geopaparazzi tables in Spatialite Databases</a></li>
 </ul>
 </li>
-<li><a href="#_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">15. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a>
+<li><a href="#_the_hortonmachine">15. The Hortonmachine</a>
 <ul class="sectlevel2">
-<li><a href="#_introduction">15.1. Introduction</a></li>
-<li><a href="#_monitoring_activities">15.2. Monitoring activities</a></li>
-<li><a href="#_technical_background">15.3. Technical background</a></li>
-<li><a href="#_acknowledgement">15.4. Acknowledgement</a></li>
-</ul>
-</li>
-<li><a href="#_projects_that_base_on_geopaparazzi">16. Projects that base on Geopaparazzi</a>
-<ul class="sectlevel2">
-<li><a href="#_gvsig_mobile">16.1. gvSIG Mobile</a></li>
-<li><a href="#_geomobi">16.2. Geomobi</a></li>
-<li><a href="#_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">16.3. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</a></li>
-<li><a href="#_disaster_management_information_system">16.4. Disaster Management Information System</a>
+<li><a href="#_hm_modules_useful_to_geopaparazzi">15.1. HM modules useful to Geopaparazzi</a></li>
+<li><a href="#_hm_installation">15.2. HM installation</a></li>
+<li><a href="#_the_data_used">15.3. The data used</a></li>
+<li><a href="#_create_an_mbtiles_database">15.4. Create an MBTiles database</a>
 <ul class="sectlevel3">
-<li><a href="#_trashmapper">16.4.1. TrashMapper</a></li>
-<li><a href="#_trackoid">16.4.2. Trackoid</a></li>
-<li><a href="#_your_app_here">16.4.3. Your app here</a></li>
+<li><a href="#_styling">15.4.1. Styling</a></li>
+<li><a href="#_a_quick_note_on_filters">15.4.2. A quick note on filters</a></li>
+<li><a href="#_the_mbtiles_creator">15.4.3. The MBTiles Creator</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#_a_small_handbook_for_developers">17. A small handbook for developers</a>
-<ul class="sectlevel2">
-<li><a href="#_introduction_2">17.1. Introduction</a>
+<li><a href="#_create_a_spatialite_database">15.5. Create a spatialite database</a></li>
+<li><a href="#_create_a_form">15.6. Create a form</a>
 <ul class="sectlevel3">
-<li><a href="#_getting_the_code">17.1.1. Getting the code</a></li>
-<li><a href="#_building_and_developing_geopaparazzi">17.1.2. Building and developing Geopaparazzi</a></li>
-</ul>
-</li>
-<li><a href="#_description_of_the_geopaparazzi_architecture">17.2. Description of the Geopaparazzi Architecture</a>
-<ul class="sectlevel3">
-<li><a href="#_modules_dependencies_diagram">17.2.1. Modules dependencies diagram</a></li>
-<li><a href="#_geopaparazzilibrary">17.2.2. geopaparazzilibrary</a></li>
-<li><a href="#_geopaparazzi_core">17.2.3. geopaparazzi_core</a></li>
-<li><a href="#_geopaparazzi_app">17.2.4. geopaparazzi.app</a></li>
-<li><a href="#_geopaparazzimapsforge">17.2.5. geopaparazzimapsforge</a></li>
-<li><a href="#_geopaparazzispatialitelibrary">17.2.6. geopaparazzispatialitelibrary</a></li>
-<li><a href="#_geopaparazzi_acrylicpaint">17.2.7. geopaparazzi_acrylicpaint</a></li>
-<li><a href="#_wms_nww">17.2.8. wms_nww</a></li>
-<li><a href="#_plugins">17.2.9. plugins</a></li>
+<li><a href="#_the_example_form">15.6.1. The example form</a></li>
+<li><a href="#_the_gform_module">15.6.2. The gform module</a></li>
+<li><a href="#_notes_about_forms">15.6.3. Notes about forms</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_appendix">18. Appendix</a>
+<li><a href="#_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">16. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</a>
 <ul class="sectlevel2">
-<li><a href="#_the_finalized_tags_json_of_the_forms_section">18.1. The finalized tags.json of the Forms section</a></li>
-<li><a href="#_complete_tag_json_for_the_egypt_use_case">18.2. Complete tag.json for the Egypt use case</a></li>
+<li><a href="#_introduction">16.1. Introduction</a></li>
+<li><a href="#_monitoring_activities">16.2. Monitoring activities</a></li>
+<li><a href="#_technical_background">16.3. Technical background</a></li>
+<li><a href="#_acknowledgement">16.4. Acknowledgement</a></li>
+</ul>
+</li>
+<li><a href="#_projects_that_base_on_geopaparazzi">17. Projects that base on Geopaparazzi</a>
+<ul class="sectlevel2">
+<li><a href="#_gvsig_mobile">17.1. gvSIG Mobile</a></li>
+<li><a href="#_geomobi">17.2. Geomobi</a></li>
+<li><a href="#_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">17.3. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</a></li>
+<li><a href="#_disaster_management_information_system">17.4. Disaster Management Information System</a>
+<ul class="sectlevel3">
+<li><a href="#_trashmapper">17.4.1. TrashMapper</a></li>
+<li><a href="#_trackoid">17.4.2. Trackoid</a></li>
+<li><a href="#_your_app_here">17.4.3. Your app here</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_a_small_handbook_for_developers">18. A small handbook for developers</a>
+<ul class="sectlevel2">
+<li><a href="#_introduction_2">18.1. Introduction</a>
+<ul class="sectlevel3">
+<li><a href="#_getting_the_code">18.1.1. Getting the code</a></li>
+<li><a href="#_building_and_developing_geopaparazzi">18.1.2. Building and developing Geopaparazzi</a></li>
+</ul>
+</li>
+<li><a href="#_description_of_the_geopaparazzi_architecture">18.2. Description of the Geopaparazzi Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_modules_dependencies_diagram">18.2.1. Modules dependencies diagram</a></li>
+<li><a href="#_geopaparazzilibrary">18.2.2. geopaparazzilibrary</a></li>
+<li><a href="#_geopaparazzi_core">18.2.3. geopaparazzi_core</a></li>
+<li><a href="#_geopaparazzi_app">18.2.4. geopaparazzi.app</a></li>
+<li><a href="#_geopaparazzimapsforge">18.2.5. geopaparazzimapsforge</a></li>
+<li><a href="#_geopaparazzispatialitelibrary">18.2.6. geopaparazzispatialitelibrary</a></li>
+<li><a href="#_geopaparazzi_acrylicpaint">18.2.7. geopaparazzi_acrylicpaint</a></li>
+<li><a href="#_wms_nww">18.2.8. wms_nww</a></li>
+<li><a href="#_plugins">18.2.9. plugins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_appendix">19. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#_the_finalized_tags_json_of_the_forms_section">19.1. The finalized tags.json of the Forms section</a></li>
+<li><a href="#_complete_tag_json_for_the_egypt_use_case">19.2. Complete tag.json for the Egypt use case</a></li>
 </ul>
 </li>
 </ul>
@@ -5174,10 +5196,752 @@ Style and isdirty are currently unused.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">15. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</h2>
+<h2 id="_the_hortonmachine">15. The Hortonmachine</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Hortonmachine is:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an Open Source geospatial library focused on hydro-geomorphological analysis and environmental modeling</p>
+</li>
+<li>
+<p>development started in 2002 at the University of Trento, Department of Civil and Environmental Engineering</p>
+</li>
+<li>
+<p>completely maintained by HydroloGIS</p>
+</li>
+<li>
+<p>from 2015 integrated as Spatial Toolbox in gvSIG</p>
+</li>
+<li>
+<p>from 2018 available as a set of stand alone modules</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_hm_modules_useful_to_geopaparazzi">15.1. HM modules useful to Geopaparazzi</h3>
+<div class="paragraph">
+<p>The used modules and a small description:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>hortonmachine
+|-- dbviewer.exe               -&gt; spatialite viewer
+|-- geopaparazzi_viewer.exe    -&gt; project viewer
+|-- gforms.exe                 -&gt; form builder
+|-- jre/
+|-- libs/
+|-- natives/
+|-- quiet-logging.properties
+|-- sld.exe                    -&gt; style generator
+|-- spatialtoolbox.exe         -&gt; data preparation
+`-- OTHER FILES</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hm_installation">15.2. HM installation</h3>
+<div class="paragraph">
+<p>You can download the latest Hortonmachine standalone version from <a href="https://github.com/TheHortonMachine/hortonmachine/releases">the releases site</a>.</p>
+</div>
+<div class="paragraph">
+<p>To install just:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>unzip the <strong>hortonmachine.zip</strong> archive</p>
+</li>
+<li>
+<p>launch the executables of the module of choice</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Depending on the PC&#8217;s power, the application can take a little moment to startup.
+If it doesn&#8217;t, for windows OS, run the <strong>hm-</strong>MODULENAME<strong>.bat</strong>. It will give information
+about the problems occurring helping to solve them. One common issue might for example
+be that the RAM memory given to the module is larger than the one available on the pc.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_data_used">15.3. The data used</h3>
+<div class="paragraph">
+<p>The data used in the following chapters <a href="http://github.com/">can be found here</a>. // TODO</p>
+</div>
+<div class="paragraph">
+<p>You should find in there:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>roi.shp</strong>: to define the region of interest</p>
+</li>
+<li>
+<p><strong>buildings_roi.shp</strong>: polygons of buildings</p>
+</li>
+<li>
+<p><strong>roads_roi.shp</strong>: lines of the road network</p>
+</li>
+<li>
+<p><strong>pois_roi.shp</strong>: points of interest</p>
+</li>
+<li>
+<p><strong>ortophoto_bucharest_georef.tif</strong>: aerial image of the region</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_an_mbtiles_database">15.4. Create an MBTiles database</h3>
+<div class="paragraph">
+<p>We wan to create an MBTile database with multiple styled layere:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/vienna_mbtiles.png" alt="vienna mbtiles">
+</div>
+</div>
+<div class="sect3">
+<h4 id="_styling">15.4.1. Styling</h4>
+<div class="paragraph">
+<p>An MBTiles database can be created with various applications (gdal, QGis, Tilemill&#8230;&#8203;). In the Hortonmachine we have
+a dedicated module that generates mbtiles datasets from layers of raster and vector data.</p>
+</div>
+<div class="paragraph">
+<p>To prepare the mbtiles dataset it is first necessary to style the shapefiles in order to get
+the right colors and labelings. Styling can be done following the OGC SLD 1.0 specification.
+It is an open standard for styling data, so any compatible tool can be used.</p>
+</div>
+<div class="paragraph">
+<p>In the Hortonmachine we havethe following module to style data: <strong>sld.exe</strong> (hm-sld.sh for unix based systems).</p>
+</div>
+<div class="paragraph">
+<p>Once launched, the following appears:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/01_main.png" alt="01 main">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_styling_the_buildings">Styling the buildings</h5>
+<div class="paragraph">
+<p>Pushing the button with the 3 dots allows to select the shapefile that we want to style.
+Once loaded it will show the default style (or load it from an *.sld file, if available):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/02_buildings_open.png" alt="02 buildings open" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>Play with the colors to get a white transparent background and a gray border.</p>
+</div>
+<div class="paragraph">
+<p>Remeber to push <strong>Apply</strong> to view the changes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/03_buildings_style.png" alt="03 buildings style" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the preview looks as desired, push the save button to write the style to the sld
+file near the shapefile.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/04_sld_xml.png" alt="04 sld xml">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_styling_the_roads">Styling the roads</h5>
+<div class="paragraph">
+<p>Styling roads is not much different from styling polygons. But in this case we also want
+a label applied to the road to see the name. To do so add a textsymbolizer by right clicking
+on the rule:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/05_roads_textadd.png" alt="05 roads textadd" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>Then, to begin, choose:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the shapefile field to use for the label (name)</p>
+</li>
+<li>
+<p>a font (size more or less 36)</p>
+</li>
+<li>
+<p>a white halo (size 2)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Apply and see if you like it.</p>
+</div>
+<div class="paragraph">
+<p>Most probably you also want the labels to follow the line (set to true) and
+give a bit of perpendicular offset so that the label is not on the road.</p>
+</div>
+<div class="paragraph">
+<p>The result might look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/06_roads_text.png" alt="06 roads text" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>Again push the save button to persist the style.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_styling_the_pois">Styling the pois</h5>
+<div class="paragraph">
+<p>Points can be styled the same way as the polygons and lines. The only difference is in the
+possibility to select a mark to represent the points:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/sld/07_pois.png" alt="07 pois" width="70%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_a_quick_note_on_filters">15.4.2. A quick note on filters</h4>
+<div class="paragraph">
+<p>We can slightly change the style of the buildings shapefile in order to better
+see the university buildings. To do so we can right click on any attribute (type
+seems to be reasonable) and visualise the stats of that field. The result is a
+table containing all values and their count:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/07_building_sld.png" alt="07 building sld" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>This gives us all the information to set the filter on a second rule that can be added by right
+clicking on the parent node of the rules (in this case <em>name</em>):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/08_uni.png" alt="08 uni" width="70%">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_mbtiles_creator">15.4.3. The MBTiles Creator</h4>
+<div class="paragraph">
+<p>To create an mbtiles database from a set of data we can use the modules of the
+spatial toolbox. Launch <strong>spatialtoolbox.exe</strong> to open it:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/01_st.png" alt="01 st" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>The spatial toolbox contains many modules to do hydro-geomophological analyses, process
+LiDAR data and work with raster and vector data. In this course we will only use the
+part related to the <strong>Mobile</strong> category.</p>
+</div>
+<div class="paragraph">
+<p>Before we run any module, make sure some settings are properly configured:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>enable the checkbox that allows loading of experimental modules</p>
+</li>
+<li>
+<p>set the Heap memory properly depending on your PC&#8217;s RAM</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <strong>GeopaparazziMapsCreator</strong> module is the actual module that creates the mbtiles database.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/02_creator.png" alt="02 creator" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The first set of parameters are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the shapefile of the area of interest we want to cover (roi.shp)</p>
+</li>
+<li>
+<p>the background raster file (aerial image tiff)</p>
+</li>
+<li>
+<p>the overlay shapefiles (buildings, roads, pois)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once inserted, it should look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/03_creator1_filled.png" alt="03 creator1 filled" width="90%">
+</div>
+</div>
+<div class="paragraph">
+<p>The second set of parameters are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a name for the dataset (the db will be named like that also)</p>
+</li>
+<li>
+<p>the min and max zoomlevel. The max zoomlevel is important, since it defines
+how large the dataset will get. On the given area a max zoomlevel of 19
+is a good compromise. The zoomlevel is the one seen in geopaparazzi.</p>
+</li>
+<li>
+<p>the used image format. In case of aerial imagery, jpg is preferred.</p>
+</li>
+<li>
+<p>the output folder</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once inserted, it should look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/03_creator2_filled.png" alt="03 creator2 filled" width="90%">
+</div>
+</div>
+<div class="paragraph">
+<p>To finally generate the mbtiles database, push the run button on the upper right corner.
+A console will appear showing the current status:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/04_execute.png" alt="04 execute" width="70%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_spatialite_database">15.5. Create a spatialite database</h3>
+<div class="paragraph">
+<p>The <strong>GeopaparazziSpatialiteCreator</strong> allows to convert a folder of shapefiles into
+a spatialite database that contains the layers styled following the
+supplied SLD.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/05_spatialite_creator.png" alt="05 spatialite creator" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The only input parameters to set are the:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>new spatialite database we want to create: <strong>&#8230;&#8203;/dataset/bucharest.sqlite</strong></p>
+</li>
+<li>
+<p>the folder of shapefiles to convert: <strong>&#8230;&#8203;/dataset/shps/</strong></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/06_spatialite_creator_filled.png" alt="06 spatialite creator filled" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>Then just run the module:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/spatialtoolbox/09_execute.png" alt="09 execute" width="70%">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_form">15.6. Create a form</h3>
+<div class="paragraph">
+<p>Geopaparazzi supports <strong>complex notes</strong> called form based notes.
+To use them, a <strong>tags.json</strong> file needs to be created and <strong>placed inside
+the geopaparazzi folder</strong> inside the sdcard. In that file a json
+format description of the wanted tags and forms needs to be
+placed.</p>
+</div>
+<div class="paragraph">
+<p>By default, to help the user to start, a sample tags.json is created
+in the Geopaparazzi installation. It contains form samples and
+examples to show all supported form widgets.</p>
+</div>
+<div class="sect3">
+<h4 id="_the_example_form">15.6.1. The example form</h4>
+<div class="paragraph">
+<p>Let&#8217;s create a form to survey university buildings. It will be made up of 3 tabs.</p>
+</div>
+<div class="paragraph">
+<p>The general tab:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/00_form_general.png" alt="00 form general">
+</div>
+</div>
+<div class="paragraph">
+<p>The structural tab:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/00_form_structural.png" alt="00 form structural">
+</div>
+</div>
+<div class="paragraph">
+<p>And the images tab:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/00_form_images.png" alt="00 form images">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_gform_module">15.6.2. The gform module</h4>
+<div class="paragraph">
+<p>The Hortonmachine has a module called <strong>gforms.exe</strong> that allows users to create
+forms easily.</p>
+</div>
+<div class="paragraph">
+<p>Once opened it appears like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/01_open.png" alt="01 open" width="60%">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_new_form">Create a new form</h5>
+<div class="paragraph">
+<p>To create a new form push the <strong>new</strong> button and name a new file. If the name
+doesn&#8217;t finish by <strong>_tags.json</strong>, the application will take care of adding it.</p>
+</div>
+<div class="paragraph">
+<p>So inserting just <strong>buldings</strong>, will produce a file <strong>buildings_tags.json</strong>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/02_new.png" alt="02 new" width="80%">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_section">Create a section</h5>
+<div class="paragraph">
+<p>Before doing anything, a <strong>section</strong> needs to be created. The section
+is what in geopaparazzi will be seen as a <strong>button</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Push the <strong>add</strong> button to the left of the combobox to add a new section:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/03_section.png" alt="03 section" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>Enter a name and push <strong>ok</strong>. <strong>buildings</strong> might be a good name.</p>
+</div>
+<div class="paragraph">
+<p>The combobox that had been empty up to now should now contain the buildings
+section.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/04_buildings_combo.png" alt="04 buildings combo" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>With the <strong>del</strong> button it  is possible to delete an existing section. For safety
+the user will be prompted to make sure the section should be removed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_tab">Create a tab</h5>
+<div class="paragraph">
+<p>To create a tab the <strong>add</strong> button at the bottom right has to be used.
+The same as for the section, a name for the tab is prompted.</p>
+</div>
+<div class="paragraph">
+<p>We are first creating the <strong>General</strong> tab, so:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/05_new_tab.png" alt="05 new tab" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add also the <strong>Structural</strong> and <strong>Images</strong> tabs. The result should
+look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/06_tabs.png" alt="06 tabs" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>While the currently selected tab can be removed (<strong>del</strong> button below the <strong>add</strong> button)
+and new ones can be added, mind that at the time they can&#8217;t be reordered:
+<em>new tabs are attached to the end</em>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_widgets">Create widgets</h5>
+<div class="paragraph">
+<p>Once a tab has been created, widgets can be added to it. Widgets can be of various
+types. The combobox at the bottom of the window contains all supported:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/07_widget_list.png" alt="07 widget list" width="80%">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_a_textfield_to_function_as_a_label">Add a textfield (to function as a label)</h5>
+<div class="paragraph">
+<p>First we want to add a textfield that should also <strong>act as label</strong>, i.e. if populated
+it should be visible near the point in the map view. It would be a good idea also
+to make it <strong>mandatory</strong>, i.e. the user won&#8217;t be able to save the note without
+filling it out.</p>
+</div>
+<div class="paragraph">
+<p>Select <strong>string</strong> from the widgets combobox and fill in the necessary parameters.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>key</strong>: the unique key of the field. It has to be unique in the whole section.
+This is then used as column name for the shapefiles.</p>
+</li>
+<li>
+<p><strong>label</strong>: the label presented to the user in the form.</p>
+</li>
+<li>
+<p><strong>default</strong>: an optional default value to insert.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/08_string.png" alt="08 string" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once pushed <strong>ok</strong>, the form should look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/09_string_added.png" alt="09 string added" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>Note that in the label part, after an arrow, information
+about it being in label mode and/or mandatory, is given.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_delete_a_widget">Delete a widget</h5>
+<div class="paragraph">
+<p>If something went wrong and we need to remove a widget from the
+current tab, use the second combobox at the bottom left of the <strong>del</strong> button.</p>
+</div>
+<div class="paragraph">
+<p>That combobox is constantly updated with the keys of the widgets currently
+present in the tab. Selecting the righ key and pushing <strong>del</strong>
+allows us to remove a widget. Again, as for tabs, remember that
+you can remove widgets in the middle, but <strong>new widgets are added to the bottom</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Please now add a textfield for the faculty field.</strong></p>
+</div>
+<div class="paragraph">
+<p>In this case a default value might be a good idea.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_a_checkbox">Add a checkbox</h5>
+<div class="paragraph">
+<p>To add a checkbox, select the <strong>boolean</strong> widget.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/10_checkbox.png" alt="10 checkbox" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>After which we should see something like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/11_general_tab.png" alt="11 general tab" width="80%">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_a_combobox">Add a combobox</h5>
+<div class="paragraph">
+<p>The last widget of the <strong>General</strong> tab is the number of enrolled students.</p>
+</div>
+<div class="paragraph">
+<p><strong>stringcombo</strong> is the choice for this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/12_combo.png" alt="12 combo" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>While we have already seen key, label and defaultvalue, the items
+textarea is new. In there we can place the values we want to see in the
+combobox, one per line:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/13_combo_filled.png" alt="13 combo filled" width="35%">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The default value has to be exactly the same as one of the items.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After adding the combobox, our form should now look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/14_general_tab_done.png" alt="14 general tab done" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the structural tab is done it should look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/15_structural_done.png" alt="15 structural done" width="80%">
+</div>
+</div>
+<div class="paragraph">
+<p>and the images tab:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/16_images_done.png" alt="16 images done" width="80%">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+the form is auto saving: all changes are automatically registered on the output file.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_see_the_form_in_geopaparazzi">See the form in Geopaparazzi</h5>
+<div class="paragraph">
+<p>To test the form inside Geopaparazzi, it is necessary to upload the form file
+to the device and place it inside the folder <strong>geopaparazzi</strong> at the root of the
+sdcard.</p>
+</div>
+<div class="paragraph">
+<p>Any file ending with *_tags.json will be loaded in the geopaparazzi notes view.</p>
+</div>
+<div class="paragraph">
+<p>So if we added our new form file, we should get the following:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="11_hortonmachine/forms/17_buildings_gpap.png" alt="17 buildings gpap" width="40%">
+</div>
+</div>
+<div class="paragraph">
+<p>Note that only the <strong>Buildings</strong> button comes from the form file we added,
+the others are from the default <strong>tags.json</strong> that is available from the
+beginning in geopaparazzi.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notes_about_forms">15.6.3. Notes about forms</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>a form is persisted in geopaparazzi with its whole definition. So a note
+can be edited also when the original form is no longer available</p>
+</li>
+<li>
+<p>a few widgets, namely connectedcombo and onetomulticombo are not yet supported
+in the gforms application, but can be created manually</p>
+</li>
+<li>
+<p>a multistringcombo allows for multiple selection</p>
+</li>
+<li>
+<p>forms are editable, simple notes not</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_case_use_of_geopaparazzi_in_egypt_to_create_a_map_to_improve_the_management_of_small_wastewater_treatment_plants">16. Use case: Use of Geopaparazzi in Egypt to create a map to improve the management of small wastewater treatment plants.</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_introduction">15.1. Introduction</h3>
+<h3 id="_introduction">16.1. Introduction</h3>
 <div class="paragraph">
 <p>Have you ever tried to type in google: <strong>sanitation maps, sanitation coverage, sanitation or inventory tracking</strong>?</p>
 </div>
@@ -5260,7 +6024,7 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 </div>
 </div>
 <div class="sect2">
-<h3 id="_monitoring_activities">15.2. Monitoring activities</h3>
+<h3 id="_monitoring_activities">16.2. Monitoring activities</h3>
 <div class="paragraph">
 <p>During fall of 2010 Geopaparazzi has been used in the monitoring of <strong>small waste water treatment plants in decentralized communities</strong> of the Nile Delta, in a thesis project in Environmental Engineering within a larger project of technical development cooperation (<a href="http://www.eawag.ch/forschung/sandec/gruppen/sesp/esriss/index_EN">ESRISS project</a>).</p>
 </div>
@@ -5293,7 +6057,7 @@ do not know, that we can&#8217;t even imagine, that can make you smile or fright
 </div>
 </div>
 <div class="sect2">
-<h3 id="_technical_background">15.3. Technical background</h3>
+<h3 id="_technical_background">16.3. Technical background</h3>
 <div class="paragraph">
 <p>Based on the available data a dedicated form has been designed to collect in a standardized way as much data as possible.</p>
 </div>
@@ -5376,7 +6140,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_acknowledgement">15.4. Acknowledgement</h3>
+<h3 id="_acknowledgement">16.4. Acknowledgement</h3>
 <div class="paragraph">
 <p>This usecase is a very small and superficial extract of the Geopaparazzi related part from the master thesis of Vania Zillante: <strong>ANALISI DI TECNOLOGIE PER LA DEPURAZIONE DEI REFLUI DOMESTICI IN COMUNITÀ DECENTRATE DEL DELTA DEL NILO E PROPOSTA PER IL TRATTAMENTO DELLA FRAZIONE ORGANICA. APPLICAZIONE DI UN SOFTWARE OPEN SOURCE PER LA GEOREFERENZIAZIONE DEGLI IMPIANTI ESISTENTI.</strong>.</p>
 </div>
@@ -5390,10 +6154,10 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_projects_that_base_on_geopaparazzi">16. Projects that base on Geopaparazzi</h2>
+<h2 id="_projects_that_base_on_geopaparazzi">17. Projects that base on Geopaparazzi</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_gvsig_mobile">16.1. gvSIG Mobile</h3>
+<h3 id="_gvsig_mobile">17.1. gvSIG Mobile</h3>
 <div class="paragraph">
 <p>gvSIG Mobile is completely based on geopaparazzi and extends its capabilities with enterprise level functionalities to connect to the services of gvSIG Online to allow synchronization of data between teams of surveyors.</p>
 </div>
@@ -5404,7 +6168,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_geomobi">16.2. Geomobi</h3>
+<h3 id="_geomobi">17.2. Geomobi</h3>
 <div class="paragraph">
 <p>Geomobi is a mobile GIS developed by team developer of Embasa (Empresa Baiana de Águas e Saneamento of State Bahia Brazil). The mobile app has maps with streets, water consumers, water supply network, and sewer network layers. These maps can be used in field services for various queries.</p>
 </div>
@@ -5415,7 +6179,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">16.3. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</h3>
+<h3 id="_gasdroide_natural_gas_emission_flux_measurements_on_android_platform">17.3. Gasdroide - Natural Gas Emission Flux Measurements on Android platform</h3>
 <div class="paragraph">
 <p>Checkout the homepage <a href="https://bitbucket.org/moovida/gasdroide">here</a></p>
 </div>
@@ -5426,7 +6190,7 @@ and modified at any time, the section has been added for further update</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_disaster_management_information_system">16.4. Disaster Management Information System</h3>
+<h3 id="_disaster_management_information_system">17.4. Disaster Management Information System</h3>
 <div class="paragraph">
 <p>The Disaster Management Information System of the city of Osaka is
 mainly meant for collecting information about water-supply infrastructure
@@ -5442,7 +6206,7 @@ to promote post-disaster recovery for water supply.</p>
 Geopaparazzi. Kudos!</p>
 </div>
 <div class="sect3">
-<h4 id="_trashmapper">16.4.1. TrashMapper</h4>
+<h4 id="_trashmapper">17.4.1. TrashMapper</h4>
 <div class="paragraph">
 <p>The TrashMapper is a tool used to keep information about the waste management of a town. Through it it is possible to sample and update information out in the field and then syncronize the data with a central database/webgis.</p>
 </div>
@@ -5453,7 +6217,7 @@ Geopaparazzi. Kudos!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_trackoid">16.4.2. Trackoid</h4>
+<h4 id="_trackoid">17.4.2. Trackoid</h4>
 <div class="paragraph">
 <p>Trackoid is a mobile system for the geolocalization of small/medium fleets and teams of people (rescue). It is a realtime system with a mobile and server side.</p>
 </div>
@@ -5475,7 +6239,7 @@ Geopaparazzi. Kudos!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_your_app_here">16.4.3. Your app here</h4>
+<h4 id="_your_app_here">17.4.3. Your app here</h4>
 <div class="paragraph">
 <p>If you are using Geopaparazzi in any flavor we would be happy to list
 it here with some screenshot. Just drop us a note!</p>
@@ -5485,12 +6249,12 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_a_small_handbook_for_developers">17. A small handbook for developers</h2>
+<h2 id="_a_small_handbook_for_developers">18. A small handbook for developers</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_introduction_2">17.1. Introduction</h3>
+<h3 id="_introduction_2">18.1. Introduction</h3>
 <div class="sect3">
-<h4 id="_getting_the_code">17.1.1. Getting the code</h4>
+<h4 id="_getting_the_code">18.1.1. Getting the code</h4>
 <div class="paragraph">
 <p>The whole source code of the Geopaparazzi project is available at <a href="https://github.com/geopaparazzi/geopaparazzi">its github site</a>.</p>
 </div>
@@ -5504,7 +6268,7 @@ it here with some screenshot. Just drop us a note!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_building_and_developing_geopaparazzi">17.1.2. Building and developing Geopaparazzi</h4>
+<h4 id="_building_and_developing_geopaparazzi">18.1.2. Building and developing Geopaparazzi</h4>
 <div class="paragraph">
 <p>The authors suggest to use <a href="https://developer.android.com/studio/index.html">Android Studio</a> for the build and development of the application.</p>
 </div>
@@ -5542,7 +6306,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_description_of_the_geopaparazzi_architecture">17.2. Description of the Geopaparazzi Architecture</h3>
+<h3 id="_description_of_the_geopaparazzi_architecture">18.2. Description of the Geopaparazzi Architecture</h3>
 <div class="paragraph">
 <p>The Geopaparazzi application has been split in different modules, that contain functions that have been isolated.</p>
 </div>
@@ -5559,7 +6323,7 @@ key.alias.password=youraliaspassword</code></pre>
 <p>While the folders <em>extra</em>, <em>build</em> and <em>gradle</em> are accessory folders, the other folders are all part of the application.</p>
 </div>
 <div class="sect3">
-<h4 id="_modules_dependencies_diagram">17.2.1. Modules dependencies diagram</h4>
+<h4 id="_modules_dependencies_diagram">18.2.1. Modules dependencies diagram</h4>
 <div class="paragraph">
 <p>The diagram shows the dependencies of the various modules:</p>
 </div>
@@ -5577,7 +6341,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzilibrary">17.2.2. geopaparazzilibrary</h4>
+<h4 id="_geopaparazzilibrary">18.2.2. geopaparazzilibrary</h4>
 <div class="paragraph">
 <p>The Geopaparazzi Library module contains all the code that can be reused across applications. The different packages contained have been named to explain their content.</p>
 </div>
@@ -5665,7 +6429,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_core">17.2.3. geopaparazzi_core</h4>
+<h4 id="_geopaparazzi_core">18.2.3. geopaparazzi_core</h4>
 <div class="paragraph">
 <p>The core module contains all that is visible in Geopaparazzi. All the activities, views and fragments and all logic behind the user interaction.</p>
 </div>
@@ -5699,7 +6463,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_app">17.2.4. geopaparazzi.app</h4>
+<h4 id="_geopaparazzi_app">18.2.4. geopaparazzi.app</h4>
 <div class="paragraph">
 <p>The geopaparazzi.app module has been created to create easily branded versions of Geopaparazzi. It is a thin wrapper around the Geopaparazzi Core module.</p>
 </div>
@@ -5717,7 +6481,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzimapsforge">17.2.5. geopaparazzimapsforge</h4>
+<h4 id="_geopaparazzimapsforge">18.2.5. geopaparazzimapsforge</h4>
 <div class="paragraph">
 <p><a href="https://github.com/mapsforge/mapsforge">Mapsforge</a> is the mapping engine used in Geopaparazzi. While the project is going towards the release of version 0.8.0 at the current time, Geopaparazzi still bases on a customized version of the 0.3.1 version of mapsforge. The reasons for the lack of update is both technical and due to missing resources dedicated to this activity. The upgrade to version 0.8.0 would take a significand amount of time and huge code refactoring.</p>
 </div>
@@ -5739,7 +6503,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzispatialitelibrary">17.2.6. geopaparazzispatialitelibrary</h4>
+<h4 id="_geopaparazzispatialitelibrary">18.2.6. geopaparazzispatialitelibrary</h4>
 <div class="paragraph">
 <p>The Spatialite Library module contains several important pieces necessary to the main application.</p>
 </div>
@@ -5775,7 +6539,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_geopaparazzi_acrylicpaint">17.2.7. geopaparazzi_acrylicpaint</h4>
+<h4 id="_geopaparazzi_acrylicpaint">18.2.7. geopaparazzi_acrylicpaint</h4>
 <div class="paragraph">
 <p>Acrylic Paint is the new choice for the drawing of sketches in Geopaparazzi. It is a very nifty and tiny project, well written and maintained in few classes. It makes the perfect fit to be used in Geopaparazzi.</p>
 </div>
@@ -5784,7 +6548,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_wms_nww">17.2.8. wms_nww</h4>
+<h4 id="_wms_nww">18.2.8. wms_nww</h4>
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Web_Map_Service">WMS</a> is a standard mapping service and is supported in Geopaparazzi using this module. The module is an adapted code from an older version of the <a href="https://github.com/NASAWorldWind/WorldWindAndroid">Nasa World Wind Android</a> application. It allows to query the <strong>getCapabilities</strong> of the Service and list the available layers, which allows th user to easily select a layer to visualize in Geopaparazzi.</p>
 </div>
@@ -5793,7 +6557,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_plugins">17.2.9. plugins</h4>
+<h4 id="_plugins">18.2.9. plugins</h4>
 <div class="paragraph">
 <p>It is now possible to use plugins with Geopaparazzi. They ar enot dynamic plugins that can be installed aside of Geopaparazzi and then loaded into it. But it is possible to compile an custom version of Geopaparazzi with certain plugins enabled.</p>
 </div>
@@ -5837,13 +6601,13 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_appendix">18. Appendix</h2>
+<h2 id="_appendix">19. Appendix</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="appendix"></a></p>
 </div>
 <div class="sect2">
-<h3 id="_the_finalized_tags_json_of_the_forms_section">18.1. The finalized tags.json of the Forms section</h3>
+<h3 id="_the_finalized_tags_json_of_the_forms_section">19.1. The finalized tags.json of the Forms section</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
@@ -5976,7 +6740,7 @@ key.alias.password=youraliaspassword</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_complete_tag_json_for_the_egypt_use_case">18.2. Complete tag.json for the Egypt use case</h3>
+<h3 id="_complete_tag_json_for_the_egypt_use_case">19.2. Complete tag.json for the Egypt use case</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">[
