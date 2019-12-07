@@ -126,6 +126,23 @@ public enum SpatialiteConnectionsHandler {
         return geoms;
     }
 
+    public Geometry getFirstGeometry(String dbPath, String tableName) throws Exception {
+        ASpatialDb db = getDb(dbPath);
+        GeometryColumn gCol = db.getGeometryColumnsForTable(tableName);
+        String query = SpatialiteUtilities.buildGetFirstGeometry(db, tableName, gCol, 4326);
+
+        IGeometryParser gp = db.getType().getGeometryParser();
+        return db.execOnConnection(connection -> {
+            try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
+                if (rs.next()) {
+                    Geometry geometry = gp.fromResultSet(rs, 1);
+                    return geometry;
+                }
+            }
+            return null;
+        });
+    }
+
     public ASpatialDb getDb(String dbPath) throws Exception {
         ASpatialDb spatialDb = connection2DbsMap.get(dbPath);
         if (spatialDb == null) {

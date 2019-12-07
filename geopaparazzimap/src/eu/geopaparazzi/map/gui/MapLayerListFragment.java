@@ -538,43 +538,64 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                         }
                                     }
 
-                                    if (tableNames != null && tableNames.size() > 0) {
-                                        String[] items = new String[tableNames.size()];
-                                        boolean[] checkItems = new boolean[tableNames.size()];
-                                        for (int i = 0; i < items.length; i++) {
-                                            items[i] = tableNames.get(i);
-                                        }
-                                        GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
-                                            List<String> selTables = new ArrayList<>();
-                                            for (int i = 0; i < checkItems.length; i++) {
-                                                if (checkItems[i]) {
-                                                    selTables.add(items[i]);
-                                                }
-                                            }
-                                            if (selTables.size() > 0) {
-                                                for (String selTable : selTables) {
-                                                    try {
-                                                        int index2 = LayerManager.INSTANCE.addSpatialiteTable(finalFile.getAbsoluteFile(), selTable, null);
-                                                        int focusedColumn2 = mBoardView.getFocusedColumn();
-                                                        int itemCount2 = mBoardView.getItemCount(focusedColumn2);
-                                                        if (index2 >= 0) {
-                                                            MapLayerItem item = new MapLayerItem();
-                                                            item.type = layerType.getType();
-                                                            item.position = index2;
-                                                            item.name = selTable;
-                                                            item.path = finalFile.getAbsolutePath();
-                                                            item.enabled = true;
-                                                            item.isEditing = false;
+                                    if (tableNames != null) {
+                                        if (tableNames.size() == 1) {
+                                            try {
+                                                int index2 = LayerManager.INSTANCE.addSpatialiteTable(finalFile.getAbsoluteFile(), tableNames.get(0), null);
+                                                int focusedColumn2 = mBoardView.getFocusedColumn();
+                                                int itemCount2 = mBoardView.getItemCount(focusedColumn2);
+                                                if (index2 >= 0) {
+                                                    MapLayerItem item = new MapLayerItem();
+                                                    item.type = layerType.getType();
+                                                    item.position = index2;
+                                                    item.name = tableNames.get(0);
+                                                    item.path = finalFile.getAbsolutePath();
+                                                    item.enabled = true;
+                                                    item.isEditing = false;
 
-                                                            mBoardView.addItem(focusedColumn2, itemCount2, item, true);
-                                                        }
-                                                    } catch (Exception e) {
-                                                        GPLog.error(this, null, e);
+                                                    mBoardView.addItem(focusedColumn2, itemCount2, item, true);
+                                                }
+                                            } catch (Exception e) {
+                                                GPLog.error(this, null, e);
+                                            }
+                                        } else if (tableNames.size() > 0) {
+                                            String[] items = new String[tableNames.size()];
+                                            boolean[] checkItems = new boolean[tableNames.size()];
+                                            for (int i = 0; i < items.length; i++) {
+                                                items[i] = tableNames.get(i);
+                                            }
+                                            GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
+                                                List<String> selTables = new ArrayList<>();
+                                                for (int i = 0; i < checkItems.length; i++) {
+                                                    if (checkItems[i]) {
+                                                        selTables.add(items[i]);
                                                     }
                                                 }
+                                                if (selTables.size() > 0) {
+                                                    for (String selTable : selTables) {
+                                                        try {
+                                                            int index2 = LayerManager.INSTANCE.addSpatialiteTable(finalFile.getAbsoluteFile(), selTable, null);
+                                                            int focusedColumn2 = mBoardView.getFocusedColumn();
+                                                            int itemCount2 = mBoardView.getItemCount(focusedColumn2);
+                                                            if (index2 >= 0) {
+                                                                MapLayerItem item = new MapLayerItem();
+                                                                item.type = layerType.getType();
+                                                                item.position = index2;
+                                                                item.name = selTable;
+                                                                item.path = finalFile.getAbsolutePath();
+                                                                item.enabled = true;
+                                                                item.isEditing = false;
 
-                                            }
-                                        });
+                                                                mBoardView.addItem(focusedColumn2, itemCount2, item, true);
+                                                            }
+                                                        } catch (Exception e) {
+                                                            GPLog.error(this, null, e);
+                                                        }
+                                                    }
+
+                                                }
+                                            });
+                                        }
                                     } else {
                                         GPDialogs.warningDialog(getActivity(), getString(R.string.unable_to_find_tables_in_db), null);
                                     }

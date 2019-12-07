@@ -212,6 +212,7 @@
     <string name="menu_enable_editing">Enable editing</string>
     <string name="menu_disable_editing">Disable editing</string>
     <string name="menu_select_theme">Select theme</string>
+    <string name="menu_select_zoomto">Zoom to</string>
     <string name="add_map">Add map...</string>
     <string name="add_maps_folder">Add maps folder...</string>
     <string name="project_layers">Project Layers</string>
@@ -226,6 +227,5 @@
     <string name="layername_images">Project Images</string>
     <string name="layername_notes">Project Notes</string>
     <string name="layername_gpsinfo">Gps Info</string>
-
 
 </resources>

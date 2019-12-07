@@ -17,6 +17,7 @@
 package eu.geopaparazzi.map.gui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -32,9 +33,15 @@ import android.widget.TextView;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
+import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
+import org.hortonmachine.dbs.mbtiles.MBTilesDb;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +52,9 @@ import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapThemes;
+import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
@@ -67,6 +76,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     private String toggleLabels;
     private String setAlpha;
     private String setStyle;
+    private String zoomTo;
     private String enableEditing;
     private String disableEditing;
     private String setTheme;
@@ -87,6 +97,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         enableEditing = activity.getString(R.string.menu_enable_editing);
         disableEditing = activity.getString(R.string.menu_disable_editing);
         setTheme = activity.getString(R.string.menu_select_theme);
+        zoomTo = activity.getString(R.string.menu_select_zoomto);
 
         setItemList(list);
     }
@@ -141,6 +152,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     break;
                                 }
                                 case MBTILES: {
+                                    popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setAlpha);
                                     break;
                                 }
@@ -152,6 +164,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     break;
                                 }
                                 case SPATIALITE: {
+                                    popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setStyle);
                                     if (selMapLayerItem.isEditing) {
                                         popup.getMenu().add(disableEditing);
@@ -198,6 +211,42 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                 } else {
                                     jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
                                 }
+                            } else if (actionName.equals(zoomTo)) {
+                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                                String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
+
+                                ELayerTypes layerType = ELayerTypes.fromFileExt(dbPath);
+                                if (layerType == ELayerTypes.MBTILES) {
+                                    ASpatialDb adb = EDb.SPATIALITE4ANDROID.getSpatialDb();
+                                    try {
+                                        boolean exists = adb.open(dbPath);
+                                        if (exists) {
+                                            MBTilesDb db = new MBTilesDb(adb);
+                                            Envelope bounds = db.getBounds();
+                                            Coordinate centre = bounds.centre();
+                                            Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                            intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                            intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                            intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                            mapLayerListFragment.getContext().startService(intent);
+                                        }
+                                    } finally {
+                                        if (adb != null)
+                                            adb.close();
+                                    }
+                                } else if (layerType == ELayerTypes.SPATIALITE) {
+                                    Geometry firstGeom = SpatialiteConnectionsHandler.INSTANCE.getFirstGeometry(dbPath, tableName);
+                                    Coordinate centre = firstGeom.getEnvelopeInternal().centre();
+                                    Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                    intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                    intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                    mapLayerListFragment.getContext().startService(intent);
+                                }
+
+
                             } else if (actionName.equals(setAlpha)) {
                                 List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
                                 JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);

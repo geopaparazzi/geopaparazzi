@@ -710,7 +710,7 @@ public enum LayerManager {
             List<JSONObject> list = isSystem ? systemLayersDefinitions : userLayersDefinitions;
             JSONObject layerObj = list.get(position);
             layerObj.put(IGpLayer.LAYERENABLED_TAG, enabled);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             GPLog.error(this, null, e);
         }
     }

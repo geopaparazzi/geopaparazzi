@@ -429,7 +429,7 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
 
         StringBuilder qSb = new StringBuilder();
         qSb.append("SELECT ");
-//        qSb.append("ST_AsBinary(");
+        qSb.append("ST_AsBinary(");
         qSb.append("CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
@@ -440,7 +440,7 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
             qSb.append(")");
         }
         qSb.append(")");
-//        qSb.append(")");
+        qSb.append(")");
         if (tableStyle.labelvisible == 1) {
             qSb.append(",");
             qSb.append(tableStyle.labelfield);
@@ -499,6 +499,33 @@ public class SpatialiteUtilities implements ISpatialiteTableAndFieldsNames {
             qSb.append(mbr);
             qSb.append(");");
         }
+        String q = qSb.toString();
+        return q;
+    }
+
+    public static String buildGetFirstGeometry(ASpatialDb db, String tableName, GeometryColumn tableGeometryColumn, int destSrid) {
+        boolean doTransform = false;
+        if (tableGeometryColumn.srid != destSrid) {
+            doTransform = true;
+        }
+
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT ");
+        qSb.append("ST_AsBinary(");
+        qSb.append("CastToXY(");
+        if (doTransform)
+            qSb.append("ST_Transform(");
+        qSb.append(tableGeometryColumn.geometryColumnName);
+        if (doTransform) {
+            qSb.append(",");
+            qSb.append(destSrid);
+            qSb.append(")");
+        }
+        qSb.append(")");
+        qSb.append(")");
+        qSb.append(" FROM ");
+        qSb.append("\"").append(tableName).append("\" limit 1");
+
         String q = qSb.toString();
         return q;
     }

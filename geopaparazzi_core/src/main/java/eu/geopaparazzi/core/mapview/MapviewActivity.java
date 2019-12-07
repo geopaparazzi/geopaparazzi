@@ -352,7 +352,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         LayerManager.INSTANCE.onResume(mapView, this);
 
         disableEditing();
-
+        GPMapPosition mapPosition = mapView.getMapPosition();
+        setNewCenter(mapPosition.getLongitude() + 0.000001, mapPosition.getLatitude() + 0.000001);
         super.onResume();
     }
 
