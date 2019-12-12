@@ -44,6 +44,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
+import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
+import org.hortonmachine.dbs.utils.BasicStyle;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
@@ -56,7 +58,7 @@ import eu.geopaparazzi.library.util.Compat;
  *
  * @author Andrea Antonello
  */
-public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
+public class GeopackageColorStrokeDialogFragment extends DialogFragment {
 
     private final static String PREFS_KEY_COLORPROPERTIES = "PREFS_KEY_COLORPROPERTIES"; //NON-NLS
 
@@ -82,8 +84,8 @@ public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
      * @param colorStrokeObject object holding color and stroke info.
      * @return the instance.
      */
-    public static SpatialiteColorStrokeDialogFragment newInstance(ColorStrokeObject colorStrokeObject) {
-        SpatialiteColorStrokeDialogFragment f = new SpatialiteColorStrokeDialogFragment();
+    public static GeopackageColorStrokeDialogFragment newInstance(ColorStrokeObject colorStrokeObject) {
+        GeopackageColorStrokeDialogFragment f = new GeopackageColorStrokeDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable(PREFS_KEY_COLORPROPERTIES, colorStrokeObject);
         f.setArguments(args);
@@ -293,17 +295,20 @@ public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.set_properties,
                 (dialog, id) -> {
                     try {
-                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(mCurrentColorStrokeObject.dbPath);
-                        Style style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(mCurrentColorStrokeObject.dbPath, mCurrentColorStrokeObject.tableName, null);
-                        style.fillcolor = ColorUtilities.getHex(mCurrentColorStrokeObject.fillColor);
-                        style.fillalpha = mCurrentColorStrokeObject.fillAlpha / 255f;
-                        style.strokecolor = ColorUtilities.getHex(mCurrentColorStrokeObject.strokeColor);
-                        style.strokealpha = mCurrentColorStrokeObject.strokeAlpha / 255f;
-                        style.width = mCurrentColorStrokeObject.strokeWidth;
-                        style.shape = mCurrentColorStrokeObject.shapeWKT;
-                        style.size = mCurrentColorStrokeObject.shapeSize;
+                        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(mCurrentColorStrokeObject.dbPath);
+                        if (db instanceof GPGeopackageDb) {
+                            GPGeopackageDb gpDb = (GPGeopackageDb) db;
+                            BasicStyle style = gpDb.getBasicStyle(mCurrentColorStrokeObject.tableName);
+                            style.fillcolor = ColorUtilities.getHex(mCurrentColorStrokeObject.fillColor);
+                            style.fillalpha = mCurrentColorStrokeObject.fillAlpha / 255f;
+                            style.strokecolor = ColorUtilities.getHex(mCurrentColorStrokeObject.strokeColor);
+                            style.strokealpha = mCurrentColorStrokeObject.strokeAlpha / 255f;
+                            style.width = mCurrentColorStrokeObject.strokeWidth;
+                            style.shape = mCurrentColorStrokeObject.shapeWKT;
+                            style.size = mCurrentColorStrokeObject.shapeSize;
 
-                        SpatialiteUtilities.updateStyle(db, style);
+                            gpDb.updateSimplifiedStyle(mCurrentColorStrokeObject.tableName, style.toString());
+                        }
                     } catch (Exception e) {
                         GPLog.error(this, null, e);
                     }

@@ -109,14 +109,14 @@ public enum GeopackageConnectionsHandler {
         st.name = tableName;
         int i = 1;
         st.id = bs.id;
-        st.size = bs.size;
+        st.size = (float) bs.size;
         st.fillcolor = bs.fillcolor;
         st.strokecolor = bs.strokecolor;
-        st.fillalpha = bs.fillalpha;
-        st.strokealpha = bs.strokealpha;
+        st.fillalpha = (float) bs.fillalpha;
+        st.strokealpha = (float) bs.strokealpha;
         st.shape = bs.shape;
-        st.width = bs.width;
-        st.labelsize = bs.labelsize;
+        st.width = (float) bs.width;
+        st.labelsize = (float) bs.labelsize;
         st.labelfield = bs.labelfield;
         st.labelvisible = bs.labelvisible;
         st.enabled = bs.enabled;
@@ -124,7 +124,7 @@ public enum GeopackageConnectionsHandler {
         st.dashPattern = bs.dashPattern;
         st.minZoom = bs.minZoom;
         st.maxZoom = bs.maxZoom;
-        st.decimationFactor = bs.decimationFactor;
+        st.decimationFactor = (float) bs.decimationFactor;
         return st;
     }
 

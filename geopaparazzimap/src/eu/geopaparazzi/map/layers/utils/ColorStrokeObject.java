@@ -27,7 +27,7 @@ import java.io.Serializable;
  *
  * @author Andrea Antonello
  */
-public class SpatialiteColorStrokeObject implements Serializable {
+public class ColorStrokeObject implements Serializable {
 
     public String tableName;
     public String dbPath;
@@ -47,8 +47,8 @@ public class SpatialiteColorStrokeObject implements Serializable {
     public int shapeSize = 50;
     public String shapeWKT = "circle"; //NON-NLS
 
-    public SpatialiteColorStrokeObject duplicate() {
-        SpatialiteColorStrokeObject dup = new SpatialiteColorStrokeObject();
+    public ColorStrokeObject duplicate() {
+        ColorStrokeObject dup = new ColorStrokeObject();
         dup.tableName = tableName;
         dup.dbPath = dbPath;
 

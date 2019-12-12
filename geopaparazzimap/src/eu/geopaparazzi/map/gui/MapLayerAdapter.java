@@ -36,6 +36,8 @@ import com.woxthebox.draglistview.DragItemAdapter;
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
+import org.hortonmachine.dbs.geopackage.FeatureEntry;
+import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.hortonmachine.dbs.mbtiles.MBTilesDb;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,8 +61,10 @@ import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
+import eu.geopaparazzi.map.layers.utils.GeopackageColorStrokeDialogFragment;
+import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
-import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeObject;
+import eu.geopaparazzi.map.layers.utils.ColorStrokeObject;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
@@ -163,6 +167,11 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     popup.getMenu().add(setAlpha);
                                     break;
                                 }
+                                case GEOPACKAGE: {
+                                    popup.getMenu().add(zoomTo);
+                                    popup.getMenu().add(setStyle);
+                                    break;
+                                }
                                 case SPATIALITE: {
                                     popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setStyle);
@@ -175,202 +184,230 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                 }
                             }
                         }
+
+                        if (!selMapLayerItem.isSystem) {
+                            popup.getMenu().add(remove_layer);
+                        }
+
+                        int finalSelIndex = selIndex;
+                        popup.setOnMenuItemClickListener(selectedItem -> {
+                            String actionName = selectedItem.getTitle().toString();
+                            try {
+                                if (actionName.equals(remove_layer)) {
+                                    mapLayerListFragment.removeItemAtIndex(0, finalSelIndex);
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    userLayersDefinitions.remove(finalSelIndex);
+                                    notifyDataSetChanged();
+                                } else if (actionName.equals(toggle3d)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    if (jsonObject.has(IGpLayer.LAYERDO3D_TAG)) {
+                                        boolean do3D = jsonObject.getBoolean(IGpLayer.LAYERDO3D_TAG);
+                                        jsonObject.put(IGpLayer.LAYERDO3D_TAG, !do3D);
+
+                                    } else {
+                                        jsonObject.put(IGpLayer.LAYERDO3D_TAG, false);
+                                    }
+                                } else if (actionName.equals(toggleLabels)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    if (jsonObject.has(IGpLayer.LAYERDOLABELS_TAG)) {
+                                        boolean doLabels = jsonObject.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
+                                        jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, !doLabels);
+                                    } else {
+                                        jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
+                                    }
+                                } else if (actionName.equals(zoomTo)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                                    String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
+
+                                    if (layerType == ELayerTypes.MBTILES) {
+                                        ASpatialDb adb = EDb.SPATIALITE4ANDROID.getSpatialDb();
+                                        try {
+                                            boolean exists = adb.open(dbPath);
+                                            if (exists) {
+                                                MBTilesDb db = new MBTilesDb(adb);
+                                                Envelope bounds = db.getBounds();
+                                                Coordinate centre = bounds.centre();
+                                                Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                                intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                                intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                                intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                                mapLayerListFragment.getContext().startService(intent);
+                                            }
+                                        } finally {
+                                            if (adb != null)
+                                                adb.close();
+                                        }
+                                    } else if (layerType == ELayerTypes.SPATIALITE) {
+                                        Geometry firstGeom = SpatialiteConnectionsHandler.INSTANCE.getFirstGeometry(dbPath, tableName);
+                                        Coordinate centre = firstGeom.getEnvelopeInternal().centre();
+                                        Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                        intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                        intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                        intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                        mapLayerListFragment.getContext().startService(intent);
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(dbPath);
+                                        if (db instanceof GPGeopackageDb) {
+                                            GPGeopackageDb gpkgDb = (GPGeopackageDb) db;
+                                            FeatureEntry feature = gpkgDb.feature(tableName);
+                                            if (feature != null) {
+                                                Geometry firstGeom = GeopackageConnectionsHandler.INSTANCE.getFirstGeometry(dbPath, tableName);
+                                                Coordinate centre = firstGeom.getEnvelopeInternal().centre();
+                                                Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                                intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                                intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                                intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                                mapLayerListFragment.getContext().startService(intent);
+                                            }
+                                        }
+
+                                    }
+                                } else if (actionName.equals(setAlpha)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    int def = 100;
+                                    if (jsonObject.has(IGpLayer.LAYERALPHA_TAG))
+                                        def = (int) (jsonObject.getDouble(IGpLayer.LAYERALPHA_TAG) * 100.0);
+
+                                    int[] opacityLevels = ELayerTypes.OPACITY_LEVELS;
+                                    String[] alphas = new String[opacityLevels.length];
+                                    boolean[] selAlphas = new boolean[opacityLevels.length];
+                                    boolean oneTrue = false;
+                                    for (int i = 0; i < opacityLevels.length; i++) {
+                                        alphas[i] = opacityLevels[i] + "%";
+                                        boolean isThat = def == opacityLevels[i];
+                                        selAlphas[i] = isThat;
+                                        if (isThat) oneTrue = true;
+                                    }
+                                    if (!oneTrue)
+                                        // if none selected set 100% opaque
+                                        selAlphas[selAlphas.length - 1] = true;
+                                    GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), alphas, selAlphas, () -> {
+                                        for (int i = 0; i < selAlphas.length; i++) {
+                                            if (selAlphas[i]) {
+                                                String alpha = alphas[i].replace("%", "");
+                                                int alphaInt = Integer.parseInt(alpha);
+                                                double a = alphaInt / 100.0;
+                                                try {
+                                                    jsonObject.put(IGpLayer.LAYERALPHA_TAG, a);
+                                                } catch (JSONException e1) {
+                                                    GPLog.error(this, null, e1);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    });
+
+                                } else if (actionName.equals(setStyle)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                                    String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
+                                    Style style = null;
+                                    EGeometryType geometryType = null;
+                                    if (layerType == ELayerTypes.SPATIALITE) {
+                                        style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+                                        geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        style = GeopackageConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+                                        geometryType = GeopackageConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
+                                    } else {
+                                        return true;
+                                    }
+
+
+                                    ColorStrokeObject colorStrokeObject = new ColorStrokeObject();
+                                    colorStrokeObject.dbPath = dbPath;
+                                    colorStrokeObject.tableName = tableName;
+
+                                    boolean isPoint = geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT;
+                                    boolean isLine = geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING;
+                                    boolean isPolygon = geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON;
+                                    if (isPolygon || isPoint) {
+                                        colorStrokeObject.hasFill = true;
+                                        colorStrokeObject.fillColor = ColorUtilities.toColor(style.fillcolor);
+                                        colorStrokeObject.fillAlpha = (int) (style.fillalpha * 255);
+                                    }
+                                    if (isPolygon || isLine || isPoint) {
+                                        colorStrokeObject.hasStroke = true;
+                                        colorStrokeObject.strokeColor = ColorUtilities.toColor(style.strokecolor);
+                                        colorStrokeObject.strokeAlpha = (int) (style.strokealpha * 255);
+
+                                        colorStrokeObject.hasStrokeWidth = true;
+                                        colorStrokeObject.strokeWidth = (int) style.width;
+                                    }
+                                    if (isPoint) {
+                                        colorStrokeObject.hasShape = true;
+                                        colorStrokeObject.shapeWKT = style.shape;
+                                        colorStrokeObject.shapeSize = (int) style.size;
+                                    }
+
+                                    if (layerType == ELayerTypes.SPATIALITE) {
+                                        SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        GeopackageColorStrokeDialogFragment colorStrokeDialogFragment = GeopackageColorStrokeDialogFragment.newInstance(colorStrokeObject);
+                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
+                                    }
+                                } else if (actionName.equals(setTheme)) {
+                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
+                                    String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());
+                                    GPMapThemes[] themes = GPMapThemes.values();
+                                    String[] themeNames = new String[themes.length];
+                                    boolean[] selThemeNames = new boolean[themes.length];
+                                    for (int i = 0; i < themeNames.length; i++) {
+                                        themeNames[i] = themes[i].getThemeLabel();
+                                        if (themeNames[i].equals(themeLabel)) {
+                                            selThemeNames[i] = true;
+                                        }
+                                    }
+                                    GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), themeNames, selThemeNames, () -> {
+                                        for (int i = 0; i < selThemeNames.length; i++) {
+                                            if (selThemeNames[i]) {
+                                                SharedPreferences.Editor editor = preferences.edit();
+                                                editor.putString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.fromLabel(themeNames[i]).getThemeLabel());
+                                                editor.apply();
+                                                break;
+                                            }
+                                        }
+                                    });
+
+                                } else if (actionName.equals(disableEditing)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
+                                    selMapLayerItem.isEditing = false;
+
+                                    notifyDataSetChanged();
+                                } else if (actionName.equals(enableEditing)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    List<MapLayerItem> mapItemList = getItemList();
+                                    for (int i = 0; i < userLayersDefinitions.size(); i++) {
+                                        JSONObject jsonObject = userLayersDefinitions.get(i);
+                                        MapLayerItem tmpItem = mapItemList.get(i);
+                                        if (i == finalSelIndex) {
+                                            jsonObject.put(IGpLayer.LAYEREDITING_TAG, true);
+                                            selMapLayerItem.isEditing = true;
+                                        } else {
+                                            jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
+                                            tmpItem.isEditing = false;
+                                        }
+                                    }
+                                    notifyDataSetChanged();
+                                }
+                            } catch (Exception e1) {
+                                GPLog.error(this, null, e1);
+                            }
+                            return true;
+                        });
+                        popup.show();
                     } catch (Exception e1) {
                         GPLog.error(this, null, e1);
                     }
-
-                    if (!selMapLayerItem.isSystem) {
-                        popup.getMenu().add(remove_layer);
-                    }
-
-                    int finalSelIndex = selIndex;
-                    popup.setOnMenuItemClickListener(selectedItem -> {
-                        String actionName = selectedItem.getTitle().toString();
-                        try {
-                            if (actionName.equals(remove_layer)) {
-                                mapLayerListFragment.removeItemAtIndex(0, finalSelIndex);
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                userLayersDefinitions.remove(finalSelIndex);
-                                notifyDataSetChanged();
-                            } else if (actionName.equals(toggle3d)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                if (jsonObject.has(IGpLayer.LAYERDO3D_TAG)) {
-                                    boolean do3D = jsonObject.getBoolean(IGpLayer.LAYERDO3D_TAG);
-                                    jsonObject.put(IGpLayer.LAYERDO3D_TAG, !do3D);
-
-                                } else {
-                                    jsonObject.put(IGpLayer.LAYERDO3D_TAG, false);
-                                }
-                            } else if (actionName.equals(toggleLabels)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                if (jsonObject.has(IGpLayer.LAYERDOLABELS_TAG)) {
-                                    boolean doLabels = jsonObject.getBoolean(IGpLayer.LAYERDOLABELS_TAG);
-                                    jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, !doLabels);
-                                } else {
-                                    jsonObject.put(IGpLayer.LAYERDOLABELS_TAG, false);
-                                }
-                            } else if (actionName.equals(zoomTo)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
-                                String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
-
-                                ELayerTypes layerType = ELayerTypes.fromFileExt(dbPath);
-                                if (layerType == ELayerTypes.MBTILES) {
-                                    ASpatialDb adb = EDb.SPATIALITE4ANDROID.getSpatialDb();
-                                    try {
-                                        boolean exists = adb.open(dbPath);
-                                        if (exists) {
-                                            MBTilesDb db = new MBTilesDb(adb);
-                                            Envelope bounds = db.getBounds();
-                                            Coordinate centre = bounds.centre();
-                                            Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
-                                            intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
-                                            intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
-                                            intent.putExtra(LibraryConstants.LATITUDE, centre.y);
-                                            mapLayerListFragment.getContext().startService(intent);
-                                        }
-                                    } finally {
-                                        if (adb != null)
-                                            adb.close();
-                                    }
-                                } else if (layerType == ELayerTypes.SPATIALITE) {
-                                    Geometry firstGeom = SpatialiteConnectionsHandler.INSTANCE.getFirstGeometry(dbPath, tableName);
-                                    Coordinate centre = firstGeom.getEnvelopeInternal().centre();
-                                    Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
-                                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
-                                    intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
-                                    intent.putExtra(LibraryConstants.LATITUDE, centre.y);
-                                    mapLayerListFragment.getContext().startService(intent);
-                                }
-
-
-                            } else if (actionName.equals(setAlpha)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                int def = 100;
-                                if (jsonObject.has(IGpLayer.LAYERALPHA_TAG))
-                                    def = (int) (jsonObject.getDouble(IGpLayer.LAYERALPHA_TAG) * 100.0);
-
-                                int[] opacityLevels = ELayerTypes.OPACITY_LEVELS;
-                                String[] alphas = new String[opacityLevels.length];
-                                boolean[] selAlphas = new boolean[opacityLevels.length];
-                                boolean oneTrue = false;
-                                for (int i = 0; i < opacityLevels.length; i++) {
-                                    alphas[i] = opacityLevels[i] + "%";
-                                    boolean isThat = def == opacityLevels[i];
-                                    selAlphas[i] = isThat;
-                                    if (isThat) oneTrue = true;
-                                }
-                                if (!oneTrue)
-                                    // if none selected set 100% opaque
-                                    selAlphas[selAlphas.length - 1] = true;
-                                GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), alphas, selAlphas, () -> {
-                                    for (int i = 0; i < selAlphas.length; i++) {
-                                        if (selAlphas[i]) {
-                                            String alpha = alphas[i].replace("%", "");
-                                            int alphaInt = Integer.parseInt(alpha);
-                                            double a = alphaInt / 100.0;
-                                            try {
-                                                jsonObject.put(IGpLayer.LAYERALPHA_TAG, a);
-                                            } catch (JSONException e1) {
-                                                GPLog.error(this, null, e1);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                });
-
-                            } else if (actionName.equals(setStyle)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
-                                String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
-
-                                Style style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
-                                SpatialiteColorStrokeObject colorStrokeObject = new SpatialiteColorStrokeObject();
-                                colorStrokeObject.dbPath = dbPath;
-                                colorStrokeObject.tableName = tableName;
-
-                                EGeometryType geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
-
-                                boolean isPoint = geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT;
-                                boolean isLine = geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING;
-                                boolean isPolygon = geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON;
-                                if (isPolygon || isPoint) {
-                                    colorStrokeObject.hasFill = true;
-                                    colorStrokeObject.fillColor = ColorUtilities.toColor(style.fillcolor);
-                                    colorStrokeObject.fillAlpha = (int) (style.fillalpha * 255);
-                                }
-                                if (isPolygon || isLine || isPoint) {
-                                    colorStrokeObject.hasStroke = true;
-                                    colorStrokeObject.strokeColor = ColorUtilities.toColor(style.strokecolor);
-                                    colorStrokeObject.strokeAlpha = (int) (style.strokealpha * 255);
-
-                                    colorStrokeObject.hasStrokeWidth = true;
-                                    colorStrokeObject.strokeWidth = (int) style.width;
-                                }
-                                if (isPoint) {
-                                    colorStrokeObject.hasShape = true;
-                                    colorStrokeObject.shapeWKT = style.shape;
-                                    colorStrokeObject.shapeSize = (int) style.size;
-                                }
-                                SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
-                                colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
-                            } else if (actionName.equals(setTheme)) {
-                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GPApplication.getInstance());
-                                String themeLabel = preferences.getString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.DEFAULT.getThemeLabel());
-                                GPMapThemes[] themes = GPMapThemes.values();
-                                String[] themeNames = new String[themes.length];
-                                boolean[] selThemeNames = new boolean[themes.length];
-                                for (int i = 0; i < themeNames.length; i++) {
-                                    themeNames[i] = themes[i].getThemeLabel();
-                                    if (themeNames[i].equals(themeLabel)) {
-                                        selThemeNames[i] = true;
-                                    }
-                                }
-                                GPDialogs.singleOptionDialog(mapLayerListFragment.getActivity(), themeNames, selThemeNames, () -> {
-                                    for (int i = 0; i < selThemeNames.length; i++) {
-                                        if (selThemeNames[i]) {
-                                            SharedPreferences.Editor editor = preferences.edit();
-                                            editor.putString(MapUtilities.PREFERENCES_KEY_THEME, GPMapThemes.fromLabel(themeNames[i]).getThemeLabel());
-                                            editor.apply();
-                                            break;
-                                        }
-                                    }
-                                });
-
-                            } else if (actionName.equals(disableEditing)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
-                                jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
-                                selMapLayerItem.isEditing = false;
-
-                                notifyDataSetChanged();
-                            } else if (actionName.equals(enableEditing)) {
-                                List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
-                                List<MapLayerItem> mapItemList = getItemList();
-                                for (int i = 0; i < userLayersDefinitions.size(); i++) {
-                                    JSONObject jsonObject = userLayersDefinitions.get(i);
-                                    MapLayerItem tmpItem = mapItemList.get(i);
-                                    if (i == finalSelIndex) {
-                                        jsonObject.put(IGpLayer.LAYEREDITING_TAG, true);
-                                        selMapLayerItem.isEditing = true;
-                                    } else {
-                                        jsonObject.put(IGpLayer.LAYEREDITING_TAG, false);
-                                        tmpItem.isEditing = false;
-                                    }
-                                }
-                                notifyDataSetChanged();
-                            }
-                        } catch (Exception e1) {
-                            GPLog.error(this, null, e1);
-                        }
-                        return true;
-                    });
-                    popup.show();
                 }
             });
         }
