@@ -9,7 +9,7 @@
         style="@style/GPTitleTextViewStyle"
         android:text="@string/askcoord" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/longitudetextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,9 +24,9 @@
             android:singleLine="true"
             android:text="11.330748" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/latitudetextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +41,6 @@
             android:singleLine="true"
             android:text="46.482556" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

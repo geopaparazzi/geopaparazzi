@@ -19,7 +19,7 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/profileNameEditTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,9 +33,9 @@
                     android:singleLine="true"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/profileDescriptionEditTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,9 +50,9 @@
                     android:singleLine="false"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/profileCreationdateEditTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                     android:singleLine="true"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
 

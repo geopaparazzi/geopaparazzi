@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.multidex.MultiDexApplication;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.multidex.MultiDexApplication;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 

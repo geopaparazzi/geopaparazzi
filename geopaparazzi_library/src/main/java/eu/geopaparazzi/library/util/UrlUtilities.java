@@ -18,7 +18,7 @@
 
 package eu.geopaparazzi.library.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Date;
 import java.util.HashMap;

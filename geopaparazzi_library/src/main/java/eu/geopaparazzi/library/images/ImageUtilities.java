@@ -25,7 +25,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

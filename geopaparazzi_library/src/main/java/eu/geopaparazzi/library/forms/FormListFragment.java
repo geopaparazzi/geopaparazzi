@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.fragment.app.ListFragment;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ import eu.geopaparazzi.library.util.Compat;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FormListFragment extends android.support.v4.app.ListFragment {
+public class FormListFragment extends ListFragment {
 
     private IFragmentListSupporter mFragmentListSupporter;
 

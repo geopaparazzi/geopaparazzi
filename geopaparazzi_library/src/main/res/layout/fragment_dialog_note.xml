@@ -23,7 +23,7 @@
     android:padding="10dp"
     android:scrollbars="vertical">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:lines="4"
             android:singleLine="false" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/alsoBookmarksCheck"

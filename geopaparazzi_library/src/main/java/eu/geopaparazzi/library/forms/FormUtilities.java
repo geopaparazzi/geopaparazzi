@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;

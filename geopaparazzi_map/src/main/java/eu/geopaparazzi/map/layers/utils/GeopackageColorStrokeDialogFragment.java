@@ -27,7 +27,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +50,6 @@ import org.hortonmachine.dbs.utils.BasicStyle;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
 
 /**

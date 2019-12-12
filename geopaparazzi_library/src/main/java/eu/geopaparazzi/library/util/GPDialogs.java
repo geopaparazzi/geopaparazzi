@@ -28,8 +28,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -261,7 +261,7 @@ public class GPDialogs {
                     DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
                         checkedItems[which] = isChecked;
                     };
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setMultiChoiceItems(items, checkedItems, dialogListener);
                     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -269,7 +269,7 @@ public class GPDialogs {
                             onSelectionRunnable.run();
                         }
                     });
-                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    androidx.appcompat.app.AlertDialog dialog = builder.create();
                     if (title != null)
                         dialog.setTitle(title);
                     dialog.show();
@@ -301,7 +301,7 @@ public class GPDialogs {
                             checkedItems[i] = which == i;
                         }
                     };
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setSingleChoiceItems(items, checkedItemIndex, dialogListener);
                     builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -309,7 +309,7 @@ public class GPDialogs {
                             onSelectionRunnable.run();
                         }
                     });
-                    android.support.v7.app.AlertDialog dialog = builder.create();
+                    androidx.appcompat.app.AlertDialog dialog = builder.create();
                     dialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in singleOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$

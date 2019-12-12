@@ -18,8 +18,8 @@
 package eu.geopaparazzi.map.gui;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerAdapter;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;

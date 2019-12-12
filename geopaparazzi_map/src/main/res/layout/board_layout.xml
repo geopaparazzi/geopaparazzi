@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addDefaultTileSourcesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/ic_defaultsources_24" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addMapSourceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/ic_add_file_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addMapSourceFolderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/ic_add_folder_24dp" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/mapToggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -18,8 +18,8 @@
 package eu.geopaparazzi.core.ui.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.util.LibraryConstants;

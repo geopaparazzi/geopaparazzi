@@ -40,9 +40,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import android.widget.Toast;
 
 import java.util.Date;

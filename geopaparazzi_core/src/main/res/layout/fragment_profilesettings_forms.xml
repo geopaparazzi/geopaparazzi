@@ -19,7 +19,7 @@
             tools:context="com.hydrologis.geoss2go.activities.ProfileSettingsActivity">
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,9 +38,9 @@
                     android:singleLine="true"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/formPathLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,9 +57,9 @@
                     android:singleLine="true"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/sectionsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,13 +76,13 @@
                     android:singleLine="true"
                     android:text="" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </RelativeLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFormsjsonButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

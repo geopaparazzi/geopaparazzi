@@ -26,7 +26,7 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;

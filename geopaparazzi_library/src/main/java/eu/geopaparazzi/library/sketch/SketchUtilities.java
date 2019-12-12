@@ -23,7 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormDetailFragment;

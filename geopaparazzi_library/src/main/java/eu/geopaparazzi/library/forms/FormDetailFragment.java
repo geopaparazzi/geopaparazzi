@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import androidx.fragment.app.Fragment;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +88,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("HardCodedStringLiteral")
-public class FormDetailFragment extends android.support.v4.app.Fragment {
+public class FormDetailFragment extends Fragment {
     public static final String ARGS_FORMINFO = "args_forminfo";
 
     private HashMap<String, GView> key2WidgetMap = new HashMap<>();

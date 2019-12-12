@@ -34,7 +34,7 @@
             android:layout_marginBottom="20dip"
             android:text="Dash intervals" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/final_dash_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,9 +54,9 @@
                 android:lines="1"
                 android:text="" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/final_dashshift_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                 android:text=""
                 android:inputType="number" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/title2"
@@ -213,7 +213,7 @@
             android:layout_toEndOf="@+id/switch6"
             android:orientation="horizontal" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/dash_unit_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -231,7 +231,7 @@
                 android:text="5"
                 android:inputType="number" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
     </RelativeLayout>
