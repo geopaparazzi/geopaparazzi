@@ -1,66 +1,43 @@
-import com.android.build.gradle.tasks.PackageApplication
-
 apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion project.ext.mycompileSdkVersion
     buildToolsVersion project.ext.mybuildToolsVersion
 
-
+    defaultConfig {
+        minSdkVersion project.ext.myminSdkVersion
+        targetSdkVersion project.ext.mytargetSdkVersion
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+    }
     buildTypes {
         release {
             minifyEnabled false
-    //            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-    //                    'proguard-rules.pro'
-    //            signingConfig signingConfigs.config
-
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //signingConfig signingConfigs.config
         }
         debug {
             debuggable true
         }
     }
-
-    defaultConfig {
-        minSdkVersion project.ext.myminSdkVersion
-        targetSdkVersion project.ext.mytargetSdkVersion
-        multiDexEnabled true
-
-        vectorDrawables.useSupportLibrary = true
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    productFlavors {
-    }
-
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
+    compileOptions {
+        encoding = 'UTF-8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    testImplementation 'junit:junit:4.12'
-    api 'com.android.support:appcompat-v7:28.0.0'
     api 'com.android.support:design:28.0.0'
-    api 'com.android.support:preference-v7:28.0.0'
     api 'com.android.support:support-v4:28.0.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
+    api 'com.android.support:preference-v7:28.0.0'
+
     api project(':geopaparazzilibrary')
     api project(':geopaparazzimap')
     api project(':geopaparazzi_acrylicpaint')
-}
-
-
-
-
-
-
-
-
-
-repositories {
-    google()
 }

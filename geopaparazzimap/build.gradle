@@ -1,128 +1,82 @@
 apply plugin: 'com.android.library'
 
-dependencies {
-    api 'com.android.support:appcompat-v7:28.0.0'
-    api 'com.android.support:design:28.0.0'
-    api 'com.android.support:support-v4:28.0.0'
-
-    //    implementation 'net.sf.kxml:kxml2:2.3.0'
-
-    //    implementation 'com.caverock:androidsvg:1.3'
-
-    //    api 'org.mapsforge:mapsforge-core:0.11.0'
-
-    //    api 'org.mapsforge:mapsforge-map:0.11.0'
-
-    //    api 'org.mapsforge:mapsforge-map-reader:0.11.0'
-
-    //    api 'org.mapsforge:mapsforge-themes:0.11.0'
-
-    //    api 'org.mapsforge:mapsforge-map-android:0.11.0'
-    api 'org.mapsforge:vtm:0.11.1'
-    api 'org.mapsforge:vtm-themes:0.11.1'
-    api 'org.mapsforge:vtm-mvt:0.11.1'
-    api 'org.mapsforge:vtm-http:0.11.1'
-    implementation 'org.slf4j:slf4j-api:1.7.25'
-    api 'org.mapsforge:vtm-android:0.11.1'
-    implementation 'org.mapsforge:vtm-android:0.11.1:natives-armeabi-v7a'
-    implementation 'org.mapsforge:vtm-android:0.11.1:natives-arm64-v8a'
-    implementation 'org.mapsforge:vtm-android:0.11.1:natives-x86'
-    implementation 'org.mapsforge:vtm-android:0.11.1:natives-x86_64'
-    api 'com.caverock:androidsvg:1.3'
-
-    api 'com.github.woxthebox:draglistview:1.6.3'
-
-    //    api 'org.mapsforge:vtm-gdx:0.11.0'
-
-    //    api 'org.mapsforge:vtm-android-gdx:0.11.0'
-
-    //    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-armeabi-v7a'
-
-    //    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-arm64-v8a'
-
-    //    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86'
-
-    //    implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86_64'
-
-    //    api 'com.badlogicgames.gdx:gdx:1.9.9'
-
-    //    api 'com.badlogicgames.gdx:gdx-backend-android:1.9.9'
-
-    //    api project(':vtm-android')
-
-    //    implementation project(':vtm-extras')
-
-    //    implementation project(':vtm-http')
-
-    //    implementation project(':vtm-jeo')
-
-    //    implementation project(':vtm-json')
-
-    //    implementation project(':vtm-jts')
-
-    //    implementation project(':vtm-mvt')
-
-    //    implementation project(':vtm-themes')
-
-    //    implementation "org.slf4j:slf4j-android:$slf4jVersion"
-
-    //
-
-    //    implementation project(':vtm-android-gdx')
-
-    //    implementation project(':vtm-gdx')
-
-    //    implementation project(':vtm-gdx-poi3d')
-    api project(':geopaparazzilibrary')
-    api fileTree(include: ['*.jar'], dir: 'libs')
-}
 android {
     compileSdkVersion project.ext.mycompileSdkVersion
     buildToolsVersion project.ext.mybuildToolsVersion
-    sourceSets {
-        main {
-            manifest {
-                srcFile 'AndroidManifest.xml'
-            }
-            java {
-                srcDir 'src'
-            }
-            res {
-                srcDir 'res'
-            }
-            assets {
-                srcDir 'assets'
-            }
-            resources {
-                srcDir 'src'
-            }
-            aidl {
-                srcDir 'src'
-            }
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
     defaultConfig {
         minSdkVersion project.ext.myminSdkVersion
         targetSdkVersion project.ext.mytargetSdkVersion
         vectorDrawables.useSupportLibrary = true
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    sourceSets {
+        main {
+            manifest { srcFile 'AndroidManifest.xml' }
+            java { srcDir 'src' }
+            res { srcDir 'res' }
+            assets { srcDir 'assets' }
+            resources { srcDir 'src' }
+            aidl { srcDir 'src' }
         }
-    }
-    productFlavors {
     }
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        encoding = 'UTF-8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
-repositories {
-    google()
+dependencies {
+    api 'com.android.support:design:28.0.0'
+    api 'com.android.support:support-v4:28.0.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
+
+    api 'org.mapsforge:vtm:0.11.1'
+    api 'org.mapsforge:vtm-android:0.11.1'
+    api 'org.mapsforge:vtm-http:0.11.1'
+    api 'org.mapsforge:vtm-mvt:0.11.1'
+    api 'org.mapsforge:vtm-themes:0.11.1'
+    implementation 'org.mapsforge:vtm-android:0.11.1:natives-armeabi-v7a'
+    implementation 'org.mapsforge:vtm-android:0.11.1:natives-arm64-v8a'
+    implementation 'org.mapsforge:vtm-android:0.11.1:natives-x86'
+    implementation 'org.mapsforge:vtm-android:0.11.1:natives-x86_64'
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    api 'com.caverock:androidsvg:1.4'
+    api 'com.github.woxthebox:draglistview:1.6.3'
+
+    // implementation 'net.sf.kxml:kxml2:2.3.0'
+    // implementation "org.slf4j:slf4j-android:$slf4jVersion"
+
+    // api 'org.mapsforge:mapsforge-core:0.11.0'
+    // api 'org.mapsforge:mapsforge-map:0.11.0'
+    // api 'org.mapsforge:mapsforge-map-android:0.11.0'
+    // api 'org.mapsforge:mapsforge-map-reader:0.11.0'
+    // api 'org.mapsforge:mapsforge-themes:0.11.0'
+    // api 'org.mapsforge:vtm-gdx:0.11.0'
+    // api 'org.mapsforge:vtm-android-gdx:0.11.0'
+    // implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-armeabi-v7a'
+    // implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-arm64-v8a'
+    // implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86'
+    // implementation 'org.mapsforge:vtm-android-gdx:0.11.0:natives-x86_64'
+
+    // api 'com.badlogicgames.gdx:gdx:1.9.9'
+    // api 'com.badlogicgames.gdx:gdx-backend-android:1.9.9'
+
+    // api project(':vtm-android')
+    // implementation project(':vtm-android-gdx')
+    // implementation project(':vtm-extras')
+    // implementation project(':vtm-gdx')
+    // implementation project(':vtm-gdx-poi3d')
+    // implementation project(':vtm-http')
+    // implementation project(':vtm-jeo')
+    // implementation project(':vtm-json')
+    // implementation project(':vtm-jts')
+    // implementation project(':vtm-mvt')
+    // implementation project(':vtm-themes')
+
+    api project(':geopaparazzilibrary')
+    api fileTree(include: ['*.jar'], dir: 'libs')
 }

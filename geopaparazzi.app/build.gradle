@@ -4,16 +4,15 @@ android {
     compileSdkVersion project.ext.mycompileSdkVersion
     buildToolsVersion project.ext.mybuildToolsVersion
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.outputFileName = "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk"
-                }
-            }
-        }
+    defaultConfig {
+        applicationId project.ext.myApplicationId
+        minSdkVersion project.ext.myminSdkVersion
+        targetSdkVersion project.ext.mytargetSdkVersion
+        versionCode project.ext.myVersionCode
+        versionName project.ext.myVersionName
+        signingConfig signingConfigs.config
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     sourceSets {
         main {
@@ -44,27 +43,26 @@ android {
             }
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    buildTypes {
+        release {
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.outputFileName = "GeoPaparazzi_" + android.defaultConfig.versionName + ".apk"
+                }
+            }
+        }
     }
-
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+        disable 'GoogleAppIndexingWarning'
     }
-
-    defaultConfig {
-        applicationId project.ext.myApplicationId
-        minSdkVersion project.ext.myminSdkVersion
-        targetSdkVersion project.ext.mytargetSdkVersion
-        versionCode project.ext.myVersionCode
-        versionName project.ext.myVersionName
-        signingConfig signingConfigs.config
-        multiDexEnabled true
-        vectorDrawables.useSupportLibrary = true
-
+    compileOptions {
+        encoding = 'UTF-8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -82,18 +80,17 @@ clean.dependsOn 'cleanCopyNativeLibs'
 
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    testImplementation 'junit:junit:4.12'
-    api 'com.android.support:appcompat-v7:28.0.0'
     api 'com.android.support:design:28.0.0'
-    api 'com.android.support:preference-v7:28.0.0'
     api 'com.android.support:support-v4:28.0.0'
+    api 'com.android.support:appcompat-v7:28.0.0'
+    api 'com.android.support:preference-v7:28.0.0'
+
     implementation project(':geopaparazzi_core')
-    implementation project(':geopaparazzi_default_import_plugins')
     implementation project(':geopaparazzi_default_export_plugins')
+    implementation project(':geopaparazzi_default_import_plugins')
     implementation project(':geopaparazzi_pdf_export_plugins')
-    implementation project(':geopaparazzi_projects_import_plugins')
-    implementation project(':geopaparazzi_projects_export_plugins')
-    implementation project(':geopaparazzi_profiles_import_plugins')
     implementation project(':geopaparazzi_profiles_export_plugins')
+    implementation project(':geopaparazzi_profiles_import_plugins')
+    implementation project(':geopaparazzi_projects_export_plugins')
+    implementation project(':geopaparazzi_projects_import_plugins')
 }

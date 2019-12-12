@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.5.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -18,20 +18,20 @@ allprojects {
         jcenter()
         google()
     }
+    ext {
+        myApplicationId = "eu.hydrologis.geopaparazzi"
+        myVersionCode = 97
+        myVersionName = "6.0.1"
 
-    ext.myApplicationId = "eu.hydrologis.geopaparazzi"
-    ext.myVersionCode = 97
-    ext.myVersionName = "6.0.1"
+        mycompileSdkVersion = 28
+        mybuildToolsVersion = "29.0.2"
+        myminSdkVersion = 21
+        mytargetSdkVersion = 28
 
-    ext.mycompileSdkVersion = 28
-    ext.mybuildToolsVersion = "28.0.3"
-    ext.myminSdkVersion = 21
-    ext.mytargetSdkVersion = 28
-
-    ext.gdxVersion = "1.9.9"
-    ext.gwtVersion = "2.8.0"
-    ext.slf4jVersion = "1.7.25"
-
+        gdxVersion = "1.9.9"
+        gwtVersion = "2.8.2"
+        slf4jVersion = "1.7.29"
+    }
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none', '-quiet')
