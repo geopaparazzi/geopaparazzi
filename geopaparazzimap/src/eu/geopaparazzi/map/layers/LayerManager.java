@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import com.woxthebox.draglistview.DragItemAdapter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,13 +27,10 @@ import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
 import eu.geopaparazzi.map.GPMapThemes;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.editing.EditManager;
-import eu.geopaparazzi.map.gui.MapLayerItem;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
@@ -51,6 +46,7 @@ import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
+import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
@@ -354,6 +350,21 @@ public enum LayerManager {
                             }
                             break;
                         }
+                        case GEOPACKAGE: {
+                            String dbPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
+
+                            boolean isEditing = false;
+                            if (layerDefinition.has(IGpLayer.LAYEREDITING_TAG))
+                                isEditing = layerDefinition.getBoolean(IGpLayer.LAYEREDITING_TAG);
+
+                            GeopackageTableLayer spatialiteLayer = new GeopackageTableLayer(mapView, dbPath, name, isEditing);
+                            spatialiteLayer.load();
+                            spatialiteLayer.setEnabled(isEnabled);
+                            if (isEditing) {
+                                EditManager.INSTANCE.setEditLayer(spatialiteLayer);
+                            }
+                            break;
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -579,7 +590,7 @@ public enum LayerManager {
                         return -1;
                     } else {
                         jo = new JSONObject();
-                        jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
+                        jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getTilesType());
                         jo.put(IGpLayer.LAYERNAME_TAG, name);
                         jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
                         if (!userLayersDefinitions.contains(jo))
@@ -593,7 +604,7 @@ public enum LayerManager {
                 }
                 case MBTILES: {
                     jo = new JSONObject();
-                    jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getType());
+                    jo.put(IGpLayer.LAYERTYPE_TAG, layerType.getTilesType());
                     jo.put(IGpLayer.LAYERNAME_TAG, name);
                     jo.put(IGpLayer.LAYERPATH_TAG, finalFile.getAbsolutePath());
                     if (!userLayersDefinitions.contains(jo))
@@ -632,7 +643,24 @@ public enum LayerManager {
         checkSameNameLayerExists(tableName);
 
         JSONObject jo = new JSONObject();
-        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.SPATIALITE.getType());
+        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.SPATIALITE.getVectorType());
+        jo.put(IGpLayer.LAYERNAME_TAG, tableName);
+        jo.put(IGpLayer.LAYERPATH_TAG, dbFile);
+        jo.put(IGpLayer.LAYERMAXZOOM_TAG, 25);
+        if (!userLayersDefinitions.contains(jo))
+            if (index != null) {
+                userLayersDefinitions.add(index, jo);
+            } else {
+                userLayersDefinitions.add(jo);
+            }
+        return userLayersDefinitions.indexOf(jo);
+    }
+
+    public int addGeopackageTable(File dbFile, String tableName, Integer index, String layerTypeClass) throws Exception {
+        checkSameNameLayerExists(tableName);
+
+        JSONObject jo = new JSONObject();
+        jo.put(IGpLayer.LAYERTYPE_TAG, layerTypeClass);
         jo.put(IGpLayer.LAYERNAME_TAG, tableName);
         jo.put(IGpLayer.LAYERPATH_TAG, dbFile);
         jo.put(IGpLayer.LAYERMAXZOOM_TAG, 25);
@@ -690,7 +718,7 @@ public enum LayerManager {
     public int addBitmapTileService(String name, String url, String tilePath, int maxZoom, float alpha, Integer index) throws Exception {
         checkSameNameLayerExists(name);
         JSONObject jo = new JSONObject();
-        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.BITMAPTILESERVICE.getType());
+        jo.put(IGpLayer.LAYERTYPE_TAG, ELayerTypes.BITMAPTILESERVICE.getTilesType());
         jo.put(IGpLayer.LAYERNAME_TAG, name);
         jo.put(IGpLayer.LAYERURL_TAG, url);
         jo.put(IGpLayer.LAYERPATH_TAG, tilePath);

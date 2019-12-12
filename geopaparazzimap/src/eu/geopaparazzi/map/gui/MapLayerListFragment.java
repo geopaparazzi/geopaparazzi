@@ -28,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
@@ -39,6 +38,8 @@ import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.ISpatialTableNames;
 import org.hortonmachine.dbs.datatypes.EDataType;
+import org.hortonmachine.dbs.geopackage.FeatureEntry;
+import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -426,7 +427,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
 
                                     if (index >= 0) {
                                         MapLayerItem item = new MapLayerItem();
-                                        item.type = layerType.getType();
+                                        item.type = layerType.getTilesType();
                                         item.position = index;
                                         item.name = FileUtilities.getNameWithoutExtention(finalFile);
                                         item.path = finalFile.getAbsolutePath();
@@ -455,7 +456,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                         int index1 = LayerManager.INSTANCE.addMapurlBitmapTileService(finalFile, null);
                                         if (index1 >= 0) {
                                             MapLayerItem item = new MapLayerItem();
-                                            item.type = layerType.getType();
+                                            item.type = layerType.getTilesType();
                                             item.position = index1;
                                             item.name = FileUtilities.getNameWithoutExtention(finalFile);
                                             item.path = finalFile.getAbsolutePath();
@@ -546,7 +547,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                                 int itemCount2 = mBoardView.getItemCount(focusedColumn2);
                                                 if (index2 >= 0) {
                                                     MapLayerItem item = new MapLayerItem();
-                                                    item.type = layerType.getType();
+                                                    item.type = layerType.getVectorType();
                                                     item.position = index2;
                                                     item.name = tableNames.get(0);
                                                     item.path = finalFile.getAbsolutePath();
@@ -579,7 +580,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                                             int itemCount2 = mBoardView.getItemCount(focusedColumn2);
                                                             if (index2 >= 0) {
                                                                 MapLayerItem item = new MapLayerItem();
-                                                                item.type = layerType.getType();
+                                                                item.type = layerType.getVectorType();
                                                                 item.position = index2;
                                                                 item.name = selTable;
                                                                 item.path = finalFile.getAbsolutePath();
@@ -599,7 +600,85 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                     } else {
                                         GPDialogs.warningDialog(getActivity(), getString(R.string.unable_to_find_tables_in_db), null);
                                     }
+                                    break;
+                                }
+                                case GEOPACKAGE: {
+                                    // ask for table
+                                    List<String> tableNames = null;
+                                    try (GPGeopackageDb db = new GPGeopackageDb()) {
+                                        db.open(finalFile.getAbsolutePath());
+                                        db.setForceMobileCompatibility(true);
 
+                                        List<FeatureEntry> featuresList = db.features();
+                                        tableNames = new ArrayList<>();
+                                        for (FeatureEntry featureEntry : featuresList) {
+                                            String tableName = featureEntry.getTableName();
+                                            tableNames.add(tableName);
+                                        }
+                                    }
+
+                                    if (tableNames != null) {
+                                        if (tableNames.size() == 1) {
+                                            try {
+                                                int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), tableNames.get(0), null, layerType.getVectorType());
+                                                int focusedColumn2 = mBoardView.getFocusedColumn();
+                                                int itemCount2 = mBoardView.getItemCount(focusedColumn2);
+                                                if (index2 >= 0) {
+                                                    MapLayerItem item = new MapLayerItem();
+                                                    item.type = layerType.getVectorType();
+                                                    item.position = index2;
+                                                    item.name = tableNames.get(0);
+                                                    item.path = finalFile.getAbsolutePath();
+                                                    item.enabled = true;
+                                                    item.isEditing = false;
+
+                                                    mBoardView.addItem(focusedColumn2, itemCount2, item, true);
+                                                }
+                                            } catch (Exception e) {
+                                                GPLog.error(this, null, e);
+                                            }
+                                        } else if (tableNames.size() > 0) {
+                                            String[] items = new String[tableNames.size()];
+                                            boolean[] checkItems = new boolean[tableNames.size()];
+                                            for (int i = 0; i < items.length; i++) {
+                                                items[i] = tableNames.get(i);
+                                            }
+                                            GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
+                                                List<String> selTables = new ArrayList<>();
+                                                for (int i = 0; i < checkItems.length; i++) {
+                                                    if (checkItems[i]) {
+                                                        selTables.add(items[i]);
+                                                    }
+                                                }
+                                                if (selTables.size() > 0) {
+                                                    for (String selTable : selTables) {
+                                                        try {
+                                                            int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), selTable, null, layerType.getVectorType());
+                                                            int focusedColumn2 = mBoardView.getFocusedColumn();
+                                                            int itemCount2 = mBoardView.getItemCount(focusedColumn2);
+                                                            if (index2 >= 0) {
+                                                                MapLayerItem item = new MapLayerItem();
+                                                                item.type = layerType.getVectorType();
+                                                                item.position = index2;
+                                                                item.name = selTable;
+                                                                item.path = finalFile.getAbsolutePath();
+                                                                item.enabled = true;
+                                                                item.isEditing = false;
+
+                                                                mBoardView.addItem(focusedColumn2, itemCount2, item, true);
+                                                            }
+                                                        } catch (Exception e) {
+                                                            GPLog.error(this, null, e);
+                                                        }
+                                                    }
+
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        GPDialogs.warningDialog(getActivity(), getString(R.string.unable_to_find_tables_in_db), null);
+                                    }
+                                    break;
                                 }
                             }
 
