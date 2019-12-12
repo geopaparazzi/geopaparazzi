@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Oblik tačke</string>
-  <string name="point_size">Veličina tačke</string>
-  <string name="decimation">Desetkovanje</string>
+    <string name="point_shape_">Oblik tačke</string>
+    <string name="point_size">Veličina tačke</string>
+    <string name="decimation">Desetkovanje</string>
 </resources>

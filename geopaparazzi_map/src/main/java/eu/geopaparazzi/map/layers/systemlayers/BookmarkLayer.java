@@ -12,8 +12,6 @@ import org.json.JSONObject;
 import org.oscim.android.canvas.AndroidGraphics;
 import org.oscim.backend.CanvasAdapter;
 import org.oscim.backend.canvas.Bitmap;
-import org.oscim.backend.canvas.Color;
-import org.oscim.backend.canvas.Paint;
 import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
@@ -21,7 +19,6 @@ import org.oscim.layers.marker.MarkerSymbol;
 import org.oscim.map.Layers;
 import org.oscim.map.Map;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

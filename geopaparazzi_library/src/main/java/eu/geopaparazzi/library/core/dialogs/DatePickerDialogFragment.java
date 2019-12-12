@@ -17,14 +17,15 @@
  */
 package eu.geopaparazzi.library.core.dialogs;
 
-import java.text.DecimalFormat;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.TextView;
+
+import androidx.fragment.app.DialogFragment;
+
+import java.text.DecimalFormat;
 
 /**
  * A date picker fragment.

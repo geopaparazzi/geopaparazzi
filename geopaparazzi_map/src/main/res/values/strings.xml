@@ -200,7 +200,7 @@
         <item quantity="one">1 document</item>
         <item quantity="other">%d documents</item>
     </plurals>
-    <string name="confirm_remove_image" >Remove image?</string>
+    <string name="confirm_remove_image">Remove image?</string>
     <string name="unable_write_geometry">Unable to write geometry</string>
     <string name="select_title">SELECT</string>
     <string name="selecting_features">Selecting features...</string>

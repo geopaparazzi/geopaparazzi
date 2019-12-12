@@ -1,9 +1,5 @@
 package eu.geopaparazzi.library.profiles.objects;
 
-import android.os.Parcelable;
-
-import eu.geopaparazzi.library.network.download.IDownloadable;
-
 /**
  * Created by hydrologis on 20/03/18.
  */

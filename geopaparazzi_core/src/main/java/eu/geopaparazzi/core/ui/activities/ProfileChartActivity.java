@@ -26,7 +26,6 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -45,22 +44,24 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYLegendWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.locationtech.jts.geom.Coordinate;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.library.util.DynamicDoubleArray;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.objects.Line;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.core.utilities.FeatureSlidingAverage;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 
 /**
  * The profile chart activity.
@@ -157,7 +158,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         xyPlotElev.setBorderPaint(null);
         xyPlotElev.setBackgroundPaint(null);
 
-        /* 
+        /*
          * Setup the Graph Widgets
          */
         XYGraphWidget graphWidgetSpeed = xyPlotSpeed.getGraphWidget();
@@ -246,7 +247,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         graphWidgetSpeed.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
         graphWidgetElev.position(0, XLayoutStyle.ABSOLUTE_FROM_CENTER, 0, YLayoutStyle.ABSOLUTE_FROM_CENTER, AnchorPosition.CENTER);
 
-        /* 
+        /*
          * Position the Label Widgets
          */
         xyPlotSpeed.getDomainLabelWidget().setWidth(100);
@@ -268,7 +269,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
         legendWidgetSpeed.getTextPaint().setTextSize(PixelUtils.dpToPix(9));
         legendWidgetSpeed.position(PixelUtils.dpToPix(30), XLayoutStyle.ABSOLUTE_FROM_LEFT, f10 + 2, YLayoutStyle.ABSOLUTE_FROM_TOP, AnchorPosition.LEFT_TOP);
 
-       
+
         /*
          *  Setup and Position the elev Legend
          */
@@ -321,7 +322,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
 
     @Override
     protected void onDestroy() {
-        if (resumeTask!= null) resumeTask.dispose();
+        if (resumeTask != null) resumeTask.dispose();
         super.onDestroy();
     }
 

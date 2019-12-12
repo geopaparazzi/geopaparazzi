@@ -2,6 +2,7 @@ package eu.geopaparazzi.map.utils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import androidx.annotation.NonNull;
 
 import org.hortonmachine.dbs.compat.objects.QueryResult;

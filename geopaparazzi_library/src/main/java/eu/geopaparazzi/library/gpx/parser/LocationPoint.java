@@ -27,7 +27,7 @@ public class LocationPoint {
     private boolean mHasElevation = false;
     private double mElevation;
 
-    final void setLocation( double longitude, double latitude ) {
+    final void setLocation(double longitude, double latitude) {
         mLongitude = longitude;
         mLatitude = latitude;
     }
@@ -46,7 +46,7 @@ public class LocationPoint {
         return mLatitude;
     }
 
-    final void setElevation( double elevation ) {
+    final void setElevation(double elevation) {
         mElevation = elevation;
         mHasElevation = true;
     }

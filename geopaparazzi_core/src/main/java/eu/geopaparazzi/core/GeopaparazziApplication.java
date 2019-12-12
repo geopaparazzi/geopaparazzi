@@ -19,7 +19,6 @@ package eu.geopaparazzi.core;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.util.Log;
 
 import org.acra.ACRA;
@@ -35,7 +34,6 @@ import java.io.IOException;
 import eu.geopaparazzi.core.database.DatabaseManager;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.map.layers.LayerManager;
 

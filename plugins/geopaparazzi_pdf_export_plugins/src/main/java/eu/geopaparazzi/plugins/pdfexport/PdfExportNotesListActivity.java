@@ -18,21 +18,14 @@
 package eu.geopaparazzi.plugins.pdfexport;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -44,42 +37,21 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoImages;
-import eu.geopaparazzi.core.database.DaoMetadata;
 import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.objects.ItemComparators;
-import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.core.database.objects.Note;
-import eu.geopaparazzi.core.mapview.MapviewActivity;
-import eu.geopaparazzi.core.ui.activities.NotesPropertiesActivity;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.ANote;
-import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IImagesDbHelper;
-import eu.geopaparazzi.library.database.Image;
-import eu.geopaparazzi.library.forms.FormActivity;
-import eu.geopaparazzi.library.forms.FormInfoHolder;
-import eu.geopaparazzi.library.forms.FormUtilities;
-import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.share.ShareUtilities;
-import eu.geopaparazzi.library.util.AppsUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.library.util.UrlUtilities;
 
 /**
  * Notes listing activity.

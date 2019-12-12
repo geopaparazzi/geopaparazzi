@@ -21,8 +21,8 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 
 /**
- * Helper class for screen matters. 
- * 
+ * Helper class for screen matters.
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ScreenHelper {
@@ -30,16 +30,16 @@ public class ScreenHelper {
     private static ScreenHelper screenHelper;
     private final Activity activity;
 
-    private ScreenHelper( Activity activity ) {
+    private ScreenHelper(Activity activity) {
         this.activity = activity;
     }
 
     /**
      * @param activity activity.
      * @return the singleton instance.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static ScreenHelper getInstance( Activity activity ) throws Exception {
+    public static ScreenHelper getInstance(Activity activity) throws Exception {
         if (screenHelper == null) {
             screenHelper = new ScreenHelper(activity);
         }
@@ -48,19 +48,19 @@ public class ScreenHelper {
 
     /**
      * Gets the density of the screen.
-     * 
+     * <p>
      * Can be checked with:
      * <code>
-     *  switch( metrics.densityDpi ) {
-     *   case DisplayMetrics.DENSITY_LOW:
-     *       break;
-     *   case DisplayMetrics.DENSITY_MEDIUM:
-     *       break;
-     *   case DisplayMetrics.DENSITY_HIGH:
-     *       break;
-     *   }
+     * switch( metrics.densityDpi ) {
+     * case DisplayMetrics.DENSITY_LOW:
+     * break;
+     * case DisplayMetrics.DENSITY_MEDIUM:
+     * break;
+     * case DisplayMetrics.DENSITY_HIGH:
+     * break;
+     * }
      * </code>
-     * 
+     *
      * @return the density of the screen.
      */
     public int getDensity() {

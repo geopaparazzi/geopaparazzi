@@ -21,8 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +28,9 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
@@ -64,10 +65,10 @@ import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
+import eu.geopaparazzi.map.layers.utils.ColorStrokeObject;
 import eu.geopaparazzi.map.layers.utils.GeopackageColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
-import eu.geopaparazzi.map.layers.utils.ColorStrokeObject;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.utils.MapUtilities;
 

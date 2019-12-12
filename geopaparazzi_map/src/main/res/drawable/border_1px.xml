@@ -1,4 +1,4 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <solid android:color="@color/main_background" />
 

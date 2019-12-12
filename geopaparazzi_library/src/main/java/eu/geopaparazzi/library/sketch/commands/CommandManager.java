@@ -18,13 +18,13 @@
 
 package eu.geopaparazzi.library.sketch.commands;
 
+import android.graphics.Canvas;
+import android.os.Handler;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import android.graphics.Canvas;
-import android.os.Handler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +38,7 @@ public class CommandManager {
     private List<DrawingPath> redoStack;
 
     /**
-     * 
+     *
      */
     public CommandManager() {
         currentStack = Collections.synchronizedList(new ArrayList<DrawingPath>());
@@ -48,13 +48,13 @@ public class CommandManager {
     /**
      * @param command command
      */
-    public void addCommand( DrawingPath command ) {
+    public void addCommand(DrawingPath command) {
         redoStack.clear();
         currentStack.add(command);
     }
 
     /**
-     * 
+     *
      */
     public void undo() {
         final int length = currentStackLength();
@@ -76,15 +76,15 @@ public class CommandManager {
     }
 
     /**
-     * @param canvas canvas
+     * @param canvas      canvas
      * @param doneHandler handler.
      */
-    public void executeAll( Canvas canvas, Handler doneHandler ) {
+    public void executeAll(Canvas canvas, Handler doneHandler) {
         if (currentStack != null) {
             synchronized (currentStack) {
                 final Iterator i = currentStack.iterator();
 
-                while( i.hasNext() ) {
+                while (i.hasNext()) {
                     final DrawingPath drawingPath = (DrawingPath) i.next();
                     drawingPath.draw(canvas);
                     // doneHandler.sendEmptyMessage(1);
@@ -108,7 +108,7 @@ public class CommandManager {
     }
 
     /**
-     * 
+     *
      */
     public void redo() {
         final int length = redoStack.toArray().length;

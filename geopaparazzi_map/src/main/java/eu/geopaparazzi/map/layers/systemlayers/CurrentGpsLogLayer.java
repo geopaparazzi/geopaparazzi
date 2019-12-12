@@ -23,11 +23,11 @@ import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.utils.GpsLog;
+import eu.geopaparazzi.map.utils.MapUtilities;
 
 public class CurrentGpsLogLayer extends VectorLayer implements IPositionLayer, ISystemLayer {
     public static String NAME = null;

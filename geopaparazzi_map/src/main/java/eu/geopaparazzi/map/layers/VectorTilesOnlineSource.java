@@ -5,7 +5,6 @@ import org.oscim.tiling.OverzoomTileDataSource;
 import org.oscim.tiling.source.UrlTileDataSource;
 import org.oscim.tiling.source.UrlTileSource;
 import org.oscim.tiling.source.mvt.MvtTileDecoder;
-import org.oscim.tiling.source.mvt.TileDecoder;
 
 @SuppressWarnings("ALL")
 public class VectorTilesOnlineSource extends UrlTileSource {
@@ -64,6 +63,6 @@ public class VectorTilesOnlineSource extends UrlTileSource {
 
     @Override
     public ITileDataSource getDataSource() {
-            return new OverzoomTileDataSource(new UrlTileDataSource(this, new MvtTileDecoder(locale), getHttpEngine()), mOverZoom);
+        return new OverzoomTileDataSource(new UrlTileDataSource(this, new MvtTileDecoder(locale), getHttpEngine()), mOverZoom);
     }
 }

@@ -17,8 +17,6 @@
  */
 package eu.geopaparazzi.library.style;
 
-import android.graphics.DashPathEffect;
-
 import java.util.Arrays;
 import java.util.HashMap;
 

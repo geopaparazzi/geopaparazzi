@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.library.util;
+
 /**
  * A bounding box that keeps both world and screen space.
  *
@@ -23,35 +24,35 @@ package eu.geopaparazzi.library.util;
  */
 public class BoundingBox {
     /**
-     * 
+     *
      */
     public float north;
     /**
-     * 
+     *
      */
     public float south;
     /**
-     * 
+     *
      */
     public float east;
     /**
-     * 
+     *
      */
     public float west;
     /**
-     * 
+     *
      */
     public int left;
     /**
-     * 
+     *
      */
     public int bottom;
     /**
-     * 
+     *
      */
     public int right;
     /**
-     * 
+     *
      */
     public int top;
 

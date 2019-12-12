@@ -20,28 +20,28 @@ package eu.geopaparazzi.library.forms.constraints;
 
 /**
  * An interface for constraints.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IConstraint {
 
     /**
      * Applies the current filter to the supplied value.
-     * 
+     *
      * @param value the value to check.
      */
     void applyConstraint(Object value);
 
     /**
      * Getter for the constraint's result.
-     * 
+     *
      * @return <code>true</code> if the constraint applies.
      */
     boolean isValid();
-    
+
     /**
      * Getter for the description of the constraint.
-     * 
+     *
      * @return the description of the constraint.
      */
     String getDescription();

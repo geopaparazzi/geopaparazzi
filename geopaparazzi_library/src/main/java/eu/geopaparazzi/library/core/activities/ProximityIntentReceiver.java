@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -35,7 +36,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
     private static final int NOTIFICATION_ID = 1000;
 
     @Override
-    public void onReceive( Context context, Intent intent ) {
+    public void onReceive(Context context, Intent intent) {
 
         String key = LocationManager.KEY_PROXIMITY_ENTERING;
 

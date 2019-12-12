@@ -25,7 +25,7 @@ import java.io.Serializable;
  *
  * @author Andrea Antonello
  */
-public class SimplePosition implements Serializable{
+public class SimplePosition implements Serializable {
     public Double longitude;
     public Double latitude;
     public Double elevation;

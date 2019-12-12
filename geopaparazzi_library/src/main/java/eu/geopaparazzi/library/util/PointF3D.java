@@ -22,9 +22,9 @@ import android.location.Location;
 
 /**
  * Add a third dimension and description to {@link PointF}.
- * 
+ *
  * <p>Note that only functions added here implement the third dimension.</p>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PointF3D extends PointF {
@@ -37,7 +37,7 @@ public class PointF3D extends PointF {
      * @param x x
      * @param y y
      */
-    public PointF3D( float x, float y ) {
+    public PointF3D(float x, float y) {
         super(x, y);
         hasZ = false;
     }
@@ -45,21 +45,21 @@ public class PointF3D extends PointF {
     /**
      * @param x x
      * @param y y
-     * @param z z 
+     * @param z z
      */
-    public PointF3D( float x, float y, float z ) {
+    public PointF3D(float x, float y, float z) {
         super(x, y);
         this.z = z;
         hasZ = true;
     }
 
     /**
-     * @param x x
-     * @param y y
-     * @param z z 
+     * @param x           x
+     * @param y           y
+     * @param z           z
      * @param description description.
      */
-    public PointF3D( float x, float y, float z, String description ) {
+    public PointF3D(float x, float y, float z, String description) {
         this(x, y, z);
         this.z = z;
         if (description != null)
@@ -70,7 +70,7 @@ public class PointF3D extends PointF {
     /**
      * @param z z to set.
      */
-    public void setZ( float z ) {
+    public void setZ(float z) {
         this.z = z;
         hasZ = true;
     }
@@ -99,18 +99,18 @@ public class PointF3D extends PointF {
     /**
      * @param description description to set.
      */
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * Calculates the 2d distance between two points.
-     * 
+     *
      * @param p the {@link PointF} from which to calculate from.
      * @return the 2d distance.
      */
     @SuppressWarnings("nls")
-    public float distance2d( PointF p ) {
+    public float distance2d(PointF p) {
         Location thisLoc = new Location("dummy");
         thisLoc.setLongitude(x);
         thisLoc.setLatitude(y);
@@ -123,11 +123,11 @@ public class PointF3D extends PointF {
 
     /**
      * Calculates the 3d distance between two points if z is available.
-     * 
+     *
      * @param p the {@link PointF3D} from which to calculate from.
      * @return the 3d distance (or 2d if no elevation info is available).
      */
-    public float distance3d( PointF3D p ) {
+    public float distance3d(PointF3D p) {
         float distance2d = distance2d(p);
         if (hasZ && p.hasZ()) {
             double distance3d = Utilities.pythagoras(distance2d, Math.abs(z - p.getZ()));

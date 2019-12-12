@@ -31,13 +31,13 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Compat;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.editing.EditManager;
 import eu.geopaparazzi.map.features.tools.interfaces.Tool;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
-import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 

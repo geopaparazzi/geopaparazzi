@@ -17,9 +17,6 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +27,16 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Compat;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom {@link Spinner} view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GComboView extends View implements GView {
@@ -43,33 +44,33 @@ public class GComboView extends View implements GView {
     private Spinner spinner;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GComboView( Context context, AttributeSet attrs, int defStyle ) {
+    public GComboView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GComboView( Context context, AttributeSet attrs ) {
+    public GComboView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
-     * @param itemsArray the items.
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
+     * @param itemsArray            the items.
      * @param constraintDescription constraints
      */
-    public GComboView( Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
-            String[] itemsArray, String constraintDescription ) {
+    public GComboView(Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
+                      String[] itemsArray, String constraintDescription) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -89,7 +90,7 @@ public class GComboView extends View implements GView {
 
         spinner = new Spinner(context);
         LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        spinnerParams.setMargins(15,25, 15, 15);
+        spinnerParams.setMargins(15, 25, 15, 15);
         spinner.setLayoutParams(spinnerParams);
         spinner.setPopupBackgroundDrawable(Compat.getDrawable(context, R.drawable.thin_background_frame));
         spinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
@@ -110,7 +111,7 @@ public class GComboView extends View implements GView {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         if (value != null) {
-            for( int i = 0; i < itemsArray.length; i++ ) {
+            for (int i = 0; i < itemsArray.length; i++) {
                 if (itemsArray[i].equals(value.trim())) {
                     spinner.setSelection(i);
                     break;
@@ -126,12 +127,12 @@ public class GComboView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

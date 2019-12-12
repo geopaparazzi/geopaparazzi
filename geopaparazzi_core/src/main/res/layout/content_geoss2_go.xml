@@ -13,12 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/empty_fillers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
         <LinearLayout
             android:id="@+id/profiles_container"

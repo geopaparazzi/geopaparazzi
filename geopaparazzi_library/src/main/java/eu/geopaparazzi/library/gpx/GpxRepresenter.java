@@ -21,9 +21,8 @@ import java.io.Serializable;
 
 /**
  * Interface for objects that are able to represent themself as gpx item.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface GpxRepresenter extends Serializable {
 
@@ -31,14 +30,17 @@ public interface GpxRepresenter extends Serializable {
      * @return min lat.
      */
     double getMinLat();
+
     /**
      * @return min lon.
      */
     double getMinLon();
+
     /**
      * @return max lat.
      */
     double getMaxLat();
+
     /**
      * @return max lon.
      */
@@ -46,9 +48,9 @@ public interface GpxRepresenter extends Serializable {
 
     /**
      * Transforms the object in its gpx representation.
-     *  
+     *
      * @return the gpx representation.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
     String toGpxString() throws Exception;
 }

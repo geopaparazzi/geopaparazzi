@@ -1,11 +1,5 @@
 package eu.geopaparazzi.map.layers.interfaces;
 
-import org.locationtech.jts.geom.Envelope;
-
-import java.util.List;
-
-import eu.geopaparazzi.map.features.Feature;
-
 /**
  *
  */

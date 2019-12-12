@@ -24,21 +24,21 @@ import android.view.MotionEvent;
 
 /**
  * A tool that can draw.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface DrawingTool extends Tool {
 
     /**
      * Called when the tool should draw.
-     * 
+     *
      * @param canvas the {@link Canvas} to draw on.
      */
     void onToolDraw(Canvas canvas);
 
     /**
      * Called on a touch event.
-     * 
+     *
      * @param event the current triggered event.
      * @return <code>true</code> if the event has been handled.
      */

@@ -17,8 +17,6 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
 import android.content.Intent;
 import android.text.InputType;
@@ -29,48 +27,53 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.util.Compat;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom {@link EditText} view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GEditTextView extends View implements GView {
 
     private EditText editView;
+
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GEditTextView( Context context, AttributeSet attrs, int defStyle ) {
+    public GEditTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GEditTextView( Context context, AttributeSet attrs ) {
+    public GEditTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
-     * @param type the text type.
-     * @param lines the lines num.
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
+     * @param type                  the text type.
+     * @param lines                 the lines num.
      * @param constraintDescription constraints
-     * @param readonly if <code>false</code>, the item is disabled for editing.
+     * @param readonly              if <code>false</code>, the item is disabled for editing.
      */
-    public GEditTextView( Context context, AttributeSet attrs, LinearLayout parentView, String label, String value, int type,
-            int lines, String constraintDescription, boolean readonly ) {
+    public GEditTextView(Context context, AttributeSet attrs, LinearLayout parentView, String label, String value, int type,
+                         int lines, String constraintDescription, boolean readonly) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -97,21 +100,21 @@ public class GEditTextView extends View implements GView {
         editView.setText(value);
         editView.setEnabled(!readonly);
 
-        switch( type ) {
-        case 1:
-            editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            break;
-        case 2:
-            editView.setInputType(InputType.TYPE_CLASS_PHONE);
-            break;
-        case 3:
-            editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-            break;
-        case 4:
-            editView.setInputType(InputType.TYPE_CLASS_NUMBER);
-            break;
-        default:
-            break;
+        switch (type) {
+            case 1:
+                editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                break;
+            case 2:
+                editView.setInputType(InputType.TYPE_CLASS_PHONE);
+                break;
+            case 3:
+                editView.setInputType(InputType.TYPE_CLASS_DATETIME);
+                break;
+            case 4:
+                editView.setInputType(InputType.TYPE_CLASS_NUMBER);
+                break;
+            default:
+                break;
         }
 
         if (lines > 0) {
@@ -133,12 +136,12 @@ public class GEditTextView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

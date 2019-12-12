@@ -25,7 +25,7 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents a bookmark.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Bookmark implements KmlRepresenter {
@@ -37,13 +37,13 @@ public class Bookmark implements KmlRepresenter {
 
     /**
      * A wrapper for a Bookmark.
-     * 
-     * @param id the id
+     *
+     * @param id   the id
      * @param name the name of the Bookmark.
-     * @param lon lon
-     * @param lat lat
+     * @param lon  lon
+     * @param lat  lat
      */
-    public Bookmark( long id, String name, double lon, double lat ) {
+    public Bookmark(long id, String name, double lon, double lat) {
         this.id = id;
         if (name != null) {
             this.name = name;
@@ -56,14 +56,14 @@ public class Bookmark implements KmlRepresenter {
 
     /**
      * Constructor.
-     * 
-     * @param id id
+     *
+     * @param id   id
      * @param name name
-     * @param lon lon
-     * @param lat lat
+     * @param lon  lon
+     * @param lat  lat
      * @param zoom zoom
      */
-    public Bookmark( long id, String name, double lon, double lat, double zoom) {
+    public Bookmark(long id, String name, double lon, double lat, double zoom) {
         this.id = id;
         this.zoom = zoom;
         if (name != null) {

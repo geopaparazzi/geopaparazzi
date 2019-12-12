@@ -17,6 +17,12 @@
  */
 package eu.geopaparazzi.library.webproject;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -24,17 +30,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
  * Singleton to handle projects to/from cloud up- and download.

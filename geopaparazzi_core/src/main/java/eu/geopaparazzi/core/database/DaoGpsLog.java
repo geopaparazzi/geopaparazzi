@@ -34,6 +34,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.database.objects.GpsLogInfo;
+import eu.geopaparazzi.core.database.objects.Line;
+import eu.geopaparazzi.core.database.objects.LogMapItem;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
 import eu.geopaparazzi.library.database.TableDescriptions;
@@ -45,19 +49,15 @@ import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.database.objects.GpsLogInfo;
-import eu.geopaparazzi.core.database.objects.Line;
-import eu.geopaparazzi.core.database.objects.LogMapItem;
 import eu.geopaparazzi.map.GPGeoPoint;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsDataTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsPropertiesTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.GpsLogsTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOGS;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_DATA;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_GPSLOG_PROPERTIES;
+import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -71,11 +71,12 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * Create log tables.
      *
-     * @throws IOException if something goes wrong.
      * @param db
+     * @throws IOException if something goes wrong.
      */
     public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
-        if (sqliteDatabase == null) sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
+        if (sqliteDatabase == null)
+            sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
         /*
          * gps log table

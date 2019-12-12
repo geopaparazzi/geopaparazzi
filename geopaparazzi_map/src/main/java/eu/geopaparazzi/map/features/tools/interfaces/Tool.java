@@ -19,7 +19,7 @@ package eu.geopaparazzi.map.features.tools.interfaces;
 
 /**
  * A tool.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface Tool {

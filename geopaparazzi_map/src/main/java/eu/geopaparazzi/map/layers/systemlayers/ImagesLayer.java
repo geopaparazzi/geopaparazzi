@@ -1,13 +1,11 @@
 package eu.geopaparazzi.map.layers.systemlayers;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,13 +31,10 @@ import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.TableDescriptions;
-import eu.geopaparazzi.library.forms.FormActivity;
-import eu.geopaparazzi.library.forms.FormInfoHolder;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;

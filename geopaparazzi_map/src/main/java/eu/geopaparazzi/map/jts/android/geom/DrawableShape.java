@@ -22,32 +22,32 @@ import android.graphics.Paint;
 
 /**
  * Interface to help drawing JTS shapes.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface DrawableShape {
 
     /**
      * Draw the current shape in stroke mode.
-     * 
+     *
      * @param canvas the {@link Canvas} on which to draw to.
-     * @param paint the {@link Paint} to use.
+     * @param paint  the {@link Paint} to use.
      */
     void draw(Canvas canvas, Paint paint);
 
     /**
      * Draw the current shape in fill mode.
-     * 
+     *
      * @param canvas the {@link Canvas} on which to draw to.
-     * @param paint the {@link Paint} to use.
+     * @param paint  the {@link Paint} to use.
      */
     void fill(Canvas canvas, Paint paint);
 
     /**
      * Draw the current shape in fill and stroke mode.
-     * 
+     *
      * @param canvas the {@link Canvas} on which to draw to.
-     * @param paint the {@link Paint} to use.
+     * @param paint  the {@link Paint} to use.
      */
     void fillAndStroke(Canvas canvas, Paint paint);
 }

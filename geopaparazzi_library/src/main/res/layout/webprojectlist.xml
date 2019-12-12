@@ -3,7 +3,7 @@
     android:id="@+id/webprojectlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/titletext"
@@ -28,7 +28,7 @@
         android:layout_margin="10dip"
         android:hint="@string/type_to_filter"
         android:inputType="text"
-        android:maxLines="1" >
+        android:maxLines="1">
 
         <requestFocus />
     </EditText>
@@ -42,7 +42,7 @@
         android:layout_margin="10dip"
         android:background="@color/main_background"
         android:dividerHeight="1dip"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <!-- android:id="@+id/mapsList" -->
 

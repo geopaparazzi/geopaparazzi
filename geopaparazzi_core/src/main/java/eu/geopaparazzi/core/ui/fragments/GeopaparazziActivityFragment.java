@@ -12,16 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import android.system.Os;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,9 +28,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -90,7 +90,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 

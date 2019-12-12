@@ -18,36 +18,36 @@
 package eu.geopaparazzi.core.ui.activities;
 
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoMetadata;
+import eu.geopaparazzi.core.database.objects.Metadata;
+import eu.geopaparazzi.core.ui.dialogs.AddMetadataDialogFragment;
+import eu.geopaparazzi.core.utilities.ISimpleChangeListener;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.utilities.ISimpleChangeListener;
-import eu.geopaparazzi.core.database.DaoMetadata;
-import eu.geopaparazzi.core.database.objects.Metadata;
-import eu.geopaparazzi.core.ui.dialogs.AddMetadataDialogFragment;
 
 /**
  * Activity for viewing project metadata.
@@ -106,17 +106,17 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             final TextInputEditText editText = view.findViewById(R.id.metadataEditText);
             container.addView(view);
 
-            if (metadata.key.equals("creationts") || metadata.key.equals("lastts")){//NON-NLS
+            if (metadata.key.equals("creationts") || metadata.key.equals("lastts")) {//NON-NLS
                 String value = metadata.value;
-                try{
+                try {
                     Date date = new Date(Long.parseLong(value));
                     value = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(date);
-                }catch (Exception e){
+                } catch (Exception e) {
                     // ignore
                 }
                 editText.setText(value);
                 editText.setKeyListener(null);
-            }else {
+            } else {
                 editText.setText(metadata.value);
             }
             editText.addTextChangedListener(new TextWatcher() {

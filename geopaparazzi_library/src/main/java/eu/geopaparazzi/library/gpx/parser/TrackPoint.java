@@ -25,7 +25,7 @@ package eu.geopaparazzi.library.gpx.parser;
 public class TrackPoint extends LocationPoint {
     private long mTime;
 
-    void setTime( long time ) {
+    void setTime(long time) {
         mTime = time;
     }
 

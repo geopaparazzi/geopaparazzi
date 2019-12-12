@@ -18,6 +18,12 @@
 
 package eu.geopaparazzi.library.gpx.parser;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,19 +35,13 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A very basic GPX parser to meet the need of the emulator control panel.
  * <p/>
  * It parses basic waypoint information, and tracks (merging segments).
- * 
+ *
  * <p>Modified to also handle routes and multiple segments by Andrea Antonello (www.hydrologis.com)
  */
 public class GpxParser {
@@ -69,8 +69,10 @@ public class GpxParser {
 
     private GpxHandler mHandler;
 
-    /** Pattern to parse time with optional sub-second precision, and optional
-     * Z indicating the time is in UTC. */
+    /**
+     * Pattern to parse time with optional sub-second precision, and optional
+     * Z indicating the time is in UTC.
+     */
     private final static Pattern ISO8601_TIME = Pattern
             .compile("(\\d{4})-(\\d\\d)-(\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)(?:(\\.\\d+))?(Z)?"); //$NON-NLS-1$
 
@@ -94,7 +96,7 @@ public class GpxParser {
         boolean mSuccess = true;
 
         @Override
-        public void startElement( String uri, String localName, String name, Attributes attributes ) throws SAXException {
+        public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
             // we only care fragment_about the standard GPX nodes.
             try {
                 if (NODE_WAYPOINT.equals(localName)) {
@@ -133,12 +135,12 @@ public class GpxParser {
          * and will be processed when {@link #endElement(String, String, String)} is called.
          */
         @Override
-        public void characters( char[] ch, int start, int length ) throws SAXException {
+        public void characters(char[] ch, int start, int length) throws SAXException {
             mStringAccumulator.append(ch, start, length);
         }
 
         @Override
-        public void endElement( String uri, String localName, String name ) throws SAXException {
+        public void endElement(String uri, String localName, String name) throws SAXException {
             if (NODE_WAYPOINT.equals(localName)) {
                 mCurrentWayPoint = null;
             } else if (NODE_TRACK.equals(localName)) {
@@ -177,21 +179,22 @@ public class GpxParser {
         }
 
         @Override
-        public void error( SAXParseException e ) throws SAXException {
+        public void error(SAXParseException e) throws SAXException {
             mSuccess = false;
         }
 
         @Override
-        public void fatalError( SAXParseException e ) throws SAXException {
+        public void fatalError(SAXParseException e) throws SAXException {
             mSuccess = false;
         }
 
         /**
          * Converts the string description of the time into milliseconds since epoch.
+         *
          * @param timeString the string data.
          * @return date in milliseconds.
          */
-        private static long computeTime( String timeString ) {
+        private static long computeTime(String timeString) {
             // Time looks like: 2008-04-05T19:24:50Z
             Matcher m = ISO8601_TIME.matcher(timeString);
             if (m.matches()) {
@@ -237,11 +240,11 @@ public class GpxParser {
 
         /**
          * Handles the location attributes and store them into a {@link LocationPoint}.
-         * 
+         *
          * @param locationNode the {@link LocationPoint} to receive the location data.
-         * @param attributes the attributes from the XML node.
+         * @param attributes   the attributes from the XML node.
          */
-        private static void handleLocation( LocationPoint locationNode, Attributes attributes ) {
+        private static void handleLocation(LocationPoint locationNode, Attributes attributes) {
             try {
                 double longitude = Double.parseDouble(attributes.getValue(ATTR_LONGITUDE));
                 double latitude = Double.parseDouble(attributes.getValue(ATTR_LATITUDE));
@@ -278,7 +281,7 @@ public class GpxParser {
         private String mComment;
         private List<TrackPoint> mPoints = new ArrayList<TrackPoint>();
 
-        void setName( String name ) {
+        void setName(String name) {
             mName = name;
         }
 
@@ -289,7 +292,7 @@ public class GpxParser {
             return mName;
         }
 
-        void setComment( String comment ) {
+        void setComment(String comment) {
             mComment = comment;
         }
 
@@ -297,7 +300,7 @@ public class GpxParser {
             return mComment;
         }
 
-        void addPoint( TrackPoint trackPoint ) {
+        void addPoint(TrackPoint trackPoint) {
             mPoints.add(trackPoint);
         }
 
@@ -338,7 +341,7 @@ public class GpxParser {
         private String mComment;
         private List<RoutePoint> mPoints = new ArrayList<RoutePoint>();
 
-        void setName( String name ) {
+        void setName(String name) {
             mName = name;
         }
 
@@ -349,7 +352,7 @@ public class GpxParser {
             return mName;
         }
 
-        void setComment( String comment ) {
+        void setComment(String comment) {
             mComment = comment;
         }
 
@@ -360,7 +363,7 @@ public class GpxParser {
             return mComment;
         }
 
-        void addPoint( RoutePoint routePoint ) {
+        void addPoint(RoutePoint routePoint) {
             mPoints.add(routePoint);
         }
 
@@ -403,14 +406,16 @@ public class GpxParser {
 
     /**
      * Creates a new GPX parser for a file specified by its full path.
+     *
      * @param fileName The full path of the GPX file to parse.
      */
-    public GpxParser( String fileName ) {
+    public GpxParser(String fileName) {
         mFileName = fileName;
     }
 
     /**
      * Parses the GPX file.
+     *
      * @return <code>true</code> if success.
      */
     public boolean parse() {
@@ -432,7 +437,7 @@ public class GpxParser {
     /**
      * Returns the parsed {@link WayPoint} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
-     * 
+     *
      * @return list of waypoints.
      */
     public List<WayPoint> getWayPoints() {
@@ -444,8 +449,8 @@ public class GpxParser {
     /**
      * Returns the parsed {@link TrackSegment} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
-     * 
-     * @return list of tracksegments. 
+     *
+     * @return list of tracksegments.
      */
     public List<TrackSegment> getTracks() {
         if (mHandler != null) {

@@ -57,9 +57,9 @@ public class ColorStrokeObject implements Serializable {
         dup.hasStrokeWidth = hasStrokeWidth;
         dup.strokeWidth = strokeWidth;
 
-        dup.hasShape= hasShape;
-        dup.shapeSize= shapeSize;
-        dup.shapeWKT= shapeWKT;
+        dup.hasShape = hasShape;
+        dup.shapeSize = shapeSize;
+        dup.shapeWKT = shapeWKT;
 
         return dup;
     }

@@ -198,7 +198,7 @@ public class TagsManager {
                 if (jsonObject.has(ATTR_SECTIONNAME)) {
                     String sectionName = jsonObject.getString(ATTR_SECTIONNAME);
                     sectionsMap.put(sectionName, jsonObject);
-                    if (jsonObject.has(ATTR_SECTIONDESCRIPTION)){
+                    if (jsonObject.has(ATTR_SECTIONDESCRIPTION)) {
                         String descr = jsonObject.getString(ATTR_SECTIONDESCRIPTION);
                         sectionsDescriptionMap.put(sectionName, descr);
                     }

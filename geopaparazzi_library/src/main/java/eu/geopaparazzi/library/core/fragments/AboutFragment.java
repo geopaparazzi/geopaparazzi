@@ -23,11 +23,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+
+import androidx.fragment.app.Fragment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,7 +92,7 @@ public class AboutFragment extends Fragment {
             InputStream inputStream = assetManager.open("about.html");//NON-NLS
             String htmlText = new Scanner(inputStream).useDelimiter("\\A").next();//NON-NLS
 
-            String applicationName= "Geopaparazzi";//NON-NLS
+            String applicationName = "Geopaparazzi";//NON-NLS
             try {
                 applicationName = ResourcesManager.getInstance(getActivity()).getApplicationName();
             } catch (Exception e) {

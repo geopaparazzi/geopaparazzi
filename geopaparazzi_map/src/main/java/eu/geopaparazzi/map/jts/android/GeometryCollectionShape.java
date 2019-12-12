@@ -33,8 +33,6 @@
 
 package eu.geopaparazzi.map.jts.android;
 
-import java.util.ArrayList;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -43,6 +41,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.shapes.Shape;
 
+import java.util.ArrayList;
+
 import eu.geopaparazzi.map.jts.android.geom.DrawableShape;
 import eu.geopaparazzi.map.jts.android.geom.RectShape;
 
@@ -50,12 +50,11 @@ import eu.geopaparazzi.map.jts.android.geom.RectShape;
 /**
  * A {@link Shape} which contains a heterogeneous collection of other shapes
  * representing JTS {@link org.locationtech.jts.geom.Geometry}s.
- * 
+ *
  * <p>Modified for Android use.</p>
- * 
+ *
  * @author Martin Davis
  * @author Andrea Antonello (www.hydrologis.com)
- *
  */
 public class GeometryCollectionShape implements DrawableShape {
     private ArrayList<DrawableShape> shapes = new ArrayList<>();
@@ -63,7 +62,7 @@ public class GeometryCollectionShape implements DrawableShape {
     public GeometryCollectionShape() {
     }
 
-    public void add( DrawableShape shape ) {
+    public void add(DrawableShape shape) {
         shapes.add(shape);
     }
 
@@ -88,68 +87,68 @@ public class GeometryCollectionShape implements DrawableShape {
     // return rectangle;
     // }
 
-    public boolean contains( double x, double y ) {
+    public boolean contains(double x, double y) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean contains( PointF p ) {
+    public boolean contains(PointF p) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean intersects( float x, float y, float w, float h ) {
+    public boolean intersects(float x, float y, float w, float h) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method intersects() not yet implemented.");
     }
 
-    public boolean intersects( RectF r ) {
+    public boolean intersects(RectF r) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method intersects() not yet implemented.");
     }
 
-    public boolean contains( float x, float y, float w, float h ) {
+    public boolean contains(float x, float y, float w, float h) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean contains( RectF r ) {
+    public boolean contains(RectF r) {
         /**@todo Implement this java.awt.Shape method*/
         throw new UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public void clip( Canvas arg0 ) {
+    public void clip(Canvas arg0) {
         throw new RuntimeException("not implemented yet");
 
     }
 
-    public boolean contains( RectShape arg0 ) {
+    public boolean contains(RectShape arg0) {
         throw new RuntimeException("not implemented yet");
     }
 
-    public boolean contains( float arg0, float arg1 ) {
+    public boolean contains(float arg0, float arg1) {
         throw new RuntimeException("not implemented yet");
     }
 
-    public void draw( Canvas canvas, Paint paint ) {
-        for( DrawableShape shape : shapes ) {
+    public void draw(Canvas canvas, Paint paint) {
+        for (DrawableShape shape : shapes) {
             shape.draw(canvas, paint);
         }
     }
 
-    public void fill( Canvas canvas, Paint paint ) {
-        for( DrawableShape shape : shapes ) {
+    public void fill(Canvas canvas, Paint paint) {
+        for (DrawableShape shape : shapes) {
             shape.fill(canvas, paint);
         }
     }
 
-    public void fillAndStroke( Canvas canvas, Paint paint ) {
-        for( DrawableShape shape : shapes ) {
+    public void fillAndStroke(Canvas canvas, Paint paint) {
+        for (DrawableShape shape : shapes) {
             shape.fillAndStroke(canvas, paint);
         }
     }
 
-    public void getBounds( RectShape arg0 ) {
+    public void getBounds(RectShape arg0) {
         throw new RuntimeException("not implemented yet");
 
     }
@@ -158,15 +157,15 @@ public class GeometryCollectionShape implements DrawableShape {
         throw new RuntimeException("not implemented yet");
     }
 
-    public boolean intersects( Rect arg0 ) {
+    public boolean intersects(Rect arg0) {
         throw new RuntimeException("not implemented yet");
     }
 
-    public boolean intersects( RectShape arg0 ) {
+    public boolean intersects(RectShape arg0) {
         throw new RuntimeException("not implemented yet");
     }
 
-    public void translate( float arg0, float arg1 ) {
+    public void translate(float arg0, float arg1) {
         throw new RuntimeException("not implemented yet");
 
     }

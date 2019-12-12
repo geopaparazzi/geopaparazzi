@@ -21,9 +21,8 @@ import java.io.Serializable;
 
 /**
  * Item representing a map entry.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapItem implements Serializable {
 
@@ -38,13 +37,13 @@ public class MapItem implements Serializable {
     protected int type;
 
     /**
-     * @param id id
-     * @param text text
-     * @param color color
-     * @param width width
+     * @param id        id
+     * @param text      text
+     * @param color     color
+     * @param width     width
      * @param isVisible if visible.
      */
-    public MapItem( long id, String text, String color, float width, boolean isVisible ) {
+    public MapItem(long id, String text, String color, float width, boolean isVisible) {
         this.id = id;
         name = text;
         this.color = color;
@@ -78,9 +77,9 @@ public class MapItem implements Serializable {
     }
 
     /**
-    * @param isDirty if dirty.
-    */
-    public void setDirty( boolean isDirty ) {
+     * @param isDirty if dirty.
+     */
+    public void setDirty(boolean isDirty) {
         this.isDirty = isDirty;
     }
 
@@ -107,9 +106,9 @@ public class MapItem implements Serializable {
     // }
 
     /**
-    * @param isVisible if visible.
-    */
-    public void setVisible( boolean isVisible ) {
+     * @param isVisible if visible.
+     */
+    public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
     }
 
@@ -146,7 +145,7 @@ public class MapItem implements Serializable {
     }
 
     @Override
-    public boolean equals( Object obj ) {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)

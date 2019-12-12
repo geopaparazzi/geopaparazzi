@@ -21,9 +21,10 @@ package eu.geopaparazzi.library.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import androidx.loader.content.CursorLoader;
+
 import androidx.core.os.CancellationSignal;
 import androidx.core.os.OperationCanceledException;
+import androidx.loader.content.CursorLoader;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

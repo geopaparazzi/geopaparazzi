@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +33,7 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.images.ImageUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -115,7 +112,7 @@ public abstract class AbstractCameraActivity extends Activity {
 
 
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra("android.intent.extra.quickCapture",true);
+            cameraIntent.putExtra("android.intent.extra.quickCapture", true);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
             lastImageMediastoreId = getLastImageMediaId();

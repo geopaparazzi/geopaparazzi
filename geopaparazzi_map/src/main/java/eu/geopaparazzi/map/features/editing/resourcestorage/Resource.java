@@ -16,12 +16,16 @@ public class Resource {
         EXTERNAL_IMAGE,
         EXTERNAL_VIDEO,
         EXTERNAL_PDF,
-        /** Generic external resource; use mime type to decide the resource type */
+        /**
+         * Generic external resource; use mime type to decide the resource type
+         */
         EXTERNAL_FILE,
         BLOB_IMAGE,
         BLOB_VIDEO,
         BLOB_PDF,
-        /** Generic internal resource; use mime type to decide the resource type */
+        /**
+         * Generic internal resource; use mime type to decide the resource type
+         */
         BLOB_FILE,
         /**
          * Used when only the resource thumbnail has been loaded, so we still
@@ -34,7 +38,7 @@ public class Resource {
         this.id = id;
         this.name = name;
         this.type = type;
-        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal() ) {
+        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal()) {
             this.isExternal = true;
         } else {
             this.isExternal = false;
@@ -46,14 +50,16 @@ public class Resource {
         this.name = name;
         this.type = type;
         this.mimeType = mimeType;
-        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal() ) {
+        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal()) {
             this.isExternal = true;
         } else {
             this.isExternal = false;
         }
     }
 
-    public Boolean isExternal() { return this.isExternal; }
+    public Boolean isExternal() {
+        return this.isExternal;
+    }
 
     /**
      * Gets the name of the resource (title or textual description)
@@ -90,7 +96,7 @@ public class Resource {
      */
     public void setType(ResourceType type) {
         this.type = type;
-        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal() ) {
+        if (this.type.ordinal() < ResourceType.BLOB_IMAGE.ordinal()) {
             this.isExternal = true;
         } else {
             this.isExternal = false;
@@ -99,6 +105,7 @@ public class Resource {
 
     /**
      * Gets the type of resource
+     *
      * @return
      */
     public ResourceType getType() {
@@ -107,6 +114,7 @@ public class Resource {
 
     /**
      * Gets the mime type of the resource
+     *
      * @return
      */
     public String getMimeType() {
@@ -130,7 +138,9 @@ public class Resource {
      * @return A low resolution image representing the resource,
      * or null if no thumbnail is available
      */
-    public byte[] getThumbnail() { return this.thumbnail; }
+    public byte[] getThumbnail() {
+        return this.thumbnail;
+    }
 
     /**
      * Sets the thumbnail of the resource

@@ -18,10 +18,6 @@
 
 package eu.geopaparazzi.map.features;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -30,6 +26,10 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKBWriter;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 

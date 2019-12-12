@@ -24,14 +24,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 public class AboutActivity extends Activity {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_about);
-		Spanned htmlText = Html.fromHtml(getResources().getString(R.string.about_description));
-		TextView aboutTextView = findViewById(R.id.aboutTextView);
-		aboutTextView.setText(htmlText);
-		aboutTextView.setMovementMethod(LinkMovementMethod.getInstance());
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_about);
+        Spanned htmlText = Html.fromHtml(getResources().getString(R.string.about_description));
+        TextView aboutTextView = findViewById(R.id.aboutTextView);
+        aboutTextView.setText(htmlText);
+        aboutTextView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 }

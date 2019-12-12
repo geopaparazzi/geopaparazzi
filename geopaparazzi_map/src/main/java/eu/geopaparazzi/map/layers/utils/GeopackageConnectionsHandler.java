@@ -9,7 +9,6 @@ import org.hortonmachine.dbs.compat.IHMStatement;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.hortonmachine.dbs.utils.BasicStyle;
-import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 

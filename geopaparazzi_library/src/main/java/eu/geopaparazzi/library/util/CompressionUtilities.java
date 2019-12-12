@@ -35,30 +35,30 @@ import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Utilities class to zip and unzip folders.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("ALL")
 public class CompressionUtilities {
 
     /**
-     * 
+     *
      */
     public static final String THE_BASE_FILE_IS_SUPPOSED_TO_BE_A_DIRECTORY = "The base file is supposed to be a directory.";
     /**
-     * 
+     *
      */
     public static final String FILE_EXISTS = "FILE EXISTS";
 
     /**
      * Compress a folder and its contents.
-     * 
-     * @param srcFolder path to the folder to be compressed.
-     * @param destZipFile path to the final output zip file.
+     *
+     * @param srcFolder    path to the folder to be compressed.
+     * @param destZipFile  path to the final output zip file.
      * @param excludeNames names of files to exclude.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    static public void zipFolder( String srcFolder, String destZipFile, String... excludeNames ) throws IOException {
+    static public void zipFolder(String srcFolder, String destZipFile, String... excludeNames) throws IOException {
         if (new File(srcFolder).isDirectory()) {
             ZipOutputStream zip = null;
             FileOutputStream fileWriter = null;
@@ -81,23 +81,23 @@ public class CompressionUtilities {
 
     /**
      * Uncompress a compressed file to the contained structure.
-     * 
-     * @param zipFile the zip file that needs to be unzipped
-     * @param destFolder the folder into which unzip the zip file and create the folder structure
+     *
+     * @param zipFile      the zip file that needs to be unzipped
+     * @param destFolder   the folder into which unzip the zip file and create the folder structure
      * @param addTimeStamp if <code>true</code>, the timestamp is added if the base folder already exists.
      * @return the name of the internal base folder or <code>null</code>.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static String unzipFolder( String zipFile, String destFolder, boolean addTimeStamp ) throws IOException {
+    public static String unzipFolder(String zipFile, String destFolder, boolean addTimeStamp) throws IOException {
         SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
 
         ZipFile zf = new ZipFile(zipFile);
-        Enumeration< ? extends ZipEntry> zipEnum = zf.entries();
+        Enumeration<? extends ZipEntry> zipEnum = zf.entries();
 
         String firstName = null;
         String newFirstName = null;
 
-        while( zipEnum.hasMoreElements() ) {
+        while (zipEnum.hasMoreElements()) {
             ZipEntry item = (ZipEntry) zipEnum.nextElement();
 
             String itemName = item.getName();
@@ -134,7 +134,7 @@ public class CompressionUtilities {
                 FileOutputStream fos = new FileOutputStream(newfilePath);
                 byte[] buffer = new byte[512];
                 int readchars = 0;
-                while( (readchars = is.read(buffer)) != -1 ) {
+                while ((readchars = is.read(buffer)) != -1) {
                     fos.write(buffer, 0, readchars);
                 }
                 is.close();
@@ -146,7 +146,7 @@ public class CompressionUtilities {
         return newFirstName;
     }
 
-    static private void addToZip( String path, String srcFile, ZipOutputStream zip, String... excludeNames ) throws IOException {
+    static private void addToZip(String path, String srcFile, ZipOutputStream zip, String... excludeNames) throws IOException {
         File file = new File(srcFile);
         if (file.isDirectory()) {
             addFolderToZip(path, srcFile, zip, excludeNames);
@@ -161,7 +161,7 @@ public class CompressionUtilities {
             try {
                 in = new FileInputStream(srcFile);
                 zip.putNextEntry(new ZipEntry(path + File.separator + file.getName()));
-                while( (len = in.read(buf)) > 0 ) {
+                while ((len = in.read(buf)) > 0) {
                     zip.write(buf, 0, len);
                 }
             } finally {
@@ -171,7 +171,7 @@ public class CompressionUtilities {
         }
     }
 
-    static private void addFolderToZip( String path, String srcFolder, ZipOutputStream zip, String... excludeNames )
+    static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip, String... excludeNames)
             throws IOException {
         if (isInArray(srcFolder, excludeNames)) {
             // jump folder if excluded
@@ -179,7 +179,7 @@ public class CompressionUtilities {
         }
         File folder = new File(srcFolder);
         String listOfFiles[] = folder.list();
-        for( int i = 0; i < listOfFiles.length; i++ ) {
+        for (int i = 0; i < listOfFiles.length; i++) {
             if (isInArray(listOfFiles[i], excludeNames)) {
                 // jump if excluded
                 continue;
@@ -195,8 +195,9 @@ public class CompressionUtilities {
             addToZip(folderPath, srcFile, zip, excludeNames);
         }
     }
-    private static boolean isInArray( String checkString, String[] array ) {
-        for( String arrayString : array ) {
+
+    private static boolean isInArray(String checkString, String[] array) {
+        for (String arrayString : array) {
             if (arrayString.trim().equals(checkString.trim())) {
                 return true;
             }
@@ -206,19 +207,19 @@ public class CompressionUtilities {
 
     /**
      * Create zip from files.
-     * 
+     *
      * @param destinationZip zip file.
-     * @param files array of files to add.
-     * @throws IOException  if something goes wrong.
+     * @param files          array of files to add.
+     * @throws IOException if something goes wrong.
      */
     @SuppressWarnings("nls")
-    public static void createZipFromFiles( File destinationZip, File... files ) throws IOException {
+    public static void createZipFromFiles(File destinationZip, File... files) throws IOException {
         FileOutputStream fos = new FileOutputStream(destinationZip);
         ZipOutputStream zos = new ZipOutputStream(fos);
         int bytesRead;
         byte[] buffer = new byte[1024];
         CRC32 crc = new CRC32();
-        for( int i = 0, n = files.length; i < n; i++ ) {
+        for (int i = 0, n = files.length; i < n; i++) {
             String name = files[i].getName();
             File file = files[i];
             if (!file.exists()) {
@@ -228,7 +229,7 @@ public class CompressionUtilities {
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             crc.reset();
-            while( (bytesRead = bis.read(buffer)) != -1 ) {
+            while ((bytesRead = bis.read(buffer)) != -1) {
                 crc.update(buffer, 0, bytesRead);
             }
             bis.close();
@@ -240,7 +241,7 @@ public class CompressionUtilities {
             entry.setSize(file.length());
             entry.setCrc(crc.getValue());
             zos.putNextEntry(entry);
-            while( (bytesRead = bis.read(buffer)) != -1 ) {
+            while ((bytesRead = bis.read(buffer)) != -1) {
                 zos.write(buffer, 0, bytesRead);
             }
             bis.close();

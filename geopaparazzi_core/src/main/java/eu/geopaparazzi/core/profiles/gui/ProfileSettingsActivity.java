@@ -3,39 +3,34 @@ package eu.geopaparazzi.core.profiles.gui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import com.google.android.material.tabs.TabLayout;
+import android.util.Log;
+import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
-import android.view.WindowManager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONException;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
-import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.profiles.ProfilesActivity;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.profiles.Profile;
+import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.profiles.objects.ProfileBasemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileProjects;
 import eu.geopaparazzi.library.profiles.objects.ProfileSpatialitemaps;
 import eu.geopaparazzi.library.profiles.objects.ProfileTags;
-import eu.geopaparazzi.library.profiles.ProfilesHandler;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.GPDialogs;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
 

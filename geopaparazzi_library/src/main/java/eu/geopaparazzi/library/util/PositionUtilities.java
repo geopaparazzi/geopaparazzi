@@ -17,17 +17,17 @@
  */
 package eu.geopaparazzi.library.util;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
+import eu.geopaparazzi.library.database.GPLog;
+
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_ELEV;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAP_ZOOM;
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Position and preferences related utils.

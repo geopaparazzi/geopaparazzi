@@ -18,21 +18,12 @@
 
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.FileProvider;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -42,8 +33,16 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.camera.CameraNoteActivity;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -54,7 +53,9 @@ import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.core.ResourcesManager;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 /**
  * A custom pictures view.

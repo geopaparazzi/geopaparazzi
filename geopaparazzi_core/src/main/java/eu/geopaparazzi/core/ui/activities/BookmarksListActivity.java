@@ -21,20 +21,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,14 +44,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoBookmarks;
 import eu.geopaparazzi.core.database.objects.Bookmark;
 import eu.geopaparazzi.core.database.objects.ItemComparators;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.GPDialogs;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TextRunnable;
 
 /**
  * Bookmarks listing activity.

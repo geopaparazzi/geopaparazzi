@@ -20,8 +20,9 @@ package eu.geopaparazzi.library.plugin;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.FragmentManager;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import eu.geopaparazzi.library.util.IActivitySupporter;
 

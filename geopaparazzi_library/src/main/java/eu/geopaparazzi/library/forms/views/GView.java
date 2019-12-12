@@ -23,28 +23,28 @@ import android.content.Intent;
 
 /**
  * Interface for geopaparazzi custom views.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface GView {
     /**
      * Get a representative value of the view.
-     * 
+     *
      * @return a value the view specialises on.
      */
     String getValue();
 
     /**
      * A callback in case the view was registered to react on an activity result.
-     * 
+     *
      * @param data the data returned.
      */
     void setOnActivityResult(Intent data);
 
     /**
      * A method to refresh content if necessary.
-     * 
-     * @param context  the context to use.
+     *
+     * @param context the context to use.
      */
     void refresh(Context context) throws Exception;
 }

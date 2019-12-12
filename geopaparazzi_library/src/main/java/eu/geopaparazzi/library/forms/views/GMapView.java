@@ -17,11 +17,6 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-import java.io.File;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,14 +28,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.Compat;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 /**
  * A custom map view.
@@ -74,7 +74,7 @@ public class GMapView extends View implements GView {
      * @param context               the context to use.
      * @param attrs                 attributes.
      * @param parentView            parent
-     * @param label                   label
+     * @param label                 label
      * @param value                 value
      * @param constraintDescription constraints
      */
@@ -107,7 +107,7 @@ public class GMapView extends View implements GView {
             Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
             ImageView imageView = new ImageView(context);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150,150);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150, 150);
             lp.setMargins(10, 10, 10, 10);
             imageView.setLayoutParams(lp);
             imageView.setPadding(5, 5, 5, 5);

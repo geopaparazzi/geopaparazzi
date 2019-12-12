@@ -5,13 +5,9 @@ import org.json.JSONObject;
 import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.map.Layers;
 
-import java.io.File;
-
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.GeopackageTileSource;
 import eu.geopaparazzi.map.layers.LayerGroups;
-import eu.geopaparazzi.map.layers.MBTilesTileSource;
 import eu.geopaparazzi.map.layers.interfaces.IRasterTileOfflineLayer;
 
 public class GeopackageTilesLayer extends BitmapTileLayer implements IRasterTileOfflineLayer {

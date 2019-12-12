@@ -27,7 +27,6 @@ import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
-
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
@@ -38,16 +37,16 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.features.editing.EditManager;
-import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.map.features.tools.MapTool;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;

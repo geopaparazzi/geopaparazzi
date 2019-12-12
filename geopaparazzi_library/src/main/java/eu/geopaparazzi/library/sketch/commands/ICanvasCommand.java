@@ -32,8 +32,9 @@ public interface ICanvasCommand {
      * @param canvas the canvas.
      */
     void draw(Canvas canvas);
+
     /**
-     * 
+     *
      */
     void undo();
 }

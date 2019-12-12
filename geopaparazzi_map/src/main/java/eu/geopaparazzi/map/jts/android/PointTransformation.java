@@ -39,17 +39,17 @@ import org.locationtech.jts.geom.Coordinate;
 /**
  * Transforms a geometry {@link org.locationtech.jts.geom.Coordinate} into an Android {@link PointF},
  * possibly with a mathematical transformation of the ordinate values.
- * Transformation from a model coordinate system to a view coordinate system 
+ * Transformation from a model coordinate system to a view coordinate system
  * can be efficiently performed by supplying an appropriate transformation.
- * 
+ *
  * @author Martin Davis
  */
 public interface PointTransformation {
-	/**
-	 * Transforms a {@link Coordinate} into an Android {@link PointF}.
-	 * 
-	 * @param src the source Coordinate 
-	 * @param dest the destination Point
-	 */
+    /**
+     * Transforms a {@link Coordinate} into an Android {@link PointF}.
+     *
+     * @param src  the source Coordinate
+     * @param dest the destination Point
+     */
     void transform(Coordinate src, PointF dest);
 }

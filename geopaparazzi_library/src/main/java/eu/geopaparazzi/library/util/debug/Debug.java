@@ -18,22 +18,21 @@
 package eu.geopaparazzi.library.util.debug;
 
 /**
- * Small interface to get hold of all debug possibilities in one place. 
- * 
- * @author Andrea Antonello (www.hydrologis.com)
+ * Small interface to get hold of all debug possibilities in one place.
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Debug {
     /**
      * Flag to define if we are in debug mode.
-     * 
+     *
      * <p>For release = <code>false</code>.
      */
     public final static boolean D = false;
 
     /**
-     * Flag to define if the tags file should be overwritten. 
-     * 
+     * Flag to define if the tags file should be overwritten.
+     *
      * <p>For release = <code>false</code>.
      */
     public final static boolean doOverwriteTags = false;

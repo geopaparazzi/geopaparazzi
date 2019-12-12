@@ -20,17 +20,18 @@ package eu.geopaparazzi.core.ui.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import eu.geopaparazzi.library.sms.SmsUtilities;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.utilities.Constants;
+import eu.geopaparazzi.library.sms.SmsUtilities;
 
 public class PanicActivity extends AppCompatActivity implements View.OnClickListener {
 

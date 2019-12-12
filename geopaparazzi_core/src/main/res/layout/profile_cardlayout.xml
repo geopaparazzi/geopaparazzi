@@ -56,7 +56,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
 
-
         <Switch
             android:id="@+id/activeSwitch"
             android:layout_width="wrap_content"

@@ -25,11 +25,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+
+import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;

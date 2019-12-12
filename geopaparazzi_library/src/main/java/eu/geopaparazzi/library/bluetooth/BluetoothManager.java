@@ -18,12 +18,6 @@
 
 package eu.geopaparazzi.library.bluetooth;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -32,16 +26,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A singleton to manage bluetooth.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum BluetoothManager {
     /**
-     * 
+     *
      */
     INSTANCE;
 
@@ -83,7 +84,7 @@ public enum BluetoothManager {
 
     /**
      * Checks if bt is supported.
-     * 
+     *
      * <p>Might not be available on certain devices.</p>
      *
      * @return <code>true</code> if the device is supported.
@@ -96,7 +97,7 @@ public enum BluetoothManager {
 
     /**
      * Checks if the bt device is turned on.
-     * 
+     *
      * @return <code>true</code> if the bt device is truned on.
      */
     public boolean isEnabled() {
@@ -135,7 +136,7 @@ public enum BluetoothManager {
 
     /**
      * Polls te state of the bt device.
-     * 
+     *
      * @return the state of the bt device.
      */
     public int getState() {
@@ -150,7 +151,7 @@ public enum BluetoothManager {
 
     /**
      * Enable the bluetooth adapter.
-     * 
+     *
      * <p>
      * This launches an activity to do so and returns when the bt device has
      * been swiced on.
@@ -165,68 +166,68 @@ public enum BluetoothManager {
      * }
      * </pre>
      * </p>
-     * 
+     *
      * @param parentActivity the {@link Activity} to use for the bt activity to start.
-     * @param requestCode the request code.
+     * @param requestCode    the request code.
      */
-    public void enable( Activity parentActivity, int requestCode ) {
+    public void enable(Activity parentActivity, int requestCode) {
         parentActivity.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), requestCode);
     }
 
     /**
      * Adds a status change listener.
-     * 
+     *
      * @param listener the {@link IBluetoothStatusChangeListener listener} to add.
      */
-    public void addStatusChangedListener( IBluetoothStatusChangeListener listener ) {
+    public void addStatusChangedListener(IBluetoothStatusChangeListener listener) {
         _statusChangeListeners.add(listener);
     }
 
     /**
      * Removes a status change listener.
-     * 
+     *
      * @param listener the {@link IBluetoothStatusChangeListener listener} to remove.
      */
-    public void removeStatusChangedListener( IBluetoothStatusChangeListener listener ) {
+    public void removeStatusChangedListener(IBluetoothStatusChangeListener listener) {
         _statusChangeListeners.remove(listener);
     }
 
     /**
      * Starts to listen to status changes.
-     * 
+     *
      * @param context the {@link Context} to use.
      */
-    public void startStatusChangeListening( Context context ) {
-        _bluetoothState = new BroadcastReceiver(){
+    public void startStatusChangeListening(Context context) {
+        _bluetoothState = new BroadcastReceiver() {
             @Override
-            public void onReceive( Context context, Intent intent ) {
+            public void onReceive(Context context, Intent intent) {
                 String prevStateExtra = BluetoothAdapter.EXTRA_PREVIOUS_STATE;
                 String stateExtra = BluetoothAdapter.EXTRA_STATE;
                 int state = intent.getIntExtra(stateExtra, -1);
                 int previousState = intent.getIntExtra(prevStateExtra, -1);
 
                 if (state != previousState) {
-                    for( IBluetoothStatusChangeListener listener : _statusChangeListeners ) {
+                    for (IBluetoothStatusChangeListener listener : _statusChangeListeners) {
                         listener.bluetoothStatusChanged(previousState, state);
                     }
                 }
 
                 String tt = ""; //$NON-NLS-1$
-                switch( state ) {
-                case BluetoothAdapter.STATE_TURNING_ON:
-                    tt = "Bluetooth turning on..."; //$NON-NLS-1$
-                    break;
-                case BluetoothAdapter.STATE_ON:
-                    tt = "Bluetooth on..."; //$NON-NLS-1$
-                    break;
-                case BluetoothAdapter.STATE_TURNING_OFF:
-                    tt = "Bluetooth turning off..."; //$NON-NLS-1$
-                    break;
-                case BluetoothAdapter.STATE_OFF:
-                    tt = "Bluetooth off..."; //$NON-NLS-1$
-                    break;
-                default:
-                    break;
+                switch (state) {
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        tt = "Bluetooth turning on..."; //$NON-NLS-1$
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        tt = "Bluetooth on..."; //$NON-NLS-1$
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        tt = "Bluetooth turning off..."; //$NON-NLS-1$
+                        break;
+                    case BluetoothAdapter.STATE_OFF:
+                        tt = "Bluetooth off..."; //$NON-NLS-1$
+                        break;
+                    default:
+                        break;
                 }
                 if (GPLog.LOG)
                     GPLog.addLogEntry(this, null, null, tt);
@@ -238,10 +239,10 @@ public enum BluetoothManager {
 
     /**
      * Stop listening to status changes.
-     * 
+     *
      * @param context the {@link Context} to use.
      */
-    public void stopStatusChangeListening( Context context ) {
+    public void stopStatusChangeListening(Context context) {
         if (_bluetoothState != null) {
             context.unregisterReceiver(_bluetoothState);
         }
@@ -249,7 +250,7 @@ public enum BluetoothManager {
 
     /**
      * Get the set of paired devices.
-     * 
+     *
      * @return the set of paired devices or an empty set.
      */
     public Set<BluetoothDevice> getBondedDevices() {
@@ -262,11 +263,11 @@ public enum BluetoothManager {
 
     /**
      * Get a {@link BluetoothDevice} by its address.
-     * 
+     *
      * @param address te bt device address.
      * @return the device or <code>null</code>.
      */
-    public BluetoothDevice getBluetoothDeviceByAddress( String address ) {
+    public BluetoothDevice getBluetoothDeviceByAddress(String address) {
         if (isEnabled()) {
             return _bluetooth.getRemoteDevice(address);
         } else {
@@ -276,14 +277,14 @@ public enum BluetoothManager {
 
     /**
      * Get a {@link BluetoothDevice} by its name.
-     * 
+     *
      * @param name te bt device name.
      * @return the device or <code>null</code>.
      */
-    public BluetoothDevice getBluetoothDeviceByName( String name ) {
+    public BluetoothDevice getBluetoothDeviceByName(String name) {
         if (isEnabled()) {
             Set<BluetoothDevice> bondedDevices = getBondedDevices();
-            for( BluetoothDevice bluetoothDevice : bondedDevices ) {
+            for (BluetoothDevice bluetoothDevice : bondedDevices) {
                 if (bluetoothDevice.getName().equals(name)) {
                     return bluetoothDevice;
                 }
@@ -296,15 +297,15 @@ public enum BluetoothManager {
 
     /**
      * Set the {@link BluetoothDevice}.
-     * 
-     * <p>If another one is available, its socket will be closed and 
+     *
+     * <p>If another one is available, its socket will be closed and
      * a new connection is made with the new device.</p>
-     * 
+     *
      * @param bluetoothDevice the device to use.
-     * @param connect if <code>true</code>, also connect to the socket.
-     * @throws Exception  if something goes wrong. 
+     * @param connect         if <code>true</code>, also connect to the socket.
+     * @throws Exception if something goes wrong.
      */
-    public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice, boolean connect ) throws Exception {
+    public synchronized void setBluetoothDevice(BluetoothDevice bluetoothDevice, boolean connect) throws Exception {
         reset();
         _bluetoothDevice = bluetoothDevice;
         // reset
@@ -319,8 +320,8 @@ public enum BluetoothManager {
 
     /**
      * Reset the current bluetooth socket and device.
-     * 
-     * @throws Exception  if something goes wrong.
+     *
+     * @throws Exception if something goes wrong.
      */
     public synchronized void reset() throws Exception {
         if (_bluetoothSocket != null) {
@@ -334,11 +335,11 @@ public enum BluetoothManager {
 
     /**
      * Get the bt socket.
-     * 
+     *
      * <p>The socket is defined when the device is chosen.</p>
-     * 
+     *
      * @return the active bt socket or <code>null</code>.
-     * @throws Exception  if something goes wrong. 
+     * @throws Exception if something goes wrong.
      */
     public synchronized BluetoothSocket getSocket() throws Exception {
         if (isDummy)
@@ -362,7 +363,7 @@ public enum BluetoothManager {
 
     /**
      * Create a bluetooth (rfcomm) socket and connect to it.
-     * 
+     *
      * @throws Exception
      */
     private void createSocket() throws Exception {
@@ -373,7 +374,7 @@ public enum BluetoothManager {
     }
 
     /**
-     * @return <code>true</code>, if the device is ready to transfer data through the socket. 
+     * @return <code>true</code>, if the device is ready to transfer data through the socket.
      */
     public boolean isIOReady() {
         if (isDummy)
@@ -382,12 +383,12 @@ public enum BluetoothManager {
     }
 
     /**
-     * Initializes 
-     * 
+     * Initializes
+     *
      * @param iBluetoothDevice the bt handler.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public void initializeIBluetoothDeviceInternal( IBluetoothIOHandler iBluetoothDevice ) throws IOException {
+    public void initializeIBluetoothDeviceInternal(IBluetoothIOHandler iBluetoothDevice) throws IOException {
         this.iBluetoothDevice = iBluetoothDevice;
         if (isDummy)
             return;

@@ -21,11 +21,9 @@ package eu.geopaparazzi.library.webprofile;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -37,6 +35,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 
@@ -88,6 +88,7 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
         refreshList();
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -189,9 +190,11 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
         public void afterTextChanged(Editable s) {
             // ignore
         }
+
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // ignore
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // arrayAdapter.getFilter().filter(s);
 //            filterList(s.toString());
@@ -227,6 +230,7 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
             progressBarUploadDialogFragment.dismiss();
         GPDialogs.warningDialog(this, errorMsg, null);
     }
+
     @Override
     public void onProgressDone(String msg) {
         if (progressBarUploadDialogFragment != null)

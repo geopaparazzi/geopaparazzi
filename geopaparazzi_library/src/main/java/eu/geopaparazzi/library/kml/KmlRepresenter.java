@@ -20,26 +20,23 @@ package eu.geopaparazzi.library.kml;
 import java.io.Serializable;
 import java.util.List;
 
-import eu.geopaparazzi.library.database.Image;
-
 /**
  * Interface for objects that are able to represent theirself as kml.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface KmlRepresenter extends Serializable {
     /**
      * Transforms the object in its kml representation.
-     *  
+     *
      * @return the kml representation.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
     String toKmlString() throws Exception;
 
     /**
      * Getter for image flag.
-     * 
+     *
      * @return <code>true</code> if the object has also an image that needs to be embedded in the kmz.
      */
     boolean hasImages();

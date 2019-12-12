@@ -38,7 +38,7 @@ public class LocaleUtils {
      * Changes the locale for the application.
      *
      * @param context
-     * @param lang the language code. If "", the command is ignored.
+     * @param lang    the language code. If "", the command is ignored.
      */
     public static void changeLang(Context context, String lang) {
         if (lang.equalsIgnoreCase(""))
@@ -70,7 +70,7 @@ public class LocaleUtils {
         String langPref = "Language";
         SharedPreferences prefs = context.getSharedPreferences("CommonPrefs", Activity.MODE_PRIVATE);
         String language = prefs.getString(langPref, "");
-        if (language.length() == 0){
+        if (language.length() == 0) {
             return null;
         }
         return language;

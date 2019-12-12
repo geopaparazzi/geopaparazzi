@@ -23,9 +23,8 @@ import android.graphics.RectF;
 
 /**
  * An oval {@link DrawableShape shape}.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class OvalShape implements DrawableShape {
 
@@ -35,25 +34,25 @@ public class OvalShape implements DrawableShape {
         this.rectF = new RectF(0f, 0f, 0f, 0f);
     }
 
-    public OvalShape( RectF rectF ) {
+    public OvalShape(RectF rectF) {
         this.rectF = rectF;
     }
 
-    public OvalShape( float x, float y, float width, float height ) {
+    public OvalShape(float x, float y, float width, float height) {
         this.rectF = new RectF(x, y, x + width, y + height);
     }
 
-    public void draw( Canvas canvas, Paint paint ) {
+    public void draw(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawOval(rectF, paint);
     }
 
-    public void fill( Canvas canvas, Paint paint ) {
+    public void fill(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawOval(rectF, paint);
     }
 
-    public void fillAndStroke( Canvas canvas, Paint paint ) {
+    public void fillAndStroke(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         canvas.drawOval(rectF, paint);
     }

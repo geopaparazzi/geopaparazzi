@@ -34,7 +34,7 @@ public class ProfileSpatialitemaps extends ARelativePathResource implements Parc
     public long size = -1;
     private String destinationPath = "";
 
-    public ProfileSpatialitemaps(){
+    public ProfileSpatialitemaps() {
     }
 
 

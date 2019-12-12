@@ -1,6 +1,5 @@
 package eu.geopaparazzi.map.layers.interfaces;
 
-import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -8,7 +7,6 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.List;
 
 import eu.geopaparazzi.map.features.Feature;
-import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 
 /**
  *
@@ -58,10 +56,9 @@ public interface IEditableLayer extends IGpLayer {
     /**
      * Updates the geometry of a feature in the given database.
      *
-     * @param feature the feature to update.
-     * @param geometry the new geometry to set.
+     * @param feature      the feature to update.
+     * @param geometry     the new geometry to set.
      * @param geometrySrid the srid of the new geometry, in case reprojection is necessary.
-     *
      * @throws Exception if something goes wrong.
      */
     void updateFeatureGeometry(Feature feature, Geometry geometry, int geometrySrid) throws Exception;

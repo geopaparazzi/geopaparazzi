@@ -17,21 +17,22 @@
  */
 package eu.geopaparazzi.library.mixare;
 
-import java.io.File;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+
+import java.io.File;
+import java.util.List;
+
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PointF3D;
-import eu.geopaparazzi.library.core.ResourcesManager;
 
 /**
- * Utilities for interaction with the Mixare project. 
- * 
+ * Utilities for interaction with the Mixare project.
+ *
  * <p>
  * A mixare json object looks like:
  * <pre>
@@ -46,9 +47,9 @@ import eu.geopaparazzi.library.core.ResourcesManager;
  *     "webpage": "http%3A%2F%2Fwww.suedtirolerland.it%2Fapi%2Fmap%2FgetMarkerTplM%2F%3Fmarker_id%3D2827%26project_id%3D15%26lang_id%3D9"
  * }
  * </pre>
- * 
+ *
  * <p>With everything optional but lat, lng, elevation and title.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -56,12 +57,12 @@ public class MixareHandler {
 
     /**
      * Show the points in the supplied region in Mixare.
-     * 
+     *
      * @param context the {@link Context} to use.
-     * @param points the {@link PointF3D} to display.
-     * @throws Exception  if something goes wrong.
+     * @param points  the {@link PointF3D} to display.
+     * @throws Exception if something goes wrong.
      */
-    public static void runRegionOnMixare( Context context, List<PointF3D> points ) throws Exception {
+    public static void runRegionOnMixare(Context context, List<PointF3D> points) throws Exception {
         String mixareJson = generateMixareData(context, points);
         File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
         File mixarefile = new File(applicationDir, "mixare.json");
@@ -76,19 +77,19 @@ public class MixareHandler {
 
     /**
      * Generate the json string needed by mixare.
-     * 
-     * <p>This is done via strign concatenation since at some point this 
+     *
+     * <p>This is done via strign concatenation since at some point this
      * could go directly to files in stream to avoid memory problems.
      *
      * @param context the {@link Context} to use.
-     * @param points the {@link PointF3D} to display.
+     * @param points  the {@link PointF3D} to display.
      * @throws Exception
      */
-    private static String generateMixareData( Context context, List<PointF3D> points ) throws Exception {
+    private static String generateMixareData(Context context, List<PointF3D> points) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         int size = points.size();
-        for( int i = 0; i < size; i++ ) {
+        for (int i = 0; i < size; i++) {
             PointF3D p3d = points.get(i);
             String json = dataToString(i, p3d.y, p3d.x, p3d.getZ(), p3d.getDescription());
             if (i > 0) {
@@ -111,8 +112,7 @@ public class MixareHandler {
     }
 
 
-
-    private static String dataToString( int id, double lat, double lon, double elev, String title ) {
+    private static String dataToString(int id, double lat, double lon, double elev, String title) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         sb.append("\"id\": \"").append(id).append("\",").append("\n");
@@ -126,11 +126,11 @@ public class MixareHandler {
 
     /**
      * Checks if Mixare is installed.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @return <code>true</code> if mixare is installed.
      */
-    public static boolean isMixareInstalled( Context context ) {
+    public static boolean isMixareInstalled(Context context) {
         // We try to locate mixare on the phone
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo("org.mixare", 0);
@@ -145,10 +145,10 @@ public class MixareHandler {
 
     /**
      * Lanches an intent that guides to the mixare installation.
-     * 
+     *
      * @param context the {@link Context} to use.
      */
-    public static void installMixareFromMarket( Context context ) {
+    public static void installMixareFromMarket(Context context) {
         Intent i = new Intent();
         i.setAction(Intent.ACTION_VIEW);
         i.setData(Uri.parse("market://search?q=pname:org.mixare"));

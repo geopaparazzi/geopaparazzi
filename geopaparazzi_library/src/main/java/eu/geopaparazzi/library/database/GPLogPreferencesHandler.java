@@ -22,7 +22,7 @@ import android.content.SharedPreferences.Editor;
 
 /**
  * Check and set logging levels.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GPLogPreferencesHandler {
@@ -43,10 +43,10 @@ public class GPLogPreferencesHandler {
     public static String PREFS_KEY_LOG_ABSURD = "PREFS_KEY_LOG_ABSURD";//NON-NLS
 
     /**
-     * @param doLog log flag.
+     * @param doLog       log flag.
      * @param preferences the preferences.
      */
-    public static void setLog( boolean doLog, SharedPreferences preferences ) {
+    public static void setLog(boolean doLog, SharedPreferences preferences) {
         GPLog.LOG = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG, doLog);
@@ -54,10 +54,10 @@ public class GPLogPreferencesHandler {
     }
 
     /**
-     * @param doLog log flag.
+     * @param doLog       log flag.
      * @param preferences the preferences.
      */
-    public static void setLogHeavy( boolean doLog, SharedPreferences preferences ) {
+    public static void setLogHeavy(boolean doLog, SharedPreferences preferences) {
         GPLog.LOG_HEAVY = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_HEAVY, doLog);
@@ -65,10 +65,10 @@ public class GPLogPreferencesHandler {
     }
 
     /**
-     * @param doLog log flag.
+     * @param doLog       log flag.
      * @param preferences the preferences.
      */
-    public static void setLogAbsurd( boolean doLog, SharedPreferences preferences ) {
+    public static void setLogAbsurd(boolean doLog, SharedPreferences preferences) {
         GPLog.LOG_ABSURD = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_ABSURD, doLog);
@@ -79,7 +79,7 @@ public class GPLogPreferencesHandler {
      * @param preferences the preferences.
      * @return if <code>true</code>, log is enabled.
      */
-    public static boolean checkLog( SharedPreferences preferences ) {
+    public static boolean checkLog(SharedPreferences preferences) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG, false);
         GPLog.LOG = doLog;
         return doLog;
@@ -89,7 +89,7 @@ public class GPLogPreferencesHandler {
      * @param preferences the preferences.
      * @return if <code>true</code>, log is enabled.
      */
-    public static boolean checkLogHeavy( SharedPreferences preferences ) {
+    public static boolean checkLogHeavy(SharedPreferences preferences) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG_HEAVY, false);
         GPLog.LOG_HEAVY = doLog;
         return doLog;
@@ -99,7 +99,7 @@ public class GPLogPreferencesHandler {
      * @param preferences the preferences.
      * @return if <code>true</code>, log is enabled.
      */
-    public static boolean checkLogAbsurd( SharedPreferences preferences ) {
+    public static boolean checkLogAbsurd(SharedPreferences preferences) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG_ABSURD, false);
         GPLog.LOG_ABSURD = doLog;
         return doLog;

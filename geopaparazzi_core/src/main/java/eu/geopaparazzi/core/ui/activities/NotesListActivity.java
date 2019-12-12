@@ -25,8 +25,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -46,6 +44,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +54,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoImages;
+import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.core.database.objects.ItemComparators;
+import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
@@ -70,13 +77,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.UrlUtilities;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoImages;
-import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.objects.ItemComparators;
-import eu.geopaparazzi.core.database.objects.Note;
-import eu.geopaparazzi.core.mapview.MapviewActivity;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 
 /**

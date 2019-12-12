@@ -17,19 +17,20 @@
  */
 package eu.geopaparazzi.library.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
 
 /**
  * A dialog that permits multiple selection.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MultipleChoiceDialog {
@@ -38,13 +39,13 @@ public class MultipleChoiceDialog {
 
     /**
      * Open the dialog.
-     * 
-     * @param context the {@link Context} to use.
+     *
+     * @param context      the {@link Context} to use.
      * @param parentButton the parent {@link Button} that will be updated and contain
-     *              the text of semicolon separated list of the selected items.
-     * @param items the items to be presented in the dialog.
+     *                     the text of semicolon separated list of the selected items.
+     * @param items        the items to be presented in the dialog.
      */
-    public void open( Context context, final Button parentButton, final String[] items ) {
+    public void open(Context context, final Button parentButton, final String[] items) {
 
         String buttonString = parentButton.getText().toString();
         if (!buttonString.equals("...")) { //$NON-NLS-1$
@@ -56,12 +57,12 @@ public class MultipleChoiceDialog {
         boolean[] checkedValues = new boolean[items.length];
         int count = items.length;
 
-        for( int i = 0; i < count; i++ )
+        for (int i = 0; i < count; i++)
             checkedValues[i] = allSelected.contains(items[i]);
 
-        DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
+        DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (items[which].length() == 0) {
                     return;
                 }
@@ -72,7 +73,7 @@ public class MultipleChoiceDialog {
                 }
                 StringBuilder sB = new StringBuilder();
 
-                for( CharSequence selected : allSelected )
+                for (CharSequence selected : allSelected)
                     sB.append(";" + selected); //$NON-NLS-1$
 
                 String buttonString = ""; //$NON-NLS-1$

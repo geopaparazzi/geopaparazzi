@@ -19,15 +19,15 @@
 package eu.geopaparazzi.library.core.fragments;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.fragment.app.ListFragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.ListFragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;

@@ -17,20 +17,9 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import androidx.fragment.app.Fragment;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -38,6 +27,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;

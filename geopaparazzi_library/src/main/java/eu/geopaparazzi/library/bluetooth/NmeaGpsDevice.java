@@ -34,6 +34,9 @@
  */
 package eu.geopaparazzi.library.bluetooth;
 
+import android.bluetooth.BluetoothSocket;
+import android.os.SystemClock;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,39 +47,37 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.bluetooth.BluetoothSocket;
-import android.os.SystemClock;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A utility class used to manage the communication with the bluetooth GPS whn the connection has been established.
  * It is used to read NMEA data from the GPS or to send SIRF III binary commands or SIRF III NMEA commands to the GPS.
- * You should run the main read loop in one thread and send the commands in a separate one.   
- * 
+ * You should run the main read loop in one thread and send the commands in a separate one.
+ *
  * @author Herbert von Broeuschmeul
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class NmeaGpsDevice implements IBluetoothIOHandler {
     /**
-     * GPS bluetooth socket used for communication. 
+     * GPS bluetooth socket used for communication.
      */
     private BluetoothSocket socket;
     /**
-     * GPS InputStream from which we read data. 
+     * GPS InputStream from which we read data.
      */
     private InputStream in;
     /**
-     * GPS output stream to which we send data (SIRF III binary commands). 
+     * GPS output stream to which we send data (SIRF III binary commands).
      */
     private OutputStream out;
     /**
-     * GPS output stream to which we send data (SIRF III NMEA commands). 
+     * GPS output stream to which we send data (SIRF III NMEA commands).
      */
     private PrintStream out2;
 
     /**
-     * A boolean which indicates if the GPS is ready to receive data. 
+     * A boolean which indicates if the GPS is ready to receive data.
      * In fact we consider that the GPS is ready when it begins to sends data...
      */
     private boolean ready = false;
@@ -88,7 +89,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth_tmp.BluetoothEnablementHandler)
      */
     @Override
-    public void initialize( BluetoothSocket socket ) {
+    public void initialize(BluetoothSocket socket) {
         this.socket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -107,10 +108,11 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
         out2 = tmpOut2;
     }
 
-    private void error( String msg, Exception e ) {
+    private void error(String msg, Exception e) {
         GPLog.error(this, msg, e);
     }
-    private void log( String msg ) {
+
+    private void log(String msg) {
         if (GPLog.LOG)
             GPLog.addLogEntry(this, null, null, msg);
     }
@@ -127,7 +129,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#setEnabled(boolean)
      */
     @Override
-    public void setEnabled( boolean enabled ) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -145,7 +147,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
             String s;
             long now = SystemClock.uptimeMillis();
             long lastRead = now;
-            while( (enabled) && (now < lastRead + 5000) ) {
+            while ((enabled) && (now < lastRead + 5000)) {
                 if (reader.ready()) {
                     s = reader.readLine();
                     // if (Debug.D)
@@ -170,14 +172,14 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
 
     /**
      * Notifies the reception of a string from the bluetooth device to registered {@link IBluetoothListener}s.
-     * 
-     * @param sentence  the complete NMEA sentence received from the bluetooth GPS (i.e. $....*XY where XY is the checksum)
+     *
+     * @param sentence the complete NMEA sentence received from the bluetooth GPS (i.e. $....*XY where XY is the checksum)
      */
-    private void notifySentence( final String sentence ) {
+    private void notifySentence(final String sentence) {
         if (enabled) {
             final long timestamp = System.currentTimeMillis();
             if (sentence != null) {
-                for( final IBluetoothListener listener : bluetoothListeners ) {
+                for (final IBluetoothListener listener : bluetoothListeners) {
                     listener.onDataReceived(timestamp, sentence);
                 }
             }
@@ -186,14 +188,14 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
 
     /**
      * Write to the connected OutStream.
-     * 
+     *
      * @param buffer the bytes to write.
      */
-    public void write( byte[] buffer ) {
+    public void write(byte[] buffer) {
         try {
             do {
                 Thread.sleep(100);
-            } while( (enabled) && (!ready) );
+            } while ((enabled) && (!ready));
             if ((enabled) && (ready)) {
                 out.write(buffer);
                 out.flush();
@@ -205,14 +207,14 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
 
     /**
      * Write to the connected OutStream.
-     * 
+     *
      * @param buffer the data to write.
      */
-    public void write( String buffer ) {
+    public void write(String buffer) {
         try {
             do {
                 Thread.sleep(100);
-            } while( (enabled) && (!ready) );
+            } while ((enabled) && (!ready));
             if ((enabled) && (ready)) {
                 out2.print(buffer);
                 out2.flush();
@@ -256,7 +258,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#addListener(eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener)
      */
     @Override
-    public boolean addListener( IBluetoothListener listener ) {
+    public boolean addListener(IBluetoothListener listener) {
         if (!bluetoothListeners.contains(listener)) {
             bluetoothListeners.add(listener);
             return true;
@@ -268,7 +270,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#removeListener(eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener)
      */
     @Override
-    public void removeListener( IBluetoothListener listener ) {
+    public void removeListener(IBluetoothListener listener) {
         bluetoothListeners.remove(listener);
     }
 
@@ -283,7 +285,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
     }
 
     @Override
-    public <T> T adapt( Class<T> adaptee ) {
+    public <T> T adapt(Class<T> adaptee) {
         if (adaptee.isAssignableFrom(NmeaGpsDevice.class)) {
             return adaptee.cast(this);
         }

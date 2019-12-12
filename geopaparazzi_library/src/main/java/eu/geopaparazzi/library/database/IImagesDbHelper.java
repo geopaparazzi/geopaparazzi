@@ -67,7 +67,7 @@ public interface IImagesDbHelper {
     /**
      * Get an image from the db by its <b>data</b> id.
      *
-     * @param imageDataId the image data id.
+     * @param imageDataId    the image data id.
      * @param sqliteDatabase the optional db to use. If called from #getImageData, this should not be null.
      * @return the image data.
      * @throws IOException
@@ -86,7 +86,7 @@ public interface IImagesDbHelper {
     /**
      * Get an image thumbnail from the db by its <b>data</b> id.
      *
-     * @param imageDataId the image data id.
+     * @param imageDataId    the image data id.
      * @param sqliteDatabase the optional db to use. If called from #getImageData, this should not be null.
      * @return the image data.
      * @throws IOException

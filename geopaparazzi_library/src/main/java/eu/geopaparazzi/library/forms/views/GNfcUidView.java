@@ -18,8 +18,6 @@
 
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormDetailFragment;
 import eu.geopaparazzi.library.nfc.NfcIdReaderActivity;
@@ -37,9 +36,12 @@ import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom NFC UID reader view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GNfcUidView extends View implements GView {
@@ -49,56 +51,56 @@ public class GNfcUidView extends View implements GView {
     private FormDetailFragment fragmentDetail;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GNfcUidView( Context context, AttributeSet attrs, int defStyle ) {
+    public GNfcUidView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GNfcUidView( Context context, AttributeSet attrs ) {
+    public GNfcUidView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param activity activity.
-     * @param attrs attributes.
-     * @param requestCode the request code for the activity return. 
-     * @param parentView parent
-     * @param label label
-     * @param value value
+     * @param activity              activity.
+     * @param attrs                 attributes.
+     * @param requestCode           the request code for the activity return.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
      * @param constraintDescription constraints
      */
-    public GNfcUidView( final Activity activity, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label,
-            String value, String constraintDescription ) {
+    public GNfcUidView(final Activity activity, AttributeSet attrs, final int requestCode, LinearLayout parentView, String label,
+                       String value, String constraintDescription) {
         super(activity, attrs);
 
         handleView(activity, requestCode, parentView, label, value, constraintDescription);
     }
 
     /**
-     * @param fragmentDetail the fragemtn.
-     * @param attrs attributes.
-     * @param requestCode the request code for the activity return. 
-     * @param parentView parent
-     * @param label label
-     * @param value value
+     * @param fragmentDetail        the fragemtn.
+     * @param attrs                 attributes.
+     * @param requestCode           the request code for the activity return.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
      * @param constraintDescription constraints
      */
-    public GNfcUidView( FormDetailFragment fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
-            String label, String value, String constraintDescription ) {
+    public GNfcUidView(FormDetailFragment fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
+                       String label, String value, String constraintDescription) {
         super(fragmentDetail.getActivity(), attrs);
         this.fragmentDetail = fragmentDetail;
         handleView(fragmentDetail.getActivity(), requestCode, parentView, label, value, constraintDescription);
     }
 
-    private void handleView( final Activity activity, final int requestCode, LinearLayout parentView, String label, String value,
-            String constraintDescription ) {
+    private void handleView(final Activity activity, final int requestCode, LinearLayout parentView, String label, String value,
+                            String constraintDescription) {
         _value = value;
 
         LinearLayout textLayout = new LinearLayout(activity);
@@ -130,8 +132,8 @@ public class GNfcUidView extends View implements GView {
         uidText.setKeyListener(null);
         textLayout.addView(uidText);
 
-        button.setOnClickListener(new OnClickListener(){
-            public void onClick( View v ) {
+        button.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
                 Intent nfcIntent = new Intent(activity, NfcIdReaderActivity.class);
                 if (fragmentDetail != null) {
                     fragmentDetail.startActivityForResult(nfcIntent, requestCode);
@@ -147,7 +149,7 @@ public class GNfcUidView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         String rfidUID = data.getStringExtra(LibraryConstants.PREFS_KEY_TEXT);
         if (rfidUID == null) {
             rfidUID = ""; //$NON-NLS-1$
@@ -157,7 +159,7 @@ public class GNfcUidView extends View implements GView {
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

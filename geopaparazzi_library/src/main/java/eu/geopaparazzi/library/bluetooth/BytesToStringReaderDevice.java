@@ -34,19 +34,20 @@
  */
 package eu.geopaparazzi.library.bluetooth;
 
+import android.bluetooth.BluetoothSocket;
+import android.os.SystemClock;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.bluetooth.BluetoothSocket;
-import android.os.SystemClock;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
- * A generic binary device that reads the raw stream and converts it to hex strings.   
- * 
+ * A generic binary device that reads the raw stream and converts it to hex strings.
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -65,15 +66,15 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param length buffer length.
      */
-    public BytesToStringReaderDevice( int length ) {
+    public BytesToStringReaderDevice(int length) {
         this.length = length;
     }
 
     @Override
-    public void initialize( BluetoothSocket socket ) {
+    public void initialize(BluetoothSocket socket) {
         this.socket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -89,7 +90,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
 
         ready = true;
         enabled = true;
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             public void run() {
                 startDevice();
             }
@@ -106,7 +107,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -120,10 +121,10 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
             final byte[] data = new byte[length];
             long now = SystemClock.uptimeMillis();
             long lastRead = now;
-            while( (enabled) && (now < lastRead + 5000) ) {
+            while ((enabled) && (now < lastRead + 5000)) {
                 int index = 0;
                 int value = 0;
-                while( enabled && (value = in.read()) != -1 ) {
+                while (enabled && (value = in.read()) != -1) {
                     data[index++] = (byte) value;
                     if (index == length) {
                         String str = new String(data, 0, length).trim();
@@ -147,11 +148,11 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
         }
     }
 
-    private void notifyBytes( final String hexString ) {
+    private void notifyBytes(final String hexString) {
         if (enabled) {
             final long timestamp = System.currentTimeMillis();
             if (hexString != null) {
-                for( final IBluetoothListener listener : bluetoothListeners ) {
+                for (final IBluetoothListener listener : bluetoothListeners) {
                     listener.onDataReceived(timestamp, hexString);
                 }
             }
@@ -188,7 +189,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     }
 
     @Override
-    public boolean addListener( IBluetoothListener listener ) {
+    public boolean addListener(IBluetoothListener listener) {
         if (!bluetoothListeners.contains(listener)) {
             bluetoothListeners.add(listener);
             return true;
@@ -197,7 +198,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     }
 
     @Override
-    public void removeListener( IBluetoothListener listener ) {
+    public void removeListener(IBluetoothListener listener) {
         bluetoothListeners.remove(listener);
     }
 
@@ -212,7 +213,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     }
 
     @Override
-    public <T> T adapt( Class<T> adaptee ) {
+    public <T> T adapt(Class<T> adaptee) {
         if (adaptee.isAssignableFrom(BytesToStringReaderDevice.class)) {
             return adaptee.cast(this);
         }

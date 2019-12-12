@@ -9,7 +9,7 @@ public enum GPGraphicsFactory {
 //        AndroidGraphicFactory.createInstance(app);
     }
 
-    public static void clearResourceMemoryCache(){
+    public static void clearResourceMemoryCache() {
 //        AndroidGraphicFactory.clearResourceMemoryCache();
     }
 

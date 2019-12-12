@@ -18,7 +18,6 @@
 package eu.geopaparazzi.plugins.projectexport;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -28,8 +27,6 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

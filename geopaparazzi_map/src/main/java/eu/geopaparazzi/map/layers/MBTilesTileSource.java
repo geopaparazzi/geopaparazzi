@@ -14,8 +14,8 @@ public class MBTilesTileSource extends TileSource {
     /**
      * Build a tile source.
      *
-     * @param dbPath the path to the mbtiles database.
-     * @param alpha an optional alpha value [0-255] to make the tile transparent.
+     * @param dbPath           the path to the mbtiles database.
+     * @param alpha            an optional alpha value [0-255] to make the tile transparent.
      * @param transparentColor an optional color that will be made transparent in the bitmap.
      * @throws Exception
      */

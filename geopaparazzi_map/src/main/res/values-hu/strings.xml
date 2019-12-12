@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Pont alakzat</string>
-  <string name="point_size">Pont méret</string>
-  <string name="decimation">Méretezés</string>
+    <string name="point_shape_">Pont alakzat</string>
+    <string name="point_size">Pont méret</string>
+    <string name="decimation">Méretezés</string>
 </resources>

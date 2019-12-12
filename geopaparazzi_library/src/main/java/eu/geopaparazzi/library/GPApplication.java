@@ -17,19 +17,19 @@
  */
 package eu.geopaparazzi.library;
 
-import java.io.File;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.multidex.MultiDexApplication;
+
 import java.io.IOException;
 
-import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
-import androidx.multidex.MultiDexApplication;
-import androidx.appcompat.app.AppCompatDelegate;
-import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Application extension for Geopaparazzi.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class GPApplication extends MultiDexApplication {
@@ -51,9 +51,9 @@ public abstract class GPApplication extends MultiDexApplication {
 
     /**
      * Getter for the database.
-     * 
+     *
      * <p>In this method the database connection should be created.
-     * 
+     *
      * @return the database connection.
      * @throws IOException if something goes wrong.
      */

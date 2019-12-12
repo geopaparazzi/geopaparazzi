@@ -26,7 +26,7 @@ public final class WayPoint extends LocationPoint {
     private String mName;
     private String mDescription;
 
-    void setName( String name ) {
+    void setName(String name) {
         mName = name;
     }
 
@@ -37,7 +37,7 @@ public final class WayPoint extends LocationPoint {
         return mName;
     }
 
-    void setDescription( String description ) {
+    void setDescription(String description) {
         mDescription = description;
     }
 

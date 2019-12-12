@@ -28,17 +28,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.library.style.Style;
+import eu.geopaparazzi.map.features.Feature;
 
 /**
  * geopaparazzi related database utilities.

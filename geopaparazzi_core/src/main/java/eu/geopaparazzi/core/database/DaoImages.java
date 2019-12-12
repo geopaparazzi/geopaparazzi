@@ -23,17 +23,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
 import eu.geopaparazzi.library.database.Image;
 import eu.geopaparazzi.library.images.ImageUtilities;
-import eu.geopaparazzi.core.GeopaparazziApplication;
 
 import static eu.geopaparazzi.library.database.TableDescriptions.ImageDataTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.ImageTableFields;

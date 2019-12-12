@@ -61,22 +61,21 @@ import eu.geopaparazzi.map.jts.android.geom.PolygonShape;
  * logic, rather than relying on Java2D <tt>AffineTransform</tt>s.
  * <p>
  * The writer supports removing duplicate consecutive points
- * (via the {@link #setRemoveDuplicatePoints(boolean)} method) 
+ * (via the {@link #setRemoveDuplicatePoints(boolean)} method)
  * as well as true <b>decimation</b>
- * (via the {@link #setDecimation(double)} method. 
- * Enabling one of these strategies can substantially improve 
+ * (via the {@link #setDecimation(double)} method.
+ * Enabling one of these strategies can substantially improve
  * rendering speed for large geometries.
  * It is only necessary to enable one strategy.
- * Using decimation is preferred, but this requires 
+ * Using decimation is preferred, but this requires
  * determining a distance below which input geometry vertices
  * can be considered unique (which may not always be feasible).
  * If neither strategy is enabled, all vertices
  * of the input <tt>Geometry</tt>
  * will be represented in the output <tt>Shape</tt>.
  * <p>
- * 
+ *
  * <p>Modified for Android use.</p>
- * 
  */
 @SuppressWarnings("ALL")
 public class ShapeWriter {
@@ -101,7 +100,6 @@ public class ShapeWriter {
     /**
      * If true, decimation will be used to reduce the number of vertices
      * by removing consecutive duplicates.
-     * 
      */
     private boolean doRemoveDuplicatePoints = false;
 
@@ -110,11 +108,11 @@ public class ShapeWriter {
     /**
      * Creates a new ShapeWriter with a specified point transformation
      * and point shape factory.
-     * 
-     * @param pointTransformer a transformation from model to view space to use 
-     * @param pointFactory the PointShapeFactory to use
+     *
+     * @param pointTransformer a transformation from model to view space to use
+     * @param pointFactory     the PointShapeFactory to use
      */
-    public ShapeWriter( PointTransformation pointTransformer, PointShapeFactory pointFactory ) {
+    public ShapeWriter(PointTransformation pointTransformer, PointShapeFactory pointFactory) {
         if (pointTransformer != null)
             this.pointTransformer = pointTransformer;
         if (pointFactory != null)
@@ -124,18 +122,18 @@ public class ShapeWriter {
     /**
      * Creates a new ShapeWriter with a specified point transformation
      * and the default point shape factory.
-     * 
-     * @param pointTransformer a transformation from model to view space to use 
+     *
+     * @param pointTransformer a transformation from model to view space to use
      */
-    public ShapeWriter( PointTransformation pointTransformer ) {
+    public ShapeWriter(PointTransformation pointTransformer) {
         this(pointTransformer, null);
     }
 
-    public ShapeWriter( PointTransformation pointTransformer, String shapeName, float size ) {
+    public ShapeWriter(PointTransformation pointTransformer, String shapeName, float size) {
         this(pointTransformer, getShape(shapeName, size));
     }
 
-    private static PointShapeFactory getShape( String shapeName, float size ) {
+    private static PointShapeFactory getShape(String shapeName, float size) {
         if (shapeName.equals("circle")) {
             return new PointShapeFactory.Circle(size);
         } else if (shapeName.equals("cross")) {
@@ -155,7 +153,6 @@ public class ShapeWriter {
 
     /**
      * Creates a new ShapeWriter with the default (identity) point transformation.
-     *
      */
     public ShapeWriter() {
     }
@@ -167,35 +164,34 @@ public class ShapeWriter {
      * where a transform reduces the extent of the geometry.
      * <p>
      * The default is <tt>false</tt>.
-     * 
      */
-    public void setRemoveDuplicatePoints( boolean doRemoveDuplicatePoints ) {
+    public void setRemoveDuplicatePoints(boolean doRemoveDuplicatePoints) {
         this.doRemoveDuplicatePoints = doRemoveDuplicatePoints;
     }
 
     /**
      * Sets the decimation distance used to determine
-     * whether vertices of the input geometry are 
+     * whether vertices of the input geometry are
      * considered to be duplicate and thus removed.
      * The distance is axis distance, not Euclidean distance.
      * The distance is specified in the input geometry coordinate system
      * (NOT the transformed output coordinate system).
      * <p>
      * When rendering to a screen image, a suitably small distance should be used
-     * to avoid obvious rendering defects.  
+     * to avoid obvious rendering defects.
      * A distance equivalent to the equivalent of 1.5 pixels or less is recommended
      * (and perhaps even smaller to avoid any chance of visible artifacts).
      * <p>
      * The default distance is 0.0, which disables decimation.
-     * 
+     *
      * @param decimationDistance the distance below which vertices are considered to be duplicates
      */
-    public void setDecimation( double decimationDistance ) {
+    public void setDecimation(double decimationDistance) {
         this.decimationDistance = decimationDistance;
     }
 
     /**
-     * Creates a {@link Shape} representing a {@link Geometry}, 
+     * Creates a {@link Shape} representing a {@link Geometry},
      * according to the specified PointTransformation
      * and PointShapeFactory (if relevant).
      * <p>
@@ -203,14 +199,14 @@ public class ShapeWriter {
      * preserve information fragment_about which elements in heterogeneous collections
      * are 1D and which are 2D.
      * For example, a GeometryCollection containing a ring and a
-     * disk will render as two disks if Graphics.fill is used, 
+     * disk will render as two disks if Graphics.fill is used,
      * or as two rings if Graphics.draw is used.
      * To avoid this issue use separate shapes for the components.
-     * 
+     *
      * @param geometry the geometry to convert
      * @return a Shape representing the geometry
      */
-    public DrawableShape toShape(Geometry geometry ) {
+    public DrawableShape toShape(Geometry geometry) {
         if (geometry.isEmpty())
             return new PathShape(new Path());
         else if (geometry instanceof Polygon)
@@ -231,18 +227,18 @@ public class ShapeWriter {
         throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
     }
 
-    private DrawableShape toShape( Polygon p ) {
+    private DrawableShape toShape(Polygon p) {
         PolygonShape poly = new PolygonShape();
 
         appendRing(poly, p.getExteriorRing().getCoordinates());
-        for( int j = 0; j < p.getNumInteriorRing(); j++ ) {
+        for (int j = 0; j < p.getNumInteriorRing(); j++) {
             appendRing(poly, p.getInteriorRingN(j).getCoordinates());
         }
 
         return poly;
     }
 
-    private void appendRing( PolygonShape poly, Coordinate[] coords ) {
+    private void appendRing(PolygonShape poly, Coordinate[] coords) {
         double prevx = Double.NaN;
         double prevy = Double.NaN;
         Coordinate prev = null;
@@ -254,7 +250,7 @@ public class ShapeWriter {
          * Ring path will be closed explicitly, which provides a 
          * more accurate path representation.
          */
-        for( int i = 0; i < n; i++ ) {
+        for (int i = 0; i < n; i++) {
 
             if (decimationDistance > 0.0) {
                 boolean isDecimated = prev != null && Math.abs(coords[i].x - prev.x) < decimationDistance
@@ -292,9 +288,9 @@ public class ShapeWriter {
         mainPath.addPath(tmpPath);
     }
 
-    private DrawableShape toShape( MultiPolygon mp ) {
+    private DrawableShape toShape(MultiPolygon mp) {
         GeometryCollectionShape shapes = new GeometryCollectionShape();
-        for( int i = 0; i < mp.getNumGeometries(); i++ ) {
+        for (int i = 0; i < mp.getNumGeometries(); i++) {
             Polygon polygon = (Polygon) mp.getGeometryN(i);
             DrawableShape shape = toShape(polygon);
             shapes.add(shape);
@@ -302,20 +298,20 @@ public class ShapeWriter {
         return shapes;
     }
 
-    private DrawableShape toShape( GeometryCollection gc ) {
+    private DrawableShape toShape(GeometryCollection gc) {
         GeometryCollectionShape shape = new GeometryCollectionShape();
         // add components to GC shape
-        for( int i = 0; i < gc.getNumGeometries(); i++ ) {
+        for (int i = 0; i < gc.getNumGeometries(); i++) {
             Geometry g = (Geometry) gc.getGeometryN(i);
             shape.add(toShape(g));
         }
         return shape;
     }
 
-    private PathShape toShape( MultiLineString mls ) {
+    private PathShape toShape(MultiLineString mls) {
         Path path = new Path();
 
-        for( int i = 0; i < mls.getNumGeometries(); i++ ) {
+        for (int i = 0; i < mls.getNumGeometries(); i++) {
             LineString lineString = (LineString) mls.getGeometryN(i);
             PathShape shape = toShape(lineString);
             path.addPath(shape.getPath());
@@ -323,7 +319,7 @@ public class ShapeWriter {
         return new PathShape(path);
     }
 
-    private PathShape toShape( LineString lineString ) {
+    private PathShape toShape(LineString lineString) {
         Path shape = new Path();
 
         Coordinate prev = lineString.getCoordinateN(0);
@@ -335,7 +331,7 @@ public class ShapeWriter {
 
         int n = lineString.getNumPoints() - 1;
         // int count = 0;
-        for( int i = 1; i <= n; i++ ) {
+        for (int i = 1; i <= n; i++) {
             Coordinate currentCoord = lineString.getCoordinateN(i);
             if (decimationDistance > 0.0) {
                 boolean isDecimated = prev != null && Math.abs(currentCoord.x - prev.x) < decimationDistance
@@ -363,15 +359,15 @@ public class ShapeWriter {
         return new PathShape(shape);
     }
 
-    private DrawableShape toShape( Point point ) {
+    private DrawableShape toShape(Point point) {
         PointF viewPoint = transformPoint(point.getCoordinate());
         return pointFactory.createPoint(viewPoint);
     }
 
-    private DrawableShape toShape( MultiPoint points ) {
+    private DrawableShape toShape(MultiPoint points) {
         GeometryCollectionShape shapes = new GeometryCollectionShape();
         int numGeometries = points.getNumGeometries();
-        for( int i = 0; i < numGeometries; i++ ) {
+        for (int i = 0; i < numGeometries; i++) {
             Point point = (Point) points.getGeometryN(i);
             PointF viewPoint = transformPoint(point.getCoordinate());
             DrawableShape drawableShape = pointFactory.createPoint(viewPoint);
@@ -380,11 +376,11 @@ public class ShapeWriter {
         return shapes;
     }
 
-    private PointF transformPoint( Coordinate model ) {
+    private PointF transformPoint(Coordinate model) {
         return transformPoint(model, new PointF());
     }
 
-    private PointF transformPoint( Coordinate model, PointF view ) {
+    private PointF transformPoint(Coordinate model, PointF view) {
         pointTransformer.transform(model, view);
         return view;
     }

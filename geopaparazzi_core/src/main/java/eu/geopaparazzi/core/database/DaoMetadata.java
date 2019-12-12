@@ -28,14 +28,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.database.objects.Metadata;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.TableDescriptions;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.database.objects.Metadata;
 
-import static eu.geopaparazzi.library.database.TableDescriptions.MetadataTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.MetadataTableDefaultValues;
+import static eu.geopaparazzi.library.database.TableDescriptions.MetadataTableFields;
 import static eu.geopaparazzi.library.database.TableDescriptions.TABLE_METADATA;
 
 /**

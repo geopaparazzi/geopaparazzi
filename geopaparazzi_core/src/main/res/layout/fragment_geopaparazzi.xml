@@ -37,7 +37,7 @@
                     android:layout_margin="10dp"
                     android:contentDescription="@string/dashboard_note_action_description"
                     app:srcCompat="@drawable/ic_dashboard_notes_24dp"
-                    android:stateListAnimator="@null"/>
+                    android:stateListAnimator="@null" />
 
                 <TextView
                     android:id="@+id/dashboardTextNotes"
@@ -64,7 +64,7 @@
                     android:layout_margin="10dp"
                     android:contentDescription="@string/dashboard_metadata_action_description"
                     app:srcCompat="@drawable/ic_dashboard_metadata_24dp"
-                    android:stateListAnimator="@null"/>
+                    android:stateListAnimator="@null" />
 
                 <TextView
                     android:id="@+id/dashboardTextMetadata"
@@ -100,7 +100,7 @@
                     android:layout_margin="10dp"
                     android:contentDescription="@string/dashboard_gpslog_action_description"
                     app:srcCompat="@drawable/ic_dashboard_gpslog_24dp"
-                    android:stateListAnimator="@null"/>
+                    android:stateListAnimator="@null" />
 
                 <TextView
                     android:id="@+id/dashboardTextGpslog"

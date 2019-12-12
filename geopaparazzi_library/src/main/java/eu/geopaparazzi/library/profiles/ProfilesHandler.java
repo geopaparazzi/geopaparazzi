@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
@@ -103,6 +104,7 @@ public enum ProfilesHandler {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
         return getProfilesFromJson(profilesJson, false);
     }
+
     public List<Profile> getProfilesFromPreferences(SharedPreferences preferences, boolean bWebOnly) throws JSONException {
         String profilesJson = preferences.getString(KEY_PROFILES_PREFERENCES, "");
         return getProfilesFromJson(profilesJson, bWebOnly);
@@ -152,8 +154,8 @@ public enum ProfilesHandler {
      * @return the profile.
      * @throws JSONException
      */
-    public Profile getProfileFromJson(JSONObject profileObject)throws JSONException{
-        return getProfileFromJson( profileObject,false);
+    public Profile getProfileFromJson(JSONObject profileObject) throws JSONException {
+        return getProfileFromJson(profileObject, false);
     }
 
     public Profile getProfileFromJson(JSONObject profileObject, boolean bWebOnly) throws JSONException {
@@ -217,7 +219,7 @@ public enum ProfilesHandler {
                     if (projectObject.has(UPLOADURL)) {
                         String uploadurl = projectObject.getString(UPLOADURL);
                         profileProject.projectUploadUrl = uploadurl;
-                        if ( uploadurl != null && !uploadurl.isEmpty() ) isWebProfile = true;
+                        if (uploadurl != null && !uploadurl.isEmpty()) isWebProfile = true;
                     }
                     if (projectObject.has(SIZE)) {
                         long size = projectObject.getLong(SIZE);
@@ -317,7 +319,7 @@ public enum ProfilesHandler {
         }
 
         if (bWebOnly) {
-            if (isWebProfile){
+            if (isWebProfile) {
                 return profile;
             } else {
                 return null;
@@ -548,10 +550,11 @@ public enum ProfilesHandler {
         URL aUrl;
         String urlProtocol;
 
-        if (url == null){
+        if (url == null) {
             url = "";
-        };
-        if (url.isEmpty()){ // just return an empty url (do not prepend the cloudProfileServer)
+        }
+        ;
+        if (url.isEmpty()) { // just return an empty url (do not prepend the cloudProfileServer)
             sNewURL = url;
         } else {
             try {

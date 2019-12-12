@@ -39,7 +39,7 @@ import static java.lang.Math.sqrt;
 
 /**
  * Represents a line (log or map).
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
@@ -59,14 +59,14 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
     private String color = "#ff0000ff"; //$NON-NLS-1$
 
     /**
-     * @param name line name.
-     * @param lonList lon coords.
-     * @param latList lat coords.
+     * @param name      line name.
+     * @param lonList   lon coords.
+     * @param latList   lat coords.
      * @param altimList elevation list.
-     * @param dateList date list.
+     * @param dateList  date list.
      */
-    public Line( String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
-            List<String> dateList ) {
+    public Line(String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
+                List<String> dateList) {
         this.name = name;
         this.lonList = lonList;
         this.latList = latList;
@@ -76,10 +76,10 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
 
     /**
      * Empty line constructor.
-     * 
+     *
      * @param logid log id.
      */
-    public Line( String logid ) {
+    public Line(String logid) {
         this.name = logid;
         this.lonList = new DynamicDoubleArray();
         this.latList = new DynamicDoubleArray();
@@ -88,12 +88,12 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
     }
 
     /**
-     * @param lon lon
-     * @param lat lat
+     * @param lon   lon
+     * @param lat   lat
      * @param altim elevation.
-     * @param date date.
+     * @param date  date.
      */
-    public void addPoint( double lon, double lat, double altim, String date ) {
+    public void addPoint(double lon, double lat, double altim, String date) {
         if (lat < 0.0001 && lon < 0.0001) {
             // don't add points in 0,0
             return;
@@ -107,11 +107,11 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
 
     /**
      * Set the style.
-     * 
+     *
      * @param width width.
      * @param color color.
      */
-    public void setStyle( float width, String color ) {
+    public void setStyle(float width, String color) {
         if (width > 0)
             this.width = width;
         if (color != null)
@@ -120,10 +120,10 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
 
     /**
      * Set the name.
-     * 
+     *
      * @param name the name.
      */
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -164,13 +164,13 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
 
     /**
      * Calculates the length of a line.
-     * 
+     *
      * @return the length of the line in meters.
      */
     public double getLength() {
         final float[] dist = new float[3];
         double length = 0;
-        for( int i = 0; i < latList.size() - 1; i++ ) {
+        for (int i = 0; i < latList.size() - 1; i++) {
             double lat1 = latList.get(i);
             double lon1 = lonList.get(i);
             double altim1 = altimList.get(i);
@@ -197,7 +197,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
         sB.append("<LineString>\n");
         sB.append("<tessellate>1</tessellate>\n");
         sB.append("<coordinates>\n");
-        for( int i = 0; i < lonList.size(); i++ ) {
+        for (int i = 0; i < lonList.size(); i++) {
             double lon = lonList.get(i);
             double lat = latList.get(i);
             sB.append(lon).append(",").append(lat).append(",1 \n");
@@ -232,7 +232,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
             int size = latList.size();
             minLat = Double.POSITIVE_INFINITY;
             maxLat = Double.NEGATIVE_INFINITY;
-            for( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 double d = latArray[i];
                 minLat = Math.min(d, minLat);
                 maxLat = Math.max(d, maxLat);
@@ -240,7 +240,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
             double[] lonArray = lonList.getInternalArray();
             minLon = Double.POSITIVE_INFINITY;
             maxLon = Double.NEGATIVE_INFINITY;
-            for( int i = 0; i < size; i++ ) {
+            for (int i = 0; i < size; i++) {
                 double d = lonArray[i];
                 minLon = Math.min(d, minLon);
                 maxLon = Math.max(d, maxLon);
@@ -281,7 +281,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
         double[] latArray = latList.getInternalArray();
         double[] lonArray = lonList.getInternalArray();
         double[] altimArray = altimList.getInternalArray();
-        for( int i = 0; i < size; i++ ) {
+        for (int i = 0; i < size; i++) {
             String dateString = dateList.get(i);
             long time = Long.parseLong(dateString);
             // TODO change this sooner or later - needs ts to be hold differently in db

@@ -35,18 +35,16 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.WKBReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.features.FeatureUtilities;
@@ -220,8 +218,7 @@ public class LineOnSelectionToolGroup implements ToolGroup, OnClickListener, OnT
                 if (context instanceof Activity) {
                     Activity activity = (Activity) context;
                     activity.startActivityForResult(intent, MapUtilities.SELECTED_FEATURES_UPDATED_RETURN_CODE);
-                }
-                else {
+                } else {
                     context.startActivity(intent);
                 }
             }

@@ -97,7 +97,7 @@ public class DownloadFileIntentService extends IntentService {
 
                         File destFile = new File(downloadable.getDestinationPath());
                         if (destFile.exists()) {
-                            updateBundle.putString(PROGRESS_MESSAGE_KEY,getString(R.string.download_Exists) + destFile.getName());
+                            updateBundle.putString(PROGRESS_MESSAGE_KEY, getString(R.string.download_Exists) + destFile.getName());
                             resultReceiver.send(DownloadResultReceiver.RESULT_CODE, updateBundle);
                             pause();
                             continue;
@@ -237,7 +237,7 @@ public class DownloadFileIntentService extends IntentService {
                 }
 
                 int percentage = (int) ((total * 100) / size);
-                prevPercentage = handlePercentage(percentage, prevPercentage, msg + " ("+ String.valueOf(percentage) + "%)");
+                prevPercentage = handlePercentage(percentage, prevPercentage, msg + " (" + String.valueOf(percentage) + "%)");
             }
             out.flush();
         } finally {

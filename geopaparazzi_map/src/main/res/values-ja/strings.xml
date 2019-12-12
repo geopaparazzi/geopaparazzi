@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="yes">はい</string>
-  <string name="no">いいえ</string>
-  <string name="up">アップ</string>
-  <string name="cantcreate_sdcard">SDカード (%1$s) にフォルダを作成できません。終了中...</string>
-  <string name="point_shape_">ポイント図形</string>
-  <string name="point_size">ポイントサイズ</string>
-  <string name="decimation">デシメーション</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="up">アップ</string>
+    <string name="cantcreate_sdcard">SDカード (%1$s) にフォルダを作成できません。終了中...</string>
+    <string name="point_shape_">ポイント図形</string>
+    <string name="point_size">ポイントサイズ</string>
+    <string name="decimation">デシメーション</string>
 </resources>

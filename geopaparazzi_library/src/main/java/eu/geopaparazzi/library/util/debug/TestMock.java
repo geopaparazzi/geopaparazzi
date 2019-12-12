@@ -17,8 +17,6 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
-import java.lang.reflect.Method;
-
 import android.content.ContentResolver;
 import android.location.Criteria;
 import android.location.Location;
@@ -27,21 +25,24 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.provider.Settings;
+
+import java.lang.reflect.Method;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A class for when there is no gps coverage.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class TestMock {
     /**
-     * 
+     *
      */
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     /**
-     * 
+     *
      */
     public static boolean isOn = false;
     private static Method locationJellyBeanFixMethod = null;
@@ -50,17 +51,17 @@ public class TestMock {
     /**
      * @param fakeGpsLog fake gps log to use.
      */
-    public static void setFakeGpsLog( IFakeGpsLog fakeGpsLog ) {
+    public static void setFakeGpsLog(IFakeGpsLog fakeGpsLog) {
         TestMock.fakeGpsLog = fakeGpsLog;
     }
 
     /**
      * Starts to trigger mock locations.
-     * 
-     * @param locationManager the location manager.
-     * @param locationListener the gps service. 
+     *
+     * @param locationManager  the location manager.
+     * @param locationListener the gps service.
      */
-    public static void startMocking( final LocationManager locationManager, LocationListener locationListener ) {
+    public static void startMocking(final LocationManager locationManager, LocationListener locationListener) {
         if (isOn) {
             return;
         }
@@ -83,7 +84,7 @@ public class TestMock {
                 false, //
                 Criteria.POWER_LOW,//
                 Criteria.ACCURACY_FINE//
-                );
+        );
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
 
         locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 2000, 0f, locationListener);
@@ -94,13 +95,13 @@ public class TestMock {
             // ignore
         }
 
-        Runnable r = new Runnable(){
+        Runnable r = new Runnable() {
             public void run() {
                 isOn = true;
 
                 long previousT = -1;
                 long t = 0;
-                while( isOn ) {
+                while (isOn) {
                     String nextLine = null;
                     if (fakeGpsLog.hasNext()) {
                         nextLine = fakeGpsLog.next();
@@ -134,7 +135,7 @@ public class TestMock {
                                 LocationProvider.AVAILABLE, //
                                 null, //
                                 SystemClock.elapsedRealtime()//
-                                );
+                        );
                         locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
                     } else {
                         fakeGpsLog.reset();
@@ -164,23 +165,24 @@ public class TestMock {
         Thread t = new Thread(r);
         t.start();
     }
+
     /**
      * Stops the mocking.
-     * 
+     *
      * @param locationManager the location manager.
      */
-    public static void stopMocking( final LocationManager locationManager ) {
+    public static void stopMocking(final LocationManager locationManager) {
         isOn = false;
         locationManager.removeTestProvider(MOCK_PROVIDER_NAME);
     }
 
     /**
      * Checks if mock locations were set.
-     * 
+     *
      * @param contentResolver {@link ContentResolver}.
      * @return true if they were set.
      */
-    public static boolean isMockEnabled( ContentResolver contentResolver ) {
+    public static boolean isMockEnabled(ContentResolver contentResolver) {
         return !Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0");
     }
 

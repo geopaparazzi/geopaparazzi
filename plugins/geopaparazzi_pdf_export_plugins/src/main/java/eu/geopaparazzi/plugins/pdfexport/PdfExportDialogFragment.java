@@ -24,14 +24,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import androidx.fragment.app.DialogFragment;
+
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -47,7 +47,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

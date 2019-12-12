@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.database.DaoImages;
 import eu.geopaparazzi.library.database.ANote;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.Image;
@@ -34,7 +35,6 @@ import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.core.database.DaoImages;
 
 /**
  * Represents a note (log or map).

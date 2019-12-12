@@ -21,16 +21,13 @@ package eu.geopaparazzi.library.core.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,10 +43,11 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
 import eu.geopaparazzi.library.style.ColorUtilities;
-import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
 
 /**

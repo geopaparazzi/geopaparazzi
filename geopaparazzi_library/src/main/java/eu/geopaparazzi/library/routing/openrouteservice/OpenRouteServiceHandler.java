@@ -17,6 +17,15 @@
  */
 package eu.geopaparazzi.library.routing.openrouteservice;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -25,71 +34,61 @@ import java.net.URLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IGpsLogDbHelper;
+import eu.geopaparazzi.library.style.ColorUtilities;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.DEFAULT_LOG_WIDTH;
 
 /**
  * Open route service class.
  *
- *
- * @deprecated since it stopped working
  * @author Andrea Antonello (www.hydrologis.com)
+ * @deprecated since it stopped working
  */
 @SuppressWarnings("nls")
 public class OpenRouteServiceHandler {
 
     /**
      * preference option for routing.
-     *
      */
     public enum Preference {
         /**
-         * 
+         *
          */
         Fastest,
         /**
-         * 
+         *
          */
         Shortest,
         /**
-          * 
-          */
+         *
+         */
         Bicycle // shortest == pedestrian
     }
+
     /**
      *
      */
     public enum Language {
         /**
-         * 
+         *
          */
         en,
         /**
-         * 
+         *
          */
         it,
         /**
-         * 
+         *
          */
         de,
         /**
-         * 
+         *
          */
         fr,
         /**
-         * 
+         *
          */
         es
     }
@@ -104,13 +103,13 @@ public class OpenRouteServiceHandler {
     /**
      * @param fromLat from lat
      * @param fromLon from lon
-     * @param toLat to lat
-     * @param toLon to lon
-     * @param pref preference
-     * @param lang language
-     * @throws Exception  if something goes wrong.
+     * @param toLat   to lat
+     * @param toLon   to lon
+     * @param pref    preference
+     * @param lang    language
+     * @throws Exception if something goes wrong.
      */
-    public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang )
+    public OpenRouteServiceHandler(double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang)
             throws Exception {
         StringBuilder urlSB = new StringBuilder();
         urlSB.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
@@ -149,7 +148,7 @@ public class OpenRouteServiceHandler {
          * extract route length
          */
         NodeList routeSummaryList = doc.getElementsByTagName("xls:RouteSummary"); //$NON-NLS-1$
-        for( int i = 0; i < routeSummaryList.getLength(); i++ ) {
+        for (int i = 0; i < routeSummaryList.getLength(); i++) {
             Node routeSummaryNode = routeSummaryList.item(i);
             NodeList totalDistance = ((Element) routeSummaryNode).getElementsByTagName("xls:TotalDistance"); //$NON-NLS-1$
             Node item = totalDistance.item(0);
@@ -161,13 +160,13 @@ public class OpenRouteServiceHandler {
          */
         NodeList routeGeometryList = doc.getElementsByTagName("xls:RouteGeometry"); //$NON-NLS-1$
         int routeGeometryListLength = routeGeometryList.getLength();
-        for( int i = 0; i < routeGeometryListLength; i++ ) {
+        for (int i = 0; i < routeGeometryListLength; i++) {
             Node gmlLinestring = routeGeometryList.item(i);
             NodeList gmlPoslist = ((Element) gmlLinestring).getElementsByTagName("gml:pos"); //$NON-NLS-1$
             int length = gmlPoslist.getLength();
             routePoints = new float[length * 2];
             int index = 0;
-            for( int j = 0; j < length; j++ ) {
+            for (int j = 0; j < length; j++) {
                 String text = gmlPoslist.item(j).getFirstChild().getNodeValue();
                 int s = text.indexOf(' ');
                 try {
@@ -183,7 +182,7 @@ public class OpenRouteServiceHandler {
 
         if (routeGeometryListLength == 0) {
             NodeList errorList = doc.getElementsByTagName("xls:ErrorList"); //$NON-NLS-1$
-            for( int i = 0; i < errorList.getLength(); i++ ) {
+            for (int i = 0; i < errorList.getLength(); i++) {
                 Node errorNode = errorList.item(i);
                 NodeList errors = ((Element) errorNode).getElementsByTagName("xls:Error"); //$NON-NLS-1$
                 Node error = errors.item(0);
@@ -229,13 +228,13 @@ public class OpenRouteServiceHandler {
 
     /**
      * Dump route into teh db.
-     * 
-     * @param name name.
-     * @param context  the context to use.
+     *
+     * @param name      name.
+     * @param context   the context to use.
      * @param logDumper log db helper.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
+    public void dumpInDatabase(String name, Context context, IGpsLogDbHelper logDumper) throws Exception {
         SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
         long now = new java.util.Date().getTime();
         long newLogId = logDumper.addGpsLog(now, now, 0, name, DEFAULT_LOG_WIDTH, ColorUtilities.BLUE.getHex(), true); //$NON-NLS-1$
@@ -248,7 +247,7 @@ public class OpenRouteServiceHandler {
                 String[] pairs = path.trim().split(" ");
 
                 try {
-                    for( int i = 1; i < pairs.length; i++ ) // the last one would be crash
+                    for (int i = 1; i < pairs.length; i++) // the last one would be crash
                     {
                         String[] lngLat = pairs[i].split(",");
                         double lon = Double.parseDouble(lngLat[0]);

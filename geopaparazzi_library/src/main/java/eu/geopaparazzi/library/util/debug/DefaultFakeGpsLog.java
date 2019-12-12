@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.util.debug;
 
 /**
  * Fake gps log.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DefaultFakeGpsLog implements IFakeGpsLog {
@@ -30,7 +30,7 @@ public class DefaultFakeGpsLog implements IFakeGpsLog {
     private int index = 0;
 
     /**
-     * 
+     *
      */
     public DefaultFakeGpsLog() {
         buildLog();

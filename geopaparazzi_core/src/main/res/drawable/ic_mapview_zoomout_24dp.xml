@@ -10,7 +10,7 @@
         android:fillColor="@color/main_decorations"
         android:strokeWidth="1"
         android:strokeLineJoin="miter"
-        android:strokeAlpha="1"/>
+        android:strokeAlpha="1" />
     <path
         android:pathData="m18.07,11.195 l0,1.61 -12.14,0 0,-1.61z"
         android:fillAlpha="1"
@@ -18,6 +18,5 @@
         android:strokeLineCap="round"
         android:strokeColor="@color/main_background"
         android:strokeWidth="1"
-        android:strokeLineJoin="round"
-        />
+        android:strokeLineJoin="round" />
 </vector>

@@ -5,12 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--<LinearLayout-->
-        <!--android:id="@+id/upperline"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:background="@color/main_decorations"-->
-        <!--android:orientation="horizontal" />-->
+    <!--android:id="@+id/upperline"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:background="@color/main_decorations"-->
+    <!--android:orientation="horizontal" />-->
 
     <ImageView
         android:id="@+id/fileIconView"

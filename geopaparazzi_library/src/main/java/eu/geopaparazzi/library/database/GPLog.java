@@ -17,14 +17,15 @@
  */
 package eu.geopaparazzi.library.database;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
@@ -55,24 +56,24 @@ public class GPLog {
     public static boolean LOG_ABSURD = false;
 
     /**
-     * 
+     *
      */
     public static final String ERROR_TAG = "ERROR_GEOPAPARAZZI";
 
     /**
-     * 
+     *
      */
     public static final String TABLE_LOG = "log";
     /**
-     * 
+     *
      */
     public static final String COLUMN_ID = "_id";
     /**
-     * 
+     *
      */
     public static final String COLUMN_DATAORA = "dataora";
     /**
-     * 
+     *
      */
     public static final String COLUMN_LOGMSG = "logmsg";
 
@@ -90,9 +91,9 @@ public class GPLog {
      * Create the default log table.
      *
      * @param sqliteDatabase the db into which to create the table.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public static void createTables( SQLiteDatabase sqliteDatabase ) throws IOException {
+    public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
         StringBuilder sB = new StringBuilder();
         sB.append("CREATE TABLE ");
         sB.append(TABLE_LOG);
@@ -138,7 +139,7 @@ public class GPLog {
      *
      * @param logMessage the message to insert in the log.
      */
-    public static void addLogEntry( String logMessage ) {
+    public static void addLogEntry(String logMessage) {
         try {
             Date date = new Date();
             SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
@@ -163,7 +164,7 @@ public class GPLog {
         }
     }
 
-    private static int log( String tag, String string ) {
+    private static int log(String tag, String string) {
         if (string == null || string.length() == 0) {
             string = "no message passed to the log";
         }
@@ -173,17 +174,17 @@ public class GPLog {
     /**
      * Add a log entry by concatenating (;) some more info in the message.
      *
-     * @param caller the calling class or tage name.
-     * @param user a user name or id. If
-     *              <code>null</code>, defaults to UNKNOWN_USER
-     * @param tag a tag for the log message. If <code>null</code>,
-     *              defaults to INFO.
+     * @param caller     the calling class or tage name.
+     * @param user       a user name or id. If
+     *                   <code>null</code>, defaults to UNKNOWN_USER
+     * @param tag        a tag for the log message. If <code>null</code>,
+     *                   defaults to INFO.
      * @param logMessage the message itself.
      */
-    public static void addLogEntry( Object caller, //
-            String user, //
-            String tag,//
-            String logMessage ) {
+    public static void addLogEntry(Object caller, //
+                                   String user, //
+                                   String tag,//
+                                   String logMessage) {
 
         StringBuilder sb = new StringBuilder();
         if (user == null || user.length() == 0) {
@@ -211,22 +212,22 @@ public class GPLog {
     /**
      * Add a log entry by concatenating (;) some more info in the message.
      *
-     * @param caller the calling class or tage name.
+     * @param caller     the calling class or tage name.
      * @param logMessage the message itself.
      */
-    public static void addLogEntry( Object caller, //
-            String logMessage ) {
+    public static void addLogEntry(Object caller, //
+                                   String logMessage) {
         addLogEntry(caller, null, null, logMessage);
     }
 
     /**
      * Error log.
-     * 
+     *
      * @param caller caller object.
-     * @param msg message or <code>null</code>.
-     * @param t a throwable.
+     * @param msg    message or <code>null</code>.
+     * @param t      a throwable.
      */
-    public static void error( Object caller, String msg, Throwable t ) {
+    public static void error(Object caller, String msg, Throwable t) {
         String localizedMessage = t.getLocalizedMessage();
         if (msg != null) {
             StringBuilder sb = new StringBuilder();
@@ -245,15 +246,16 @@ public class GPLog {
             log("GPLOG_ERROR", stackTrace);
         }
     }
+
     /**
      * Do an insert or throw with the proper error handling.
+     *
      * @param table
      * @param values
-     *
      * @return
      * @throws IOException
      */
-    private static long insertOrThrow( SQLiteDatabase sqliteDatabase, String table, ContentValues values ) throws Exception {
+    private static long insertOrThrow(SQLiteDatabase sqliteDatabase, String table, ContentValues values) throws Exception {
         if (sqliteDatabase == null || !sqliteDatabase.isOpen()) {
             throw new Exception("Database not ready!");
         }
@@ -262,7 +264,7 @@ public class GPLog {
             Set<Entry<String, Object>> valueSet = values.valueSet();
             StringBuilder sb = new StringBuilder();
             sb.append("Insert failed with: \n");
-            for( Entry<String, Object> entry : valueSet ) {
+            for (Entry<String, Object> entry : valueSet) {
                 sb.append("(").append(entry.getKey()).append(",");
                 sb.append(entry.getValue()).append(")\n");
             }
@@ -276,9 +278,9 @@ public class GPLog {
      * Clear the log table.
      *
      * @param db the db to use.
-     * @throws Exception  if something goes wrong.
+     * @throws Exception if something goes wrong.
      */
-    public static void clearLogTable( SQLiteDatabase db ) throws Exception {
+    public static void clearLogTable(SQLiteDatabase db) throws Exception {
         String deleteLogQuery = "delete from " + TABLE_LOG;
         db.beginTransaction();
         try {
@@ -299,7 +301,7 @@ public class GPLog {
         return query;
     }
 
-    private static String toName( Object obj ) {
+    private static String toName(Object obj) {
         if (obj instanceof String) {
             String name = (String) obj;
             return name;
@@ -313,23 +315,23 @@ public class GPLog {
     // ////////////////////////////////////////////////////
 
     /**
-    * Function for global logging.
-    * 
-    * @param logLevel the log level to use. 
-    * <ul>
-    * <li>-1=use global value</li>
-    * <li>0=no message</li>
-    * <li>1=info</li>
-    * <li>2=warning</li>
-    * <li>3=error</li>
-    * <li>4=debug</li>
-    * <li>5=What a Terrible Failure!</li>
-    * <li>6=verbose</li>
-    * </ul>
-    * @param message message text to be shown in logcat.
-    * @param exception result of Log.getStackTraceString(exception) will be added to the message.
-    */
-    public static void androidLog( int logLevel, String message, Throwable exception ) {
+     * Function for global logging.
+     *
+     * @param logLevel  the log level to use.
+     *                  <ul>
+     *                  <li>-1=use global value</li>
+     *                  <li>0=no message</li>
+     *                  <li>1=info</li>
+     *                  <li>2=warning</li>
+     *                  <li>3=error</li>
+     *                  <li>4=debug</li>
+     *                  <li>5=What a Terrible Failure!</li>
+     *                  <li>6=verbose</li>
+     *                  </ul>
+     * @param message   message text to be shown in logcat.
+     * @param exception result of Log.getStackTraceString(exception) will be added to the message.
+     */
+    public static void androidLog(int logLevel, String message, Throwable exception) {
         if (!LOG_ANDROID)
             return;
         if (exception != null) {
@@ -337,52 +339,53 @@ public class GPLog {
         }
         androidLog(logLevel, message);
     }
+
     /**
-    * Function for global logging.
-    *
-    * @param logLevel the log level to use. 
-    * <ul>
-    * <li>-1=use global value</li>
-    * <li>0=no message</li>
-    * <li>1=info</li>
-    * <li>2=warning</li>
-    * <li>3=error</li>
-    * <li>4=debug</li>
-    * <li>5=What a Terrible Failure!</li>
-    * <li>6=verbose</li>
-    * </ul>
-    * @param message message text to be shown in logcat.
-    */
-    public static void androidLog( int logLevel, String message ) {
+     * Function for global logging.
+     *
+     * @param logLevel the log level to use.
+     *                 <ul>
+     *                 <li>-1=use global value</li>
+     *                 <li>0=no message</li>
+     *                 <li>1=info</li>
+     *                 <li>2=warning</li>
+     *                 <li>3=error</li>
+     *                 <li>4=debug</li>
+     *                 <li>5=What a Terrible Failure!</li>
+     *                 <li>6=verbose</li>
+     *                 </ul>
+     * @param message  message text to be shown in logcat.
+     */
+    public static void androidLog(int logLevel, String message) {
         if (!LOG_ANDROID)
             return;
         if (logLevel < 0)
             logLevel = GLOBAL_LOG_LEVEL;
         if (GLOBAL_LOG_TAG == null || GLOBAL_LOG_TAG.length() == 0)
             GLOBAL_LOG_TAG = "GEOPAPARAZZI";
-        switch( logLevel ) {
-        case 0:
-            // ignore
-            break;
-        case 2: // method is used to log warnings.
-            Log.w(GLOBAL_LOG_TAG, message);
-            break;
-        case 3: // method is used to log errors.
-            Log.e(GLOBAL_LOG_TAG, message);
-            break;
-        case 4: // method is used to log debug messages.
-            Log.d(GLOBAL_LOG_TAG, message);
-            break;
-        case 5: // method is used to log terrible failures that should never happen.
-            Log.wtf(GLOBAL_LOG_TAG, message);
-            break;
-        case 6: // method is used to log verbose messages.
-            Log.v(GLOBAL_LOG_TAG, message);
-            break;
-        case 1:
-        default: // method is used to log informational messages.
-            Log.i(GLOBAL_LOG_TAG, message);
-            break;
+        switch (logLevel) {
+            case 0:
+                // ignore
+                break;
+            case 2: // method is used to log warnings.
+                Log.w(GLOBAL_LOG_TAG, message);
+                break;
+            case 3: // method is used to log errors.
+                Log.e(GLOBAL_LOG_TAG, message);
+                break;
+            case 4: // method is used to log debug messages.
+                Log.d(GLOBAL_LOG_TAG, message);
+                break;
+            case 5: // method is used to log terrible failures that should never happen.
+                Log.wtf(GLOBAL_LOG_TAG, message);
+                break;
+            case 6: // method is used to log verbose messages.
+                Log.v(GLOBAL_LOG_TAG, message);
+                break;
+            case 1:
+            default: // method is used to log informational messages.
+                Log.i(GLOBAL_LOG_TAG, message);
+                break;
         }
     }
 

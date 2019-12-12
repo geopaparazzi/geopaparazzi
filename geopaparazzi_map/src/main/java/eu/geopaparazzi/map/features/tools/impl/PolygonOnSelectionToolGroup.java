@@ -45,7 +45,6 @@ import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
-import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.features.FeatureUtilities;

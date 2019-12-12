@@ -20,19 +20,19 @@ package eu.geopaparazzi.library.forms.constraints;
 
 /**
  * A constraint to check for the content not being empty.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MandatoryConstraint implements IConstraint {
 
     private boolean isValid = false;
-    
+
     private String description = "mandatory"; //$NON-NLS-1$
 
-    public void applyConstraint( Object value ) {
-        if (value ==null) {
+    public void applyConstraint(Object value) {
+        if (value == null) {
             isValid = false;
-        }else{
+        } else {
             String string = value.toString();
             isValid = string.length() > 0;
         }

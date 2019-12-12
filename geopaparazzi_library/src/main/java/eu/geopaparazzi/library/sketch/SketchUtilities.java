@@ -17,13 +17,14 @@
  */
 package eu.geopaparazzi.library.sketch;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.MediaStore;
+
 import androidx.fragment.app.FragmentActivity;
+
+import java.io.File;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormDetailFragment;

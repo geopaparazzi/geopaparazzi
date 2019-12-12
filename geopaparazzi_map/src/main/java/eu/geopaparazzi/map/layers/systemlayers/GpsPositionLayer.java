@@ -29,7 +29,7 @@ import eu.geopaparazzi.map.vtm.VtmUtilities;
 
 public class GpsPositionLayer extends LocationTextureLayer implements IPositionLayer, ISystemLayer {
     public static String NAME = null;
-//    private static TextureRegion activeTexture;
+    //    private static TextureRegion activeTexture;
 //    private static TextureRegion staleTexture;
 //    private static TextureRegion movingTexture;
     private SharedPreferences peferences = null;

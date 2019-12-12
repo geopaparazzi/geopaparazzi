@@ -60,7 +60,7 @@ public class ImportDefaultDatabaseMenuEntry extends MenuEntry {
         Activity activity = null;
         if (context instanceof Activity) {
             activity = (Activity) context;
-        }else{
+        } else {
             GPDialogs.warningDialog(context, "Wrong context. This needs to be an activity.", null);
             return;
         }

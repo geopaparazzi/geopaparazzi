@@ -20,33 +20,25 @@ package eu.geopaparazzi.library.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.core.activities.GeocodeActivity;
-import eu.geopaparazzi.library.core.dialogs.InsertCoordinatesDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**

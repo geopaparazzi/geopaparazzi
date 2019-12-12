@@ -20,15 +20,14 @@ package eu.geopaparazzi.library.bluetooth;
 
 /**
  * A bluetooth listener interface.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IBluetoothListener {
 
     /**
      * Method triggered when string data are recieved by the bluetooth.
-     * 
+     *
      * @param time the timestamp.
      * @param data the data retrieved.
      */

@@ -17,13 +17,6 @@
  */
 package eu.geopaparazzi.library.webproject;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -39,9 +32,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
+
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 
 /**
  * Web projects listing activity.

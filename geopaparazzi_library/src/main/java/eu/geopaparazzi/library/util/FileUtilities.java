@@ -33,9 +33,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import eu.geopaparazzi.library.database.GPLog;
 
 /**

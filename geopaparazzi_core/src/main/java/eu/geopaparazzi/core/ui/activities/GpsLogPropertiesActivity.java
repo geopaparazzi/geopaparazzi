@@ -20,8 +20,6 @@ package eu.geopaparazzi.core.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -31,11 +29,18 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoGpsLog;
+import eu.geopaparazzi.core.database.objects.LogMapItem;
+import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorStrokeObject;
@@ -44,10 +49,6 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoGpsLog;
-import eu.geopaparazzi.core.database.objects.LogMapItem;
-import eu.geopaparazzi.core.utilities.Constants;
 
 /**
  * Data properties activity.

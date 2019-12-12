@@ -37,7 +37,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPoint;
@@ -57,6 +56,7 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.MapsSupportService;
+import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.features.FeatureUtilities;
 import eu.geopaparazzi.map.features.editing.EditManager;
@@ -69,7 +69,6 @@ import eu.geopaparazzi.map.jts.android.PointTransformation;
 import eu.geopaparazzi.map.jts.android.ShapeWriter;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
-import eu.geopaparazzi.map.R;
 
 import static java.lang.Math.round;
 

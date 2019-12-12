@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.util.debug;
 
 /**
  * A fake gps log interface to support demo log mockings.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IFakeGpsLog {
@@ -31,9 +31,9 @@ public interface IFakeGpsLog {
 
     /**
      * Get the next gps record.
-     * 
-     * @return the record in the csv format: 
-     *          time(long),lon,lat,altimetry,speed,accuracy(meters) 
+     *
+     * @return the record in the csv format:
+     * time(long),lon,lat,altimetry,speed,accuracy(meters)
      */
     String next();
 

@@ -25,10 +25,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
+import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,18 +39,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.DaoMetadata;
+import eu.geopaparazzi.core.database.DaoNotes;
+import eu.geopaparazzi.core.database.objects.Line;
+import eu.geopaparazzi.core.database.objects.Note;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
-import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoGpsLog;
-import eu.geopaparazzi.core.database.DaoNotes;
-import eu.geopaparazzi.core.database.objects.Line;
-import eu.geopaparazzi.core.database.objects.Note;
 
 
 /**

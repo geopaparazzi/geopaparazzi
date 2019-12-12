@@ -20,12 +20,13 @@ package eu.geopaparazzi.core.ui.activities;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,10 +36,10 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.activities.DatabaseListActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.core.R;
 
 /**
  * A view for db queries.
@@ -98,7 +99,7 @@ public class SqlViewActivity extends AppCompatActivity {
     public void launchOwnQuery(View view) throws Exception {
         String customQuery = customQueryText.getText().toString();
 
-        if (customQuery.trim().length()>0) {
+        if (customQuery.trim().length() > 0) {
             Intent dbViewIntent = new Intent(this, DatabaseListActivity.class);
             dbViewIntent.putExtra(LibraryConstants.PREFS_KEY_QUERY, customQuery);
             startActivity(dbViewIntent);

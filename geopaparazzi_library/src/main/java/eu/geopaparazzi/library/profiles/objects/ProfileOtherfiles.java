@@ -31,7 +31,7 @@ public class ProfileOtherfiles extends ARelativePathResource implements Parcelab
     public long size = -1;
     private String destinationPath = "";
 
-    public ProfileOtherfiles(){
+    public ProfileOtherfiles() {
     }
 
 

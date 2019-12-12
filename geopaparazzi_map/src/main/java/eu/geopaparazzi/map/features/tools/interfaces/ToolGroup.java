@@ -20,7 +20,7 @@ package eu.geopaparazzi.map.features.tools.interfaces;
 
 /**
  * A group of tools.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface ToolGroup extends DrawingTool {
@@ -37,14 +37,14 @@ public interface ToolGroup extends DrawingTool {
 
     /**
      * Callback when a tool finishes.
-     * 
+     *
      * @param tool the tool that finished.
      */
     void onToolFinished(Tool tool);
 
     /**
-     * Callback for position updates. 
-     * 
+     * Callback for position updates.
+     *
      * @param lon longitude.
      * @param lat latitude.
      */

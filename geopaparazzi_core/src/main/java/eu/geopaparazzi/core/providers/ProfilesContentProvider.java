@@ -1,4 +1,3 @@
-
 package eu.geopaparazzi.core.providers;
 
 import android.content.ContentProvider;

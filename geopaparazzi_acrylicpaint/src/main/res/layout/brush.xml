@@ -3,7 +3,7 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <SeekBar
         android:id="@+id/brushSizeSeekBar"
@@ -14,8 +14,7 @@
         android:layout_marginTop="20dp"
         android:max="99"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp" >
-    </SeekBar>
+        android:paddingRight="30dp"></SeekBar>
 
     <TextView
         android:id="@+id/sizeValueTextView"

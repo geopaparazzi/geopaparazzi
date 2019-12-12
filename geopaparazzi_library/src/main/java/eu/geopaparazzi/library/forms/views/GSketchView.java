@@ -18,21 +18,11 @@
 
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -42,7 +32,15 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.IImagesDbHelper;
@@ -55,8 +53,9 @@ import eu.geopaparazzi.library.util.AppsUtilities;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.util.UrlUtilities;
+
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 /**
  * A custom Sketch view.
@@ -120,7 +119,7 @@ public class GSketchView extends View implements GView {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(label.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(Compat.getColor(activity,R.color.formcolor));
+        textView.setTextColor(Compat.getColor(activity, R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(activity);
@@ -203,7 +202,7 @@ public class GSketchView extends View implements GView {
                 Bitmap thumbnail = ImageUtilities.getImageFromImageData(imageThumbnail);
 
                 ImageView imageView = new ImageView(context);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150,150);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(150, 150);
                 lp.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(lp);
                 imageView.setPadding(5, 5, 5, 5);

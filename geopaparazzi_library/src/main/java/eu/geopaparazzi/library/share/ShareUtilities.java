@@ -17,18 +17,17 @@
  */
 package eu.geopaparazzi.library.share;
 
-import java.io.File;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import java.io.File;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.UrlUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Utilities to help sharing of data through the android intents.
@@ -57,7 +56,7 @@ public class ShareUtilities {
     /**
      * Share position url.
      *
-     * @param context      the context to use.
+     * @param context the context to use.
      */
     public static void sharePositionUrl(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

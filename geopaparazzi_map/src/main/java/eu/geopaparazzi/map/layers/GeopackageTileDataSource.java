@@ -2,10 +2,7 @@ package eu.geopaparazzi.map.layers;
 
 import android.graphics.BitmapFactory;
 
-import org.hortonmachine.dbs.compat.ADb;
-import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
-import org.hortonmachine.dbs.mbtiles.MBTilesDb;
 import org.oscim.android.canvas.AndroidGraphics;
 import org.oscim.backend.canvas.Bitmap;
 import org.oscim.layers.tile.MapTile;

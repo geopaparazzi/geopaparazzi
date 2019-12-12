@@ -31,7 +31,8 @@ public class ProfileTags extends ARelativePathResource implements Parcelable, ID
     public long tagsSize = -1;
     private String destinationPath = "";
 
-    public ProfileTags(){}
+    public ProfileTags() {
+    }
 
 
     protected ProfileTags(Parcel in) {

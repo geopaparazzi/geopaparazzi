@@ -45,18 +45,17 @@ import eu.geopaparazzi.map.jts.android.geom.RectShape;
  * {@link PointF}
  * geometries. Java2D does not provide an actual point shape, so some other
  * shape must be used to render points (e.g. such as a Rectangle or Ellipse).
- * 
+ *
  * <p>Modified for Android use.</p>
- * 
+ *
  * @author Martin Davis
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface PointShapeFactory {
     /**
      * Creates a shape representing a {@link PointF}.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     DrawableShape createPoint(PointF point);
@@ -71,35 +70,31 @@ public interface PointShapeFactory {
 
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public BasePointShapeFactory() {
         }
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public BasePointShapeFactory( double size ) {
+        public BasePointShapeFactory(double size) {
             this.size = size;
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public abstract DrawableShape createPoint( PointF point );
+        public abstract DrawableShape createPoint(PointF point);
     }
 
     class Square extends BasePointShapeFactory {
         /**
          * Creates a new factory for squares with default size.
-         * 
          */
         public Square() {
             super();
@@ -107,22 +102,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for squares of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public Square( double size ) {
+        public Square(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
             float x = (float) (point.x - (size / 2));
             float y = (float) (point.y - (size / 2));
             RectShape pointMarker = new RectShape(x, y, (float) size, (float) size);
@@ -133,7 +126,6 @@ public interface PointShapeFactory {
     class Star extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public Star() {
             super();
@@ -141,22 +133,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public Star( double size ) {
+        public Star(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
             Path path = new Path();
             path.moveTo(point.x, (float) (point.y - size / 2));
             path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y - size * 1 / 8));
@@ -176,7 +166,6 @@ public interface PointShapeFactory {
     class Triangle extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public Triangle() {
             super();
@@ -184,22 +173,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public Triangle( double size ) {
+        public Triangle(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
 
             Path path = new Path();
             path.moveTo((point.x), (float) (point.y - size / 2));
@@ -211,10 +198,10 @@ public interface PointShapeFactory {
         }
 
     }
+
     class Circle extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public Circle() {
             super();
@@ -222,22 +209,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public Circle( double size ) {
+        public Circle(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
             float x = (float) (point.x - (size / 2));
             float y = (float) (point.y - (size / 2));
             OvalShape shape = new OvalShape(x, y, (float) size, (float) size);
@@ -245,10 +230,10 @@ public interface PointShapeFactory {
         }
 
     }
+
     class Cross extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public Cross() {
             super();
@@ -256,22 +241,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public Cross( double size ) {
+        public Cross(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
 
             float x1 = (float) (point.x - size / 2f);
             float x2 = (float) (point.x - size / 4f);
@@ -302,10 +285,10 @@ public interface PointShapeFactory {
         }
 
     }
+
     class X extends BasePointShapeFactory {
         /**
          * Creates a new factory for points with default size.
-         * 
          */
         public X() {
             super();
@@ -313,22 +296,20 @@ public interface PointShapeFactory {
 
         /**
          * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
+         *
+         * @param size the size of the points
          */
-        public X( double size ) {
+        public X(double size) {
             super(size);
         }
 
         /**
          * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
+         *
+         * @param point the location of the point
          * @return a shape
          */
-        public DrawableShape createPoint( PointF point ) {
+        public DrawableShape createPoint(PointF point) {
             Path path = new Path();
             path.moveTo((point.x), (float) (point.y - size * 1 / 8));
             path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y - size / 2));

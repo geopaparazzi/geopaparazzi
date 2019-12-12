@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Punt vorm</string>
-  <string name="point_size">Punt grootte</string>
-  <string name="decimation">Afronden</string>
+    <string name="point_shape_">Punt vorm</string>
+    <string name="point_size">Punt grootte</string>
+    <string name="decimation">Afronden</string>
 </resources>

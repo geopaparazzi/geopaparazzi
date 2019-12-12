@@ -27,11 +27,11 @@ import android.graphics.Path;
  * Time: 11:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CircleBrush extends Brush{
+public class CircleBrush extends Brush {
 
     @Override
     public void mouseMove(Path path, float x, float y) {
-        path.addCircle(x,y,10,Path.Direction.CW);
+        path.addCircle(x, y, 10, Path.Direction.CW);
     }
 
 }

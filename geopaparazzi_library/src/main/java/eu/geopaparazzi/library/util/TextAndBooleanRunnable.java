@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.util;
 
 /**
  * A runnable that runs on text.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class TextAndBooleanRunnable implements Runnable {
@@ -29,7 +29,7 @@ public abstract class TextAndBooleanRunnable implements Runnable {
     /**
      * @param text text to set.
      */
-    public void setText( String text ) {
+    public void setText(String text) {
         theTextToRunOn = text;
     }
 

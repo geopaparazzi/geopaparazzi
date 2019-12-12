@@ -68,8 +68,8 @@ public class MapsSupportService extends Service {
         // GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
 
         /*
-         * If startService(intent) is called while the service is running, 
-         * its onStartCommand() is also called. Therefore your service needs 
+         * If startService(intent) is called while the service is running,
+         * its onStartCommand() is also called. Therefore your service needs
          * to be prepared that onStartCommand() can be called several times.
          */
         if (intent != null) {

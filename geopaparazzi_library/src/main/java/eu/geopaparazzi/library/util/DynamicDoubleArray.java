@@ -23,7 +23,7 @@ import static java.lang.Math.max;
 
 /**
  * A wrapper for a dynamic growing array.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  * @since 2.6
  */
@@ -42,20 +42,20 @@ public class DynamicDoubleArray implements Serializable {
 
     /**
      * Create the array with an initial size.
-     * 
+     *
      * @param initalSize the initial size.
      */
-    public DynamicDoubleArray( int initalSize ) {
+    public DynamicDoubleArray(int initalSize) {
         this(initalSize, 50);
     }
 
     /**
      * Create the array with an initial size.
-     * 
-     * @param initalSize the initial size.
-     * @param growingSize the size to grow the array additionally, if the array was too small. 
+     *
+     * @param initalSize  the initial size.
+     * @param growingSize the size to grow the array additionally, if the array was too small.
      */
-    public DynamicDoubleArray( int initalSize, int growingSize ) {
+    public DynamicDoubleArray(int initalSize, int growingSize) {
         this.initalSize = initalSize;
         this.growingSize = growingSize;
         internalArray = new double[initalSize];
@@ -63,13 +63,13 @@ public class DynamicDoubleArray implements Serializable {
 
     /**
      * Safe set the value in a certain position.
-     * 
+     *
      * <p>If the array is smaller than the position, the array is extended and substituted.</p>
-     * 
+     *
      * @param position the index in which to set the value.
-     * @param value the value to set.
+     * @param value    the value to set.
      */
-    public synchronized void setValue( int position, double value ) {
+    public synchronized void setValue(int position, double value) {
         if (position >= internalArray.length) {
             double[] newArray = new double[position + growingSize];
             System.arraycopy(internalArray, 0, newArray, 0, internalArray.length);
@@ -81,27 +81,27 @@ public class DynamicDoubleArray implements Serializable {
 
     /**
      * Add a value at the end of the array.
-     * 
+     *
      * @param value the value to add.
      */
-    public synchronized void add( double value ) {
+    public synchronized void add(double value) {
         currentPosition = currentPosition + 1;
         setValue(currentPosition, value);
     }
 
     /**
      * Get the value in a certain position of the array.
-     * 
+     *
      * @param position the position.
      * @return the value.
      */
-    public double get( int position ) {
+    public double get(int position) {
         return internalArray[position];
     }
 
     /**
      * Get the last used index.
-     * 
+     *
      * @return the last used index.
      */
     public int size() {
@@ -124,8 +124,8 @@ public class DynamicDoubleArray implements Serializable {
     }
 
     /**
-     * Get the internal array. 
-     * 
+     * Get the internal array.
+     *
      * @return the array.
      */
     public double[] getInternalArray() {
@@ -133,8 +133,8 @@ public class DynamicDoubleArray implements Serializable {
     }
 
     /**
-     * Get a trimmed version of the array, i.e. without ending unset positions. 
-     * 
+     * Get a trimmed version of the array, i.e. without ending unset positions.
+     *
      * @return the trimmed array.
      */
     public double[] getTrimmedInternalArray() {

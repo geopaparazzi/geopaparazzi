@@ -23,10 +23,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;

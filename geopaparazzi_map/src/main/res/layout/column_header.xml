@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2014 Magnus Woxblom
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Magnus Woxblom
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -10,8 +9,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_layout"
     android:layout_width="match_parent"
@@ -39,14 +37,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="20sp"
-            android:text="Test"/>
+            android:text="Test" />
 
         <TextView
             android:id="@+id/item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="Test"/>
+            android:text="Test" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

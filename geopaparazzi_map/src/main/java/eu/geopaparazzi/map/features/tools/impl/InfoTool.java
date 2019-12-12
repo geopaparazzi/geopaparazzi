@@ -28,29 +28,27 @@ import android.view.MotionEvent;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
-import org.hortonmachine.dbs.compat.objects.QueryResult;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.features.editing.EditManager;
-import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
-import eu.geopaparazzi.map.gui.FeaturePagerActivity;
-import eu.geopaparazzi.map.features.FeatureUtilities;
-import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.ToolColors;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.features.Feature;
+import eu.geopaparazzi.map.features.FeatureUtilities;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.tools.MapTool;
+import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
+import eu.geopaparazzi.map.gui.FeaturePagerActivity;
 import eu.geopaparazzi.map.layers.ELayerTypes;
-import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;

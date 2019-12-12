@@ -27,7 +27,7 @@ import android.graphics.Path;
  * Time: 10:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Brush implements  IBrush {
+public class Brush implements IBrush {
     public void mouseDown(Path path, float x, float y) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

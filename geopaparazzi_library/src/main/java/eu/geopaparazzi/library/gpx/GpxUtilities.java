@@ -17,55 +17,55 @@
  */
 package eu.geopaparazzi.library.gpx;
 
+import android.content.Context;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
+import eu.geopaparazzi.library.style.ColorUtilities;
 
 /**
  * Utilities to handle gpx stuff.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class GpxUtilities {
 
     /**
-     * 
+     *
      */
     public static final String GPX_TRACK_START = "<trk>";
     /**
-     * 
+     *
      */
     public static final String GPX_TRACK_END = "</trk>";
     /**
-     * 
+     *
      */
     public static final String GPX_TRACKSEGMENT_START = "<trkseg>";
     /**
-     * 
+     *
      */
     public static final String GPX_TRACKSEGMENT_END = "</trkseg>";
 
     /**
      * Creates a Waypoint string from the point values.
-     * 
-     * @param lat latitude of the point.
-     * @param lon longitude of the point.
+     *
+     * @param lat  latitude of the point.
+     * @param lon  longitude of the point.
      * @param elev elevation of the point.
      * @param name the name of the point.
      * @param desc a description of the point.
      * @return the waypoint string.
      */
-    public static String getWayPointString( double lat, double lon, double elev, String name, String desc ) {
+    public static String getWayPointString(double lat, double lon, double elev, String name, String desc) {
         StringBuilder sb = new StringBuilder();
         sb.append("<wpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
         sb.append("  <ele>" + elev + "</ele>").append("\n");
@@ -78,14 +78,14 @@ public class GpxUtilities {
 
     /**
      * Creates a Trackpoint string from the point values.
-     * 
-     * @param lat latitude of the point.
-     * @param lon longitude of the point.
+     *
+     * @param lat  latitude of the point.
+     * @param lon  longitude of the point.
      * @param elev elevation of the point.
      * @param time the time at which the point was taken.
      * @return the trackpoint string.
      */
-    public static String getTrackPointString( double lat, double lon, double elev, String time ) {
+    public static String getTrackPointString(double lat, double lon, double elev, String time) {
         StringBuilder sb = new StringBuilder();
         sb.append("<trkpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
         sb.append("  <ele>" + elev + "</ele>").append("\n");
@@ -96,11 +96,11 @@ public class GpxUtilities {
 
     /**
      * Creates a Track name string from the name.
-     * 
+     *
      * @param name the name of the track.
      * @return the gpx string.
      */
-    public static String getTrackNameString( String name ) {
+    public static String getTrackNameString(String name) {
         StringBuilder sb = new StringBuilder();
         sb.append("<name>" + name + "</name>").append("\n");
         return sb.toString();
@@ -108,13 +108,13 @@ public class GpxUtilities {
 
     /**
      * Read gpx data.
-     * 
-     * @param context  the context to use.
-     * @param path the string data.
+     *
+     * @param context the context to use.
+     * @param path    the string data.
      * @param asLines if <code>true</code>, the data are read as lines.
      * @return list of {@link GpxItem}s.
      */
-    public static List<GpxItem> readGpxData( Context context, String path, boolean asLines ) {
+    public static List<GpxItem> readGpxData(Context context, String path, boolean asLines) {
         List<GpxItem> gpxItems = new ArrayList<GpxItem>();
 
         File file = new File(path);
@@ -133,7 +133,7 @@ public class GpxUtilities {
             }
             List<TrackSegment> tracks = parser.getTracks();
             if (tracks.size() > 0) {
-                for( TrackSegment trackSegment : tracks ) {
+                for (TrackSegment trackSegment : tracks) {
                     String name = trackSegment.getName();
                     GpxItem item = new GpxItem();
                     item.setName(name);
@@ -146,7 +146,7 @@ public class GpxUtilities {
             }
             List<Route> routes = parser.getRoutes();
             if (routes.size() > 0) {
-                for( Route route : routes ) {
+                for (Route route : routes) {
                     String name = route.getName();
                     GpxItem item = new GpxItem();
                     item.setName(name);

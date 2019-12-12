@@ -18,9 +18,6 @@
 
 package eu.geopaparazzi.library.camera;
 
-import java.io.File;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,8 +26,6 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-
-import org.acra.prefs.PrefUtils;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;

@@ -304,9 +304,9 @@ public class AppsUtilities {
     /**
      * Shows a document using an ACTION_VIEW Intent, based on the provided mime type.
      *
-     * @param docData The document to be shown, as a byte array
+     * @param docData  The document to be shown, as a byte array
      * @param mimeType The mime type of the document
-     * @param docName The document name
+     * @param docName  The document name
      * @param context
      * @throws Exception
      */
@@ -344,7 +344,7 @@ public class AppsUtilities {
      * Show PDF.
      *
      * @param pdfFile the image file.
-     * @param context   the context to use.
+     * @param context the context to use.
      * @throws Exception
      */
     public static void showPDF(File pdfFile, Context context) throws Exception {

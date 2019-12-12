@@ -46,9 +46,9 @@ import java.util.Iterator;
 /**
  * A {@link Shape} which represents a polygon which may contain holes.
  * Provided because the standard AWT Polygon class does not support holes.
- * 
+ *
  * <p>Adapted for android.</p>
- * 
+ *
  * @author Martin Davis
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -59,15 +59,15 @@ public class PolygonShape implements DrawableShape {
 
     /**
      * Creates a new polygon {@link Shape}.
-     * 
-     * @param shellVertices the vertices of the shell 
+     *
+     * @param shellVertices          the vertices of the shell
      * @param holeVerticesCollection a collection of Coordinate[] for each hole
      */
     @SuppressWarnings("rawtypes")
-    public PolygonShape(Coordinate[] shellVertices, Collection holeVerticesCollection ) {
+    public PolygonShape(Coordinate[] shellVertices, Collection holeVerticesCollection) {
         polygonPath = toPath(shellVertices);
 
-        for( Iterator i = holeVerticesCollection.iterator(); i.hasNext(); ) {
+        for (Iterator i = holeVerticesCollection.iterator(); i.hasNext(); ) {
             Coordinate[] holeVertices = (Coordinate[]) i.next();
             polygonPath.addPath(toPath(holeVertices));
         }
@@ -80,7 +80,7 @@ public class PolygonShape implements DrawableShape {
         polygonPath = new Path();
     }
 
-    void addToRing( PointF p ) {
+    void addToRing(PointF p) {
         if (ringPath == null) {
             ringPath = new Path();
             ringPath.setFillType(Path.FillType.EVEN_ODD);
@@ -101,20 +101,20 @@ public class PolygonShape implements DrawableShape {
     }
 
     /**
-     * Creates a GeneralPath representing a polygon ring 
+     * Creates a GeneralPath representing a polygon ring
      * having the given coordinate sequence.
      * Uses the GeneralPath.WIND_EVEN_ODD winding rule.
-     * 
+     *
      * @param coordinates a coordinate sequence
      * @return the path for the coordinate sequence
      */
-    private Path toPath( Coordinate[] coordinates ) {
+    private Path toPath(Coordinate[] coordinates) {
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
 
         if (coordinates.length > 0) {
             path.moveTo((float) coordinates[0].x, (float) coordinates[0].y);
-            for( int i = 0; i < coordinates.length; i++ ) {
+            for (int i = 0; i < coordinates.length; i++) {
                 path.lineTo((float) coordinates[i].x, (float) coordinates[i].y);
             }
         }
@@ -126,19 +126,19 @@ public class PolygonShape implements DrawableShape {
     }
 
     @Override
-    public void draw( Canvas canvas, Paint paint ) {
+    public void draw(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public void fill( Canvas canvas, Paint paint ) {
+    public void fill(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public void fillAndStroke( Canvas canvas, Paint paint ) {
+    public void fillAndStroke(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         canvas.drawPath(polygonPath, paint);
     }

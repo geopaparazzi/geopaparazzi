@@ -29,21 +29,23 @@ import android.graphics.Path;
  */
 public interface IBrush {
     /**
-     * @param path  path 
-     * @param x     x    
-     * @param y     y    
+     * @param path path
+     * @param x    x
+     * @param y    y
      */
     void mouseDown(Path path, float x, float y);
+
     /**
-     * @param path path 
-     * @param x    x    
-     * @param y    y    
+     * @param path path
+     * @param x    x
+     * @param y    y
      */
     void mouseMove(Path path, float x, float y);
+
     /**
-     * @param path   path 
-     * @param x      x    
-     * @param y      y    
+     * @param path path
+     * @param x    x
+     * @param y    y
      */
     void mouseUp(Path path, float x, float y);
 }

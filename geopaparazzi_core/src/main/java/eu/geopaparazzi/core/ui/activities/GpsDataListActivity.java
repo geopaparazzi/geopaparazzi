@@ -31,8 +31,6 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +44,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ import eu.geopaparazzi.core.database.objects.Line;
 import eu.geopaparazzi.core.database.objects.LogMapItem;
 import eu.geopaparazzi.core.database.objects.MapItem;
 import eu.geopaparazzi.core.database.objects.SerializableLogs;
-import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
@@ -69,6 +69,7 @@ import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.map.MapsSupportService;
 
 /**
  * Gpx listing activity.

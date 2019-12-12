@@ -18,8 +18,6 @@
 
 package eu.geopaparazzi.library.style;
 
-import java.util.HashMap;
-
 /**
  * Th old colors for backwards compat.
  *

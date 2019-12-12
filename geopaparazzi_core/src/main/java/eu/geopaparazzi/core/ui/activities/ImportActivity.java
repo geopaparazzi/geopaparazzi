@@ -20,23 +20,23 @@ package eu.geopaparazzi.core.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import java.util.List;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.plugin.ExtensionPoints;
 import eu.geopaparazzi.library.plugin.PluginLoaderListener;
-import eu.geopaparazzi.library.plugin.menu.IMenuLoader;
 import eu.geopaparazzi.library.plugin.menu.MenuLoader;
 import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.plugin.types.IMenuEntry;
 import eu.geopaparazzi.library.util.IActivitySupporter;
-import eu.geopaparazzi.core.R;
 
 /**
  * Activity for export tasks.

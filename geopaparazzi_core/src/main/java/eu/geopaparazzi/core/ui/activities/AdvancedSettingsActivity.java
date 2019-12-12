@@ -23,22 +23,21 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import java.util.Collection;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import eu.geopaparazzi.core.GeopaparazziApplication;
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.activities.LogAnalysisActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
 
 /**
  * The advanced settings activity.

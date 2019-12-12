@@ -40,5 +40,5 @@ public abstract class PluginService extends IntentService {
     }
 
     @Override
-    public abstract IBinder onBind (Intent intent);
+    public abstract IBinder onBind(Intent intent);
 }

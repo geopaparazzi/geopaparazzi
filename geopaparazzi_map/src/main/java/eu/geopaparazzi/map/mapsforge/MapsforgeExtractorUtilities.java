@@ -20,6 +20,7 @@ package eu.geopaparazzi.map.mapsforge;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
+
 import androidx.annotation.NonNull;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;

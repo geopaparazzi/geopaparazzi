@@ -23,6 +23,7 @@ import java.util.ArrayList;
 /**
  * Generic class to get a route between a start and a destination point,
  * going through a list of waypoints.
+ *
  * @author M.Kergall
  * @see OSRMRoadManager
  */
@@ -53,17 +54,18 @@ public abstract class RoadManager {
     /**
      * Add an option that will be used in the route request.
      * Note that some options are set in the request in all cases.
+     *
      * @param requestOption see provider documentation.
-     * Just one example: "routeType=bicycle" for MapQuest; "mode=bicycling" for Google.
+     *                      Just one example: "routeType=bicycle" for MapQuest; "mode=bicycling" for Google.
      */
-    public void addRequestOption(String requestOption){
+    public void addRequestOption(String requestOption) {
         mOptions += "&" + requestOption;
     }
 
     /**
      * @return the GeoPoint as a string, properly formatted: lat,lon
      */
-    protected String geoPointAsString(GeoPoint p){
+    protected String geoPointAsString(GeoPoint p) {
         StringBuilder result = new StringBuilder();
         double d = p.getLatitude();
         result.append(d);

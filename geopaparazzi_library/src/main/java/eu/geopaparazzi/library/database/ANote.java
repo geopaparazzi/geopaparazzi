@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.database;
 
 /**
  * Utility abstraction.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class ANote {

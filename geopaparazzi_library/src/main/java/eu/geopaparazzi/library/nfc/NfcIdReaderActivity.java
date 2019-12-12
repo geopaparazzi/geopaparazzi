@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.bluetooth.BluetoothManager;
 import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
@@ -37,7 +38,6 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * @author moovida
- *
  */
 public class NfcIdReaderActivity extends Activity implements IBluetoothListener {
 
@@ -50,7 +50,7 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
     private IBluetoothIOHandler bluetoothDevice;
 
     @Override
-    public void onCreate( Bundle savedInstanceState ) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc_id_reader);
 
@@ -130,10 +130,10 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
 
     /**
      * Ok action.
-     * 
+     *
      * @param view parent.
      */
-    public void okPushed( View view ) {
+    public void okPushed(View view) {
         Intent intent = getIntent();
         intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, lastReadNfcMessage);
         setResult(Activity.RESULT_OK, intent);
@@ -142,15 +142,15 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
 
     /**
      * Cancel action.
-     * 
+     *
      * @param view parent.
      */
-    public void cancelPushed( View view ) {
+    public void cancelPushed(View view) {
         finish();
     }
 
     @Override
-    protected void onNewIntent( Intent intent ) {
+    protected void onNewIntent(Intent intent) {
         // NDEF exchange mode
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -173,9 +173,9 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
     }
 
     @Override
-    public void onDataReceived( long time, final Object data ) {
+    public void onDataReceived(long time, final Object data) {
         if (data != null) {
-            runOnUiThread(new Runnable(){
+            runOnUiThread(new Runnable() {
                 public void run() {
                     lastReadNfcMessage = data.toString().toLowerCase();
                     readMessageEditText.setText(lastReadNfcMessage);

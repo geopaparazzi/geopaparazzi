@@ -17,13 +17,6 @@
  */
 package eu.geopaparazzi.library.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
@@ -33,8 +26,16 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import androidx.core.content.FileProvider;
 import android.telephony.TelephonyManager;
+
+import androidx.core.content.FileProvider;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.database.GPLog;
@@ -349,15 +350,15 @@ public class Utilities {
      * Join strings through {@link StringBuilder}.
      *
      * @param separator separator to use or <code>null</code>.
-     * @param strings strings to join.
+     * @param strings   strings to join.
      * @return the joined string.
      */
-    public static String joinStrings( String separator, String... strings ) {
+    public static String joinStrings(String separator, String... strings) {
         if (separator == null) {
             separator = "";
         }
         StringBuilder sb = new StringBuilder();
-        for( int i = 0; i < strings.length; i++ ) {
+        for (int i = 0; i < strings.length; i++) {
             sb.append(strings[i]);
             if (i < strings.length - 1) {
                 sb.append(separator);

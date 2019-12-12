@@ -18,16 +18,16 @@
 
 package eu.geopaparazzi.library.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.fragment.app.FragmentManager;
 
 /**
  * Class able to start activities.
  *
  * <p>This is done to handle Fragments and Activities the same way.</p>
- *
+ * <p>
  * Created by hydrologis on 04/02/16.
  */
 public interface IActivitySupporter {
@@ -42,7 +42,7 @@ public interface IActivitySupporter {
     /**
      * Start an activity for result.
      *
-     * @param intent the intent to use.
+     * @param intent      the intent to use.
      * @param requestCode the request code.
      */
     void startActivityForResult(Intent intent, int requestCode);

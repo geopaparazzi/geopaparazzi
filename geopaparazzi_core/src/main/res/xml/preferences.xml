@@ -5,8 +5,7 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences"
-        android:summary="@string/gps_preferences_summary"
-        >
+        android:summary="@string/gps_preferences_summary">
         <EditTextPreference
             android:defaultValue="1"
             android:inputType="number"
@@ -76,8 +75,7 @@
             android:key="mapsview_textsize_factor"
             android:order="80"
             android:title="@string/map_textsize_factor"
-            android:summary="@string/map_textsize_factor_summary"
-            />
+            android:summary="@string/map_textsize_factor_summary" />
 
         <CheckBoxPreference
             android:key="PREFS_KEY_SCREEN_ON"
@@ -96,14 +94,14 @@
             android:title="@string/high_density_display" />
     </PreferenceScreen>
     <!--<PreferenceScreen-->
-        <!--android:order="40"-->
-        <!--android:title="@string/spatialite_preferences"-->
-        <!--android:summary="@string/spatialite_preferences_summary">-->
-        <!--<CheckBoxPreference-->
-            <!--android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"-->
-            <!--android:order="41"-->
-            <!--android:summary="@string/spatialite_recover_mode_tooltip"-->
-            <!--android:title="@string/spatialite_recovery_mode" />-->
+    <!--android:order="40"-->
+    <!--android:title="@string/spatialite_preferences"-->
+    <!--android:summary="@string/spatialite_preferences_summary">-->
+    <!--<CheckBoxPreference-->
+    <!--android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"-->
+    <!--android:order="41"-->
+    <!--android:summary="@string/spatialite_recover_mode_tooltip"-->
+    <!--android:title="@string/spatialite_recovery_mode" />-->
     <!--</PreferenceScreen>-->
 
     <eu.geopaparazzi.core.preferences.ForceLocalePreference

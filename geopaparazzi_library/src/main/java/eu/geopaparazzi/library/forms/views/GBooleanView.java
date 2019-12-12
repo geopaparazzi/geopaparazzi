@@ -17,8 +17,6 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
@@ -27,12 +25,16 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Compat;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom boolean view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("ALL")
@@ -41,33 +43,33 @@ public class GBooleanView extends View implements GView {
     private CheckBox checkbox;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GBooleanView( Context context, AttributeSet attrs, int defStyle ) {
+    public GBooleanView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GBooleanView( Context context, AttributeSet attrs ) {
+    public GBooleanView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
      * @param constraintDescription constraints
-     * @param readonly if <code>false</code>, the item is disabled for editing.
+     * @param readonly              if <code>false</code>, the item is disabled for editing.
      */
-    public GBooleanView( Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
-            String constraintDescription, boolean readonly ) {
+    public GBooleanView(Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
+                        String constraintDescription, boolean readonly) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -107,12 +109,12 @@ public class GBooleanView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">点形状</string>
-  <string name="point_size">点尺寸</string>
-  <string name="decimation">抽取</string>
+    <string name="point_shape_">点形状</string>
+    <string name="point_size">点尺寸</string>
+    <string name="decimation">抽取</string>
 </resources>

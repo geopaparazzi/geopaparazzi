@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 2014 Magnus Woxblom
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright 2014 Magnus Woxblom
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -14,8 +13,8 @@
     <item android:state_pressed="true">
         <inset android:insetLeft="2dp" android:insetBottom="3dp" android:insetRight="2dp" android:insetTop="2dp">
             <shape>
-                <stroke android:color="@color/main_decorations" android:width="2dp"/>
-                <corners android:radius="3dp"/>
+                <stroke android:color="@color/main_decorations" android:width="2dp" />
+                <corners android:radius="3dp" />
             </shape>
         </inset>
     </item>

@@ -18,6 +18,7 @@
 package eu.geopaparazzi.map.features.tools.impl;
 
 import java.util.List;
+
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
 

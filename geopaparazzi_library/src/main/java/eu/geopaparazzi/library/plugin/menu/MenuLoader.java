@@ -35,6 +35,7 @@ import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
 public class MenuLoader extends PluginLoader implements IMenuLoader {
     private ArrayList<IMenuEntryList> menuGroups = new ArrayList<IMenuEntryList>();
     private ArrayList<IMenuEntry> menuEntries = new ArrayList<IMenuEntry>();
+
     public MenuLoader(Context context, String providerName) {
         super(context, providerName);
     }
@@ -48,16 +49,15 @@ public class MenuLoader extends PluginLoader implements IMenuLoader {
     public List<IMenuEntry> getEntries() {
         if (isLoadComplete()) {
             return menuEntries;
-        }
-        else {
+        } else {
             throw new RuntimeException("Entries still not ready");
         }
     }
 
     @Override
     protected void onLoadComplete() {
-        for (IMenuEntryList menuGroup: menuGroups) {
-            for (IMenuEntry entry: menuGroup.getEntries()) {
+        for (IMenuEntryList menuGroup : menuGroups) {
+            for (IMenuEntry entry : menuGroup.getEntries()) {
                 menuEntries.add(entry);
             }
         }
@@ -67,24 +67,19 @@ public class MenuLoader extends PluginLoader implements IMenuLoader {
                 // return natural order comparison, but consider that
                 // - numbers<0 are bigger than numbers >=0
                 // - numbers <0 have the same order as other numbers <0
-                if (t0.getOrder()<0) {
-                    if (t1.getOrder()<0) {
+                if (t0.getOrder() < 0) {
+                    if (t1.getOrder() < 0) {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return 1;
                     }
-                }
-                else if (t1.getOrder()<0) {
+                } else if (t1.getOrder() < 0) {
                     return -1;
-                }
-                else if (t0.getOrder()<t1.getOrder()) {
+                } else if (t0.getOrder() < t1.getOrder()) {
                     return -1;
-                }
-                else if (t0.getOrder()==t1.getOrder()) {
+                } else if (t0.getOrder() == t1.getOrder()) {
                     return 0;
-                }
-                else {
+                } else {
                     return 1;
                 }
             }

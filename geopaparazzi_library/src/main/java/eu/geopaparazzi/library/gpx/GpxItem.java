@@ -26,7 +26,7 @@ import eu.geopaparazzi.library.gpx.parser.WayPoint;
 
 /**
  * Item representing a gpx file.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpxItem implements Comparable<GpxItem> {
@@ -50,7 +50,7 @@ public class GpxItem implements Comparable<GpxItem> {
     /**
      * @param name name to set.
      */
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -64,7 +64,7 @@ public class GpxItem implements Comparable<GpxItem> {
     /**
      * @param width width to set.
      */
-    public void setWidth( String width ) {
+    public void setWidth(String width) {
         this.width = width;
     }
 
@@ -78,7 +78,7 @@ public class GpxItem implements Comparable<GpxItem> {
     /**
      * @param color color to set.
      */
-    public void setColor( String color ) {
+    public void setColor(String color) {
         this.color = color;
     }
 
@@ -92,7 +92,7 @@ public class GpxItem implements Comparable<GpxItem> {
     /**
      * @param isVisible set to visible.
      */
-    public void setVisible( boolean isVisible ) {
+    public void setVisible(boolean isVisible) {
         this.isVisible = isVisible;
     }
 
@@ -103,18 +103,18 @@ public class GpxItem implements Comparable<GpxItem> {
         return isVisible;
     }
 
-    public int compareTo( GpxItem another ) {
+    public int compareTo(GpxItem another) {
         return 0;
     }
 
     /**
      * Set the data.
-     * 
+     *
      * @param data data to set.
      */
     @SuppressWarnings("unchecked")
-    public void setData( Object data ) {
-        if (data instanceof List< ? >) {
+    public void setData(Object data) {
+        if (data instanceof List<?>) {
             wayPoints = (List<WayPoint>) data;
         }
         if (data instanceof TrackSegment) {

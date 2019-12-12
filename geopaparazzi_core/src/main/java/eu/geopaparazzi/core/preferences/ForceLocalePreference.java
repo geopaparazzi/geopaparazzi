@@ -27,8 +27,8 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import eu.geopaparazzi.library.locale.LocaleUtils;
 import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.library.locale.LocaleUtils;
 
 /**
  * A custom preference to force a particular locale, even if the OS is on another.

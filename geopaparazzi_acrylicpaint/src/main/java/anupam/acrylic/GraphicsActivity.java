@@ -13,14 +13,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package anupam.acrylic;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,11 +28,11 @@ class GraphicsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setRequestedOrientation(
-    			ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @SuppressWarnings("unused")
-	@Override
+    @Override
     public void setContentView(View view) {
         if (false) { // set to true to test Picture
             ViewGroup vg = new PictureLayout(this);

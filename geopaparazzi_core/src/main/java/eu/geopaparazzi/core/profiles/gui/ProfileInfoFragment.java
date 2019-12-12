@@ -1,15 +1,14 @@
 package eu.geopaparazzi.core.profiles.gui;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
+
+import androidx.fragment.app.Fragment;
 
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.profiles.Profile;

@@ -18,13 +18,12 @@
 package eu.geopaparazzi.map.features.tools;
 
 
-
-import eu.geopaparazzi.map.features.tools.interfaces.DrawingTool;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.features.tools.interfaces.DrawingTool;
 
 /**
  * A tool that works on a {@link GPMapView}.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class MapTool implements DrawingTool {
@@ -33,7 +32,7 @@ public abstract class MapTool implements DrawingTool {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the mapview to work on
      */
     public MapTool(GPMapView mapView) {

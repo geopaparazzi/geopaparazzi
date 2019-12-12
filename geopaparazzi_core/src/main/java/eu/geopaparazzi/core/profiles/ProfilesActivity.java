@@ -6,10 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +14,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 
@@ -46,8 +48,8 @@ import eu.geopaparazzi.library.util.FileTypes;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 public class ProfilesActivity extends AppCompatActivity implements NewProfileDialogFragment.INewProfileCreatedListener, ColorStrokeDialogFragment.IColorStrokePropertiesChangeListener {
 

@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.webproject;
 
 /**
  * The class holding webproject info.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Webproject {
@@ -34,8 +34,8 @@ public class Webproject {
     public long size;
     /**
      * Name of the project.
-     * 
-     * <p>This is also the folder that will be created.</p> 
+     *
+     * <p>This is also the folder that will be created.</p>
      */
     public String name;
     /**
@@ -53,11 +53,11 @@ public class Webproject {
 
     /**
      * Checks if the project info match the supplied string.
-     * 
+     *
      * @param pattern the pattern to match.
      * @return <code>true</code> if the pattern matches any info.
      */
-    public boolean matches( String pattern ) {
+    public boolean matches(String pattern) {
         pattern = pattern.toLowerCase();
         if (name.toLowerCase().contains(pattern)) {
             return true;

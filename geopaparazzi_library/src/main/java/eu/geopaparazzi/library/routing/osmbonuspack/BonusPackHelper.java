@@ -17,6 +17,7 @@
  */
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,29 +29,38 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
-/** Useful functions and common constants.
+/**
+ * Useful functions and common constants.
+ *
  * @author M.Kergall
  */
 @SuppressWarnings("ALL")
 public class BonusPackHelper {
 
-    /** Log tag. */
+    /**
+     * Log tag.
+     */
     public static final String LOG_TAG = "BONUSPACK";
 
-    /** resource id value meaning "undefined resource id" */
+    /**
+     * resource id value meaning "undefined resource id"
+     */
     public static final int UNDEFINED_RES_ID = 0;
 
-    /**	User agent sent to services by default */
+    /**
+     * User agent sent to services by default
+     */
     public static final String DEFAULT_USER_AGENT = "OsmBonusPack/1";
 
-    /** @return true if the device is the emulator, false if actual device.
+    /**
+     * @return true if the device is the emulator, false if actual device.
      */
-    public static boolean isEmulator(){
+    public static boolean isEmulator() {
         //return Build.MANUFACTURER.equals("unknown");
         return ("google_sdk".equals(Build.PRODUCT) || "sdk".equals(Build.PRODUCT));
     }
 
-    public static BoundingBox cloneBoundingBox(BoundingBox bb){
+    public static BoundingBox cloneBoundingBox(BoundingBox bb) {
         return new BoundingBox(
                 bb.getLatNorth(),
                 bb.getLonEast(),
@@ -58,8 +68,10 @@ public class BonusPackHelper {
                 bb.getLonWest());
     }
 
-    /** @return the BoundingBox enclosing bb1 and bb2 BoundingBoxes */
-    public static BoundingBox concatBoundingBox(BoundingBox bb1, BoundingBox bb2){
+    /**
+     * @return the BoundingBox enclosing bb1 and bb2 BoundingBoxes
+     */
+    public static BoundingBox concatBoundingBox(BoundingBox bb1, BoundingBox bb2) {
         return new BoundingBox(
                 Math.max(bb1.getLatNorth(), bb2.getLatNorth()),
                 Math.max(bb1.getLonEast(), bb2.getLonEast()),
@@ -70,11 +82,13 @@ public class BonusPackHelper {
     /**
      * @return the whole content of the http request, as a string
      */
-    private static String readStream(HttpConnection connection){
+    private static String readStream(HttpConnection connection) {
         return connection.getContentAsString();
     }
 
-    /** sends an http request, and returns the whole content result in a String
+    /**
+     * sends an http request, and returns the whole content result in a String
+     *
      * @param url
      * @param userAgent
      * @return the whole content, or null if any issue.
@@ -89,7 +103,9 @@ public class BonusPackHelper {
         return result;
     }
 
-    /** sends an http request, and returns the whole content result in a String.
+    /**
+     * sends an http request, and returns the whole content result in a String.
+     *
      * @param url
      * @return the whole content, or null if any issue.
      */
@@ -99,6 +115,7 @@ public class BonusPackHelper {
 
     /**
      * Loads a bitmap from a url.
+     *
      * @param url
      * @return the bitmap, or null if any issue.
      */
@@ -126,6 +143,7 @@ public class BonusPackHelper {
 
     /**
      * Workaround on Android issue on bitmap loading
+     *
      * @see <a href="http://stackoverflow.com/questions/4601352/createfromstream-in-android-returning-null-for-certain-url">Issue</a>
      */
     static class FlushedInputStream extends FilterInputStream {
@@ -133,7 +151,8 @@ public class BonusPackHelper {
             super(inputStream);
         }
 
-        @Override public long skip(long n) throws IOException {
+        @Override
+        public long skip(long n) throws IOException {
             long totalBytesSkipped = 0L;
             while (totalBytesSkipped < n) {
                 long bytesSkipped = in.skip(n - totalBytesSkipped);

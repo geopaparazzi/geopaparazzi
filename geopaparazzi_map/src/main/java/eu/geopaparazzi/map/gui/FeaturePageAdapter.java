@@ -18,8 +18,6 @@
 package eu.geopaparazzi.map.gui;
 
 import android.content.Context;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.PagerAdapter;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -31,6 +29,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.PagerAdapter;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;

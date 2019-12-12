@@ -113,7 +113,7 @@ public class HttpConnection {
      */
     public String getContentAsString() {
         try {
-            if (stream !=null){
+            if (stream != null) {
                 BufferedReader bi = new BufferedReader(new InputStreamReader(stream));
                 StringBuilder sb = new StringBuilder();
                 String line = null;
@@ -142,7 +142,7 @@ public class HttpConnection {
                 e.printStackTrace();
             }
         }
-        if (httpURLConnection!=null){
+        if (httpURLConnection != null) {
             httpURLConnection.disconnect();
         }
     }

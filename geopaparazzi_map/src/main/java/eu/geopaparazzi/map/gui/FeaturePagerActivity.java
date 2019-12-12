@@ -19,15 +19,16 @@ package eu.geopaparazzi.map.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.locationtech.jts.geom.Coordinate;

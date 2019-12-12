@@ -12,9 +12,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.util.List;
-import java.util.Map;
 
-import eu.geopaparazzi.library.core.maps.SpatialiteMap;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;

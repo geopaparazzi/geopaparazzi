@@ -1,11 +1,12 @@
 package eu.geopaparazzi.map.gui;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import eu.geopaparazzi.library.core.dialogs.ColorStrokeDialogFragment;
 import eu.geopaparazzi.library.style.ColorStrokeObject;

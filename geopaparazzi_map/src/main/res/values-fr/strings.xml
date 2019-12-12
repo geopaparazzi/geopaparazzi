@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Couche de points</string>
-  <string name="point_size">Taille du point</string>
-  <string name="decimation">Epurage</string>
+    <string name="point_shape_">Couche de points</string>
+    <string name="point_size">Taille du point</string>
+    <string name="decimation">Epurage</string>
 </resources>

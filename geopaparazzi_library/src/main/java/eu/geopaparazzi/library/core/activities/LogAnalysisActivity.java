@@ -18,9 +18,6 @@
 
 package eu.geopaparazzi.library.core.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -29,22 +26,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A log list activity.
@@ -232,7 +231,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
     private boolean messageOk(String logMessage) {
         boolean allFalse = //
-                        !showError && //
+                !showError && //
                         !showSession && //
                         !showEvento && //
                         !showSendCleanup && //
@@ -277,7 +276,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
 
     private static boolean isGps(String logMessageLC) {
         return logMessageLC.contains("gps") ||
-               logMessageLC.contains("satellites") ;
+                logMessageLC.contains("satellites");
     }
 
     private static boolean isMemory(String logMessageLC) {
@@ -287,8 +286,8 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
     }
 
     private static boolean isInfo(String logMessageLC, String logMessage) {
-        return  !isError(logMessageLC,logMessage)  &&
-                !isGps(logMessageLC)    &&
+        return !isError(logMessageLC, logMessage) &&
+                !isGps(logMessageLC) &&
                 !isMemory(logMessageLC) &&
                 !isCheck(logMessageLC);
 

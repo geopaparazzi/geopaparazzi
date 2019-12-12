@@ -17,23 +17,24 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import java.util.Iterator;
-
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.os.SystemClock;
+
+import java.util.Iterator;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Class to get info from {@link GpsStatus}.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsStatusInfo {
 
     /**
      * The accepted time between a point and the other to say it has fix.
-     * 
+     *
      * <p>This is 10 secs right now, because the pick interval is 1 sec.
      * If that changes, it should be related to the pick interval of the GPS.
      */
@@ -48,7 +49,7 @@ public class GpsStatusInfo {
     /**
      * @param status the status.
      */
-    public GpsStatusInfo( GpsStatus status ) {
+    public GpsStatusInfo(GpsStatus status) {
         this.status = status;
     }
 
@@ -61,7 +62,7 @@ public class GpsStatusInfo {
 
         satCount = 0;
         satUsedInFixCount = 0;
-        while( satellites.hasNext() ) {
+        while (satellites.hasNext()) {
             GpsSatellite satellite = satellites.next();
             satCount++;
             if (satellite.usedInFix()) {
@@ -96,29 +97,29 @@ public class GpsStatusInfo {
 
     /**
      * Checks if there fix is still there based on the last picked location.
-     * 
-     * @param hasFix fix state previous to the check. 
+     *
+     * @param hasFix                   fix state previous to the check.
      * @param lastLocationUpdateMillis the millis of the last picked location.
-     * @param event the Gps status event triggered.
+     * @param event                    the Gps status event triggered.
      * @return <code>true</code>, if it has fix.
      */
     @SuppressWarnings("nls")
-    public static boolean checkFix( boolean hasFix, long lastLocationUpdateMillis, int event ) {
-        switch( event ) {
-        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            long diff = SystemClock.elapsedRealtime() - lastLocationUpdateMillis;
-            if (GPLog.LOG_ABSURD)
-                GPLog.addLogEntry("GPSSTATUSINFO", "gps event diff: " + diff);
-            if (diff < FIX_TIME_INTERVAL_CHECK) {
-                if (!hasFix) {
-                    hasFix = true;
+    public static boolean checkFix(boolean hasFix, long lastLocationUpdateMillis, int event) {
+        switch (event) {
+            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+                long diff = SystemClock.elapsedRealtime() - lastLocationUpdateMillis;
+                if (GPLog.LOG_ABSURD)
+                    GPLog.addLogEntry("GPSSTATUSINFO", "gps event diff: " + diff);
+                if (diff < FIX_TIME_INTERVAL_CHECK) {
+                    if (!hasFix) {
+                        hasFix = true;
+                    }
+                } else {
+                    if (hasFix) {
+                        hasFix = false;
+                    }
                 }
-            } else {
-                if (hasFix) {
-                    hasFix = false;
-                }
-            }
-            break;
+                break;
         }
         return hasFix;
     }

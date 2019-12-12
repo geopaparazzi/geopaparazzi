@@ -17,18 +17,19 @@
  */
 package eu.geopaparazzi.library.core.dialogs;
 
-import java.text.DecimalFormat;
-
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.fragment.app.DialogFragment;
+
+import java.text.DecimalFormat;
+
 /**
  * A time picker fragment.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TimePickerDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -42,11 +43,11 @@ public class TimePickerDialogFragment extends DialogFragment implements TimePick
      * Set attributes.
      *
      * @param hourOfDay hour
-     * @param minute minute
-     * @param is24 format
-     * @param timeView view
+     * @param minute    minute
+     * @param is24      format
+     * @param timeView  view
      */
-    public void setAttributes( int hourOfDay, int minute, boolean is24, TextView timeView ) {
+    public void setAttributes(int hourOfDay, int minute, boolean is24, TextView timeView) {
         this.hourOfDay = hourOfDay;
         this.minute = minute;
         this.is24 = is24;
@@ -54,12 +55,12 @@ public class TimePickerDialogFragment extends DialogFragment implements TimePick
     }
 
     @Override
-    public Dialog onCreateDialog( Bundle savedInstanceState ) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new TimePickerDialog(getActivity(), this, hourOfDay, minute, is24);
     }
 
     @Override
-    public void onTimeSet( TimePicker arg0, int hourOfDay, int minute ) {
+    public void onTimeSet(TimePicker arg0, int hourOfDay, int minute) {
         DecimalFormat decimalFormatter = new DecimalFormat("00"); //$NON-NLS-1$
 
         StringBuilder sb = new StringBuilder();

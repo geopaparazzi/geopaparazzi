@@ -17,22 +17,11 @@
  */
 package eu.geopaparazzi.plugins.defaultexports;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-
-import java.io.File;
 
 import eu.geopaparazzi.core.ui.dialogs.GpxExportDialogFragment;
-import eu.geopaparazzi.core.ui.dialogs.GpxImportDialogFragment;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.plugin.types.MenuEntry;
-import eu.geopaparazzi.library.util.AppsUtilities;
-import eu.geopaparazzi.library.util.FileTypes;
-import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.IActivitySupporter;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)

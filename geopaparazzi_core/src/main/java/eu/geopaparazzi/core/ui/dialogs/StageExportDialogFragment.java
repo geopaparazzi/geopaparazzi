@@ -24,14 +24,15 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import androidx.fragment.app.DialogFragment;
+
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
-import eu.geopaparazzi.core.R;
 
 
 /**

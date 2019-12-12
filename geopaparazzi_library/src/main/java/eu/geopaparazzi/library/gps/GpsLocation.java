@@ -17,14 +17,15 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import android.location.Location;
+
 import java.util.Date;
 
-import android.location.Location;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * Extends the location with some infos.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsLocation extends Location {
@@ -34,7 +35,7 @@ public class GpsLocation extends Location {
     /**
      * @param l {@link Location} object to wrap.
      */
-    public GpsLocation( Location l ) {
+    public GpsLocation(Location l) {
         super(l);
     }
 
@@ -48,7 +49,7 @@ public class GpsLocation extends Location {
     /**
      * @param previousLoc sets previous location.
      */
-    public void setPreviousLoc( Location previousLoc ) {
+    public void setPreviousLoc(Location previousLoc) {
         this.previousLoc = previousLoc;
     }
 

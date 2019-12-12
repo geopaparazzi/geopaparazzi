@@ -18,6 +18,7 @@
 package eu.geopaparazzi.core.ui.activities;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -54,7 +55,6 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
 
     /**
      * Start data extraction.
-     *
      */
 //    public void startExtraction(View view) {
 //
@@ -363,10 +363,9 @@ public class ImportMapsforgeActivity extends AppCompatActivity {
 //            GPDialogs.warningDialog(this, getString(R.string.extract_mapsforge_only_when_loaded), null);
 //        }
 //    }
-
     @Override
     protected void onDestroy() {
-        if (importTask!= null) importTask.dispose();
+        if (importTask != null) importTask.dispose();
         super.onDestroy();
     }
 }

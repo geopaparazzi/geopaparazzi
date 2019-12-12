@@ -23,10 +23,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
@@ -54,11 +55,11 @@ public class NoteDialogFragment extends DialogFragment {
      */
     public interface IAddNote {
         /**
-         * @param lon the longitude of the point.
-         * @param lat the latitude of the point.
-         * @param elev the elevation of the point.
-         * @param timestamp the timestamp of the point.
-         * @param note the text of the note.
+         * @param lon            the longitude of the point.
+         * @param lat            the latitude of the point.
+         * @param elev           the elevation of the point.
+         * @param timestamp      the timestamp of the point.
+         * @param note           the text of the note.
          * @param alsoAsBookmark if true, then the note is also saved to bookmarks.
          */
         void addNote(double lon, double lat, double elev, long timestamp, String note, boolean alsoAsBookmark);

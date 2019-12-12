@@ -36,8 +36,8 @@ public class DouglasPeuckerReducer {
      * @param tolerance The tolerance to decide whether or not
      *                  to keep a point, in the coordinate system
      *                  of the points (micro-degrees here)
+     * @param shape     The shape to reduce
      * @return the reduced shape
-     * @param    shape The shape to reduce
      */
     public static ArrayList<GeoPoint> reduceWithTolerance(ArrayList<GeoPoint> shape, double tolerance) {
         int n = shape.size();

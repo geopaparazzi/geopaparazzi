@@ -18,6 +18,12 @@
 
 package eu.geopaparazzi.library.gpx.parser;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +32,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -75,7 +75,7 @@ public class KmlParser {
         boolean mSuccess = true;
 
         @Override
-        public void startElement( String uri, String localName, String name, Attributes attributes ) throws SAXException {
+        public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
             // we only care fragment_about the standard GPX nodes.
             try {
                 if (uri.startsWith(NS_KML_2)) {
@@ -99,12 +99,12 @@ public class KmlParser {
          * and will be processed when {@link #endElement(String, String, String)} is called.
          */
         @Override
-        public void characters( char[] ch, int start, int length ) throws SAXException {
+        public void characters(char[] ch, int start, int length) throws SAXException {
             mStringAccumulator.append(ch, start, length);
         }
 
         @Override
-        public void endElement( String uri, String localName, String name ) throws SAXException {
+        public void endElement(String uri, String localName, String name) throws SAXException {
             if (uri.startsWith(NS_KML_2)) {
                 if (NODE_PLACEMARK.equals(localName)) {
                     mCurrentWayPoint = null;
@@ -121,21 +121,22 @@ public class KmlParser {
         }
 
         @Override
-        public void error( SAXParseException e ) throws SAXException {
+        public void error(SAXParseException e) throws SAXException {
             mSuccess = false;
         }
 
         @Override
-        public void fatalError( SAXParseException e ) throws SAXException {
+        public void fatalError(SAXParseException e) throws SAXException {
             mSuccess = false;
         }
 
         /**
          * Parses the location string and store the information into a {@link LocationPoint}.
+         *
          * @param locationNode the {@link LocationPoint} to receive the location data.
-         * @param location The string containing the location info.
+         * @param location     The string containing the location info.
          */
-        private void parseLocation( LocationPoint locationNode, String location ) {
+        private void parseLocation(LocationPoint locationNode, String location) {
             Matcher m = sLocationPattern.matcher(location);
             if (m.matches()) {
                 try {
@@ -169,15 +170,16 @@ public class KmlParser {
 
     /**
      * Creates a new GPX parser for a file specified by its full path.
+     *
      * @param fileName The full path of the GPX file to parse.
      */
-    public KmlParser( String fileName ) {
+    public KmlParser(String fileName) {
         mFileName = fileName;
     }
 
     /**
      * Parses the KML file.
-     * 
+     *
      * @return <code>true</code> if success.
      */
     public boolean parse() {
@@ -198,8 +200,8 @@ public class KmlParser {
     /**
      * Returns the parsed {@link WayPoint} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
-     * 
-     * @return array of waypoints. 
+     *
+     * @return array of waypoints.
      */
     public WayPoint[] getWayPoints() {
         if (mHandler != null) {

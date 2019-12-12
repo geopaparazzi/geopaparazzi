@@ -19,7 +19,7 @@ package eu.geopaparazzi.library.gps;
 
 /**
  * Enum defining possible status of the {@link GpsService}.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum GpsServiceStatus {
@@ -55,13 +55,13 @@ public enum GpsServiceStatus {
 
     /**
      * Get the {@link GpsServiceStatus} for a given code.
-     * 
+     *
      * @param code the code to check.
      * @return the status.
      */
-    public static GpsServiceStatus getStatusForCode( int code ) {
+    public static GpsServiceStatus getStatusForCode(int code) {
         GpsServiceStatus[] values = values();
-        for( GpsServiceStatus gpsServiceStatus : values ) {
+        for (GpsServiceStatus gpsServiceStatus : values) {
             if (code == gpsServiceStatus.getCode()) {
                 return gpsServiceStatus;
             }

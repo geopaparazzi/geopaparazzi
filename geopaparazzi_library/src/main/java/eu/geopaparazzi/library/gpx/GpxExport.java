@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.gpx;
 
+import android.content.Context;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,13 +26,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A kmz exporter for notes, logs and pics.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -41,23 +42,23 @@ public class GpxExport {
 
     /**
      * Constructor.
-     * 
-     * @param name a name for the gpx.
+     *
+     * @param name       a name for the gpx.
      * @param outputFile the path in which to create the gpx.
      */
-    public GpxExport( String name, File outputFile ) {
+    public GpxExport(String name, File outputFile) {
         this.name = name;
         this.outputFile = outputFile;
     }
 
     /**
      * Export.
-     * 
-     * @param context  the context to use.
+     *
+     * @param context         the context to use.
      * @param gpxRepresenters list of data representers.
-     * @throws IOException  if something goes wrong.
+     * @throws IOException if something goes wrong.
      */
-    public void export( Context context, List<GpxRepresenter> gpxRepresenters ) throws IOException {
+    public void export(Context context, List<GpxRepresenter> gpxRepresenters) throws IOException {
         if (name == null) {
             name = "Geopaparazzi Gpx Export";
         }
@@ -80,7 +81,7 @@ public class GpxExport {
             double minLon = Double.POSITIVE_INFINITY;
             double maxLat = Double.NEGATIVE_INFINITY;
             double maxLon = Double.NEGATIVE_INFINITY;
-            for( GpxRepresenter gpxRepresenter : gpxRepresenters ) {
+            for (GpxRepresenter gpxRepresenter : gpxRepresenters) {
                 minLat = Math.min(minLat, gpxRepresenter.getMinLat());
                 minLon = Math.min(minLon, gpxRepresenter.getMinLon());
                 maxLat = Math.max(maxLat, gpxRepresenter.getMaxLat());
@@ -89,7 +90,7 @@ public class GpxExport {
 
             bW.write("<bounds minlat=\"" + minLat + "\" minlon=\"" + minLon + "\" maxlat=\"" + maxLat + "\" maxlon=\"" + maxLon
                     + "\"/>\n");
-            for( GpxRepresenter gpxRepresenter : gpxRepresenters ) {
+            for (GpxRepresenter gpxRepresenter : gpxRepresenters) {
                 try {
                     bW.write(gpxRepresenter.toGpxString());
                 } catch (Exception e) {

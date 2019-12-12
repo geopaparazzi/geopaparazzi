@@ -419,7 +419,7 @@
     <string name="profile_description">Profile Description</string>
     <string name="name_of_the_new_profile">Name of the new profile</string>
     <string name="description_of_the_new_profile">Description of the new profile</string>
-    <string name="browse_images" >Browse images</string>
+    <string name="browse_images">Browse images</string>
     <string name="return_to_view_after_note">Return to view after note</string>
     <string name="unable_parse_url">Unable to parse the url:</string>
     <string name="option_center_on_gps">center on gps</string>

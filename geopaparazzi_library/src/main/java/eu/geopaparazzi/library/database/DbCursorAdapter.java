@@ -20,30 +20,32 @@ package eu.geopaparazzi.library.database;
 
 import android.content.Context;
 import android.database.Cursor;
-import androidx.cursoradapter.widget.CursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.cursoradapter.widget.CursorAdapter;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Compat;
 
 /**
  * A cursor adapter generic to given field names.
- * 
+ *
  * <p><b>Note that it ignores fields named _id.</b></p>
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DbCursorAdapter extends CursorAdapter {
 
-    public DbCursorAdapter( Context context, Cursor c ) {
+    public DbCursorAdapter(Context context, Cursor c) {
         super(context, c, false);
     }
 
-    public void bindView( View view, Context context, Cursor cursor ) {
+    public void bindView(View view, Context context, Cursor cursor) {
         StringBuilder sb = new StringBuilder();
         TextView textView = (TextView) view;
-        for( int i = 0; i < cursor.getColumnCount(); i++ ) {
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
             String field = cursor.getColumnName(i);
             if (field.equals("_id")) {//NON-NLS
                 continue;
@@ -61,7 +63,7 @@ public class DbCursorAdapter extends CursorAdapter {
         textView.setPadding(5, 5, 5, 5);
     }
 
-    public View newView( Context context, Cursor cursor, ViewGroup parent ) {
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
         // Inflate your view here.
         TextView view = new TextView(context);
         return view;

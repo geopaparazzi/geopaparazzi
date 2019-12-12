@@ -27,8 +27,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
@@ -44,6 +42,9 @@ import android.widget.GridView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import org.json.JSONObject;
 

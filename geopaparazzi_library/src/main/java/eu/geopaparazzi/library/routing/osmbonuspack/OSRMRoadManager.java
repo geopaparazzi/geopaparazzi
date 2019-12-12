@@ -17,6 +17,7 @@
  */
 
 package eu.geopaparazzi.library.routing.osmbonuspack;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -26,20 +27,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 import eu.geopaparazzi.library.R;
 
-/** get a route between a start and a destination point, going through a list of waypoints.
+/**
+ * get a route between a start and a destination point, going through a list of waypoints.
  * It uses OSRM, a free open source routing service based on OpenSteetMap data. <br>
- *
+ * <p>
  * It requests by default the OSRM demo site.
  * Use setService() to request an other (for instance your own) OSRM service. <br>
  *
+ * @author M.Kergall
  * @see <a href="https://github.com/DennisOSRM/Project-OSRM/wiki/Server-api">OSRM</a>
  * @see <a href="https://github.com/Project-OSRM/osrm-backend/wiki/New-Server-api">V5 API</a>
- *
- * @author M.Kergall
  */
 @SuppressWarnings("ALL")
 public class OSRMRoadManager extends RoadManager {
@@ -53,6 +53,7 @@ public class OSRMRoadManager extends RoadManager {
      * mapping from OSRM StepManeuver types to MapQuest maneuver IDs:
      */
     static final HashMap<String, Integer> MANEUVERS;
+
     static {
         MANEUVERS = new HashMap<>();
         MANEUVERS.put("new name", 2); //road name change
@@ -101,6 +102,7 @@ public class OSRMRoadManager extends RoadManager {
     // %d: direction => removed
     // <*>: will only be printed when there actually is a road name
     static final HashMap<Integer, Object> DIRECTIONS;
+
     static {
         DIRECTIONS = new HashMap<>();
         DIRECTIONS.put(1, R.string.osmbonuspack_directions_1);
@@ -129,44 +131,47 @@ public class OSRMRoadManager extends RoadManager {
         DIRECTIONS.put(34, R.string.osmbonuspack_directions_34);
     }
 
-    public OSRMRoadManager(Context context){
+    public OSRMRoadManager(Context context) {
         super();
         mContext = context;
         mServiceUrl = SERVICE;
         mUserAgent = BonusPackHelper.DEFAULT_USER_AGENT; //set user agent to the default one.
     }
 
-    /** allows to request on an other site than OSRM demo site */
-    public void setService(String serviceUrl){
+    /**
+     * allows to request on an other site than OSRM demo site
+     */
+    public void setService(String serviceUrl) {
         mServiceUrl = serviceUrl;
     }
 
-    /** allows to send to OSRM service a user agent specific to the app,
+    /**
+     * allows to send to OSRM service a user agent specific to the app,
      * instead of the default user agent of OSMBonusPack lib.
      */
-    public void setUserAgent(String userAgent){
+    public void setUserAgent(String userAgent) {
         mUserAgent = userAgent;
     }
 
     public String getUrl(ArrayList<GeoPoint> waypoints, boolean getAlternate) {
         StringBuilder urlString = new StringBuilder(mServiceUrl);
-        for (int i=0; i<waypoints.size(); i++){
+        for (int i = 0; i < waypoints.size(); i++) {
             GeoPoint p = waypoints.get(i);
-            if (i>0)
+            if (i > 0)
                 urlString.append(';');
             urlString.append(Double.toString(p.getLongitude()) + "," + Double.toString(p.getLatitude()));
         }
-        urlString.append("?alternatives="+(getAlternate?"true" : "false"));
+        urlString.append("?alternatives=" + (getAlternate ? "true" : "false"));
         urlString.append("&overview=full&steps=true");
         urlString.append(mOptions);
         return urlString.toString();
     }
 
 
-    protected String getUrl(ArrayList<GeoPoint> waypoints){
+    protected String getUrl(ArrayList<GeoPoint> waypoints) {
         StringBuffer urlString = new StringBuffer(mServiceUrl);
-        for (int i=0; i<waypoints.size(); i++){
-            if (i>0)
+        for (int i = 0; i < waypoints.size(); i++) {
+            if (i > 0)
                 urlString.append(';');
             GeoPoint p = waypoints.get(i);
             urlString.append(Double.toString(p.getLongitude()) + "," + Double.toString(p.getLatitude()));
@@ -186,39 +191,39 @@ public class OSRMRoadManager extends RoadManager {
 //        return urlString.toString();
 //    }
 
-	/*
-	protected void getInstructions(Road road, JSONArray jInstructions){
-		try {
-			int n = jInstructions.length();
-			RoadNode lastNode = null;
-			for (int i=0; i<n; i++){
-				JSONArray jInstruction = jInstructions.getJSONArray(i);
-				RoadNode node = new RoadNode();
-				int positionIndex = jInstruction.getInt(3);
-				node.mLocation = road.mRouteHigh.get(positionIndex);
-				node.mLength = jInstruction.getInt(2)/1000.0;
-				node.mDuration = jInstruction.getInt(4); //Segment duration in seconds.
-				String direction = jInstruction.getString(0);
-				String roadName = jInstruction.getString(1);
-				if (lastNode!=null && "1".equals(direction) && "".equals(roadName)){
-					//node "Continue" with no road name is useless, don't add it
-					lastNode.mLength += node.mLength;
-					lastNode.mDuration += node.mDuration;
-				} else {
-					node.mManeuverType = getManeuverCode(direction);
-					node.mInstructions = buildInstructions(direction, roadName);
-					//Log.d(BonusPackHelper.LOG_TAG, direction+"=>"+node.mManeuverType+"; "+node.mInstructions);
-					road.mNodes.add(node);
-					lastNode = node;
-				}
-			}
-		} catch (JSONException e) {
-			road.mStatus = Road.STATUS_TECHNICAL_ISSUE;
-			e.printStackTrace();
-		}
-	}
-	*/
-    protected Road[] defaultRoad(ArrayList<GeoPoint> waypoints){
+    /*
+    protected void getInstructions(Road road, JSONArray jInstructions){
+        try {
+            int n = jInstructions.length();
+            RoadNode lastNode = null;
+            for (int i=0; i<n; i++){
+                JSONArray jInstruction = jInstructions.getJSONArray(i);
+                RoadNode node = new RoadNode();
+                int positionIndex = jInstruction.getInt(3);
+                node.mLocation = road.mRouteHigh.get(positionIndex);
+                node.mLength = jInstruction.getInt(2)/1000.0;
+                node.mDuration = jInstruction.getInt(4); //Segment duration in seconds.
+                String direction = jInstruction.getString(0);
+                String roadName = jInstruction.getString(1);
+                if (lastNode!=null && "1".equals(direction) && "".equals(roadName)){
+                    //node "Continue" with no road name is useless, don't add it
+                    lastNode.mLength += node.mLength;
+                    lastNode.mDuration += node.mDuration;
+                } else {
+                    node.mManeuverType = getManeuverCode(direction);
+                    node.mInstructions = buildInstructions(direction, roadName);
+                    //Log.d(BonusPackHelper.LOG_TAG, direction+"=>"+node.mManeuverType+"; "+node.mInstructions);
+                    road.mNodes.add(node);
+                    lastNode = node;
+                }
+            }
+        } catch (JSONException e) {
+            road.mStatus = Road.STATUS_TECHNICAL_ISSUE;
+            e.printStackTrace();
+        }
+    }
+    */
+    protected Road[] defaultRoad(ArrayList<GeoPoint> waypoints) {
         Road[] roads = new Road[1];
         roads[0] = new Road(waypoints);
         return roads;
@@ -247,7 +252,7 @@ public class OSRMRoadManager extends RoadManager {
             } else {
                 JSONArray jRoutes = jObject.getJSONArray("routes");
                 Road[] roads = new Road[jRoutes.length()];
-                for (int i=0; i<jRoutes.length(); i++){
+                for (int i = 0; i < jRoutes.length(); i++) {
                     Road road = new Road();
                     roads[i] = road;
                     road.mStatus = Road.STATUS_OK;
@@ -259,7 +264,7 @@ public class OSRMRoadManager extends RoadManager {
                     road.mDuration = jRoute.getDouble("duration");
                     //legs:
                     JSONArray jLegs = jRoute.getJSONArray("legs");
-                    for (int l=0; l<jLegs.length(); l++) {
+                    for (int l = 0; l < jLegs.length(); l++) {
                         //leg:
                         JSONObject jLeg = jLegs.getJSONObject(l);
                         RoadLeg leg = new RoadLeg();
@@ -270,7 +275,7 @@ public class OSRMRoadManager extends RoadManager {
                         JSONArray jSteps = jLeg.getJSONArray("steps");
                         RoadNode lastNode = null;
                         String lastRoadName = "";
-                        for (int s=0; s<jSteps.length(); s++) {
+                        for (int s = 0; s < jSteps.length(); s++) {
                             JSONObject jStep = jSteps.getJSONObject(s);
                             RoadNode node = new RoadNode();
                             node.mLength = jStep.getDouble("distance") / 1000.0;
@@ -279,10 +284,10 @@ public class OSRMRoadManager extends RoadManager {
                             JSONArray jLocation = jStepManeuver.getJSONArray("location");
                             node.mLocation = new GeoPoint(jLocation.getDouble(1), jLocation.getDouble(0));
                             String direction = jStepManeuver.getString("type");
-                            if (direction.equals("turn") || direction.equals("ramp") || direction.equals("merge")){
+                            if (direction.equals("turn") || direction.equals("ramp") || direction.equals("merge")) {
                                 String modifier = jStepManeuver.getString("modifier");
                                 direction = direction + '-' + modifier;
-                            } else if (direction.equals("roundabout")){
+                            } else if (direction.equals("roundabout")) {
                                 int exit = 0;
                                 if (jStepManeuver.has("exit")) {
                                     exit = jStepManeuver.getInt("exit");
@@ -318,16 +323,18 @@ public class OSRMRoadManager extends RoadManager {
         }
     }
 
-    @Override public Road[] getRoads(ArrayList<GeoPoint> waypoints) {
+    @Override
+    public Road[] getRoads(ArrayList<GeoPoint> waypoints) {
         return getRoads(waypoints, true);
     }
 
-    @Override public Road getRoad(ArrayList<GeoPoint> waypoints) {
+    @Override
+    public Road getRoad(ArrayList<GeoPoint> waypoints) {
         Road[] roads = getRoads(waypoints, false);
         return roads[0];
     }
 
-    protected int getManeuverCode(String direction){
+    protected int getManeuverCode(String direction) {
         Integer code = MANEUVERS.get(direction);
         if (code != null)
             return code;
@@ -335,7 +342,7 @@ public class OSRMRoadManager extends RoadManager {
             return 0;
     }
 
-    protected String buildInstructions(int maneuver, String roadName){
+    protected String buildInstructions(int maneuver, String roadName) {
         Integer resDirection = (Integer) DIRECTIONS.get(maneuver);
         if (resDirection == null)
             return null;
@@ -353,7 +360,7 @@ public class OSRMRoadManager extends RoadManager {
     }
 
     protected String buildInstructions(String direction, String roadName,
-                                       HashMap<String, String> directions){
+                                       HashMap<String, String> directions) {
         if (directions == null)
             return null;
         direction = directions.get(direction);

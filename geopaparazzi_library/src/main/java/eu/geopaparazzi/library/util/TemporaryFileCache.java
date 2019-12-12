@@ -22,7 +22,6 @@ import android.content.Context;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * A file cache to handle temporary files properly.
@@ -37,7 +36,7 @@ public enum TemporaryFileCache {
      * Create a new temporary file for geopaparazzi.
      *
      * @param context the context to use.
-     * @param ext the extension to use (ex. .png).
+     * @param ext     the extension to use (ex. .png).
      * @return the created file.
      * @throws IOException
      */

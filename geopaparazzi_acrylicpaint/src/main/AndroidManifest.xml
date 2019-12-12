@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="anupam.acrylic"
     android:versionCode="15"
-    android:versionName="2.2.0" >
+    android:versionName="2.2.0">
 
     <supports-screens
         android:anyDensity="true"
@@ -22,8 +22,7 @@
 
         <activity
             android:name=".EasyPaint"
-            android:theme="@style/Theme"
-             >
+            android:theme="@style/Theme">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

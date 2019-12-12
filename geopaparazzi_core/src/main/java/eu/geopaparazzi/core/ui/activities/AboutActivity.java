@@ -18,13 +18,14 @@
 package eu.geopaparazzi.core.ui.activities;
 
 import android.os.Bundle;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.core.ResourcesManager;
 import eu.geopaparazzi.library.core.fragments.AboutFragment;
-import eu.geopaparazzi.core.R;
 
 /**
  * The about activity.

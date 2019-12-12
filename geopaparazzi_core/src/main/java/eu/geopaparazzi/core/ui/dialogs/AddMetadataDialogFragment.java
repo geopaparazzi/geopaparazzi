@@ -23,17 +23,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import eu.geopaparazzi.library.database.GPLog;
+import androidx.fragment.app.DialogFragment;
+
 import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.utilities.ISimpleChangeListener;
 import eu.geopaparazzi.core.database.DaoMetadata;
+import eu.geopaparazzi.core.utilities.ISimpleChangeListener;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * New project creation dialog.

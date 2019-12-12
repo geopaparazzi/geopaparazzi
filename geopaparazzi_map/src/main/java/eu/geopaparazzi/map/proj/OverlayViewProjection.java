@@ -11,7 +11,6 @@ import eu.geopaparazzi.map.GPMapView;
 
 /**
  * @author mapsforge
- *
  */
 public class OverlayViewProjection {
     private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions"; //NON-NLS
@@ -22,16 +21,16 @@ public class OverlayViewProjection {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the map view.
-     * @param view the parent view.
+     * @param view    the parent view.
      */
-    public OverlayViewProjection(GPMapView mapView, View view ) {
+    public OverlayViewProjection(GPMapView mapView, View view) {
         this.mapView = mapView;
         this.view = view;
     }
 
-    public Coordinate fromPixels(int x, int y ) {
+    public Coordinate fromPixels(int x, int y) {
         if (this.view.getWidth() <= 0 || this.view.getHeight() <= 0) {
             return null;
         }
@@ -77,12 +76,12 @@ public class OverlayViewProjection {
         throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
     }
 
-    public float metersToPixels( float meters, byte zoom ) {
+    public float metersToPixels(float meters, byte zoom) {
         double groundResolution = MercatorProjection.groundResolution(mapView.map().getMapPosition());
         return (float) (meters * (1 / groundResolution));
     }
 
-    public Point toPixels( Coordinate in, Point out ) {
+    public Point toPixels(Coordinate in, Point out) {
         if (this.view.getWidth() <= 0 || this.view.getHeight() <= 0) {
             return null;
         }
@@ -106,7 +105,7 @@ public class OverlayViewProjection {
         return out;
     }
 
-    public Point toPoint( Coordinate in, Point out, byte zoom ) {
+    public Point toPoint(Coordinate in, Point out, byte zoom) {
         if (out == null) {
             // create a new point and return it
             return new Point((int) MercatorProjection.longitudeToPixelX(in.x, zoom),

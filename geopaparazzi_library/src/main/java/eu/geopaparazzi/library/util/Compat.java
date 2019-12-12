@@ -21,12 +21,10 @@ package eu.geopaparazzi.library.util;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import eu.geopaparazzi.library.R;
+import androidx.appcompat.content.res.AppCompatResources;
 
 /**
  * Compatibility helper methods.

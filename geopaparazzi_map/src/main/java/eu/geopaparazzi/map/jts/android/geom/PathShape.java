@@ -23,15 +23,14 @@ import android.graphics.Path;
 
 /**
  * A {@link Path} based {@link DrawableShape shape}.
- * 
- * @author Andrea Antonello (www.hydrologis.com)
  *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PathShape implements DrawableShape {
 
     private Path path;
 
-    public PathShape( Path path ) {
+    public PathShape(Path path) {
         this.path = path;
     }
 
@@ -40,19 +39,19 @@ public class PathShape implements DrawableShape {
     }
 
     @Override
-    public void draw( Canvas canvas, Paint paint ) {
+    public void draw(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawPath(path, paint);
     }
 
     @Override
-    public void fill( Canvas canvas, Paint paint ) {
+    public void fill(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPath(path, paint);
     }
 
     @Override
-    public void fillAndStroke( Canvas canvas, Paint paint ) {
+    public void fillAndStroke(Canvas canvas, Paint paint) {
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         canvas.drawPath(path, paint);
     }

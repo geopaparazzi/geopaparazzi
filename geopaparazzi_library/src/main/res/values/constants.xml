@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<?xml version="1.0" encoding="utf-8"?><!--
 	Copyright (C) 2010, 2011 Herbert von Broeuschmeul
 	Copyright (C) 2010, 2011 BluetoothGPS4Droid Project
 	  
@@ -19,7 +18,7 @@
 	along with BluetoothGPS4Droid. If not, see : http://www.gnu.org/licenses/.
 -->
 <resources>
-	<string name="versionName">1.2.3</string>
+    <string name="versionName">1.2.3</string>
 
     <string name="pref_start_gps_key">startGps</string>
     <string name="pref_gps_location_provider_key">gpsLocationProviderKey</string>
@@ -50,7 +49,7 @@
     <string name="defaultTrackFilePrefix">btnmeatrack</string>
     <string name="defaultMockGpsName">bluetooth_gps</string>
 
-    
+
     <string name="sirf_nmea_gga_on">PSRF103,00,00,01,01</string>
     <string name="sirf_nmea_gga_off">PSRF103,00,00,00,01</string>
     <string name="sirf_nmea_rmc_on">PSRF103,04,00,01,01</string>
@@ -67,16 +66,16 @@
     <string name="sirf_nmea_zda_off">PSRF103,08,00,00,01</string>
 
     <string name="sirf_nmea_to_binary">PSRF100,0,38400,8,1,0</string>
-    
+
     <string name="sirf_nmea_sbas_on">PSRF151,01</string>
     <string name="sirf_nmea_sbas_off">PSRF151,00</string>
-    
+
     <string name="sirf_bin_static_nav_on">8F01</string>
-    <string name="sirf_bin_static_nav_off">8F00</string> 
+    <string name="sirf_bin_static_nav_off">8F00</string>
     <string name="sirf_bin_to_nmea">8702</string>
     <string name="sirf_bin_to_nmea_38400">810201010001050105010001000100010001000100019600</string>
     <string name="sirf_bin_to_nmea_38400_alt" formatted="false">8102%02X01%02X01%02X01%02X01%02X01%02X01%02X01%02X01%02X0100019600</string>
     <string name="sirf_bin_dgps_ext_on">85020000000000</string>
     <string name="sirf_bin_dgps_sbas_on">85010000000000</string>
-    <string name="sirf_software_version">8400</string>   
+    <string name="sirf_software_version">8400</string>
 </resources>

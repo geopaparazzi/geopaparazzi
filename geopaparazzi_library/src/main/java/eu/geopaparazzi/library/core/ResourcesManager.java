@@ -24,8 +24,6 @@ import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.json.JSONException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;

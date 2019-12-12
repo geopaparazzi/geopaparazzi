@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package anupam.acrylic;
 
@@ -29,7 +29,7 @@ import android.view.ViewParent;
 
 
 public class PictureLayout extends ViewGroup {
-	private static String error = "PictureLayout can host only one direct child";
+    private static String error = "PictureLayout can host only one direct child";
     private final Picture mPicture = new Picture();
 
     public PictureLayout(Context context) {
@@ -120,20 +120,20 @@ public class PictureLayout extends ViewGroup {
     }
 
     @SuppressWarnings("unused")
-	@Override
+    @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(mPicture.beginRecording(getWidth(), getHeight()));
         mPicture.endRecording();
 
-        int x = getWidth()/2;
-        int y = getHeight()/2;
+        int x = getWidth() / 2;
+        int y = getHeight() / 2;
 
         if (false) {
             canvas.drawPicture(mPicture);
         } else {
-            drawPict(canvas, 0, 0, x, y,  1,  1);
-            drawPict(canvas, x, 0, x, y, -1,  1);
-            drawPict(canvas, 0, y, x, y,  1, -1);
+            drawPict(canvas, 0, 0, x, y, 1, 1);
+            drawPict(canvas, x, 0, x, y, -1, 1);
+            drawPict(canvas, 0, y, x, y, 1, -1);
             drawPict(canvas, x, y, x, y, -1, -1);
         }
     }

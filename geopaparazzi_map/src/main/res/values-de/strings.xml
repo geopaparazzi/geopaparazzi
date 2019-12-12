@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Punktform</string>
-  <string name="point_size">Punktgröße</string>
-  <string name="decimation">Dezimierung</string>
+    <string name="point_shape_">Punktform</string>
+    <string name="point_size">Punktgröße</string>
+    <string name="decimation">Dezimierung</string>
 </resources>

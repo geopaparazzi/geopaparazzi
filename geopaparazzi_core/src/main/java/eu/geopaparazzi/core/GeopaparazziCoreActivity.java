@@ -6,14 +6,14 @@ package eu.geopaparazzi.core;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.FragmentTransaction;
+import android.view.KeyEvent;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.KeyEvent;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.IOException;
 
@@ -28,8 +28,6 @@ import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.permissions.AChainedPermissionHelper;
 import eu.geopaparazzi.library.permissions.PermissionFineLocation;
 import eu.geopaparazzi.library.permissions.PermissionForegroundService;
-import eu.geopaparazzi.library.permissions.PermissionRecieveSms;
-import eu.geopaparazzi.library.permissions.PermissionSendSms;
 import eu.geopaparazzi.library.permissions.PermissionWriteStorage;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;

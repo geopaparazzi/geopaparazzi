@@ -33,6 +33,7 @@ public class BlobResource extends Resource {
 
     /**
      * Sets the resource data (image, video, pdf, etc) as a byte array
+     *
      * @param blob
      */
     public void setBlob(byte[] blob) {

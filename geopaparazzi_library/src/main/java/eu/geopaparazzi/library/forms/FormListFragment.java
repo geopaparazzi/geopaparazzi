@@ -19,7 +19,6 @@
 package eu.geopaparazzi.library.forms;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
@@ -28,13 +27,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+
 import androidx.fragment.app.ListFragment;
 
 import java.util.List;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.Compat;
 
 /**

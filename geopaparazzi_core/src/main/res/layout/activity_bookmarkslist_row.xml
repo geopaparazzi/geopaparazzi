@@ -23,8 +23,8 @@
         android:layout_alignBottom="@+id/gobutton"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/renamebutton"
-        android:layout_toRightOf="@+id/gobutton"
-        >
+        android:layout_toRightOf="@+id/gobutton">
+
         <TextView
             android:id="@+id/bookmarkrowtext"
             style="@style/GPTitleTextViewStyle"

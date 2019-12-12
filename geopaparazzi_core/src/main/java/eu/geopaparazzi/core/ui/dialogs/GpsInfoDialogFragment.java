@@ -27,19 +27,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.fragment.app.DialogFragment;
 
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.OrientationSensor;
 import eu.geopaparazzi.library.util.TimeUtilities;
-import eu.geopaparazzi.core.R;
 
 
 /**

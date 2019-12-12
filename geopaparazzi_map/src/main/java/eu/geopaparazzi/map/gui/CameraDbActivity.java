@@ -74,7 +74,8 @@ public class CameraDbActivity extends AbstractCameraActivity {
             if (!imageSaveFolder.exists()) {
                 imageSaveFolder.mkdirs();
             }
-        } catch(Exception exc) {}
+        } catch (Exception exc) {
+        }
         doTakePicture(icicle);
     }
 
@@ -112,20 +113,22 @@ public class CameraDbActivity extends AbstractCameraActivity {
     }
 
     protected void storeImagePath(String imgPath) {
-        try{
+        try {
             // get relative path
             imgPath = imageSaveFolder.toURI().relativize(new File(imgPath).toURI()).getPath();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         ExternalResource res = new ExternalResource(imgPath, "", Resource.ResourceType.EXTERNAL_IMAGE);
         storage.insertResource(rowId, res);
     }
 
     /**
      * Stores as blob the image provided as a file system path
+     *
      * @param imgPath
      */
     protected void storeImageBlob(String imgPath) {
-        try{
+        try {
             byte[][] imageAndThumb = ImageUtilities.getImageAndThumbnailFromPath(imgPath, 10);
             BlobResource res = new BlobResource(imageAndThumb[0], "", Resource.ResourceType.BLOB_IMAGE);
             res.setThumbnail(imageAndThumb[1]);

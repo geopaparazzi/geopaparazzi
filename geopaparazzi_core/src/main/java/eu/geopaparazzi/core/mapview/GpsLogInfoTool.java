@@ -27,7 +27,6 @@ import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.strtree.STRtree;
@@ -37,16 +36,16 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
-import eu.geopaparazzi.map.features.editing.EditManager;
-import eu.geopaparazzi.map.features.editing.EditingView;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.core.GeopaparazziApplication;
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.core.database.objects.GpsLogInfo;
-import eu.geopaparazzi.map.features.tools.MapTool;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.editing.EditingView;
+import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 
 import static java.lang.Math.round;

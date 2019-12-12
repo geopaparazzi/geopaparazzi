@@ -19,7 +19,6 @@ package eu.geopaparazzi.map.features.tools.impl;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,17 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
-import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.features.editing.EditManager;
-import eu.geopaparazzi.map.features.editing.EditingView;
-import eu.geopaparazzi.map.features.tools.interfaces.Tool;
-import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
-import eu.geopaparazzi.map.jts.JtsUtilities;
-import eu.geopaparazzi.map.jts.MapviewPointTransformation;
-import eu.geopaparazzi.map.jts.android.PointTransformation;
-import eu.geopaparazzi.map.jts.android.ShapeWriter;
-import eu.geopaparazzi.map.features.FeatureUtilities;
-import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.ToolColors;
@@ -66,6 +54,16 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.map.GPMapPosition;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.R;
+import eu.geopaparazzi.map.features.FeatureUtilities;
+import eu.geopaparazzi.map.features.editing.EditManager;
+import eu.geopaparazzi.map.features.editing.EditingView;
+import eu.geopaparazzi.map.features.tools.interfaces.Tool;
+import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
+import eu.geopaparazzi.map.jts.JtsUtilities;
+import eu.geopaparazzi.map.jts.MapviewPointTransformation;
+import eu.geopaparazzi.map.jts.android.PointTransformation;
+import eu.geopaparazzi.map.jts.android.ShapeWriter;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
 

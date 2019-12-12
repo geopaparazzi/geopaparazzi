@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Figur for punkt </string>
-  <string name="point_size">Punktstørrelse</string>
-  <string name="decimation">Fjern</string>
+    <string name="point_shape_">Figur for punkt </string>
+    <string name="point_size">Punktstørrelse</string>
+    <string name="decimation">Fjern</string>
 </resources>

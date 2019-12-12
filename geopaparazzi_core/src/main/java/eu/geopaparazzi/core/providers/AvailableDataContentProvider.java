@@ -26,11 +26,9 @@ import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import androidx.annotation.Nullable;
 import android.util.SparseArray;
 
-import java.io.File;
-import java.util.List;
+import androidx.annotation.Nullable;
 
 import eu.geopaparazzi.library.core.maps.BaseMap;
 import eu.geopaparazzi.library.core.maps.SpatialiteMap;

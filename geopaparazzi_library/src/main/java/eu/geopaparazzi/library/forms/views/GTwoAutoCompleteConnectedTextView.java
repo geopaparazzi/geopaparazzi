@@ -20,7 +20,6 @@ package eu.geopaparazzi.library.forms.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -33,6 +32,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

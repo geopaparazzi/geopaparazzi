@@ -16,8 +16,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout
-    android:id="@+id/fragmentAboutContainer"
+<FrameLayout android:id="@+id/fragmentAboutContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,4 +27,4 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.activities.AboutActivity"/>
+    tools:context=".ui.activities.AboutActivity" />

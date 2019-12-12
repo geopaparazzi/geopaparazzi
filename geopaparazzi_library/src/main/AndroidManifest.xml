@@ -68,14 +68,14 @@
         </activity>
 
         <!--<receiver-->
-            <!--android:name=".sms.SmsReceiverPositionSender"-->
-            <!--android:enabled="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.provider.Telephony.SMS_RECEIVED" />-->
-            <!--</intent-filter>-->
+        <!--android:name=".sms.SmsReceiverPositionSender"-->
+        <!--android:enabled="true">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.provider.Telephony.SMS_RECEIVED" />-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
-        <service android:name=".network.download.DownloadFileIntentService"/>
-        <service android:name=".network.upload.UploadFileIntentService"/>
+        <service android:name=".network.download.DownloadFileIntentService" />
+        <service android:name=".network.upload.UploadFileIntentService" />
 
     </application>
 

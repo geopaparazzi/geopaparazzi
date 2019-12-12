@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.kml;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,8 +28,6 @@ import java.util.TreeSet;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import android.content.Context;
 
 import eu.geopaparazzi.library.database.DefaultHelperClasses;
 import eu.geopaparazzi.library.database.GPLog;
@@ -127,7 +127,7 @@ public class KmzExport {
                     Image image = imagesDbHelper.getImage(id);
                     String imageName = image.getName();
 
-                    if (!addedImages.add(imageName)){
+                    if (!addedImages.add(imageName)) {
                         // don't add double images
                         continue;
                     }

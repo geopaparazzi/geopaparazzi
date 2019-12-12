@@ -37,7 +37,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;

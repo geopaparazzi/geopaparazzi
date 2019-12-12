@@ -10,16 +10,16 @@ import android.os.ResultReceiver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.BufferedInputStream;
-import java.net.HttpURLConnection;
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -28,7 +28,6 @@ import eu.geopaparazzi.library.core.dialogs.ProgressBarUploadDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 
-import static eu.geopaparazzi.library.network.NetworkUtilities.maxBufferSize;
 import static eu.geopaparazzi.library.network.upload.UploadResultReceiver.PROGRESS_ENDED_KEY;
 import static eu.geopaparazzi.library.network.upload.UploadResultReceiver.PROGRESS_ERRORED_KEY;
 import static eu.geopaparazzi.library.network.upload.UploadResultReceiver.PROGRESS_KEY;
@@ -116,7 +115,7 @@ public class UploadFileIntentService extends IntentService {
                         updateBundle.putInt(PROGRESS_KEY, 0);
                         resultReceiver.send(UploadResultReceiver.RESULT_CODE, updateBundle);
                         try {
-                            String response = sendFileViaPost(url, sourceFile, "document",user, password);
+                            String response = sendFileViaPost(url, sourceFile, "document", user, password);
                             updateBundle.putInt(PROGRESS_KEY, max);
                             resultReceiver.send(UploadResultReceiver.RESULT_CODE, updateBundle);
                             pause();
@@ -141,9 +140,10 @@ public class UploadFileIntentService extends IntentService {
      * POST requests to a web server.
      * (even though we use it to send one file at a time)
      * ---- Adapted from: ----
+     *
      * @author www.codejava.net
      * https://gist.github.com/Antarix/a36faeaff3092b1fd977
-     *  (License MIT, attribution required)
+     * (License MIT, attribution required)
      */
     public String sendFileViaPost(String requestURL, File uploadFile, String fieldName, String user, String password)
             throws Exception {
@@ -165,9 +165,9 @@ public class UploadFileIntentService extends IntentService {
         String header = "";
         header += "--" + boundary + LINE_FEED;
         header += "Content-Disposition: form-data; name=\"" + fieldName
-                  + "\"; filename=\"" + fileName + "\"" + LINE_FEED;
+                + "\"; filename=\"" + fileName + "\"" + LINE_FEED;
         header += "Content-Type: "
-                  + URLConnection.guessContentTypeFromName(fileName) + LINE_FEED;
+                + URLConnection.guessContentTypeFromName(fileName) + LINE_FEED;
         header += "Content-Transfer-Encoding: binary" + LINE_FEED;
         header += LINE_FEED;
 
@@ -195,7 +195,7 @@ public class UploadFileIntentService extends IntentService {
         httpConn.setFixedLengthStreamingMode(totalLength);
 
         outputStream = httpConn.getOutputStream();
-        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),true);
+        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
 
 
         // ====== Multipart Utility "addFilePart()" ======
@@ -212,13 +212,13 @@ public class UploadFileIntentService extends IntentService {
             long totalBytesWritten = 0;
             int percentage = 0;
             int prevPercentage = 0;
-            String msg = getString(R.string.upload_Uploading)+ uploadFile.getName();
+            String msg = getString(R.string.upload_Uploading) + uploadFile.getName();
 
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
                 totalBytesWritten = totalBytesWritten + bytesRead;
                 percentage = (int) ((totalBytesWritten * 100) / fileSize);
-                prevPercentage = handlePercentage(percentage, prevPercentage, msg + " ("+ String.valueOf(percentage) + "%)");
+                prevPercentage = handlePercentage(percentage, prevPercentage, msg + " (" + String.valueOf(percentage) + "%)");
                 outputStream.flush();
                 writer.flush();
             }
@@ -235,7 +235,7 @@ public class UploadFileIntentService extends IntentService {
 
         // checks server's status code first
         int status = httpConn.getResponseCode();
-        if (status >= HttpURLConnection.HTTP_OK  && status < 400 ) {
+        if (status >= HttpURLConnection.HTTP_OK && status < 400) {
 
             BufferedInputStream in = new BufferedInputStream(httpConn.getInputStream());
             response = inputStreamToString(in);
@@ -254,7 +254,7 @@ public class UploadFileIntentService extends IntentService {
             return result;
         }
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             StringBuilder out = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {

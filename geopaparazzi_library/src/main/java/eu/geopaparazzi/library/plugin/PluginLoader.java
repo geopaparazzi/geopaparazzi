@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.core.ResourcesManager;
-import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
 
 /**
  * @author Cesar Martinez Izquierdo (www.scolab.es)

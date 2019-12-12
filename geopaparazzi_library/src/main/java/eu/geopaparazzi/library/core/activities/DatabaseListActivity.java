@@ -22,12 +22,11 @@
 package eu.geopaparazzi.library.core.activities;
 
 import android.os.Bundle;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.core.fragments.AboutFragment;
 import eu.geopaparazzi.library.core.fragments.DatabaseListFragment;
 import eu.geopaparazzi.library.util.LibraryConstants;
 

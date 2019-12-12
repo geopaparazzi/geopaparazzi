@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Forma do ponto</string>
-  <string name="point_size">Tamanho do ponto</string>
-  <string name="decimation">Eliminação</string>
+    <string name="point_shape_">Forma do ponto</string>
+    <string name="point_size">Tamanho do ponto</string>
+    <string name="decimation">Eliminação</string>
 </resources>

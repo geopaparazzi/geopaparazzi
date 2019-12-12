@@ -63,7 +63,7 @@ public class ImportGpxMenuEntry extends MenuEntry {
     }
 
     @Override
-    public void onActivityResultExecute( int requestCode, int resultCode, Intent data) {
+    public void onActivityResultExecute(int requestCode, int resultCode, Intent data) {
         Context context = clickActivityStarter.getContext();
         if (resultCode == Activity.RESULT_OK) {
             try {

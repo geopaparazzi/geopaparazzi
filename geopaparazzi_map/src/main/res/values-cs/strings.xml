@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="point_shape_">Tvar bodu</string>
-  <string name="point_size">Velikost bodu</string>
-  <string name="decimation">Redukce hustoty</string>
+    <string name="point_shape_">Tvar bodu</string>
+    <string name="point_size">Velikost bodu</string>
+    <string name="decimation">Redukce hustoty</string>
 </resources>

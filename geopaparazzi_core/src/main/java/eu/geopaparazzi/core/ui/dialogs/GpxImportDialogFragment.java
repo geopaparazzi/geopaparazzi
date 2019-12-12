@@ -22,24 +22,25 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+
+import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.core.R;
+import eu.geopaparazzi.core.database.DaoGpsLog;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
+import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.database.DaoGpsLog;
 
 
 /**

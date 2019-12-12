@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -447,7 +446,7 @@ public class NetworkUtilities {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
-            urlConnection.setRequestProperty ("Authorization", getB64Auth(user, password));
+            urlConnection.setRequestProperty("Authorization", getB64Auth(user, password));
         }
 
         int responseCode = urlConnection.getResponseCode();

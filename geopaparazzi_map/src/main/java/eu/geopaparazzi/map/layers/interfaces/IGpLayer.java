@@ -2,14 +2,8 @@ package eu.geopaparazzi.map.layers.interfaces;
 
 import android.content.Context;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oscim.layers.Layer;
-import org.oscim.layers.vector.AbstractVectorLayer;
-import org.oscim.map.Layers;
-
-import java.io.IOException;
 
 import eu.geopaparazzi.map.GPMapView;
 
@@ -63,7 +57,7 @@ public interface IGpLayer {
         return jo;
     }
 
-    static String getName(Context context){
+    static String getName(Context context) {
         return "";
     }
 

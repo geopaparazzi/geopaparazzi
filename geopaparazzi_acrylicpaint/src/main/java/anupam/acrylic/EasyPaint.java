@@ -17,19 +17,11 @@
 
 package anupam.acrylic;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Calendar;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -46,7 +38,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Build;
@@ -57,7 +48,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -65,10 +55,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 
 @SuppressLint("ClickableViewAccessibility")
 public class EasyPaint extends GraphicsActivity implements
@@ -483,9 +478,9 @@ public class EasyPaint extends GraphicsActivity implements
             return true;
         } else if (i1 == R.id.smudge_menu) {
             if (Build.VERSION.SDK_INT >= 17) {
-                    /* Basically what we're doing here is copying the entire foreground bitmap,
-					 * blurring it, then telling mPaint to use that instead of a solid color.
-					 */
+                /* Basically what we're doing here is copying the entire foreground bitmap,
+                 * blurring it, then telling mPaint to use that instead of a solid color.
+                 */
 
                 RenderScript rs = RenderScript.create(getApplicationContext());
                 ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.RGBA_8888(rs));

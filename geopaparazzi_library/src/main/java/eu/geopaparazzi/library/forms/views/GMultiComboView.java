@@ -18,8 +18,6 @@
 
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
@@ -29,14 +27,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom {@link Spinner} view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GMultiComboView extends View implements GView {
@@ -44,33 +46,33 @@ public class GMultiComboView extends View implements GView {
     private Button button;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GMultiComboView( Context context, AttributeSet attrs, int defStyle ) {
+    public GMultiComboView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GMultiComboView( Context context, AttributeSet attrs ) {
+    public GMultiComboView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
-     * @param itemsArray the items.
+     * @param context               the context to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
+     * @param itemsArray            the items.
      * @param constraintDescription constraints
      */
-    public GMultiComboView( final Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
-            final String[] itemsArray, String constraintDescription ) {
+    public GMultiComboView(final Context context, AttributeSet attrs, LinearLayout parentView, String label, String value,
+                           final String[] itemsArray, String constraintDescription) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -97,8 +99,8 @@ public class GMultiComboView extends View implements GView {
         } else {
             button.setText(value);
         }
-        button.setOnClickListener(new OnClickListener(){
-            public void onClick( View v ) {
+        button.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
                 MultipleChoiceDialog dialog = new MultipleChoiceDialog();
                 dialog.open(context, button, itemsArray);
             }
@@ -117,12 +119,12 @@ public class GMultiComboView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

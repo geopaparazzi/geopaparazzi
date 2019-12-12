@@ -21,7 +21,7 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A numeric range constraint.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class RangeConstraint implements IConstraint {
@@ -34,19 +34,19 @@ public class RangeConstraint implements IConstraint {
     private final boolean includeHigh;
 
     /**
-     * @param low low value.
-     * @param includeLow if <code>true</code>, include low.
-     * @param high high value.
+     * @param low         low value.
+     * @param includeLow  if <code>true</code>, include low.
+     * @param high        high value.
      * @param includeHigh if <code>true</code>, include high.
      */
-    public RangeConstraint( Number low, boolean includeLow, Number high, boolean includeHigh ) {
+    public RangeConstraint(Number low, boolean includeLow, Number high, boolean includeHigh) {
         this.includeLow = includeLow;
         this.includeHigh = includeHigh;
         highValue = high.doubleValue();
         lowValue = low.doubleValue();
     }
 
-    public void applyConstraint( Object value ) {
+    public void applyConstraint(Object value) {
         if (value instanceof String) {
             String str = (String) value;
             if (str.length() == 0) {

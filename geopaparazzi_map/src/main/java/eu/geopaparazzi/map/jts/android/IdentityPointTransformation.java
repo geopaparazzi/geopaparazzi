@@ -38,12 +38,11 @@ import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Copies point ordinates with no transformation.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class IdentityPointTransformation implements PointTransformation {
-    public void transform(Coordinate model, PointF view ) {
+    public void transform(Coordinate model, PointF view) {
         view.set((float) model.x, (float) model.y);
     }
 }

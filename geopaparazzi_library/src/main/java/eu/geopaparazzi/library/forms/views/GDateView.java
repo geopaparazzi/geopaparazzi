@@ -18,33 +18,35 @@
 
 package eu.geopaparazzi.library.forms.views;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
-import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.core.dialogs.DatePickerDialogFragment;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.plugin.style.StyleHelper;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
+import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
+
 /**
  * A custom date view.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GDateView extends View implements GView {
@@ -52,33 +54,33 @@ public class GDateView extends View implements GView {
     private Button button;
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context  the context to use.
+     * @param attrs    attributes.
      * @param defStyle def style.
      */
-    public GDateView( Context context, AttributeSet attrs, int defStyle ) {
+    public GDateView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     /**
-     * @param context   the context to use.
-     * @param attrs attributes.
+     * @param context the context to use.
+     * @param attrs   attributes.
      */
-    public GDateView( Context context, AttributeSet attrs ) {
+    public GDateView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     /**
-     * @param fragment   the fragment to use.
-     * @param attrs attributes.
-     * @param parentView parent
-     * @param label label
-     * @param value value
+     * @param fragment              the fragment to use.
+     * @param attrs                 attributes.
+     * @param parentView            parent
+     * @param label                 label
+     * @param value                 value
      * @param constraintDescription constraints
-     * @param readonly if <code>false</code>, the item is disabled for editing.
+     * @param readonly              if <code>false</code>, the item is disabled for editing.
      */
-    public GDateView( final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String label, String value,
-            String constraintDescription, boolean readonly ) {
+    public GDateView(final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String label, String value,
+                     String constraintDescription, boolean readonly) {
         super(fragment.getActivity(), attrs);
 
         Context context = fragment.getActivity();
@@ -108,8 +110,8 @@ public class GDateView extends View implements GView {
         } else {
             button.setText(value);
         }
-        button.setOnClickListener(new OnClickListener(){
-            public void onClick( View v ) {
+        button.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
                 String dateStr = button.getText().toString();
                 Date date = null;
                 try {
@@ -143,12 +145,12 @@ public class GDateView extends View implements GView {
     }
 
     @Override
-    public void setOnActivityResult( Intent data ) {
+    public void setOnActivityResult(Intent data) {
         // ignore
     }
 
     @Override
-    public void refresh( Context context ) {
+    public void refresh(Context context) {
         // TODO Auto-generated method stub
 
     }

@@ -17,6 +17,15 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import android.app.Activity;
+import android.app.AppOpsManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.os.Build;
+
 import static eu.geopaparazzi.library.gps.GpsService.GPS_LOGGING_STATUS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_BROADCAST_NOTIFICATION;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_DO_BROADCAST;
@@ -25,32 +34,11 @@ import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_EXTRAS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_TIME;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_STATUS;
+import static eu.geopaparazzi.library.gps.GpsService.START_GPS_CONTINUE_LOG;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOGGING;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_HELPER_CLASS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_NAME;
-import static eu.geopaparazzi.library.gps.GpsService.*;
-
-import android.app.Activity;
-import android.app.AppOpsManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
-import android.os.Build;
-import android.provider.Settings;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import java.util.Date;
-
-import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.sensors.OrientationSensor;
-import eu.geopaparazzi.library.util.TimeUtilities;
+import static eu.geopaparazzi.library.gps.GpsService.STOP_GPS_LOGGING;
 
 /**
  * A service utils class.
@@ -58,7 +46,6 @@ import eu.geopaparazzi.library.util.TimeUtilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsServiceUtilities {
-
 
 
     /**

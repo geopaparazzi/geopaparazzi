@@ -3,15 +3,16 @@ package eu.geopaparazzi.map.gui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +72,8 @@ public class ResourceBrowserActivity extends AppCompatActivity {
             if (!imageSaveFolder.exists()) {
                 imageSaveFolder.mkdirs();
             }
-        } catch(Exception exc) {}
+        } catch (Exception exc) {
+        }
 
         gridView = findViewById(R.id.resourcesGridView);
         numImagesView = findViewById(R.id.numImages);
@@ -138,11 +140,10 @@ public class ResourceBrowserActivity extends AppCompatActivity {
                     AppsUtilities.showDocument(completeRes.getBlob(), completeRes.getMimeType(), completeRes.getName(), this);
                 }
 
-            }
-            else {
+            } else {
                 ExternalResource completeRes = (ExternalResource) res;
                 //ToDo: the "getMainStorageDir" needs to be from the profile in case it is set to SECONDARYSTORAGE
-                File image  = new File(ResourcesManager.getInstance(this).getMainStorageDir(), completeRes.getPath());
+                File image = new File(ResourcesManager.getInstance(this).getMainStorageDir(), completeRes.getPath());
                 if (res.getType() == Resource.ResourceType.EXTERNAL_IMAGE) {
                     AppsUtilities.showImage(image, this);
                 } else if (res.getType() == Resource.ResourceType.EXTERNAL_PDF) {
@@ -173,8 +174,8 @@ public class ResourceBrowserActivity extends AppCompatActivity {
     private ArrayList<ResourceImageItem> refreshThumbnails(ArrayList<ResourceImageItem> imageItems) {
         imageItems.clear();
         List<Resource> resources = storage.getThumbnails(rowId); //, Resource.ResourceType.BLOB_IMAGE);
-        int i=1;
-        for (Resource r: resources) {
+        int i = 1;
+        for (Resource r : resources) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(r.getThumbnail(), 0, r.getThumbnail().length);
             String title = getResources().getString(R.string.Document_title);
             imageItems.add(new ResourceImageItem(bitmap, r.getName(), r));
@@ -198,8 +199,7 @@ public class ResourceBrowserActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.capture_picture) {
             startCameraActivity();
             return true;
-        }
-        else if (item.getItemId() == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return false;
@@ -208,7 +208,7 @@ public class ResourceBrowserActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (CAMERA_RETURN_CODE == requestCode) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 if (data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false)) {
                     refreshThumbnails(imageItems);
                     gridAdapter.notifyDataSetChanged();

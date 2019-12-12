@@ -23,14 +23,13 @@ import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
-
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.R;
-import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.ISystemLayer;
 import eu.geopaparazzi.map.layers.utils.GpsLog;
+import eu.geopaparazzi.map.utils.MapUtilities;
 
 public class GpsLogsLayer extends VectorLayer implements ISystemLayer {
 

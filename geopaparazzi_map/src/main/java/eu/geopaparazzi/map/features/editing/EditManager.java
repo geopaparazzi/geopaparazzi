@@ -25,12 +25,12 @@ import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 
 /**
  * The editing layer manager.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum EditManager {
     /**
-     * The singleton instance. 
+     * The singleton instance.
      */
     INSTANCE;
 
@@ -49,23 +49,23 @@ public enum EditManager {
 
     /**
      * Setter for the editing layer.
-     * 
+     *
      * @param editLayer the editing layer.
      */
-    public void setEditLayer( IEditableLayer editLayer ) {
+    public void setEditLayer(IEditableLayer editLayer) {
         this.editLayer = editLayer;
     }
 
     /**
      * Set the current active {@link Tool}.
-     * 
+     *
      * <p>Only one tool can be active at the time.</p>
-     * <p>Setting the active tool to <code>null</code> has the 
+     * <p>Setting the active tool to <code>null</code> has the
      * result of disabling the current tool.
-     * 
+     *
      * @param newActiveTool the new active tool to set.
      */
-    public void setActiveTool( Tool newActiveTool ) {
+    public void setActiveTool(Tool newActiveTool) {
         if (this.activeTool != null) {
             // disable current active tool
             this.activeTool.disable();
@@ -87,15 +87,15 @@ public enum EditManager {
 
     /**
      * Set the current active {@link ToolGroup}.
-     * 
+     *
      * <p>The tool group gets initialized inside here. Don't call initUI before.
      * <p>Only one toolgroup can be active at the time.</p>
-     * <p>Setting the active toolgroup to <code>null</code> has the 
+     * <p>Setting the active toolgroup to <code>null</code> has the
      * result of disabling the current toolgroup.
-     * 
+     *
      * @param activeToolGroup the new active tool to set.
      */
-    public void setActiveToolGroup( ToolGroup activeToolGroup ) {
+    public void setActiveToolGroup(ToolGroup activeToolGroup) {
         if (this.activeToolGroup != null) {
             // disable current active tool
             this.activeToolGroup.disable();
@@ -108,6 +108,7 @@ public enum EditManager {
         }
         invalidateEditingView();
     }
+
     /**
      * @return the current active tool.
      */
@@ -117,11 +118,11 @@ public enum EditManager {
 
     /**
      * Set the editing view.
-     * 
+     *
      * @param editingView the editing view to set.
      * @param toolsLayout the layout for the tools gui.
      */
-    public void setEditingView( EditingView editingView, LinearLayout toolsLayout ) {
+    public void setEditingView(EditingView editingView, LinearLayout toolsLayout) {
         this.editingView = editingView;
         this.toolsLayout = toolsLayout;
     }
@@ -150,12 +151,12 @@ public enum EditManager {
     }
 
     /**
-     * Callback for position updates. 
-     * 
+     * Callback for position updates.
+     *
      * @param lon longitude.
      * @param lat latitude.
      */
-    public void onGpsUpdate( double lon, double lat ) {
+    public void onGpsUpdate(double lon, double lat) {
         if (this.activeToolGroup != null) {
             this.activeToolGroup.onGpsUpdate(lon, lat);
         }
