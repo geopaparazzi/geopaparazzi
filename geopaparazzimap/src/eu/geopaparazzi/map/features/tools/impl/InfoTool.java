@@ -49,6 +49,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.map.GPMapView;
+import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.utils.MapUtilities;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
@@ -213,14 +214,20 @@ public class InfoTool extends MapTool {
 
                             for (IVectorDbLayer vectorLayer : vectorLayers) {
                                 try {
-                                    ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorLayer.getDbPath());
 
                                     Envelope env = new Envelope(west, east, south, north);
-                                    int mapSrid = LibraryConstants.SRID_WGS84_4326;
-                                    GeometryColumn gcol = db.getGeometryColumnsForTable(vectorLayer.getName());
-                                    Envelope repEnv = db.reproject(env, mapSrid, gcol.srid);
-                                    QueryResult queryResult = db.getTableRecordsMapIn(vectorLayer.getName(), repEnv, -1, mapSrid, null);
-                                    List<Feature> featuresList = MapUtilities.fromQueryResult(vectorLayer.getName(), vectorLayer.getDbPath(), queryResult);
+
+                                    ELayerTypes layerType = ELayerTypes.fromFileExt(vectorLayer.getDbPath());
+                                    List<Feature> featuresList = new ArrayList<>();
+                                    if (layerType == ELayerTypes.SPATIALITE) {
+                                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorLayer.getDbPath());
+                                        int mapSrid = LibraryConstants.SRID_WGS84_4326;
+                                        GeometryColumn gcol = db.getGeometryColumnsForTable(vectorLayer.getName());
+                                        Envelope repEnv = db.reproject(env, mapSrid, gcol.srid);
+                                        featuresList.addAll(vectorLayer.getFeatures(repEnv));
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        featuresList.addAll(vectorLayer.getFeatures(env));
+                                    }
                                     this.features.addAll(featuresList);
 
                                     publishProgress(1);

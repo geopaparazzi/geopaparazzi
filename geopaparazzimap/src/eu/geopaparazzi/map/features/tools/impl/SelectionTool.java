@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
+import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
@@ -212,12 +213,17 @@ public class SelectionTool extends MapTool {
 
                     if (editLayer instanceof IVectorDbLayer) {
                         IVectorDbLayer vectorDbLayer = (IVectorDbLayer) editLayer;
+                        ELayerTypes layerType = ELayerTypes.fromFileExt(vectorDbLayer.getDbPath());
+                        if (layerType == ELayerTypes.SPATIALITE) {
+                            ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorDbLayer.getDbPath());
+                            int mapSrid = LibraryConstants.SRID_WGS84_4326;
+                            GeometryColumn gcol = db.getGeometryColumnsForTable(vectorDbLayer.getName());
+                            Envelope repEnv = db.reproject(env, mapSrid, gcol.srid);
+                            this.features = vectorDbLayer.getFeatures(repEnv);
+                        } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                            this.features = vectorDbLayer.getFeatures(env);
+                        }
 
-                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorDbLayer.getDbPath());
-                        int mapSrid = LibraryConstants.SRID_WGS84_4326;
-                        GeometryColumn gcol = db.getGeometryColumnsForTable(vectorDbLayer.getName());
-                        Envelope repEnv = db.reproject(env, mapSrid, gcol.srid);
-                        this.features = vectorDbLayer.getFeatures(repEnv);
                     }
 
                     return "";

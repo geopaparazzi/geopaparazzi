@@ -167,11 +167,12 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     popup.getMenu().add(setAlpha);
                                     break;
                                 }
-                                case GEOPACKAGE: {
-                                    popup.getMenu().add(zoomTo);
-                                    popup.getMenu().add(setStyle);
-                                    break;
-                                }
+                                case GEOPACKAGE:
+//                                    {
+//                                    popup.getMenu().add(zoomTo);
+//                                    popup.getMenu().add(setStyle);
+//                                    break;
+//                                }
                                 case SPATIALITE: {
                                     popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setStyle);

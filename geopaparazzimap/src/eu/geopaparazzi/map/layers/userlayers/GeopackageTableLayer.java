@@ -7,9 +7,7 @@ import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.IGeometryParser;
 import org.hortonmachine.dbs.compat.IHMPreparedStatement;
 import org.hortonmachine.dbs.compat.objects.QueryResult;
-import org.hortonmachine.dbs.datatypes.EDataType;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
-import org.hortonmachine.dbs.datatypes.ESpatialiteGeometryType;
 import org.hortonmachine.dbs.geopackage.GeopackageCommonDb;
 import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.json.JSONException;
@@ -36,7 +34,6 @@ import eu.geopaparazzi.map.layers.layerobjects.GPPointDrawable;
 import eu.geopaparazzi.map.layers.layerobjects.GPPolygonDrawable;
 import eu.geopaparazzi.map.layers.layerobjects.IGPDrawable;
 import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
-import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
 public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer {
@@ -307,19 +304,39 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
         IGeometryParser gp = db.getType().getGeometryParser();
         geometry.setSRID(epsg);
         Object obj = gp.toSqlObject(geometry);
-        GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
-        String sql = "INSERT INTO " + tableName + " (" + pk + "," + gc.geometryColumnName + ") VALUES (?, ?)";
+        if (obj instanceof byte[]) {
+            byte[] objBytes = (byte[]) obj;
+            GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
+            String sql = "INSERT INTO " + tableName + " (" + pk + "," + gc.geometryColumnName + ") VALUES (?, ?)";
 
-        db.execOnConnection(connection -> {
-            try (IHMPreparedStatement pStmt = connection.prepareStatement(sql)) {
-                pStmt.setLong(1, nextId);
-                pStmt.setObject(2, obj);
-                pStmt.executeUpdate();
+            db.execOnConnection(connection -> {
+                try (IHMPreparedStatement pStmt = connection.prepareStatement(sql)) {
+                    pStmt.setLong(1, nextId);
+                    pStmt.setBytes(2, objBytes);
+                    pStmt.executeUpdate();
+                }
+                return null;
+            });
+
+            Envelope env = geometry.getEnvelopeInternal();
+            double minX = env.getMinX();
+            double maxX = env.getMaxX();
+            double minY = env.getMinY();
+            double maxY = env.getMaxY();
+
+            try {
+                // also update rtree index, since it is not supported
+                String sqlTree = "INSERT OR REPLACE INTO rtree_" + tableName + "_" + gc.geometryColumnName +
+                        " VALUES (" + nextId + "," + minX + ", " + maxX + "," + minY + ", " + maxY + ");";
+                db.executeInsertUpdateDeleteSql(sqlTree);
+            } catch (Exception e) {
+                GPLog.error(this, "ERROR on rtree", e);
             }
-            return null;
-        });
 
-        return nextId;
+            return nextId;
+        }
+
+        throw new IllegalArgumentException("Geometry object is not byte array.");
     }
 
     public void updateGeometry(ASpatialDb db, String tableName, long id, Geometry geometry) throws Exception {
@@ -329,16 +346,37 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
         IGeometryParser gp = db.getType().getGeometryParser();
         geometry.setSRID(epsg);
         Object obj = gp.toSqlObject(geometry);
-        GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
-        String sql = "update " + tableName + " set " + gc.geometryColumnName + "=? where " + pk + "=" + id;
+        if (obj instanceof byte[]) {
+            byte[] objBytes = (byte[]) obj;
+            GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
+            String sql = "update " + tableName + " set " + gc.geometryColumnName + "=? where " + pk + "=" + id;
 
-        db.execOnConnection(connection -> {
-            try (IHMPreparedStatement pStmt = connection.prepareStatement(sql)) {
-                pStmt.setObject(1, obj);
-                pStmt.executeUpdate();
+            db.execOnConnection(connection -> {
+                try (IHMPreparedStatement pStmt = connection.prepareStatement(sql)) {
+                    pStmt.setObject(1, objBytes);
+                    pStmt.executeUpdate();
+                }
+                return null;
+            });
+
+            Envelope env = geometry.getEnvelopeInternal();
+            double minX = env.getMinX();
+            double maxX = env.getMaxX();
+            double minY = env.getMinY();
+            double maxY = env.getMaxY();
+
+            try {
+                // also update rtree index, since it is not supported
+                String sqlTree = "INSERT OR REPLACE INTO rtree_" + tableName + "_" + gc.geometryColumnName +
+                        " VALUES (" + id + "," + minX + ", " + maxX + "," + minY + ", " + maxY + ");";
+                db.executeInsertUpdateDeleteSql(sqlTree);
+            } catch (Exception e) {
+                GPLog.error(this, "ERROR on rtree", e);
             }
-            return null;
-        });
+
+        } else {
+            throw new IllegalArgumentException("Geometry object is not byte array.");
+        }
     }
 
 
