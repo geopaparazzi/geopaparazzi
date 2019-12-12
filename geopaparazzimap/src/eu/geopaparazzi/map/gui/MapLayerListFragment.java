@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.woxthebox.draglistview.BoardView;
 import com.woxthebox.draglistview.DragItem;
@@ -605,16 +606,27 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                 case GEOPACKAGE: {
                                     // ask for table
                                     List<String> tableNames = null;
+                                    int ignoredTables = 0;
                                     try (GPGeopackageDb db = new GPGeopackageDb()) {
                                         db.open(finalFile.getAbsolutePath());
-                                        db.setForceMobileCompatibility(true);
+                                        db.setForceMobileCompatibility(false); // we need to see what we ignore
 
                                         List<FeatureEntry> featuresList = db.features();
                                         tableNames = new ArrayList<>();
                                         for (FeatureEntry featureEntry : featuresList) {
+                                            Integer srid = featureEntry.getSrid();
+                                            if (srid != null && srid != GPGeopackageDb.WGS84LL_SRID) {
+                                                ignoredTables++;
+                                                // only 4326 layers are supported
+                                                continue;
+                                            }
                                             String tableName = featureEntry.getTableName();
                                             tableNames.add(tableName);
                                         }
+                                    }
+
+                                    if (ignoredTables > 0) {
+                                        GPDialogs.toast(getActivity(), String.format(getContext().getString(R.string.gpkg_ignore_vector_due_to_srid), ignoredTables), Toast.LENGTH_LONG);
                                     }
 
                                     if (tableNames != null) {
@@ -643,6 +655,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                             for (int i = 0; i < items.length; i++) {
                                                 items[i] = tableNames.get(i);
                                             }
+
                                             GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
                                                 List<String> selTables = new ArrayList<>();
                                                 for (int i = 0; i < checkItems.length; i++) {

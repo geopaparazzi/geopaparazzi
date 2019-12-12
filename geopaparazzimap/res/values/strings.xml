@@ -227,5 +227,6 @@
     <string name="layername_images">Project Images</string>
     <string name="layername_notes">Project Notes</string>
     <string name="layername_gpsinfo">Gps Info</string>
+    <string name="gpkg_ignore_vector_due_to_srid">For Geopackage only vector tables with srid 4326 are supported. Ignoring %d tables.</string>
 
 </resources>

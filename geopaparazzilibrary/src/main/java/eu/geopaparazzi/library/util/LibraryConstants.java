@@ -50,7 +50,7 @@ public interface LibraryConstants {
     /**
      * Default width of new logs.
      */
-    float DEFAULT_LOG_WIDTH = 8f;
+    float DEFAULT_LOG_WIDTH = 4f;
 
     int DEFAULT_NOTES_SIZE = 50;
 

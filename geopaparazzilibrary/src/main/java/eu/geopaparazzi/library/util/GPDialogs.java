@@ -246,6 +246,11 @@ public class GPDialogs {
 
     public static void multiOptionDialog(final Context context, final String[] items, final boolean[] checkedItems,
                                          final Runnable onSelectionRunnable) {
+        multiOptionDialog(context, null, items, checkedItems, onSelectionRunnable);
+    }
+
+    public static void multiOptionDialog(final Context context, final String title, final String[] items, final boolean[] checkedItems,
+                                         final Runnable onSelectionRunnable) {
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 return ""; //$NON-NLS-1$
@@ -265,6 +270,8 @@ public class GPDialogs {
                         }
                     });
                     android.support.v7.app.AlertDialog dialog = builder.create();
+                    if (title != null)
+                        dialog.setTitle(title);
                     dialog.show();
                 } catch (Exception e) {
                     GPLog.error("UTILITIES", "Error in multiOptionDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
