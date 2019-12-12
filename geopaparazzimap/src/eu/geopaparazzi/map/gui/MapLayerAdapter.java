@@ -37,8 +37,10 @@ import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.hortonmachine.dbs.geopackage.FeatureEntry;
+import org.hortonmachine.dbs.geopackage.TileEntry;
 import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.hortonmachine.dbs.mbtiles.MBTilesDb;
+import org.hortonmachine.dbs.utils.MercatorUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
@@ -61,6 +63,7 @@ import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
+import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
 import eu.geopaparazzi.map.layers.utils.GeopackageColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
@@ -167,12 +170,21 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     popup.getMenu().add(setAlpha);
                                     break;
                                 }
-                                case GEOPACKAGE:
-//                                    {
-//                                    popup.getMenu().add(zoomTo);
-//                                    popup.getMenu().add(setStyle);
-//                                    break;
-//                                }
+                                case GEOPACKAGE: {
+                                    if (selMapLayerItem.type.equals(GeopackageTableLayer.class.getCanonicalName())) {
+                                        popup.getMenu().add(zoomTo);
+                                        popup.getMenu().add(setStyle);
+                                        if (selMapLayerItem.isEditing) {
+                                            popup.getMenu().add(disableEditing);
+                                        } else {
+                                            popup.getMenu().add(enableEditing);
+                                        }
+                                    } else {
+                                        popup.getMenu().add(zoomTo);
+                                        popup.getMenu().add(setAlpha);
+                                    }
+                                    break;
+                                }
                                 case SPATIALITE: {
                                     popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setStyle);
@@ -263,6 +275,18 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                                 intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
                                                 intent.putExtra(LibraryConstants.LATITUDE, centre.y);
                                                 mapLayerListFragment.getContext().startService(intent);
+                                            } else {
+                                                TileEntry tileEntry = gpkgDb.tile(tableName);
+                                                if (tileEntry != null) {
+                                                    Envelope tileMatrixSetBounds = tileEntry.getTileMatrixSetBounds();
+                                                    Coordinate centre = tileMatrixSetBounds.centre();
+                                                    centre = MercatorUtils.convert3857To4326(centre);
+                                                    Intent intent = new Intent(mapLayerListFragment.getContext(), MapsSupportService.class);
+                                                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                                                    intent.putExtra(LibraryConstants.LONGITUDE, centre.x);
+                                                    intent.putExtra(LibraryConstants.LATITUDE, centre.y);
+                                                    mapLayerListFragment.getContext().startService(intent);
+                                                }
                                             }
                                         }
 

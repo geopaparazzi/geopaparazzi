@@ -40,6 +40,7 @@ import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.compat.ISpatialTableNames;
 import org.hortonmachine.dbs.datatypes.EDataType;
 import org.hortonmachine.dbs.geopackage.FeatureEntry;
+import org.hortonmachine.dbs.geopackage.TileEntry;
 import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -605,41 +606,64 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                 }
                                 case GEOPACKAGE: {
                                     // ask for table
-                                    List<String> tableNames = null;
-                                    int ignoredTables = 0;
+                                    List<String> vectorTableNames = new ArrayList<>();
+                                    List<String> tilesTableNames = new ArrayList<>();
+                                    int ignoredVectorTables = 0;
+                                    int ignoredTilesTables = 0;
                                     try (GPGeopackageDb db = new GPGeopackageDb()) {
                                         db.open(finalFile.getAbsolutePath());
                                         db.setForceMobileCompatibility(false); // we need to see what we ignore
 
                                         List<FeatureEntry> featuresList = db.features();
-                                        tableNames = new ArrayList<>();
                                         for (FeatureEntry featureEntry : featuresList) {
                                             Integer srid = featureEntry.getSrid();
                                             if (srid != null && srid != GPGeopackageDb.WGS84LL_SRID) {
-                                                ignoredTables++;
+                                                ignoredVectorTables++;
                                                 // only 4326 layers are supported
                                                 continue;
                                             }
                                             String tableName = featureEntry.getTableName();
-                                            tableNames.add(tableName);
+                                            vectorTableNames.add(tableName);
                                         }
+
+                                        List<TileEntry> tiles = db.tiles();
+                                        for (TileEntry tileEntry : tiles) {
+                                            Integer srid = tileEntry.getSrid();
+                                            if (srid != null && srid != GPGeopackageDb.MERCATOR_SRID) {
+                                                ignoredTilesTables++;
+                                                // only 3857 layers are supported
+                                                continue;
+                                            }
+                                            String tableName = tileEntry.getTableName();
+                                            tilesTableNames.add(tableName);
+                                        }
+
+
                                     }
 
-                                    if (ignoredTables > 0) {
-                                        GPDialogs.toast(getActivity(), String.format(getContext().getString(R.string.gpkg_ignore_vector_due_to_srid), ignoredTables), Toast.LENGTH_LONG);
+                                    if (ignoredVectorTables > 0 || ignoredTilesTables > 0) {
+                                        String msg = getContext().getString(R.string.gpkg_ignore_vector_due_to_srid);
+                                        GPDialogs.toast(getActivity(), String.format(msg, ignoredVectorTables, ignoredTilesTables), Toast.LENGTH_LONG);
                                     }
 
-                                    if (tableNames != null) {
-                                        if (tableNames.size() == 1) {
+                                    List<String> allTables = new ArrayList<>();
+                                    allTables.addAll(vectorTableNames);
+                                    allTables.addAll(tilesTableNames);
+
+                                    if (allTables.size() > 0) {
+                                        if (allTables.size() == 1) {
                                             try {
-                                                int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), tableNames.get(0), null, layerType.getVectorType());
+                                                String tableName = allTables.get(0);
+                                                String layerTypeStr = vectorTableNames.contains(tableName) ? layerType.getVectorType() : layerType.getTilesType();
+
+                                                int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), tableName, null, layerTypeStr);
                                                 int focusedColumn2 = mBoardView.getFocusedColumn();
                                                 int itemCount2 = mBoardView.getItemCount(focusedColumn2);
                                                 if (index2 >= 0) {
                                                     MapLayerItem item = new MapLayerItem();
-                                                    item.type = layerType.getVectorType();
+                                                    item.type = layerTypeStr;
                                                     item.position = index2;
-                                                    item.name = tableNames.get(0);
+                                                    item.name = tableName;
                                                     item.path = finalFile.getAbsolutePath();
                                                     item.enabled = true;
                                                     item.isEditing = false;
@@ -649,11 +673,11 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                             } catch (Exception e) {
                                                 GPLog.error(this, null, e);
                                             }
-                                        } else if (tableNames.size() > 0) {
-                                            String[] items = new String[tableNames.size()];
-                                            boolean[] checkItems = new boolean[tableNames.size()];
+                                        } else if (allTables.size() > 1) {
+                                            String[] items = new String[allTables.size()];
+                                            boolean[] checkItems = new boolean[allTables.size()];
                                             for (int i = 0; i < items.length; i++) {
-                                                items[i] = tableNames.get(i);
+                                                items[i] = allTables.get(i);
                                             }
 
                                             GPDialogs.multiOptionDialog(getActivity(), items, checkItems, () -> {
@@ -666,12 +690,15 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
                                                 if (selTables.size() > 0) {
                                                     for (String selTable : selTables) {
                                                         try {
-                                                            int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), selTable, null, layerType.getVectorType());
+                                                            String layerTypeStr = vectorTableNames.contains(selTable) ? layerType.getVectorType() : layerType.getTilesType();
+
+
+                                                            int index2 = LayerManager.INSTANCE.addGeopackageTable(finalFile.getAbsoluteFile(), selTable, null, layerTypeStr);
                                                             int focusedColumn2 = mBoardView.getFocusedColumn();
                                                             int itemCount2 = mBoardView.getItemCount(focusedColumn2);
                                                             if (index2 >= 0) {
                                                                 MapLayerItem item = new MapLayerItem();
-                                                                item.type = layerType.getVectorType();
+                                                                item.type = layerTypeStr;
                                                                 item.position = index2;
                                                                 item.name = selTable;
                                                                 item.path = finalFile.getAbsolutePath();

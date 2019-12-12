@@ -2,6 +2,7 @@ package eu.geopaparazzi.map.layers;
 
 import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
 import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
+import eu.geopaparazzi.map.layers.userlayers.GeopackageTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
@@ -14,7 +15,7 @@ public enum ELayerTypes {
     BITMAPTILESERVICE("BitmapTileService", BitmapTileServiceLayer.class.getCanonicalName(), null),
     MBTILES("mbtiles", MBTilesLayer.class.getCanonicalName(), null),
     MAPURL("mapurl", BitmapTileServiceLayer.class.getCanonicalName(), null),
-    GEOPACKAGE("gpkg", BitmapTileServiceLayer.class.getCanonicalName(), GeopackageTableLayer.class.getCanonicalName()),
+    GEOPACKAGE("gpkg", GeopackageTilesLayer.class.getCanonicalName(), GeopackageTableLayer.class.getCanonicalName()),
     SPATIALITE("sqlite", null, SpatialiteTableLayer.class.getCanonicalName());
 
     public static final int[] OPACITY_LEVELS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};

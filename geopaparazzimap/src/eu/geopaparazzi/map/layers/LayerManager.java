@@ -47,6 +47,7 @@ import eu.geopaparazzi.map.layers.systemlayers.ImagesLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 import eu.geopaparazzi.map.layers.userlayers.BitmapTileServiceLayer;
 import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
+import eu.geopaparazzi.map.layers.userlayers.GeopackageTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MBTilesLayer;
 import eu.geopaparazzi.map.layers.userlayers.MapsforgeLayer;
 import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
@@ -353,15 +354,24 @@ public enum LayerManager {
                         case GEOPACKAGE: {
                             String dbPath = layerDefinition.getString(IGpLayer.LAYERPATH_TAG);
 
-                            boolean isEditing = false;
-                            if (layerDefinition.has(IGpLayer.LAYEREDITING_TAG))
-                                isEditing = layerDefinition.getBoolean(IGpLayer.LAYEREDITING_TAG);
+                            if (layerClass.equals(ELayerTypes.GEOPACKAGE.getVectorType())) {
+                                boolean isEditing = false;
+                                if (layerDefinition.has(IGpLayer.LAYEREDITING_TAG))
+                                    isEditing = layerDefinition.getBoolean(IGpLayer.LAYEREDITING_TAG);
 
-                            GeopackageTableLayer spatialiteLayer = new GeopackageTableLayer(mapView, dbPath, name, isEditing);
-                            spatialiteLayer.load();
-                            spatialiteLayer.setEnabled(isEnabled);
-                            if (isEditing) {
-                                EditManager.INSTANCE.setEditLayer(spatialiteLayer);
+                                GeopackageTableLayer spatialiteLayer = new GeopackageTableLayer(mapView, dbPath, name, isEditing);
+                                spatialiteLayer.load();
+                                spatialiteLayer.setEnabled(isEnabled);
+                                if (isEditing) {
+                                    EditManager.INSTANCE.setEditLayer(spatialiteLayer);
+                                }
+                            } else {
+                                float alpha = 1f;
+                                if (layerDefinition.has(IGpLayer.LAYERALPHA_TAG))
+                                    alpha = (float) layerDefinition.getDouble(IGpLayer.LAYERALPHA_TAG);
+                                GeopackageTilesLayer geopackageTilesLayer = new GeopackageTilesLayer(mapView, dbPath, name, alpha, null);
+                                geopackageTilesLayer.load();
+                                geopackageTilesLayer.setEnabled(isEnabled);
                             }
                             break;
                         }
