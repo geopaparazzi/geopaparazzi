@@ -35,6 +35,8 @@ build/
 .idea/
 *.iml
 
+.DS_Store
+**/.DS_Store
 ant.properties
 
 geopaparazzi.app/release/
