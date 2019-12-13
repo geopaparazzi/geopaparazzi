@@ -10,7 +10,6 @@ android {
         targetSdkVersion project.ext.mytargetSdkVersion
         versionCode project.ext.myVersionCode
         versionName project.ext.myVersionName
-        signingConfig signingConfigs.config
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -46,6 +45,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.config
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
