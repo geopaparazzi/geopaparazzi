@@ -52,6 +52,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.GPDialogs;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
+import eu.geopaparazzi.map.MapsSupportService;
 
 /**
  * Bookmarks listing activity.
@@ -236,12 +237,13 @@ public class BookmarksListActivity extends AppCompatActivity {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
 
-                            Intent intent = getIntent();
-                            intent.putExtra(LibraryConstants.LATITUDE, bookmark.getLat());
+                            Intent intent = new Intent(getContext(), MapsSupportService.class);
+                            intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
                             intent.putExtra(LibraryConstants.LONGITUDE, bookmark.getLon());
+                            intent.putExtra(LibraryConstants.LATITUDE, bookmark.getLat());
                             intent.putExtra(LibraryConstants.ZOOMLEVEL, (int) bookmark.getZoom());
-                            // if (getParent() == null) {
-                            setResult(Activity.RESULT_OK, intent);
+                            getContext().startService(intent);
+
                         }
                         finish();
                     }
