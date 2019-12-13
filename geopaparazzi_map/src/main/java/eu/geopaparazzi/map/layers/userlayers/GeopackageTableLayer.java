@@ -353,7 +353,7 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
 
             db.execOnConnection(connection -> {
                 try (IHMPreparedStatement pStmt = connection.prepareStatement(sql)) {
-                    pStmt.setObject(1, objBytes);
+                    pStmt.setBytes(1, objBytes);
                     pStmt.executeUpdate();
                 }
                 return null;

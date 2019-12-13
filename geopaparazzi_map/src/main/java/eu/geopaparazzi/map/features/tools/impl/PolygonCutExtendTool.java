@@ -53,6 +53,7 @@ import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
 import eu.geopaparazzi.map.jts.MapviewPointTransformation;
 import eu.geopaparazzi.map.jts.android.PointTransformation;
 import eu.geopaparazzi.map.jts.android.ShapeWriter;
+import eu.geopaparazzi.map.layers.ELayerTypes;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
@@ -277,11 +278,13 @@ public class PolygonCutExtendTool extends MapTool {
                     Envelope env = new Envelope(west, east, south, north);
                     if (editLayer instanceof IVectorDbLayer) {
                         IVectorDbLayer vectorDbLayer = (IVectorDbLayer) editLayer;
-                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorDbLayer.getDbPath());
-
-                        int mapSrid = LibraryConstants.SRID_WGS84_4326;
-                        GeometryColumn gcol = db.getGeometryColumnsForTable(vectorDbLayer.getName());
-                        env = db.reproject(env, mapSrid, gcol.srid);
+                        ELayerTypes layerType = ELayerTypes.fromFileExt(vectorDbLayer.getDbPath());
+                        if(layerType==ELayerTypes.SPATIALITE) {
+                            ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(vectorDbLayer.getDbPath());
+                            int mapSrid = LibraryConstants.SRID_WGS84_4326;
+                            GeometryColumn gcol = db.getGeometryColumnsForTable(vectorDbLayer.getName());
+                            env = db.reproject(env, mapSrid, gcol.srid);
+                        }
                     }
 
                     List<Feature> features = editLayer.getFeatures(env);

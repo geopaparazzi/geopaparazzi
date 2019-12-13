@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.map.layers.ELayerTypes;
+import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 
 /**
@@ -264,7 +266,14 @@ public class ResourceStorage {
     }
 
     public static ResourceStorage getStorage(String tableName, String databasePath) throws java.lang.Exception {
-        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(databasePath);
+        ASpatialDb db = null;
+
+        ELayerTypes layerType = ELayerTypes.fromFileExt(databasePath);
+        if (layerType == ELayerTypes.SPATIALITE) {
+            db = SpatialiteConnectionsHandler.INSTANCE.getDb(databasePath);
+        } else if (layerType == ELayerTypes.GEOPACKAGE) {
+            db = GeopackageConnectionsHandler.INSTANCE.getDb(databasePath);
+        }
 
         if (!db.hasTable(AUX_TABLE_NAME)) {
             addResTable(db);
