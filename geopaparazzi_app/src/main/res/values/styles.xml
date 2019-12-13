@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/main_decorations</item>
         <item name="colorPrimaryDark">@color/main_decorations_dark</item>
         <item name="colorAccent">@color/main_selection</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+<!--        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
         <item name="android:colorBackground">@color/main_background</item>
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
 

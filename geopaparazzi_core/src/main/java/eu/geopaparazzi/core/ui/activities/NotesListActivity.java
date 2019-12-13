@@ -77,6 +77,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.UrlUtilities;
+import eu.geopaparazzi.map.MapsSupportService;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 
 /**
@@ -326,12 +327,12 @@ public class NotesListActivity extends AppCompatActivity {
 
                 holder.goButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Intent intent = getIntent();
-                        intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
+                        Intent intent = new Intent(getContext(), MapsSupportService.class);
+                        intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
                         intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
+                        intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
                         intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
-                        // if (getParent() == null) {
-                        setResult(Activity.RESULT_OK, intent);
+                        getContext().startService(intent);
                         finish();
                     }
                 });
