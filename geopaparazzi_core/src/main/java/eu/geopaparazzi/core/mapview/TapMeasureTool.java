@@ -56,6 +56,7 @@ public class TapMeasureTool extends MapTool {
     private final Paint measurePaint = new Paint();
     private final Paint measureHaloPaint = new Paint();
     private final Paint measureTextPaint = new Paint();
+    private final Paint measureTextHaloPaint = new Paint();
     private Path measurePath = new Path();
 
     private float measuredDistance = Float.NaN;
@@ -94,10 +95,15 @@ public class TapMeasureTool extends MapTool {
         measureHaloPaint.setStrokeWidth(12f);
         measureHaloPaint.setStyle(Paint.Style.STROKE);
 
-        measureTextPaint.setAntiAlias(true);
         int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics());
+        measureTextPaint.setAntiAlias(true);
         measureTextPaint.setTextSize(pixel);
         measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+        measureTextHaloPaint.setAntiAlias(true);
+        measureTextHaloPaint.setColor(Color.WHITE);
+        measureTextHaloPaint.setTextSize(pixel);
+        measureTextHaloPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         distanceString = context.getString(R.string.distance);
     }
@@ -114,7 +120,7 @@ public class TapMeasureTool extends MapTool {
         int cWidth = canvas.getWidth();
         canvas.drawPath(measurePath, measureHaloPaint);
         canvas.drawPath(measurePath, measurePaint);
-        int upper = 70;
+        int upper = 200;
         int delta = 5;
         measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
         int textWidth = rect.width();
@@ -134,6 +140,7 @@ public class TapMeasureTool extends MapTool {
         measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
         textWidth = rect.width();
         x = cWidth / 2 - textWidth / 2;
+        canvas.drawText(distanceText, x - 2, upper + delta + textHeight - 2, measureTextHaloPaint);
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
