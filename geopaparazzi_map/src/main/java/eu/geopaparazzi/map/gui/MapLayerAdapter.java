@@ -36,6 +36,7 @@ import com.woxthebox.draglistview.DragItemAdapter;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.EDb;
+import org.hortonmachine.dbs.compat.GeometryColumn;
 import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.hortonmachine.dbs.geopackage.FeatureEntry;
 import org.hortonmachine.dbs.geopackage.TileEntry;
@@ -49,11 +50,14 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.core.dialogs.LabelDialogFragment;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
+import eu.geopaparazzi.library.style.LabelObject;
 import eu.geopaparazzi.library.style.Style;
 import eu.geopaparazzi.library.util.Compat;
 import eu.geopaparazzi.library.util.GPDialogs;
@@ -68,6 +72,7 @@ import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
 import eu.geopaparazzi.map.layers.utils.ColorStrokeObject;
 import eu.geopaparazzi.map.layers.utils.GeopackageColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
+import eu.geopaparazzi.map.layers.utils.GeopackageLabelDialogFragment;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.utils.MapUtilities;
@@ -88,6 +93,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
     private String enableEditing;
     private String disableEditing;
     private String setTheme;
+    private String labelling;
 
 
     MapLayerAdapter(MapLayerListFragment mapLayerListFragment, ArrayList<MapLayerItem> list, int layoutId, int grabHandleId, boolean dragOnLongPress) {
@@ -106,6 +112,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
         disableEditing = activity.getString(R.string.menu_disable_editing);
         setTheme = activity.getString(R.string.menu_select_theme);
         zoomTo = activity.getString(R.string.menu_select_zoomto);
+        labelling = activity.getString(R.string.menu_select_labelling);
 
         setItemList(list);
     }
@@ -175,6 +182,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     if (selMapLayerItem.type.equals(GeopackageTableLayer.class.getCanonicalName())) {
                                         popup.getMenu().add(zoomTo);
                                         popup.getMenu().add(setStyle);
+                                        popup.getMenu().add(labelling);
                                         if (selMapLayerItem.isEditing) {
                                             popup.getMenu().add(disableEditing);
                                         } else {
@@ -189,6 +197,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                 case SPATIALITE: {
                                     popup.getMenu().add(zoomTo);
                                     popup.getMenu().add(setStyle);
+                                    popup.getMenu().add(labelling);
                                     if (selMapLayerItem.isEditing) {
                                         popup.getMenu().add(disableEditing);
                                     } else {
@@ -424,6 +433,40 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                         }
                                     }
                                     notifyDataSetChanged();
+
+                                } else if (actionName.equals(labelling)) {
+                                    List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                                    String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
+                                    if (layerType == ELayerTypes.SPATIALITE) {
+//                                        SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
+//                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(dbPath);
+                                        GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
+                                        List<String[]> tableColumns = db.getTableColumns(tableName);
+                                        List<String> possibleFields = new ArrayList<>();
+                                        for (String[] tableColumn : tableColumns) {
+                                            if (!tableColumn[0].equals(gc.geometryColumnName)) {
+                                                possibleFields.add(tableColumn[0]);
+                                            }
+                                        }
+                                        Collections.sort(possibleFields);
+
+                                        Style style = GeopackageConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+                                        LabelObject labelObject = new LabelObject();
+                                        labelObject.dbPath = dbPath;
+                                        labelObject.tableName = tableName;
+                                        labelObject.hasLabel = style.labelvisible == 1;
+                                        labelObject.labelFieldsList = possibleFields;
+                                        labelObject.label = style.labelfield;
+                                        labelObject.labelSize = (int) style.labelsize;
+
+                                        GeopackageLabelDialogFragment colorStrokeDialogFragment = GeopackageLabelDialogFragment.newInstance(labelObject);
+                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Label Dialog");//NON-NLS
+                                    }
+
                                 }
                             } catch (Exception e1) {
                                 GPLog.error(this, null, e1);

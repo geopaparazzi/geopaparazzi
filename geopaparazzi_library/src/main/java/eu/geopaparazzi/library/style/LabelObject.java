@@ -31,6 +31,8 @@ import java.util.List;
  */
 public class LabelObject implements Serializable {
 
+    public String tableName;
+    public String dbPath;
     public boolean hasLabel = false;
     public int labelColor = Color.BLACK;
     public int labelSize = 30;
@@ -39,6 +41,8 @@ public class LabelObject implements Serializable {
 
     public LabelObject duplicate() {
         LabelObject dup = new LabelObject();
+        dup.tableName = tableName;
+        dup.dbPath = dbPath;
         dup.hasLabel = hasLabel;
         dup.labelColor = labelColor;
         dup.labelSize = labelSize;

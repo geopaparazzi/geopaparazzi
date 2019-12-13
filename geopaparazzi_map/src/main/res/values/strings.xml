@@ -213,6 +213,7 @@
     <string name="menu_disable_editing">Disable editing</string>
     <string name="menu_select_theme">Select theme</string>
     <string name="menu_select_zoomto">Zoom to</string>
+    <string name="menu_select_labelling">Labelling</string>
     <string name="add_map">Add map...</string>
     <string name="add_maps_folder">Add maps folder...</string>
     <string name="project_layers">Project Layers</string>

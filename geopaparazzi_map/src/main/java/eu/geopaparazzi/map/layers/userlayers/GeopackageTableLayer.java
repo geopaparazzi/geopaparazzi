@@ -1,6 +1,12 @@
 package eu.geopaparazzi.map.layers.userlayers;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.util.LongSparseArray;
+import android.util.TypedValue;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
 import org.hortonmachine.dbs.compat.GeometryColumn;
@@ -15,6 +21,7 @@ import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.Drawable;
@@ -28,15 +35,17 @@ import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.LayerGroups;
+import eu.geopaparazzi.map.layers.interfaces.ILabeledLayer;
 import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
 import eu.geopaparazzi.map.layers.layerobjects.GPLineDrawable;
 import eu.geopaparazzi.map.layers.layerobjects.GPPointDrawable;
 import eu.geopaparazzi.map.layers.layerobjects.GPPolygonDrawable;
 import eu.geopaparazzi.map.layers.layerobjects.IGPDrawable;
 import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
+import eu.geopaparazzi.map.proj.OverlayViewProjection;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
-public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer {
+public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer, ILabeledLayer {
 
     private GPMapView mapView;
     private final String dbPath;
@@ -51,6 +60,9 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
     private Style polygonStyle = null;
 
     private LongSparseArray<IGPDrawable> drawablesMap = null;
+    private ASpatialDb db;
+    private eu.geopaparazzi.library.style.Style gpStyle;
+    private int labelColor;
 
     public GeopackageTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
@@ -78,11 +90,19 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
 
         GeopackageConnectionsHandler.INSTANCE.openTable(dbPath, tableName);
 
-        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(dbPath);
+        db = GeopackageConnectionsHandler.INSTANCE.getDb(dbPath);
         gCol = db.getGeometryColumnsForTable(tableName);
         tableColumnInfos = db.getTableColumns(tableName);
         geometryType = GeopackageConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
-        eu.geopaparazzi.library.style.Style gpStyle = GeopackageConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+        gpStyle = GeopackageConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+
+        if (gpStyle.strokecolor != null) {
+            labelColor = ColorUtilities.toColor(gpStyle.strokecolor);
+        } else if (gpStyle.fillcolor != null) {
+            labelColor = ColorUtilities.toColor(gpStyle.fillcolor);
+        } else {
+            labelColor = Color.BLACK;
+        }
 
         List<Feature> features = getFeatures(null);
         drawablesMap = new LongSparseArray<>(features.size());
@@ -257,7 +277,6 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
 
     @Override
     public List<Feature> getFeatures(Envelope env) throws Exception {
-        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(getDbPath());
         QueryResult queryResult = db.getTableRecordsMapIn(getName(), env, -1, -1, null); // only 4326 are supported
 
         return MapUtilities.fromQueryResult(getName(), getDbPath(), queryResult);
@@ -383,19 +402,12 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
     @Override
     public void addNewFeatureByGeometry(Geometry geometry, int geometrySrid)
             throws Exception {
-        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(getDbPath());
-
-
-        String geometryFieldName = gCol.geometryColumnName;
         int srid = gCol.srid;
         if (srid != GeopackageCommonDb.WGS84LL_SRID) {
             // not supported
             return;
         }
-
-
         long newId = insertGeometry(db, gCol.tableName, geometry);
-
         /*
          * if everything went well, add also geometry to the layer
          */
@@ -437,10 +449,6 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
     @Override
     public void updateFeatureGeometry(Feature feature, Geometry geometry, int geometrySrid)
             throws Exception {
-        ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
-        String geometryFieldName = gCol.geometryColumnName;
-        int srid = gCol.srid;
-
         updateGeometry(db, gCol.tableName, feature.getIdFieldValue(), geometry);
 
         long id = feature.getIdFieldValue();
@@ -487,5 +495,53 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer 
             drawablesMap.remove(id);
         }
         update();
+    }
+
+    @Override
+    public void drawLabels(Canvas canvas, OverlayViewProjection prj) throws Exception {
+        if (gpStyle != null && gpStyle.labelvisible == 1) {
+            android.graphics.Point drawPoint = new android.graphics.Point();
+            DisplayMetrics displayMetrics = getMapView().getContext().getResources().getDisplayMetrics();
+            int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, gpStyle.labelsize, displayMetrics);
+
+            android.graphics.Paint labelPaint = new android.graphics.Paint();
+            labelPaint.setAntiAlias(true);
+            labelPaint.setTextSize(pixel);
+            labelPaint.setColor(labelColor);
+            labelPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            android.graphics.Paint labelBorderPaint = new android.graphics.Paint();
+            labelBorderPaint.setAntiAlias(true);
+            labelBorderPaint.setTextSize(pixel);
+            labelBorderPaint.setColor(Color.WHITE);
+            labelBorderPaint.setStyle(android.graphics.Paint.Style.STROKE);
+            labelBorderPaint.setStrokeWidth(3);
+            labelBorderPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            Rect rect = new Rect();
+
+            Rect bounds = canvas.getClipBounds();
+            Coordinate ll = prj.fromPixels(bounds.left, bounds.bottom);
+            Coordinate ur = prj.fromPixels(bounds.right, bounds.top);
+            Envelope env = new Envelope(ll, ur);
+
+            List<Feature> features = getFeatures(env);
+            for (Feature f : features) {
+                Object attribute = f.getAttribute(gpStyle.labelfield);
+                if (attribute != null) {
+                    String txt = attribute.toString();
+                    Point p = f.getDefaultGeometry().getCentroid();
+
+                    prj.toPixels(p.getCoordinate(), drawPoint);
+
+
+                    labelPaint.getTextBounds(txt, 0, txt.length(), rect);
+                    int textWidth = rect.width();
+                    int x = drawPoint.x - textWidth / 2;
+                    canvas.drawText(txt, x, drawPoint.y, labelBorderPaint);
+                    canvas.drawText(txt, x, drawPoint.y, labelPaint);
+                }
+            }
+
+
+        }
     }
 }

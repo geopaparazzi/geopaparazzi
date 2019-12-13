@@ -272,6 +272,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         final ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(this);
+        toggleMeasuremodeButton.setOnLongClickListener(this);
 
         final ImageButton toggleLogInfoButton = findViewById(R.id.toggleloginfobutton);
         toggleLogInfoButton.setOnClickListener(this);
@@ -877,7 +878,22 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             builder.setMultiChoiceItems(items, checkedItems, dialogListener);
             AlertDialog dialog = builder.create();
             dialog.show();
+        } else if (i == R.id.togglemeasuremodebutton) {
 
+            boolean isInNonClickableMode = !mapView.isClickable();
+            ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
+            ImageButton  toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+            if (!isInNonClickableMode) {
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
+
+                PanLabelsTool panLabelsTool = new PanLabelsTool(mapView);
+                EditManager.INSTANCE.setActiveTool(panLabelsTool);
+            } else {
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
+
+                EditManager.INSTANCE.setActiveTool(null);
+            }
 
         }
         return false;
