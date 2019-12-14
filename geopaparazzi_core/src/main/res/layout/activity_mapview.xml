@@ -82,6 +82,15 @@
             android:orientation="vertical">
 
             <ImageButton
+                android:id="@+id/toggleLabels"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/mapview_sides_space"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_mapview_toggle_labels_off_24dp" />
+
+            <ImageButton
                 android:id="@+id/zoomin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

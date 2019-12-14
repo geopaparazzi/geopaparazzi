@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 
@@ -64,6 +65,7 @@ import static java.lang.Math.round;
 public class PanLabelsTool extends MapTool {
     private OverlayViewProjection projection;
     private List<ILabeledLayer> labeledLayers = new ArrayList<>();
+//    private boolean doDraw = true;
 
     /**
      * Constructor.
@@ -84,18 +86,20 @@ public class PanLabelsTool extends MapTool {
                     labeledLayers.add((ILabeledLayer) layer);
                 }
             }
-
             EditingView editingView = EditManager.INSTANCE.getEditingView();
             projection = new OverlayViewProjection(mapView, editingView);
+
         }
     }
 
     public void onToolDraw(Canvas canvas) {
-
         try {
+//            if (doDraw) {
+
             for (ILabeledLayer l : labeledLayers) {
                 l.drawLabels(canvas, projection);
             }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,10 +107,25 @@ public class PanLabelsTool extends MapTool {
     }
 
     public boolean onToolTouchEvent(MotionEvent event) {
-        if (mapView == null || mapView.isClickable()) {
-            return false;
-        }
-        return true;
+//        if (mapView == null) {
+//            return false;
+//        }
+//        int action = event.getAction();
+//        Log.i("BAU" ,"Action: "+ action);
+//        switch (action) {
+//            case MotionEvent.ACTION_DOWN:
+//                doDraw = false;
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                doDraw = false;
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                doDraw = true;
+//                EditManager.INSTANCE.invalidateEditingView();
+//                break;
+//        }
+
+        return false;
     }
 
     public void disable() {

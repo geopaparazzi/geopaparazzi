@@ -60,6 +60,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import eu.geopaparazzi.core.R;
@@ -109,6 +110,8 @@ import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
 import eu.geopaparazzi.map.gui.MapLayerListActivity;
 import eu.geopaparazzi.map.layers.LayerManager;
 import eu.geopaparazzi.map.layers.interfaces.IEditableLayer;
+import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
+import eu.geopaparazzi.map.layers.interfaces.ILabeledLayer;
 import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
 import eu.geopaparazzi.map.utils.MapUtilities;
@@ -163,6 +166,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     private String lonString;
     private TextView batteryText;
     private ImageButton toggleEditingButton;
+    private ImageButton toggleLabelsButton;
+    private boolean hasLabelledLayers;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -281,6 +286,9 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         toggleEditingButton = findViewById(R.id.toggleEditingButton);
         toggleEditingButton.setOnClickListener(this);
 
+        toggleLabelsButton = findViewById(R.id.toggleLabels);
+        toggleLabelsButton.setOnClickListener(this);
+
         if (mapCenterLocation != null)
             setNewCenterAtZoom(mapCenterLocation[0], mapCenterLocation[1], (int) mapCenterLocation[2]);
 
@@ -354,10 +362,28 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
     protected void onResume() {
         LayerManager.INSTANCE.onResume(mapView, this);
 
+        checkLabelButton();
+
         disableEditing();
         GPMapPosition mapPosition = mapView.getMapPosition();
         setNewCenter(mapPosition.getLongitude() + 0.000001, mapPosition.getLatitude() + 0.000001);
         super.onResume();
+    }
+
+    private void checkLabelButton() {
+        hasLabelledLayers = false;
+        List<IGpLayer> layers = mapView.getLayers();
+        for (IGpLayer layer : layers) {
+            if (layer instanceof ILabeledLayer) {
+                hasLabelledLayers = true;
+                break;
+            }
+        }
+        if (!hasLabelledLayers) {
+            toggleLabelsButton.setVisibility(View.GONE);
+        } else {
+            toggleLabelsButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setTextScale() {
@@ -878,31 +904,14 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             builder.setMultiChoiceItems(items, checkedItems, dialogListener);
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else if (i == R.id.togglemeasuremodebutton) {
-
-            boolean isInNonClickableMode = !mapView.isClickable();
-            ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
-            ImageButton  toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
-            if (!isInNonClickableMode) {
-                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
-                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
-
-                PanLabelsTool panLabelsTool = new PanLabelsTool(mapView);
-                EditManager.INSTANCE.setActiveTool(panLabelsTool);
-            } else {
-                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
-
-                EditManager.INSTANCE.setActiveTool(null);
-            }
-
         }
         return false;
     }
 
     public void onClick(View v) {
-        boolean isInNonClickableMode;
-        ImageButton toggleMeasuremodeButton;
-        ImageButton toggleLoginfoButton;
+        boolean isInNonClickableMode = !mapView.isClickable();
+        ImageButton toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
+        ImageButton toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
 //        ImageButton toggleViewingconeButton;
         int i = v.getId();
         if (i == R.id.menu_map_button) {
@@ -960,36 +969,22 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
         } else if (i == R.id.addbookmarkbutton) {
             addBookmark();
-
         } else if (i == R.id.togglemeasuremodebutton) {
-
-            isInNonClickableMode = !mapView.isClickable();
-            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
-            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
-//                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_on_24dp));
                 toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
-//                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-
+                toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_off_24dp));
                 TapMeasureTool measureTool = new TapMeasureTool(mapView);
                 EditManager.INSTANCE.setActiveTool(measureTool);
             } else {
                 toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
-
                 EditManager.INSTANCE.setActiveTool(null);
             }
-//
         } else if (i == R.id.toggleloginfobutton) {
-            isInNonClickableMode = !mapView.isClickable();
-            toggleLoginfoButton = findViewById(R.id.toggleloginfobutton);
-            toggleMeasuremodeButton = findViewById(R.id.togglemeasuremodebutton);
-//                toggleViewingconeButton = (ImageButton) findViewById(R.id.toggleviewingconebutton);
             if (!isInNonClickableMode) {
                 toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_on_24dp));
                 toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
-//                    toggleViewingconeButton.setBackgroundResource(R.drawable.mapview_viewingcone_off);
-
+                toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_off_24dp));
                 try {
                     GpsLogInfoTool measureTool = new GpsLogInfoTool(mapView);
                     EditManager.INSTANCE.setActiveTool(measureTool);
@@ -1004,13 +999,29 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
             }
         } else if (i == R.id.toggleEditingButton) {
             toggleEditing();
+        } else if (i == R.id.toggleLabels) {
+            Tool activeTool = EditManager.INSTANCE.getActiveTool();
+            if (activeTool instanceof PanLabelsTool) {
+                toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_off_24dp));
+                EditManager.INSTANCE.setActiveTool(null);
+                mapView.releaseMapBlock();
+            }else{
+                toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_on_24dp));
+                toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
+                toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
 
+                PanLabelsTool panLabelsTool = new PanLabelsTool(mapView);
+                EditManager.INSTANCE.setActiveTool(panLabelsTool);
+                mapView.blockMap();
+            }
         }
     }
 
     private void toggleEditing() {
         ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
         boolean isEditing = activeToolGroup != null;
+
+        checkLabelButton();
 
         if (isEditing) {
             disableEditing();
@@ -1034,6 +1045,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
             mapView.blockMap();
         }
+
     }
 
     private void disableEditing() {

@@ -75,6 +75,7 @@ import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.GeopackageLabelDialogFragment;
 import eu.geopaparazzi.map.layers.utils.SpatialiteColorStrokeDialogFragment;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
+import eu.geopaparazzi.map.layers.utils.SpatialiteLabelDialogFragment;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
 class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.ViewHolder> {
@@ -440,8 +441,28 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
                                     String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
                                     if (layerType == ELayerTypes.SPATIALITE) {
-//                                        SpatialiteColorStrokeDialogFragment colorStrokeDialogFragment = SpatialiteColorStrokeDialogFragment.newInstance(colorStrokeObject);
-//                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Color Stroke Dialog");//NON-NLS
+                                        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
+                                        GeometryColumn gc = db.getGeometryColumnsForTable(tableName);
+                                        List<String[]> tableColumns = db.getTableColumns(tableName);
+                                        List<String> possibleFields = new ArrayList<>();
+                                        for (String[] tableColumn : tableColumns) {
+                                            if (!tableColumn[0].equals(gc.geometryColumnName)) {
+                                                possibleFields.add(tableColumn[0]);
+                                            }
+                                        }
+                                        Collections.sort(possibleFields);
+
+                                        Style style = SpatialiteConnectionsHandler.INSTANCE.getStyleForTable(dbPath, tableName, null);
+                                        LabelObject labelObject = new LabelObject();
+                                        labelObject.dbPath = dbPath;
+                                        labelObject.tableName = tableName;
+                                        labelObject.hasLabel = style.labelvisible == 1;
+                                        labelObject.labelFieldsList = possibleFields;
+                                        labelObject.label = style.labelfield;
+                                        labelObject.labelSize = (int) style.labelsize;
+
+                                        SpatialiteLabelDialogFragment colorStrokeDialogFragment = SpatialiteLabelDialogFragment.newInstance(labelObject);
+                                        colorStrokeDialogFragment.show(mapLayerListFragment.getSupportFragmentManager(), "Label Dialog");//NON-NLS
                                     } else if (layerType == ELayerTypes.GEOPACKAGE) {
                                         ASpatialDb db = GeopackageConnectionsHandler.INSTANCE.getDb(dbPath);
                                         GeometryColumn gc = db.getGeometryColumnsForTable(tableName);

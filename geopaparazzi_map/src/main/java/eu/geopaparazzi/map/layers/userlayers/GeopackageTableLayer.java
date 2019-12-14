@@ -528,16 +528,18 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer,
                 Object attribute = f.getAttribute(gpStyle.labelfield);
                 if (attribute != null) {
                     String txt = attribute.toString();
-                    Point p = f.getDefaultGeometry().getCentroid();
+                    if (txt.length() > 0) {
+                        Point p = f.getDefaultGeometry().getCentroid();
 
-                    prj.toPixels(p.getCoordinate(), drawPoint);
+                        prj.toPixels(p.getCoordinate(), drawPoint);
 
 
-                    labelPaint.getTextBounds(txt, 0, txt.length(), rect);
-                    int textWidth = rect.width();
-                    int x = drawPoint.x - textWidth / 2;
-                    canvas.drawText(txt, x, drawPoint.y, labelBorderPaint);
-                    canvas.drawText(txt, x, drawPoint.y, labelPaint);
+                        labelPaint.getTextBounds(txt, 0, txt.length(), rect);
+                        int textWidth = rect.width();
+                        int x = drawPoint.x - textWidth / 2;
+                        canvas.drawText(txt, x, drawPoint.y, labelBorderPaint);
+                        canvas.drawText(txt, x, drawPoint.y, labelPaint);
+                    }
                 }
             }
 
