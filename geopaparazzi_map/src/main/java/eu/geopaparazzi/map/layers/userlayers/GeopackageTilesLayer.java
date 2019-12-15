@@ -5,10 +5,12 @@ import org.json.JSONObject;
 import org.oscim.layers.tile.bitmap.BitmapTileLayer;
 import org.oscim.map.Layers;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.layers.GeopackageTileSource;
 import eu.geopaparazzi.map.layers.LayerGroups;
 import eu.geopaparazzi.map.layers.interfaces.IRasterTileOfflineLayer;
+import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 
 public class GeopackageTilesLayer extends BitmapTileLayer implements IRasterTileOfflineLayer {
     private final String name;
@@ -50,6 +52,11 @@ public class GeopackageTilesLayer extends BitmapTileLayer implements IRasterTile
 
     @Override
     public void load() {
+        try {
+            GeopackageConnectionsHandler.INSTANCE.openTable(dbPath, name);
+        } catch (Exception e) {
+            GPLog.error(this, "ERROR", e);
+        }
         Layers layers = map().layers();
         layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
     }

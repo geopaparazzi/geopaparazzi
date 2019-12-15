@@ -59,7 +59,7 @@ import android.view.Window;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public abstract class StringAsyncTask extends AsyncTask<String, Integer, String> {
-    private Context context;
+    protected Context context;
     private ProgressDialog progressDialog;
     private String title;
     private String message;

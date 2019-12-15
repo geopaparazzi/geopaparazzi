@@ -3,6 +3,7 @@ package eu.geopaparazzi.map.layers.userlayers;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.util.LongSparseArray;
@@ -16,10 +17,15 @@ import org.hortonmachine.dbs.datatypes.EGeometryType;
 import org.hortonmachine.dbs.datatypes.ESpatialiteGeometryType;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.algorithm.InteriorPointArea;
+import org.locationtech.jts.algorithm.InteriorPointLine;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.index.quadtree.Quadtree;
 import org.oscim.backend.canvas.Paint;
 import org.oscim.layers.vector.VectorLayer;
 import org.oscim.layers.vector.geometries.Drawable;
@@ -31,6 +37,7 @@ import java.util.List;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.Feature;
 import eu.geopaparazzi.map.layers.LayerGroups;
@@ -61,9 +68,9 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
 
     private LongSparseArray<IGPDrawable> drawablesMap = null;
 
-    private ASpatialDb db;
     private eu.geopaparazzi.library.style.Style gpStyle;
     private int labelColor;
+    private android.graphics.Paint labelsBackgroundPaint = new android.graphics.Paint();
 
     public SpatialiteTableLayer(GPMapView mapView, String dbPath, String tableName, boolean isEditing) {
         super(mapView.map());
@@ -71,18 +78,38 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
         this.dbPath = dbPath;
         this.tableName = tableName;
         this.isEditing = isEditing;
+
+        labelsBackgroundPaint.setAntiAlias(true);
+        labelsBackgroundPaint.setColor(Color.WHITE);
+        labelsBackgroundPaint.setAlpha(170);
+        labelsBackgroundPaint.setStyle(android.graphics.Paint.Style.FILL);
     }
 
     public void load() {
+        Layers layers = mapView.map().layers();
+        layers.add(SpatialiteTableLayer.this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
         try {
-            reloadData();
+            new StringAsyncTask(mapView.getContext()) {
+                @Override
+                protected String doBackgroundWork() {
+                    try {
+                        reloadData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
 
-            Layers layers = mapView.map().layers();
-            layers.add(this, LayerGroups.GROUP_MAPLAYERS.getGroupId());
+                @Override
+                protected void doUiPostWork(String response) {
+
+                }
+            }.execute();
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }
     }
+
 
     @Override
     public void reloadData() throws Exception {
@@ -91,7 +118,7 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
 
         SpatialiteConnectionsHandler.INSTANCE.openTable(dbPath, tableName);
 
-        db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
         gCol = db.getGeometryColumnsForTable(tableName);
         tableColumnInfos = db.getTableColumns(tableName);
         geometryType = SpatialiteConnectionsHandler.INSTANCE.getGeometryType(dbPath, tableName);
@@ -258,11 +285,6 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
 
     @Override
     public void dispose() {
-        try {
-            SpatialiteConnectionsHandler.INSTANCE.disposeTable(dbPath, tableName);
-        } catch (Exception e) {
-            GPLog.error(this, null, e);
-        }
     }
 
     @Override
@@ -281,33 +303,6 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
         QueryResult queryResult = db.getTableRecordsMapIn(getName(), env, -1, LibraryConstants.SRID_WGS84_4326, null);
 
         return MapUtilities.fromQueryResult(getName(), getDbPath(), queryResult);
-
-
-//        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
-//
-//        IGeometryParser gp = db.getType().getGeometryParser();
-//        return db.execOnConnection(connection -> {
-//            List<Feature> tmp = new ArrayList<>();
-//            try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
-//                IHMResultSetMetaData md = rs.getMetaData();
-//                int columnCount = md.getColumnCount();
-//                while (rs.next()) {
-//                    String id = rs.getString(1);
-//                    Geometry geometry = gp.fromResultSet(rs, columnCount);
-//
-//                    Feature feature = new Feature(tableName, dbPath, id, geometry);
-//                    for (int i = 2; i < columnCount - 1; i++) {
-//                        String cName = md.getColumnName(i);
-//                        String value = rs.getString(i);
-//
-//                        EDataType type = EDataType.getType4Name(cName);
-//                        feature.addAttribute(cName, value, type.name());
-//                    }
-//                    tmp.add(feature);
-//                }
-//            }
-//            return tmp;
-//        });
     }
 
 
@@ -555,13 +550,6 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
             labelPaint.setTextSize(pixel);
             labelPaint.setColor(labelColor);
             labelPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            android.graphics.Paint labelBorderPaint = new android.graphics.Paint();
-            labelBorderPaint.setAntiAlias(true);
-            labelBorderPaint.setTextSize(pixel);
-            labelBorderPaint.setColor(Color.WHITE);
-            labelBorderPaint.setStyle(android.graphics.Paint.Style.STROKE);
-            labelBorderPaint.setStrokeWidth(3);
-            labelBorderPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
             Rect rect = new Rect();
 
             Rect bounds = canvas.getClipBounds();
@@ -569,22 +557,122 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
             Coordinate ur = prj.fromPixels(bounds.right, bounds.top);
             Envelope env = new Envelope(ll, ur);
 
+            Quadtree labelTree = new Quadtree();
+
             List<Feature> features = getFeatures(env);
             for (Feature f : features) {
+
                 Object attribute = f.getAttribute(gpStyle.labelfield);
                 if (attribute != null) {
                     String txt = attribute.toString();
                     if (txt.length() > 0) {
-                        Point p = f.getDefaultGeometry().getCentroid();
-
-                        prj.toPixels(p.getCoordinate(), drawPoint);
-
-
                         labelPaint.getTextBounds(txt, 0, txt.length(), rect);
                         int textWidth = rect.width();
-                        int x = drawPoint.x - textWidth / 2;
-                        canvas.drawText(txt, x, drawPoint.y, labelBorderPaint);
-                        canvas.drawText(txt, x, drawPoint.y, labelPaint);
+                        int textHeight = rect.height();
+
+                        if (geometryType == EGeometryType.POINT || geometryType == EGeometryType.MULTIPOINT) {
+                            Point p = f.getDefaultGeometry().getCentroid();
+                            prj.toPixels(p.getCoordinate(), drawPoint);
+
+                            int x = drawPoint.x - textWidth / 2;
+                            int y = drawPoint.y - textHeight;
+
+                            int indent = 10;
+                            RectF backRect = new RectF();
+                            backRect.left = x - indent;
+                            backRect.right = x + textWidth + indent * 2;
+                            backRect.bottom = y + indent * 2;
+                            backRect.top = y - textHeight - indent * 2;
+
+                            Envelope lenv = new Envelope(backRect.left, backRect.right, backRect.bottom, backRect.top);
+                            List<Envelope> res = labelTree.query(lenv);
+                            boolean inters = false;
+                            for (Envelope e : res) {
+                                if (lenv.intersects(e)) {
+                                    inters = true;
+                                    break;
+                                }
+                            }
+                            if (!inters) {
+                                canvas.drawRoundRect(backRect, indent, indent, labelsBackgroundPaint);
+//                                canvas.drawText(txt, x, y, labelBorderPaint);
+                                canvas.drawText(txt, x, y, labelPaint);
+                                labelTree.insert(lenv, lenv);
+                            }
+                        } else if (geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON) {
+                            Geometry geometry = f.getDefaultGeometry();
+                            int numGeometries = geometry.getNumGeometries();
+                            for (int i = 0; i < numGeometries; i++) {
+                                Polygon polygon = (Polygon) geometry.getGeometryN(i);
+
+                                Coordinate interiorPoint = new InteriorPointArea(polygon).getInteriorPoint();
+                                prj.toPixels(interiorPoint, drawPoint);
+
+                                int x = drawPoint.x - textWidth / 2;
+                                int y = drawPoint.y;
+
+                                int indent = 10;
+                                RectF backRect = new RectF();
+                                backRect.left = x - indent;
+                                backRect.right = x + textWidth + indent * 2;
+                                backRect.bottom = y + indent * 2;
+                                backRect.top = y - textHeight - indent * 2;
+
+                                Envelope lenv = new Envelope(backRect.left, backRect.right, backRect.bottom, backRect.top);
+                                List<Envelope> res = labelTree.query(lenv);
+                                boolean inters = false;
+                                for (Envelope e : res) {
+                                    if (lenv.intersects(e)) {
+                                        inters = true;
+                                        break;
+                                    }
+                                }
+                                if (!inters) {
+                                    canvas.drawRoundRect(backRect, indent, indent, labelsBackgroundPaint);
+//                                    canvas.drawText(txt, x, y, labelBorderPaint);
+                                    canvas.drawText(txt, x, y, labelPaint);
+                                    labelTree.insert(lenv, lenv);
+                                }
+                            }
+                        } else if (geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING) {
+                            Geometry geometry = f.getDefaultGeometry();
+                            int numGeometries = geometry.getNumGeometries();
+                            for (int i = 0; i < numGeometries; i++) {
+                                LineString polygon = (LineString) geometry.getGeometryN(i);
+
+                                Coordinate interiorPoint = new InteriorPointLine(polygon).getInteriorPoint();
+                                prj.toPixels(interiorPoint, drawPoint);
+
+                                int x = drawPoint.x - textWidth / 2;
+                                int y = drawPoint.y;
+
+                                int indent = 10;
+                                RectF backRect = new RectF();
+                                backRect.left = x - indent;
+                                backRect.right = x + textWidth + indent * 2;
+                                backRect.bottom = y + indent * 2;
+                                backRect.top = y - textHeight - indent * 2;
+
+                                Envelope lenv = new Envelope(backRect.left, backRect.right, backRect.bottom, backRect.top);
+                                List<Envelope> res = labelTree.query(lenv);
+                                boolean inters = false;
+                                for (Envelope e : res) {
+                                    if (lenv.intersects(e)) {
+                                        inters = true;
+                                        break;
+                                    }
+                                }
+                                if (!inters) {
+                                    canvas.drawRoundRect(backRect, indent, indent, labelsBackgroundPaint);
+//                                    canvas.drawText(txt, x, y, labelBorderPaint);
+                                    canvas.drawText(txt, x, y, labelPaint);
+                                    labelTree.insert(lenv, lenv);
+                                }
+                            }
+
+
+                        }
+
                     }
                 }
             }

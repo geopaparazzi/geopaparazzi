@@ -221,6 +221,16 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     mapLayerListFragment.removeItemAtIndex(0, finalSelIndex);
                                     List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
                                     userLayersDefinitions.remove(finalSelIndex);
+
+                                    // if db layers we can release the db if no one uses it
+                                    JSONObject jsonObject = userLayersDefinitions.get(finalSelIndex);
+                                    String tableName = jsonObject.getString(IGpLayer.LAYERNAME_TAG);
+                                    String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
+                                    if (layerType == ELayerTypes.SPATIALITE) {
+                                        SpatialiteConnectionsHandler.INSTANCE.disposeTable(dbPath, tableName);
+                                    } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                                        GeopackageConnectionsHandler.INSTANCE.disposeTable(dbPath, tableName);
+                                    }
                                     notifyDataSetChanged();
                                 } else if (actionName.equals(toggle3d)) {
                                     List<JSONObject> userLayersDefinitions = LayerManager.INSTANCE.getUserLayersDefinitions();
