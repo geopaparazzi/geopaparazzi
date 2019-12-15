@@ -283,8 +283,12 @@ public enum LayerManager {
                 String name = layerDefinition.getString(IGpLayer.LAYERNAME_TAG);
                 boolean isEnabled = true;
                 boolean hasEnabled = layerDefinition.has(IGpLayer.LAYERENABLED_TAG);
-                if (hasEnabled)
+                if (hasEnabled) {
                     isEnabled = layerDefinition.getBoolean(IGpLayer.LAYERENABLED_TAG);
+                    if (!isEnabled) {
+                        continue;
+                    }
+                }
 
                 ELayerTypes layerType = ELayerTypes.fromType(layerClass);
                 if (layerType != null) {
