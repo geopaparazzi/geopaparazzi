@@ -34,6 +34,7 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -305,7 +306,10 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
         description = description.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
         String name = Utilities.makeXmlSafe(this.simpleText);
         name = name.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
-        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description);
+
+        long time = getTimeStamp();
+        String dateString = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(new Date(time));
+        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description, dateString);
         return wayPointString;
     }
 }

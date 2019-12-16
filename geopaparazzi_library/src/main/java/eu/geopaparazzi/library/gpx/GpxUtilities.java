@@ -65,13 +65,14 @@ public class GpxUtilities {
      * @param desc a description of the point.
      * @return the waypoint string.
      */
-    public static String getWayPointString(double lat, double lon, double elev, String name, String desc) {
+    public static String getWayPointString(double lat, double lon, double elev, String name, String desc, String time) {
         StringBuilder sb = new StringBuilder();
         sb.append("<wpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
         sb.append("  <ele>" + elev + "</ele>").append("\n");
         sb.append("  <name>" + name + "</name>").append("\n");
         sb.append("  <cmt>" + desc + "</cmt>").append("\n");
         sb.append("  <desc>" + desc + "</desc>").append("\n");
+        sb.append("  <time>" + time + "</time>").append("\n");
         sb.append("</wpt>").append("\n");
         return sb.toString();
     }
