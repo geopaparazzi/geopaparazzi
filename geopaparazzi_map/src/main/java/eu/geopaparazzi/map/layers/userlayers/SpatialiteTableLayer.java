@@ -299,10 +299,10 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
 
     @Override
     public List<Feature> getFeatures(Envelope env) throws Exception {
-        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(getDbPath());
+        ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(dbPath);
         QueryResult queryResult = db.getTableRecordsMapIn(getName(), env, -1, LibraryConstants.SRID_WGS84_4326, null);
 
-        return MapUtilities.fromQueryResult(getName(), getDbPath(), queryResult);
+        return MapUtilities.fromQueryResult(getName(), dbPath, queryResult);
     }
 
 
@@ -556,6 +556,11 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
             Coordinate ll = prj.fromPixels(bounds.left, bounds.bottom);
             Coordinate ur = prj.fromPixels(bounds.right, bounds.top);
             Envelope env = new Envelope(ll, ur);
+
+            if (LibraryConstants.SRID_WGS84_4326 != gCol.srid) {
+                ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(getDbPath());
+                env = db.reproject(env, LibraryConstants.SRID_WGS84_4326, gCol.srid);
+            }
 
             Quadtree labelTree = new Quadtree();
 
