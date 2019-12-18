@@ -1,45 +1,45 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Geopaparazzi</string>
-    <!--old gpap-->
-    <string name="yes">ja</string>
-    <string name="no">nej</string>
-    <string name="app_file_name">Geopaparazzi Projekt Database</string>
-    <string name="notesvisibilityToggle">Tænd/sluk for noter</string>
-    <string name="about">Om</string>
-    <string name="exit">Forlad</string>
-    <string name="utctime">tid</string>
-    <string name="altim">altim:</string>
-    <string name="lat">lat:</string>
-    <string name="lon">lon:</string>
-    <string name="go_to">Gå til</string>
-    <string name="goto_coordinate">Gå til koordinat</string>
-    <string name="geocoding">geokodning</string>
-    <string name="color_label">farve</string>
-    <string name="mainmenu_kmlexport">eksporter</string>
-    <string name="mainmenu_import">importer</string>
-    <string name="mainmenu_preferences">indstillinger</string>
-    <string name="gpslog_zoom">zoom til</string>
-    <string name="gpslog_delete">slet</string>
-    <string name="map_zoom">Zoom til kortet</string>
-    <string name="map_delete">Slet kortet</string>
-    <string name="gpx_import_processing">importer gpx...</string>
-    <string name="text_show_position_on_map">kort visning</string>
-    <string name="text_take_a_gps_note">lav notat</string>
-    <string name="text_undo_a_gps_note">fortryd notat</string>
-    <string name="audio_recording_stop">stop</string>
-    <string name="panic">panik!</string>
-    <!--added after 2.1.2-->
-    <!--added after 2.1.4-->
-    <!--added after 2.3.1-->
-    <!--added after 2.4.3-->
-    <!--added after 2.5.0-->
-    <!--ellipsis character instead of three dots-->
-    <string name="delete">slet</string>
-    <string name="view">Vis</string>
-    <string name="export_images">Billeder</string>
-    <string name="export_img_unable_to_create_folder">Kunne ikke oprette folder på SDkort:</string>
-    <string name="export_img_ok_exported">Billeder eksporteret til folder:</string>
-    <string name="export_img_processing">eksporterer billeder...</string>
-    <!--geoss2go profiles-->
+  <string name="app_name">Geopaparazzi</string>
+  <!--old gpap-->
+  <string name="yes">ja</string>
+  <string name="no">nej</string>
+  <string name="app_file_name">Geopaparazzi Projekt Database</string>
+  <string name="notesvisibilityToggle">Tænd/sluk for noter</string>
+  <string name="about">Om</string>
+  <string name="exit">Forlad</string>
+  <string name="utctime">tid</string>
+  <string name="altim">altim:</string>
+  <string name="lat">lat:</string>
+  <string name="lon">lon:</string>
+  <string name="go_to">Gå til</string>
+  <string name="goto_coordinate">Gå til koordinat</string>
+  <string name="geocoding">geokodning</string>
+  <string name="color_label">farve</string>
+  <string name="mainmenu_kmlexport">eksporter</string>
+  <string name="mainmenu_import">importer</string>
+  <string name="mainmenu_preferences">indstillinger</string>
+  <string name="gpslog_zoom">zoom til</string>
+  <string name="gpslog_delete">slet</string>
+  <string name="map_zoom">Zoom til kortet</string>
+  <string name="map_delete">Slet kortet</string>
+  <string name="gpx_import_processing">importer gpx...</string>
+  <string name="text_show_position_on_map">kort visning</string>
+  <string name="text_take_a_gps_note">lav notat</string>
+  <string name="text_undo_a_gps_note">fortryd notat</string>
+  <string name="audio_recording_stop">stop</string>
+  <string name="panic">panik!</string>
+  <!--added after 2.1.2-->
+  <!--added after 2.1.4-->
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+  <!--ellipsis character instead of three dots-->
+  <string name="delete">slet</string>
+  <string name="view">Vis</string>
+  <string name="export_images">Billeder</string>
+  <string name="export_img_unable_to_create_folder">Kunne ikke oprette folder på SDkort:</string>
+  <string name="export_img_ok_exported">Billeder eksporteret til folder:</string>
+  <string name="export_img_processing">eksporterer billeder...</string>
+  <!--geoss2go profiles-->
 </resources>

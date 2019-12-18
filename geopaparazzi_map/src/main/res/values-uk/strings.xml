@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="point_shape_">Форма точки</string>
-    <string name="point_size">Розмір точки</string>
-    <string name="decimation">Децимація</string>
+  <string name="point_shape_">Форма точки</string>
+  <string name="point_size">Розмір точки</string>
+  <string name="decimation">Децимація</string>
 </resources>

@@ -388,7 +388,7 @@
     <string name="data_to_pdf_label">Project Forms to Pdf</string>
     <string name="exporting_data_to_pdf">Exporting form data to PDF</string>
 
-    <string name="dashboard_msg_notes">"Notes:  %d</string>
+    <string name="dashboard_msg_notes">Notes:  %d</string>
     <string name="dashboard_msg_gps">GPS Logs: %d</string>
 
 

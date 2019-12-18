@@ -9,13 +9,13 @@ source_file = geopaparazzi_core/src/main/res/values/strings.xml
 source_lang = en
 
 [geopaparazzi.geopaparazzi-library-stringsxml]
-file_filter = geopaparazzilibrary/src/main/res/values-<lang>/strings.xml
-source_file = geopaparazzilibrary/src/main/res/values/strings.xml
+file_filter = geopaparazzi_library/src/main/res/values-<lang>/strings.xml
+source_file = geopaparazzi_library/src/main/res/values/strings.xml
 source_lang = en
 
 [geopaparazzi.geopaparazzi-spatialite-stringsxml]
-file_filter = geopaparazzimap/res/values-<lang>/strings.xml
-source_file = geopaparazzimap/res/values/strings.xml
+file_filter = geopaparazzi_map/src/main/res/values-<lang>/strings.xml
+source_file = geopaparazzi_map/src/main/res/values/strings.xml
 source_lang = en
 
 

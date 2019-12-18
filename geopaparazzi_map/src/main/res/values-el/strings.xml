@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="point_shape_">Σχήμα σημείου</string>
-    <string name="point_size">Μέγεθος σημείου</string>
-    <string name="decimation">Δεκαδικοποίηση</string>
+  <string name="point_shape_">Σχήμα σημείου</string>
+  <string name="point_size">Μέγεθος σημείου</string>
+  <string name="decimation">Δεκαδικοποίηση</string>
 </resources>
