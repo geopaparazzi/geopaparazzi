@@ -20,8 +20,8 @@ allprojects {
     }
     ext {
         myApplicationId = "eu.hydrologis.geopaparazzi"
-        myVersionCode = 97
-        myVersionName = "6.0.1"
+        myVersionCode = 98
+        myVersionName = "6.0.2"
 
         mycompileSdkVersion = 28
         mybuildToolsVersion = "29.0.2"
