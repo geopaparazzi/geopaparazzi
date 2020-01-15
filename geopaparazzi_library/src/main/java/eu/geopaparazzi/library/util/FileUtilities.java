@@ -337,7 +337,6 @@ public class FileUtilities {
      * @param separator  the separator or <code>null</code>. Defaults to '='.
      * @param valueFirst if <code>true</code>, the second part of the string is used as key.
      * @return the read map.
-     * @throws IOException
      */
     public static LinkedHashMap<String, String> readFileToHashMap(File file, String separator, boolean valueFirst)
             throws IOException {
@@ -351,23 +350,19 @@ public class FileUtilities {
             if (line.length() == 0) {
                 continue;
             }
-            if (!line.contains(separator)) {
+            int firstSep = line.indexOf(separator);
+            if (firstSep == -1) {
                 continue;
             }
-            String[] lineSplit = line.split(separator);
+
+            String first = line.substring(0, firstSep);
+            String second = line.substring(firstSep + 1);
+
+
             if (!valueFirst) {
-                String key = lineSplit[0].trim();
-                String value = "";
-                if (lineSplit.length > 1) {
-                    value = lineSplit[1].trim();
-                }
-                propertiesMap.put(key, value);
+                propertiesMap.put(first, second);
             } else {
-                if (lineSplit.length > 1) {
-                    String key = lineSplit[0].trim();
-                    String value = lineSplit[1].trim();
-                    propertiesMap.put(value, key);
-                }
+                propertiesMap.put(second, first);
             }
         }
         return propertiesMap;
