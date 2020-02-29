@@ -36,18 +36,11 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
     private GPMapView mapView;
 
     public GpsPositionLayer(GPMapView mapView) throws IOException {
-        super(mapView.map(), createTextures(mapView.getContext()));
+        super(mapView.map());
         getName(mapView.getContext());
 
         peferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
         this.mapView = mapView;
-
-
-        // set color of accuracy circle (Color.BLUE is default)
-        locationRenderer.setAccuracyColor(Color.get(50, 50, 255));
-
-        // set color of indicator circle (Color.RED is default)
-        locationRenderer.setIndicatorColor(Color.get(0, 0, 0, 0));
 
         // set billboard rendering for TextureRegion (false is default)
         locationRenderer.setBillboard(false);
@@ -73,10 +66,6 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
 //            movingTexture = new TextureRegion(new TextureItem(movingGpsBitmap), new TextureAtlas.Rect(0, 0, movingGpsBitmap.getWidth(), movingGpsBitmap.getHeight()));
 //        }
 //        return staleTexture;
-    }
-
-    public GpsPositionLayer(Map map, TextureRegion textureRegion) {
-        super(map, textureRegion);
     }
 
 //    public void setActive() {
@@ -123,7 +112,7 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
             }
         }
         if (lastGpsPosition != null)
-            setPosition(lastGpsPosition[1], lastGpsPosition[0], bearing, accuracy);
+            setPosition(lastGpsPosition[1], lastGpsPosition[0], accuracy);
     }
 
 
