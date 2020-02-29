@@ -203,8 +203,12 @@
   <string name="menu_enable_editing">編集を有効に</string>
   <string name="menu_disable_editing">編集を無効に</string>
   <string name="menu_select_theme">テーマ選択</string>
+  <string name="menu_select_zoomto">ズーム </string>
+  <string name="menu_select_labelling">ラベリング</string>
   <string name="add_map">地図の追加...</string>
   <string name="add_maps_folder">地図フォルダの追加...</string>
+  <string name="project_layers">プロジェクトレイヤ</string>
+  <string name="map_layers">マップレイヤ</string>
   <string name="wms_unsupported">このバージョンでは、WMS mapurlはまだサポートされていません。</string>
   <string name="unable_to_find_tables_in_db">選択されたデータベースに互換性のあるテーブルがありません。</string>
   <string name="layername_bookmarks">プロジェクトブックマーク</string>
@@ -215,4 +219,5 @@
   <string name="layername_images">プロジェクト画像</string>
   <string name="layername_notes">プロジェクトノート</string>
   <string name="layername_gpsinfo">GPS情報</string>
+  <string name="gpkg_ignore_vector_due_to_srid">Geopackageではベクターテーブルは srid 4326、タイルテーブルは srid 3857のみがサポートされます。 無効な %d ベクターテーブル %d タイルテーブル。</string>
 </resources>

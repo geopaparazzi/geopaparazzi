@@ -1,5 +1,30 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
+  <string name="yes">sim</string>
+  <string name="no">não</string>
+  <string name="up">acima</string>
+  <string name="cantcreate_sdcard">Não foi possível criar a pasta (%1$s). Saindo...</string>
+  <string name="sdcard_notexist">A pasta não existe ou não pode ser gravada (é possível monta-la num PC?). Saindo...</string>
+  <string name="error_disk_full">O disco parece estar cheio. Libere algum espaço e tente novamente.</string>
+  <string name="cantwrite_gpslog">ERRO: não foi possível gravar o registro do GPS!</string>
+  <string name="gpsloggingoff">Registro do GPS parado.</string>
+  <string name="gpsloggingon">Registro do GPS iniciado...</string>
+  <string name="gpsloggingalarm">Evite ou pare o alarme...</string>
+  <string name="prompt_gpsenable">Seu GPS está desabilitado! Deseja habilita-lo?</string>
+  <string name="last_position">Última posição</string>
+  <string name="last_position_unknown">Não foi possível identificar a localização adequada.</string>
+  <string name="cantcreate_img_folder">Não foi possível criar a pasta para salvar a imagem.</string>
+  <string name="gpx_import_title">Linha ou Ponto?</string>
+  <string name="gpx_import_message">Escolha se o arquivo será importado como pontos ou linhas.</string>
+  <string name="gpx_import_checkbox_message">Forçar importação como linha?</string>
+  <string name="gpx_import_processing">Importando GPX...</string>
+  <string name="insert_note">insira sua anotação aqui</string>
+  <string name="notesaved">Anotação salva com sucesso!</string>
+  <string name="notenonsaved">Um erro ocorreu enquanto a anotação era salva!</string>
+  <string name="notecancel">A anotação do usuário não foi salva.</string>
+  <string name="longitude">longitude</string>
+  <string name="latitude">latitude</string>
+  <string name="askcoord">Por favor, insira as coordenadas para ir para</string>
   <string name="point_shape_">Forma do ponto</string>
   <string name="point_size">Tamanho do ponto</string>
   <string name="decimation">Eliminação</string>

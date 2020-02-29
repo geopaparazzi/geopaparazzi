@@ -18,6 +18,7 @@
   <string name="about">حَول</string>
   <string name="exit">خروج</string>
   <string name="utctime">الوقت</string>
+  <string name="altim">بديل الوقت</string>
   <string name="lat">خط العرض</string>
   <string name="lon">خط الطول</string>
   <string name="azimuth">السمت</string>
@@ -50,7 +51,7 @@
   <string name="sms_preferences_summary">قم بإعداد الرقم الخاص بالخوف و الهلع</string>
   <string name="databaseError">حصل خطأ عند محاولة الربط بقاعدة البيانات</string>
   <string name="chart_profile_view">عرض معلومات الملف</string>
-  <string name="gpx_import_processing">إستورد بيانات نظام تحديد الموقع الخطية</string>
+  <string name="gpx_import_processing">إستيراد بيانات نظام تحديد الموقع الخطية</string>
   <string name="osm_additionalinfo">قم بإضافة معلومات لمن تم إختياره</string>
   <string name="osm_tagsgrid">قم بإختيار من تريد لإدراجه</string>
   <string name="text_show_position_on_map">عرض الخارطة</string>
@@ -91,6 +92,7 @@
   <string name="gps_searching_fix">نظام تحديد الموقع يحاول الإتصال بالتصحيح</string>
   <string name="bookmarks_list_rename">إعادة تسمية الإرتباطات المرجعية</string>
   <string name="mapsactivity_menu_toggle_scalebar">تبديل شريط المقياس</string>
+  <string name="mapsactivity_menu_tilesource">أختر مصدر التسمية</string>
   <string name="mapsactivity_delete_bookmarks">جاري حذف الإرتباطات المرجعية</string>
   <string name="mapsactivity_delete_notes">جاري حذف الملاحظات</string>
   <string name="mapsactivity_new_bookmark">إرتباط مرجعي جديد</string>
@@ -103,18 +105,89 @@
   <string name="imagefromgps">صورة مركز الخارطة</string>
   <string name="notefromgps">ملاحظة لمركز الخارطة</string>
   <string name="quicknotes">ملاحظات مركز الخارطة</string>
+  <string name="formnotes">نموذج مبنى علي الملاحظات</string>
   <!--added after 2.5.0-->
+  <string name="an_error_occurred_while_creating_the_chart_">حدث خطأ أثناء إنشاء الخريطة</string>
+  <string name="osm_preferences">إعدادات خريطة الشارع المفتوح</string>
+  <string name="osm_do_it">إتاحة أدوات الشارع المفتوح</string>
   <string name="osm_user_label">اسم المستخدم</string>
   <string name="osm_password_label">كلمه السر</string>
+  <string name="osm_server_label">توصيل الخادم أو السيرفر إلي</string>
+  <string name="osm_notes_properly_uploaded">خريطة الشارع المفتوح علي الأرجح تم تحميلها,
+هل تريد إزالة الملاحظات المحملة من الجهاز؟</string>
+  <string name="an_error_occurred_while_uploading_osm_tags">حدث خطأ أثناء تحميل علامات خريطة الشارع المفتوحة:</string>
+  <string name="enable_automatic_center_on_gps">المركز التلقائي في جهاز تحديد الموقع </string>
+  <string name="enable_center_on_gps">تفعيل المركز في جهاز تحديد الموقع</string>
+  <string name="disable_center_on_gps">تعطيل المركز في جهاز تحديد الموقع</string>
+  <string name="profile">الملف الشخصي</string>
+  <string name="loading_data">تحميل البيانات</string>
   <string name="profilelable_distance">المسافة  [م]</string>
   <string name="profilelable_elevation">الارتفاع  [م]</string>
+  <string name="error_json_osm">نموذج الرمز المرسل غير صالح, فضلا تفقد الرموز ونموذج البيانات.</string>
+  <string name="available_only_with_network">الخاصية متاحة فقط مع شبكة إتصال فعالة</string>
+  <string name="error_osm_server">حدث خطأ أثاء الإتصال إلي خادم خريطة الشارع المفتوح, فضلا تفقد إسم المستخدم وكلمة السر, من المحتمل ان خادم خريطة الشارع المفتوح غير متاح.</string>
+  <string name="check_valid_field">فضلا تفقد أن هذا الحقل \"{0}\" سليم.</string>
+  <string name="view_in_mixare">شاهد فى \"Mixare\"</string>
+  <string name="gps_use_coarse">استخدم الشبكة بناء علي الموقع بدلا من نظام تحديد الموقع (يحتاج إلي إعادة التشغيل)</string>
+  <string name="type_to_filter">أكتب للتصفية</string>
+  <string name="geopapcloud_preferences">إعدادات خادم \"Cloud\"</string>
+  <string name="geopapcloud_preferences_summary">إعداد بيانات الإعتماد لخادم \"Cloud\"  للخدمات</string>
   <string name="geopapcloud_user_label">اسم المستخدم</string>
   <string name="geopapcloud_password_label">كلمة السر</string>
-  <string name="exporting_data">تسجيل المعطيات</string>
-  <string name="sent_sms">ارسال ارسالية</string>
+  <string name="geopapcloud_server_label">خادم مشروع \"cloud\"</string>
+  <string name="cloud_profile_url_label">رابط الملفات الشخصية الخاص ب \"Cloud\"</string>
+  <string name="exporting_data">تصدير البيانات</string>
+  <string name="error_set_cloud_settings">حدود \"Cloud\" لم يتم إعدادها بشكل صحيح.
+فضلا تأكد من إعدادات خادم \"Cloud\". </string>
+  <string name="exporting_data_to_the_cloud">تصدير البيانات إلي خادم مشروع \"Cloud\"</string>
+  <string name="project_succesfully_uploaded_to_cloud">تم تحميل هذا المشروع بنجاح إلي خادم مشروع \"Cloud\".</string>
+  <string name="exporting_data_to_kmz">تصدير البيانات إلي \"KMZ\".</string>
+  <string name="exporting_data_to_gpx">تصدير البيانات إلي \"GPX\" </string>
+  <string name="media_upload">تحميل وسائط الإعلام</string>
+  <string name="osm_insert_a_changeset_description">أدخل وصف مجموعة المتغيرات</string>
+  <string name="set_description">إعداد الوصف</string>
+  <string name="loaded_project_in">المشروع المحمل في: </string>
+  <string name="no_sdcard_use_internal_memory">لا يوجد بطاقة ذاكرة متاحة (تفقد إذا لم تكن موصلة بالحاسب الاّلي). هل تريد إستخدام الذاكرة الداخلية عوضا عن ذلك؟ فضلا لاحظ أن في هذه الحالة عرض الخريطة لن يظهر أي خريطة بسبب المساحة.</string>
+  <string name="add_message">إضافة رسالة</string>
+  <string name="insert_an_optional_text_to_send_with_the_geosms">أدخل رسالة اختيارية لارسالها عن طريق \"Geo SMS\"</string>
+  <string name="enter_a_name_for_the_new_project">إدخل أسم ملف للمشروع الجديد</string>
+  <string name="chosen_project_exists">أسم المشروع المشروع المختار موجود بالفعل, فضلا اختر اسم اخر</string>
+  <string name="no_external_sdcard_for_db_renderer">إصدار قاعدة البيانات متوفر فقط من الذاكرة الخارجية,لم يتم إيجلد ذاكرة خارجية, هل هناك واحدة متاحة؟</string>
+  <string name="no_map_files_found_go_online">لم يتم إيجاد ملفات الخريطة فى مجلد بطاقة ذاكرة/الخرائط. التحول إلي الخرائط علي شبكة الأنترنت. /الخرائط يمكن تحميلها من:
+http://download.mapsforge.org</string>
+  <string name="select_map_to_use">اختر خريطة للاستخدام</string>
+  <string name="no_map_file_found_going_to_mapnik">لم يتم إيجاد ملف للخريطة, التحول إلي MAPNIK مصدر أجزاء الخريطة.</string>
+  <string name="enter_project_description">ادخل وصف للمشروع</string>
+  <string name="no_images">لا مستندات</string>
+  <string name="with_images">مع الصور</string>
+  <string name="successfully_imported_bookmarks">تم إستيراد الإشارات المرجعية بنجاح:</string>
+  <string name="error_bookmarks_import">حدث خطأ أثناء إستيراد الإشارات المرجعية.</string>
+  <string name="no_bookmarks_csv">لم يتم إيجاد ملف \" bookmarks.CSV\"  فى اساس بطاقة التخزين. يرجي وضع الإشارات المرجعية هناك للإستيرادهم.</string>
+  <string name="center_on_map">مركز الخريطة الرئيسية</string>
+  <string name="proximity_radius">نصف قطر القرب</string>
+  <string name="add_proximity_radius">أضف منبه لنصف قطر القرب بالأمتار.</string>
+  <string name="sent_sms">ارسال رسالة نصية: </string>
+  <string name="share_position">شارك الموقع</string>
+  <string name="found_no_data_to_send">لم يتم إيجاد بيانات فى الخريطة المرئية الحالية.</string>
+  <string name="insert_phone_to_send">الرسائل النصية سوف ترسل لنقل البيانات المختارة.
+فضلا أدخل رقم هاتف صالح لإرسال البيانات إليه.</string>
+  <string name="no_message_sent">لم يتم إرسال الرسالة.</string>
+  <string name="logs_will_be_merged">السجلات سوف تدمج معا في خلال هذه العملية.
+الإستمرار؟</string>
   <string name="distance">المسافة</string>
+  <string name="imported_notes_and_bookmarks">الملاحظات {0} والإشارات المرجعية {1} التي تم إستيرادها.</string>
+  <string name="could_not_open_sms">تعذر فتح رابط بيانات الرسائل النصية التي تم تمريرها.</string>
   <string name="start_">بدأ</string>
-  <string name="end_">النهاية</string>
+  <string name="end_">إنهاء</string>
+  <string name="map_textsize_factor">عامل حجم خط الخريطة</string>
+  <string name="map_textsize_factor_summary">عامل حجم الخط من أجل صياغة الخريطة وملفات الخريطة.</string>
+  <string name="keep_screen_on">الإبقاء علي الشاشة نشطة</string>
+  <string name="keep_screen_on_summary">الإبقاء علي نشاط الشاشة عند أداة المتابعة وعرض الخريطة</string>
+  <string name="the_secret_view">العرض السري</string>
+  <string name="database_queries">إستعلام قاعدة البيانات</string>
+  <string name="demo_mode">الوضع التجريبي</string>
+  <string name="select_database_query">اختر استفسار قاعدة البيانات</string>
+  <string name="launch_query">إطلاق الإستعلام</string>
   <string name="size_color">الحجم و الالوان</string>
   <string name="color">اللون</string>
   <!--ellipsis character instead of three dots-->
