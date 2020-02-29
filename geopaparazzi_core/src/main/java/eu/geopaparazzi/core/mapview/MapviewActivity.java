@@ -354,19 +354,26 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
 
     @Override
     protected void onPause() {
-        LayerManager.INSTANCE.onPause(mapView);
+        if (mapView != null) {
+            LayerManager.INSTANCE.onPause(mapView);
+            mapView.onPause();
+        }
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        LayerManager.INSTANCE.onResume(mapView, this);
+        if (mapView != null) {
+            mapView.onResume();
+            LayerManager.INSTANCE.onResume(mapView, this);
 
+            GPMapPosition mapPosition = mapView.getMapPosition();
+            setNewCenter(mapPosition.getLongitude() + 0.000001, mapPosition.getLatitude() + 0.000001);
+        }
         checkLabelButton();
 
         disableEditing();
-        GPMapPosition mapPosition = mapView.getMapPosition();
-        setNewCenter(mapPosition.getLongitude() + 0.000001, mapPosition.getLatitude() + 0.000001);
+
         super.onResume();
     }
 
@@ -466,8 +473,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
      */
     private int getZoom() {
         GPMapPosition mapPosition = mapView.getMapPosition();
-        byte zoom = (byte) mapPosition.getZoomLevel();
-        return zoom;
+        return (byte) mapPosition.getZoomLevel();
     }
 
     public void setZoom(int zoom) {
@@ -1005,7 +1011,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
                 toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_off_24dp));
                 EditManager.INSTANCE.setActiveTool(null);
                 mapView.releaseMapBlock();
-            }else{
+            } else {
                 toggleLabelsButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_labels_on_24dp));
                 toggleMeasuremodeButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_measuremode_off_24dp));
                 toggleLoginfoButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_loginfo_off_24dp));
