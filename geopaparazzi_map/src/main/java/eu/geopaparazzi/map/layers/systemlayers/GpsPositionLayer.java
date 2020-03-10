@@ -45,6 +45,9 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         // set billboard rendering for TextureRegion (false is default)
         locationRenderer.setBillboard(false);
 
+        Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(mapView.getContext(), eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
+        locationRenderer.setBitmapMarker(activeGpsBitmap);
+        locationRenderer.setBitmapArrow(activeGpsBitmap);
     }
 
     public static String getName(Context context) {
@@ -54,9 +57,9 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
         return NAME;
     }
 
-    private static TextureRegion createTextures(Context context) throws IOException {
-        Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
-        return new TextureRegion(new TextureItem(activeGpsBitmap), new TextureAtlas.Rect(0, 0, activeGpsBitmap.getWidth(), activeGpsBitmap.getHeight()));
+//    private static TextureRegion createTextures(Context context) throws IOException {
+//        Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_moving_24dp);
+//        return new TextureRegion(new TextureItem(activeGpsBitmap), new TextureAtlas.Rect(0, 0, activeGpsBitmap.getWidth(), activeGpsBitmap.getHeight()));
 //        if (staleTexture == null) {
 //            Bitmap activeGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_black_24dp);
 //            Bitmap staleGpsBitmap = VtmUtilities.getBitmapFromResource(context, eu.geopaparazzi.library.R.drawable.ic_my_location_grey_24dp);
@@ -66,8 +69,8 @@ public class GpsPositionLayer extends LocationTextureLayer implements IPositionL
 //            movingTexture = new TextureRegion(new TextureItem(movingGpsBitmap), new TextureAtlas.Rect(0, 0, movingGpsBitmap.getWidth(), movingGpsBitmap.getHeight()));
 //        }
 //        return staleTexture;
-    }
-
+//    }
+//
 //    public void setActive() {
 //        locationRenderer.setTextureRegion(activeTexture);
 //    }

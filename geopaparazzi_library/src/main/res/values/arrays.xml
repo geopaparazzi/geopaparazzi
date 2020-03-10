@@ -71,6 +71,7 @@
         <item>X</item>
     </string-array>
     <string-array name="locales">
+        <item>ar</item>
         <item>cs</item>
         <item>da</item>
         <item>de</item>
