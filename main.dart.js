@@ -37367,9 +37367,9 @@ F.tW.prototype={
 M:function(a){var t=$.W6()
 return new S.nq(new F.nm(null),"Geopaparazzi, because not all paparazzis are evil!",X.TS($.W8(),C.a_,$.W5(),"Arial",t),!1,!1,!1,null)}}
 F.nm.prototype={
-aP:function(){return new F.zi(H.b(["assets/00.png","assets/01.jpg","assets/02.jpg","assets/03.jpg","assets/04.jpg","assets/05.png","assets/06.png","assets/07.png","assets/08.png","assets/09.png"],u.s),C.q)}}
+aP:function(){return new F.zi(H.b(["assets/geopaparazzi_icon.png","assets/01.jpg","assets/02.jpg","assets/03.jpg","assets/04.jpg","assets/05.png","assets/06.png","assets/07.png","assets/08.png","assets/09.png"],u.s),C.q)}}
 F.zi.prototype={
-M:function(a){var t,s=this,r=null,q=u.p,p=T.QI(H.b([T.cS(new T.ch(new V.an(5,5,5,5),U.SP("00.png",300),r)),T.cS(new T.ch(new V.an(5,5,5,5),U.SP("smash_icon.png",250),r))],q),C.kK),o=T.QI(H.b([s.yG(C.p),s.yL(C.p)],q),C.kK),n=new P.aJ(5,5),m=L.SM(C.zC,C.p,48),l=K.oE("Geopaparazzi Survey Server",!1,C.p)
+M:function(a){var t,s=this,r=null,q=u.p,p=T.QI(H.b([T.cS(new T.ch(new V.an(5,5,5,5),U.SP("geopaparazzi_icon.png",300),r)),T.cS(new T.ch(new V.an(5,5,5,5),U.SP("smash_icon.png",250),r))],q),C.kK),o=T.QI(H.b([s.yG(C.p),s.yL(C.p)],q),C.kK),n=new P.aJ(5,5),m=L.SM(C.zC,C.p,48),l=K.oE("Geopaparazzi Survey Server",!1,C.p)
 n=T.cS(new T.ch(new V.an(5,5,5,5),V.CT(new T.ex(r,200,T.rX(H.b([M.jE(r,Q.GK(m,K.fj("Sync your survey in the cloud.",!1,C.p),l),C.uS,r,r,r,r,r),T.cS(new T.cP(C.R,r,r,R.eZ(!1,!0,K.fj("User manual",!0,C.p),r,!0,r,r,r,r,r,r,r,r,new F.MJ(s),r),r)),T.cS(new T.cP(C.R,r,r,R.eZ(!1,!0,K.fj("Related projects",!1,C.p),r,!0,r,r,r,r,r,r,r,r,new F.MK(s),r),r))],q),C.bw,C.bU),r),3,new X.by(C.m,new K.ba(n,n,n,n))),r))
 l=new P.aJ(5,5)
 m=L.SM(C.zD,C.p,48)
