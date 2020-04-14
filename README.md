@@ -5,6 +5,7 @@
     height="80">](https://play.google.com/store/apps/details?id=eu.hydrologis.geopaparazzi)
 
 [![Join the chat at https://gitter.im/geopaparazzi/geopaparazzi](https://badges.gitter.im/geopaparazzi/geopaparazzi.svg)](https://gitter.im/geopaparazzi/geopaparazzi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![SourceSpy Dashboard](https://sourcespy.com/shield.svg)](https://sourcespy.com/github/geopaparazzigeopaparazzi/)
 
 This repository contains the complete code of the Android app geopaparazzi.
 
