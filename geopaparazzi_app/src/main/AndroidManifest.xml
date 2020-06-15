@@ -23,6 +23,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="io.flutter.embedding.android.FlutterActivity"
+            android:theme="@style/GeopapTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize"
+            />
+
         <provider
             android:name="eu.geopaparazzi.core.providers.ProfilesContentProvider"
             android:authorities="eu.geopaparazzi.provider.profiles"

@@ -38,4 +38,5 @@ dependencies {
     api project(':geopaparazzi_library')
     api project(':geopaparazzi_map')
     api project(':geopaparazzi_acrylicpaint')
+    implementation project(':flutter')
 }

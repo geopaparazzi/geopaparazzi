@@ -34,6 +34,9 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.SimplePosition;
 import eu.geopaparazzi.library.util.UrlUtilities;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.dart.DartExecutor;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_DATABASE_TO_LOAD;
 
@@ -82,6 +85,19 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     }
 
     private void init() {
+        // Instantiate a FlutterEngine.
+        FlutterEngine flutterEngine = new FlutterEngine(this);
+        flutterEngine.getNavigationChannel().setInitialRoute("/about");
+
+        // Start executing Dart code to pre-warm the FlutterEngine.
+        flutterEngine.getDartExecutor().executeDartEntrypoint(
+                DartExecutor.DartEntrypoint.createDefault()
+        );
+
+        // Cache the FlutterEngine to be used by FlutterActivity.
+        FlutterEngineCache
+                .getInstance()
+                .put("gpap_engine_id", flutterEngine);
 
         // set default values in the app's SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);

@@ -16,3 +16,11 @@ include ':geopaparazzi_profiles_import_plugins'
 project(':geopaparazzi_profiles_import_plugins').projectDir = new File('plugins/geopaparazzi_profiles_import_plugins/')
 include ':geopaparazzi_profiles_export_plugins'
 project(':geopaparazzi_profiles_export_plugins').projectDir = new File('plugins/geopaparazzi_profiles_export_plugins/')
+
+setBinding(new Binding([gradle:this]))
+evaluate(new File(
+        settingsDir.parentFile,
+        'geopaparazzi/geopaparazzi_flutter_ext/.android/include_flutter.groovy'
+))
+include ':geopaparazzi_flutter_ext'
+project(':geopaparazzi_flutter_ext').projectDir = new File('geopaparazzi_flutter_ext/')

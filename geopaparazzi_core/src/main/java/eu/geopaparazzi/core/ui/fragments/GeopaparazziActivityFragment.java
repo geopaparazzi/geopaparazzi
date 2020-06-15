@@ -90,6 +90,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextAndBooleanRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import io.flutter.embedding.android.FlutterActivity;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.MAPSFORGE_EXTRACTED_DB_NAME;
 
@@ -371,8 +372,15 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
             startActivityForResult(profilesIntent, RETURNCODE_PROFILES);
             return true;
         } else if (i == R.id.action_about) {
-            Intent intent = new Intent(getActivity(), AboutActivity.class);
-            startActivity(intent);
+            startActivity(
+                    FlutterActivity
+//                            .withNewEngine()
+                            .withCachedEngine("gpap_engine_id")
+//                            .initialRoute("/about")
+                            .build(getActivity())
+            );
+//            Intent intent = new Intent(getActivity(), AboutActivity.class);
+//            startActivity(intent);
             return true;
         } else if (i == R.id.action_exit) {
             appChangeListener.onAppIsShuttingDown();
