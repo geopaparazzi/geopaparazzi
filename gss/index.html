@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="description" content="A description">
+<meta name="description" content="GSS manual">
 <meta name="author" content="HydroloGIS S.r.l.">
 <title>The Geopaparazzi Survey Server</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -444,39 +444,35 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>The Geopaparazzi Survey Server</h1>
 <div class="details">
 <span id="author" class="author">HydroloGIS S.r.l.</span><br>
-<span id="revdate">2020-04-01</span>
+<span id="revdate">2020-07-16</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_the_geopaparazzi_survey_server_friends">1. The Geopaparazzi Survey Server &amp; Friends</a></li>
-<li><a href="#_the_server">2. The server</a>
+<li><a href="#_the_geopaparazzi_survey_server">1. The Geopaparazzi Survey Server</a></li>
+<li><a href="#_installation_and_run">2. Installation and run</a>
 <ul class="sectlevel2">
 <li><a href="#_preparing_the_data_folder">2.1. Preparing the data folder</a></li>
-<li><a href="#_installation">2.2. Installation</a>
+<li><a href="#_installation_and_run_through_docker">2.2. Installation and run through docker</a></li>
+<li><a href="#_installation_without_docker">2.3. Installation without docker</a></li>
+</ul>
+</li>
+<li><a href="#_anatomy_of_the_gss">3. Anatomy of the GSS</a>
+<ul class="sectlevel2">
+<li><a href="#_the_mapview">3.1. The mapview</a></li>
+<li><a href="#_the_navigation_buttons">3.2. The navigation buttons</a></li>
+<li><a href="#_map_selector_filters_and_attribute_table">3.3. Map selector, filters and attribute table</a></li>
+<li><a href="#_visualizing_data">3.4. Visualizing data</a></li>
+<li><a href="#_the_left_drawer_menu">3.5. The left drawer menu</a>
 <ul class="sectlevel3">
-<li><a href="#_installation_with_docker_linux">2.2.1. Installation with docker (linux)</a></li>
-<li><a href="#_installation_with_tomcat_windows">2.2.2. Installation with Tomcat (windows)</a></li>
-</ul>
-</li>
-<li><a href="#_run_the_server">2.3. Run the server</a>
-<ul class="sectlevel3">
-<li><a href="#_run_the_server_with_docker">2.3.1. Run the server with docker</a></li>
-</ul>
-</li>
-<li><a href="#_gss_views">2.4. GSS Views</a>
-<ul class="sectlevel3">
-<li><a href="#_the_dashboard">2.4.1. The dashboard</a></li>
-<li><a href="#_the_mapview">2.4.2. The mapview</a></li>
-<li><a href="#_the_settings_views">2.4.3. The Settings Views</a></li>
-<li><a href="#_the_export_views">2.4.4. The Export Views</a></li>
-<li><a href="#_the_project_data_view">2.4.5. The Project Data View</a></li>
-<li><a href="#_the_form_builder_view">2.4.6. The Form Builder View</a></li>
+<li><a href="#_the_surveyors_view">3.5.1. The Surveyors View</a></li>
+<li><a href="#_the_webusers_view">3.5.2. The Webusers View</a></li>
+<li><a href="#_the_project_data_view">3.5.3. The Project Data View</a></li>
+<li><a href="#_the_about_view">3.5.4. The About View</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_the_mobile_app">3. The mobile app</a></li>
 </ul>
 </div>
 </div>
@@ -487,41 +483,45 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_geopaparazzi_survey_server_friends">1. The Geopaparazzi Survey Server &amp; Friends</h2>
+<h2 id="_the_geopaparazzi_survey_server">1. The Geopaparazzi Survey Server</h2>
 <div class="sectionbody">
-<div class="imageblock text-center">
-<div class="content">
-<img src="logo.png" alt="logo" width="30%">
-</div>
+<div class="paragraph">
+<p>The Geopaparazzi Survey Server (GSS) is a web application that allows <a href="https://www.geopaparazzi.org/smash/">SMASH</a>
+users to synchronize their survey data with a central server.</p>
 </div>
 <div class="paragraph">
-<p>The Geopaparazzi Survey Server (GSS) is a web application that allows <a href="http://www.geopaparazzi.eu">geopaparazzi</a>
-users to synchronize their project data with a central server.</p>
+<p>Also <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a> users can make use of the GSS, since the project databases for <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a> and <a href="https://www.geopaparazzi.org/smash/">SMASH</a> are completely compatible. The additional step for <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a> users is that they have to use <a href="https://www.geopaparazzi.org/smash/">SMASH</a> to upload their data, even if surveyed with <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a>.</p>
 </div>
 <div class="paragraph">
-<p>Its companion is an Android app named <strong>Geopaparazzi Survey Server Sync</strong> (GSSS)
-<a href="https://play.google.com/store/apps/details?id=com.hydrologis.gssmobile">available on google play</a>.
-The app can connect to geopaparazzi projects and synchronize the data contained using the unique device ID to
+<p>Please refer to the <a href="https://www.geopaparazzi.org/smash/">SMASH</a> manual to see how data are uploaded from <a href="https://www.geopaparazzi.org/smash/">SMASH</a> to GSS. This manual only describes the GSS application side.</p>
+</div>
+<div class="paragraph">
+<p>It is important to have clear in mind that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.geopaparazzi.org/smash/">SMASH</a> can synchronize <a href="https://www.geopaparazzi.org/smash/">SMASH</a> / <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a> databasese using its unique device ID to
 upload the data to the server.</p>
+</li>
+<li>
+<p>any device, to be able to connect to the server, needs to be registered in the surveyor settings section of the server by an administrator user. If you try to uplopad without being registered, you will get a permission denied error.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>A device, to be able to connect to the server, needs to be registered in the surveyor settings section of the server by an administrator user.</p>
-</div>
-<div class="paragraph">
-<p>The applications are available as Free and Open Source software. The server is available under EPL v2.0, while the
-mobile app is available under GPL v3.0.</p>
+<p>The applications are available as Free and Open Source software. The server is available under GPL 3.0 license. The source code of the server, which is written part in java and part in flutter, is available at <a href="https://github.com/moovida/GSS">this repository</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_server">2. The server</h2>
+<h2 id="_installation_and_run">2. Installation and run</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_preparing_the_data_folder">2.1. Preparing the data folder</h3>
 <div class="paragraph">
 <p>To run GSS you can prepare the data folder for the server, which will contain
-the database (if it doesn&#8217;t exist, it is created from scratch), some styling
-components and optional mapsforge *.map files for local tiles generation.</p>
+the database (if it doesn&#8217;t exist, it is created from scratch) and optional mapsforge *.map files for local tiles generation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -530,203 +530,157 @@ components and optional mapsforge *.map files for local tiles generation.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You can just start with an empty folder, which will be filled with the bare minimum necessary
-to run GSS.
+You can just start with an empty folder, which will be filled with the bare minimum necessary to run GSS.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s assume you are a heavy lifter and want to do things on your own, and that the data folder
-is named TESTGSS, then the folder structure needs contain at least the following:</p>
+<p>Let&#8217;s assume you are a heavy lifter and want to do things on your own, and that the data folder is named TESTGSS, then the folder structure needs contain at least the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>TESTGSS/
-|-- DATA    &lt;-- folder
-|   |-- images.png
-|   `-- notes.png
-`-- WORKSPACE    &lt;-- folder</pre>
+|-- DATA
+|   |-- database.mv.db --&gt; if you are using H2GIS
+|   `-- italy.map --&gt; local mapsforge tiles datasource
+`-- WORKSPACE</pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Where <strong>images.png</strong> and <strong>notes.png</strong> are the images that will be used in the map view to style
-geopaparazzi notes and media notes.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installation">2.2. Installation</h3>
-<div class="sect3">
-<h4 id="_installation_with_docker_linux">2.2.1. Installation with docker (linux)</h4>
+<h3 id="_installation_and_run_through_docker">2.2. Installation and run through docker</h3>
 <div class="paragraph">
-<p>The GSS server available as docker image from the <a href="https://hub.docker.com/r/moovida/gss/">docker hub</a>. As such
-it works best on linux systems that have docker installed.</p>
+<p>Since version 3.0 the default installation supplied is based on <a href="https://www.docker.com/">docker</a> and uses <a href="https://postgis.net/">PostGIS</a> as its default database, also bundled in the docker image.</p>
 </div>
 <div class="paragraph">
-<p>Installing docker is resumed in the following steps on ubuntu and similar systems:</p>
+<p>The installation is a two step process:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>run postgis</p>
+</li>
+<li>
+<p>run the GSS application</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>First you need to define the variable for the local workspace you want to use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update
-sudo apt install docker.io
-sudo systemctl start docker
-sudo systemctl enable docker
-docker --version
-sudo usermod -a -G docker $USER</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">WORKSPACE=/path/to/GSSSERVER</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can test the installation running the hello world application:</p>
+<p>then run the db through docker:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run hello-world</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker run  --rm --name=gss-postgis \
+  -d -v $WORKSPACE:/home/gssworkspace \
+  -e POSTGRES_USER=test -e POSTGRES_PASS=test -e POSTGRES_DBNAME=test \
+  -e ALLOW_IP_RANGE=0.0.0.0/0 \
+  -p 8080:8080 -p 5432:5432 \
+  -v $WORKSPACE:/var/lib/postgresql \
+  moovida/gss:v3.0beta</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If it works you are ready to get the GSS from the docker hub.</p>
+<p>Note that here you are defining some configuration parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the postgis database name, user and password (yo need them later when you start the application)</p>
+</li>
+<li>
+<p>the port mapping for db and application</p>
+</li>
+<li>
+<p>the mapping of the local folder to use (the workspace set before)</p>
+</li>
+<li>
+<p>note that in the above v3.0beta is the used GSS version, as seen on docker hub (discussed later).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Running the command returns the ID of the just launched docker container. Place that id in a new variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">GSS_CONTAINER_ID=yourid</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and then run the application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker exec -ti $GSS_CONTAINER_ID \
+  java -Xmx1g -jar gss-backbone-0.1.0.jar /home/gssworkspace \
+  testPwd \
+  jdbc:postgresql://localhost:5432/test</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>-Xmx1g</strong> is the memory that the webapplication can make use of.</p>
+</li>
+<li>
+<p><strong>testPwd</strong> is the password that the server expects from the connecting devices. You need to set it inside the GSS connection settings of <a href="https://www.geopaparazzi.org/smash/">SMASH</a>.</p>
+</li>
+<li>
+<p><strong>jdbc:postgresql&#8230;&#8203;</strong> is the parameter that tells the webapp which database to use. The user and password of the database are asked on execution of the command (if the database has a name different from test).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To check on the latest version of the GSS, just head to the <a href="https://hub.docker.com/r/moovida/gss">GSS docker hub page</a>, where all the versions are listed as tags:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
 <img src="images/01_hub.png" alt="01 hub" width="70%">
 </div>
-<div class="title">Figure 1. GSS on hub.docker.com.</div>
-</div>
-<div class="paragraph">
-<p>To install the docker image just open a terminal and type in from shell:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker pull moovida/gss:v2.2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will download the server image and install it on your machine.</p>
-</div>
-<div class="paragraph">
-<p>The installation process should reveal something similar to the following (the version number will most probably be different):</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/02_install.png" alt="02 install" width="70%">
-</div>
-<div class="title">Figure 2. GSS installation process.</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>And once finished, the image should be visible with the command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker images</code></pre>
-</div>
 </div>
 </td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_installation_with_tomcat_windows">2.2.2. Installation with Tomcat (windows)</h4>
 <div class="paragraph">
-<p>The docker installation takes a lot of space (around 1Gb at the time of writing). Moreover
-docker might be a bit tricky to get running properly on windows. Therefore we provide
-an alternative installation the good old java way: through tomcat.</p>
-</div>
-<div class="paragraph">
-<p>The installation process in this case will be done on windows.</p>
-</div>
-<div class="paragraph">
-<p>To install tomcat on windows and tweak it to be used with GSS:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Download tomcat 9. At the time of writing the latest version is <a href="https://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.13/bin/apache-tomcat-9.0.13-windows-x64.zip">9.0.13</a>. Unzio the archive to your disk.</p>
-</li>
-<li>
-<p>enter the folder <strong>apache-tomcat-9.0.13/conf/</strong> and add to the file <strong>server.xml</strong> the attribute <code><code>URIEncoding="UTF-8”</code></code> to the line that contains <code><code>&lt;Connector port="8080" protocol=…</code></code></p>
-</li>
-<li>
-<p>to have access to the admin gui, in the same conf folder add a user to <code>tomcat-users.xml</code>. For example:</p>
-<div class="literalblock">
-<div class="content">
-<pre>&lt;role rolename="manager-gui"/&gt;
-&lt;user username="tomcat" password="qweasdzxcpoilkjmnb123098" roles="manager-gui"/&gt;</pre>
-</div>
-</div>
-</li>
-<li>
-<p>set the neccessary environmental variables in file <code>apache-tomcat-9.0.13/bin/setenv.bat</code>.</p>
-<div class="literalblock">
-<div class="content">
-<pre>set JAVA_OPTS=-Xms1256m -Xmx4g -Dstage.globalfolder=/path_to/TESTGSS/</pre>
-</div>
-</div>
-</li>
-<li>
-<p>copy the file of the Geopaparazzi Survey Server (currently gss-2.2.war) into the folder webapps and rename it as ROOT.war</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_run_the_server">2.3. Run the server</h3>
-<div class="sect3">
-<h4 id="_run_the_server_with_docker">2.3.1. Run the server with docker</h4>
-<div class="paragraph">
-<p>To run the GSS server, it is necessary to define a few things:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the path to the data folder</p>
-</li>
-<li>
-<p>the port that needs to be used</p>
-</li>
-<li>
-<p>the docker image to use</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Assuming we want to run the application on the data folder defined before and on port 8080,
-the command to run the application is:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run -v /media/hydrologis/Samsung_T3/TESTGSS:/home/basefolder -e JAVA_OPTS="-Xms1256m -Xmx4g -Dstage.globalfolder=/home/basefolder/" -p 8080:8080 moovida/gss:v2.2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Open your favorite browser and enter the url:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>http://localhost:8080</pre>
-</div>
+<p>Once run you should now be able to access the web app in the browser at port 8080 ( <a href="http://localhost:8080" class="bare">http://localhost:8080</a> if run locally).</p>
 </div>
 <div class="paragraph">
 <p>You should get the following login screen:</p>
 </div>
-<div class="imageblock text-center">
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
 <div class="content">
 <img src="images/03_login.png" alt="03 login" width="100%">
 </div>
-<div class="title">Figure 3. The GSS login screen.</div>
 </div>
 <div class="paragraph">
-<p>This already means that you are ready to rumble!</p>
+<p>The GSS login screen.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that you are ready to rumble!</p>
 </div>
 <div class="paragraph">
 <p>You can login with:</p>
@@ -745,415 +699,442 @@ the command to run the application is:</p>
 <p>Which already tells us that the user has quite some admin rights.</p>
 </div>
 <div class="paragraph">
+<p>For normal user access use:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>user: user</p>
+</li>
+<li>
+<p>password: user</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
 <p>Once logged in, the dashboard view is shown.</p>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="_gss_views">2.4. GSS Views</h3>
+<h3 id="_installation_without_docker">2.3. Installation without docker</h3>
 <div class="paragraph">
-<p>The GSS views are organized as follows:</p>
-</div>
-<div class="paragraph">
-<p>The upper toolbar features the menu button on the left, through which the side toolbar can be hidden. At the very right
-of the toolbar the currently logged user is shown.</p>
-</div>
-<div class="paragraph">
-<p>The left toolbar contains buttons to access the available views:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Dashboard</p>
-</li>
-<li>
-<p>Map View</p>
-</li>
-<li>
-<p>Settings</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Surveyors (admin mode)</p>
-</li>
-<li>
-<p>Web Users (admin mode)</p>
-</li>
-<li>
-<p>Map Chooser</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Export</p>
-<div class="ulist">
-<ul>
-<li>
-<p>PDF</p>
-</li>
-<li>
-<p>KMZ</p>
-</li>
-<li>
-<p>Database (admin mode)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Project Data (admin mode)</p>
-</li>
-<li>
-<p>Form Builder</p>
-</li>
-<li>
-<p>Log View (admin mode)</p>
-</li>
-<li>
-<p>About</p>
-</li>
-<li>
-<p>Logout</p>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="_the_dashboard">2.4.1. The dashboard</h4>
-<div class="paragraph">
-<p>The dashboard view shows a simple chart listing the amount of information for each device.</p>
-</div>
-<div class="paragraph">
-<p>If no data are available, as in our inizial case, the folloing will be shown:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/04_dashboard.png" alt="04 dashboard" width="100%">
-</div>
-<div class="title">Figure 4. The empty dashboard.</div>
-</div>
-<div class="paragraph">
-<p>If instead data are available, the dashboard will give some information about the work in progress:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/04_dashboard2.png" alt="04 dashboard2" width="100%">
-</div>
-<div class="title">Figure 5. The dashboard.</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_mapview">2.4.2. The mapview</h4>
-<div class="paragraph">
-<p>The mapview features the Surveyor list and a map panel.</p>
-</div>
-<div class="paragraph">
-<p>The surveyor can be actived by selecting the checkbox in the table. Once the data of the
-surveyor are loaded, through the zoom button on top of the table it is possible to zoom to
-the surveyor&#8217;s data extent.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/05_mapview.png" alt="05 mapview" width="100%">
-</div>
-<div class="title">Figure 6. The mapview with the surveyors list.</div>
-</div>
-<div class="paragraph">
-<p>If data are uploaded while on the map view, one can either reload the view by refreshing the page
-or:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>using the first button to reload the data of the currently loaded surveyor</p>
-</li>
-<li>
-<p>using the last button to reload all the available surveyors</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The data can be queried by clicking on them. Simple information is shown as described below.</p>
-</div>
-<div class="paragraph">
-<p>In the case of notes, the main note text, the elevation and the timestamp are shown. Note that
-for notes that have forms, the complex form is not visualized in the information box.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/08_notes.png" alt="08 notes" width="25%">
-</div>
-<div class="title">Figure 7. Notes.</div>
-</div>
-<div class="paragraph">
-<p>For GPS logs the name of the log and the start and end timestamp are shown.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/09_logs.png" alt="09 logs" width="30%">
-</div>
-<div class="title">Figure 8. Gps Logs.</div>
-</div>
-<div class="paragraph">
-<p>For media notes it is possible to visualize the images, by clicking on the image icon.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/10_media.png" alt="10 media" width="70%">
-</div>
-<div class="title">Figure 9. Media notes.</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_settings_views">2.4.3. The Settings Views</h4>
-<div class="paragraph">
-<p>Selecting the proper action from the settings menu it is possible to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Configure surveyors. Surveyors can be added or removed. Note that only
-surveyors registered are able to connect with the mobile app.
-Editable attributes can be changed by double-clicking on the surveyor.
-<strong>Warning: removing a surveyor will also delete all its data.</strong></p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/12_surveyors.png" alt="12 surveyors" width="100%">
-</div>
-<div class="title">Figure 10. Surveyor configuration.</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Create web users and groups. There are two levels of users: admins and normal users.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/11_users.png" alt="11 users" width="100%">
-</div>
-<div class="title">Figure 11. Web users configuration.</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Configure background maps. Several map services can be added to the background
-maps that can then be selected in the mapview.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/13_maps.png" alt="13 maps" width="100%">
-</div>
-<div class="title">Figure 12. The background maps configuration.</div>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Many of the available map services need a license key to be accessed
-and/or have particular requirements to be used. Make sure that you have the
-rights to use the maps you select.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_export_views">2.4.4. The Export Views</h4>
-<div class="paragraph">
-<p>Selecting the proper action from the export menu it is possible to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Export the data of one or more surveyors as PDF:</p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/14_export_pdf.png" alt="14 export pdf" width="100%">
-</div>
-<div class="title">Figure 13. The PDF export view</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Export the data of one or more surveyors as KMZ:</p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/15_export_kmz.png" alt="15 export kmz" width="100%">
-</div>
-<div class="title">Figure 14. The KMZ export view</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Export the current database. While it is best to connect to the online database through the port 9092, which is exposed,
-in some environments it might not be possible (ex. Heroku allows only one port). In this
-case it is possible to export the database by downloading it.</p>
-</li>
-</ul>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/15_1_export_db.png" alt="15 1 export db" width="100%">
-</div>
-<div class="title">Figure 15. The database export view</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_project_data_view">2.4.5. The Project Data View</h4>
-<div class="paragraph">
-<p>In the project data view it is possible to upload datasets that can be downloaded by the mobiles app to
-allow geopaparazzi to access them.</p>
-</div>
-<div class="paragraph">
-<p>The view is split into 3 columns, one for each supported datatype:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>basemaps (mbtiles, mapsforge maps)</p>
-</li>
-<li>
-<p>overlays (spatialite databases)</p>
-</li>
-<li>
-<p>projects (geopaparazzi projects)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The user can simply drag the files in the lower area to upload the files.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/23_dataview_drag.png" alt="23 dataview drag" width="100%">
-</div>
-<div class="title">Figure 16. The project data view</div>
-</div>
-<div class="paragraph">
-<p>File types are placed in the right tables if recongized:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/24_dataview.png" alt="24 dataview" width="100%">
-</div>
-<div class="title">Figure 17. The different datatype tables</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_form_builder_view">2.4.6. The Form Builder View</h4>
-<div class="paragraph">
-<p>The form view is an interactive gui builder for geopaparazzi forms.</p>
-</div>
-<div class="paragraph">
-<p>To better understand the description of its usage, some naming needs to be fixed:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>tags</strong>: a tag is what we see as a complete file on geopaparazzi (speak tags.json). From
-version 5.6.2 on Geopaparazzi loads any file that ends with <strong>tags.json</strong> from the geopaparazzi folder,
-allowing tags to be kept separate.</p>
-</li>
-<li>
-<p><strong>section</strong>: a section is what in geopaparazzi is seen as a button in the <strong>add notes</strong> view.</p>
-</li>
-<li>
-<p><strong>form</strong>: a form is a tab of the geopaparazzi view</p>
-</li>
-<li>
-<p><strong>widget</strong>: it is the widget the user interacts with, ex. combobox or textfield</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The naming is a bit confusing, but comes form the early days and is in the source code of geopaparazzi. So, in order
-to be able to always document things the same way, we have to follow these naming.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/25_forms.png" alt="25 forms" width="100%">
-</div>
-<div class="title">Figure 18. The From Builder</div>
-</div>
-<div class="paragraph">
-<p>After creating a tag with the <strong>add</strong> button, one can add a new section to the tag:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/26_forms.png" alt="26 forms" width="100%">
-</div>
-<div class="title">Figure 19. The add section dialog.</div>
-</div>
-<div class="paragraph">
-<p>Once the section is created the user can add <strong>forms</strong> to the section, which will load
-tabs for each one in the tab view.</p>
-</div>
-<div class="paragraph">
-<p>To each of it widgets can be added:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/27_forms.png" alt="27 forms" width="100%">
-</div>
-<div class="title">Figure 20. The add widget menu while adding a widget to a form tab.</div>
-</div>
-<div class="paragraph">
-<p>The add widget dialogs prompt the user for a key and a label and other parameters depending on the type:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/28_forms.png" alt="28 forms" width="100%">
-</div>
-<div class="title">Figure 21. The add text field widget</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/29_forms.png" alt="29 forms" width="100%">
-</div>
-<div class="title">Figure 22. The add combo widget, which can load from a textfile the combobox entries.</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/30_forms.png" alt="30 forms" width="100%">
-</div>
-<div class="title">Figure 23. The work in progress form view.</div>
-</div>
-<div class="paragraph">
-<p>Once the user has finalized his tag entry, it is necessary to mark it visible in order for the mobile app to see it:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="images/31_forms.png" alt="31 forms" width="70%">
-</div>
-<div class="title">Figure 24. The checkbox to mark the tag visible.</div>
-</div>
+<p>It is possible to install the GSS also without docker. It is way more customizable, but in that case the user will have to build the application <a href="https://github.com/moovida/GSS">from the source code</a>.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_mobile_app">3. The mobile app</h2>
+<h2 id="_anatomy_of_the_gss">3. Anatomy of the GSS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="http://www.geopaparazzi.org/smash/index.html">SMASH</a> is the suggested app to synchronize data with the
-survey server. It allows both download of datasets as well as incremental uploading of
-surveyed data. Have a look at the <a href="http://www.geopaparazzi.org/smash/index.html#_gss">SMASH manual to see hot to import or export data</a>.</p>
+<p>The GSS views are organized as follows. The main view is the map view. From there different toolsets and sections can be accessed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>left upper menu icon. This gives access to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the drawer header which also <strong>shows the current logged user</strong></p>
+</li>
+<li>
+<p>the <strong>Surveyors</strong> view</p>
+</li>
+<li>
+<p>the <strong>Web Users</strong> view</p>
+</li>
+<li>
+<p>the <strong>Project Data</strong> view</p>
+</li>
+<li>
+<p>the <strong>About</strong> view</p>
+</li>
+<li>
+<p>the logout button</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>the upper central navigation buttons</p>
+</li>
+<li>
+<p>various tools at the upper right part of the map</p>
+</li>
+<li>
+<p>the bottom attributes table, if enabled</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_the_mapview">3.1. The mapview</h3>
+<div class="paragraph">
+<p>The main map view features a background map and the survey data on top of it. The survey data are clickable and the proper widgets will open to show the data content, being it images, simple notes or form based notes.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/05_mapview.png" alt="05 mapview" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The mapview with opened attributes table.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_navigation_buttons">3.2. The navigation buttons</h3>
+<div class="paragraph">
+<p>The navigation tools are basically 4 buttons. The first and last buttons are the well known zoom in and zoom out buttons and do not need explanation. Zooming can be achieved also by scrolling with the mouse wheel. To pan the map, the mouse can be used pushing the left button and dragging the map.</p>
+</div>
+<div class="paragraph">
+<p>The second navigation button from the left is the <em>zoom to data</em> button and sets the boundaries of the map to the bounds of all the currently loaded data.</p>
+</div>
+<div class="paragraph">
+<p>The third navigation button is the bookmarks button. Pushing it opens the bookmarks view.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/06_bookmarks.png" alt="06 bookmarks" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The bookmarks view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The view contains a set of bookmarks, that can be selected by pushing the magnification icon on the left. To add a bookmark just push <em>ADD CURRENT</em>, which will create a new bookmark using the last visible map area. To remove a bookmark, the rightside trash icon can be used.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_map_selector_filters_and_attribute_table">3.3. Map selector, filters and attribute table</h3>
+<div class="paragraph">
+<p>At the upper right side of the map, we find 3 icons.</p>
+</div>
+<div class="paragraph">
+<p><strong>The map selector</strong>: the map selector button opens a view that allows the user to select from a set of maps the one to use in the map view.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/07_mapselector.png" alt="07 mapselector" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The map selector view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>It is important to note that the first map is a map that is generated from the server itself, if <a href="https://download.mapsforge.org/">mapsforge *.map</a> files are present in the DATA folder of the installation of the GSS.</p>
+</div>
+<div class="paragraph">
+<p><strong>The filter dialog</strong>: the filter button opens the filter dialog, which allows for some very simple filtering of the data, based on the surveyors:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock text-center">
+<div class="content">
+<img src="images/08_filter_surveyor.png" alt="08 filter surveyor" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The filter dialog for surveyors.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>or on projects:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/08_filter_projects.png" alt="08 filter projects" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The filter dialog for projects.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>From the dialog it is simple to enable or disable surveyors or projects.</p>
+</div>
+<div class="paragraph">
+<p>Once <em>OK</em> is pushed, the data on the map view are reloaded to reflect the filter applied.</p>
+</div>
+<div class="paragraph">
+<p><strong>The attributes table</strong>: the attributes table button toggles the visibility of the attributes table.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/19_attributes.png" alt="19 attributes" width="100%">
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The attributes table lists only the data currently visible on the map view. It features information about the survey notes, showing the proper icon, note title, the timestamp as well as the surveyor and project the note is part of.</p>
+</div>
+<div class="paragraph">
+<p>It also allows the user to zoom to the selected note or open the note through the buttons in the <strong>Actions</strong> column.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_visualizing_data">3.4. Visualizing data</h3>
+<div class="paragraph">
+<p>To view a note, image or form the user can just click on it in the map view or, to have better control, use the open action in the attributes table.</p>
+</div>
+<div class="paragraph">
+<p><strong>Image notes</strong>: Image notes are visible on the map as little thumbnail images.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/09_image_map.png" alt="09 image map" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The image note thumbnails on the map.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Clicking on them opens the image in larger mode:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/09_image.png" alt="09 image" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The image note.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Simple notes</strong>: Simple notes are visible on the map using the icon that has been chosen during the survey with <a href="https://www.geopaparazzi.org/smash/">SMASH</a>. If the survey was done with <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a>, which doesn&#8217;t support note icons, then a default marker icon is used.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/10_simplenotes_map.png" alt="10 simplenotes map" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>A simple note on the map.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Clicking on it will open a simple dialog with the note information:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/10_simplenotes.png" alt="10 simplenotes" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The simple note dialog.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Form notes</strong>: Form notes are visible on the map using the icon that has been chosen during the survey with <a href="https://www.geopaparazzi.org/smash/">SMASH</a>. If the survey was done with <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a>, which doesn&#8217;t support note icons, then a default marker icon is used.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/11_formnotes_map.png" alt="11 formnotes map" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>A form note on the map.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Clicking on it will open the form notes dialog we are used to see in <a href="https://www.geopaparazzi.org/smash/">SMASH</a>:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/11_formnotes.png" alt="11 formnotes" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The form note dialog.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In form notes, if images are present, a double click on the thumbnail will open the image.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Gps Logs</strong>: GPS logs are transfered to the server with the properties set by the user in <a href="https://www.geopaparazzi.org/smash/">SMASH</a> or <a href="https://www.geopaparazzi.org/geopaparazzi/">geopaparazzi</a>.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/12_logs.png" alt="12 logs" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>A set of logs on the map.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_left_drawer_menu">3.5. The left drawer menu</h3>
+<div class="paragraph">
+<p>The upper left menu button opens the drawer:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/18_drawer.png" alt="18 drawer" width="60%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_surveyors_view">3.5.1. The Surveyors View</h4>
+<div class="paragraph">
+<p>The surveyors view allows to define the devices that are allowed to sync data with the server. Devices are identified by their unique device id. It is possible to set a human readable name to the device/surveyor and a contact.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/13_surveyors.png" alt="13 surveyors" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The surveyors view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Following the idea that it is never good to loose surveyed data, a surveyor can&#8217;t be deleted from the server. It is possible to disable him/her. Once disabled the surveyer will end in the disabled list and its data will not be shown in the map and in the filters. It will indeed look like the surveyor has been removed.</p>
+</div>
+<div class="paragraph">
+<p>To add a new surveyor at the moment we use the 30 seconds magic button approach. Once the button is pushed, for 30 seconds any connecting device will be registered as new surveyor and allowed to sync.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_webusers_view">3.5.2. The Webusers View</h4>
+<div class="paragraph">
+<p>The webusers view allows us to create, remove and modify web users, i.e. users that can access to the web application (speak: the initial login screen).</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/14_webusers.png" alt="14 webusers" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The webusers view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>There are two levels of users: administrators and normal users. They all have access to all the parts of the web application, but normal users are not able to add surveyors, add/remove web users and upload forms for distribution.</p>
+</div>
+<div class="paragraph">
+<p>To remove a user, the red trash icon can be used, right of the change password button.</p>
+</div>
+<div class="paragraph">
+<p>To add a new user, the bottom right action button can be used. It opens up a simple dialog that takes the right data for the user creation:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/15_adduser.png" alt="15 adduser" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The dialog to add new web users.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_project_data_view">3.5.3. The Project Data View</h4>
+<div class="paragraph">
+<p>The project data view allows the user to make data available to its surveyors.</p>
+</div>
+<div class="paragraph">
+<p>Basemaps, projects and custom forms can be loaded into the view. These data will then be available in the GSS import menu of <a href="https://www.geopaparazzi.org/smash/">SMASH</a>:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/16_projectdata.png" alt="16 projectdata" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>The project data view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>At the current time only forms can be added and removed. The other data types are supposed to be large datasets that are better uploaded by means ot ftp or similar tools.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_about_view">3.5.4. The About View</h4>
+<div class="paragraph">
+<p>Not much to say here:</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/17_about.png" alt="17 about" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The project data view.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Important information is the License and the link to the source code repository.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
