@@ -30,9 +30,12 @@
   <string name="okcoord">utilizare coordonată</string>
   <string name="message_sent">Mesaj transmis</string>
   <string name="select_dotdot">Selectare…</string>
+  <string name="webprojects_list_title">Lista Proiectelor Remote</string>
+  <string name="webprofiles_list_title">Lista Profilelor din Cloud</string>
   <string name="downloading">Descărcare...</string>
   <string name="downloading_projects_list_from_server">Se descarcă lista proiectelor.</string>
   <string name="downloading_profiles_list_from_server">Se descarcă lista profilelor.</string>
+  <string name="download_icon_description">Alegeți descărcarea de pe server.</string>
   <string name="downloading_layers_list_from_server">Se descarcă lista straturilor.</string>
   <string name="downloading_project">Descărcare proiect...</string>
   <string name="downloading_profile">Descărcare profil...</string>

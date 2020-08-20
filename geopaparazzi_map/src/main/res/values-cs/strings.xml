@@ -206,8 +206,12 @@
   <string name="menu_enable_editing">Povolit úpravy</string>
   <string name="menu_disable_editing">Zakázat úpravy</string>
   <string name="menu_select_theme">Vybrat vzhled</string>
+  <string name="menu_select_zoomto">Přiblížit na</string>
+  <string name="menu_select_labelling">Značení</string>
   <string name="add_map">Přidat mapu...</string>
   <string name="add_maps_folder">Přidat složku s mapami...</string>
+  <string name="project_layers">Vrstvy projektu</string>
+  <string name="map_layers">Vrstvy mapy</string>
   <string name="wms_unsupported">WMS mapurl v této verzi ještě není podporováno.</string>
   <string name="unable_to_find_tables_in_db">Ve vybrané databázi nelze najít slučitelné tabulky.</string>
   <string name="layername_bookmarks">Záložky projektu</string>
@@ -218,4 +222,5 @@
   <string name="layername_images">Obrázky projektu</string>
   <string name="layername_notes">Poznámky projektu</string>
   <string name="layername_gpsinfo">Informace GPS</string>
+  <string name="gpkg_ignore_vector_due_to_srid">Pro Geopackage jsou podporovány pouze vektorové tabulky s srid 4326 a tabulky dlaždic s srid 3857. Ignorování %d vektorových tabulek a %d tabulek dlaždic.</string>
 </resources>

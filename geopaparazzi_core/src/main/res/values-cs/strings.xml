@@ -382,6 +382,8 @@
   <string name="upload_to_cloud_prompt">Nahrát nynější projekt na server?</string>
   <string name="data_to_pdf_label">Projektové formuláře do PDF</string>
   <string name="exporting_data_to_pdf">Data formuláře se ukládají do PDF</string>
+  <string name="dashboard_msg_notes">Poznámky:  %d</string>
+  <string name="dashboard_msg_gps">GPS Logy: %d</string>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">Nastavení</string>
   <string name="profiles_action_cloud_import">Nahrát profily serveru</string>

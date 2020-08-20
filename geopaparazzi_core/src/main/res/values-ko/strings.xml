@@ -383,6 +383,8 @@
   <string name="upload_to_cloud_prompt">현재 프로젝트를 클라우드에 업로드하시겠습니까?</string>
   <string name="data_to_pdf_label">프로젝트 양식을 PDF로</string>
   <string name="exporting_data_to_pdf">양식 데이터를 PDF로 변환합니다</string>
+  <string name="dashboard_msg_notes">메모:  %d</string>
+  <string name="dashboard_msg_gps">GPS 로그: %d</string>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">설정</string>
   <string name="profiles_action_cloud_import">클라우드 프로필 가져오기</string>

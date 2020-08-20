@@ -382,6 +382,8 @@
   <string name="upload_to_cloud_prompt">Lataatko nykyisen projektin pilveen?</string>
   <string name="data_to_pdf_label">Projektilomakkeet pdf:ksi</string>
   <string name="exporting_data_to_pdf">Viedään lomakedatasta pdf:ksi</string>
+  <string name="dashboard_msg_notes">Huomautukset:  %d</string>
+  <string name="dashboard_msg_gps">GPS lokit: %d</string>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">Asetukset</string>
   <string name="profiles_action_cloud_import">Tuo Pilviprofiilit</string>

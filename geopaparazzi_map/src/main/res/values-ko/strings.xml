@@ -203,8 +203,12 @@
   <string name="menu_enable_editing">편집 활성화</string>
   <string name="menu_disable_editing">편집 비활성화</string>
   <string name="menu_select_theme">주제 선택</string>
+  <string name="menu_select_zoomto">확대</string>
+  <string name="menu_select_labelling">레이블</string>
   <string name="add_map">지도 추가...</string>
   <string name="add_maps_folder">지도 폴더 추가...</string>
+  <string name="project_layers">프로젝트 레이어</string>
+  <string name="map_layers">지도 레이어</string>
   <string name="wms_unsupported">이 버전에서는 WMS mapurl을 현재 지원하지 않습니다.</string>
   <string name="unable_to_find_tables_in_db">선택한 데이터베이스에서 호환 가능한 테이블을 찾을 수 없습니다.</string>
   <string name="layername_bookmarks">프로젝트 북마크</string>
@@ -215,4 +219,5 @@
   <string name="layername_images">프로젝트 이미지</string>
   <string name="layername_notes">프로젝트 메모</string>
   <string name="layername_gpsinfo">GPS 정보</string>
+  <string name="gpkg_ignore_vector_due_to_srid">GeoPackage에서 4326 좌표계의 벡터 테이블과 3857 좌표계의 타일 테이블만 지원합니다. %d 벡터 테이블과 %d 타일 테이블은 무시됩니다.</string>
 </resources>

@@ -44,8 +44,11 @@
   <string name="map_delete">Ștergere hartă</string>
   <string name="gps_preferences">Setări GPS</string>
   <string name="gps_preferences_summary">Setați în GPS metoda de jurnalizare preferată: distanța sau intervalul.</string>
+  <string name="gps_logging_distance">Distanța min de jurnalizare gps</string>
+  <string name="gps_logging_interval">Intervalul min de jurnalizare gps</string>
   <string name="gps_use_android_level">Utilizare la nivelul android (economisire baterie, necesită restart)</string>
   <string name="sms_preferences">Setări SMS</string>
+  <string name="sms_preferences_summary">Setare număr de panică.</string>
   <string name="chart_profile_view">Vizualizare Profil</string>
   <string name="gpx_import_processing">Importare gpx...</string>
   <string name="osm_additionalinfo">Adaugă informația etichetei</string>
@@ -55,6 +58,10 @@
   <string name="text_undo_a_gps_note">anulează nota</string>
   <string name="gps_log">jurnal gps</string>
   <string name="audio_recording_stop">stop</string>
+  <string name="panic">panică!</string>
+  <string name="panic_number">Număr de panică</string>
+  <string name="panic_upper">  PANICĂ!  </string>
+  <string name="send_status_update">sau doar trimiteți poziția dvs.</string>
   <string name="help_needed">Am nevoie de ajutor!</string>
   <string name="message_sent">Mesaj transmis</string>
   <string name="last_note_deleted">S-a șters ultima notă</string>
