@@ -61,7 +61,7 @@ public class NewProjectDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         try {
-            final File sdcardDir = ResourcesManager.getInstance(getActivity()).getMainStorageDir();
+            final File projectsDir = ResourcesManager.getInstance(getActivity()).getApplicationProjectsDir();
             final String projectExistingString = getString(eu.geopaparazzi.core.R.string.chosen_project_exists);
 
             final String newGeopaparazziProjectName = ResourcesManager.getInstance(getContext()).getApplicationName()
@@ -90,7 +90,7 @@ public class NewProjectDialogFragment extends DialogFragment {
                     if (!newName.endsWith(LibraryConstants.GEOPAPARAZZI_DB_EXTENSION)) {
                         newName = newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
                     }
-                    File newProjectFile = new File(sdcardDir, newName);
+                    File newProjectFile = new File(projectsDir, newName);
                     if (newName.length() < 1) {
                         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                     } else if (newProjectFile.exists()) {
@@ -112,7 +112,7 @@ public class NewProjectDialogFragment extends DialogFragment {
                                 Editable value = projectEditText.getText();
                                 String newName = value.toString();
                                 GeopaparazziApplication.getInstance().closeDatabase();
-                                File newGeopaparazziFile = new File(sdcardDir.getAbsolutePath(), newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
+                                File newGeopaparazziFile = new File(projectsDir.getAbsolutePath(), newName + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION);
                                 DatabaseUtilities.setNewDatabase(getContext(), GeopaparazziApplication.getInstance(), newGeopaparazziFile.getAbsolutePath());
 
                                 if (appChangeListener != null) {

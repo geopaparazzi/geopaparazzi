@@ -100,6 +100,7 @@ import eu.geopaparazzi.map.features.FeatureUtilities;
 import eu.geopaparazzi.map.features.editing.EditManager;
 import eu.geopaparazzi.map.features.editing.EditingView;
 import eu.geopaparazzi.map.features.tools.MapTool;
+import eu.geopaparazzi.map.features.tools.impl.AlphanumericEditingToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.LineMainEditingToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.NoEditableLayerToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.OnSelectionToolGroup;
@@ -114,6 +115,7 @@ import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ILabeledLayer;
 import eu.geopaparazzi.map.layers.systemlayers.BookmarkLayer;
 import eu.geopaparazzi.map.layers.systemlayers.NotesLayer;
+import eu.geopaparazzi.map.layers.userlayers.SpatialiteTableLayer;
 import eu.geopaparazzi.map.utils.MapUtilities;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.COORDINATE_FORMATTER;
@@ -195,6 +197,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         };
 
         mPeferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useOnly2d = mPeferences.getBoolean(Constants.PREFS_KEY_ONLY2D, false);
+
 
         // COORDINATE TEXT VIEW
         coordView = findViewById(R.id.coordsText);
@@ -237,6 +241,8 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         mapView = new GPMapView(this);
         mapView.setClickable(true);
         mapView.setOnTouchListener(this);
+
+        mapView.setOnly2dMode(useOnly2d);
 
         float mapScaleX = mPeferences.getFloat(MAPSCALE_X, 1f);
         float mapScaleY = mPeferences.getFloat(MAPSCALE_Y, 1f);
@@ -1035,11 +1041,15 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         } else {
             toggleEditingButton.setImageDrawable(Compat.getDrawable(this, R.drawable.ic_mapview_toggle_editing_on_24dp));
             IEditableLayer editLayer = EditManager.INSTANCE.getEditLayer();
+
+
             if (editLayer == null) {
                 // if not layer is
                 activeToolGroup = new NoEditableLayerToolGroup(mapView);
 //                GPDialogs.warningDialog(this, getString(R.string.no_editable_layer_set), null);
 //                return;
+            } else if (!(editLayer instanceof SpatialiteTableLayer)) {
+                activeToolGroup = new AlphanumericEditingToolGroup(mapView);
             } else if (editLayer.getGeometryType().isPolygon())
                 activeToolGroup = new PolygonMainEditingToolGroup(mapView);
             else if (editLayer.getGeometryType().isLine())

@@ -30,7 +30,7 @@ allprojects {
 
         gdxVersion = "1.9.9"
         gwtVersion = "2.8.2"
-        slf4jVersion = "1.7.29"
+        slf4jVersion = '1.7.30'
     }
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {

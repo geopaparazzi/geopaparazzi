@@ -32,6 +32,8 @@ import eu.geopaparazzi.map.layers.interfaces.IPositionLayer;
 import eu.geopaparazzi.map.layers.systemlayers.GpsPositionTextLayer;
 
 public class GPMapView extends org.oscim.android.MapView {
+
+
     public interface GPMapUpdateListener {
         void onUpdate(GPMapPosition mapPosition);
     }
@@ -45,6 +47,7 @@ public class GPMapView extends org.oscim.android.MapView {
 
     private float lastUsedBearing = -1;
     private View editingView;
+    private boolean useOnly2d = false;
 
     private List<GPMapUpdateListener> mapUpdateListeners = new ArrayList<>();
 
@@ -281,6 +284,13 @@ public class GPMapView extends org.oscim.android.MapView {
         map().viewport().setTilt((float) tilt);
     }
 
+    public void setOnly2dMode(boolean useOnly2d) {
+        this.useOnly2d = useOnly2d;
+        if (useOnly2d) {
+            blockMap();
+        }
+    }
+
     public void blockMap(boolean resetRotation, boolean resetTilt) {
         if (resetRotation) {
             setMapRotation(0.0d);
@@ -297,6 +307,7 @@ public class GPMapView extends org.oscim.android.MapView {
     }
 
     public void releaseMapBlock() {
+        if (useOnly2d) return;
         enableRotationGesture(true);
         enableTiltGesture(true);
     }

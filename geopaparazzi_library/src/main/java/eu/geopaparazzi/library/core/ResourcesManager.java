@@ -53,6 +53,7 @@ public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String PATH_TEMP = "temp"; //$NON-NLS-1$
+    private static final String PATH_PROJECTS = "projects"; //$NON-NLS-1$
 
     /**
      * The nomedia file defining folders that should not be searched for media.
@@ -66,6 +67,11 @@ public class ResourcesManager implements Serializable {
      * <p>It contains for example the json tags file and temporary files if necessary.
      */
     private File applicationSupportFolder;
+
+    /**
+     * The projects folder of geopaparazzi.
+     */
+    private File projectsFolder;//NON-NLS
 
     /**
      * The database file for geopap.
@@ -156,9 +162,9 @@ public class ResourcesManager implements Serializable {
          *
          * sdcard
          *    |
-         *    |-- applicationname.gpap -> main database
          *    |-- applicationSupportfolder
          *    |          |
+         *    |          |--- projects/ -> newly created projects folder
          *    |          |--- temp/ -> temporary files
          *    |          `--- tags.json
          *    |
@@ -219,6 +225,13 @@ public class ResourcesManager implements Serializable {
             Log.i("RESOURCESMANAGER", "Application support folder exists: " + applicationSupportFolder.exists());
         }
 
+        projectsFolder = new File(applicationSupportFolder, PATH_PROJECTS);
+        if (!projectsFolder.exists()) {
+            if (!projectsFolder.mkdir()) {
+                projectsFolder = applicationSupportFolder;
+            }
+        }
+
         /*
          * get the database file
          */
@@ -227,7 +240,7 @@ public class ResourcesManager implements Serializable {
         if (databaseFile.getParentFile() == null || !databaseFile.getParentFile().exists()) {
             // fallback on the default
             String databaseName = applicationLabel + LibraryConstants.GEOPAPARAZZI_DB_EXTENSION;
-            databaseFile = new File(mainStorageDir, databaseName);
+            databaseFile = new File(projectsFolder, databaseName);
         }
 
 
@@ -275,6 +288,21 @@ public class ResourcesManager implements Serializable {
             }
         }
         return exportFolder;
+    }
+
+    /**
+     * Get the file of the export folder.
+     *
+     * @return the export folder.
+     */
+    public File getApplicationProjectsDir() {
+        File projectsFolder = new File(applicationSupportFolder, PATH_PROJECTS);//NON-NLS
+        if (!projectsFolder.exists()) {
+            if (!projectsFolder.mkdir()) {
+                return applicationSupportFolder;
+            }
+        }
+        return projectsFolder;
     }
 
     /**

@@ -28,13 +28,14 @@ dependencies {
     api 'org.mapsforge:vtm-http:0.13.0'
     api 'org.mapsforge:vtm-mvt:0.13.0'
     api 'org.mapsforge:vtm-themes:0.13.0'
+    api files('libs/hm-dbs-0.9.14-SNAPSHOT.jar')
     implementation 'org.mapsforge:vtm-android:0.13.0:natives-armeabi-v7a'
     implementation 'org.mapsforge:vtm-android:0.13.0:natives-arm64-v8a'
     implementation 'org.mapsforge:vtm-android:0.13.0:natives-x86'
     implementation 'org.mapsforge:vtm-android:0.13.0:natives-x86_64'
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
     api 'com.caverock:androidsvg:1.4'
-    api 'com.github.woxthebox:draglistview:1.6.6'
+    api 'com.github.woxthebox:draglistview:1.7.2'
 
     // implementation 'net.sf.kxml:kxml2:2.3.0'
     // implementation "org.slf4j:slf4j-android:$slf4jVersion"
@@ -67,5 +68,4 @@ dependencies {
     // implementation project(':vtm-themes')
 
     api project(':geopaparazzi_library')
-    api fileTree(include: ['*.jar'], dir: 'libs')
 }

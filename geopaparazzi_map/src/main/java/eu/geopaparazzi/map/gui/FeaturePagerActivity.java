@@ -50,6 +50,8 @@ import eu.geopaparazzi.map.features.tools.impl.LineOnSelectionToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.PointOnSelectionToolGroup;
 import eu.geopaparazzi.map.features.tools.impl.PolygonOnSelectionToolGroup;
 import eu.geopaparazzi.map.features.tools.interfaces.ToolGroup;
+import eu.geopaparazzi.map.layers.ELayerTypes;
+import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteUtilities;
 
@@ -177,7 +179,14 @@ public class FeaturePagerActivity extends AppCompatActivity implements OnPageCha
     private void saveData() throws java.lang.Exception {
         for (Feature feature : featuresList) {
             if (feature.isDirty()) {
-                ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
+                String databasePath = feature.getDatabasePath();
+                ELayerTypes layerType = ELayerTypes.fromFileExt(databasePath);
+                ASpatialDb db = null;
+                if (layerType == ELayerTypes.SPATIALITE) {
+                    db = SpatialiteConnectionsHandler.INSTANCE.getDb(databasePath);
+                } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                    db = GeopackageConnectionsHandler.INSTANCE.getDb(databasePath);
+                }
                 SpatialiteUtilities.updateFeatureAlphanumericAttributes(db, feature);
             }
         }

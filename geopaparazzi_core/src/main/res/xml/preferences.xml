@@ -92,6 +92,11 @@
             android:order="92"
             android:summary="@string/high_density_display_sum"
             android:title="@string/high_density_display" />
+        <CheckBoxPreference
+            android:key="PREFS_KEY_ONLY2D"
+            android:order="93"
+            android:summary="@string/only2d_sum"
+            android:title="@string/only2d" />
     </PreferenceScreen>
     <!--<PreferenceScreen-->
     <!--android:order="40"-->

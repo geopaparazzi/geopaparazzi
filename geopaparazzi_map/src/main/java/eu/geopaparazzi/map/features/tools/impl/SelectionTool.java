@@ -257,7 +257,16 @@ public class SelectionTool extends MapTool {
                                         geometryType = EGeometryType.forGeometry(geometry);
                                 }
                             }
-                            if (geometryType.isPolygon()) {
+                            if (editLayer instanceof IVectorDbLayer) {
+                                IVectorDbLayer vectorDbLayer = (IVectorDbLayer) editLayer;
+                                ELayerTypes layerType = ELayerTypes.fromFileExt(vectorDbLayer.getDbPath());
+                                if (layerType == ELayerTypes.GEOPACKAGE) {
+                                    GPDialogs.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
+                                    AlphanumericOnSelectionToolGroup selectionGroup = new AlphanumericOnSelectionToolGroup(mapView, features);
+                                    EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                                }
+
+                            } else if (geometryType.isPolygon()) {
                                 GPDialogs.toast(context, String.format(context.getString(R.string.selected_features_in_layer), features.size(), geomsCount), Toast.LENGTH_SHORT);
                                 PolygonOnSelectionToolGroup selectionGroup = new PolygonOnSelectionToolGroup(mapView, features);
                                 EditManager.INSTANCE.setActiveToolGroup(selectionGroup);

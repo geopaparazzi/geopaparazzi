@@ -52,6 +52,8 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.map.R;
 import eu.geopaparazzi.map.features.Feature;
+import eu.geopaparazzi.map.layers.ELayerTypes;
+import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.layers.utils.SpatialiteConnectionsHandler;
 
 /**
@@ -181,9 +183,21 @@ public class FeaturePageAdapter extends PagerAdapter {
         Geometry defaultGeometry = feature.getDefaultGeometry();
         if (defaultGeometry != null) {
             try {
-                ASpatialDb db = SpatialiteConnectionsHandler.INSTANCE.getDb(feature.getDatabasePath());
+                String databasePath = feature.getDatabasePath();
+                ELayerTypes layerType = ELayerTypes.fromFileExt(databasePath);
+                ASpatialDb db = null;
+                if (layerType == ELayerTypes.SPATIALITE) {
+                    db = SpatialiteConnectionsHandler.INSTANCE.getDb(databasePath);
+                } else if (layerType == ELayerTypes.GEOPACKAGE) {
+                    db = GeopackageConnectionsHandler.INSTANCE.getDb(databasePath);
+                }
                 GeometryColumn gcol = db.getGeometryColumnsForTable(feature.getTableName());
-                Geometry reprojected = db.reproject(defaultGeometry, LibraryConstants.SRID_WGS84_4326, gcol.srid);
+                Geometry reprojected=defaultGeometry;
+                try {
+                    reprojected = db.reproject(defaultGeometry, LibraryConstants.SRID_WGS84_4326, gcol.srid);
+                }catch (Exception e){
+                    // ignore, if the format doesn't support it, it needs to be 4326
+                }
 
                 TextView areaTextView = new TextView(context);
                 areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
