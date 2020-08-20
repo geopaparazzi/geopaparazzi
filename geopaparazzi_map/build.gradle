@@ -20,8 +20,8 @@ android {
 }
 
 dependencies {
-    api 'androidx.appcompat:appcompat:1.1.0'
-    api 'com.google.android.material:material:1.1.0'
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'com.google.android.material:material:1.2.0'
 
     api 'org.mapsforge:vtm:0.13.0'
     api 'org.mapsforge:vtm-android:0.13.0'

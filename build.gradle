@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.1'
+        classpath 'com.android.tools.build:gradle:4.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -23,10 +23,10 @@ allprojects {
         myVersionCode = 99
         myVersionName = "6.0.3"
 
-        mycompileSdkVersion = 28
+        mycompileSdkVersion = 29
         mybuildToolsVersion = "29.0.2"
         myminSdkVersion = 21
-        mytargetSdkVersion = 28
+        mytargetSdkVersion = 29
 
         gdxVersion = "1.9.9"
         gwtVersion = "2.8.2"

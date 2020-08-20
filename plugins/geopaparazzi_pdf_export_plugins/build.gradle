@@ -17,7 +17,7 @@ android {
 }
 
 dependencies {
-    api 'androidx.appcompat:appcompat:1.0.2'
+    api 'androidx.appcompat:appcompat:1.2.0'
 
     implementation project(':geopaparazzi_core')
     implementation 'com.itextpdf:itextg:5.5.10'
