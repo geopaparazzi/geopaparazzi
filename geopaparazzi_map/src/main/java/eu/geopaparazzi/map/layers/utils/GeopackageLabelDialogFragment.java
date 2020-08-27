@@ -18,7 +18,6 @@
 
 package eu.geopaparazzi.map.layers.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -43,7 +42,6 @@ import java.util.List;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.style.ColorUtilities;
 import eu.geopaparazzi.library.style.LabelObject;
 
 

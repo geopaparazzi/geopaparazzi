@@ -17,45 +17,19 @@
  */
 package eu.geopaparazzi.core.mapview;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.location.Location;
-import androidx.preference.PreferenceManager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
-
-import org.hortonmachine.dbs.utils.MercatorUtils;
-import org.locationtech.jts.geom.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.geopaparazzi.core.GeopaparazziApplication;
-import eu.geopaparazzi.core.R;
-import eu.geopaparazzi.core.utilities.Constants;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.map.GPMapView;
 import eu.geopaparazzi.map.features.editing.EditManager;
 import eu.geopaparazzi.map.features.editing.EditingView;
 import eu.geopaparazzi.map.features.tools.MapTool;
 import eu.geopaparazzi.map.layers.interfaces.IGpLayer;
 import eu.geopaparazzi.map.layers.interfaces.ILabeledLayer;
-import eu.geopaparazzi.map.layers.interfaces.IVectorDbLayer;
-import eu.geopaparazzi.map.layers.userlayers.GeopackageTableLayer;
-import eu.geopaparazzi.map.layers.userlayers.GeopackageTilesLayer;
-import eu.geopaparazzi.map.layers.utils.GeopackageConnectionsHandler;
 import eu.geopaparazzi.map.proj.OverlayViewProjection;
-
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
 
 /**
  * A tool to measure by means of drawing on the map.

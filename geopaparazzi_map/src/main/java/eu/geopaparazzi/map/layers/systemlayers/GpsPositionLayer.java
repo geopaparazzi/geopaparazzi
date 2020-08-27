@@ -8,13 +8,8 @@ import androidx.preference.PreferenceManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oscim.backend.canvas.Bitmap;
-import org.oscim.backend.canvas.Color;
 import org.oscim.layers.LocationTextureLayer;
 import org.oscim.map.Layers;
-import org.oscim.map.Map;
-import org.oscim.renderer.atlas.TextureAtlas;
-import org.oscim.renderer.atlas.TextureRegion;
-import org.oscim.renderer.bucket.TextureItem;
 
 import java.io.IOException;
 

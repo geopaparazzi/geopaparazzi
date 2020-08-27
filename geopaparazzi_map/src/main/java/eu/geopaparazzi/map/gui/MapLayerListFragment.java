@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.woxthebox.draglistview.BoardView;
-import com.woxthebox.draglistview.ColumnProperties;
 import com.woxthebox.draglistview.DragItem;
 import com.woxthebox.draglistview.DragItemAdapter;
 

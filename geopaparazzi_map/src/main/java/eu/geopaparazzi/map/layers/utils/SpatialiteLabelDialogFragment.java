@@ -35,8 +35,6 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 import org.hortonmachine.dbs.compat.ASpatialDb;
-import org.hortonmachine.dbs.geopackage.android.GPGeopackageDb;
-import org.hortonmachine.dbs.utils.BasicStyle;
 
 import java.util.List;
 
