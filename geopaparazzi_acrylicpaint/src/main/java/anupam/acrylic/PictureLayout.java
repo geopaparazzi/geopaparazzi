@@ -119,7 +119,6 @@ public class PictureLayout extends ViewGroup {
         canvas.restore();
     }
 
-    @SuppressWarnings("unused")
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(mPicture.beginRecording(getWidth(), getHeight()));

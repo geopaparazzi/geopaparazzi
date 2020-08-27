@@ -40,11 +40,9 @@ public class ColorPickerDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        OnColorChangedListener l = new OnColorChangedListener() {
-            public void colorChanged(int color) {
-                mListener.colorChanged(color);
-                dismiss();
-            }
+        OnColorChangedListener l = color -> {
+            mListener.colorChanged(color);
+            dismiss();
         };
 
         setContentView(new ColorPickerView(getContext(), l, mInitialColor));
@@ -119,8 +117,7 @@ public class ColorPickerDialog extends Dialog {
         }
 
         private int floatToByte(float x) {
-            int n = java.lang.Math.round(x);
-            return n;
+            return Math.round(x);
         }
 
         private int pinToByte(int n) {
@@ -133,7 +130,7 @@ public class ColorPickerDialog extends Dialog {
         }
 
         private int ave(int s, int d, float p) {
-            return s + java.lang.Math.round(p * (d - s));
+            return s + Math.round(p * (d - s));
         }
 
         private int interpColor(int[] colors, float unit) {
@@ -159,7 +156,6 @@ public class ColorPickerDialog extends Dialog {
             return Color.argb(a, r, g, b);
         }
 
-        @SuppressWarnings("unused")
         private int rotateColor(int color, float rad) {
             float deg = rad * 180 / 3.1415927f;
             int r = Color.red(color);
@@ -191,7 +187,7 @@ public class ColorPickerDialog extends Dialog {
         public boolean onTouchEvent(MotionEvent event) {
             float x = event.getX() - CENTER_X;
             float y = event.getY() - CENTER_Y;
-            boolean inCenter = java.lang.Math.sqrt(x * x + y * y) <= CENTER_RADIUS;
+            boolean inCenter = Math.sqrt(x * x + y * y) <= CENTER_RADIUS;
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -208,7 +204,7 @@ public class ColorPickerDialog extends Dialog {
                             invalidate();
                         }
                     } else {
-                        float angle = (float) java.lang.Math.atan2(y, x);
+                        float angle = (float) Math.atan2(y, x);
                         // need to turn angle [-PI ... PI] into unit [0....1]
                         float unit = angle / (2 * PI);
                         if (unit < 0) {

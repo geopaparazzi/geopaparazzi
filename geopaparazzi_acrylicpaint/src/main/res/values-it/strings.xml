@@ -11,9 +11,10 @@
     <string name="clear_all">Pulisci tutto</string>
     <string name="save">Salva</string>
     <string name="share">Condividi</string>
-    <string name="about">Info</string>
+    <string name="about">Informazioni</string>
     <string name="open_image">Apri immagine come sfondo</string>
-    <string name="your_selected_size_is">Dimensione scelta: %1$s</string>
+    <string name="fill_background_with_color">Riempi sfondo</string>
+    <string name="your_selected_size_is">Dimensione scelta: %1$d</string>
     <string name="choose_width">Scegli dimensione:</string>
     <string name="saved_your_location_to">La tua creazione è stata salvata in %1$s</string>
     <string name="select">Seleziona</string>
@@ -26,7 +27,7 @@
     <string name="no_way_to_share">Non risulta alcuna app con cui condividere la tua opera…</string>
     <string name="normal">Matita</string>
     <string name="title_activity_about">Informazioni</string>
-    <string name="press_back_again">Premi ancora per uscire!</string>
+    <string name="press_back_again">Premi ancora per uscire!\n(Hai salvato?)</string>
     <string name="about_description">
 <![CDATA[
 <h1>Acrylic Paint</h1>
@@ -54,4 +55,9 @@ Ciò è per permettere a chiunque di usare, studiare, migliorare e ricondividere
     ]]>
     </string>
     <string name="select_image_to_open">Seleziona l\'immagine da aprire</string>
+    <string name="extract_color">Preleva un colore</string>
+    <string name="color_extracted">Colore prelevato</string>
+    <string name="tap_to_extract_color">Premi ovunque per prelevare un colore</string>
+    <string name="ability_disabled_need_newer_api_level">Questa funzionalità è disabilitata poiché richiede una versione di Android più aggiornata (almeno API 17).</string>
+    <string name="smudge">Sfuma</string>
 </resources>

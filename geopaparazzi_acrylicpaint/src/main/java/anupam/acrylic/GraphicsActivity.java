@@ -31,7 +31,6 @@ class GraphicsActivity extends Activity {
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void setContentView(View view) {
         if (false) { // set to true to test Picture

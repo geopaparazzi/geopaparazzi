@@ -16,7 +16,7 @@
     <string name="about">About</string>
     <string name="open_image">Open image as background</string>
     <string name="fill_background_with_color">Fill background with color</string>
-    <string name="your_selected_size_is">Selected size: %1$s</string>
+    <string name="your_selected_size_is">Selected size: %1$d</string>
     <string name="choose_width">Brush size</string>
     <string name="saved_your_location_to">Saved your artwork to %1$s</string>
     <string name="select">Select</string>
@@ -40,7 +40,7 @@
 <b><a href="https://github.com/anupam1525>Anupam Shrivastava</a></b> for the former version of Acrylic Paint. Now he's inactive.<br>
 <b><a href="https://github.com/valerio-bozzolan">Valerio Bozzolan</a></b> for the great work done reviewing the source code and optimising it. He currently carries on the work for this version of AcrylicPaint.<br>
 <b><a href="https://github.com/marcogagino-22">Marco Gagino</a></b> for the thorough restyling and the great participation!
-</p>    
+</p>
 
 <h2>Licenses</h2>
 <p>This version of Acrylic Paint and its source code are released by <a href="https://boz.reyboz.it">Valerio Bozzolan</a> under the
@@ -54,7 +54,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
 <p>Contribute to the source code: <a href="https://github.com/valerio-bozzolan/AcrylicPaint">valerio-bozzolan/AcrylicPaint</a> @GitHub.</p>
 <p>Read the <a href="https://github.com/valerio-bozzolan/AcrylicPaint/blob/master/README.md">README</a> file for further information.</p>
 
-<p>Have fun!</p> 
+<p>Have fun!</p>
     ]]>
     </string>
     <string name="select_image_to_open">Select image to open</string>

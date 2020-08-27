@@ -39,13 +39,14 @@ import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
+import android.renderscript.RSIllegalArgumentException;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
@@ -170,13 +171,12 @@ public class EasyPaint extends GraphicsActivity implements
             Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.RGB_565, true);
             v.destroyDrawingCache();
             FileOutputStream output = null;
-            File file = null;
+            File file;
             try {
                 file = new File(outputFilePath);
                 output = new FileOutputStream(file);
                 copyBitmap.compress(CompressFormat.PNG, 100, output);
             } catch (FileNotFoundException e) {
-                file = null;
                 e.printStackTrace();
             } finally {
                 if (output != null) {
@@ -223,13 +223,7 @@ public class EasyPaint extends GraphicsActivity implements
         Toast.makeText(this, R.string.press_back_again, Toast.LENGTH_SHORT)
                 .show();
 
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 3000);
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 3000);
     }
 
     public void colorChanged(int color) {
@@ -240,6 +234,10 @@ public class EasyPaint extends GraphicsActivity implements
             //colors[ 0 ] = color;
             //contentView.mBitmapBackground = Bitmap.createBitmap( colors, contentView.mBitmapBackground.getWidth(), contentView.mBitmapBackground.getHeight(), contentView.mBitmapBackground.getConfig() );
         } else {
+            // Changes the color of the action bar when the pencil color is changed
+            ActionBar actionBar = getActionBar();
+            ColorDrawable colorDrawable = new ColorDrawable(color);
+            actionBar.setBackgroundDrawable(colorDrawable);
             mPaint.setColor(color);
         }
     }
@@ -477,39 +475,37 @@ public class EasyPaint extends GraphicsActivity implements
             mPaint.setMaskFilter(mEmboss);
             return true;
         } else if (i1 == R.id.smudge_menu) {
-            if (Build.VERSION.SDK_INT >= 17) {
-                /* Basically what we're doing here is copying the entire foreground bitmap,
-                 * blurring it, then telling mPaint to use that instead of a solid color.
-                 */
+            /* Basically what we're doing here is copying the entire foreground bitmap,
+             * blurring it, then telling mPaint to use that instead of a solid color.
+             */
 
-                RenderScript rs = RenderScript.create(getApplicationContext());
-                ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.RGBA_8888(rs));
-                script.setRadius(20f); //The radius must be between 0 and 25. Smaller radius means less blur. I just picked 20 randomly. ~TheOpenSourceNinja
-
-                //copy the foreground: (n API level 18+, this will be really fast because it uses a shared memory model, thus not really copying everything)
-                Allocation input = Allocation.createFromBitmap(rs, contentView.mBitmap);
-                script.setInput(input);
-
-                //allocate memory for the output:
-                Allocation output = Allocation.createTyped(rs, input.getType());
-
-                //Blur the image:
-                script.forEach(output);
-
-                //Store the blurred image as a Bitmap object:
-                Bitmap blurred = Bitmap.createBitmap(contentView.mBitmap);
-                output.copyTo(blurred);
-
-                //Tell mPaint to use the blurred image:
-                Shader shader = new BitmapShader(blurred, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                mPaint.setShader(shader);
-                return true;
-            } else {
-                Toast.makeText(this.getApplicationContext(),
-                        R.string.ability_disabled_need_newer_api_level,
-                        Toast.LENGTH_LONG).show();
-                return true;
+            RenderScript rs = RenderScript.create(getApplicationContext());
+            ScriptIntrinsicBlur script;
+            try {
+                script = ScriptIntrinsicBlur.create(rs, Element.RGBA_8888(rs));
+            } catch (RSIllegalArgumentException e) {
+                script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
             }
+            script.setRadius(20f); //The radius must be between 0 and 25. Smaller radius means less blur. I just picked 20 randomly. ~TheOpenSourceNinja
+
+            //copy the foreground: (n API level 18+, this will be really fast because it uses a shared memory model, thus not really copying everything)
+            Allocation input = Allocation.createFromBitmap(rs, contentView.mBitmap);
+            script.setInput(input);
+
+            //allocate memory for the output:
+            Allocation output = Allocation.createTyped(rs, input.getType());
+
+            //Blur the image:
+            script.forEach(output);
+
+            //Store the blurred image as a Bitmap object:
+            Bitmap blurred = Bitmap.createBitmap(contentView.mBitmap);
+            output.copyTo(blurred);
+
+            //Tell mPaint to use the blurred image:
+            Shader shader = new BitmapShader(blurred, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mPaint.setShader(shader);
+            return true;
         } else if (i1 == R.id.blur_menu) {
             mPaint.setShader(null);
             mPaint.setMaskFilter(mBlur);
@@ -609,7 +605,7 @@ public class EasyPaint extends GraphicsActivity implements
         Bitmap copyBitmap = cachedBitmap.copy(Bitmap.Config.RGB_565, true);
         v.destroyDrawingCache();
         FileOutputStream output = null;
-        File file = null;
+        File file;
         try {
             File path = Places.getScreenshotFolder();
             Calendar cal = Calendar.getInstance();
@@ -678,11 +674,12 @@ public class EasyPaint extends GraphicsActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != RESULT_CANCELED) { //"The resultCode will be RESULT_CANCELED if the activity explicitly returned that, didn't return any result, or crashed during its operation." (quote from https://developer.android.com/reference/android/app/Activity.html#onActivityResult(int,%20int,%20android.content.Intent) )
-            switch (requestCode) {
-                case CHOOSE_IMAGE: {
-                    setBackgroundUri(data.getData());
-                }
+        if (resultCode != RESULT_CANCELED) {
+            //"The resultCode will be RESULT_CANCELED if the activity explicitly returned that,
+            // didn't return any result, or crashed during its operation."
+            // (quote from https://developer.android.com/reference/android/app/Activity.html#onActivityResult(int,%20int,%20android.content.Intent))
+            if (requestCode == CHOOSE_IMAGE) {
+                setBackgroundUri(data.getData());
             }
         }
     }

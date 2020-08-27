@@ -24,7 +24,7 @@
     <string name="share_title_template">Посмотрите на то, что я нарисовал с помощью Acrylic Paint! --- Acrylic Paint (Простое рисование пальцем) - https://f-droid.org/app/anupam.acrylic</string>
     <string name="title_activity_about">О программе</string>
     <string name="toolbox_share_title">Поделиться</string>
-    <string name="your_selected_size_is">Выбранный размер: %1$s</string>
+    <string name="your_selected_size_is">Выбранный размер: %1$d</string>
     <string name="app_description">Acrylic Paint - это Свободное Программное Обеспечение, которое позволяет вам свободно творить!\n\nНажмите на меню для отображения других опций.\n\nБлагодарю Anupam Shrivastava за идею, Valerio Bozzolan за возрождение проекта и физика Marco Gagino за потрясающую поддержку. Спасибо всем участникам!\n\nСчастливого рисования :)</string>
     <string name="about_description">
 <![CDATA[
