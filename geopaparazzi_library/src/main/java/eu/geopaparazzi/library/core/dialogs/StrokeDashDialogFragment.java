@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.library.core.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
@@ -213,11 +214,11 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IDashStrokePropertiesChangeListener) {
-            iDashStrokePropertiesChangeListener = (IDashStrokePropertiesChangeListener) activity;
+        if (context instanceof IDashStrokePropertiesChangeListener) {
+            iDashStrokePropertiesChangeListener = (IDashStrokePropertiesChangeListener) context;
         }
     }
 

@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.core.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
@@ -174,11 +175,11 @@ public class AddNoteLayoutDialogFragment extends DialogFragment {
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IAddNotesLayoutChangeListener) {
-            layoutChangeListener = (IAddNotesLayoutChangeListener) activity;
+        if (context instanceof IAddNotesLayoutChangeListener) {
+            layoutChangeListener = (IAddNotesLayoutChangeListener) context;
         }
     }
 

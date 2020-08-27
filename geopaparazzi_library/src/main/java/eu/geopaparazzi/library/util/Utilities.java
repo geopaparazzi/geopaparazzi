@@ -317,7 +317,7 @@ public class Utilities {
      */
     public static float getAvailableMegabytes(File file) {
         StatFs stat = new StatFs(file.getPath());
-        long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
+        long bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
         return bytesAvailable / (1024.f * 1024.f);
     }
 
@@ -329,7 +329,7 @@ public class Utilities {
      */
     public static float getFilesystemMegabytes(File file) {
         StatFs stat = new StatFs(file.getPath());
-        long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+        long bytes = stat.getBlockSizeLong() * stat.getBlockCountLong();
         return bytes / (1024.f * 1024.f);
     }
 

@@ -228,7 +228,7 @@ public class GpsServiceUtilities {
                 Context appContext = context.getApplicationContext();
                 ApplicationInfo appInfo = appContext.getApplicationInfo();
                 String applicationId = appInfo.packageName;
-                isMockLocation = (opsManager.checkOp(AppOpsManager.OPSTR_MOCK_LOCATION, android.os.Process.myUid(), applicationId) == AppOpsManager.MODE_ALLOWED);
+                isMockLocation = (opsManager.unsafeCheckOp(AppOpsManager.OPSTR_MOCK_LOCATION, android.os.Process.myUid(), applicationId) == AppOpsManager.MODE_ALLOWED);
             } else {
                 // in marshmallow this will always return true
                 isMockLocation = !android.provider.Settings.Secure.getString(context.getContentResolver(), "mock_location").equals("0"); //NON-NLS

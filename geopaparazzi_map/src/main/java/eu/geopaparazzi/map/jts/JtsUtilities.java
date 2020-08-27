@@ -70,7 +70,7 @@ public class JtsUtilities {
      * @return the created points.
      */
     public static MultiPoint createPoints(List<Coordinate> coordinatesList) {
-        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        MultiPoint multiPoints = gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         return multiPoints;
     }
 
@@ -81,7 +81,7 @@ public class JtsUtilities {
      * @return the created points.
      */
     public static Geometry createVertexBuffers(List<Coordinate> coordinatesList) {
-        MultiPoint multiPoints = gf.createMultiPoint(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        MultiPoint multiPoints = gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
         Geometry buffer = multiPoints.buffer(0.0001);
         return buffer;
     }

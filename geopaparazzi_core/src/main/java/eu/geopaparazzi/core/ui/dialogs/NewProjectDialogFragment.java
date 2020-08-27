@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.core.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
@@ -142,11 +143,11 @@ public class NewProjectDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IApplicationChangeListener) {
-            appChangeListener = (IApplicationChangeListener) activity;
+        if (context instanceof IApplicationChangeListener) {
+            appChangeListener = (IApplicationChangeListener) context;
         }
     }
 

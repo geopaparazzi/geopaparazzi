@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.core.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.core.R;
@@ -108,11 +109,11 @@ public class AddMetadataDialogFragment extends DialogFragment implements TextWat
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof ISimpleChangeListener) {
-            simpleChangeListener = (ISimpleChangeListener) activity;
+        if (context instanceof ISimpleChangeListener) {
+            simpleChangeListener = (ISimpleChangeListener) context;
         }
     }
 

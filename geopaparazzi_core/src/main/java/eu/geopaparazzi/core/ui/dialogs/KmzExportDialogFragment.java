@@ -18,7 +18,6 @@
 
 package eu.geopaparazzi.core.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -29,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
@@ -256,9 +256,9 @@ public class KmzExportDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Context context) {
 
-        super.onAttach(activity);
+        super.onAttach(context);
 
     }
 

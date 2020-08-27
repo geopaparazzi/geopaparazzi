@@ -27,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -348,7 +349,7 @@ public class LineCreateFeatureToolGroup implements ToolGroup, OnClickListener, O
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
+                v.getBackground().setColorFilter(new PorterDuffColorFilter(buttonSelectionColor, Mode.SRC_ATOP));
                 v.invalidate();
                 break;
             }

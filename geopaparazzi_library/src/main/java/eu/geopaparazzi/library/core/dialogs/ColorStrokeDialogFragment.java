@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.library.core.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,6 +43,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.library.R;
@@ -341,11 +342,11 @@ public class ColorStrokeDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IColorStrokePropertiesChangeListener) {
-            colorStrokePropertiesChangeListener = (IColorStrokePropertiesChangeListener) activity;
+        if (context instanceof IColorStrokePropertiesChangeListener) {
+            colorStrokePropertiesChangeListener = (IColorStrokePropertiesChangeListener) context;
         }
     }
 

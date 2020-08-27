@@ -72,8 +72,7 @@ public class DatabaseListFragment extends ListFragment implements LoaderManager.
                 mCursorAdapter = new DbCursorAdapter(getActivity(), null);
                 setListAdapter(mCursorAdapter);
 
-                LoaderManager loaderManager = getLoaderManager();
-                loaderManager.initLoader(LOADER_ID, null, this);
+                LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
             }
         } catch (Exception e) {
             String msg = getString(R.string.error_launching_query) + mSql;

@@ -3,6 +3,7 @@ package eu.geopaparazzi.map.features.tools.impl;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -201,7 +202,7 @@ public class PointMainEditingToolGroup implements ToolGroup, OnClickListener, On
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                v.getBackground().setColorFilter(selectionColor, Mode.SRC_ATOP);
+                v.getBackground().setColorFilter(new PorterDuffColorFilter(selectionColor, Mode.SRC_ATOP));
                 v.invalidate();
                 break;
             }

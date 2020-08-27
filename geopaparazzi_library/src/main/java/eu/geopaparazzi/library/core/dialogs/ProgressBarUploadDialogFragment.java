@@ -1,8 +1,8 @@
 package eu.geopaparazzi.library.core.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -140,11 +141,11 @@ public class ProgressBarUploadDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IProgressChangeListener) {
-            iProgressChangeListener = (IProgressChangeListener) activity;
+        if (context instanceof IProgressChangeListener) {
+            iProgressChangeListener = (IProgressChangeListener) context;
         }
     }
 

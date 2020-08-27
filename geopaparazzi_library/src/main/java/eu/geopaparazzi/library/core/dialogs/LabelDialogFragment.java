@@ -18,9 +18,9 @@
 
 package eu.geopaparazzi.library.core.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +33,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.List;
@@ -164,11 +165,11 @@ public class LabelDialogFragment extends DialogFragment {
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof ILabelPropertiesChangeListener) {
-            labelPropertiesChangeListener = (ILabelPropertiesChangeListener) activity;
+        if (context instanceof ILabelPropertiesChangeListener) {
+            labelPropertiesChangeListener = (ILabelPropertiesChangeListener) context;
         }
     }
 

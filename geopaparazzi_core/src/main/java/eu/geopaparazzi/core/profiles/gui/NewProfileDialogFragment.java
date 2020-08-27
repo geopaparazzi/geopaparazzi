@@ -18,14 +18,15 @@
 
 package eu.geopaparazzi.core.profiles.gui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Date;
@@ -122,11 +123,11 @@ public class NewProfileDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof INewProfileCreatedListener) {
-            iNewProfileCreatedListener = (INewProfileCreatedListener) activity;
+        if (context instanceof INewProfileCreatedListener) {
+            iNewProfileCreatedListener = (INewProfileCreatedListener) context;
         }
     }
 

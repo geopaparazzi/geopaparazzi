@@ -18,15 +18,16 @@
 
 package eu.geopaparazzi.library.core.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import eu.geopaparazzi.library.R;
@@ -134,11 +135,11 @@ public class InsertCoordinatesDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        if (activity instanceof IInsertCoordinateListener) {
-            insertCoordinateListener = (IInsertCoordinateListener) activity;
+        if (context instanceof IInsertCoordinateListener) {
+            insertCoordinateListener = (IInsertCoordinateListener) context;
         }
     }
 
