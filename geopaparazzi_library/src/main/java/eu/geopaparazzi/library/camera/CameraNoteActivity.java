@@ -24,8 +24,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
+import androidx.preference.PreferenceManager;
 
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.DefaultHelperClasses;

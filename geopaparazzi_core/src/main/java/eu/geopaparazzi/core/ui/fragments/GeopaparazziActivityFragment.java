@@ -14,7 +14,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.system.Os;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -692,7 +692,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
         /*
          * check the logging system
          */
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
         GPLogPreferencesHandler.checkLog(preferences);
         GPLogPreferencesHandler.checkLogHeavy(preferences);
         GPLogPreferencesHandler.checkLogAbsurd(preferences);

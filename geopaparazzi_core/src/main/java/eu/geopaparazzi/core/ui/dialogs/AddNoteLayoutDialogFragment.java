@@ -24,13 +24,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.ui.activities.AddNotesActivity;
@@ -72,7 +72,7 @@ public class AddNoteLayoutDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
 
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
         int gridColumnCount = preferences.getInt(AddNotesActivity.PREFS_KEY_GUICOLUMNCOUNT,
                 AddNotesActivity.DEFAULT_GUICOLUMNCOUNT);
         int textsizeFactor = preferences.getInt(AddNotesActivity.PREFS_KEY_GUITEXTSIZEFACTOR,

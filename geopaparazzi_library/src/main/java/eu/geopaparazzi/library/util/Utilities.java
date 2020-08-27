@@ -24,11 +24,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.StatFs;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import androidx.core.content.FileProvider;
+import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

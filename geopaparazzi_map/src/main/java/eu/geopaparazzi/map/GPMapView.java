@@ -6,8 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.preference.PreferenceManager;
 import android.view.View;
+
+import androidx.preference.PreferenceManager;
 
 import org.oscim.backend.canvas.Color;
 import org.oscim.core.BoundingBox;

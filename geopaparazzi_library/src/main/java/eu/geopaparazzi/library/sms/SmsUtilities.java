@@ -23,10 +23,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

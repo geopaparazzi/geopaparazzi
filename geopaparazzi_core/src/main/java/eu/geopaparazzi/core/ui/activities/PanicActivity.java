@@ -21,13 +21,13 @@ package eu.geopaparazzi.core.ui.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 import eu.geopaparazzi.core.R;
 import eu.geopaparazzi.core.utilities.Constants;

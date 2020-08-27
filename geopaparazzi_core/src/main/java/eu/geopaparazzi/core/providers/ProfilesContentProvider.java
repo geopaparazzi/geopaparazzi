@@ -7,12 +7,14 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import eu.geopaparazzi.library.profiles.Profile;
 import eu.geopaparazzi.library.profiles.ProfilesHandler;
@@ -47,7 +49,7 @@ public class ProfilesContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection,
                         String selection, String[] selectionArgs, String sortOrder) {
-        SharedPreferences mPeferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences mPeferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getContext()));
         List<Profile> mAvailableProfiles = new ArrayList<>();
         try {
             mAvailableProfiles = ProfilesHandler.INSTANCE.getProfilesFromPreferences(mPeferences);

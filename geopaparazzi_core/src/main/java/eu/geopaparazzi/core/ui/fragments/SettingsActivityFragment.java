@@ -4,11 +4,12 @@ package eu.geopaparazzi.core.ui.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,14 +17,13 @@ import java.util.Map;
 import eu.geopaparazzi.core.R;
 
 public class SettingsActivityFragment
-        extends PreferenceFragment
+        extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     // creates preferences GUI from preferences.xml file in res/xml
     SharedPreferences sharedPreferences;
 
     @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences); // load from XML
     }
 

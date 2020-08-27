@@ -20,7 +20,8 @@ package eu.geopaparazzi.plugins.profileexport;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import eu.geopaparazzi.core.utilities.Constants;
 import eu.geopaparazzi.library.network.NetworkUtilities;

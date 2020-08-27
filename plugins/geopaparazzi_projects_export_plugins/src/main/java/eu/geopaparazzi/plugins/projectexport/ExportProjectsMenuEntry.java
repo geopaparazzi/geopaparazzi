@@ -19,7 +19,8 @@ package eu.geopaparazzi.plugins.projectexport;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import eu.geopaparazzi.core.ui.dialogs.StageExportDialogFragment;
 import eu.geopaparazzi.core.utilities.Constants;
