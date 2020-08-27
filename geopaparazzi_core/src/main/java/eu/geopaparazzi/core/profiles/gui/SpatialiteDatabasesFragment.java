@@ -160,30 +160,28 @@ public class SpatialiteDatabasesFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (RETURNCODE_BROWSE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (path != null && new File(path).exists()) {
-                        ProfileSpatialitemaps spatialitemap = new ProfileSpatialitemaps();
+        if (requestCode == RETURNCODE_BROWSE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (path != null && new File(path).exists()) {
+                    ProfileSpatialitemaps spatialitemap = new ProfileSpatialitemaps();
 
-                        String sdcardPath = profile.getSdcardPath();
+                    String sdcardPath = profile.getSdcardPath();
 
-                        if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
-                            return;
-                        }
+                    if (!path.contains(sdcardPath)) {
+                        GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
+                        return;
+                    }
 
-                        String relativePath = path.replaceFirst(sdcardPath, "");
-                        spatialitemap.setRelativePath(relativePath);
+                    String relativePath = path.replaceFirst(sdcardPath, "");
+                    spatialitemap.setRelativePath(relativePath);
 
-                        if (!mSpatialiteDbsList.contains(spatialitemap)) {
-                            mSpatialiteDbsList.add(spatialitemap);
+                    if (!mSpatialiteDbsList.contains(spatialitemap)) {
+                        mSpatialiteDbsList.add(spatialitemap);
 
-                            ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                            activity.onSpatialitedbAdded(relativePath);
-                            refreshList();
-                        }
+                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+                        activity.onSpatialitedbAdded(relativePath);
+                        refreshList();
                     }
                 }
             }

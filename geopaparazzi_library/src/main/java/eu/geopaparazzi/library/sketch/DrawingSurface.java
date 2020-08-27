@@ -101,7 +101,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         public void run() {
             Canvas canvas = null;
             while (_run) {
-                if (isDrawing == true) {
+                if (isDrawing) {
                     try {
                         canvas = mSurfaceHolder.lockCanvas(null);
                         if (mBitmap == null) {

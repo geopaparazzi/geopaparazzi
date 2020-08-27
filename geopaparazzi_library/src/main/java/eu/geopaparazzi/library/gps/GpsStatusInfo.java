@@ -105,21 +105,19 @@ public class GpsStatusInfo {
      */
     @SuppressWarnings("nls")
     public static boolean checkFix(boolean hasFix, long lastLocationUpdateMillis, int event) {
-        switch (event) {
-            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                long diff = SystemClock.elapsedRealtime() - lastLocationUpdateMillis;
-                if (GPLog.LOG_ABSURD)
-                    GPLog.addLogEntry("GPSSTATUSINFO", "gps event diff: " + diff);
-                if (diff < FIX_TIME_INTERVAL_CHECK) {
-                    if (!hasFix) {
-                        hasFix = true;
-                    }
-                } else {
-                    if (hasFix) {
-                        hasFix = false;
-                    }
+        if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
+            long diff = SystemClock.elapsedRealtime() - lastLocationUpdateMillis;
+            if (GPLog.LOG_ABSURD)
+                GPLog.addLogEntry("GPSSTATUSINFO", "gps event diff: " + diff);
+            if (diff < FIX_TIME_INTERVAL_CHECK) {
+                if (!hasFix) {
+                    hasFix = true;
                 }
-                break;
+            } else {
+                if (hasFix) {
+                    hasFix = false;
+                }
+            }
         }
         return hasFix;
     }

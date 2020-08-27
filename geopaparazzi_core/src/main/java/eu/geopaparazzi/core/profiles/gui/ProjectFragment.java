@@ -105,24 +105,22 @@ public class ProjectFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (RETURNCODE_BROWSE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                    if (path != null && new File(path).exists()) {
-                        String sdcardPath = profile.getSdcardPath();
+        if (requestCode == RETURNCODE_BROWSE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String path = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (path != null && new File(path).exists()) {
+                    String sdcardPath = profile.getSdcardPath();
 
-                        if (!path.contains(sdcardPath)) {
-                            GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
-                            return;
-                        }
-
-                        String relativePath = path.replaceFirst(sdcardPath, "");
-
-                        setProjectData(path);
-                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        activity.onProjectPathChanged(relativePath);
+                    if (!path.contains(sdcardPath)) {
+                        GPDialogs.warningDialog(getActivity(), getString(R.string.data_need_to_reside_in_same_path), null);
+                        return;
                     }
+
+                    String relativePath = path.replaceFirst(sdcardPath, "");
+
+                    setProjectData(path);
+                    ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+                    activity.onProjectPathChanged(relativePath);
                 }
             }
         }

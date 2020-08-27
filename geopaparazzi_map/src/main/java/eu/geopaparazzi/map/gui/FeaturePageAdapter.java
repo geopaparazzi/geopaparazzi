@@ -234,23 +234,20 @@ public class FeaturePageAdapter extends PagerAdapter {
 
     private TextView getEditView(final Feature feature, final String fieldName, EDataType type, String value) {
         final TextView editView;
-        switch (type) {
-            case DATE:
-                editView = new TextView(context);
-                editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-                editView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        FeaturePageAdapter.this.openDatePicker((EditText) view);
-                    }
-                });
-                if (value == null || value.equals("")) {
-                    value = "____-__-__";
+        if (type == EDataType.DATE) {
+            editView = new TextView(context);
+            editView.setInputType(InputType.TYPE_CLASS_DATETIME);
+            editView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FeaturePageAdapter.this.openDatePicker((EditText) view);
                 }
-                break;
-            default:
-                editView = new EditText(context);
-                break;
+            });
+            if (value == null || value.equals("")) {
+                value = "____-__-__";
+            }
+        } else {
+            editView = new EditText(context);
         }
         editView.setText(value);
 

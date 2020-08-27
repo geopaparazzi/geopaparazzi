@@ -628,24 +628,21 @@ public class NotesListActivity extends AppCompatActivity {
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (NotesLayer.FORMUPDATE_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
-                    if (formInfoHolder != null) {
-                        try {
-                            long noteId = formInfoHolder.noteId;
-                            String nameStr = formInfoHolder.renderingLabel;
-                            String jsonStr = formInfoHolder.sectionObjectString;
+        if (requestCode == NotesLayer.FORMUPDATE_RETURN_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                FormInfoHolder formInfoHolder = (FormInfoHolder) data.getSerializableExtra(FormInfoHolder.BUNDLE_KEY_INFOHOLDER);
+                if (formInfoHolder != null) {
+                    try {
+                        long noteId = formInfoHolder.noteId;
+                        String nameStr = formInfoHolder.renderingLabel;
+                        String jsonStr = formInfoHolder.sectionObjectString;
 
-                            DaoNotes.updateForm(noteId, nameStr, jsonStr);
-                        } catch (Exception e) {
-                            GPLog.error(this, null, e);
-                            GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
-                        }
+                        DaoNotes.updateForm(noteId, nameStr, jsonStr);
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                        GPDialogs.warningDialog(this, getString(eu.geopaparazzi.library.R.string.notenonsaved), null);
                     }
                 }
-                break;
             }
         }
     }

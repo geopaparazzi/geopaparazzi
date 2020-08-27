@@ -174,11 +174,10 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer,
                                     .scaleZoomLevel(19)
                                     .build();
                             drawable = new GPPointDrawable(c.y, c.x, pointThemeStyle, id);
-                            add((Drawable) drawable);
                         } else {
                             drawable = new GPPointDrawable(c.y, c.x, pointStyle, id);
-                            add((Drawable) drawable);
                         }
+                        add((Drawable) drawable);
                     }
                 }
             } else if (geometryType == EGeometryType.LINESTRING || geometryType == EGeometryType.MULTILINESTRING) {
@@ -200,11 +199,10 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer,
                                     .cap(Paint.Cap.ROUND)
                                     .build();
                             drawable = new GPLineDrawable(geometryN, lineThemeStyle, id);
-                            add((Drawable) drawable);
                         } else {
                             drawable = new GPLineDrawable(geometryN, lineStyle, id);
-                            add((Drawable) drawable);
                         }
+                        add((Drawable) drawable);
                     }
                 }
             } else if (geometryType == EGeometryType.POLYGON || geometryType == EGeometryType.MULTIPOLYGON) {
@@ -230,11 +228,10 @@ public class GeopackageTableLayer extends VectorLayer implements IVectorDbLayer,
                                     .cap(Paint.Cap.ROUND)
                                     .build();
                             drawable = new GPPolygonDrawable(geometryN, polygonThemeStyle, id);
-                            add((Drawable) drawable);
                         } else {
                             drawable = new GPPolygonDrawable(geometryN, polygonStyle, id);
-                            add((Drawable) drawable);
                         }
+                        add((Drawable) drawable);
                     }
                 }
             }

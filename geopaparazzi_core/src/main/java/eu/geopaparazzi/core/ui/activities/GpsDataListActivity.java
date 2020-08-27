@@ -322,23 +322,21 @@ public class GpsDataListActivity extends AppCompatActivity implements
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case (GPSDATAPROPERTIES_RETURN_CODE): {
-                if (resultCode == Activity.RESULT_OK) {
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
+        if (requestCode == GPSDATAPROPERTIES_RETURN_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
 //                    Intent intent = getIntent();
 //                    intent.putExtra(LibraryConstants.LATITUDE, lat);
 //                    intent.putExtra(LibraryConstants.LONGITUDE, lon);
 //                    setResult(Activity.RESULT_OK, intent);
 
-                    Intent intent = new Intent(this, MapsSupportService.class);
-                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
-                    intent.putExtra(LibraryConstants.LONGITUDE, lon);
-                    intent.putExtra(LibraryConstants.LATITUDE, lat);
-                    startService(intent);
-                    finish();
-                }
+                Intent intent = new Intent(this, MapsSupportService.class);
+                intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                intent.putExtra(LibraryConstants.LONGITUDE, lon);
+                intent.putExtra(LibraryConstants.LATITUDE, lat);
+                startService(intent);
+                finish();
             }
         }
     }
