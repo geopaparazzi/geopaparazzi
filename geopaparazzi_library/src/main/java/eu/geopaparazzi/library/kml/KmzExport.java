@@ -22,7 +22,7 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.zip.CRC32;
@@ -96,7 +96,7 @@ public class KmzExport {
         stringBuilder.append("</Document>\n");
         stringBuilder.append("</kml>\n");
 
-        byte[] kmlBytes = stringBuilder.toString().getBytes(Charset.forName("UTF-8"));
+        byte[] kmlBytes = stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
 
         /*
          * start adding the kml part
