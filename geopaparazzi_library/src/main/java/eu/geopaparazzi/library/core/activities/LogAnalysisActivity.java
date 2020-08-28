@@ -92,7 +92,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
             GPLog.error(this, null, e);
         }
 
-        messagesList = new ArrayList<String>();
+        messagesList = new ArrayList<>();
 
         LinearLayout errorToggleLayout = findViewById(R.id.errorToggleLayout);
         errorToggleLayout.setBackgroundColor(COLOR_ERROR);

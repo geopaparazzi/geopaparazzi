@@ -100,7 +100,7 @@ public class DirectoryBrowserActivity extends ListActivity {
      */
     public static final String DOFOLDER = "folder"; //$NON-NLS-1$
 
-    private List<File> filesList = new ArrayList<File>();
+    private List<File> filesList = new ArrayList<>();
     private File startFolderFile;
     private String intentId;
     private String[] extentions;

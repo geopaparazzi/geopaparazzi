@@ -116,13 +116,13 @@ public class GeocodeActivity extends AppCompatActivity {
                 return;
             }
 
-            List<AddressWrapper> addressWrapperList = new ArrayList<AddressWrapper>();
+            List<AddressWrapper> addressWrapperList = new ArrayList<>();
 
             for (Address address : addressList) {
                 addressWrapperList.add(new AddressWrapper(address));
             }
 
-            mListView.setAdapter(new ArrayAdapter<AddressWrapper>(this, R.layout.activity_geocode_row, addressWrapperList));
+            mListView.setAdapter(new ArrayAdapter<>(this, R.layout.activity_geocode_row, addressWrapperList));
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -213,7 +213,7 @@ public class GeocodeActivity extends AppCompatActivity {
                 try {
 
                     OSRMRoadManager roadManager = new OSRMRoadManager(GeocodeActivity.this);
-                    ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
+                    ArrayList<GeoPoint> waypoints = new ArrayList<>();
                     waypoints.add(new GeoPoint(lonLatZoom[1], lonLatZoom[0]));
                     waypoints.add(new GeoPoint(latitude, longitude));
                     Road road = roadManager.getRoad(waypoints);

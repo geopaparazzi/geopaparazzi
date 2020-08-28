@@ -63,7 +63,7 @@ public class FormListFragment extends ListFragment {
 
         List<String> fragmentTitles = mFragmentListSupporter.getListTitles();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_activated_1,
                 fragmentTitles.toArray(new String[fragmentTitles.size()]));
 
         int color = Compat.getColor(getActivity(), R.color.formcolor);

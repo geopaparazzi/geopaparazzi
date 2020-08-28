@@ -116,7 +116,7 @@ public class GpxUtilities {
      * @return list of {@link GpxItem}s.
      */
     public static List<GpxItem> readGpxData(Context context, String path, boolean asLines) {
-        List<GpxItem> gpxItems = new ArrayList<GpxItem>();
+        List<GpxItem> gpxItems = new ArrayList<>();
 
         File file = new File(path);
         GpxParser parser = new GpxParser(path);

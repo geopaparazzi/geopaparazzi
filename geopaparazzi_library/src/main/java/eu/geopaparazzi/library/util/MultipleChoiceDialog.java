@@ -35,7 +35,7 @@ import eu.geopaparazzi.library.R;
  */
 public class MultipleChoiceDialog {
 
-    private List<String> allSelected = new ArrayList<String>();
+    private List<String> allSelected = new ArrayList<>();
 
     /**
      * Open the dialog.

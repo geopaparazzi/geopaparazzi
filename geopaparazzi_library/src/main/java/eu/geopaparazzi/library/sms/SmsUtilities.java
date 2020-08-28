@@ -182,7 +182,7 @@ public class SmsUtilities {
      * @throws IOException if something goes wrong.
      */
     public static List<SmsData> sms2Data(String url) throws IOException {
-        List<SmsData> smsDataList = new ArrayList<SmsData>();
+        List<SmsData> smsDataList = new ArrayList<>();
 
         url = url.replaceFirst("http://", "");
         // remove gp://

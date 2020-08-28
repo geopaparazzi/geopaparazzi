@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.profiles.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import eu.geopaparazzi.library.network.download.IDownloadable;
 import eu.geopaparazzi.library.network.upload.IUploadable;
 
@@ -67,7 +69,7 @@ public class ProfileSpatialitemaps extends ARelativePathResource implements Parc
         ProfileSpatialitemaps that = (ProfileSpatialitemaps) o;
 
         if (!relativePath.equals(that.relativePath)) return false;
-        return modifiedDate != null ? modifiedDate.equals(that.modifiedDate) : that.modifiedDate == null;
+        return Objects.equals(modifiedDate, that.modifiedDate);
     }
 
     @Override

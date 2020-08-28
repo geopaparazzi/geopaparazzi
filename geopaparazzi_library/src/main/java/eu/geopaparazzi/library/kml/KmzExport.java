@@ -118,7 +118,7 @@ public class KmzExport {
          * now add all images
          */
         IImagesDbHelper imagesDbHelper = DefaultHelperClasses.getDefaulfImageHelper();
-        TreeSet<String> addedImages = new TreeSet<String>();
+        TreeSet<String> addedImages = new TreeSet<>();
         for (KmlRepresenter kmlRepresenter : kmlRepresenters) {
             if (kmlRepresenter.hasImages()) {
                 List<String> imageIds = kmlRepresenter.getImageIds();

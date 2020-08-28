@@ -382,7 +382,7 @@ public class TagsManager {
             for (int i = 0; i < length; i++) {
                 String name = names.getString(i);
 
-                List<String> valuesList = new ArrayList<String>();
+                List<String> valuesList = new ArrayList<>();
                 JSONArray itemsArray = valuesObj.getJSONArray(name);
                 int length2 = itemsArray.length();
                 for (int j = 0; j < length2; j++) {

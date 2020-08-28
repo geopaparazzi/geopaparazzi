@@ -63,9 +63,7 @@ public class GpxExport {
             name = "Geopaparazzi Gpx Export";
         }
 
-        BufferedWriter bW = null;
-        try {
-            bW = new BufferedWriter(new FileWriter(outputFile));
+        try (BufferedWriter bW = new BufferedWriter(new FileWriter(outputFile))) {
             bW.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             bW.write("<gpx\n");
             bW.write("  version=\"1.0\"\n");
@@ -98,9 +96,6 @@ public class GpxExport {
                 }
             }
             bW.write("</gpx>\n");
-        } finally {
-            if (bW != null)
-                bW.close();
         }
     }
 }

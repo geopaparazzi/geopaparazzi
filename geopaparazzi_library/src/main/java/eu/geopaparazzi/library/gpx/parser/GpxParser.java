@@ -81,9 +81,9 @@ public class GpxParser {
      */
     private static class GpxHandler extends DefaultHandler {
         // --------- parsed data ---------
-        List<WayPoint> mWayPoints = new ArrayList<WayPoint>();
-        List<TrackSegment> mTrackSegmentList = new ArrayList<TrackSegment>();
-        List<Route> mRouteList = new ArrayList<Route>();
+        List<WayPoint> mWayPoints = new ArrayList<>();
+        List<TrackSegment> mTrackSegmentList = new ArrayList<>();
+        List<Route> mRouteList = new ArrayList<>();
 
         // --------- state for parsing ---------
         TrackSegment mCurrentTrackSegment;
@@ -279,7 +279,7 @@ public class GpxParser {
     public final static class TrackSegment {
         private String mName;
         private String mComment;
-        private List<TrackPoint> mPoints = new ArrayList<TrackPoint>();
+        private List<TrackPoint> mPoints = new ArrayList<>();
 
         void setName(String name) {
             mName = name;
@@ -339,7 +339,7 @@ public class GpxParser {
     public final static class Route {
         private String mName;
         private String mComment;
-        private List<RoutePoint> mPoints = new ArrayList<RoutePoint>();
+        private List<RoutePoint> mPoints = new ArrayList<>();
 
         void setName(String name) {
             mName = name;

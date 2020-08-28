@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.profiles.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import eu.geopaparazzi.library.network.download.IDownloadable;
 import eu.geopaparazzi.library.network.upload.IUploadable;
 
@@ -65,7 +67,7 @@ public class ProfileProjects extends ARelativePathResource implements Parcelable
         ProfileProjects that = (ProfileProjects) o;
 
         if (!relativePath.equals(that.relativePath)) return false;
-        return projectModifiedDate != null ? projectModifiedDate.equals(that.projectModifiedDate) : that.projectModifiedDate == null;
+        return Objects.equals(projectModifiedDate, that.projectModifiedDate);
     }
 
     @Override

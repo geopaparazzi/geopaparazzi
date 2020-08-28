@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.profiles.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import eu.geopaparazzi.library.network.download.IDownloadable;
 
 /**
@@ -62,7 +64,7 @@ public class ProfileTags extends ARelativePathResource implements Parcelable, ID
         ProfileTags that = (ProfileTags) o;
 
         if (!relativePath.equals(that.relativePath)) return false;
-        return tagsModifiedDate != null ? tagsModifiedDate.equals(that.tagsModifiedDate) : that.tagsModifiedDate == null;
+        return Objects.equals(tagsModifiedDate, that.tagsModifiedDate);
     }
 
     @Override

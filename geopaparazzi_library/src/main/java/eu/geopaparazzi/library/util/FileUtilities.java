@@ -142,7 +142,7 @@ public class FileUtilities {
      */
     public static List<String> readfileToList(File file) throws IOException {
         BufferedReader br = null;
-        List<String> linesList = new ArrayList<String>();
+        List<String> linesList = new ArrayList<>();
         try {
             br = new BufferedReader(new FileReader(file));
             String line = null;
@@ -289,14 +289,12 @@ public class FileUtilities {
      * @throws IOException if something goes wrong.
      */
     public static byte[] readFileToByte(File file) throws IOException {
-        RandomAccessFile f = new RandomAccessFile(file, "r"); //NON-NLS
-        try {
+        //NON-NLS
+        try (RandomAccessFile f = new RandomAccessFile(file, "r")) {
             long length = f.length();
             byte[] data = new byte[(int) length];
             f.readFully(data);
             return data;
-        } finally {
-            f.close();
         }
     }
 

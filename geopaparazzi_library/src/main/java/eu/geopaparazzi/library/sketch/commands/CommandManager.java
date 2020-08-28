@@ -41,8 +41,8 @@ public class CommandManager {
      *
      */
     public CommandManager() {
-        currentStack = Collections.synchronizedList(new ArrayList<DrawingPath>());
-        redoStack = Collections.synchronizedList(new ArrayList<DrawingPath>());
+        currentStack = Collections.synchronizedList(new ArrayList<>());
+        redoStack = Collections.synchronizedList(new ArrayList<>());
     }
 
     /**

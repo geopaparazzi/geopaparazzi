@@ -81,7 +81,7 @@ public class KmlParser {
                 if (uri.startsWith(NS_KML_2)) {
                     if (NODE_PLACEMARK.equals(localName)) {
                         if (mWayPoints == null) {
-                            mWayPoints = new ArrayList<WayPoint>();
+                            mWayPoints = new ArrayList<>();
                         }
 
                         mWayPoints.add(mCurrentWayPoint = new WayPoint());

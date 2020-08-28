@@ -45,7 +45,7 @@ public class JtsUtilities {
      * @return the created polygon.
      */
     public static Polygon createPolygon(List<Coordinate> coordinatesList) {
-        coordinatesList = new ArrayList<Coordinate>(coordinatesList);
+        coordinatesList = new ArrayList<>(coordinatesList);
         Coordinate firstCoord = coordinatesList.get(0);
         coordinatesList.add(firstCoord);
         return gf.createPolygon(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));

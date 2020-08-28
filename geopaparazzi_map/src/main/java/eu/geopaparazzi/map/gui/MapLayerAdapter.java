@@ -257,8 +257,7 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                     String dbPath = jsonObject.getString(IGpLayer.LAYERPATH_TAG);
 
                                     if (layerType == ELayerTypes.MBTILES) {
-                                        ASpatialDb adb = EDb.SPATIALITE4ANDROID.getSpatialDb();
-                                        try {
+                                        try (ASpatialDb adb = EDb.SPATIALITE4ANDROID.getSpatialDb()) {
                                             boolean exists = adb.open(dbPath);
                                             if (exists) {
                                                 MBTilesDb db = new MBTilesDb(adb);
@@ -270,9 +269,6 @@ class MapLayerAdapter extends DragItemAdapter<MapLayerItem, MapLayerAdapter.View
                                                 intent.putExtra(LibraryConstants.LATITUDE, centre.y);
                                                 mapLayerListFragment.getContext().startService(intent);
                                             }
-                                        } finally {
-                                            if (adb != null)
-                                                adb.close();
                                         }
                                     } else if (layerType == ELayerTypes.SPATIALITE) {
                                         Geometry firstGeom = SpatialiteConnectionsHandler.INSTANCE.getFirstGeometry(dbPath, tableName);

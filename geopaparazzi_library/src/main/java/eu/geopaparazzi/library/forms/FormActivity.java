@@ -83,7 +83,7 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     private String mSectionName;
     private String mFormName;
     private JSONObject sectionObject;
-    private List<String> formNames4Section = new ArrayList<String>();
+    private List<String> formNames4Section = new ArrayList<>();
     private long noteId = -1;
     private boolean noteIsNew = false;
 

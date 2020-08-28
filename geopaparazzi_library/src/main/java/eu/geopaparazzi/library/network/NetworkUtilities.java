@@ -148,11 +148,7 @@ public class NetworkUtilities {
             file = new File(file, fileName);
         }
 
-        InputStream in = null;
-        FileOutputStream out = null;
-        try {
-            in = conn.getInputStream();
-            out = new FileOutputStream(file);
+        try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(file)) {
 
             byte[] buffer = new byte[(int) maxBufferSize];
             int bytesRead = in.read(buffer, 0, (int) maxBufferSize);
@@ -162,10 +158,6 @@ public class NetworkUtilities {
             }
             out.flush();
         } finally {
-            if (in != null)
-                in.close();
-            if (out != null)
-                out.close();
             if (conn != null)
                 conn.disconnect();
         }

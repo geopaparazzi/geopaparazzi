@@ -43,7 +43,7 @@ public class FeatureSlidingAverage {
     public List<Coordinate> smooth(int lookAhead, boolean considerZ, double slide) {
 
         double sc;
-        List<Coordinate> res = new ArrayList<Coordinate>();
+        List<Coordinate> res = new ArrayList<>();
 
         Coordinate[] coordinates = data.toArray(new Coordinate[data.size()]);
         int n = coordinates.length;

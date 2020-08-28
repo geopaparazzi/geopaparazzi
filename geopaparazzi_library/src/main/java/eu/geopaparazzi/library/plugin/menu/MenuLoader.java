@@ -33,8 +33,8 @@ import eu.geopaparazzi.library.plugin.types.IMenuEntryList;
  * @author Cesar Martinez Izquierdo (www.scolab.es)
  */
 public class MenuLoader extends PluginLoader implements IMenuLoader {
-    private ArrayList<IMenuEntryList> menuGroups = new ArrayList<IMenuEntryList>();
-    private ArrayList<IMenuEntry> menuEntries = new ArrayList<IMenuEntry>();
+    private ArrayList<IMenuEntryList> menuGroups = new ArrayList<>();
+    private ArrayList<IMenuEntry> menuEntries = new ArrayList<>();
 
     public MenuLoader(Context context, String providerName) {
         super(context, providerName);

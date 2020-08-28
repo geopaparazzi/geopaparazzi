@@ -415,8 +415,7 @@ public class DaoImages implements IImagesDbHelper {
                 ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()//
         };
         String whereStr = ImageTableFields.COLUMN_ID.getFieldName() + " = " + imageId;
-        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereStr, null, null, null, null);
-        try {
+        try (Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, whereStr, null, null, null, null)) {
             c.moveToFirst();
             if (!c.isAfterLast()) {
                 long id = c.getLong(0);
@@ -432,8 +431,6 @@ public class DaoImages implements IImagesDbHelper {
                 return new Image(id, text, lon, lat, altim, azim, imageDataId, noteId, ts);
             }
             return null;
-        } finally {
-            c.close();
         }
     }
 

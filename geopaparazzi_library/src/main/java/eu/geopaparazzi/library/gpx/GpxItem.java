@@ -36,9 +36,9 @@ public class GpxItem implements Comparable<GpxItem> {
     private boolean isLine;
     private boolean isVisible;
 
-    private List<WayPoint> wayPoints = new ArrayList<WayPoint>();
-    private List<TrackSegment> trackSegments = new ArrayList<TrackSegment>();
-    private List<Route> routes = new ArrayList<Route>();
+    private List<WayPoint> wayPoints = new ArrayList<>();
+    private List<TrackSegment> trackSegments = new ArrayList<>();
+    private List<Route> routes = new ArrayList<>();
 
     /**
      * @return name.

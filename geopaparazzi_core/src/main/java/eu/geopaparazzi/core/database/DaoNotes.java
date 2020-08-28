@@ -386,8 +386,7 @@ public class DaoNotes implements INotesDbHelper {
                 " FROM " + TABLE_NOTES;
         query = query + " WHERE " + NotesTableFields.COLUMN_ID.getFieldName() + "=" + checkId;
 
-        Cursor c = sqliteDatabase.rawQuery(query, null);
-        try {
+        try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
             if (!c.isAfterLast()) {
                 long id = c.getLong(0);
@@ -403,8 +402,6 @@ public class DaoNotes implements INotesDbHelper {
 
                 return new Note(id, text, description, timestamp, lon, lat, altim, form, isDirty, style);
             }
-        } finally {
-            c.close();
         }
         return null;
     }

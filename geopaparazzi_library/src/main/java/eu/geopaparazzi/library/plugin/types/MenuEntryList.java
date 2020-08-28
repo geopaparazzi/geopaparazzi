@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 public class MenuEntryList extends Binder implements IMenuEntryList {
-    private ArrayList<IMenuEntry> list = new ArrayList<IMenuEntry>();
+    private ArrayList<IMenuEntry> list = new ArrayList<>();
 
     public void addEntry(IMenuEntry entry) {
         list.add(entry);

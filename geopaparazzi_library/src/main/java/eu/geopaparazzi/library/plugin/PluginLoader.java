@@ -46,7 +46,7 @@ public abstract class PluginLoader {
             processService(service);
         }
     };
-    private List<PluginLoaderListener> listeners = new ArrayList<PluginLoaderListener>();
+    private List<PluginLoaderListener> listeners = new ArrayList<>();
     private boolean isLoadComplete = false;
 
     protected abstract void doProcessService(IBinder binder);

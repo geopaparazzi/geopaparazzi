@@ -177,7 +177,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
             subSpinner.setBackground(Compat.getDrawable(context, R.drawable.thin_background_frame));
             subSpinner.setMinimumHeight(minHeight);
 
-            ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, namedList.items);
+            ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, namedList.items);
             combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             subSpinner.setAdapter(combo2ListAdapter);
 
@@ -250,7 +250,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
                 subTextView.setText(namedList.name);
 
                 Spinner subSpinner = orderedSubCombosList.get(i);
-                ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<String>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, namedList.items);
+                ArrayAdapter<String> combo2ListAdapter = new ArrayAdapter<>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, namedList.items);
                 combo2ListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 subSpinner.setAdapter(combo2ListAdapter);
             }

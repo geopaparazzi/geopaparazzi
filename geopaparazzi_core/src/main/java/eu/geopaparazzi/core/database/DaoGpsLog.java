@@ -407,9 +407,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
         String query = sB.toString();
 
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(query, null);
+        try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 long logid = c.getLong(0);
@@ -428,9 +426,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 logsList.add(item);
                 c.moveToNext();
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
 
         // Logger.d(DEBUG_TAG, "Query: " + query);
@@ -444,16 +439,11 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
         String sql = "select count(*) from " + TABLE_GPSLOGS;
 
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(sql, null);
+        try (Cursor c = sqliteDatabase.rawQuery(sql, null)) {
             c.moveToFirst();
             if (!c.isAfterLast()) {
                 return c.getInt(0);
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
         return -1;
     }
@@ -841,9 +831,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName()//
         };
         String strSortOrder = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "," + GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, null, null, null, null, strSortOrder);
+        try (Cursor c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, null, null, null, null, strSortOrder)) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 long logid = c.getLong(0);
@@ -859,9 +847,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 line.addPoint(lon, lat, altim, date);
                 c.moveToNext();
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
         return linesMap;
     }
@@ -903,9 +888,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 "d." + latField + " > " + s + " and d." + latField + " < " + n;
 
         STRtree tree = new STRtree();
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.rawQuery(sql, null);
+        try (Cursor c = sqliteDatabase.rawQuery(sql, null)) {
             c.moveToFirst();
             while (!c.isAfterLast()) {
                 int i = 0;
@@ -926,9 +909,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 c.moveToNext();
             }
-        } finally {
-            if (c != null)
-                c.close();
         }
         return tree;
     }
@@ -953,9 +933,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         };
         String strSortOrder = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
         String strWhere = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "=" + logId;
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+        try (Cursor c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder)) {
             int count = c.getCount();
             int jump = 0;
             if (pointsNum != -1 && count > pointsNum) {
@@ -980,9 +958,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
             }
             return line;
-        } finally {
-            if (c != null)
-                c.close();
         }
     }
 
@@ -1004,9 +979,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         };
         String strSortOrder = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " ASC";
         String strWhere = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "=" + logId;
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
+        try (Cursor c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1")) {
             c.moveToFirst();
             double[] lonLat = new double[2];
             if (!c.isAfterLast()) {
@@ -1014,9 +987,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 lonLat[1] = c.getDouble(1);
             }
             return lonLat;
-        } finally {
-            if (c != null)
-                c.close();
         }
     }
 
@@ -1038,9 +1008,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         };
         String strSortOrder = GpsLogsDataTableFields.COLUMN_DATA_TS.getFieldName() + " DESC";
         String strWhere = GpsLogsDataTableFields.COLUMN_LOGID.getFieldName() + "=" + logId;
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
+        try (Cursor c = sqliteDatabase.query(TABLE_GPSLOG_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1")) {
             c.moveToFirst();
             double[] lonLat = new double[2];
             while (!c.isAfterLast()) {
@@ -1049,9 +1017,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 break;
             }
             return lonLat;
-        } finally {
-            if (c != null)
-                c.close();
         }
     }
 

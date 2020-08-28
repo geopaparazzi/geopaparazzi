@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class Constraints {
 
-    private List<IConstraint> constraints = new ArrayList<IConstraint>();
+    private List<IConstraint> constraints = new ArrayList<>();
 
     /**
      * Add a constraint.

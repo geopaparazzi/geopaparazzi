@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.profiles.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import eu.geopaparazzi.library.network.download.IDownloadable;
 
 /**
@@ -62,7 +64,7 @@ public class ProfileBasemaps extends ARelativePathResource implements Parcelable
         ProfileBasemaps basemaps = (ProfileBasemaps) o;
 
         if (!relativePath.equals(basemaps.relativePath)) return false;
-        return modifiedDate != null ? modifiedDate.equals(basemaps.modifiedDate) : basemaps.modifiedDate == null;
+        return Objects.equals(modifiedDate, basemaps.modifiedDate);
     }
 
     @Override

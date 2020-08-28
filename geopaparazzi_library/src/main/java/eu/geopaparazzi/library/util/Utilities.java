@@ -388,13 +388,8 @@ public class Utilities {
      * @throws Exception
      */
     public static <T> T deserializeObject(byte[] bytes, Class<T> clazz) throws Exception {
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
             return clazz.cast(in.readObject());
-        } finally {
-            if (in != null)
-                in.close();
         }
     }
 

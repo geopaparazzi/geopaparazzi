@@ -21,7 +21,7 @@ public class ResourceImageGridViewAdapter<T> extends ArrayAdapter<T> {
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<ResourceImageItem> data = new ArrayList<ResourceImageItem>();
+    private ArrayList<ResourceImageItem> data = new ArrayList<>();
 
     public ResourceImageGridViewAdapter(Context context, int layoutResourceId, ArrayList data) {
         super(context, layoutResourceId, data);

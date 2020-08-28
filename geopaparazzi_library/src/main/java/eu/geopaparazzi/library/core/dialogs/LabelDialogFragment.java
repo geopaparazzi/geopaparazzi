@@ -126,7 +126,7 @@ public class LabelDialogFragment extends DialogFragment {
             }
         }
         final Spinner fieldsSpinner = labelDialogView.findViewById(R.id.labelFieldSpinner);
-        ArrayAdapter<String> fieldsSpinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+        ArrayAdapter<String> fieldsSpinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item,
                 labelFieldsList);
         fieldsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fieldsSpinner.setAdapter(fieldsSpinnerAdapter);

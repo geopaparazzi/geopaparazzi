@@ -758,7 +758,7 @@ public class FormUtilities {
      * @throws Exception if something goes wrong.
      */
     public static List<String> getImageIds(String formString) throws Exception {
-        List<String> imageIds = new ArrayList<String>();
+        List<String> imageIds = new ArrayList<>();
         if (formString != null && formString.length() > 0) {
             JSONObject sectionObject = new JSONObject(formString);
             List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
