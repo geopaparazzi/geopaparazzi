@@ -225,8 +225,8 @@ public class FileUtilities {
 
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteFileOrDir(new File(filehandle, children[i]));
+            for (String child : children) {
+                boolean success = deleteFileOrDir(new File(filehandle, child));
                 if (!success) {
                     return false;
                 }
@@ -253,8 +253,8 @@ public class FileUtilities {
     public static boolean deleteFileOrDirOnExit(File filehandle) {
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteFileOrDir(new File(filehandle, children[i]));
+            for (String child : children) {
+                boolean success = deleteFileOrDir(new File(filehandle, child));
                 if (!success) {
                     return false;
                 }

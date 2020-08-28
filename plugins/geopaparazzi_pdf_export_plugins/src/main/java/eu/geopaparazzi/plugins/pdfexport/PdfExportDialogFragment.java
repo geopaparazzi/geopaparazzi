@@ -185,8 +185,8 @@ public class PdfExportDialogFragment extends DialogFragment {
                     document.addCreator("Geopaparazzi - http://www.geopaparazzi.eu");
 
                     List<Long> idsToExport = new ArrayList<>();
-                    for (int i = 0; i < exportIds.length; i++) {
-                        idsToExport.add(exportIds[i]);
+                    for (long exportId : exportIds) {
+                        idsToExport.add(exportId);
                     }
                     int index = 1;
                     for (Note note : notesList) {

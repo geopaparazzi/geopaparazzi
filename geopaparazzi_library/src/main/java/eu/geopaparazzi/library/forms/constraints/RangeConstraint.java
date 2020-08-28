@@ -58,7 +58,7 @@ public class RangeConstraint implements IConstraint {
 
         Double adapted = Utilities.adapt(value, Double.class);
         if (adapted != null) {
-            double doubleValue = adapted.doubleValue();
+            double doubleValue = adapted;
             //
 //
 //

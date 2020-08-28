@@ -67,8 +67,8 @@ public class PolygonShape implements DrawableShape {
     public PolygonShape(Coordinate[] shellVertices, Collection holeVerticesCollection) {
         polygonPath = toPath(shellVertices);
 
-        for (Iterator i = holeVerticesCollection.iterator(); i.hasNext(); ) {
-            Coordinate[] holeVertices = (Coordinate[]) i.next();
+        for (Object o : holeVerticesCollection) {
+            Coordinate[] holeVertices = (Coordinate[]) o;
             polygonPath.addPath(toPath(holeVertices));
         }
     }
@@ -114,8 +114,8 @@ public class PolygonShape implements DrawableShape {
 
         if (coordinates.length > 0) {
             path.moveTo((float) coordinates[0].x, (float) coordinates[0].y);
-            for (int i = 0; i < coordinates.length; i++) {
-                path.lineTo((float) coordinates[i].x, (float) coordinates[i].y);
+            for (Coordinate coordinate : coordinates) {
+                path.lineTo((float) coordinate.x, (float) coordinate.y);
             }
         }
         return path;

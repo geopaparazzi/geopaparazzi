@@ -55,7 +55,7 @@ public class PolylineEncoder {
      * @return the encoded polyline, as a String
      */
     public static String encode(ArrayList<GeoPoint> polyline, int precision) {
-        StringBuffer encodedPoints = new StringBuffer();
+        StringBuilder encodedPoints = new StringBuilder();
         int prev_lat = 0, prev_lng = 0;
         for (GeoPoint trackpoint : polyline) {
             int lat = trackpoint.getLatitudeE6() / precision;

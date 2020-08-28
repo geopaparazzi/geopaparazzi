@@ -81,10 +81,8 @@ public class CommandManager {
     public void executeAll(Canvas canvas, Handler doneHandler) {
         if (currentStack != null) {
             synchronized (currentStack) {
-                final Iterator i = currentStack.iterator();
 
-                while (i.hasNext()) {
-                    final DrawingPath drawingPath = (DrawingPath) i.next();
+                for (DrawingPath drawingPath : currentStack) {
                     drawingPath.draw(canvas);
                     // doneHandler.sendEmptyMessage(1);
                 }
