@@ -189,61 +189,51 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
                         label = formItem.getString(FormUtilities.TAG_LABEL);
                     }
 
-                    if (type.equals(FormUtilities.TYPE_PICTURES)) {
-                        if (value.trim().length() == 0) {
-                            continue;
+                    switch (type) {
+                        case FormUtilities.TYPE_PICTURES:
+                        case FormUtilities.TYPE_SKETCH: {
+                            if (value.trim().length() == 0) {
+                                continue;
+                            }
+                            String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
+                            for (String imageId : imageIdsSplit) {
+                                Image image = daoImages.getImage(Long.parseLong(imageId));
+                                String imgName = image.getName();
+                                sB.append("<tr>");
+                                sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
+                                sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
+                                sB.append("</td>");
+                                sB.append("</tr>");
+
+                                images.add(imageId);
+                            }
+                            break;
                         }
-                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
-                        for (String imageId : imageIdsSplit) {
+                        case FormUtilities.TYPE_MAP:
+                            if (value.trim().length() == 0) {
+                                continue;
+                            }
+                            sB.append("<tr>");
+                            // FIXME
+                            String imageId = value.trim();
                             Image image = daoImages.getImage(Long.parseLong(imageId));
                             String imgName = image.getName();
-                            sB.append("<tr>");
                             sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
                             sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
                             sB.append("</td>");
                             sB.append("</tr>");
-
                             images.add(imageId);
-                        }
-                    } else if (type.equals(FormUtilities.TYPE_MAP)) {
-                        if (value.trim().length() == 0) {
-                            continue;
-                        }
-                        sB.append("<tr>");
-                        // FIXME
-                        String imageId = value.trim();
-                        Image image = daoImages.getImage(Long.parseLong(imageId));
-                        String imgName = image.getName();
-                        sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-                        sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
-                        sB.append("</td>");
-                        sB.append("</tr>");
-                        images.add(imageId);
-                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
-                        if (value.trim().length() == 0) {
-                            continue;
-                        }
-                        String[] imageIdsSplit = value.split(IMAGES_SEPARATOR);
-                        for (String imageId : imageIdsSplit) {
-                            Image image = daoImages.getImage(Long.parseLong(imageId));
-                            String imgName = image.getName();
+                            break;
+                        default:
                             sB.append("<tr>");
-                            sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
-                            sB.append("<img src=\"").append(imgName).append("\" width=\"300\">");
+                            sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                            sB.append(label);
+                            sB.append("</td>");
+                            sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                            sB.append(value);
                             sB.append("</td>");
                             sB.append("</tr>");
-
-                            images.add(imageId);
-                        }
-                    } else {
-                        sB.append("<tr>");
-                        sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
-                        sB.append(label);
-                        sB.append("</td>");
-                        sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
-                        sB.append(value);
-                        sB.append("</td>");
-                        sB.append("</tr>");
+                            break;
                     }
                 }
                 sB.append("</tbody>");

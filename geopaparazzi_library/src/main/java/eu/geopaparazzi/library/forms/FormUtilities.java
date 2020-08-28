@@ -776,24 +776,23 @@ public class FormUtilities {
                     if (formItem.has(FormUtilities.TAG_VALUE))
                         value = formItem.getString(FormUtilities.TAG_VALUE);
 
-                    if (type.equals(FormUtilities.TYPE_PICTURES)) {
-                        if (value.trim().length() == 0) {
-                            continue;
+                    switch (type) {
+                        case FormUtilities.TYPE_PICTURES:
+                        case FormUtilities.TYPE_SKETCH: {
+                            if (value.trim().length() == 0) {
+                                continue;
+                            }
+                            String[] imageSplit = value.split(";");
+                            Collections.addAll(imageIds, imageSplit);
+                            break;
                         }
-                        String[] imageSplit = value.split(";");
-                        Collections.addAll(imageIds, imageSplit);
-                    } else if (type.equals(FormUtilities.TYPE_MAP)) {
-                        if (value.trim().length() == 0) {
-                            continue;
-                        }
-                        String image = value.trim();
-                        imageIds.add(image);
-                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
-                        if (value.trim().length() == 0) {
-                            continue;
-                        }
-                        String[] imageSplit = value.split(";");
-                        Collections.addAll(imageIds, imageSplit);
+                        case FormUtilities.TYPE_MAP:
+                            if (value.trim().length() == 0) {
+                                continue;
+                            }
+                            String image = value.trim();
+                            imageIds.add(image);
+                            break;
                     }
                 }
             }

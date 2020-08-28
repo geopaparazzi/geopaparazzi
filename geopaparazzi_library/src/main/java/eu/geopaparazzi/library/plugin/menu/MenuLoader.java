@@ -72,13 +72,7 @@ public class MenuLoader extends PluginLoader implements IMenuLoader {
                 }
             } else if (t1.getOrder() < 0) {
                 return -1;
-            } else if (t0.getOrder() < t1.getOrder()) {
-                return -1;
-            } else if (t0.getOrder() == t1.getOrder()) {
-                return 0;
-            } else {
-                return 1;
-            }
+            } else return Integer.compare(t0.getOrder(), t1.getOrder());
         });
     }
 

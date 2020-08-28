@@ -26,12 +26,6 @@ import java.util.Comparator;
 public class SpatialiteMapOrderComparator implements Comparator<SpatialiteMap> {
     @Override
     public int compare(SpatialiteMap m1, SpatialiteMap m2) {
-        if (m1.order < m2.order) {
-            return -1;
-        } else if (m1.order > m2.order) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Double.compare(m1.order, m2.order);
     }
 }
