@@ -140,6 +140,7 @@ public class GeopaparazziActivityFragment extends Fragment implements View.OnLon
                         String authority = provider.authority;
                         if (authority != null && authority.equals("eu.geopaparazzi.provider.profiles")) {//NON-NLS
                             hasProfilesProvider = true;
+                            break;
                         }
                     }
                 }

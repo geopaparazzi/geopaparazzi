@@ -85,7 +85,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append("CREATE TABLE ");
         sB.append(TABLE_GPSLOGS);
         sB.append(" (");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName() + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
+        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName()).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(GpsLogsTableFields.COLUMN_LOG_STARTTS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(GpsLogsTableFields.COLUMN_LOG_ENDTS.getFieldName()).append(" LONG NOT NULL,");
         sB.append(GpsLogsTableFields.COLUMN_LOG_LENGTHM.getFieldName()).append(" REAL NOT NULL, ");
@@ -106,7 +106,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append("CREATE TABLE ");
         sB.append(TABLE_GPSLOG_DATA);
         sB.append(" (");
-        sB.append(GpsLogsDataTableFields.COLUMN_ID.getFieldName() + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
+        sB.append(GpsLogsDataTableFields.COLUMN_ID.getFieldName()).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LON.getFieldName()).append(" REAL NOT NULL, ");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_LAT.getFieldName()).append(" REAL NOT NULL,");
         sB.append(GpsLogsDataTableFields.COLUMN_DATA_ALTIM.getFieldName()).append(" REAL NOT NULL,");
@@ -116,7 +116,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(GpsLogsDataTableFields.COLUMN_LOGID.getFieldName());
         sB.append(" REFERENCES ");
         sB.append(TABLE_GPSLOGS);
-        sB.append("(" + GpsLogsTableFields.COLUMN_ID.getFieldName() + ") ON DELETE CASCADE");
+        sB.append("(").append(GpsLogsTableFields.COLUMN_ID.getFieldName()).append(") ON DELETE CASCADE");
         sB.append(");");
         String CREATE_TABLE_GPSLOG_DATA = sB.toString();
 
@@ -179,7 +179,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName());
         sB.append(" INTEGER NOT NULL ");
-        sB.append("CONSTRAINT " + GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName() + " REFERENCES ");
+        sB.append("CONSTRAINT ").append(GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName()).append(" REFERENCES ");
         sB.append(TABLE_GPSLOGS);
         sB.append("(");
         sB.append(GpsLogsTableFields.COLUMN_ID);

@@ -324,8 +324,9 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
 
         long newId = -1;
         // get list of non geom fields and default values
-        String nonGeomFieldsNames = "";
-        String nonGeomFieldsValues = "";
+        String nonGeomFieldsNames;
+        StringBuilder nonGeomFieldsValues = new StringBuilder();
+        StringBuilder nonGeomFieldsNamesBuilder = new StringBuilder();
         for (String[] columnInfo : tableColumnInfos) {
             String field = columnInfo[0];
             String fieldType = columnInfo[1];
@@ -333,17 +334,18 @@ public class SpatialiteTableLayer extends VectorLayer implements IVectorDbLayer,
             if (!ignore) {
                 EDataType tableFieldType = EDataType.getType4Name(fieldType);
                 if (tableFieldType != null) {
-                    nonGeomFieldsNames = nonGeomFieldsNames + "," + field;
+                    nonGeomFieldsNamesBuilder.append(",").append(field);
                     String valueToSet = tableFieldType.getDefaultValueForSql();
                     if (columnInfo[2].equals("1")) {
                         long max = db.getMax(tableName, field);
                         newId = max + 1;
                         valueToSet = String.valueOf(newId);
                     }
-                    nonGeomFieldsValues = nonGeomFieldsValues + "," + valueToSet;
+                    nonGeomFieldsValues.append(",").append(valueToSet);
                 }
             }
         }
+        nonGeomFieldsNames = nonGeomFieldsNamesBuilder.toString();
 
         boolean doTransform = true;
         if (srid == geometrySrid) {

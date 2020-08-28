@@ -210,7 +210,7 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
         uploadables.addAll(selectedLocalprofile.spatialiteList);
         uploadProfile = selectedLocalprofile;
 
-        progressBarUploadDialogFragment = ProgressBarUploadDialogFragment.newInstance(uploadables.toArray(new Parcelable[uploadables.size()]));
+        progressBarUploadDialogFragment = ProgressBarUploadDialogFragment.newInstance(uploadables.toArray(new Parcelable[0]));
         progressBarUploadDialogFragment.setCancelable(true);
         progressBarUploadDialogFragment.show(getSupportFragmentManager(), "Upload Profile"); //NON-NLS
     }

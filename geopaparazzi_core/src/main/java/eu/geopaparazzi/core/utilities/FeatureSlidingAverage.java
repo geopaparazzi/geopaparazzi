@@ -45,7 +45,7 @@ public class FeatureSlidingAverage {
         double sc;
         List<Coordinate> res = new ArrayList<>();
 
-        Coordinate[] coordinates = data.toArray(new Coordinate[data.size()]);
+        Coordinate[] coordinates = data.toArray(new Coordinate[0]);
         int n = coordinates.length;
 
         if (n < 4 * lookAhead) {

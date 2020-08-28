@@ -48,7 +48,7 @@ public class JtsUtilities {
         coordinatesList = new ArrayList<>(coordinatesList);
         Coordinate firstCoord = coordinatesList.get(0);
         coordinatesList.add(firstCoord);
-        return gf.createPolygon(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        return gf.createPolygon(coordinatesList.toArray(new Coordinate[0]));
     }
 
     /**
@@ -58,7 +58,7 @@ public class JtsUtilities {
      * @return the created line.
      */
     public static LineString createLineString(List<Coordinate> coordinatesList) {
-        return gf.createLineString(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        return gf.createLineString(coordinatesList.toArray(new Coordinate[0]));
     }
 
     /**
@@ -68,7 +68,7 @@ public class JtsUtilities {
      * @return the created points.
      */
     public static MultiPoint createPoints(List<Coordinate> coordinatesList) {
-        return gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        return gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[0]));
     }
 
     /**
@@ -78,7 +78,7 @@ public class JtsUtilities {
      * @return the created points.
      */
     public static Geometry createVertexBuffers(List<Coordinate> coordinatesList) {
-        MultiPoint multiPoints = gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[coordinatesList.size()]));
+        MultiPoint multiPoints = gf.createMultiPointFromCoords(coordinatesList.toArray(new Coordinate[0]));
         return multiPoints.buffer(0.0001);
     }
 

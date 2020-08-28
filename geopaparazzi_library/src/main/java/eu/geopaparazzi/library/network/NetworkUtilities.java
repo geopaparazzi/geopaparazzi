@@ -207,7 +207,7 @@ public class NetworkUtilities {
                         String line = br.readLine();
                         if (line == null)
                             break;
-                        returnMessageBuilder.append(line + "\n");
+                        returnMessageBuilder.append(line).append("\n");
                     }
                     br.close();
                 }

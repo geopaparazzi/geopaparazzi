@@ -127,10 +127,7 @@ public class SqlViewActivity extends AppCompatActivity {
         }
 
         Set<String> keySet = queriesMap.keySet();
-        List<String> queries = new ArrayList<>();
-        for (String query : keySet) {
-            queries.add(query);
-        }
+        List<String> queries = new ArrayList<>(keySet);
         Collections.sort(queries);
         return queries;
     }

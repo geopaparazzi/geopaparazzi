@@ -41,7 +41,6 @@ import android.graphics.drawable.shapes.Shape;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * A {@link Shape} which represents a polygon which may contain holes.

@@ -157,7 +157,7 @@ public class KmlParser {
 
         WayPoint[] getWayPoints() {
             if (mWayPoints != null) {
-                return mWayPoints.toArray(new WayPoint[mWayPoints.size()]);
+                return mWayPoints.toArray(new WayPoint[0]);
             }
 
             return null;

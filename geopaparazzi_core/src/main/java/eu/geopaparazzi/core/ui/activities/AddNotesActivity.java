@@ -185,7 +185,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         buttonGridView = findViewById(R.id.osmgridview);
         try {
             Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
-            tagNamesArray = sectionNames.toArray(new String[sectionNames.size()]);
+            tagNamesArray = sectionNames.toArray(new String[0]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
             GPLog.error(this, e1.getLocalizedMessage(), e1);

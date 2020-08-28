@@ -56,9 +56,7 @@ public class MenuLoader extends PluginLoader implements IMenuLoader {
     @Override
     protected void onLoadComplete() {
         for (IMenuEntryList menuGroup : menuGroups) {
-            for (IMenuEntry entry : menuGroup.getEntries()) {
-                menuEntries.add(entry);
-            }
+            menuEntries.addAll(menuGroup.getEntries());
         }
         Collections.sort(menuEntries, (t0, t1) -> {
             // return natural order comparison, but consider that

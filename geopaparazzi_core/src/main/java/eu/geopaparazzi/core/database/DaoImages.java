@@ -66,7 +66,7 @@ public class DaoImages implements IImagesDbHelper {
         sB.append(ImageTableFields.COLUMN_AZIM.getFieldName()).append(" REAL NOT NULL,");
         sB.append(ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName());
         sB.append(" INTEGER NOT NULL ");
-        sB.append("CONSTRAINT " + ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName() + " REFERENCES ");
+        sB.append("CONSTRAINT ").append(ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()).append(" REFERENCES ");
         sB.append(TABLE_IMAGE_DATA);
         sB.append("(");
         sB.append(ImageDataTableFields.COLUMN_ID);
@@ -194,26 +194,28 @@ public class DaoImages implements IImagesDbHelper {
         sqliteDatabase.beginTransaction();
         try {
             String[] asColumnsToReturn = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
-            String imageIdsWhereStr = "";
+            String imageIdsWhereStr;
             int count = 0;
+            StringBuilder imageIdsWhereStrBuilder = new StringBuilder();
             for (long id : ids) {
                 if (count > 0) {
-                    imageIdsWhereStr = imageIdsWhereStr + " or ";
+                    imageIdsWhereStrBuilder.append(" or ");
                 }
-                imageIdsWhereStr = imageIdsWhereStr + ImageTableFields.COLUMN_ID.getFieldName() + " = " + id;
+                imageIdsWhereStrBuilder.append(ImageTableFields.COLUMN_ID.getFieldName()).append(" = ").append(id);
                 count++;
             }
+            imageIdsWhereStr = imageIdsWhereStrBuilder.toString();
             Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, imageIdsWhereStr, null, null, null, null);
             c.moveToFirst();
-            String imageDataIdsWhereStr = "";
+            StringBuilder imageDataIdsWhereStr = new StringBuilder();
             count = 0;
             while (!c.isAfterLast()) {
                 long imageDataId = c.getLong(0);
                 c.moveToNext();
                 if (count > 0) {
-                    imageDataIdsWhereStr = imageDataIdsWhereStr + " or ";
+                    imageDataIdsWhereStr.append(" or ");
                 }
-                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
+                imageDataIdsWhereStr.append(ImageDataTableFields.COLUMN_ID.getFieldName()).append(" = ").append(imageDataId);
                 count++;
 
             }
@@ -250,26 +252,28 @@ public class DaoImages implements IImagesDbHelper {
         sqliteDatabase.beginTransaction();
         try {
             String[] asColumnsToReturn = {ImageTableFields.COLUMN_IMAGEDATA_ID.getFieldName()};
-            String notesIdsWhereStr = "";
+            String notesIdsWhereStr;
             int count = 0;
+            StringBuilder notesIdsWhereStrBuilder = new StringBuilder();
             for (long id : noteIds) {
                 if (count > 0) {
-                    notesIdsWhereStr = notesIdsWhereStr + " || ";
+                    notesIdsWhereStrBuilder.append(" || ");
                 }
-                notesIdsWhereStr = notesIdsWhereStr + ImageTableFields.COLUMN_NOTE_ID.getFieldName() + " = " + id;
+                notesIdsWhereStrBuilder.append(ImageTableFields.COLUMN_NOTE_ID.getFieldName()).append(" = ").append(id);
                 count++;
             }
+            notesIdsWhereStr = notesIdsWhereStrBuilder.toString();
             Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, notesIdsWhereStr, null, null, null, null);
             c.moveToFirst();
-            String imageDataIdsWhereStr = "";
+            StringBuilder imageDataIdsWhereStr = new StringBuilder();
             count = 0;
             while (!c.isAfterLast()) {
                 long imageDataId = c.getLong(0);
                 c.moveToNext();
                 if (count > 0) {
-                    imageDataIdsWhereStr = imageDataIdsWhereStr + " || ";
+                    imageDataIdsWhereStr.append(" || ");
                 }
-                imageDataIdsWhereStr = imageDataIdsWhereStr + ImageDataTableFields.COLUMN_ID.getFieldName() + " = " + imageDataId;
+                imageDataIdsWhereStr.append(ImageDataTableFields.COLUMN_ID.getFieldName()).append(" = ").append(imageDataId);
                 count++;
 
             }

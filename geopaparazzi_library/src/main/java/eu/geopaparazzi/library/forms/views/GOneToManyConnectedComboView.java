@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -94,9 +95,7 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
         List<String> _comboValues = new ArrayList<>();
         if (valueSplit.length > 1) {
             _mainComboValue = valueSplit[0];
-            for (int i = 1; i < valueSplit.length; i++) {
-                _comboValues.add(valueSplit[i]);
-            }
+            _comboValues.addAll(Arrays.asList(valueSplit).subList(1, valueSplit.length));
         } else {
             _mainComboValue = "";
             for (int i = 1; i < dataMap.size(); i++) {
@@ -216,13 +215,13 @@ public class GOneToManyConnectedComboView extends View implements GView, OnItemS
     public String getValue() {
         Object mainComboItem = mainComboSpinner.getSelectedItem();
         if (mainComboItem == null) mainComboItem = "";
-        String result = mainComboItem.toString();
+        StringBuilder result = new StringBuilder(mainComboItem.toString());
         for (Spinner spinner : orderedSubCombosList) {
             Object item = spinner.getSelectedItem();
             if (item == null) item = "";
-            result += SEP + item;
+            result.append(SEP).append(item);
         }
-        return result;
+        return result.toString();
     }
 
     @Override

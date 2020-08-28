@@ -192,7 +192,7 @@ public class Line implements KmlRepresenter, GpxRepresenter, Serializable {
         String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
-        sB.append("<name>" + name + "</name>\n");
+        sB.append("<name>").append(name).append("</name>\n");
         sB.append("<visibility>1</visibility>\n");
         sB.append("<LineString>\n");
         sB.append("<tessellate>1</tessellate>\n");

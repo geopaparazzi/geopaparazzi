@@ -72,7 +72,7 @@ public class MultipleChoiceDialog {
             StringBuilder sB = new StringBuilder();
 
             for (CharSequence selected : allSelected)
-                sB.append(";" + selected); //$NON-NLS-1$
+                sB.append(";").append(selected); //$NON-NLS-1$
 
             String buttonString1 = ""; //$NON-NLS-1$
             if (sB.length() > 0) {

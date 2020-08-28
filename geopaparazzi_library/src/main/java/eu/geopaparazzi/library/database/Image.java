@@ -150,7 +150,7 @@ public class Image extends ANote implements KmlRepresenter {
         sB.append("<html><head><title></title>");
         sB.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">");
         sB.append("</head><body>");
-        sB.append("<img src=\"" + name + "\" width=\"300\">");
+        sB.append("<img src=\"").append(name).append("\" width=\"300\">");
         sB.append("</body></html>]]></description>\n");
         // sB.append("<styleUrl>#yellow-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#camera-icon</styleUrl>\n");

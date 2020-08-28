@@ -236,7 +236,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
             if (doReread) {
                 List<LogMapItem> logsList = DaoGpsLog.getGpslogs();
                 Collections.sort(logsList, mapItemSorter);
-                gpslogItems = logsList.toArray(new LogMapItem[logsList.size()]);
+                gpslogItems = logsList.toArray(new LogMapItem[0]);
             }
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);

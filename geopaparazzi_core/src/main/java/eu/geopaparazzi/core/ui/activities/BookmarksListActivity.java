@@ -139,7 +139,7 @@ public class BookmarksListActivity extends AppCompatActivity {
                 }
             }
 
-            bookmarksNames = namesList.toArray(new String[namesList.size()]);
+            bookmarksNames = namesList.toArray(new String[0]);
         } catch (IOException e) {
             GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

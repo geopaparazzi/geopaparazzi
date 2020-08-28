@@ -67,12 +67,12 @@ public class GpxUtilities {
      */
     public static String getWayPointString(double lat, double lon, double elev, String name, String desc, String time) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<wpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
-        sb.append("  <ele>" + elev + "</ele>").append("\n");
-        sb.append("  <name>" + name + "</name>").append("\n");
-        sb.append("  <cmt>" + desc + "</cmt>").append("\n");
-        sb.append("  <desc>" + desc + "</desc>").append("\n");
-        sb.append("  <time>" + time + "</time>").append("\n");
+        sb.append("<wpt lat=\"").append(lat).append("\" lon=\"").append(lon).append("\">").append("\n");
+        sb.append("  <ele>").append(elev).append("</ele>").append("\n");
+        sb.append("  <name>").append(name).append("</name>").append("\n");
+        sb.append("  <cmt>").append(desc).append("</cmt>").append("\n");
+        sb.append("  <desc>").append(desc).append("</desc>").append("\n");
+        sb.append("  <time>").append(time).append("</time>").append("\n");
         sb.append("</wpt>").append("\n");
         return sb.toString();
     }
@@ -88,9 +88,9 @@ public class GpxUtilities {
      */
     public static String getTrackPointString(double lat, double lon, double elev, String time) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<trkpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
-        sb.append("  <ele>" + elev + "</ele>").append("\n");
-        sb.append("  <time>" + time + "</time>").append("\n");
+        sb.append("<trkpt lat=\"").append(lat).append("\" lon=\"").append(lon).append("\">").append("\n");
+        sb.append("  <ele>").append(elev).append("</ele>").append("\n");
+        sb.append("  <time>").append(time).append("</time>").append("\n");
         sb.append("</trkpt>").append("\n");
         return sb.toString();
     }
@@ -103,7 +103,7 @@ public class GpxUtilities {
      */
     public static String getTrackNameString(String name) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<name>" + name + "</name>").append("\n");
+        sb.append("<name>").append(name).append("</name>").append("\n");
         return sb.toString();
     }
 

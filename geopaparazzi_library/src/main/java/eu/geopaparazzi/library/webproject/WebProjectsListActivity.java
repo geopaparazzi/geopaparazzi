@@ -84,9 +84,7 @@ public class WebProjectsListActivity extends ListActivity {
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 try {
                     projectList = WebProjectManager.INSTANCE.downloadProjectList(context, url, user, pwd);
-                    for (Webproject wp : projectList) {
-                        projectListToLoad.add(wp);
-                    }
+                    projectListToLoad.addAll(projectList);
                     return ""; //$NON-NLS-1$
                 } catch (Exception e) {
                     GPLog.error(this, null, e);

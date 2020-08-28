@@ -149,14 +149,14 @@ public class KmzExport {
     }
 
     private void addMarker(StringBuilder sb, String alias, String url, int x, int y) throws IOException {
-        sb.append("<Style id=\"" + alias + "\">\n");
+        sb.append("<Style id=\"").append(alias).append("\">\n");
         sb.append("<IconStyle>\n");
         sb.append("<scale>1.1</scale>\n");
         sb.append("<Icon>\n");
-        sb.append("<href>" + url + "\n");
+        sb.append("<href>").append(url).append("\n");
         sb.append("</href>\n");
         sb.append("</Icon>\n");
-        sb.append("<hotSpot x=\"" + x + "\" y=\"" + y + "\" xunits=\"pixels\" yunits=\"pixels\" />\n");
+        sb.append("<hotSpot x=\"").append(x).append("\" y=\"").append(y).append("\" xunits=\"pixels\" yunits=\"pixels\" />\n");
         sb.append("</IconStyle>\n");
         sb.append("<ListStyle>\n");
         sb.append("</ListStyle>\n");
