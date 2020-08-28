@@ -183,8 +183,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
         if (selected1Item == null) selected1Item = "";
         Object selected2Item = combo2Spinner.getSelectedItem();
         if (selected2Item == null) selected2Item = "";
-        String result = selected1Item.toString() + SEP + selected2Item.toString();
-        return result;
+        return selected1Item.toString() + SEP + selected2Item.toString();
     }
 
     @Override

@@ -65,7 +65,6 @@ public class DbCursorAdapter extends CursorAdapter {
 
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         // Inflate your view here.
-        TextView view = new TextView(context);
-        return view;
+        return new TextView(context);
     }
 }

@@ -197,18 +197,16 @@ public class SelectionTool extends MapTool {
             protected String doInBackground(String... params) {
                 try {
                     features.clear();
-                    double north = n;
                     double south = s;
                     if (n - s == 0) {
                         south = n - 1;
                     }
                     double west = w;
-                    double east = e;
                     if (e - w == 0) {
                         west = e - 1;
                     }
 
-                    Envelope env = new Envelope(west, east, south, north);
+                    Envelope env = new Envelope(west, e, south, n);
 
                     if (editLayer instanceof IVectorDbLayer) {
                         IVectorDbLayer vectorDbLayer = (IVectorDbLayer) editLayer;

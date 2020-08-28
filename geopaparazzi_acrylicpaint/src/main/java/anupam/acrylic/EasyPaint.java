@@ -692,8 +692,7 @@ public class EasyPaint extends GraphicsActivity implements
         try {
             //I don't like loading both full-sized and reduced-size copies of the image (the larger copy can use a lot of memory), but I couldn't find any other way to do this.
             Bitmap fullsize = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            Bitmap resized = Bitmap.createScaledBitmap(fullsize, contentView.mBitmap.getWidth(), contentView.mBitmap.getHeight(), true);
-            contentView.mBitmapBackground = resized;
+            contentView.mBitmapBackground = Bitmap.createScaledBitmap(fullsize, contentView.mBitmap.getWidth(), contentView.mBitmap.getHeight(), true);
             //contentView.mCanvas = new Canvas( contentView.mBitmapBackground );
         } catch (IOException exception) {
             //TODO: How should we handle this exception?

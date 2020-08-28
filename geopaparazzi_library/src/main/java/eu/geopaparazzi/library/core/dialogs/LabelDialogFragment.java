@@ -134,8 +134,7 @@ public class LabelDialogFragment extends DialogFragment {
         fieldsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Object selectedItem = fieldsSpinner.getSelectedItem();
-                String fieldStr = selectedItem.toString();
-                mCurrentLabelObject.label = fieldStr;
+                mCurrentLabelObject.label = selectedItem.toString();
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {

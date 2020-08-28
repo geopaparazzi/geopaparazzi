@@ -143,8 +143,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         if (permissionHelper.hasGainedPermission(requestCode, grantResults)) {
-            AChainedPermissionHelper nextWithoutPermission = permissionHelper.getNextWithoutPermission(this);
-            permissionHelper = nextWithoutPermission;
+            permissionHelper = permissionHelper.getNextWithoutPermission(this);
             if (permissionHelper == null) {
                 completeInit();
             } else {

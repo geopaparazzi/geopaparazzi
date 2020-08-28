@@ -59,8 +59,7 @@ public class AddNoteLayoutDialogFragment extends DialogFragment {
      * @return the instance.
      */
     public static AddNoteLayoutDialogFragment newInstance() {
-        AddNoteLayoutDialogFragment f = new AddNoteLayoutDialogFragment();
-        return f;
+        return new AddNoteLayoutDialogFragment();
     }
 
 

@@ -111,8 +111,7 @@ public enum WebProfileManager {
 //            server = addActionPath(server, DOWNLOADLISTPATH);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
-        List<Profile> webprofilesList = json2WebprofilesList(jsonString);
-        return webprofilesList;
+        return json2WebprofilesList(jsonString);
     }
 
     /**

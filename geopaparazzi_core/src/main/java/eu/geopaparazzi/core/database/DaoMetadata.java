@@ -350,8 +350,7 @@ public class DaoMetadata {
             c = sqliteDatabase.query(TABLE_METADATA, asColumnsToReturn, MetadataTableFields.COLUMN_KEY.getFieldName() + "='" + MetadataTableDefaultValues.KEY_NAME.getFieldName() + "'", null, null, null, null);
             c.moveToFirst();
             if (!c.isAfterLast()) {
-                String value = c.getString(0);
-                return value;
+                return c.getString(0);
             }
             return null;
         } finally {

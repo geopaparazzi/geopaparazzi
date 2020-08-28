@@ -102,8 +102,7 @@ public class PanicActivity extends AppCompatActivity implements View.OnClickList
         if (panicNumbersString.length() == 0 || panicNumbersString.matches(".*[A-Za-z].*")) {
             return null;
         } else {
-            String[] numbers = panicNumbersString.split(";");
-            return numbers;
+            return panicNumbersString.split(";");
         }
     }
 }

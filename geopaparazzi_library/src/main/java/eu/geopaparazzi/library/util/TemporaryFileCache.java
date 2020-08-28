@@ -42,8 +42,7 @@ public enum TemporaryFileCache {
      */
     public static File createNewTempFile(Context context, String ext) throws IOException {
         File outputDir = context.getCacheDir();
-        File outputFile = File.createTempFile("geopaparazzi_", ext, outputDir); //NON-NLS
-        return outputFile;
+        return File.createTempFile("geopaparazzi_", ext, outputDir);
     }
 
 }

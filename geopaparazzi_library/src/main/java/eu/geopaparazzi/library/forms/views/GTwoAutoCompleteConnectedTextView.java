@@ -250,8 +250,7 @@ public class GTwoAutoCompleteConnectedTextView extends View implements GView, On
 
 
     public String getValue() {
-        String result = selectedCombo1Entry + SEP + selectedCombo2Entry;
-        return result;
+        return selectedCombo1Entry + SEP + selectedCombo2Entry;
     }
 
     @Override

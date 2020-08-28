@@ -70,8 +70,7 @@ public class Utilities {
     public static Uri getFileUriInApplicationFolder(Context context, File imageFile) throws Exception {
         String packageName = ResourcesManager.getInstance(context).getPackageName();
 
-        Uri outputFileUri = FileProvider.getUriForFile(context, packageName + GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS, imageFile);
-        return outputFileUri;
+        return FileProvider.getUriForFile(context, packageName + GEOPAPARAZZI_LIBRARY_FILEPROVIDER_PLUS, imageFile);
     }
 
 
@@ -170,8 +169,7 @@ public class Utilities {
         tmp2 = Double.parseDouble(value[1]);
         double seconds = tmp1 / tmp2;
 
-        double result = degree + (minutes / 60.0) + (seconds / 3600.0);
-        return result;
+        return degree + (minutes / 60.0) + (seconds / 3600.0);
     }
 
     /**
@@ -286,8 +284,7 @@ public class Utilities {
      * @return the formatted string.
      */
     public static String format(String msg, String... args) {
-        String msgFormat = String.format(msg, (Object[]) args);
-        return msgFormat;
+        return String.format(msg, (Object[]) args);
     }
 
     /**

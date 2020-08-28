@@ -295,8 +295,7 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
         final double b = Math.cos(lat1) * Math.sin(lat2) -
                 Math.sin(lat1) * Math.cos(lat2) * Math.cos(delta_long);
         final double bearing = Math.toDegrees(Math.atan2(a, b));
-        final double bearing_normalized = (bearing + 360) % 360;
-        return bearing_normalized;
+        return (bearing + 360) % 360;
     }
 
     /**

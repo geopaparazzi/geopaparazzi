@@ -179,8 +179,7 @@ public class DaoNotes implements INotesDbHelper {
         if (style != null)
             values.put(NotesTableFields.COLUMN_STYLE.getFieldName(), style);
         values.put(NotesTableFields.COLUMN_ISDIRTY.getFieldName(), 1);
-        long noteId = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
-        return noteId;
+        return sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
     }
 
     /**
@@ -402,8 +401,7 @@ public class DaoNotes implements INotesDbHelper {
                 String form = c.getString(8);
                 int isDirty = c.getInt(9);
 
-                Note note = new Note(id, text, description, timestamp, lon, lat, altim, form, isDirty, style);
-                return note;
+                return new Note(id, text, description, timestamp, lon, lat, altim, form, isDirty, style);
             }
         } finally {
             c.close();

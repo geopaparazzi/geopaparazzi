@@ -116,8 +116,7 @@ public class StageExportDialogFragment extends DialogFragment {
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {
-                    String message = WebProjectManager.INSTANCE.uploadProject(getActivity(), serverUrl, user, pwd);
-                    return message;
+                    return WebProjectManager.INSTANCE.uploadProject(getActivity(), serverUrl, user, pwd);
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     return "ERROR" + e.getLocalizedMessage();//NON-NLS

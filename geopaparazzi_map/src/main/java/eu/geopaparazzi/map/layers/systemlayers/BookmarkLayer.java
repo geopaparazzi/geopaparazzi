@@ -119,15 +119,14 @@ public class BookmarkLayer extends ItemizedLayer<MarkerItem> implements Itemized
 
         int symbolWidth = poiBitmap.getWidth();
 
-        int xSize = symbolWidth;
         int ySize = symbolWidth + dist2symbol;
 
         // markerCanvas, the drawing area for all: title, description and symbol
-        Bitmap markerBitmap = CanvasAdapter.newBitmap(xSize, ySize, 0);
+        Bitmap markerBitmap = CanvasAdapter.newBitmap(symbolWidth, ySize, 0);
         org.oscim.backend.canvas.Canvas markerCanvas = CanvasAdapter.newCanvas();
         markerCanvas.setBitmap(markerBitmap);
 
-        markerCanvas.drawBitmap(poiBitmap, xSize * 0.5f - (symbolWidth * 0.25f), ySize * 0.5f - (symbolWidth * 0.25f));
+        markerCanvas.drawBitmap(poiBitmap, symbolWidth * 0.5f - (symbolWidth * 0.25f), ySize * 0.5f - (symbolWidth * 0.25f));
 
         return (new MarkerSymbol(markerBitmap, MarkerSymbol.HotspotPlace.CENTER, true));
     }

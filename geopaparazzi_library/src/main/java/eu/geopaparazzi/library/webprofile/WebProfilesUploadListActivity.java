@@ -141,14 +141,13 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
                 descriptionText.setText(selectedWebprofile.description);
                 dateText.setText(selectedWebprofile.creationdate);
 
-                Profile profile = selectedWebprofile;
                 boolean ignore = false;
-                if (profile == null) {
+                if (selectedWebprofile == null) {
                     // a new profile
                     commentsText.setText("");
                 } else {
-                    String pName = profile.name;
-                    String pModifieddate = profile.modifieddate;
+                    String pName = selectedWebprofile.name;
+                    String pModifieddate = selectedWebprofile.modifieddate;
                     String wpModifieddate = selectedWebprofile.modifieddate;
                     commentsText.setText("");
 

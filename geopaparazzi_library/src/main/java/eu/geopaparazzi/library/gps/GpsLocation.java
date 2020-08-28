@@ -57,16 +57,14 @@ public class GpsLocation extends Location {
      * @return the time string in UTC.
      */
     public String getTimeString() {
-        String timeString = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.format(new Date(getTime()));
-        return timeString;
+        return TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.format(new Date(getTime()));
     }
 
     /**
      * @return the sql time string in UTC.
      */
     public String getTimeStringSql() {
-        String timeString = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(new Date(getTime()));
-        return timeString;
+        return TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(new Date(getTime()));
     }
 
     /**

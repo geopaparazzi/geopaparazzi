@@ -50,13 +50,11 @@ public class DefaultHelperClasses {
 
     public static IImagesDbHelper getDefaulfImageHelper() throws Exception {
         Class<?> logHelper = Class.forName(IMAGE_HELPER_CLASS);
-        IImagesDbHelper imagesDbHelper = (IImagesDbHelper) logHelper.newInstance();
-        return imagesDbHelper;
+        return (IImagesDbHelper) logHelper.newInstance();
     }
 
     public static INotesDbHelper getDefaulfNotesHelper() throws Exception {
         Class<?> logHelper = Class.forName(NOTES_HELPER_CLASS);
-        INotesDbHelper notesDbHelper = (INotesDbHelper) logHelper.newInstance();
-        return notesDbHelper;
+        return (INotesDbHelper) logHelper.newInstance();
     }
 }

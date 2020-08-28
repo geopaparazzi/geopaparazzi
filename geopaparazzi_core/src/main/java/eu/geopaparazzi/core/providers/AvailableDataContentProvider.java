@@ -192,10 +192,9 @@ public class AvailableDataContentProvider extends ContentProvider {
      * @return the SparseArray of the Spatialite maps and ids to use.
      */
     public static SparseArray<SpatialiteMap> getSpatialiteMaps(ContentResolver contentResolver) {
-        String[] projection = CONTENT_PROVIDER_FIELDS_SPATIALITE;
         Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(SPATIALITE).build();
         Cursor cursor = contentResolver.query(CONTENT_URI,
-                projection,
+                CONTENT_PROVIDER_FIELDS_SPATIALITE,
                 null,
                 null,
                 null);

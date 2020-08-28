@@ -86,8 +86,7 @@ public class DatabaseListFragment extends ListFragment implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        RawSqlCursorLoader cl = new RawSqlCursorLoader(getActivity(), mDatabase, mSql);
-        return cl;
+        return new RawSqlCursorLoader(getActivity(), mDatabase, mSql);
     }
 
     @Override

@@ -573,8 +573,7 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
      */
     private double[] getMapWorldBounds() {
         GPBBox bbox = mapView.getBoundingBox();
-        double[] nswe = {bbox.getMaxLatitude(), bbox.getMinLatitude(), bbox.getMinLongitude(), bbox.getMaxLongitude()};
-        return nswe;
+        return new double[]{bbox.getMaxLatitude(), bbox.getMinLatitude(), bbox.getMinLongitude(), bbox.getMaxLongitude()};
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

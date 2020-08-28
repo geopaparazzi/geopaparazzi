@@ -297,14 +297,12 @@ public class GPLog {
     public static String getLogQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append("select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc");
-        String query = sb.toString();
-        return query;
+        return sb.toString();
     }
 
     private static String toName(Object obj) {
         if (obj instanceof String) {
-            String name = (String) obj;
-            return name;
+            return (String) obj;
         }
         String simpleName = obj.getClass().getSimpleName();
         return simpleName.toUpperCase();

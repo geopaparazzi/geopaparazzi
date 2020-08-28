@@ -133,7 +133,7 @@ public enum GeopackageConnectionsHandler {
         String query = buildGeometriesInBoundsQuery(db, tableName, gCol, gpStyle, null);
 
         IGeometryParser gp = db.getType().getGeometryParser();
-        List<Geometry> geoms = db.execOnConnection(connection -> {
+        return db.execOnConnection(connection -> {
             List<Geometry> tmp = new ArrayList<>();
             try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
                 while (rs.next()) {
@@ -147,7 +147,6 @@ public enum GeopackageConnectionsHandler {
             }
             return tmp;
         });
-        return geoms;
     }
 
 
@@ -182,8 +181,7 @@ public enum GeopackageConnectionsHandler {
             String spatialindexBBoxWherePiece = db.getSpatialindexBBoxWherePiece(tableName, null, x1, y1, x2, y2);
             qSb.append(" WHERE ").append(spatialindexBBoxWherePiece);
         }
-        String q = qSb.toString();
-        return q;
+        return qSb.toString();
     }
 
     public static String buildGetFirstGeometry(ASpatialDb db, String tableName, GeometryColumn tableGeometryColumn) {
@@ -192,8 +190,7 @@ public enum GeopackageConnectionsHandler {
         qSb.append(tableGeometryColumn.geometryColumnName);
         qSb.append(" FROM ");
         qSb.append("\"").append(tableName).append("\" limit 1");
-        String q = qSb.toString();
-        return q;
+        return qSb.toString();
     }
 
 
@@ -206,8 +203,7 @@ public enum GeopackageConnectionsHandler {
         return db.execOnConnection(connection -> {
             try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
                 if (rs.next()) {
-                    Geometry geometry = gp.fromResultSet(rs, 1);
-                    return geometry;
+                    return gp.fromResultSet(rs, 1);
                 }
             }
             return null;

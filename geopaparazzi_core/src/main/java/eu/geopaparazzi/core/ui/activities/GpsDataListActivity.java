@@ -204,7 +204,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
             }
             byte[] logBytes = Utilities.serializeObject(logs);
 
-            NdefMessage msg = new NdefMessage(NdefRecord.createMime(
+            return new NdefMessage(NdefRecord.createMime(
                     logSendingMimeType, logBytes)
                     /**
                      * The Android Application Record (AAR) is commented out. When a device
@@ -216,7 +216,6 @@ public class GpsDataListActivity extends AppCompatActivity implements
                      */
                     //,NdefRecord.createApplicationRecord("com.examples.nfcbeam")
             );
-            return msg;
         } catch (IOException e) {
             GPLog.error(this, "Error in sending logs.", e);//NON-NLS
         }

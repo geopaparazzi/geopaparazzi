@@ -199,9 +199,8 @@ public class WebProjectsListActivity extends ListActivity {
         new AsyncTask<String, Void, String>() {
             protected String doInBackground(String... params) {
                 try {
-                    String returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user, pwd,
+                    return WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user, pwd,
                             webproject);
-                    return returnCode;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();

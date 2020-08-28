@@ -197,8 +197,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     public SQLiteDatabase getDatabase() throws Exception {
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
-        return sqliteDatabase;
+        return GeopaparazziApplication.getInstance().getDatabase();
     }
 
     public long addGpsLog(long startTs, long endTs, double lengthm, String text, float width, String color, boolean visible)
@@ -450,8 +449,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             c = sqliteDatabase.rawQuery(sql, null);
             c.moveToFirst();
             if (!c.isAfterLast()) {
-                int count = c.getInt(0);
-                return count;
+                return c.getInt(0);
             }
         } finally {
             if (c != null)
@@ -1104,7 +1102,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         // tracks
         List<TrackSegment> trackSegments = gpxItem.getTrackSegments();
         if (trackSegments.size() > 0) {
-            float width = DEFAULT_LOG_WIDTH;
             for (TrackSegment trackSegment : trackSegments) {
                 String tsName = trackSegment.getName();
                 if (tsName == null) {
@@ -1117,7 +1114,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 long date = System.currentTimeMillis();
 
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(date, date, 0, name, width, ColorUtilities.BLUE.getHex(), true);
+                long logId = helper.addGpsLog(date, date, 0, name, DEFAULT_LOG_WIDTH, ColorUtilities.BLUE.getHex(), true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1224,8 +1221,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         try (Cursor mCursor = database.rawQuery(query, null)) {
             mCursor.moveToFirst();
             if (!mCursor.isAfterLast()) {
-                long id = mCursor.getLong(0);
-                return id;
+                return mCursor.getLong(0);
             }
         }
         throw new Exception();

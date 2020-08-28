@@ -116,8 +116,7 @@ public enum WebProjectManager {
             File sdcardDir = resourcesManager.getMainStorageDir();
             File downloadedProjectFile = new File(sdcardDir, webproject.id);
             if (downloadedProjectFile.exists()) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();
-                return wontOverwrite;
+                return context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFile.getName();
             }
             server = addActionPath(server, DOWNLOADPROJECTPATH);
             NetworkUtilities.sendGetRequest4File(server, downloadedProjectFile, "id=" + webproject.id, user, passwd);
@@ -127,8 +126,7 @@ public enum WebProjectManager {
             GPLog.error(this, null, e);
             String message = e.getMessage();
             if (message.equals(CompressionUtilities.FILE_EXISTS)) {
-                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName;
-                return wontOverwrite;
+                return context.getString(R.string.the_file_exists_wont_overwrite) + " " + downloadedProjectFileName;
             }
             return e.getLocalizedMessage();
         }
@@ -160,8 +158,7 @@ public enum WebProjectManager {
             server = addActionPath(server, DOWNLOADLISTPATH);
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
-        List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
-        return webprojectsList;
+        return json2WebprojectsList(jsonString);
     }
 
     /**

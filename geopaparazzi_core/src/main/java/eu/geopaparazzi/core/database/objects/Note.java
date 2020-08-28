@@ -309,7 +309,6 @@ public class Note extends ANote implements KmlRepresenter, GpxRepresenter {
 
         long time = getTimeStamp();
         String dateString = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(new Date(time));
-        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description, dateString);
-        return wayPointString;
+        return GpxUtilities.getWayPointString(lat, lon, altim, name, description, dateString);
     }
 }

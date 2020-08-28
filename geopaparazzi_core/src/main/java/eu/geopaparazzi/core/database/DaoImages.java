@@ -429,8 +429,7 @@ public class DaoImages implements IImagesDbHelper {
                 long noteId = c.getLong(7);
                 long imageDataId = c.getLong(8);
 
-                Image image = new Image(id, text, lon, lat, altim, azim, imageDataId, noteId, ts);
-                return image;
+                return new Image(id, text, lon, lat, altim, azim, imageDataId, noteId, ts);
             }
             return null;
         } finally {
@@ -453,8 +452,7 @@ public class DaoImages implements IImagesDbHelper {
         c.close();
 
         if (imageDataId != -1) {
-            byte[] imageData = getImageDataById(imageDataId, sqliteDatabase);
-            return imageData;
+            return getImageDataById(imageDataId, sqliteDatabase);
         }
 
         return null;
@@ -500,13 +498,12 @@ public class DaoImages implements IImagesDbHelper {
                 int maxBlobSize = ImageUtilities.MAXBLOBSIZE;
                 if (blobSize > maxBlobSize) {
                     for (long i = 1; i <= blobSize; i = i + maxBlobSize) {
-                        long from = i;
                         long size = maxBlobSize;
-                        if (from + size > blobSize) {
-                            size = blobSize - from + 1;
+                        if (i + size > blobSize) {
+                            size = blobSize - i + 1;
                         }
                         String tmpQuery = "SELECT substr(" + ImageDataTableFields.COLUMN_IMAGE.getFieldName() + //
-                                "," + from + ", " + size + ") FROM " + TABLE_IMAGE_DATA + " WHERE " + whereStr;
+                                "," + i + ", " + size + ") FROM " + TABLE_IMAGE_DATA + " WHERE " + whereStr;
                         if (GPLog.LOG_HEAVY)
                             GPLog.addLogEntry(this, "ISSUE QUERY: " + tmpQuery);
                         Cursor imageCunchCursor = sqliteDatabase.rawQuery(tmpQuery, null);
@@ -547,8 +544,7 @@ public class DaoImages implements IImagesDbHelper {
         c.close();
 
         if (imageDataId != -1) {
-            byte[] imageData = getImageThumbnailById(sqliteDatabase, imageDataId);
-            return imageData;
+            return getImageThumbnailById(sqliteDatabase, imageDataId);
         }
 
         return null;

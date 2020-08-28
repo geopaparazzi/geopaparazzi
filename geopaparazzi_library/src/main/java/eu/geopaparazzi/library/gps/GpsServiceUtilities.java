@@ -112,8 +112,7 @@ public class GpsServiceUtilities {
         if (intent == null) {
             return null;
         }
-        double[] position = intent.getDoubleArrayExtra(GPS_SERVICE_POSITION);
-        return position;
+        return intent.getDoubleArrayExtra(GPS_SERVICE_POSITION);
     }
 
     /**
@@ -126,8 +125,7 @@ public class GpsServiceUtilities {
         if (intent == null) {
             return null;
         }
-        float[] positionExtras = intent.getFloatArrayExtra(GPS_SERVICE_POSITION_EXTRAS);
-        return positionExtras;
+        return intent.getFloatArrayExtra(GPS_SERVICE_POSITION_EXTRAS);
     }
 
     /**
@@ -140,8 +138,7 @@ public class GpsServiceUtilities {
         if (intent == null) {
             return -1;
         }
-        long time = intent.getLongExtra(GPS_SERVICE_POSITION_TIME, -1);
-        return time;
+        return intent.getLongExtra(GPS_SERVICE_POSITION_TIME, -1);
     }
 
     /**
@@ -154,8 +151,7 @@ public class GpsServiceUtilities {
         if (intent == null) {
             return null;
         }
-        int[] gpsstatusExtras = intent.getIntArrayExtra(GPS_SERVICE_GPSSTATUS_EXTRAS);
-        return gpsstatusExtras;
+        return intent.getIntArrayExtra(GPS_SERVICE_GPSSTATUS_EXTRAS);
     }
 
     /**

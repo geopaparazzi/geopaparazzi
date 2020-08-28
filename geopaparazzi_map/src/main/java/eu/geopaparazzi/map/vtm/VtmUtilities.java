@@ -22,7 +22,6 @@ public class VtmUtilities {
 
 
     public static Bitmap decodeBitmap(byte[] imageBytes) throws IOException {
-        Bitmap bitmap = CanvasAdapter.decodeBitmap(new ByteArrayInputStream(imageBytes));
-        return bitmap;
+        return CanvasAdapter.decodeBitmap(new ByteArrayInputStream(imageBytes));
     }
 }

@@ -98,8 +98,7 @@ public enum SpatialiteConnectionsHandler {
 
     public Style getStyleForTable(String dbPath, String tableName, String labelField) throws Exception {
         ASpatialDb db = getDb(dbPath);
-        Style style4Table = SpatialiteUtilities.getStyle4Table(db, tableName, labelField);
-        return style4Table;
+        return SpatialiteUtilities.getStyle4Table(db, tableName, labelField);
     }
 
     public List<Geometry> getGeometries(String dbPath, String tableName, Style gpStyle) throws Exception {
@@ -108,7 +107,7 @@ public enum SpatialiteConnectionsHandler {
         String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(db, tableName, gCol, gpStyle, 4326, null);
 
         IGeometryParser gp = db.getType().getGeometryParser();
-        List<Geometry> geoms = db.execOnConnection(connection -> {
+        return db.execOnConnection(connection -> {
             List<Geometry> tmp = new ArrayList<>();
             try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
                 while (rs.next()) {
@@ -123,7 +122,6 @@ public enum SpatialiteConnectionsHandler {
             }
             return tmp;
         });
-        return geoms;
     }
 
     public Geometry getFirstGeometry(String dbPath, String tableName) throws Exception {
@@ -135,8 +133,7 @@ public enum SpatialiteConnectionsHandler {
         return db.execOnConnection(connection -> {
             try (IHMStatement stmt = connection.createStatement(); IHMResultSet rs = stmt.executeQuery(query)) {
                 if (rs.next()) {
-                    Geometry geometry = gp.fromResultSet(rs, 1);
-                    return geometry;
+                    return gp.fromResultSet(rs, 1);
                 }
             }
             return null;
