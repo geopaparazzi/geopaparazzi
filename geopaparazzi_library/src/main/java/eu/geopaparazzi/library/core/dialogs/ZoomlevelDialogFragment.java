@@ -21,7 +21,6 @@ package eu.geopaparazzi.library.core.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -145,18 +144,14 @@ public class ZoomlevelDialogFragment extends DialogFragment {
 
 
         builder.setPositiveButton(R.string.set_properties,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (zoomlevelPropertiesChangeListener != null) {
-                            zoomlevelPropertiesChangeListener.onPropertiesChanged(mMinMaxZoomlevels[0], mMinMaxZoomlevels[1]);
-                        }
+                (dialog, id) -> {
+                    if (zoomlevelPropertiesChangeListener != null) {
+                        zoomlevelPropertiesChangeListener.onPropertiesChanged(mMinMaxZoomlevels[0], mMinMaxZoomlevels[1]);
                     }
                 }
         );
         builder.setNegativeButton(getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                (dialog, id) -> {
                 }
         );
 

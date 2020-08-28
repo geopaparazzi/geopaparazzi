@@ -36,7 +36,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -134,12 +133,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
 
 
         togglePositionTypeButtonGps = findViewById(R.id.togglePositionTypeGps);
-        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor edit = preferences.edit();
-                edit.putBoolean(FormActivity.USE_MAPCENTER_POSITION, !isChecked);
-                edit.apply();
-            }
+        togglePositionTypeButtonGps.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor edit = preferences.edit();
+            edit.putBoolean(FormActivity.USE_MAPCENTER_POSITION, !isChecked);
+            edit.apply();
         });
 
         textsizeFactor = preferences.getInt(PREFS_KEY_GUITEXTSIZEFACTOR,
@@ -149,13 +146,10 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         returnToViewAfterNoteCheckBox = findViewById(R.id.returnToViewAfterNoteCheckBox);
         boolean returnToViewAfterNote = preferences.getBoolean(PREFS_KEY_RETURNTOVIEWAFTERNOTE, false);
         returnToViewAfterNoteCheckBox.setChecked(returnToViewAfterNote);
-        returnToViewAfterNoteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor editor = preferences.edit();
-                editor.putBoolean(PREFS_KEY_RETURNTOVIEWAFTERNOTE, isChecked);
-                editor.apply();
-            }
+        returnToViewAfterNoteCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = preferences.edit();
+            editor.putBoolean(PREFS_KEY_RETURNTOVIEWAFTERNOTE, isChecked);
+            editor.apply();
         });
 
         double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);

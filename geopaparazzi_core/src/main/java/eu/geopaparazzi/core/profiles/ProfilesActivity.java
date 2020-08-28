@@ -78,12 +78,9 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
 
         FloatingActionButton fab = findViewById(R.id.fab);
         assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NewProfileDialogFragment newProfileDialogFragment = NewProfileDialogFragment.newInstance(null, null);
-                newProfileDialogFragment.show(getSupportFragmentManager(), "New Profile Dialog");//NON-NLS
-            }
+        fab.setOnClickListener(view -> {
+            NewProfileDialogFragment newProfileDialogFragment = NewProfileDialogFragment.newInstance(null, null);
+            newProfileDialogFragment.show(getSupportFragmentManager(), "New Profile Dialog");//NON-NLS
         });
 
         previousActiveProfile = ProfilesHandler.INSTANCE.getActiveProfile();
@@ -234,13 +231,10 @@ public class ProfilesActivity extends AppCompatActivity implements NewProfileDia
             ImageButton deleteButton = newProjectCardView.findViewById(R.id.deleteButton);
             deleteButton.setOnClickListener(v -> {
                 String msg = String.format(ProfilesActivity.this.getString(R.string.prompt_remove_profile), profile.name);
-                GPDialogs.yesNoMessageDialog(ProfilesActivity.this, msg, () -> runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        profileList.remove(profile);
-                        saveProfiles();
-                        loadProfiles();
-                    }
+                GPDialogs.yesNoMessageDialog(ProfilesActivity.this, msg, () -> runOnUiThread(() -> {
+                    profileList.remove(profile);
+                    saveProfiles();
+                    loadProfiles();
                 }), null);
 
             });

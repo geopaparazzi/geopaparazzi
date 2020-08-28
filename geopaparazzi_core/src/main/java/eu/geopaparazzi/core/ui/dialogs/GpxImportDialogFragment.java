@@ -20,7 +20,6 @@ package eu.geopaparazzi.core.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -89,17 +88,11 @@ public class GpxImportDialogFragment extends DialogFragment {
                 R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        isInterrupted = true;
-                    }
-                }
+                (dialog, id) -> isInterrupted = true
         );
         builder.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                (dialog, id) -> {
 
-                    }
                 }
         );
 

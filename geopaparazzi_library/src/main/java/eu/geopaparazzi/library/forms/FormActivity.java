@@ -252,38 +252,18 @@ public class FormActivity extends AppCompatActivity implements IFragmentListSupp
     @Override
     public void onBackPressed() {
         GPDialogs.yesNoMessageDialog(this, getString(R.string.form_exit_prompt),
-                new Runnable() {
-                    @Override
-                    public void run() {
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    saveAction();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
+                () -> runOnUiThread(() -> {
+                    try {
+                        saveAction();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }, new Runnable() {
-                    @Override
-                    public void run() {
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (noteIsNew) {
-                                    cancelResult();
-                                }
-                                FormActivity.super.onBackPressed();
-                            }
-                        });
-
+                }), () -> runOnUiThread(() -> {
+                    if (noteIsNew) {
+                        cancelResult();
                     }
-                }
+                    FormActivity.super.onBackPressed();
+                })
         );
     }
 

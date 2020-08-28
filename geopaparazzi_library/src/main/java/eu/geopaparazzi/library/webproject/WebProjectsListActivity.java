@@ -164,11 +164,7 @@ public class WebProjectsListActivity extends ListActivity {
                 // sizeText.setText(kbSize + "Kb");
 
                 ImageView imageView = rowView.findViewById(R.id.downloadproject_image);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        downloadProject(webproject);
-                    }
-                });
+                imageView.setOnClickListener(v -> downloadProject(webproject));
                 return rowView;
             }
 

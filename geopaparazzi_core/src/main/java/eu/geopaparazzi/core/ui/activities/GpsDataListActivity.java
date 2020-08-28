@@ -38,8 +38,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -176,12 +174,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
                 }
 
             }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    GPDialogs.infoDialog(GpsDataListActivity.this, getString(R.string.incoming_logs_added) + logs.getSize(), null);
-                }
-            });
+            runOnUiThread(() -> GPDialogs.infoDialog(GpsDataListActivity.this, getString(R.string.incoming_logs_added) + logs.getSize(), null));
         } catch (Exception e) {
             GPLog.error(GpsDataListActivity.this, e.getLocalizedMessage(), e);
         }
@@ -226,12 +219,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
     public void onNdefPushComplete(NfcEvent event) {
         //This callback happens on a binder thread, don't update
         // the UI directly from this method.
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                GPDialogs.infoDialog(GpsDataListActivity.this, getString(R.string.logs_sent), null);
-            }
-        });
+        runOnUiThread(() -> GPDialogs.infoDialog(GpsDataListActivity.this, getString(R.string.logs_sent), null));
     }
 
     @Override
@@ -294,19 +282,14 @@ public class GpsDataListActivity extends AppCompatActivity implements
                 holder.nameView.setText(item.getName());
 
                 holder.visibleView.setChecked(item.isVisible());
-                holder.visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        item.setVisible(isChecked);
-                        item.setDirty(true);
-                    }
+                holder.visibleView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    item.setVisible(isChecked);
+                    item.setDirty(true);
                 });
-                holder.propertiesButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(GpsDataListActivity.this, GpsLogPropertiesActivity.class);
-                        intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
-                        startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
-                    }
+                holder.propertiesButton.setOnClickListener(v -> {
+                    Intent intent = new Intent(GpsDataListActivity.this, GpsLogPropertiesActivity.class);
+                    intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
+                    startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
                 });
 
                 return rowView;
@@ -401,12 +384,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
                     }
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshList(true);
-                    }
-                });
+                runOnUiThread(() -> refreshList(true));
             }
         }, null);
     }

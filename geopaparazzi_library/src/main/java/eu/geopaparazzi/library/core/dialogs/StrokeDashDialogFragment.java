@@ -21,7 +21,6 @@ package eu.geopaparazzi.library.core.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -144,18 +143,14 @@ public class StrokeDashDialogFragment extends DialogFragment implements Compound
         }
 
         builder.setPositiveButton(R.string.set_dash,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (iDashStrokePropertiesChangeListener != null) {
-                            iDashStrokePropertiesChangeListener.onDashChanged(mCurrentDash, mDashShift);
-                        }
+                (dialog, id) -> {
+                    if (iDashStrokePropertiesChangeListener != null) {
+                        iDashStrokePropertiesChangeListener.onDashChanged(mCurrentDash, mDashShift);
                     }
                 }
         );
         builder.setNegativeButton(getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                (dialog, id) -> {
                 }
         );
 

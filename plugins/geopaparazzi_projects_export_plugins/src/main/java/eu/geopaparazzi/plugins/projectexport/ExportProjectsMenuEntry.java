@@ -71,12 +71,9 @@ public class ExportProjectsMenuEntry extends MenuEntry {
             return;
         }
 
-        GPDialogs.yesNoMessageDialog(context, context.getString(eu.geopaparazzi.core.R.string.upload_to_cloud_prompt), new Runnable() {
-            @Override
-            public void run() {
-                StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
-                stageExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "cloud export");
-            }
+        GPDialogs.yesNoMessageDialog(context, context.getString(eu.geopaparazzi.core.R.string.upload_to_cloud_prompt), () -> {
+            StageExportDialogFragment stageExportDialogFragment = StageExportDialogFragment.newInstance(serverUrl, user, pwd);
+            stageExportDialogFragment.show(clickActivityStarter.getSupportFragmentManager(), "cloud export");
         }, null);
     }
 

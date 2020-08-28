@@ -99,11 +99,9 @@ public class GMultiComboView extends View implements GView {
         } else {
             button.setText(value);
         }
-        button.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                MultipleChoiceDialog dialog = new MultipleChoiceDialog();
-                dialog.open(context, button, itemsArray);
-            }
+        button.setOnClickListener(v -> {
+            MultipleChoiceDialog dialog = new MultipleChoiceDialog();
+            dialog.open(context, button, itemsArray);
         });
 
         textLayout.addView(button);

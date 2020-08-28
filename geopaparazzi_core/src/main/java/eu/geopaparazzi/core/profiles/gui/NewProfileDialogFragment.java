@@ -21,7 +21,6 @@ package eu.geopaparazzi.core.profiles.gui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -95,23 +94,19 @@ public class NewProfileDialogFragment extends DialogFragment {
             if (description != null) newProfileDescriptionText.setText(description);
 
             builder.setPositiveButton(getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            String name = newProfileNameText.getText().toString();
-                            if (name.trim().length() == 0)
-                                name = "no name: " + new Date();//NON-NLS
-                            String description = newProfileDescriptionText.getText().toString();
+                    (dialog, id) -> {
+                        String name = newProfileNameText.getText().toString();
+                        if (name.trim().length() == 0)
+                            name = "no name: " + new Date();//NON-NLS
+                        String description = newProfileDescriptionText.getText().toString();
 
-                            if (iNewProfileCreatedListener != null)
-                                iNewProfileCreatedListener.onNewProfileCreated(name, description);
-                        }
+                        if (iNewProfileCreatedListener != null)
+                            iNewProfileCreatedListener.onNewProfileCreated(name, description);
                     }
             );
 
             builder.setNegativeButton(getString(android.R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
+                    (dialog, id) -> {
                     }
             );
 

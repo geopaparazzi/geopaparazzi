@@ -25,8 +25,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -75,12 +73,10 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         boolean notesVisible = mPreferences.getBoolean(PREFS_KEY_NOTES_VISIBLE, true);
         CheckBox notesVisibilityCheckbox = findViewById(R.id.checkVisibility);
         notesVisibilityCheckbox.setChecked(notesVisible);
-        notesVisibilityCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_VISIBLE, isChecked);
-                editor.apply();
-            }
+        notesVisibilityCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_NOTES_VISIBLE, isChecked);
+            editor.apply();
         });
 
 
@@ -89,24 +85,20 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
 
         boolean imagesVisible = mPreferences.getBoolean(PREFS_KEY_IMAGES_VISIBLE, true);
         imagesView.setChecked(imagesVisible);
-        imagesView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences.Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_IMAGES_VISIBLE, isChecked);
-                editor.apply();
-            }
+        imagesView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_IMAGES_VISIBLE, isChecked);
+            editor.apply();
         });
 
         // use custom
         final CheckBox useCustomCheckbox = findViewById(R.id.checkUseCustom);
         boolean doCustom = mPreferences.getBoolean(PREFS_KEY_NOTES_CHECK, true);
         useCustomCheckbox.setChecked(doCustom);
-        useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
-                editor.apply();
-            }
+        useCustomCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
+            editor.apply();
         });
 
         int arraySizeId = R.array.array_size;
@@ -135,22 +127,18 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         final CheckBox showNotesLabelsCheckbox = findViewById(R.id.checkShowNotesLabels);
         boolean showNotesLabels = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, true);
         showNotesLabelsCheckbox.setChecked(showNotesLabels);
-        showNotesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showNotesLabelsCheckbox.isChecked());
-                editor.apply();
-            }
+        showNotesLabelsCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_NOTES_TEXT_VISIBLE, showNotesLabelsCheckbox.isChecked());
+            editor.apply();
         });
         final CheckBox showImagesLabelsCheckbox = findViewById(R.id.checkShowImageLabels);
         boolean showImagesLabels = mPreferences.getBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, true);
         showImagesLabelsCheckbox.setChecked(showImagesLabels);
-        showImagesLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, showImagesLabelsCheckbox.isChecked());
-                editor.apply();
-            }
+        showImagesLabelsCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_IMAGES_TEXT_VISIBLE, showImagesLabelsCheckbox.isChecked());
+            editor.apply();
         });
 
         int fontSizeSpinnerId = R.id.fontSizeSpinner;
@@ -161,12 +149,10 @@ public class NotesPropertiesActivity extends AppCompatActivity implements ColorS
         final CheckBox haloCheckbox = findViewById(R.id.checkHalo);
         boolean doHalo = mPreferences.getBoolean(PREFS_KEY_NOTES_TEXT_DOHALO, true);
         haloCheckbox.setChecked(doHalo);
-        haloCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Editor editor = mPreferences.edit();
-                editor.putBoolean(PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
-                editor.apply();
-            }
+        haloCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Editor editor = mPreferences.edit();
+            editor.putBoolean(PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
+            editor.apply();
         });
     }
 

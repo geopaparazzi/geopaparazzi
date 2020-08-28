@@ -26,7 +26,6 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -115,12 +114,7 @@ public class ExportActivity extends AppCompatActivity implements
 //        });
 
         MenuLoader menuLoader = new MenuLoader(this, ExtensionPoints.MENU_EXPORT_PROVIDER);
-        menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
-            @Override
-            public void pluginLoaded(MenuLoader loader) {
-                addMenuEntries(loader.getEntries());
-            }
-        });
+        menuLoader.addListener((PluginLoaderListener<MenuLoader>) loader -> addMenuEntries(loader.getEntries()));
         menuLoader.connect();
     }
 
@@ -138,11 +132,7 @@ public class ExportActivity extends AppCompatActivity implements
             code++;
             LinearLayout container = findViewById(R.id.scrollView);
             container.addView(button, lp);
-            button.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    entry.onClick(ExportActivity.this);
-                }
-            });
+            button.setOnClickListener(v -> entry.onClick(ExportActivity.this));
         }
     }
 

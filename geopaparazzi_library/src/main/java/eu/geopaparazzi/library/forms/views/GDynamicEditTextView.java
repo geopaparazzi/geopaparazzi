@@ -116,16 +116,13 @@ public class GDynamicEditTextView extends View implements GView {
         addTextButton.setBackground(Compat.getDrawable(context, R.drawable.ic_add_primary_24dp));
         mainLayout.addView(addTextButton);
 
-        addTextButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                mainLayout.removeView(addTextButton);
+        addTextButton.setOnClickListener(v -> {
+            mainLayout.removeView(addTextButton);
 
-                addSingleEditText(context, mainLayout, "", readonly, type);
+            addSingleEditText(context, mainLayout, "", readonly, type);
 
-                // add the button back
-                mainLayout.addView(addTextButton);
-            }
-
+            // add the button back
+            mainLayout.addView(addTextButton);
         });
 
 

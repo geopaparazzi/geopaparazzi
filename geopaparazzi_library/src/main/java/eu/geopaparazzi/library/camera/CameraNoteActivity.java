@@ -86,14 +86,11 @@ public class CameraNoteActivity extends AbstractCameraActivity {
         if (warningAlreadyShown) {
             doTakePicture(icicle);
         } else {
-            GPDialogs.infoDialog(this, getString(R.string.first_camera_open_warning), new Runnable() {
-                @Override
-                public void run() {
-                    doTakePicture(icicle);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, true);
-                    editor.apply();
-                }
+            GPDialogs.infoDialog(this, getString(R.string.first_camera_open_warning), () -> {
+                doTakePicture(icicle);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(LibraryConstants.PREFS_KEY_CAMERA_WARNING_SHOWN, true);
+                editor.apply();
             });
         }
     }

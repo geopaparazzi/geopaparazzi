@@ -24,7 +24,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -139,46 +138,38 @@ public class DirectoryBrowserActivity extends ListActivity {
             preferencesKey = extras.getString(PUT_PATH_PREFERENCE);
             doFolder = extras.getBoolean(DOFOLDER, false);
 
-            fileFilter = new FileFilter() {
-                public boolean accept(File file) {
-                    if (file.isDirectory()) {
-                        return true;
-                    }
-                    if (extentions != null && extentions.length > 0) {
-                        String name = file.getName();
-                        return endsWith(name, extentions);
-                    }
+            fileFilter = file -> {
+                if (file.isDirectory()) {
                     return true;
                 }
+                if (extentions != null && extentions.length > 0) {
+                    String name = file.getName();
+                    return endsWith(name, extentions);
+                }
+                return true;
             };
         }
 
         FloatingActionButton okButton = findViewById(R.id.okbutton);
         if (doFolder) {
-            okButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    String absolutePath = currentDir.getAbsolutePath();
+            okButton.setOnClickListener(v -> {
+                String absolutePath = currentDir.getAbsolutePath();
 
-                    if (preferencesKey != null) {
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString(preferencesKey, absolutePath);
-                        editor.apply();
-                    }
-
-                    handleIntent(absolutePath);
-                    finish();
+                if (preferencesKey != null) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(preferencesKey, absolutePath);
+                    editor.apply();
                 }
+
+                handleIntent(absolutePath);
+                finish();
             });
         } else {
             okButton.hide();
         }
         FloatingActionButton upButton = findViewById(R.id.upbutton);
-        upButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                goUp();
-            }
-        });
+        upButton.setOnClickListener(v -> goUp());
 
         startFolderFile = new File(startFolder);
         if (!startFolderFile.exists()) {

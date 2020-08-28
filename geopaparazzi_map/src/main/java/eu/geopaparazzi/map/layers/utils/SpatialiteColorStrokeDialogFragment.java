@@ -170,12 +170,7 @@ public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
         RadioButton fillRadioButton = colorStrokeDialogView.findViewById(R.id.doFillRadioButton);
         fillRadioButton.setChecked(true);
         RadioGroup radioGroup = colorStrokeDialogView.findViewById(R.id.radioDo);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                onRadioButtonClicked(checkedId);
-            }
-        });
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> onRadioButtonClicked(checkedId));
 
         /*
          * The fill/stroke color picker part
@@ -254,31 +249,28 @@ public class SpatialiteColorStrokeDialogFragment extends DialogFragment {
                     int color = ColorUtilities.toColor(hex);
                     holder.button.setBackgroundColor(color);
                     final Button b = holder.button;
-                    holder.button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int color = Color.TRANSPARENT;
-                            Drawable background = b.getBackground();
-                            if (background instanceof ColorDrawable)
-                                color = ((ColorDrawable) background).getColor();
+                    holder.button.setOnClickListener(v -> {
+                        int color1 = Color.TRANSPARENT;
+                        Drawable background = b.getBackground();
+                        if (background instanceof ColorDrawable)
+                            color1 = ((ColorDrawable) background).getColor();
 
-                            int red = Color.red(color);
-                            int green = Color.green(color);
-                            int blue = Color.blue(color);
-                            int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
-                            mColorView.setBackgroundColor(argb);
-                            mRedSeekBar.setProgress(red);
-                            mGreenSeekBar.setProgress(green);
-                            mBlueSeekBar.setProgress(blue);
-                            if (handlingFillColor) {
-                                mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-                                        mBlueSeekBar.getProgress());
-                                mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
-                            } else {
-                                mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
-                                        mBlueSeekBar.getProgress());
-                                mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
-                            }
+                        int red = Color.red(color1);
+                        int green = Color.green(color1);
+                        int blue = Color.blue(color1);
+                        int argb = Color.argb(red, green, blue, mAlphaSeekBar.getProgress());
+                        mColorView.setBackgroundColor(argb);
+                        mRedSeekBar.setProgress(red);
+                        mGreenSeekBar.setProgress(green);
+                        mBlueSeekBar.setProgress(blue);
+                        if (handlingFillColor) {
+                            mCurrentColorStrokeObject.fillColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+                                    mBlueSeekBar.getProgress());
+                            mCurrentColorStrokeObject.fillAlpha = mAlphaSeekBar.getProgress();
+                        } else {
+                            mCurrentColorStrokeObject.strokeColor = Color.rgb(mRedSeekBar.getProgress(), mGreenSeekBar.getProgress(),
+                                    mBlueSeekBar.getProgress());
+                            mCurrentColorStrokeObject.strokeAlpha = mAlphaSeekBar.getProgress();
                         }
                     });
 

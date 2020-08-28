@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -81,23 +79,15 @@ public class ResourceBrowserActivity extends AppCompatActivity {
         gridAdapter = new ResourceImageGridViewAdapter<>(this, R.layout.fragment_image_item, imageItems);
         gridView.setAdapter(gridAdapter);
 
-        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ResourceImageItem item = (ResourceImageItem) parent.getItemAtPosition(position);
-                removeImage(item);
-                return true;
-            }
-
+        gridView.setOnItemLongClickListener((parent, view, position, id) -> {
+            ResourceImageItem item = (ResourceImageItem) parent.getItemAtPosition(position);
+            removeImage(item);
+            return true;
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ResourceImageItem item = (ResourceImageItem) parent.getItemAtPosition(position);
-                showDocument(item);
-            }
-
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            ResourceImageItem item = (ResourceImageItem) parent.getItemAtPosition(position);
+            showDocument(item);
         });
 
     }

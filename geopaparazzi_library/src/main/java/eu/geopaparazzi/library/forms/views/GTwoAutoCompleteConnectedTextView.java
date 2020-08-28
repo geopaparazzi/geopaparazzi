@@ -148,18 +148,8 @@ public class GTwoAutoCompleteConnectedTextView extends View implements GView, On
         autoCompleteTextView2.setAdapter(combo2ArrayAdapter);
         if (_combo2Value != null)
             autoCompleteTextView2.setText(_combo2Value);
-        autoCompleteTextView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View arg0) {
-                autoCompleteTextView2.showDropDown();
-            }
-        });
-        autoCompleteTextView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedCombo2Entry = combo2ArrayAdapter.getItem(position);
-            }
-        });
+        autoCompleteTextView2.setOnClickListener(arg0 -> autoCompleteTextView2.showDropDown());
+        autoCompleteTextView2.setOnItemClickListener((parent, view, position, id) -> selectedCombo2Entry = combo2ArrayAdapter.getItem(position));
         autoCompleteTextView2.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -192,26 +182,18 @@ public class GTwoAutoCompleteConnectedTextView extends View implements GView, On
         autoCompleteTextView1.setAdapter(arrayAdapter);
         if (_combo1Value != null)
             autoCompleteTextView1.setText(_combo1Value);
-        autoCompleteTextView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View arg0) {
-                autoCompleteTextView1.showDropDown();
-            }
-        });
-        autoCompleteTextView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedCombo1Entry = arrayAdapter.getItem(position);
+        autoCompleteTextView1.setOnClickListener(arg0 -> autoCompleteTextView1.showDropDown());
+        autoCompleteTextView1.setOnItemClickListener((parent, view, position, id) -> {
+            selectedCombo1Entry = arrayAdapter.getItem(position);
 
-                List<String> valuesList = new ArrayList<>();
-                if (selectedCombo1Entry.length() != 0) {
-                    valuesList = dataMap.get(selectedCombo1Entry);
-                }
-                combo2ArrayAdapter = new ArrayAdapter<>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, valuesList);
-//                combo2ArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                autoCompleteTextView2.setAdapter(combo2ArrayAdapter);
-                autoCompleteTextView2.setText("");
+            List<String> valuesList = new ArrayList<>();
+            if (selectedCombo1Entry.length() != 0) {
+                valuesList = dataMap.get(selectedCombo1Entry);
             }
+            combo2ArrayAdapter = new ArrayAdapter<>(parent.getContext(), android.R.layout.simple_spinner_dropdown_item, valuesList);
+//                combo2ArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            autoCompleteTextView2.setAdapter(combo2ArrayAdapter);
+            autoCompleteTextView2.setText("");
         });
         autoCompleteTextView1.addTextChangedListener(new TextWatcher() {
             @Override

@@ -21,7 +21,6 @@ package eu.geopaparazzi.core.ui.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -100,35 +99,31 @@ public class AddNoteLayoutDialogFragment extends DialogFragment {
 
 
         builder.setPositiveButton(R.string.set_properties,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        SharedPreferences.Editor editor = preferences.edit();
-                        int col = 1;
-                        try {
-                            col = Integer.parseInt(mColumnTextView.getText().toString());
-                        } catch (Exception e) {
-                            //ignore
-                        }
-                        editor.putInt(AddNotesActivity.PREFS_KEY_GUICOLUMNCOUNT, col);
-                        int sizeFactor = 1;
-                        try {
-                            sizeFactor = Integer.parseInt(mSizeTextView.getText().toString());
-                        } catch (Exception e) {
-                            //ignore
-                        }
-                        editor.putInt(AddNotesActivity.PREFS_KEY_GUITEXTSIZEFACTOR, sizeFactor);
-                        editor.commit();
+                (dialog, id) -> {
+                    SharedPreferences.Editor editor = preferences.edit();
+                    int col = 1;
+                    try {
+                        col = Integer.parseInt(mColumnTextView.getText().toString());
+                    } catch (Exception e) {
+                        //ignore
+                    }
+                    editor.putInt(AddNotesActivity.PREFS_KEY_GUICOLUMNCOUNT, col);
+                    int sizeFactor = 1;
+                    try {
+                        sizeFactor = Integer.parseInt(mSizeTextView.getText().toString());
+                    } catch (Exception e) {
+                        //ignore
+                    }
+                    editor.putInt(AddNotesActivity.PREFS_KEY_GUITEXTSIZEFACTOR, sizeFactor);
+                    editor.commit();
 
-                        if (layoutChangeListener != null) {
-                            layoutChangeListener.onPropertiesChanged();
-                        }
+                    if (layoutChangeListener != null) {
+                        layoutChangeListener.onPropertiesChanged();
                     }
                 }
         );
         builder.setNegativeButton(getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                (dialog, id) -> {
                 }
         );
 

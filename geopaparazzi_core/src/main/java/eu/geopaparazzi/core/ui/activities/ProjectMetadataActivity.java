@@ -81,12 +81,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
 
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            GPDialogs.errorDialog(this, e, new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.errorDialog(this, e, this::finish);
         }
 
 
@@ -140,12 +135,9 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
                 }
             });
 
-            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        currentSelectedMetadata = metadata;
-                    }
+            editText.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    currentSelectedMetadata = metadata;
                 }
             });
         }
@@ -201,12 +193,7 @@ public class ProjectMetadataActivity extends AppCompatActivity implements ISimpl
             finish();
         } catch (IOException e) {
             GPLog.error(this, null, e);
-            GPDialogs.errorDialog(this, e, new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.errorDialog(this, e, this::finish);
         }
     }
 

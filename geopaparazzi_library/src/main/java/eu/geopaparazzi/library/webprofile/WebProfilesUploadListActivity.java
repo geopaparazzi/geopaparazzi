@@ -165,17 +165,9 @@ public class WebProfilesUploadListActivity extends AppCompatActivity implements 
                 ignore = false; //bwf ToDo
                 if (!ignore) {
                     ImageView imageText = rowView.findViewById(R.id.cloud_image);
-                    imageText.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            uploadProfile(selectedWebprofile);
-                        }
-                    });
+                    imageText.setOnClickListener(v -> uploadProfile(selectedWebprofile));
                     TextView titleText = rowView.findViewById(R.id.nametext);
-                    titleText.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            uploadProfile(selectedWebprofile);
-                        }
-                    });
+                    titleText.setOnClickListener(v -> uploadProfile(selectedWebprofile));
                 }
                 return rowView;
             }

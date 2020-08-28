@@ -21,7 +21,6 @@ package eu.geopaparazzi.plugins.pdfexport;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -122,17 +121,11 @@ public class PdfExportDialogFragment extends DialogFragment {
                 R.id.progressBar);
 
         builder.setNegativeButton(android.R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        isInterrupted = true;
-                    }
-                }
+                (dialog, id) -> isInterrupted = true
         );
         builder.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                (dialog, id) -> {
 
-                    }
                 }
         );
 

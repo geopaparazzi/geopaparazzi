@@ -90,11 +90,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
 
         ready = true;
         enabled = true;
-        new Thread(new Runnable() {
-            public void run() {
-                startDevice();
-            }
-        }).start();
+        new Thread(this::startDevice).start();
     }
 
     private void startDevice() {

@@ -21,7 +21,6 @@ package eu.geopaparazzi.library.core.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -100,11 +99,7 @@ public class ProgressBarDialogFragment extends DialogFragment {
             progressBar.setMax(max);
 
             builder.setNegativeButton(getString(android.R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            DownloadFileIntentService.isCancelled = true;
-                        }
-                    }
+                    (dialog, id) -> DownloadFileIntentService.isCancelled = true
             );
 
             if (startMsg == null) {

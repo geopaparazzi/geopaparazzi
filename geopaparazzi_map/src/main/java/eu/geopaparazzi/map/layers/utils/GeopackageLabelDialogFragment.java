@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -95,12 +94,7 @@ public class GeopackageLabelDialogFragment extends DialogFragment {
 
         CheckBox visibilityCheckBox = labelDialogView.findViewById(R.id.checkVisibility);
         visibilityCheckBox.setChecked(mCurrentLabelObject.hasLabel);
-        visibilityCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mCurrentLabelObject.hasLabel = isChecked;
-            }
-        });
+        visibilityCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> mCurrentLabelObject.hasLabel = isChecked);
 
         mSizeTextView = labelDialogView.findViewById(R.id.sizeTextView);
         mSizeTextView.setText(String.valueOf(mCurrentLabelObject.labelSize));
@@ -157,9 +151,7 @@ public class GeopackageLabelDialogFragment extends DialogFragment {
                 }
         );
         builder.setNegativeButton(getString(android.R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                (dialog, id) -> {
                 }
         );
 

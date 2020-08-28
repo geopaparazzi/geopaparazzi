@@ -22,7 +22,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -66,14 +65,11 @@ public class PermissionWriteStorage extends AChainedPermissionHelper {
                                     new AlertDialog.Builder(activity);
                             builder.setMessage(activity.getString(R.string.permissions_write_disk));
                             builder.setPositiveButton(android.R.string.ok,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (canAskPermission) {
-                                                activity.requestPermissions(new String[]{
-                                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                                        WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
-                                            }
+                                    (dialog, which) -> {
+                                        if (canAskPermission) {
+                                            activity.requestPermissions(new String[]{
+                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                                    WRITE_EXTERNAL_STORAGE_PERMISSION_REQUESTCODE);
                                         }
                                     }
                             );

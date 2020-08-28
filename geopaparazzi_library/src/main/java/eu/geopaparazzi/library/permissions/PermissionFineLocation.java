@@ -22,7 +22,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -66,14 +65,9 @@ public class PermissionFineLocation extends AChainedPermissionHelper {
                                 new AlertDialog.Builder(activity);
                         builder.setMessage(activity.getString(R.string.permissions_location));
                         builder.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        activity.requestPermissions(new String[]{
-                                                        Manifest.permission.ACCESS_FINE_LOCATION},
-                                                FINE_LOCATION_PERMISSION_REQUESTCODE);
-                                    }
-                                }
+                                (dialog, which) -> activity.requestPermissions(new String[]{
+                                                Manifest.permission.ACCESS_FINE_LOCATION},
+                                        FINE_LOCATION_PERMISSION_REQUESTCODE)
                         );
                         // display the dialog
                         builder.create().show();

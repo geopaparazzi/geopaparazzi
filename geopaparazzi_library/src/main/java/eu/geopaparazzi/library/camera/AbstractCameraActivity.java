@@ -88,11 +88,7 @@ public abstract class AbstractCameraActivity extends Activity {
 
             if (!imageSaveFolder.exists()) {
                 if (!imageSaveFolder.mkdirs()) {
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            finish();
-                        }
-                    };
+                    Runnable runnable = this::finish;
                     GPDialogs.warningDialog(this, getString(R.string.cantcreate_img_folder), runnable);
                     return;
                 }
@@ -120,12 +116,7 @@ public abstract class AbstractCameraActivity extends Activity {
             startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
         } catch (Exception e) {
             GPLog.error(this, null, e);
-            GPDialogs.errorDialog(this, e, new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.errorDialog(this, e, this::finish);
         }
 
     }

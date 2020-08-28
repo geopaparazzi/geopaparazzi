@@ -19,10 +19,8 @@ package eu.geopaparazzi.plugins.defaultexports;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.TreeSet;
@@ -60,11 +58,7 @@ public class ImportBookmarksMenuEntry extends MenuEntry {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
 
             final File sdcardDir = resourcesManager.getMainStorageDir();
-            File[] bookmarksfileList = sdcardDir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String filename) {
-                    return filename.startsWith("bookmarks") && filename.endsWith(".csv");
-                }
-            });
+            File[] bookmarksfileList = sdcardDir.listFiles((dir, filename) -> filename.startsWith("bookmarks") && filename.endsWith(".csv"));
             if (bookmarksfileList.length == 0) {
                 GPDialogs.warningDialog(context, context.getString(eu.geopaparazzi.core.R.string.no_bookmarks_csv), null);
                 return;
@@ -76,14 +70,11 @@ public class ImportBookmarksMenuEntry extends MenuEntry {
             }
 
             new AlertDialog.Builder(context).setSingleChoiceItems(items, 0, null)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                            String selectedItem = items[selectedPosition];
-                            dialog.dismiss();
-                            doImport(context, sdcardDir, selectedItem);
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        String selectedItem = items[selectedPosition];
+                        dialog.dismiss();
+                        doImport(context, sdcardDir, selectedItem);
                     }).show();
         } catch (Exception e1) {
             GPLog.error(this, null, e1);

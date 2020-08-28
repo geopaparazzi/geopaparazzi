@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,19 +73,16 @@ public class BasemapsFragment extends Fragment {
         listView = rootView.findViewById(R.id.basemapsList);
 
         FloatingActionButton addFormButton = rootView.findViewById(R.id.addFormsjsonButton);
-        addFormButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, supportedExtensions);
+        addFormButton.setOnClickListener(v -> {
+            try {
+                Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, supportedExtensions);
 
-                    String lastPath = Utilities.getLastFilePath(getContext());
-                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, lastPath);
-                    startActivityForResult(browseIntent, RETURNCODE_BROWSE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String lastPath = Utilities.getLastFilePath(getContext());
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, lastPath);
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -147,31 +143,20 @@ public class BasemapsFragment extends Fragment {
         listView.setLongClickable(true);
         listView.setFocusable(true);
         listView.setFocusableInTouchMode(true);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final ProfileBasemaps baseMap = mBasemapsList.get(position);
-                File file = profile.getFile(baseMap.getRelativePath());
-                GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.you_want_to_remove) + file.getName() + "?", new Runnable() {
-                    @Override
-                    public void run() {
-                        mBasemapsList.remove(position);
-                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                        if (activity != null) {
-                            activity.onBasemapRemoved(baseMap.getRelativePath());
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    refreshList();
-                                }
-                            });
-                        }
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            final ProfileBasemaps baseMap = mBasemapsList.get(position);
+            File file = profile.getFile(baseMap.getRelativePath());
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.you_want_to_remove) + file.getName() + "?", () -> {
+                mBasemapsList.remove(position);
+                ProfileSettingsActivity activity1 = (ProfileSettingsActivity) getActivity();
+                if (activity1 != null) {
+                    activity1.onBasemapRemoved(baseMap.getRelativePath());
+                    activity1.runOnUiThread(BasemapsFragment.this::refreshList);
+                }
 
-                    }
-                }, null);
+            }, null);
 
-                return true;
-            }
+            return true;
         });
     }
 

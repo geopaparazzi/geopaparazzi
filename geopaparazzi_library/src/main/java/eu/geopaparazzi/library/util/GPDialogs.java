@@ -75,11 +75,9 @@ public class GPDialogs {
                     builder //
                             .setMessage(msg)
                             .setIcon(icon).setCancelable(true)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    if (okRunnable != null) {
-                                        new Thread(okRunnable).start();
-                                    }
+                            .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                                if (okRunnable != null) {
+                                    new Thread(okRunnable).start();
                                 }
                             });
                     AlertDialog alertDialog = builder.create();
@@ -119,11 +117,9 @@ public class GPDialogs {
                     builder //
                             .setMessage(s)
                             .setIcon(icon).setCancelable(true)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    if (okRunnable != null) {
-                                        new Thread(okRunnable).start();
-                                    }
+                            .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                                if (okRunnable != null) {
+                                    new Thread(okRunnable).start();
                                 }
                             });
                     AlertDialog alertDialog = builder.create();
@@ -157,11 +153,9 @@ public class GPDialogs {
                     builder //
                             .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
                             .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    if (okRunnable != null) {
-                                        new Thread(okRunnable).start();
-                                    }
+                            .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                                if (okRunnable != null) {
+                                    new Thread(okRunnable).start();
                                 }
                             });
                     AlertDialog alertDialog = builder.create();
@@ -250,17 +244,11 @@ public class GPDialogs {
 
             protected void onPostExecute(String response) {
                 try {
-                    DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
-                        checkedItems[which] = isChecked;
-                    };
+                    DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> checkedItems[which] = isChecked;
                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setMultiChoiceItems(items, checkedItems, dialogListener);
-                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            onSelectionRunnable.run();
-                        }
-                    });
+                    builder.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> onSelectionRunnable.run());
                     androidx.appcompat.app.AlertDialog dialog = builder.create();
                     if (title != null)
                         dialog.setTitle(title);
@@ -296,11 +284,7 @@ public class GPDialogs {
                     androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
                     builder.setTitle("");
                     builder.setSingleChoiceItems(items, checkedItemIndex, dialogListener);
-                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            onSelectionRunnable.run();
-                        }
-                    });
+                    builder.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> onSelectionRunnable.run());
                     androidx.appcompat.app.AlertDialog dialog = builder.create();
                     dialog.show();
                 } catch (Exception e) {
@@ -404,18 +388,16 @@ public class GPDialogs {
 
         try {
             builder.setPositiveButton(activity.getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Editable value = editText.getText();
-                            String newText = value.toString();
-                            if (newText.length() < 1) {
-                                newText = defaultText;
-                            }
-                            dialog.dismiss();
-                            if (textRunnable != null) {
-                                textRunnable.setText(newText);
-                                new Thread(textRunnable).start();
-                            }
+                    (dialog, id) -> {
+                        Editable value = editText.getText();
+                        String newText = value.toString();
+                        if (newText.length() < 1) {
+                            newText = defaultText;
+                        }
+                        dialog.dismiss();
+                        if (textRunnable != null) {
+                            textRunnable.setText(newText);
+                            new Thread(textRunnable).start();
                         }
                     }
             );
@@ -459,19 +441,17 @@ public class GPDialogs {
 
         try {
             builder.setPositiveButton(activity.getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Editable value = editText.getText();
-                            String newText = value.toString();
-                            if (newText.length() < 1) {
-                                newText = defaultText;
-                            }
-                            dialog.dismiss();
-                            if (textRunnable != null) {
-                                textRunnable.setText(newText);
-                                textRunnable.setTheBoolean(checkBox.isChecked());
-                                new Thread(textRunnable).start();
-                            }
+                    (dialog, id) -> {
+                        Editable value = editText.getText();
+                        String newText = value.toString();
+                        if (newText.length() < 1) {
+                            newText = defaultText;
+                        }
+                        dialog.dismiss();
+                        if (textRunnable != null) {
+                            textRunnable.setText(newText);
+                            textRunnable.setTheBoolean(checkBox.isChecked());
+                            new Thread(textRunnable).start();
                         }
                     }
             );

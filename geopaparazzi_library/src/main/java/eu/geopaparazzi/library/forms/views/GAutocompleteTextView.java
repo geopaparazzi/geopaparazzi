@@ -24,7 +24,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
@@ -100,18 +99,8 @@ public class GAutocompleteTextView extends View implements GView {
             autoCompleteTextView.setText(value);
             selectedComboEntry = value;
         }
-        autoCompleteTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View arg0) {
-                autoCompleteTextView.showDropDown();
-            }
-        });
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedComboEntry = arrayAdapter.getItem(position);
-            }
-        });
+        autoCompleteTextView.setOnClickListener(arg0 -> autoCompleteTextView.showDropDown());
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> selectedComboEntry = arrayAdapter.getItem(position));
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

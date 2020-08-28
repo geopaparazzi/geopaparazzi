@@ -112,12 +112,7 @@ public class ProfileChartActivity extends Activity implements View.OnTouchListen
             }
 
         } else {
-            GPDialogs.warningDialog(this, getString(R.string.an_error_occurred_while_creating_the_chart_), new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.warningDialog(this, getString(R.string.an_error_occurred_while_creating_the_chart_), this::finish);
             return;
         }
 

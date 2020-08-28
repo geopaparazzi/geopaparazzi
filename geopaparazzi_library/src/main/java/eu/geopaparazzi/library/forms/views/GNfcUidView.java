@@ -132,14 +132,12 @@ public class GNfcUidView extends View implements GView {
         uidText.setKeyListener(null);
         textLayout.addView(uidText);
 
-        button.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent nfcIntent = new Intent(activity, NfcIdReaderActivity.class);
-                if (fragmentDetail != null) {
-                    fragmentDetail.startActivityForResult(nfcIntent, requestCode);
-                } else {
-                    activity.startActivityForResult(nfcIntent, requestCode);
-                }
+        button.setOnClickListener(v -> {
+            Intent nfcIntent = new Intent(activity, NfcIdReaderActivity.class);
+            if (fragmentDetail != null) {
+                fragmentDetail.startActivityForResult(nfcIntent, requestCode);
+            } else {
+                activity.startActivityForResult(nfcIntent, requestCode);
             }
         });
     }

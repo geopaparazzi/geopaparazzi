@@ -66,21 +66,19 @@ public class AdvancedSettingsActivity extends AppCompatActivity implements Check
         final CheckBox demoCheckbox = findViewById(R.id.demoCheckbox);
         final boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         demoCheckbox.setChecked(isDemoMode);
-        demoCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && !GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
-                    GPDialogs.warningDialog(AdvancedSettingsActivity.this, getString(R.string.enable_mock_locations_for_demo), null);
-                    demoCheckbox.setChecked(false);
-                }
-
-                Editor edit = preferences.edit();
-                if (isChecked) {
-                    edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, true);
-                } else {
-                    edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
-                }
-                edit.apply();
+        demoCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !GpsServiceUtilities.isMockSettingsON(AdvancedSettingsActivity.this)) {
+                GPDialogs.warningDialog(AdvancedSettingsActivity.this, getString(R.string.enable_mock_locations_for_demo), null);
+                demoCheckbox.setChecked(false);
             }
+
+            Editor edit = preferences.edit();
+            if (isChecked) {
+                edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, true);
+            } else {
+                edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+            }
+            edit.apply();
         });
 
         initLogs(preferences);

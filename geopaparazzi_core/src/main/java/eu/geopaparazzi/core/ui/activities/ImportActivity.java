@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -58,12 +57,7 @@ public class ImportActivity extends AppCompatActivity implements IActivitySuppor
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MenuLoader menuLoader = new MenuLoader(this, ExtensionPoints.MENU_IMPORT_PROVIDER);
-        menuLoader.addListener(new PluginLoaderListener<MenuLoader>() {
-            @Override
-            public void pluginLoaded(MenuLoader loader) {
-                addMenuEntries(loader.getEntries());
-            }
-        });
+        menuLoader.addListener((PluginLoaderListener<MenuLoader>) loader -> addMenuEntries(loader.getEntries()));
         menuLoader.connect();
     }
 
@@ -81,11 +75,7 @@ public class ImportActivity extends AppCompatActivity implements IActivitySuppor
             code++;
             LinearLayout container = findViewById(R.id.scrollView);
             container.addView(button, lp);
-            button.setOnClickListener(new Button.OnClickListener() {
-                public void onClick(View v) {
-                    entry.onClick(ImportActivity.this);
-                }
-            });
+            button.setOnClickListener(v -> entry.onClick(ImportActivity.this));
         }
     }
 

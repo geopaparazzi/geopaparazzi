@@ -198,15 +198,12 @@ public class NotesListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_sort) {
-            DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    currentComparatorIndex = which;
+            DialogInterface.OnClickListener dialogListener = (dialog, which) -> {
+                currentComparatorIndex = which;
 
-                    SharedPreferences.Editor editor = mPreferences.edit();
-                    editor.putInt(CURRENT_NOTES_COMPARATOR_INDEX, which);
-                    editor.apply();
-                }
+                SharedPreferences.Editor editor = mPreferences.edit();
+                editor.putInt(CURRENT_NOTES_COMPARATOR_INDEX, which);
+                editor.apply();
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -315,34 +312,26 @@ public class NotesListActivity extends AppCompatActivity {
 
                 final CheckBox checkBox = holder.checkButton;
                 checkBox.setChecked(currentNote.isChecked());
-                checkBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        checkBox.setChecked(isChecked);
-                        currentNote.setChecked(isChecked);
-                    }
+                checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    checkBox.setChecked(isChecked);
+                    currentNote.setChecked(isChecked);
                 });
 
 
                 holder.notesText.setText(currentNote.getName());
 
-                holder.goButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), MapsSupportService.class);
-                        intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
-                        intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
-                        intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
-                        intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
-                        getContext().startService(intent);
-                        finish();
-                    }
+                holder.goButton.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), MapsSupportService.class);
+                    intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                    intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
+                    intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
+                    intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
+                    getContext().startService(intent);
+                    finish();
                 });
 
                 final ImageButton moreButton2 = holder.moreButton;
-                moreButton2.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        openMoreMenu(moreButton2, currentNote);
-                    }
-                });
+                moreButton2.setOnClickListener(v -> openMoreMenu(moreButton2, currentNote));
 
                 return rowView;
             }
@@ -377,35 +366,31 @@ public class NotesListActivity extends AppCompatActivity {
         subMenu.add(selectAll);
         subMenu.add(invertSelection);
         subMenu.add(deleteSelected);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                String actionName = item.getTitle().toString();
-                if (actionName.equals(share)) {
-                    shareNote(currentNote);
-                } else if (actionName.equals(edit) || actionName.equals(view)) {
-                    editNote(currentNote);
-                } else if (actionName.equals(delete)) {
-                    deleteNote(currentNote);
-                } else if (actionName.equals(asSelection)) {
-                    String name = currentNote.getName();
-                    filterText.setText(name);
-                } else if (actionName.equals(selectAll)) {
-                    for (ANote aNote : visibleNotesList) {
-                        aNote.setChecked(true);
-                    }
-                    arrayAdapter.notifyDataSetChanged();
-                } else if (actionName.equals(invertSelection)) {
-                    for (ANote aNote : visibleNotesList) {
-                        aNote.setChecked(!aNote.isChecked());
-                    }
-                    arrayAdapter.notifyDataSetChanged();
-                } else if (actionName.equals(deleteSelected)) {
-                    deleteSelectedNotes();
+        popup.setOnMenuItemClickListener(item -> {
+            String actionName = item.getTitle().toString();
+            if (actionName.equals(share)) {
+                shareNote(currentNote);
+            } else if (actionName.equals(edit) || actionName.equals(view)) {
+                editNote(currentNote);
+            } else if (actionName.equals(delete)) {
+                deleteNote(currentNote);
+            } else if (actionName.equals(asSelection)) {
+                String name = currentNote.getName();
+                filterText.setText(name);
+            } else if (actionName.equals(selectAll)) {
+                for (ANote aNote : visibleNotesList) {
+                    aNote.setChecked(true);
                 }
-                return true;
+                arrayAdapter.notifyDataSetChanged();
+            } else if (actionName.equals(invertSelection)) {
+                for (ANote aNote : visibleNotesList) {
+                    aNote.setChecked(!aNote.isChecked());
+                }
+                arrayAdapter.notifyDataSetChanged();
+            } else if (actionName.equals(deleteSelected)) {
+                deleteSelectedNotes();
             }
-
-
+            return true;
         });
         popup.show();
     }
@@ -554,55 +539,47 @@ public class NotesListActivity extends AppCompatActivity {
 
     private void deleteSelectedNotes() {
         GPDialogs.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_selected_notes),
-                new Runnable() {
-                    public void run() {
+                () -> runOnUiThread(() -> {
+                    int total = 0;
+                    for (ANote aNote : visibleNotesList) {
+                        if (aNote.isChecked()) {
+                            total++;
+                        }
+                    }
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                int total = 0;
+                    deletionTask = new StringAsyncTask(NotesListActivity.this) {
+                        protected String doBackgroundWork() {
+                            try {
+                                int index = 0;
                                 for (ANote aNote : visibleNotesList) {
                                     if (aNote.isChecked()) {
-                                        total++;
+                                        if (aNote instanceof Note) {
+                                            DaoNotes.deleteComplexNote((Note) aNote);
+                                        } else if (aNote instanceof Image) {
+                                            DaoImages.deleteImages(aNote.getId());
+                                        }
+                                        publishProgress(index);
+                                        index++;
                                     }
                                 }
-
-                                deletionTask = new StringAsyncTask(NotesListActivity.this) {
-                                    protected String doBackgroundWork() {
-                                        try {
-                                            int index = 0;
-                                            for (ANote aNote : visibleNotesList) {
-                                                if (aNote.isChecked()) {
-                                                    if (aNote instanceof Note) {
-                                                        DaoNotes.deleteComplexNote((Note) aNote);
-                                                    } else if (aNote instanceof Image) {
-                                                        DaoImages.deleteImages(aNote.getId());
-                                                    }
-                                                    publishProgress(index);
-                                                    index++;
-                                                }
-                                            }
-                                        } catch (Exception e) {
-                                            return getString(R.string.error_while_removing_notes) + e.getLocalizedMessage();
-                                        }
-                                        return "";
-                                    }
-
-                                    protected void doUiPostWork(String response) {
-                                        dispose();
-                                        if (response.length() != 0) {
-                                            GPDialogs.warningDialog(NotesListActivity.this, response, null);
-                                        } else {
-                                            refreshList();
-                                        }
-                                    }
-                                };
-                                deletionTask.setProgressDialog(null, getString(R.string.removing_notes), false, total);
-                                deletionTask.execute();
+                            } catch (Exception e) {
+                                return getString(R.string.error_while_removing_notes) + e.getLocalizedMessage();
                             }
-                        });
-                    }
-                }, null
+                            return "";
+                        }
+
+                        protected void doUiPostWork(String response) {
+                            dispose();
+                            if (response.length() != 0) {
+                                GPDialogs.warningDialog(NotesListActivity.this, response, null);
+                            } else {
+                                refreshList();
+                            }
+                        }
+                    };
+                    deletionTask.setProgressDialog(null, getString(R.string.removing_notes), false, total);
+                    deletionTask.execute();
+                }), null
         );
     }
 

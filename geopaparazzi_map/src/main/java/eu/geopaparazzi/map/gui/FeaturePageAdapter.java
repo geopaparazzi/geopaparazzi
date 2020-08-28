@@ -21,7 +21,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -163,15 +162,12 @@ public class FeaturePageAdapter extends PagerAdapter {
             }
 
             if (isReadOnly) {
-                editView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        String text = editView.getText().toString();
-                        // FIXME
+                editView.setOnTouchListener((v, event) -> {
+                    String text = editView.getText().toString();
+                    // FIXME
 //                        FeatureUtilities.viewIfApplicable(v.getContext(), text);
 
-                        return false;
-                    }
+                    return false;
                 });
             }
             linearLayoutView.addView(editView);
@@ -237,12 +233,7 @@ public class FeaturePageAdapter extends PagerAdapter {
         if (type == EDataType.DATE) {
             editView = new TextView(context);
             editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-            editView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FeaturePageAdapter.this.openDatePicker((EditText) view);
-                }
-            });
+            editView.setOnClickListener(view -> FeaturePageAdapter.this.openDatePicker((EditText) view));
             if (value == null || value.equals("")) {
                 value = "____-__-__";
             }
@@ -261,12 +252,7 @@ public class FeaturePageAdapter extends PagerAdapter {
                 break;
             case DATE:
                 editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-                editView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        FeaturePageAdapter.this.openDatePicker((TextView) view);
-                    }
-                });
+                editView.setOnClickListener(view -> FeaturePageAdapter.this.openDatePicker((TextView) view));
                 break;
             case INTEGER:
                 editView.setInputType(InputType.TYPE_CLASS_NUMBER);

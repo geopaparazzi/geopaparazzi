@@ -215,12 +215,9 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         registerForContextMenu(menuButton);
 
         FloatingActionButton layerButton = findViewById(R.id.layers_map_button);
-        layerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mapTagsIntent = new Intent(MapviewActivity.this, MapLayerListActivity.class);
-                startActivity(mapTagsIntent);
-            }
+        layerButton.setOnClickListener(v -> {
+            Intent mapTagsIntent = new Intent(MapviewActivity.this, MapLayerListActivity.class);
+            startActivity(mapTagsIntent);
         });
 
 

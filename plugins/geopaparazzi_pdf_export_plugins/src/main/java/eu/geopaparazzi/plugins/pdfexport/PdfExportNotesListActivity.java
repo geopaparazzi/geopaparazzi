@@ -24,13 +24,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -191,34 +189,26 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
 
                 final CheckBox checkBox = holder.checkButton;
                 checkBox.setChecked(currentNote.isChecked());
-                checkBox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        checkBox.setChecked(isChecked);
-                        currentNote.setChecked(isChecked);
-                    }
+                checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    checkBox.setChecked(isChecked);
+                    currentNote.setChecked(isChecked);
                 });
 
 
                 holder.notesText.setText(currentNote.getName());
 
-                holder.goButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Intent intent = getIntent();
-                        intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
-                        intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
-                        intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
-                        // if (getParent() == null) {
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
-                    }
+                holder.goButton.setOnClickListener(v -> {
+                    Intent intent = getIntent();
+                    intent.putExtra(LibraryConstants.LATITUDE, currentNote.getLat());
+                    intent.putExtra(LibraryConstants.LONGITUDE, currentNote.getLon());
+                    intent.putExtra(LibraryConstants.ZOOMLEVEL, 16);
+                    // if (getParent() == null) {
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
                 });
 
                 final ImageButton moreButton2 = holder.moreButton;
-                moreButton2.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        openMoreMenu(moreButton2, currentNote);
-                    }
-                });
+                moreButton2.setOnClickListener(v -> openMoreMenu(moreButton2, currentNote));
 
                 return rowView;
             }
@@ -233,24 +223,20 @@ public class PdfExportNotesListActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, button);
         popup.getMenu().add(selectAll);
         popup.getMenu().add(invertSelection);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                String actionName = item.getTitle().toString();
-                if (actionName.equals(selectAll)) {
-                    for (ANote aNote : visibleNotesList) {
-                        aNote.setChecked(true);
-                    }
-                    arrayAdapter.notifyDataSetChanged();
-                } else if (actionName.equals(invertSelection)) {
-                    for (ANote aNote : visibleNotesList) {
-                        aNote.setChecked(!aNote.isChecked());
-                    }
-                    arrayAdapter.notifyDataSetChanged();
+        popup.setOnMenuItemClickListener(item -> {
+            String actionName = item.getTitle().toString();
+            if (actionName.equals(selectAll)) {
+                for (ANote aNote : visibleNotesList) {
+                    aNote.setChecked(true);
                 }
-                return true;
+                arrayAdapter.notifyDataSetChanged();
+            } else if (actionName.equals(invertSelection)) {
+                for (ANote aNote : visibleNotesList) {
+                    aNote.setChecked(!aNote.isChecked());
+                }
+                arrayAdapter.notifyDataSetChanged();
             }
-
-
+            return true;
         });
         popup.show();
     }

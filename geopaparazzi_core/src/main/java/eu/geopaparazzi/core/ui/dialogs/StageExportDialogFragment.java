@@ -21,7 +21,6 @@ package eu.geopaparazzi.core.ui.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -98,10 +97,8 @@ public class StageExportDialogFragment extends DialogFragment {
                 R.id.progressBar);
 
         builder.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                (dialog, id) -> {
 
-                    }
                 }
         );
 

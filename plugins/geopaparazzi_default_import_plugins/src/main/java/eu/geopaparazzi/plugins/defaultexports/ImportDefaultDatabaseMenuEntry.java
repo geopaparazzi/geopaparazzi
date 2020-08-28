@@ -80,21 +80,11 @@ public class ImportDefaultDatabaseMenuEntry extends MenuEntry {
 
                     FileUtilities.copyFile(inputStream, new FileOutputStream(newDbFile));
 
-                    _activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GPDialogs.infoDialog(_activity, _activity.getString(eu.geopaparazzi.core.R.string.new_template_db_create), null);
-                        }
-                    });
+                    _activity.runOnUiThread(() -> GPDialogs.infoDialog(_activity, _activity.getString(eu.geopaparazzi.core.R.string.new_template_db_create), null));
                 } catch (final Exception e) {
                     GPLog.error(_activity, null, e);
 
-                    _activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GPDialogs.errorDialog(_activity, e, null);
-                        }
-                    });
+                    _activity.runOnUiThread(() -> GPDialogs.errorDialog(_activity, e, null));
                 }
 
             }

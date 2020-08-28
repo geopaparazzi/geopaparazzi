@@ -172,23 +172,13 @@ public class BookmarksListActivity extends AppCompatActivity {
                                     }
                                     Bookmark bookmark = bookmarksMap.get(name);
                                     DaoBookmarks.updateBookmarkName(bookmark.getId(), theTextToRunOn);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            refreshList();
-                                        }
-                                    });
+                                    runOnUiThread(BookmarksListActivity.this::refreshList);
 
                                 } catch (final IOException e) {
                                     GPLog.error(this, e.getLocalizedMessage(), e);
                                     e.printStackTrace();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
-                                                    .show();
-                                        }
-                                    });
+                                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
+                                            .show());
 
                                 }
                             }
@@ -231,21 +221,19 @@ public class BookmarksListActivity extends AppCompatActivity {
                 });
 
                 final ImageButton goButton = rowView.findViewById(R.id.gobutton);
-                goButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
-                        if (bookmark != null) {
+                goButton.setOnClickListener(v -> {
+                    Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
+                    if (bookmark != null) {
 
-                            Intent intent = new Intent(getContext(), MapsSupportService.class);
-                            intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
-                            intent.putExtra(LibraryConstants.LONGITUDE, bookmark.getLon());
-                            intent.putExtra(LibraryConstants.LATITUDE, bookmark.getLat());
-                            intent.putExtra(LibraryConstants.ZOOMLEVEL, (int) bookmark.getZoom());
-                            getContext().startService(intent);
+                        Intent intent = new Intent(getContext(), MapsSupportService.class);
+                        intent.putExtra(MapsSupportService.CENTER_ON_POSITION_REQUEST, true);
+                        intent.putExtra(LibraryConstants.LONGITUDE, bookmark.getLon());
+                        intent.putExtra(LibraryConstants.LATITUDE, bookmark.getLat());
+                        intent.putExtra(LibraryConstants.ZOOMLEVEL, (int) bookmark.getZoom());
+                        getContext().startService(intent);
 
-                        }
-                        finish();
                     }
+                    finish();
                 });
 
 //                final ImageView proximityButton = (ImageView) rowView.findViewById(R.id.alertbutton);

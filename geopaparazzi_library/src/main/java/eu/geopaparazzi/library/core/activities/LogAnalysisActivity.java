@@ -129,12 +129,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
         setButtonColor(errorToggleButton);
 
         FloatingActionButton refreshButton = findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                refreshListWithSpin();
-            }
-        });
+        refreshButton.setOnClickListener(v -> refreshListWithSpin());
         refreshListWithSpin();
     }
 
@@ -173,11 +168,7 @@ public class LogAnalysisActivity extends ListActivity implements View.OnClickLis
                     importDialog.dismiss();
                 }
                 if (response.startsWith("ERROR")) {
-                    GPDialogs.warningDialog(getApplicationContext(), response, new Runnable() {
-                        public void run() {
-                            finish();
-                        }
-                    });
+                    GPDialogs.warningDialog(getApplicationContext(), response, LogAnalysisActivity.this::finish);
                 } else {
                     try {
                         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.log_row,

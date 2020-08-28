@@ -151,12 +151,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
             }
 
         } else {
-            GPDialogs.infoDialog(this, getString(R.string.premissions_cant_start) + permissionHelper.getDescription(), new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            });
+            GPDialogs.infoDialog(this, getString(R.string.premissions_cant_start) + permissionHelper.getDescription(), this::finish);
         }
     }
 
@@ -192,12 +187,7 @@ public class GeopaparazziCoreActivity extends AppCompatActivity implements IAppl
         }
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                recreate();
-            }
-        }, 10);
+        handler.postDelayed(this::recreate, 10);
     }
 
     @Override

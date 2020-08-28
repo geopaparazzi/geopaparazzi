@@ -53,21 +53,15 @@ public class ProjectFragment extends Fragment {
 
         nameEdittext = rootView.findViewById(R.id.projectNameEditText);
         nameEdittext.setOnLongClickListener(v -> {
-            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.profiles_want_clear_project_form), new Runnable() {
-                @Override
-                public void run() {
-                    ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
-                    activity.onProjectPathChanged("");
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.profiles_want_clear_project_form), () -> {
+                ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+                activity.onProjectPathChanged("");
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            nameEdittext.setText("");
-                            pathEdittext.setText("");
-                        }
-                    });
+                getActivity().runOnUiThread(() -> {
+                    nameEdittext.setText("");
+                    pathEdittext.setText("");
+                });
 
-                }
             }, null);
             return true;
         });

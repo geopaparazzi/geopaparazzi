@@ -19,7 +19,6 @@ package eu.geopaparazzi.library.core.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -27,7 +26,6 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -123,23 +121,15 @@ public class GeocodeActivity extends AppCompatActivity {
             }
 
             mListView.setAdapter(new ArrayAdapter<>(this, R.layout.activity_geocode_row, addressWrapperList));
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    gotoButton.show();
-                    routeToButton.show();
-                }
+            mListView.setOnItemClickListener((parent, view1, position, id) -> {
+                gotoButton.show();
+                routeToButton.show();
             });
 
         } catch (IOException e) {
             GPLog.error(this, "Could not geocode address", e); //$NON-NLS-1$
             new AlertDialog.Builder(this).setMessage(R.string.geocodeErrorMessage).setTitle(R.string.geocodeErrorTitle)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss()).show();
         }
         // }
     }

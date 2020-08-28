@@ -71,18 +71,15 @@ public class FormTagsFragment extends Fragment {
             setFormData(profile.getFile(profile.profileTags.getRelativePath()));
         }
         FloatingActionButton addFormButton = rootView.findViewById(R.id.addFormsjsonButton);
-        addFormButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
-                    Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"json"});//NON-NLS
-                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
-                    startActivityForResult(browseIntent, RETURNCODE_BROWSE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        addFormButton.setOnClickListener(v -> {
+            try {
+                File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
+                Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, new String[]{"json"});//NON-NLS
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

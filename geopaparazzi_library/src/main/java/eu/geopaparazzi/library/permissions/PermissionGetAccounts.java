@@ -22,7 +22,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -66,14 +65,11 @@ public class PermissionGetAccounts extends AChainedPermissionHelper {
                                     new AlertDialog.Builder(activity);
                             builder.setMessage(activity.getString(R.string.permissions_accounts));
                             builder.setPositiveButton(android.R.string.ok,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (canAskPermission) {
-                                                activity.requestPermissions(new String[]{
-                                                                Manifest.permission.GET_ACCOUNTS},
-                                                        GET_ACCOUNTS_PERMISSION_REQUESTCODE);
-                                            }
+                                    (dialog, which) -> {
+                                        if (canAskPermission) {
+                                            activity.requestPermissions(new String[]{
+                                                            Manifest.permission.GET_ACCOUNTS},
+                                                    GET_ACCOUNTS_PERMISSION_REQUESTCODE);
                                         }
                                     }
                             );

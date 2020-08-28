@@ -26,7 +26,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,12 +167,7 @@ public class TagsManager {
         if (tagsFileArray == null) {
             File applicationDir = ResourcesManager.getInstance(context).getApplicationSupporterDir();
 
-            tagsFileArray = applicationDir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(TAGSFILENAME_ENDPATTERN);
-                }
-            });
+            tagsFileArray = applicationDir.listFiles((dir, name) -> name.endsWith(TAGSFILENAME_ENDPATTERN));
 
             if (tagsFileArray == null || tagsFileArray.length == 0 || Debug.doOverwriteTags) {
                 AssetManager assetManager = context.getAssets();

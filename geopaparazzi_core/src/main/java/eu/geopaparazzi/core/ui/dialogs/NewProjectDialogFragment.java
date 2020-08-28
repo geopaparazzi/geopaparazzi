@@ -128,9 +128,7 @@ public class NewProjectDialogFragment extends DialogFragment {
             );
 
             builder.setNegativeButton(getString(android.R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
+                    (dialog, id) -> {
                     }
             );
 

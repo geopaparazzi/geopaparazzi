@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -67,18 +66,15 @@ public class SpatialiteDatabasesFragment extends Fragment {
         mSpatialiteDbsList.addAll(spatialiteList);
 
         FloatingActionButton addFormButton = rootView.findViewById(R.id.addSpatialitedbButton);
-        addFormButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
-                    Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
-                    browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, supportedExtensions);
-                    browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
-                    startActivityForResult(browseIntent, RETURNCODE_BROWSE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        addFormButton.setOnClickListener(v -> {
+            try {
+                File sdcardDir = ResourcesManager.getInstance(getContext()).getMainStorageDir();
+                Intent browseIntent = new Intent(getContext(), DirectoryBrowserActivity.class);
+                browseIntent.putExtra(DirectoryBrowserActivity.EXTENSIONS, supportedExtensions);
+                browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, sdcardDir.getAbsolutePath());
+                startActivityForResult(browseIntent, RETURNCODE_BROWSE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -128,31 +124,20 @@ public class SpatialiteDatabasesFragment extends Fragment {
         listView.setLongClickable(true);
         listView.setFocusable(true);
         listView.setFocusableInTouchMode(true);
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final ProfileSpatialitemaps spatialitemap = mSpatialiteDbsList.get(position);
-                String name = profile.getFile(spatialitemap.getRelativePath()).getName();
-                GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.want_to_remove) + name + "?", new Runnable() {
-                    @Override
-                    public void run() {
-                        mSpatialiteDbsList.remove(position);
-                        ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            final ProfileSpatialitemaps spatialitemap = mSpatialiteDbsList.get(position);
+            String name = profile.getFile(spatialitemap.getRelativePath()).getName();
+            GPDialogs.yesNoMessageDialog(getActivity(), getString(R.string.want_to_remove) + name + "?", () -> {
+                mSpatialiteDbsList.remove(position);
+                ProfileSettingsActivity activity = (ProfileSettingsActivity) getActivity();
 
-                        activity.onSpatialitedbRemoved(spatialitemap.getRelativePath());
+                activity.onSpatialitedbRemoved(spatialitemap.getRelativePath());
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshList();
-                            }
-                        });
+                getActivity().runOnUiThread(SpatialiteDatabasesFragment.this::refreshList);
 
-                    }
-                }, null);
+            }, null);
 
-                return true;
-            }
+            return true;
         });
     }
 

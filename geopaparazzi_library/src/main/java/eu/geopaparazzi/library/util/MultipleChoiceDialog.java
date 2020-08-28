@@ -60,30 +60,27 @@ public class MultipleChoiceDialog {
         for (int i = 0; i < count; i++)
             checkedValues[i] = allSelected.contains(items[i]);
 
-        DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if (items[which].length() == 0) {
-                    return;
-                }
-                if (isChecked) {
-                    allSelected.add(items[which]);
-                } else {
-                    allSelected.remove(items[which]);
-                }
-                StringBuilder sB = new StringBuilder();
-
-                for (CharSequence selected : allSelected)
-                    sB.append(";" + selected); //$NON-NLS-1$
-
-                String buttonString = ""; //$NON-NLS-1$
-                if (sB.length() > 0) {
-                    buttonString = sB.substring(1);
-                } else {
-                    buttonString = "..."; //$NON-NLS-1$
-                }
-                parentButton.setText(buttonString);
+        DialogInterface.OnMultiChoiceClickListener dialogListener = (dialog, which, isChecked) -> {
+            if (items[which].length() == 0) {
+                return;
             }
+            if (isChecked) {
+                allSelected.add(items[which]);
+            } else {
+                allSelected.remove(items[which]);
+            }
+            StringBuilder sB = new StringBuilder();
+
+            for (CharSequence selected : allSelected)
+                sB.append(";" + selected); //$NON-NLS-1$
+
+            String buttonString1 = ""; //$NON-NLS-1$
+            if (sB.length() > 0) {
+                buttonString1 = sB.substring(1);
+            } else {
+                buttonString1 = "..."; //$NON-NLS-1$
+            }
+            parentButton.setText(buttonString1);
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
