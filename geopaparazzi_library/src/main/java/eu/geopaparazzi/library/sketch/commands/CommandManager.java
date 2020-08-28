@@ -33,7 +33,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CommandManager {
-    private List<DrawingPath> currentStack;
+    private final List<DrawingPath> currentStack;
     private List<DrawingPath> redoStack;
 
     /**

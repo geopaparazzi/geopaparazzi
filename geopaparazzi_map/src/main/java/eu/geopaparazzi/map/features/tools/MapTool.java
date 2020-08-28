@@ -28,7 +28,7 @@ import eu.geopaparazzi.map.features.tools.interfaces.DrawingTool;
  */
 public abstract class MapTool implements DrawingTool {
 
-    protected GPMapView mapView;
+    protected final GPMapView mapView;
 
     /**
      * Constructor.
