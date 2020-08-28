@@ -376,36 +376,34 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<LogMapItem> logsList = new ArrayList<>();
 
-        StringBuilder sB = new StringBuilder();
-        sB.append("select l.");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(" AS ");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(", l.");
-        sB.append(GpsLogsTableFields.COLUMN_LOG_TEXT.getFieldName());
-        sB.append(", l.");
-        sB.append(GpsLogsTableFields.COLUMN_LOG_STARTTS.getFieldName());
-        sB.append(", l.");
-        sB.append(GpsLogsTableFields.COLUMN_LOG_ENDTS.getFieldName());
-        sB.append(", l.");
-        sB.append(GpsLogsTableFields.COLUMN_LOG_LENGTHM.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_COLOR.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_WIDTH.getFieldName());
-        sB.append(", p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName());
-        sB.append(" from ");
-        sB.append(TABLE_GPSLOGS);
-        sB.append(" l, ");
-        sB.append(TABLE_GPSLOG_PROPERTIES);
-        sB.append(" p where l.");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        sB.append(" = p.");
-        sB.append(GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName());
-        sB.append(" order by ");
-        sB.append(GpsLogsTableFields.COLUMN_ID.getFieldName());
-        String query = sB.toString();
+        String query = "select l." +
+                GpsLogsTableFields.COLUMN_ID.getFieldName() +
+                " AS " +
+                GpsLogsTableFields.COLUMN_ID.getFieldName() +
+                ", l." +
+                GpsLogsTableFields.COLUMN_LOG_TEXT.getFieldName() +
+                ", l." +
+                GpsLogsTableFields.COLUMN_LOG_STARTTS.getFieldName() +
+                ", l." +
+                GpsLogsTableFields.COLUMN_LOG_ENDTS.getFieldName() +
+                ", l." +
+                GpsLogsTableFields.COLUMN_LOG_LENGTHM.getFieldName() +
+                ", p." +
+                GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_COLOR.getFieldName() +
+                ", p." +
+                GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_WIDTH.getFieldName() +
+                ", p." +
+                GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName() +
+                " from " +
+                TABLE_GPSLOGS +
+                " l, " +
+                TABLE_GPSLOG_PROPERTIES +
+                " p where l." +
+                GpsLogsTableFields.COLUMN_ID.getFieldName() +
+                " = p." +
+                GpsLogsPropertiesTableFields.COLUMN_LOGID.getFieldName() +
+                " order by " +
+                GpsLogsTableFields.COLUMN_ID.getFieldName();
 
         try (Cursor c = sqliteDatabase.rawQuery(query, null)) {
             c.moveToFirst();
@@ -651,13 +649,10 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sqliteDatabase.beginTransaction();
         try {
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("UPDATE ");
-            sb.append(TABLE_GPSLOG_PROPERTIES);
-            sb.append(" SET ");
-            sb.append(GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName()).append("=").append(visible ? 1 : 0).append(" ");
-
-            String query = sb.toString();
+            String query = "UPDATE " +
+                    TABLE_GPSLOG_PROPERTIES +
+                    " SET " +
+                    GpsLogsPropertiesTableFields.COLUMN_PROPERTIES_VISIBLE.getFieldName() + "=" + (visible ? 1 : 0) + " ";
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
@@ -1207,19 +1202,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static void addFieldGPSTables(SQLiteDatabase sqliteDatabase, String tableName, String colName, String colType)
             throws IOException {
 
-        StringBuilder sB = new StringBuilder();
-        sB.append("ALTER TABLE ");
-        sB.append(tableName);
-        sB.append(" ADD COLUMN ");
-        sB.append(colName).append(" ");
-        sB.append(colType).append(" ; ");
-
-        String ADD_FIELD_TO_TABLE = sB.toString();
+        String ADD_FIELD_TO_TABLE = "ALTER TABLE " +
+                tableName +
+                " ADD COLUMN " +
+                colName + " " +
+                colType + " ; ";
 
         if (GPLog.LOG_ANDROID) {
-            StringBuilder sB2 = new StringBuilder();
-            sB2.append("Added ").append(colName).append(" to ").append(tableName);
-            Log.i("DAOGPSLOG", sB2.toString());
+            Log.i("DAOGPSLOG", "Added " + colName + " to " + tableName);
         }
         sqliteDatabase.execSQL(ADD_FIELD_TO_TABLE);
 

@@ -63,11 +63,9 @@ public class TimePickerDialogFragment extends DialogFragment implements TimePick
     public void onTimeSet(TimePicker arg0, int hourOfDay, int minute) {
         DecimalFormat decimalFormatter = new DecimalFormat("00"); //$NON-NLS-1$
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(decimalFormatter.format(hourOfDay));
-        sb.append(":"); //$NON-NLS-1$
-        sb.append(decimalFormatter.format(minute));
-        String dateStr = sb.toString();
+        String dateStr = decimalFormatter.format(hourOfDay) +
+                ":" + //$NON-NLS-1$
+                decimalFormatter.format(minute);
         timeView.setText(dateStr);
     }
 }

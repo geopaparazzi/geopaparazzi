@@ -185,12 +185,10 @@ public enum GeopackageConnectionsHandler {
     }
 
     public static String buildGetFirstGeometry(ASpatialDb db, String tableName, GeometryColumn tableGeometryColumn) {
-        StringBuilder qSb = new StringBuilder();
-        qSb.append("SELECT ");
-        qSb.append(tableGeometryColumn.geometryColumnName);
-        qSb.append(" FROM ");
-        qSb.append("\"").append(tableName).append("\" limit 1");
-        return qSb.toString();
+        return "SELECT " +
+                tableGeometryColumn.geometryColumnName +
+                " FROM " +
+                "\"" + tableName + "\" limit 1";
     }
 
 

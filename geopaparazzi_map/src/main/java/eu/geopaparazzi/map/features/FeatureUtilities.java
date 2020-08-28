@@ -193,7 +193,9 @@ public class FeatureUtilities {
         DrawableShape shape = shapeWriter.toShape(geom);
         switch (geometryType) {
             case MULTIPOINT:
-            case POINT: {
+            case POINT:
+            case MULTIPOLYGON:
+            case POLYGON: {
                 if (geometryPaintFill != null)
                     shape.fill(canvas, geometryPaintFill);
                 if (geometryPaintStroke != null)
@@ -202,14 +204,6 @@ public class FeatureUtilities {
             break;
             case MULTILINESTRING:
             case LINESTRING: {
-                if (geometryPaintStroke != null)
-                    shape.draw(canvas, geometryPaintStroke);
-            }
-            break;
-            case MULTIPOLYGON:
-            case POLYGON: {
-                if (geometryPaintFill != null)
-                    shape.fill(canvas, geometryPaintFill);
                 if (geometryPaintStroke != null)
                     shape.draw(canvas, geometryPaintStroke);
             }

@@ -152,11 +152,9 @@ public class GPLog {
             }
 
             if (LOG_ANDROID) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(TimeUtilities.INSTANCE.iso8601Format.format(date));
-                sb.append(": ");
-                sb.append(logMessage);
-                String string = sb.toString();
+                String string = TimeUtilities.INSTANCE.iso8601Format.format(date) +
+                        ": " +
+                        logMessage;
                 log(GLOBAL_LOG_TAG, string);
             }
         } catch (Exception e) {
@@ -230,11 +228,9 @@ public class GPLog {
     public static void error(Object caller, String msg, Throwable t) {
         String localizedMessage = t.getLocalizedMessage();
         if (msg != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(msg);
-            sb.append(": ");
-            sb.append(localizedMessage);
-            localizedMessage = sb.toString();
+            localizedMessage = msg +
+                    ": " +
+                    localizedMessage;
         }
         addLogEntry(caller, null, ERROR_TAG, localizedMessage);
         if (LOG_ANDROID) {
@@ -295,9 +291,7 @@ public class GPLog {
      * @return the query to get id,datetimestring,logmsg.
      */
     public static String getLogQuery() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc");
-        return sb.toString();
+        return "select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc";
     }
 
     private static String toName(Object obj) {

@@ -721,12 +721,11 @@ public class MapviewActivity extends AppCompatActivity implements IActivitySuppo
         }
 
         if (GPLog.LOG_ABSURD) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Map Center moved: "); //$NON-NLS-1$
-            sb.append(lon);
-            sb.append("/"); //$NON-NLS-1$
-            sb.append(lat);
-            GPLog.addLogEntry(this, sb.toString());
+            String sb = "Map Center moved: " + //$NON-NLS-1$
+                    lon +
+                    "/" + //$NON-NLS-1$
+                    lat;
+            GPLog.addLogEntry(this, sb);
         }
 
         PositionUtilities.putMapCenterInPreferences(mPeferences, lon, lat, zoom);

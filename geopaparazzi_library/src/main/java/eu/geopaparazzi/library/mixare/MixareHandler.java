@@ -100,28 +100,24 @@ public class MixareHandler {
 
         String jsonString = sb.toString();
 
-        StringBuilder finalSb = new StringBuilder();
-        finalSb.append("{\n");
-        finalSb.append("\"status\": \"OK\",\n");
-        finalSb.append("\"num_results\":").append(size).append(",\n");
-        finalSb.append("\"results\": [\n");
-        finalSb.append(jsonString);
-        finalSb.append("]\n");
-        finalSb.append("}\n");
-        return finalSb.toString();
+        return "{\n" +
+                "\"status\": \"OK\",\n" +
+                "\"num_results\":" + size + ",\n" +
+                "\"results\": [\n" +
+                jsonString +
+                "]\n" +
+                "}\n";
     }
 
 
     private static String dataToString(int id, double lat, double lon, double elev, String title) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n");
-        sb.append("\"id\": \"").append(id).append("\",").append("\n");
-        sb.append("\"lat\": \"").append(lat).append("\",").append("\n");
-        sb.append("\"lng\": \"").append(lon).append("\",").append("\n");
-        sb.append("\"elevation\": \"").append(elev).append("\",").append("\n");
-        sb.append("\"title\": \"").append(title).append("\"").append("\n");
-        sb.append("}\n");
-        return sb.toString();
+        return "{\n" +
+                "\"id\": \"" + id + "\"," + "\n" +
+                "\"lat\": \"" + lat + "\"," + "\n" +
+                "\"lng\": \"" + lon + "\"," + "\n" +
+                "\"elevation\": \"" + elev + "\"," + "\n" +
+                "\"title\": \"" + title + "\"" + "\n" +
+                "}\n";
     }
 
     /**

@@ -148,7 +148,7 @@ public class LineMainEditingToolGroup implements ToolGroup, OnClickListener, OnT
     public void onClick(View v) {
         if (v == selectAllButton) {
             Tool currentTool = EditManager.INSTANCE.getActiveTool();
-            if (currentTool != null && currentTool instanceof InfoTool) {
+            if (currentTool instanceof InfoTool) {
                 // if the same tool is re-selected, it is disabled
                 EditManager.INSTANCE.setActiveTool(null);
             } else {

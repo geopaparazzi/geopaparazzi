@@ -66,15 +66,13 @@ public class GpxUtilities {
      * @return the waypoint string.
      */
     public static String getWayPointString(double lat, double lon, double elev, String name, String desc, String time) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<wpt lat=\"").append(lat).append("\" lon=\"").append(lon).append("\">").append("\n");
-        sb.append("  <ele>").append(elev).append("</ele>").append("\n");
-        sb.append("  <name>").append(name).append("</name>").append("\n");
-        sb.append("  <cmt>").append(desc).append("</cmt>").append("\n");
-        sb.append("  <desc>").append(desc).append("</desc>").append("\n");
-        sb.append("  <time>").append(time).append("</time>").append("\n");
-        sb.append("</wpt>").append("\n");
-        return sb.toString();
+        return "<wpt lat=\"" + lat + "\" lon=\"" + lon + "\">" + "\n" +
+                "  <ele>" + elev + "</ele>" + "\n" +
+                "  <name>" + name + "</name>" + "\n" +
+                "  <cmt>" + desc + "</cmt>" + "\n" +
+                "  <desc>" + desc + "</desc>" + "\n" +
+                "  <time>" + time + "</time>" + "\n" +
+                "</wpt>" + "\n";
     }
 
     /**
@@ -87,12 +85,10 @@ public class GpxUtilities {
      * @return the trackpoint string.
      */
     public static String getTrackPointString(double lat, double lon, double elev, String time) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<trkpt lat=\"").append(lat).append("\" lon=\"").append(lon).append("\">").append("\n");
-        sb.append("  <ele>").append(elev).append("</ele>").append("\n");
-        sb.append("  <time>").append(time).append("</time>").append("\n");
-        sb.append("</trkpt>").append("\n");
-        return sb.toString();
+        return "<trkpt lat=\"" + lat + "\" lon=\"" + lon + "\">" + "\n" +
+                "  <ele>" + elev + "</ele>" + "\n" +
+                "  <time>" + time + "</time>" + "\n" +
+                "</trkpt>" + "\n";
     }
 
     /**
@@ -102,9 +98,7 @@ public class GpxUtilities {
      * @return the gpx string.
      */
     public static String getTrackNameString(String name) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<name>").append(name).append("</name>").append("\n");
-        return sb.toString();
+        return "<name>" + name + "</name>" + "\n";
     }
 
     /**

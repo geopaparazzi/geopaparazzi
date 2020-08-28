@@ -128,14 +128,12 @@ public class DaoBookmarks {
         SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("UPDATE ");
-            sb.append(TABLE_BOOKMARKS);
-            sb.append(" SET ");
-            sb.append(COLUMN_TEXT).append("='").append(newName).append("' ");
-            sb.append("WHERE ").append(COLUMN_ID).append("=").append(id);
 
-            String query = sb.toString();
+            String query = "UPDATE " +
+                    TABLE_BOOKMARKS +
+                    " SET " +
+                    COLUMN_TEXT + "='" + newName + "' " +
+                    "WHERE " + COLUMN_ID + "=" + id;
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry("DAOBOOKMARKS", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);

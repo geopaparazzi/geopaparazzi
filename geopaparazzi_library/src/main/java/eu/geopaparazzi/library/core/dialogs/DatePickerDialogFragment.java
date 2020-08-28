@@ -63,13 +63,11 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
         DecimalFormat decimalFormatter = new DecimalFormat("00");
         //$NON-NLS-1$
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(year);
-        sb.append("-"); //$NON-NLS-1$
-        sb.append(decimalFormatter.format(month + 1));
-        sb.append("-"); //$NON-NLS-1$
-        sb.append(decimalFormatter.format(day));
-        String dateStr = sb.toString();
+        String dateStr = year +
+                "-" + //$NON-NLS-1$
+                decimalFormatter.format(month + 1) +
+                "-" + //$NON-NLS-1$
+                decimalFormatter.format(day);
         dateView.setText(dateStr);
     }
 }

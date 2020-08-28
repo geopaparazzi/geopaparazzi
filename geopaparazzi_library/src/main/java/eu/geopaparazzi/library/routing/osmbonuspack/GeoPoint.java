@@ -195,8 +195,7 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
 
     @Override
     public String toString() {
-        return new StringBuilder().append(this.mLatitudeE6).append(",").append(this.mLongitudeE6).append(",").append(this.mAltitude)
-                .toString();
+        return this.mLatitudeE6 + "," + this.mLongitudeE6 + "," + this.mAltitude;
     }
 
     @Override
@@ -334,13 +333,13 @@ public class GeoPoint implements IGeoPoint, Parcelable, Serializable, Cloneable 
     }
 
     public String toDoubleString() {
-        return new StringBuilder().append(this.mLatitudeE6 / 1E6).append(",")
-                .append(this.mLongitudeE6 / 1E6).append(",").append(this.mAltitude).toString();
+        return this.mLatitudeE6 / 1E6 + "," +
+                this.mLongitudeE6 / 1E6 + "," + this.mAltitude;
     }
 
     public String toInvertedDoubleString() {
-        return new StringBuilder().append(this.mLongitudeE6 / 1E6).append(",")
-                .append(this.mLatitudeE6 / 1E6).append(",").append(this.mAltitude).toString();
+        return this.mLongitudeE6 / 1E6 + "," +
+                this.mLatitudeE6 / 1E6 + "," + this.mAltitude;
     }
 
     // ===========================================================

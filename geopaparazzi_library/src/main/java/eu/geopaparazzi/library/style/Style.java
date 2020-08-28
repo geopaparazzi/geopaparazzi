@@ -129,42 +129,40 @@ public class Style {
      * all the values placed.
      */
     public String insertValuesString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("'");
-        sb.append(name);
-        sb.append("', ");
-        sb.append(size);
-        sb.append(", '");
-        sb.append(fillcolor);
-        sb.append("', '");
-        sb.append(strokecolor);
-        sb.append("', ");
-        sb.append(fillalpha);
-        sb.append(", ");
-        sb.append(strokealpha);
-        sb.append(", '");
-        sb.append(shape);
-        sb.append("', ");
-        sb.append(width);
-        sb.append(", ");
-        sb.append(labelsize);
-        sb.append(", '");
-        sb.append(labelfield);
-        sb.append("', ");
-        sb.append(labelvisible);
-        sb.append(", ");
-        sb.append(enabled);
-        sb.append(", ");
-        sb.append(order);
-        sb.append(", '");
-        sb.append(dashPattern);
-        sb.append("', ");
-        sb.append(minZoom);
-        sb.append(", ");
-        sb.append(maxZoom);
-        sb.append(", ");
-        sb.append(decimationFactor);
-        return sb.toString();
+        return "'" +
+                name +
+                "', " +
+                size +
+                ", '" +
+                fillcolor +
+                "', '" +
+                strokecolor +
+                "', " +
+                fillalpha +
+                ", " +
+                strokealpha +
+                ", '" +
+                shape +
+                "', " +
+                width +
+                ", " +
+                labelsize +
+                ", '" +
+                labelfield +
+                "', " +
+                labelvisible +
+                ", " +
+                enabled +
+                ", " +
+                order +
+                ", '" +
+                dashPattern +
+                "', " +
+                minZoom +
+                ", " +
+                maxZoom +
+                ", " +
+                decimationFactor;
     }
 
     /**

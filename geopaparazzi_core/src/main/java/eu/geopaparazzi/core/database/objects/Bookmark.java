@@ -78,21 +78,19 @@ public class Bookmark implements KmlRepresenter {
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
         String name = Utilities.makeXmlSafe(this.name);
-        StringBuilder sB = new StringBuilder();
-        sB.append("<Placemark>\n");
-        // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
-        sB.append("<styleUrl>#bookmark-icon</styleUrl>\n");
-        sB.append("<name>").append(name).append("</name>\n");
-        sB.append("<description>\n");
-        sB.append(name);
-        sB.append("</description>\n");
-        sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");
-        sB.append("<Point>\n");
-        sB.append("<coordinates>").append(lon).append(",").append(lat).append(",0</coordinates>\n");
-        sB.append("</Point>\n");
-        sB.append("</Placemark>\n");
 
-        return sB.toString();
+        return "<Placemark>\n" +
+                // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
+                "<styleUrl>#bookmark-icon</styleUrl>\n" +
+                "<name>" + name + "</name>\n" +
+                "<description>\n" +
+                name +
+                "</description>\n" +
+                "<gx:balloonVisibility>1</gx:balloonVisibility>\n" +
+                "<Point>\n" +
+                "<coordinates>" + lon + "," + lat + ",0</coordinates>\n" +
+                "</Point>\n" +
+                "</Placemark>\n";
     }
 
     /**

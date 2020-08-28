@@ -241,7 +241,6 @@ public class SelectionTool extends MapTool {
                 if (response.startsWith("ERROR")) {//NON-NLS
                     GPDialogs.warningDialog(context, response, null);
                 } else if (response.startsWith("CANCEL")) {//NON-NLS
-                    return;
                 } else {
                     if (features.size() > 0) {
                         try {

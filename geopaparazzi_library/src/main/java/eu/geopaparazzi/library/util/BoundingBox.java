@@ -58,11 +58,9 @@ public class BoundingBox {
 
     @SuppressWarnings("nls")
     public String toString() {
-        StringBuilder sB = new StringBuilder();
-        sB.append("left=").append(left).append("/");
-        sB.append("right=").append(right).append("/");
-        sB.append("top=").append(top).append("/");
-        sB.append("bottom=").append(bottom);
-        return sB.toString();
+        return "left=" + left + "/" +
+                "right=" + right + "/" +
+                "top=" + top + "/" +
+                "bottom=" + bottom;
     }
 }

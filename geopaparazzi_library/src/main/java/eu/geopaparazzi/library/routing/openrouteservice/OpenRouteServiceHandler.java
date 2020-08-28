@@ -111,20 +111,6 @@ public class OpenRouteServiceHandler {
      */
     public OpenRouteServiceHandler(double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang)
             throws Exception {
-        StringBuilder urlSB = new StringBuilder();
-        urlSB.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
-        urlSB.append("start=");// from
-        urlSB.append(fromLon);
-        urlSB.append(",");
-        urlSB.append(fromLat);
-        urlSB.append("&end=");// to
-        urlSB.append(toLon);
-        urlSB.append(",");
-        urlSB.append(toLat);
-        urlSB.append("&preference=");
-        urlSB.append(pref.toString());
-        urlSB.append("&language=");
-        urlSB.append(lang.toString());
         /*
          * TODO check the openrouteservce docs, which seem to be wrong or outdated.
          */
@@ -137,7 +123,19 @@ public class OpenRouteServiceHandler {
         // urlString.append(noTollways.toString());
         // }
 
-        urlString = urlSB.toString();
+        urlString = "http://openls.geog.uni-heidelberg.de/osm/eu/routing?" +
+                "start=" +// from
+                fromLon +
+                "," +
+                fromLat +
+                "&end=" +// to
+                toLon +
+                "," +
+                toLat +
+                "&preference=" +
+                pref.toString() +
+                "&language=" +
+                lang.toString();
         URL url = new URL(urlString);
         URLConnection connection = url.openConnection();
 

@@ -150,7 +150,6 @@ public class FeatureSlidingAverage {
         } else {
             newAssignedCoordinate.z = 0;
         }
-        return;
     }
 
     private void pointAdd(Coordinate a, Coordinate b, Coordinate res) {

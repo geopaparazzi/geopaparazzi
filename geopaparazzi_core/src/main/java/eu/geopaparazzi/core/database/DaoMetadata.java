@@ -54,15 +54,13 @@ public class DaoMetadata {
      * @throws java.io.IOException if something goes wrong.
      */
     public static void createTables(SQLiteDatabase sqliteDatabase) throws IOException {
-        StringBuilder sB = new StringBuilder();
-        sB.append("CREATE TABLE ");
-        sB.append(TABLE_METADATA);
-        sB.append(" (");
-        sB.append(MetadataTableFields.COLUMN_KEY.getFieldName()).append(" TEXT NOT NULL, ");
-        sB.append(MetadataTableFields.COLUMN_LABEL.getFieldName()).append(" TEXT , ");
-        sB.append(MetadataTableFields.COLUMN_VALUE.getFieldName()).append(" TEXT NOT NULL ");
-        sB.append(");");
-        String CREATE_TABLE_PROJECT = sB.toString();
+        String CREATE_TABLE_PROJECT = "CREATE TABLE " +
+                TABLE_METADATA +
+                " (" +
+                MetadataTableFields.COLUMN_KEY.getFieldName() + " TEXT NOT NULL, " +
+                MetadataTableFields.COLUMN_LABEL.getFieldName() + " TEXT , " +
+                MetadataTableFields.COLUMN_VALUE.getFieldName() + " TEXT NOT NULL " +
+                ");";
 
         if (sqliteDatabase == null)
             sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
