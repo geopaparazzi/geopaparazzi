@@ -225,6 +225,7 @@ public class GpsDataListActivity extends AppCompatActivity implements
     @Override
     public void onNewIntent(Intent intent) {
         // onResume gets called after this to handle the intent
+        super.onNewIntent(intent);
         setIntent(intent);
     }
 
