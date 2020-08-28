@@ -38,7 +38,7 @@ public class GpsStatusInfo {
      * <p>This is 10 secs right now, because the pick interval is 1 sec.
      * If that changes, it should be related to the pick interval of the GPS.
      */
-    private static final long FIX_TIME_INTERVAL_CHECK = 10000l;
+    private static final long FIX_TIME_INTERVAL_CHECK = 10000L;
 
     private GpsStatus status;
     private int maxSatellites;

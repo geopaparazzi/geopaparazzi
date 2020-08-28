@@ -351,9 +351,9 @@ public class GpsService extends Service implements LocationListener, Listener {
                     throw new SecurityException();
                 }
                 if (useNetworkPositions) {
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance, this);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000L, minDistance, this);
                 } else {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForSecs * 1000l, minDistance, this);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForSecs * 1000L, minDistance, this);
                 }
                 isListeningForUpdates = true;
                 log("registered for updates.");

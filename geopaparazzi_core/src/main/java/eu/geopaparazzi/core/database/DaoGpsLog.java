@@ -1090,7 +1090,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                         if (point.getTime() > 0) {
                             date = point.getTime();
                         } else {
-                            date = currentTimeMillis + i * 1000l;
+                            date = currentTimeMillis + i * 1000L;
                         }
                         helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(),
                                 point.getElevation(), date);
@@ -1139,7 +1139,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                         if (point.getTime() > 0) {
                             date = point.getTime();
                         } else {
-                            date = currentTimeMillis + i * 1000l;
+                            date = currentTimeMillis + i * 1000L;
                         }
                         helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(),
                                 point.getElevation(), date);

@@ -788,7 +788,7 @@ public class MapLayerListFragment extends Fragment implements IActivitySupporter
             }
 
             dragView.setPivotY(0);
-            dragView.setPivotX(clickedView.getMeasuredWidth() / 2);
+            dragView.setPivotX(clickedView.getMeasuredWidth() / 2.0f);
         }
 
         @Override

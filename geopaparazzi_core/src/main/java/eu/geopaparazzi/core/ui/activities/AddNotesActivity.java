@@ -301,7 +301,7 @@ public class AddNotesActivity extends AppCompatActivity implements NoteDialogFra
         } else if (item.getItemId() == R.id.action_simplepicture) {
             checkPositionCoordinates();
             Intent intent = new Intent(AddNotesActivity.this, CameraNoteActivity.class);
-            intent.putExtra(LibraryConstants.DATABASE_ID, -1l);
+            intent.putExtra(LibraryConstants.DATABASE_ID, -1L);
             intent.putExtra(LibraryConstants.LONGITUDE, longitude);
             intent.putExtra(LibraryConstants.LATITUDE, latitude);
             intent.putExtra(LibraryConstants.ELEVATION, elevation);
