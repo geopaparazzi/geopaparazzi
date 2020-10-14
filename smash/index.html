@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="description" content="The SMASH manual, updated for version 1.0.0, 2020-04">
+<meta name="description" content="The SMASH manual, updated for version 1.5.0, 2020-09">
 <meta name="author" content="HydroloGIS S.r.l.">
 <title>SMASH Reference Manual</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -445,8 +445,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">HydroloGIS S.r.l.</span><br>
 <span id="email" class="email"><a href="mailto:feedback@geopaparazzi.eu">feedback@geopaparazzi.eu</a></span><br>
-<span id="revnumber">version 1.0.0,</span>
-<span id="revdate">2020-04</span>
+<span id="revnumber">version 1.5.0,</span>
+<span id="revdate">2020-09</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -496,64 +496,73 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_zoom_buttons">4.5. Zoom buttons</a></li>
 </ul>
 </li>
-<li><a href="#_the_tools_drawer">5. The tools drawer</a>
+<li><a href="#_the_bottom_toolbar">5. The bottom toolbar</a>
 <ul class="sectlevel2">
-<li><a href="#_project_info">5.1. Project Info</a></li>
-<li><a href="#_position_tools">5.2. Position Tools</a>
-<ul class="sectlevel3">
-<li><a href="#_go_to">5.2.1. Go to</a></li>
-<li><a href="#_share_position">5.2.2. Share position</a></li>
+<li><a href="#_features_tools">5.1. Features tools</a></li>
+<li><a href="#_the_measurement_tool">5.2. The measurement tool</a></li>
 </ul>
 </li>
-<li><a href="#_features_tools">5.3. Features tools</a></li>
-<li><a href="#_extras">5.4. Extras</a>
-<ul class="sectlevel3">
-<li><a href="#_available_icons">5.4.1. Available icons</a></li>
-<li><a href="#_offline_maps">5.4.2. Offline maps</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_the_main_drawer">6. The main drawer</a>
+<li><a href="#_the_tools_drawer">6. The tools drawer</a>
 <ul class="sectlevel2">
-<li><a href="#_project">6.1. Project</a></li>
-<li><a href="#_import">6.2. Import</a></li>
-<li><a href="#_export">6.3. Export</a>
+<li><a href="#_project_info">6.1. Project Info</a></li>
+<li><a href="#_position_tools">6.2. Position Tools</a>
 <ul class="sectlevel3">
-<li><a href="#_pdf">6.3.1. PDF</a></li>
-<li><a href="#_gss">6.3.2. GSS</a></li>
+<li><a href="#_go_to">6.2.1. Go to</a></li>
+<li><a href="#_share_position">6.2.2. Share position</a></li>
 </ul>
 </li>
-<li><a href="#_settings">6.4. Settings</a>
+<li><a href="#_extras">6.3. Extras</a>
 <ul class="sectlevel3">
-<li><a href="#_gps_settings">6.4.1. GPS Settings</a></li>
-<li><a href="#_screen_settings">6.4.2. Screen Settings</a></li>
-<li><a href="#_camera_settings">6.4.3. Camera Settings</a></li>
-<li><a href="#_vector_layers">6.4.4. Vector Layers</a></li>
-<li><a href="#_device_settings">6.4.5. Device Settings</a></li>
-<li><a href="#_gss_settings">6.4.6. GSS Settings</a></li>
-<li><a href="#_diagnostics_settings">6.4.7. Diagnostics Settings</a></li>
-<li><a href="#_turn_gps_offon_or_exit">6.4.8. Turn GPS off/on or Exit</a></li>
+<li><a href="#_available_icons">6.3.1. Available icons</a></li>
+<li><a href="#_offline_maps">6.3.2. Offline maps</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_supported_map_types">7. Supported map types</a>
+<li><a href="#_the_main_drawer">7. The main drawer</a>
 <ul class="sectlevel2">
-<li><a href="#_geopackage">7.1. Geopackage</a></li>
-<li><a href="#_gpx">7.2. GPX</a></li>
-<li><a href="#_mbtiles">7.3. MBTiles</a></li>
-<li><a href="#_mapsforge_format_data">7.4. Mapsforge Format Data</a></li>
-<li><a href="#_mapurls_map_tiles">7.5. Mapurls: Map tiles</a></li>
+<li><a href="#_project">7.1. Project</a></li>
+<li><a href="#_import">7.2. Import</a></li>
+<li><a href="#_export">7.3. Export</a>
+<ul class="sectlevel3">
+<li><a href="#_pdf">7.3.1. PDF</a></li>
+<li><a href="#_gpx">7.3.2. GPX</a></li>
+<li><a href="#_kml">7.3.3. KML</a></li>
+<li><a href="#_gss">7.3.4. GSS</a></li>
 </ul>
 </li>
-<li><a href="#_layers_style">8. Layers style</a>
+<li><a href="#_settings">7.4. Settings</a>
+<ul class="sectlevel3">
+<li><a href="#_gps_settings">7.4.1. GPS Settings</a></li>
+<li><a href="#_screen_settings">7.4.2. Screen Settings</a></li>
+<li><a href="#_camera_settings">7.4.3. Camera Settings</a></li>
+<li><a href="#_vector_layers">7.4.4. Vector Layers</a></li>
+<li><a href="#_crs">7.4.5. CRS</a></li>
+<li><a href="#_device_settings">7.4.6. Device Settings</a></li>
+<li><a href="#_gss_settings">7.4.7. GSS Settings</a></li>
+<li><a href="#_diagnostics_settings">7.4.8. Diagnostics Settings</a></li>
+<li><a href="#_turn_gps_offon_or_exit">7.4.9. Turn GPS off/on or Exit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_supported_map_types">8. Supported map types</a>
 <ul class="sectlevel2">
-<li><a href="#_style_a_geopackage_layer">8.1. Style a Geopackage layer</a></li>
-<li><a href="#_style_a_gpx_layer">8.2. Style a GPX layer</a></li>
+<li><a href="#_geopackage">8.1. Geopackage</a></li>
+<li><a href="#_gpx_2">8.2. GPX</a></li>
+<li><a href="#_mbtiles">8.3. MBTiles</a></li>
+<li><a href="#_mapsforge_format_data">8.4. Mapsforge Format Data</a></li>
+<li><a href="#_mapurls_map_tiles">8.5. Mapurls: Map tiles</a></li>
 </ul>
 </li>
-<li><a href="#_application_folder_structure">9. Application folder structure</a></li>
+<li><a href="#_layers_style">9. Layers style</a>
+<ul class="sectlevel2">
+<li><a href="#_style_a_geopackage_layer">9.1. Style a Geopackage layer</a></li>
+<li><a href="#_style_a_gpx_layer">9.2. Style a GPX layer</a></li>
+</ul>
+</li>
+<li><a href="#_application_folder_structure">10. Application folder structure</a></li>
+<li><a href="#_appendix_1_raster_reprojection">11. Appendix 1: Raster reprojection</a></li>
 </ul>
 </div>
 </div>
@@ -593,7 +602,7 @@ If you are looking for the source code for the software of this project, <a href
 <p>fits in any pocket and can be always at hand, when needed</p>
 </li>
 <li>
-<p>gives the possibility to take geo-referenced and possibly orientated pictures during a survey, with further possibility to import them into GIS applications like gvSIG</p>
+<p>gives the possibility to take geo-referenced and possibly orientated pictures during a survey, with further possibility to import them into GIS applications</p>
 </li>
 <li>
 <p>is able to easily exploit an Internet connection, if available</p>
@@ -607,7 +616,7 @@ If you are looking for the source code for the software of this project, <a href
 <div class="content">
 <div id="img-ipad" class="imageblock">
 <div class="content">
-<img src="images/ipad.jpeg" alt="ipad" width="70%">
+<img src="images/ipad.png" alt="ipad" width="70%">
 </div>
 </div>
 <div class="paragraph">
@@ -656,7 +665,7 @@ If you are looking for the source code for the software of this project, <a href
 <div class="content">
 <div id="img-android" class="imageblock">
 <div class="content">
-<img src="images/android.jpeg" alt="android" width="40%">
+<img src="images/android.jpg" alt="android" width="40%">
 </div>
 </div>
 <div class="paragraph">
@@ -845,7 +854,7 @@ we are here to help you!</p>
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/08_coach.png" alt="08 coach" width="50% align="center"">
+<img src="images/version_1_3_0/08_coach.png" alt="08 coach" width="60% align="center"">
 </div>
 </div>
 <div class="paragraph">
@@ -925,6 +934,9 @@ notes creation, as well as the visualization of the current position on a map ar
 <p>open the layer view and open the map plugins dialog</p>
 </li>
 <li>
+<p>activate the bottom toolbar</p>
+</li>
+<li>
 <p>open the project information and share dialog</p>
 </li>
 <li>
@@ -1002,7 +1014,7 @@ notes creation, as well as the visualization of the current position on a map ar
 <p>To close the GPS info and tools panel just swipe it down.</p>
 </div>
 <div class="paragraph">
-<p>By double tapping the GPS button the automatic map centering on GPS is toggled.</p>
+<p><em>By double tapping the GPS button the automatic map centering on GPS is toggled.</em></p>
 </div>
 </div>
 <div class="sect2">
@@ -1068,7 +1080,7 @@ notes creation, as well as the visualization of the current position on a map ar
 </div>
 </div>
 <div class="paragraph">
-<p>Adding simple notes to the project. The note will be placed in the current GPS position.</p>
+<p>Adding simple notes to the project. The note will be placed in the current center of the map.</p>
 </div>
 </div>
 </div>
@@ -1296,7 +1308,7 @@ log or to accept the one generated based on the current date and time
 </div>
 </div>
 <div class="paragraph">
-<p>Once logging has started, the GPS logging button will turn orange and the GPS status icon blue.</p>
+<p>Once logging has started, both the GPS logging button and the GPS status icon will turn blue.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1307,6 +1319,21 @@ log or to accept the one generated based on the current date and time
 </div>
 <div class="paragraph">
 <p>The GPS logging button with its blue (currently logging) color.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>While logging some log information are displayed in a box on the top right of the application window. This information are about the cumulated time and distance of the log. The distance has two values, one calculated with raw data and the other by applying the Kalman filter (see <a href="#_gps_settings">GPS Settings</a>). The first value is the one defined in the settings and the other one is indicated in brackets.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/log_infoscreen.jpeg" alt="log infoscreen" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The GPS logging info box.</p>
 </div>
 </div>
 </div>
@@ -1332,7 +1359,7 @@ to verify the action.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>From here GPS logs can be zoom to or it is possible to modify the style of the selected GPS log and visualize the profile (swipe log to the right) or deleted it (swipe log to the left).</p>
+<p>From here GPS logs can be zoom to or it is possible to modify the style of the selected GPS log and visualize the profile (swipe log to the right), and export to GPX or delete it (swipe log to the left).</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1377,7 +1404,7 @@ to verify the action.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>It is now possible to decide to use the filtered logs in certain in the logs list. Just enter the GPS settings and enable the option.</p>
+<p>It is now possible to decide if to use the filtered or the raw data logs in the logs list. Just enter the <a href="#GPS settings">[GPS settings]</a> and enable the option.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1414,7 +1441,7 @@ to verify the action.</p>
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/02_only_filtered.png" alt="02 only filtered" width="30%">
+<img src="images/version_1_3_0/02_only_filtered.jpeg" alt="02 only filtered" width="50%">
 </div>
 </div>
 <div class="paragraph">
@@ -1433,7 +1460,7 @@ to verify the action.</p>
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/03_only_orig.png" alt="03 only orig" width="30%">
+<img src="images/version_1_3_0/03_only_orig.jpeg" alt="03 only orig" width="50%">
 </div>
 </div>
 <div class="paragraph">
@@ -1452,7 +1479,7 @@ to verify the action.</p>
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/04_both.png" alt="04 both" width="30%">
+<img src="images/version_1_3_0/04_both.jpeg" alt="04 both" width="50%">
 </div>
 </div>
 <div class="paragraph">
@@ -1524,30 +1551,6 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 </div>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-At the moment this operation shows some issues in rendering the layers list when the new definition of the projection has been added. To solve it try two times to add the projection and then activate and deactivate the layer in the layers list. This should update the visualization of the layer with the correct EPSG code.
-</td>
-</tr>
-</table>
-</div>
-<div class="exampleblock text-center">
-<div class="content">
-<div class="imageblock">
-<div class="content">
-<img src="images/version_1_3_0/17_layers_list.jpeg" alt="17 layers list" width="30%">
-</div>
-</div>
-<div class="paragraph">
-<p>The list of supported projection after adding the new one.</p>
-</div>
-</div>
-</div>
 <div class="paragraph">
 <p>Double tapping on the layers button opens the Layers Plugins dialog.</p>
 </div>
@@ -1586,95 +1589,49 @@ At the moment this operation shows some issues in rendering the layers list when
 <div class="sect2">
 <h3 id="_zoom_buttons">4.5. Zoom buttons</h3>
 <div class="paragraph">
-<p>The zoom buttons don&#8217;t need lot of information. They can be used to zoom in and out the map. The same can be done using the pinch gestures.</p>
+<p>The zoom buttons don&#8217;t need lot of information. They can be used to zoom in and out the map. The same can be done using the pinch gestures. The value visualized represents the zoom level following the OSM convention.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_tools_drawer">5. The tools drawer</h2>
+<h2 id="_the_bottom_toolbar">5. The bottom toolbar</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Tools or right Drawer button is placed on the right top action bar.</p>
-</div>
-<div class="paragraph">
-<p>This menu groups some maps and features tools together with some extra actions.</p>
+<p>From version 1.5.0 Smash shows a small handler in the lower right corner which allows to activate the bottom toolbar.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/18_tools_drawer.jpeg" alt="18 tools drawer" width="30%">
+<img src="images/version_1_3_0/18_toolbar.png" alt="18 toolbar" width="60%">
 </div>
 </div>
 <div class="paragraph">
-<p>The complete tools drawer.</p>
+<p>The bottom toolbar handler in the map view.</p>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_project_info">5.1. Project Info</h3>
-<div class="paragraph">
-<p>It shows the path to the current database and allows the user to share the file with others.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/19_tools_drawer.jpeg" alt="19 tools drawer" width="30%">
+<img src="images/version_1_3_0/19_toolbar.png" alt="19 toolbar" width="60%">
 </div>
 </div>
 <div class="paragraph">
-<p>The project info panel with sharing button.</p>
+<p>The visualization of the bottom toolbar.</p>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>The bottom toolbar will host all the interactive operations on layers and on the map view.</p>
+</div>
+<div class="paragraph">
+<p>If selected one tool, its icon becames red, this means that the tool is active. To deactivete it just tap the same icon in the bottom toolbar. The tools are automatically deactivated when the user decides to exit the bottom toolbar by tapping the handler on the right corner of the map view.</p>
 </div>
 <div class="sect2">
-<h3 id="_position_tools">5.2. Position Tools</h3>
-<div class="paragraph">
-<p>This section of the tools drawer contais the possibility to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><em>Go to</em> a specified location entered by an address</p>
-</li>
-<li>
-<p><em>Share position</em> using other applications installed on the device</p>
-</li>
-<li>
-<p>enable the <em>Center on GPS</em> functionality for the map visualization.</p>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="_go_to">5.2.1. Go to</h4>
-<div class="paragraph">
-<p>The go-to function allows to exploit the devices OS geocoding function to find locations based on an address. It is then possible to move the map to the selected result.</p>
-</div>
-<div class="exampleblock text-center">
-<div class="content">
-<div class="imageblock">
-<div class="content">
-<img src="images/ipad/geocoding.PNG" alt="geocoding" width="70%">
-</div>
-</div>
-<div class="paragraph">
-<p>The geocoding view.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_share_position">5.2.2. Share position</h4>
-<div class="paragraph">
-<p>This action allows the user to share the current gps position with the most common social media methods available on the device.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_features_tools">5.3. Features tools</h3>
+<h3 id="_features_tools">5.1. Features tools</h3>
 <div class="paragraph">
 <p>The <strong>Query layers</strong> checkbox can be used to enable the vector layer info and editing tool. Once enabled, tapping on the map will query the available vector layers for information in the tap position and editing of the selected features.</p>
 </div>
@@ -1711,7 +1668,7 @@ At the moment this operation shows some issues in rendering the layers list when
 </div>
 </div>
 <div class="paragraph">
-<p>The feature info view showing a line feature.</p>
+<p>The feature info view showing a polygon feature.</p>
 </div>
 </div>
 </div>
@@ -1729,12 +1686,111 @@ At the moment this operation shows some issues in rendering the layers list when
 </div>
 </div>
 <div class="sect2">
-<h3 id="_extras">5.4. Extras</h3>
+<h3 id="_the_measurement_tool">5.2. The measurement tool</h3>
+<div class="paragraph">
+<p>The second icon of the bottom toolbar represents the measurement tool, with this tool the user can drag over the map and have a qualitative measurement of the distance.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/20_measure.png" alt="20 measure" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The complete tools drawer.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_tools_drawer">6. The tools drawer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Tools or right Drawer button is placed on the right top action bar.</p>
+</div>
+<div class="paragraph">
+<p>This menu groups some maps and features tools together with some extra actions.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/18_tools_drawer.jpeg" alt="18 tools drawer" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>The complete tools drawer.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_project_info">6.1. Project Info</h3>
+<div class="paragraph">
+<p>It shows the path to the current database and allows the user to share the file with others.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/19_tools_drawer.jpeg" alt="19 tools drawer" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>The project info panel with sharing button.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_position_tools">6.2. Position Tools</h3>
+<div class="paragraph">
+<p>This section of the tools drawer contais the possibility to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Go to</em> a specified location entered by an address</p>
+</li>
+<li>
+<p><em>Share position</em> using other applications installed on the device.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_go_to">6.2.1. Go to</h4>
+<div class="paragraph">
+<p>The go-to function allows to exploit the devices OS geocoding function to find locations based on an address. It is then possible to move the map to the selected result.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/geocoding.PNG" alt="geocoding" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The geocoding view.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_share_position">6.2.2. Share position</h4>
+<div class="paragraph">
+<p>This action allows the user to share the current gps position with the most common social media methods available on the device.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extras">6.3. Extras</h3>
 <div class="paragraph">
 <p>This section contains some non specific tools of the application.</p>
 </div>
 <div class="sect3">
-<h4 id="_available_icons">5.4.1. Available icons</h4>
+<h4 id="_available_icons">6.3.1. Available icons</h4>
 <div class="paragraph">
 <p>This action opens the icons view:</p>
 </div>
@@ -1758,7 +1814,7 @@ At the moment this operation shows some issues in rendering the layers list when
 </div>
 </div>
 <div class="sect3">
-<h4 id="_offline_maps">5.4.2. Offline maps</h4>
+<h4 id="_offline_maps">6.3.2. Offline maps</h4>
 <div class="paragraph">
 <p>SMASH has a builtin function to download mapsforge (see <a href="#maptypes">supported map types</a>) map files for the whole world.</p>
 </div>
@@ -1794,7 +1850,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_main_drawer">6. The main drawer</h2>
+<h2 id="_the_main_drawer">7. The main drawer</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The left drawer contains some of the main operations that a user usually performs while not actively taking notes.</p>
@@ -1812,9 +1868,9 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect2">
-<h3 id="_project">6.1. Project</h3>
+<h3 id="_project">7.1. Project</h3>
 <div class="paragraph">
-<p>When tapping on the <strong>Project</strong> action, the user is prompted to the starting panel (Project view) where it is possible to <em>Open and existing project</em>, <em>Create a new project</em> or select one of the <em>Recent projects</em>:</p>
+<p>When tapping on the <strong>Project</strong> action, the user is prompted to the starting panel (Project view) where it is possible to <em>Open and existing project</em>, <em>Create a new project</em> :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1824,25 +1880,10 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <li>
 <p>insert a new name for the project or accept the default one based on the timestamp</p>
 </li>
-<li>
-<p>select one of the most recent projects from the list</p>
-</li>
 </ul>
 </div>
-<div class="exampleblock text-center">
-<div class="content">
-<div class="imageblock">
-<div class="content">
-<img src="images/ipad/project_new.jpeg" alt="project new" width="70%">
-</div>
-</div>
 <div class="paragraph">
-<p>The main left drawer.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>New projects will be created inside the <a href="#folderstructure">application&#8217;s folder structure</a>. To open old projects browse the project folder inside the local application&#8217;s folder.</p>
+<p>or select one of the most <em>Recent projects</em> from the list.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1852,19 +1893,34 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="paragraph">
-<p>The file browser view, showing the content of the <em>SMASH projects</em> folder.</p>
+<p>The <em>Project View</em>.</p>
+</div>
+</div>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/project_new.jpeg" alt="project new" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The new project dialog.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>SMASH projects are of the exact same type as those of the <a href="https://www.geopaparazzi.org/geopaparazzi/index.html">geopaparazzi</a> project. That is the reason the extension of the file is <strong>gpap</strong>.</p>
+<p>New projects will be created inside the <a href="#folderstructure">application&#8217;s folder structure</a>. To open old projects browse the project folder inside the local application&#8217;s folder.</p>
+</div>
+<div class="paragraph">
+<p>SMASH projects are of the exact same type as those of the <a href="https://www.geopaparazzi.org/geopaparazzi/index.html">Geopaparazzi</a> project. That is the reason the extension of the file is <strong>gpap</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Once selected, the project is loaded.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_import">6.2. Import</h3>
+<h3 id="_import">7.2. Import</h3>
 <div class="paragraph">
 <p>SMASH allows to import data from the <a href="https://www.geopaparazzi.org/gss/index.html">Geopaparazzi Survey Server</a>.</p>
 </div>
@@ -1881,7 +1937,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="paragraph">
-<p>In fact SMASH is currently the suggested tool to sync geopaparazzi and SMASH surveys with the GSS.</p>
+<p>In fact SMASH is currently the suggested tool to synchronize Geopaparazzi and SMASH surveys with the GSS.</p>
 </div>
 <div class="paragraph">
 <p>When entering the GSS import view, a list of datasets, projects and forms available from the server is presented to the user:</p>
@@ -1899,13 +1955,13 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="paragraph">
-<p>Using the left icon data can be downloaded to the device. Once downloaded teh cion will show what datasets are already available.</p>
+<p>Using the left icon, data can be downloaded to the device. Once downloaded the application will show what datasets are still available.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_export">6.3. Export</h3>
+<h3 id="_export">7.3. Export</h3>
 <div class="paragraph">
-<p>SMASH is currently able to export to PDF and to synchronize with the <a href="https://www.geopaparazzi.org/gss/index.html">Geopaparazzi Survey Server</a>.</p>
+<p>SMASH is currently able to export to files and to synchronize the project with the <a href="https://www.geopaparazzi.org/gss/index.html">Geopaparazzi Survey Server</a>.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1920,13 +1976,37 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_pdf">6.3.1. PDF</h4>
+<h4 id="_pdf">7.3.1. PDF</h4>
 <div class="paragraph">
-<p>When pushing the pdf export button, a pdf is generated and saved to the export folder.</p>
+<p>When pushing the pdf export button, a pdf containing all the notes in the project (simple and form based), is generated and saved to the export folder in the application directory.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/pdf_export.jpeg" alt="pdf export" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The export view.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gss">6.3.2. GSS</h4>
+<h4 id="_gpx">7.3.2. GPX</h4>
+<div class="paragraph">
+<p>When pushing the gpx export button, the application exports the whole survey project to a single GPX and saves the file in the export folder in the application directory.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_kml">7.3.3. KML</h4>
+<div class="paragraph">
+<p>When pushing the kml export button, the application exports the whole survey project to a single KML and saves the file in the export folder in the application directory.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gss">7.3.4. GSS</h4>
 <div class="paragraph">
 <p>When pushing the GSS export button, the stats page is presented. It shows what will be uploaded to the server if pushing the <strong>upload</strong> button.</p>
 </div>
@@ -1964,7 +2044,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/ipad/gss_upload_error.jpeg" alt="gss upload error" width="70%">
+<img src="images/ipad/gss_upload_error.jpeg" alt="gss upload error" width="60%">
 </div>
 </div>
 <div class="paragraph">
@@ -1975,12 +2055,12 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect2">
-<h3 id="_settings">6.4. Settings</h3>
+<h3 id="_settings">7.4. Settings</h3>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/ipad/settings.PNG" alt="settings" width="70%">
+<img src="images/ipad/settings.jpeg" alt="settings" width="40%">
 </div>
 </div>
 <div class="paragraph">
@@ -1989,12 +2069,12 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gps_settings">6.4.1. GPS Settings</h4>
+<h4 id="_gps_settings">7.4.1. GPS Settings</h4>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/27_main_drawer.jpeg" alt="27 main drawer" width="30%">
+<img src="images/version_1_3_0/27_main_drawer.jpeg" alt="27 main drawer" width="40%">
 </div>
 </div>
 <div class="paragraph">
@@ -2003,10 +2083,22 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="paragraph">
-<p>In the gps settings the user can define filters based on distance and time interval for the logging activity.</p>
+<p>In the GPS settings the user can define filters based on distance and time interval for the logging activity.</p>
 </div>
 <div class="paragraph">
-<p>There is also the possibility to visualize the GPS point count separated for the <em>valid</em> and for <em>all</em> points. And to decide to use the GPS filtered points in certain section of the application (instead of the original data). In particular that will affect the log statistics and charting.</p>
+<p>There is also the possibility to visualize the GPS point count separated for the <em>valid</em> and for <em>all</em> points. And to decide to use the GPS filtered points (currently calculated applying the Kalman filter) to all GPS dependent features of the application (instead of the original raw data).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In case of GPS logs original and filtered GPS signal are <strong>BOTH</strong> always saved into the database and the user can choose to look at the original and/or filtered log in the <a href="#_gps_logging_visualization">GPS Logging visualization</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Last but not least it is possible to simulate a gps log. The device needs to have a gps fix for this to work. This can be handy when in need to demo the application&#8217;s logging functionality when sitting indoor, but still having a fix.</p>
@@ -2018,7 +2110,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/32_live_preview.jpeg" alt="32 live preview" width="30%">
+<img src="images/version_1_3_0/32_live_preview.jpeg" alt="32 live preview" width="40%">
 </div>
 </div>
 <div class="paragraph">
@@ -2028,12 +2120,12 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_screen_settings">6.4.2. Screen Settings</h4>
+<h4 id="_screen_settings">7.4.2. Screen Settings</h4>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/28_main_drawer.jpeg" alt="28 main drawer" width="30%">
+<img src="images/version_1_3_0/28_main_drawer.jpeg" alt="28 main drawer" width="40%">
 </div>
 </div>
 <div class="paragraph">
@@ -2053,6 +2145,9 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <p>use the Retina screen mode</p>
 </li>
 <li>
+<p>define the color picker to use in the application when setting a color</p>
+</li>
+<li>
 <p>style the map center cross</p>
 </li>
 <li>
@@ -2062,13 +2157,13 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_camera_settings">6.4.3. Camera Settings</h4>
+<h4 id="_camera_settings">7.4.3. Camera Settings</h4>
 <div class="paragraph">
 <p>The camera settings allow to choose the pictures resolution between high, medium and low.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_vector_layers">6.4.4. Vector Layers</h4>
+<h4 id="_vector_layers">7.4.4. Vector Layers</h4>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
@@ -2099,7 +2194,37 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_device_settings">6.4.5. Device Settings</h4>
+<h4 id="_crs">7.4.5. CRS</h4>
+<div class="paragraph">
+<p>The CRS view contains the list of supported CRS for the application with the possibility to add new projections by epsg code. Available projections are used to reproject vector datasets (geopackage layers and shapefiles) onto the map.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/33_main_drawer.png" alt="33 main drawer" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>The CRS view.</p>
+</div>
+</div>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/34_main_drawer.png" alt="34 main drawer" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>The add CRS panel.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_device_settings">7.4.6. Device Settings</h4>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
@@ -2120,7 +2245,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gss_settings">6.4.6. GSS Settings</h4>
+<h4 id="_gss_settings">7.4.7. GSS Settings</h4>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
@@ -2138,13 +2263,13 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_diagnostics_settings">6.4.7. Diagnostics Settings</h4>
+<h4 id="_diagnostics_settings">7.4.8. Diagnostics Settings</h4>
 <div class="paragraph">
 <p>In the diagnostics settings view it is possible to show the full debug information and filter on the main errors.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_turn_gps_offon_or_exit">6.4.8. Turn GPS off/on or Exit</h4>
+<h4 id="_turn_gps_offon_or_exit">7.4.9. Turn GPS off/on or Exit</h4>
 <div class="paragraph">
 <p>Since the behaviour of the background applications is different between Android and iOS devices, this option covers the possibility to definitely disable the application to collect data:</p>
 </div>
@@ -2163,13 +2288,13 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect1">
-<h2 id="_supported_map_types">7. Supported map types</h2>
+<h2 id="_supported_map_types">8. Supported map types</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="maptypes"></a></p>
 </div>
 <div class="sect2">
-<h3 id="_geopackage">7.1. Geopackage</h3>
+<h3 id="_geopackage">8.1. Geopackage</h3>
 <div class="paragraph">
 <p>SMASH supports the Geopackage format based on sqlite database both raster tiles and vector formats.</p>
 </div>
@@ -2177,11 +2302,11 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <p>Geopackage vector layers are supported also for the editing of the attribute table.</p>
 </div>
 <div class="paragraph">
-<p>The layers can be also in different projections.</p>
+<p>The vector layers can be in different projections, they will be reprojected on the fly.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gpx">7.2. GPX</h3>
+<h3 id="_gpx_2">8.2. GPX</h3>
 <div class="paragraph">
 <p>GPX files can be loaded as layers. SMASH will create different layers for the waypoint and track information contained.</p>
 </div>
@@ -2190,13 +2315,13 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mbtiles">7.3. MBTiles</h3>
+<h3 id="_mbtiles">8.3. MBTiles</h3>
 <div class="paragraph">
 <p>MBTiles is a file format for storing map tiles in a single file. It is, technically, a SQLite database. See the <a href="http://wiki.openstreetmap.org/wiki/MBTiles">openstreetmap wiki</a> for more information.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mapsforge_format_data">7.4. Mapsforge Format Data</h3>
+<h3 id="_mapsforge_format_data">8.4. Mapsforge Format Data</h3>
 <div class="paragraph">
 <p>The mapsforge project provides free and open software for the rendering of vector data based on OpenStreetMap. It developed an efficient binary format for storage of OSM map data (usually with file extension <strong>.map</strong>), and is offering country specific .map files for download. Geopaparazzi is able to render map tiles locally from .map files and will cache rendered tiles in a local MBTiles store.</p>
 </div>
@@ -2210,7 +2335,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/main_view_mapsforge.png" alt="main view mapsforge" width="70%">
+<img src="images/version_1_3_0/main_view_mapsforge.jpeg" alt="main view mapsforge" width="70%">
 </div>
 </div>
 <div class="paragraph">
@@ -2220,7 +2345,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mapurls_map_tiles">7.5. Mapurls: Map tiles</h3>
+<h3 id="_mapurls_map_tiles">8.5. Mapurls: Map tiles</h3>
 <div class="paragraph">
 <p>By default, SMASH is configured to load map Mapnik rendered tiles from OpenStreetMap&#8217;s tile server on the Internet.</p>
 </div>
@@ -2304,7 +2429,7 @@ This information can be tested also in a browser <a href="http://tile.openstreet
 </div>
 </div>
 <div class="sect1">
-<h2 id="_layers_style">8. Layers style</h2>
+<h2 id="_layers_style">9. Layers style</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="layerstyle"></a></p>
@@ -2317,7 +2442,7 @@ There are also several editors and GIS that support SLD, so it is possible to cr
 <p>SMASH automatically visualizes vector layers as defined in theyr own SLD file (previously created in a GIS). It is also possible to create a new style for the Geopackage and GPX layers by accessing the Layer List and sliding the layer to style to the right to enter the style properties.</p>
 </div>
 <div class="sect2">
-<h3 id="_style_a_geopackage_layer">8.1. Style a Geopackage layer</h3>
+<h3 id="_style_a_geopackage_layer">9.1. Style a Geopackage layer</h3>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
@@ -2391,7 +2516,7 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/sld_08_points_map.png" alt="sld 08 points map" width="30%">
+<img src="images/version_1_3_0/sld_08_points_map.jpeg" alt="sld 08 points map" width="30%">
 </div>
 </div>
 <div class="paragraph">
@@ -2457,7 +2582,7 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/sld_12_theme_map.png" alt="sld 12 theme map" width="30%">
+<img src="images/version_1_3_0/sld_12_theme_map.jpeg" alt="sld 12 theme map" width="30%">
 </div>
 </div>
 <div class="paragraph">
@@ -2467,7 +2592,7 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 </div>
 </div>
 <div class="sect2">
-<h3 id="_style_a_gpx_layer">8.2. Style a GPX layer</h3>
+<h3 id="_style_a_gpx_layer">9.2. Style a GPX layer</h3>
 <div class="paragraph">
 <p>The style properties of a GPX layer will be also saved to an SLD sidecar file to ensure style persistence.</p>
 </div>
@@ -2490,7 +2615,7 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/sld_15_gpx_map.png" alt="sld 15 gpx map" width="30%">
+<img src="images/version_1_3_0/sld_15_gpx_map.jpeg" alt="sld 15 gpx map" width="30%">
 </div>
 </div>
 <div class="paragraph">
@@ -2502,7 +2627,7 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 </div>
 </div>
 <div class="sect1">
-<h2 id="_application_folder_structure">9. Application folder structure</h2>
+<h2 id="_application_folder_structure">10. Application folder structure</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a id="folderstructure"></a></p>
@@ -2546,10 +2671,132 @@ Please remember to <strong>save</strong> using the floating action bottom at the
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_appendix_1_raster_reprojection">11. Appendix 1: Raster reprojection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The support for the visualization of the Geopackage raster layers allows to set different parameters like the tiling system and the projection.
+As for the tiling system we reccommand to use Gdal to create Geopackage rasters. In fact, Gdal by default generates only one zoomlevel at the optimal image resolution and using the best tile schema. This allows to create geopackages of big imagery maintaining more or less the same size o the original data.</p>
+</div>
+<div class="paragraph">
+<p>Smash supports different projections and does the reprojection on the flight if it is different from the usual EPSG 3857 used as base for the application.</p>
+</div>
+<div class="paragraph">
+<p>Geopackage tile datasets can be loaded in two different ways. The settings are available in the properties view of geopackage layers.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/01_gpkg_props.png" alt="01 gpkg props" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>The Layers view: a detail of possibilities for a Geopackage layer.</p>
+</div>
+</div>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/02_gpkg_props.png" alt="02 gpkg props" width="60%">
+</div>
+</div>
+<div class="paragraph">
+<p>The properties view of a geopackage layer.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The available options are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the opacity value of the entire map</p>
+</li>
+<li>
+<p>the possibility to load a wider range of tiles schemas: to use for an ortophoto reprojected with gdal and packaged as geopackage</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/03_gladschema.png" alt="03 gladschema" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The visualization of a geopackage layer with an ortophoto reprojected with gdal.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This feature has a larger memory footprint as it loads the tiles in memory as an image. So if the dataset is too large for your device it will not work and it has to be disabled.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the color to make transparent: this is useful when there is the need to overlay technical maps over an elevation model or ortophoto. But it also solves a situation like this:</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/04_collar.png" alt="04 collar" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The visualization of two geopackage layers with an ortophoto reprojected with gdal, note the black collar.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>where there are two geopackage layers of a reprojected ortophoto. When both loaded the black collar of one covers the other. It is possible to set the black collar to transparent by selecting the black color in the picker.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/ipad/06_collar_fixtile.png" alt="06 collar fixtile" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The visualization of two geopackage layers with an ortophoto reprojected with gdal, with the black color set to transparent.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+when the jpeg geopackage tiles are generated, there is some interpolation and antialiasing going on, which makes part of the color not completely black, hence some pixel will remaining.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.0<br>
+Version 1.5.0<br>
 </div>
 </div>
 <style>
