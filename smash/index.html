@@ -498,8 +498,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_the_bottom_toolbar">5. The bottom toolbar</a>
 <ul class="sectlevel2">
-<li><a href="#_features_tools">5.1. Features tools</a></li>
-<li><a href="#_the_measurement_tool">5.2. The measurement tool</a></li>
+<li><a href="#_feature_editing">5.1. Feature editing</a>
+<ul class="sectlevel3">
+<li><a href="#_editing_of_existing_features">5.1.1. Editing of existing features</a></li>
+<li><a href="#_add_new_features">5.1.2. Add new features</a></li>
+<li><a href="#_delete_existing_features">5.1.3. Delete existing features</a></li>
+</ul>
+</li>
+<li><a href="#_query_features">5.2. Query features</a></li>
+<li><a href="#_the_measurement_tool">5.3. The measurement tool</a></li>
 </ul>
 </li>
 <li><a href="#_the_tools_drawer">6. The tools drawer</a>
@@ -528,7 +535,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_pdf">7.3.1. PDF</a></li>
 <li><a href="#_gpx">7.3.2. GPX</a></li>
 <li><a href="#_kml">7.3.3. KML</a></li>
-<li><a href="#_gss">7.3.4. GSS</a></li>
+<li><a href="#_geopackage">7.3.4. GEOPACKAGE</a></li>
+<li><a href="#_gss">7.3.5. GSS</a></li>
 </ul>
 </li>
 <li><a href="#_settings">7.4. Settings</a>
@@ -548,7 +556,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_supported_map_types">8. Supported map types</a>
 <ul class="sectlevel2">
-<li><a href="#_geopackage">8.1. Geopackage</a></li>
+<li><a href="#_geopackage_2">8.1. Geopackage</a></li>
 <li><a href="#_gpx_2">8.2. GPX</a></li>
 <li><a href="#_mbtiles">8.3. MBTiles</a></li>
 <li><a href="#_mapsforge_format_data">8.4. Mapsforge Format Data</a></li>
@@ -826,7 +834,7 @@ we are here to help you!</p>
 <div class="sect3">
 <h4 id="_from_the_main_repository">2.2.2. From the main repository</h4>
 <div class="paragraph">
-<p>For people that have no access to Google Play, an apk has been paced under the <a href="https://github.com/moovida/smash/releases">releases page of SMASH</a>. Under the assets section of each release there is also an <strong>apk</strong> file. That one can be manualli installed oin Android. Actually, if the link is accessed from within Android, the installation is proposed on clicking the link.</p>
+<p>For people that have no access to Google Play, an apk has been paced under the <a href="https://github.com/moovida/smash/releases">releases page of SMASH</a>. Under the assets section of each release there is also an <strong>apk</strong> file. That one can be manually installed on Android. Actually, if the link is accessed from within Android, the installation is proposed on clicking the link.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1015,6 +1023,21 @@ notes creation, as well as the visualization of the current position on a map ar
 </div>
 <div class="paragraph">
 <p><em>By double tapping the GPS button the automatic map centering on GPS is toggled.</em></p>
+</div>
+<div class="paragraph">
+<p>On <strong>Android</strong> devices the GPS position notification message is dynamic. In the notification of the device there are all the information about the GPS status (position and logging).</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/gps_notification_01.jpg" alt="gps notification 01" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The visualization of the GPS notification on an <em>Android</em> device.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1338,6 +1361,21 @@ log or to accept the one generated based on the current date and time
 </div>
 </div>
 <div class="paragraph">
+<p>On <strong>Android</strong> devices where the GPS position notification message is dynamic, in the notifications of the device there are all the information about the GPS status and logging information. The title of the notification shows the logging operation and in the second line time and distance from starting point of the current log is displayed.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/gps_notification_02.jpg" alt="gps notification 02" width="50%">
+</div>
+</div>
+<div class="paragraph">
+<p>The visualization of the GPS notification on an <em>Android</em> device.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
 <p>To stop logging, the same button is used. Once tapped, you are prompted
 to verify the action.</p>
 </div>
@@ -1604,7 +1642,7 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/18_toolbar.png" alt="18 toolbar" width="60%">
+<img src="images/version_1_3_0/18_toolbar.jpeg" alt="18 toolbar" width="60%">
 </div>
 </div>
 <div class="paragraph">
@@ -1616,7 +1654,7 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/19_toolbar.png" alt="19 toolbar" width="60%">
+<img src="images/version_1_3_0/19_toolbar.jpeg" alt="19 toolbar" width="60%">
 </div>
 </div>
 <div class="paragraph">
@@ -1628,12 +1666,230 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 <p>The bottom toolbar will host all the interactive operations on layers and on the map view.</p>
 </div>
 <div class="paragraph">
-<p>If selected one tool, its icon becames red, this means that the tool is active. To deactivete it just tap the same icon in the bottom toolbar. The tools are automatically deactivated when the user decides to exit the bottom toolbar by tapping the handler on the right corner of the map view.</p>
+<p>If selected one tool, its icon becames red, this means that the tool is active. To deactivate it just tap the same icon in the bottom toolbar. The tools are automatically deactivated when the user decides to exit the bottom toolbar by tapping the handler on the right corner of the map view. In addition, when activated, the feature editing tool will show its specific options in the bottom toolbar.</p>
 </div>
 <div class="sect2">
-<h3 id="_features_tools">5.1. Features tools</h3>
+<h3 id="_feature_editing">5.1. Feature editing</h3>
 <div class="paragraph">
-<p>The <strong>Query layers</strong> checkbox can be used to enable the vector layer info and editing tool. Once enabled, tapping on the map will query the available vector layers for information in the tap position and editing of the selected features.</p>
+<p>The first icon of the bottom toolbar represents the feature editing tool for vector layers in the Geopackage format:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>of all feature&#8217;s type: point, lines, polygons</p>
+</li>
+<li>
+<p>in their own coordinate reference system.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The features editing works for all visible vector layers of a Geopackage  and allows to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>modify existing geometries</p>
+</li>
+<li>
+<p>add a new geometry</p>
+</li>
+<li>
+<p>delete an existing geometry.</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/36_editing.jpeg" alt="36 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>The moment of tapping and loading query data with enabled the features editing tool.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Once activated <strong>long tap</strong> on a feature in the map to select the feature below, for polygons, or in the very near, for lines and points. The diameter of influence of the tapped position can be set in the general <em>Settings &#8594; Vector layers &#8594; Info Tool</em>.</p>
+</div>
+<div class="paragraph">
+<p>The selected feature will be highlighted in yellow in the map and some specific editing tools will be displayed in the bottom toolbar to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>delete</p>
+</li>
+<li>
+<p>edit the attributes table</p>
+</li>
+<li>
+<p>save the modified geometry</p>
+</li>
+<li>
+<p>cancel the geometry changes until last saved action.</p>
+</li>
+</ol>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/37_editing.jpeg" alt="37 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>The long tapped polygon feature selected.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_editing_of_existing_features">5.1.1. Editing of existing features</h4>
+<div class="paragraph">
+<p>Editing of an existing geometry consists of:</p>
+</div>
+<div class="paragraph">
+<p>a) drag edges/angles in the new position</p>
+</div>
+<div class="paragraph">
+<p>b) move the middle points of segments: this will become an edge and automatically two additional middle points will be added from the selected vertex to the two adjacent vertexes in both directions</p>
+</div>
+<div class="paragraph">
+<p>c) long tap on a node to remove it.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/38_editing.jpeg" alt="38 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of an edited polygon feature.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>As soon as the modified geometry is ready, it is possible to either save the changes, by tapping on the save icon  <span class="image"><img src="images/version_1_3_0/39_editing.png" alt="39 editing" width="5%"></span> or long tap on the cancel icon <span class="image"><img src="images/version_1_3_0/40_editing.png" alt="40 editing" width="5%"></span> to restore the initial geometry for that feature. Both the commands will close the editing tool for the current geometry.</p>
+</div>
+<div class="paragraph">
+<p>Editing of the attributes of and existing feature is accessible both from the editing menu and from the query features tool. In this case just select the second icon of the editing toolbar to visualize the attributes table of the current feature. Once edited, the changes are automatically saved in the attributes table.</p>
+</div>
+<div class="paragraph">
+<p>To exit the tool tap the left arrow on the top left of the window.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/44_editing.jpeg" alt="44 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>Editing attributes of a polygon layer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_add_new_features">5.1.2. Add new features</h4>
+<div class="paragraph">
+<p>To add a new feature in one of the visible Geopackage layers long tap on the desidered position regardless of the type of the new feature you want to add:</p>
+</div>
+<div class="paragraph">
+<p>a) the application will ask in which layer to save the new feature</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/41_editing.jpeg" alt="41 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>The list of the available layers where to create the new feature.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>b) select the layers from the list of the available</p>
+</div>
+<div class="paragraph">
+<p>c) new feature of the type of the selected layer will be added automatically in the tapped position:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>point layers: a new point is added in the tapped position</p>
+</li>
+<li>
+<p>line layers: a small line with two vertexes will be added in the tapped position, the user can then modify this geometry following the <em>Editing of existing features</em> instructions</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/42_editing.jpeg" alt="42 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of the new line feature created automatically by the application.</p>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>polygon layers: a small polygon with 3 vertexes will be added in the tapped position, the user can then modify this geometry following the <em>Editing of existing features</em> instructions</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/43_editing.jpeg" alt="43 editing" width="30%">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of the new polygon feature created automatically by the application.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_delete_existing_features">5.1.3. Delete existing features</h4>
+<div class="paragraph">
+<p>To delete an existing feature:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>long tap on the feature to delete to select it</p>
+</li>
+<li>
+<p>tap the trash icon in the bottom toolbar.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>please consider that the delete tool has no possibility to reverse the action, there are no <em>undo</em> or <em>cancel</em> tools working after it.</p>
+</dd>
+</dl>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_query_features">5.2. Query features</h3>
+<div class="paragraph">
+<p>The second icon of the bottom toolbar activates the query features tool, that can be used to enable the vector layer info and attributes editing. Once enabled, tapping on the map will query all the visible vector layers for information in the tapped position. The attributes will be also editable if the selected feature is contained in a Geopackage layer.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
@@ -1648,7 +1904,7 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 </div>
 </div>
 <div class="paragraph">
-<p>The info tool queries all visible vector layers and opens the feature info view, which presents each selected feature highlighted in the map context and its attributes:</p>
+<p>The info tool queries all visible vector layers and opens the feature info view, which showsdddddd each selected feature highlighted in the map context and its attributes:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1656,7 +1912,7 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 <p>to browse between the selecte features (if more than one) use the arrows on the top right of the window</p>
 </li>
 <li>
-<p>it is possible to edit the attributes of the feature of Geopackage layers by selecting the pencil near the value of the attribute in the table</p>
+<p>it is possible to edit the attributes of the feature only of Geopackage layers by selecting the pencil near the value of the attribute in the table</p>
 </li>
 </ul>
 </div>
@@ -1668,7 +1924,7 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 </div>
 </div>
 <div class="paragraph">
-<p>The feature info view showing a polygon feature.</p>
+<p>The feature info view showing a polygon feature in a non Geopackage layer.</p>
 </div>
 </div>
 </div>
@@ -1680,25 +1936,25 @@ Local data must have its own projection information file (<em>.prj</em>) both fo
 </div>
 </div>
 <div class="paragraph">
-<p>The feature info view showing a point feature.</p>
+<p>The feature info view showing a point feature in a Geopackage layer with the possibility for attribute&#8217;s editing.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_measurement_tool">5.2. The measurement tool</h3>
+<h3 id="_the_measurement_tool">5.3. The measurement tool</h3>
 <div class="paragraph">
-<p>The second icon of the bottom toolbar represents the measurement tool, with this tool the user can drag over the map and have a qualitative measurement of the distance.</p>
+<p>The third icon of the bottom toolbar represents the measurement tool, with this tool the user can drag over the map and have a qualitative measurement of the distance. The path is highlighted in red on the map view and the total distance is shown on top of the measurement icon in the bottom toolbar.</p>
 </div>
 <div class="exampleblock text-center">
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/20_measure.png" alt="20 measure" width="50%">
+<img src="images/version_1_3_0/20_measure.jpeg" alt="20 measure" width="50%">
 </div>
 </div>
 <div class="paragraph">
-<p>The complete tools drawer.</p>
+<p>The measurement tool.</p>
 </div>
 </div>
 </div>
@@ -1971,7 +2227,7 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="paragraph">
-<p>The export view.</p>
+<p>The PDF export view.</p>
 </div>
 </div>
 </div>
@@ -2006,7 +2262,25 @@ At the current time, due to a tecnical issue in the flutter framework, the visua
 </div>
 </div>
 <div class="sect3">
-<h4 id="_gss">7.3.4. GSS</h4>
+<h4 id="_geopackage">7.3.4. GEOPACKAGE</h4>
+<div class="paragraph">
+<p>When pushing the Geopackage export button, the application exports the whole survey project to a single Geopackage and saves the file in the export folder in the application directory.</p>
+</div>
+<div class="exampleblock text-center">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="images/version_1_3_0/geopkg_export.jpeg" alt="geopkg export" width="70%">
+</div>
+</div>
+<div class="paragraph">
+<p>The export view.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gss">7.3.5. GSS</h4>
 <div class="paragraph">
 <p>When pushing the GSS export button, the stats page is presented. It shows what will be uploaded to the server if pushing the <strong>upload</strong> button.</p>
 </div>
@@ -2168,7 +2442,7 @@ In case of GPS logs original and filtered GPS signal are <strong>BOTH</strong> a
 <div class="content">
 <div class="imageblock">
 <div class="content">
-<img src="images/version_1_3_0/29_main_drawer.jpeg" alt="29 main drawer" width="70%">
+<img src="images/version_1_3_0/29_main_drawer.jpeg" alt="29 main drawer" width="60%">
 </div>
 </div>
 <div class="paragraph">
@@ -2188,7 +2462,13 @@ In case of GPS logs original and filtered GPS signal are <strong>BOTH</strong> a
 <p>select if to load the data only on the last visible map area</p>
 </li>
 <li>
-<p>define the radius of the tap of the info query tool.</p>
+<p>define the radius of the tap of the info feature and editing tool</p>
+</li>
+<li>
+<p>set the dimension of the editing drag handler size</p>
+</li>
+<li>
+<p>set the dimension of the editing intermediate drag handler size.</p>
 </li>
 </ul>
 </div>
@@ -2294,7 +2574,7 @@ In case of GPS logs original and filtered GPS signal are <strong>BOTH</strong> a
 <p><a id="maptypes"></a></p>
 </div>
 <div class="sect2">
-<h3 id="_geopackage">8.1. Geopackage</h3>
+<h3 id="_geopackage_2">8.1. Geopackage</h3>
 <div class="paragraph">
 <p>SMASH supports the Geopackage format based on sqlite database both raster tiles and vector formats.</p>
 </div>
