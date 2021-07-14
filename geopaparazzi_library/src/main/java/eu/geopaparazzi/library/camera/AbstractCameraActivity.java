@@ -195,7 +195,7 @@ public abstract class AbstractCameraActivity extends Activity {
             }
             for (File cameraTakenFile : cameraTakenMediaFiles) {
                 // delete the one duplicated
-                cameraTakenFile.delete();
+                //cameraTakenFile.delete();
             }
         } catch (Exception e) {
             GPLog.error(this, null, e);
