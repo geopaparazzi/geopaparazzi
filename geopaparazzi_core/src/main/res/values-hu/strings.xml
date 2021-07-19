@@ -115,9 +115,9 @@
   <string name="osm_server_label">Elérendő WPS szerver</string>
   <string name="osm_notes_properly_uploaded">Az OSM jegyzetek rendben feltöltődtek.\n\nTörölni kívánod a feltöltött jegyzeteket az eszközről?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Hiba történt az OSM cimkék feltöltése során: </string>
-  <string name="enable_automatic_center_on_gps">GPS követő térkép</string>
-  <string name="enable_center_on_gps">Térkép közép GPS pozícióra állítása</string>
-  <string name="disable_center_on_gps">Térkép közép GPS pozíciótól függetlenítése</string>
+  <string name="enable_automatic_center_on_gps">Automatikus GPS követés</string>
+  <string name="enable_center_on_gps">GPS követés beállítása</string>
+  <string name="disable_center_on_gps">GPS követés leállítása</string>
   <string name="profile">útprofil</string>
   <string name="loading_data">Adatok betöltése...</string>
   <string name="profilelable_distance">távolság [m]</string>
@@ -194,6 +194,8 @@
   <string name="custom_icon_properties">Egyéni ikon tulajdonságok</string>
   <string name="use_custom">egyéni beállítás használata</string>
   <string name="labels">Cimkék</string>
+  <string name="show_notes_labels">cimkézés jegyzetekkel</string>
+  <string name="show_image_labels">kép cimkék mutatása</string>
   <string name="halo">fényöv</string>
   <string name="screen_preferences">Képernyő beállítások</string>
   <string name="screen_preferences_summary">Add meg a képernyő beállítását a középponti kereszt, vagy a képpont sűrűség szerint</string>
@@ -302,6 +304,8 @@
   <string name="export_img_processing">Képek exportja...</string>
   <string name="routing_pref_title">Útvonal szolgáltatási kulcs</string>
   <string name="routing_pref_summary">A MapQuest és Graphhopper útvonal szolgáltatások használatához add meg a kulcsot - ApiKey.</string>
+  <string name="gps_info_dialog_title">GPS információ
+</string>
   <string name="open_gps_settings">GPS beállítások nyitása</string>
   <string name="dashboard_note_action_description">Készíts szöveg, kép vagy vázlat jegyzetet</string>
   <string name="dashboard_metadata_action_description">Projekt információ megjelenítés</string>
@@ -379,6 +383,8 @@
   <string name="upload_to_cloud_prompt">Feltölti felhőbe az aktuális projektet?</string>
   <string name="data_to_pdf_label">Projekt űrlapok PDF-be</string>
   <string name="exporting_data_to_pdf">Űrlap adatok PDF-be exportálása</string>
+  <string name="dashboard_msg_notes">Jegyzetek:  %d</string>
+  <string name="dashboard_msg_gps">GPS naplók: %d</string>
   <!--geoss2go profiles-->
   <string name="profiles_action_settings">Beállítások</string>
   <string name="profiles_action_cloud_import">Felhő profilok importja</string>
@@ -392,6 +398,7 @@
   <string name="profiles">Profilok</string>
   <string name="layout_settings">Elrendezés beállítások</string>
   <string name="layout_columns">Oszlopok elrendezése</string>
+  <string name="text_factor">Szöveg tényező</string>
   <string name="GPS">GPS</string>
   <string name="name">Név</string>
   <string name="path">Útvonal</string>
@@ -405,4 +412,35 @@
   <string name="description_of_the_new_profile">Az új profil leírása</string>
   <string name="browse_images">Képek böngészése</string>
   <string name="return_to_view_after_note">Jegyzet után vissza a nézetre</string>
+  <string name="unable_parse_url">Az url nem értelmezhető:</string>
+  <string name="option_center_on_gps">GPS követés</string>
+  <string name="option_rotate_with_bearing">irányszöggel forgatás</string>
+  <string name="option_show_gps_info">infó mutatás</string>
+  <string name="option_hide_gps_accuracy">pontosság elrejtés</string>
+  <string name="basemaps_colon">Alaptérképek:</string>
+  <string name="spatialita_dbs_colon">Spatialite dbs:</string>
+  <string name="forms_colon">Űrlapok:</string>
+  <string name="has_project_colon">Meglévő projekt:</string>
+  <string name="prompt_remove_profile">Valóban törlöd ezt a profilt: \'%s\'? Visszavonhatatlan lépés.</string>
+  <string name="profiles_imported">Profilook importálása rendben.</string>
+  <string name="no_profiles_in_path">Profil fájl nem található a relatív hivatkozáson:</string>
+  <string name="an_error_occurred">Hiba történt:</string>
+  <string name="profiles_exported_to">Profilok exportálódtak ide:</string>
+  <string name="you_want_to_remove">Törölni kívánod:</string>
+  <string name="data_need_to_reside_in_same_path">Ugyanazon profil minden adata egyező elérési úton található.</string>
+  <string name="wms_mapurl_added_to_basemaps">WMS mapurl fájl alaptérképekhez adása megtörtént és ide mentődött:</string>
+  <string name="profile_info_title">Profil infó</string>
+  <string name="profile_basemap_title">Alaptérképek</string>
+  <string name="profile_spatialite_title">Spatialite adatbázisok</string>
+  <string name="profile_forms_title">Űrlapok</string>
+  <string name="profile_project_title">Projekt</string>
+  <string name="profiles_want_clear_project_form">Kiüríted a projekt űrlapot?</string>
+  <string name="want_to_remove">Törölni kívánod:</string>
+  <string name="style_reset_performed">Stílus visszaállítás történt.</string>
+  <string name="log_will_be_removed">A napló törlésre kerül, visszavonhatatlanul.</string>
+  <string name="chart_elev">Magasság [m]</string>
+  <string name="chart_speed">Sebesség [km/h]</string>
+  <string name="loading_data_process">Adatbetöltés...</string>
+  <string name="metadata_sure_remove_entry">Valóban törölni kívánod a bejegyzést:</string>
+  <string name="add_new_metadata_title">Új metaadat elem hozzáadása</string>
 </resources>
