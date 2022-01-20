@@ -1,0 +1,48 @@
+{
+  "access_right": "open",
+  "title":"Geopaparazzi",
+  "description":"Geopaparazzi is a mobile application for Android to do very fast qualitative engineering/geologic surveys and GIS data collection.",
+  "language": "eng",
+  "license": {"id":"GPL-3.0-or-later"},
+  "keywords": ["gis","mobile", "geopaparazzi", "android", "digital field mapping"],
+  "creators": [
+     {
+       "name":"Andrea Antonello",
+       "affiliation":"HydroloGIS S.r.l., Free University of Bolzano",
+       "orcid":"0000-0001-9543-751X"
+     },
+     {
+       "name":"Silvia Franceschi",
+       "affiliation":"HydroloGIS S.r.l."
+     }
+  ],
+  "contributors": [
+     {
+       "name":"Mark Johnson",
+       "type": "Other"
+     },
+     {
+       "name":"Brent Fraser",
+       "type": "Other"
+     },
+     {
+       "name":"Cesar Martinez Izquierdo",
+       "type": "Other"
+     },
+     {
+       "name":"Luca Delucchi",
+       "type": "Other"
+     },
+     {
+       "name":"Tim Howard",
+       "type": "Other"
+     },
+     {
+       "name":"Alex Karezin",
+       "type": "Other"
+     }
+  ],
+  "references": [
+    
+  ]
+}
