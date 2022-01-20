@@ -1,5 +1,7 @@
 # Geopaparazzi
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5881915.svg)](https://doi.org/10.5281/zenodo.5881915)
+
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Google Play"
     height="80">](https://play.google.com/store/apps/details?id=eu.hydrologis.geopaparazzi)
