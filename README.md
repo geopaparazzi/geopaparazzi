@@ -1,3 +1,8 @@
+# ⚠️ ARCHIVED — SINCE NOT MAINTAINED ⚠️
+
+> [!CAUTION]
+> **This project has been archived. The project has been long super-seeded by the project [SMASH](https://github.com/geopaparazzi/smash) by the same authors.**
+
 # Geopaparazzi
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5881915.svg)](https://doi.org/10.5281/zenodo.5881915)
